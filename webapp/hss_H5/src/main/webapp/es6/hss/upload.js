@@ -19,18 +19,12 @@ let identityOppositePic_src = document.getElementById('identityOppositePic_src')
 let identityHandPic_src = document.getElementById('identityHandPic_src');
 let bankHandPic_src = document.getElementById('bankHandPic_src');
 
-wx.error(function (res) {
-  alert(res);
-});
-
 let ua = navigator.userAgent.toLowerCase();
 // 获取本地图片
 let getLocalImg = function (id, localId) {
-  alert(localId);
   wx.getLocalImgData({
     localId: localId,
     success: function (res) {
-      alert(res.localData);
       document.getElementById(id).setAttribute('src', res.localData);
     }
   });
@@ -41,7 +35,6 @@ let upload_identityFacePic = new Upload('identityFacePic', function (localId) {
     getLocalImg('identityFacePic_src', localId);
     return;
   }
-  alert(localId);
   document.getElementById('identityFacePic_src').setAttribute('src', localId);
 });
 
