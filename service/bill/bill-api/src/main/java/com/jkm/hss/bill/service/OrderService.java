@@ -3,6 +3,8 @@ package com.jkm.hss.bill.service;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.*;
+import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -10,6 +12,7 @@ import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +116,15 @@ public interface OrderService {
     int markSettleSuccess(long id, int status, Date successSettleTime);
 
     /**
+     * 更新退款信息
+     *
+     * @param id
+     * @param refundAmount
+     * @param refundStatus
+     */
+    int updateRefundInfo(long id, BigDecimal refundAmount, EnumOrderRefundStatus refundStatus);
+
+    /**
      * 按id查询
      *
      * @param id
@@ -206,13 +218,15 @@ public interface OrderService {
 
     /**
      * 分页查询--查询个数
-
      *
      * @param accountId
      * @param appId
+     * @param payChannelSigns
+     * @param startTime
+     * @param endTime
      * @return
      */
-    long getPageOrdersCountByAccountId(long accountId, String appId, Date date);
+    long getOrderCountByParam(long accountId, String appId, List<Integer> payChannelSigns, Date startTime, Date endTime);
 
     /**
      * 分页查询--查询记录
@@ -221,9 +235,12 @@ public interface OrderService {
      * @param appId
      * @param offset
      * @param count
+     * @param payChannelSigns
+     * @param startTime
+     * @param endTime
      * @return
      */
-    List<Order> getPageOrdersByAccountId(long accountId, String appId, int offset, int count, Date date);
+    List<Order> getOrdersByParam(long accountId, String appId, int offset, int count, List<Integer> payChannelSigns, Date startTime, Date endTime);
 
     /**
      * 批量查询
@@ -360,6 +377,18 @@ public interface OrderService {
      * @return
      */
    List<Order> getOrderByOrderNos(List<String> orderNos, int offset, int pageSize);
+
+    /**
+     * 统计金额，笔数
+     *
+     * @param accountId
+     * @param appId
+     * @param payChannelSigns
+     * @param sDate
+     * @param eDate
+     * @return
+     */
+    AppStatisticsOrder statisticsByParam(long accountId, String appId, ArrayList<Integer> payChannelSigns, String sDate, String eDate);
 
     /**
      * 查询交易详情

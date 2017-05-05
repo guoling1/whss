@@ -40,6 +40,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      */
     @Override
     public void add(final SettleAccountFlow accountFlow) {
+        accountFlow.setFlowNo(this.getSettleAccountFlowNo());
         this.settleAccountFlowDao.insert(accountFlow);
     }
 

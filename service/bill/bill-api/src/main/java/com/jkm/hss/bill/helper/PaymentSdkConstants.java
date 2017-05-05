@@ -54,6 +54,11 @@ public final class PaymentSdkConstants {
      */
     public static final String SDK_PAY_QUERYIN;
 
+    /**
+     * 退款地址
+     */
+    public static final String SDK_PAY_REFUND;
+
     static {
         final PaymentSdkConfig config = getConfig();
         APP_ID= config.appId();
@@ -74,6 +79,8 @@ public final class PaymentSdkConstants {
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_PREPARE), "加载支付中心快捷支付-预下单url失败");
         SDK_PAY_UNIONPAY_CONFRIM = config.sdkPayUnionPayConfirm();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_CONFRIM), "加载支付中心快捷支付-确认下单url失败");
+        SDK_PAY_REFUND = config.sdkPayRefund();
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_REFUND), "加载支付中心退款url失败");
     }
 
     private static PaymentSdkConfig getConfig() {
@@ -136,5 +143,9 @@ public final class PaymentSdkConstants {
         @Key("payment.sdk.pay.unionpay.confirm")
         @DefaultValue("http://pay.qianbaojiajia.com/pay/confirmPlaceOrder")
         String sdkPayUnionPayConfirm();
+
+        @Key("payment.sdk.pay.refund.url")
+        @DefaultValue("http://pay.qianbaojiajia.com/pay/refund")
+        String sdkPayRefund();
     }
 }

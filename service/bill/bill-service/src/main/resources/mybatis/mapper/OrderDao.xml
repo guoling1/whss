@@ -130,6 +130,10 @@
         UPDATE tb_order SET settle_status = #{status}, success_settle_time = #{successSettleTime} WHERE id = #{id}
     </update>
 
+    <update id="updateRefundInfo">
+        UPDATE tb_order SET refund_amount = #{refundAmount}, refund_status = #{refundStatus} WHERE id = #{id}
+    </update>
+
     <select id="selectById" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE id = #{id}
     </select>
@@ -1158,27 +1162,36 @@
         AND checked_status = 1
     </select>
 
-    <select id="selectPageOrdersCountByAccountId" resultType="java.lang.Long">
+    <select id="selectOrderCountByParam" resultType="java.lang.Long">
         SELECT COUNT(0) FROM tb_order
         WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
         AND app_id = #{appId}
-        AND status in (4, 6)
-        <if test="date != null">
-            AND create_time &lt;= #{date}
+        AND status in (4, 6, 7 ,9)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
         </if>
     </select>
 
-    <select id="selectPageOrdersByAccountId" resultType="com.jkm.hss.bill.entity.Order">
+    <select id="selectOrdersByParam" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order
         WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
         AND app_id = #{appId}
-        AND status in (4, 6)
-        <if test="date != null">
-            AND create_time &lt;= #{date}
+        AND status in (4, 6, 7 ,9)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
         </if>
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>
+
     <select id="getByOrderNos" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE order_no
         in <foreach collection="orderNos" index="index" item="item" open="(" close=")" separator=",">
@@ -1232,5 +1245,20 @@
         </foreach>
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
+    </select>
+
+    <select id="statisticsByParam" resultType="com.jkm.hss.bill.helper.AppStatisticsOrder">
+        SELECT SUM(trade_amount) as amount, COUNT(id) as number
+        FROM tb_order
+        WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
+        AND app_id = #{appId}
+        AND status in (4, 6)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="sDate != null and eDate != null">
+            AND create_time BETWEEN #{sDate} AND #{eDate}
+        </if>
     </select>
 </mapper>

@@ -2,17 +2,18 @@ package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.base.common.util.SnGenerator;
-import com.jkm.hss.account.entity.Account;
-import com.jkm.hss.account.entity.FrozenRecord;
-import com.jkm.hss.account.entity.UnFrozenRecord;
+import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
@@ -20,17 +21,16 @@ import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.HolidaySettlementConstants;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
-import com.jkm.hss.bill.service.CalculateService;
-import com.jkm.hss.bill.service.HSYTradeService;
-import com.jkm.hss.bill.service.MergeTableSettlementDateService;
-import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.*;
@@ -83,8 +83,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Autowired
     private SettleAccountFlowService settleAccountFlowService;
     @Autowired
-    private SplitAccountRecordService splitAccountRecordService;
-    @Autowired
     private ShallProfitDetailService shallProfitDetailService;
     @Autowired
     private PushService pushService;
@@ -94,6 +92,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HttpClientFacade httpClientFacade;
     @Autowired
     private MergeTableSettlementDateService mergeTableSettlementDateService;
+    @Autowired
+    private RefundOrderService refundOrderService;
+    @Autowired
+    private SplitAccountRecordService splitAccountRecordService;
+    @Autowired
+    private SplitAccountRefundRecordService splitAccountRefundRecordService;
+    @Autowired
+    private SendMsgService sendMsgService;
 
     /**
      * {@inheritDoc}
@@ -137,22 +143,62 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long accountId = dataJo.getLongValue("accountId");
         final int pageNo = dataJo.getIntValue("pageNo");
         final int pageSize = dataJo.getIntValue("pageSize");
-        final String dateStr = dataJo.getString("date");
-        Date date = null;
-        if (!StringUtils.isEmpty(dateStr) && !StringUtils.isEmpty(dateStr)) {
-            date = DateFormatUtil.parse(dateStr + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        }
+        final List<Integer> paymentChannels = (List<Integer>) dataJo.get("channel");
+        final String startTimeStr = dataJo.getString("startTime");
+        final String endTimeStr = dataJo.getString("endTime");
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
-        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), date);
-        final List<Order> orders = this.orderService.getPageOrdersByAccountId(accountId, EnumAppType.HSY.getId(),
-                pageModel.getFirstIndex(), pageSize, date);
+        if (CollectionUtils.isEmpty(paymentChannels)) {
+            pageModel.setCount(0);
+            pageModel.setRecords(Collections.<JSONObject>emptyList());
+            return JSON.toJSONString(pageModel);
+        }
+        final ArrayList<Integer> payChannelSigns = new ArrayList<>();
+        for (int i = 0; i < paymentChannels.size(); i++) {
+            payChannelSigns.addAll(EnumPayChannelSign.getIdListByPaymentChannel(paymentChannels.get(i)));
+        }
+        Date startTime = null;
+        Date endTime = null;
+        if (!StringUtils.isEmpty(startTimeStr) && !StringUtils.isEmpty(startTimeStr)) {
+            startTime = DateFormatUtil.parse(startTimeStr, DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        if (!StringUtils.isEmpty(endTimeStr) && !StringUtils.isEmpty(endTimeStr)) {
+            endTime = DateFormatUtil.parse(endTimeStr, DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        final long count = this.orderService.getOrderCountByParam(accountId, EnumAppType.HSY.getId(), payChannelSigns, startTime, endTime);
+        final List<Order> orders= this.orderService.getOrdersByParam(accountId, EnumAppType.HSY.getId(),
+                pageModel.getFirstIndex(), pageSize, payChannelSigns, startTime, endTime);
         pageModel.setCount(count);
         if (!CollectionUtils.isEmpty(orders)) {
             final List<JSONObject> recordList = new ArrayList<>();
             pageModel.setRecords(recordList);
+            final HashSet<Date> dateHashSet = new HashSet<>();
+            for (Order order: orders) {
+                dateHashSet.add(DateFormatUtil.parse(DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd));
+            }
+            final Iterator<Date> iterator = dateHashSet.iterator();
+            final HashMap<Date, AppStatisticsOrder> statisticsOrderHashMap = new HashMap<>();
+            while (iterator.hasNext()) {
+                final Date nextDate = iterator.next();
+                final String sDate = DateFormatUtil.format(nextDate, DateFormatUtil.yyyy_MM_dd) + " 00:00:00";
+                final String eDate = DateFormatUtil.format(nextDate, DateFormatUtil.yyyy_MM_dd) + " 23:59:59";
+                final AppStatisticsOrder statisticsOrder = this.orderService.statisticsByParam(accountId, EnumAppType.HSY.getId(), payChannelSigns, sDate, eDate);
+                statisticsOrderHashMap.put(nextDate, statisticsOrder);
+            }
             for (Order order : orders) {
                 final JSONObject jo = new JSONObject();
                 recordList.add(jo);
+                final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(order.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+                final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+                if (order.isRefundSuccess() || order.isSettled() || payDate.compareTo(refundDate) != 0) {
+                    jo.put("canRefund", 0);
+                } else {
+                    jo.put("canRefund", 1);
+                }
+                final Date parseDate = DateFormatUtil.parse(DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+                final AppStatisticsOrder statisticsOrder = statisticsOrderHashMap.get(parseDate);
+                jo.put("number", statisticsOrder.getNumber());
+                jo.put("totalAmount", statisticsOrder.getAmount().toPlainString());
+                jo.put("refundStatus", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
                 if (EnumTradeType.PAY.getId() == order.getTradeType()) {
                     jo.put("tradeType", "1");
                 } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
@@ -167,6 +213,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 jo.put("amount", order.getTradeAmount().toPlainString());
                 jo.put("time", order.getCreateTime());
                 jo.put("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+                jo.put("orderId", order.getId());
             }
         } else {
             pageModel.setRecords(Collections.<JSONObject>emptyList());
@@ -202,6 +249,308 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("url", receiptResult.getRight());
         }
         return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String appOrderDetail(final String paramData, final AppParam appParam) {
+        final JSONObject result = new JSONObject();
+        final JSONObject paramJo = JSONObject.parseObject(paramData);
+        final long payOrderId = paramJo.getLongValue("payOrderId");
+        final Order order = this.orderService.getById(payOrderId).get();
+        final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
+        result.put("amount", order.getTradeAmount().toPlainString());
+        result.put("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+        result.put("merchantName", appBizShop.getName());
+        result.put("time", order.getCreateTime());
+        result.put("status", EnumOrderStatus.of(order.getStatus()).getValue());
+        result.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue());
+        result.put("orderNo", order.getOrderNo());
+        result.put("settleStatus", EnumSettleStatus.of(order.getSettleStatus()).getValue());
+        return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    @Override
+    synchronized public String appRefund(final String paramData, final AppParam appParam) {
+        final JSONObject result = new JSONObject();
+        final JSONObject paramJo = JSONObject.parseObject(paramData);
+        final long payOrderId = paramJo.getLongValue("payOrderId");
+        final String password = paramJo.getString("password");
+
+//        final BigDecimal refundAmount = new BigDecimal(paramJo.getString("refundAmount"));
+        final Order payOrder = this.orderService.getByIdWithLock(payOrderId).get();
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(payOrder.getPayee()).get(0);
+        if (StringUtils.isEmpty(password) || !password.equals(appAuUser.getPassword())) {
+            result.put("code", -1);
+            result.put("msg", "密码错误");
+            return result.toJSONString();
+        }
+        if (payOrder.isRefundSuccess()) {
+            result.put("code", -1);
+            result.put("msg", "已退款");
+            return result.toJSONString();
+        }
+//        final BigDecimal refundedAmount = this.refundOrderService.getRefundedAmount(payOrderId);
+//        if (payOrder.getRealPayAmount().subtract(refundedAmount).compareTo(refundAmount) < 0) {
+//            result.put("code", -1);
+//            result.put("msg", "可退金额不足");
+//            return result.toJSONString();
+//        }
+        final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(payOrder.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+        final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+        if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
+            result.put("code", -1);
+            result.put("msg", "只可以退当日订单");
+            return result.toJSONString();
+        }
+        final List<RefundOrder> refundOrders = this.refundOrderService.getByPayOrderId(payOrderId);
+        if (!CollectionUtils.isEmpty(refundOrders)) {
+            result.put("code", -1);
+            result.put("msg", "退款异常.");
+            return result.toJSONString();
+        }
+        final RefundOrder refundOrder = new RefundOrder();
+        refundOrder.setBatchNo("");
+        refundOrder.setOrderNo(SnGenerator.generateRefundSn());
+        refundOrder.setPayOrderId(payOrder.getId());
+        refundOrder.setPayOrderNo(payOrder.getOrderNo());
+        refundOrder.setSn("");
+        refundOrder.setRefundAccountId(payOrder.getPayee());
+        refundOrder.setRefundAmount(payOrder.getRealPayAmount());
+        refundOrder.setMerchantRefundAmount(payOrder.getRealPayAmount().subtract(payOrder.getPoundage()));
+        refundOrder.setPoundageRefundAmount(payOrder.getPoundage());
+        refundOrder.setUpperChannel(EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getUpperChannel().getId());
+        refundOrder.setStatus(EnumRefundOrderStatus.REFUNDING.getId());
+        this.refundOrderService.add(refundOrder);
+        final Pair<Integer, String> resultPair = this.refundImpl(refundOrder, payOrder);
+        if (0 == resultPair.getLeft()) {
+            result.put("code", 0);
+            result.put("msg", "退款成功");
+        } else {
+            result.put("code", -1);
+            result.put("msg", "退款失败");
+        }
+        return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundOrder 退款单
+     * @param payOrder 交易单
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> refundImpl(final RefundOrder refundOrder, final Order payOrder) {
+        //退款到手续费账户
+        this.refund2Poundage(refundOrder, payOrder);
+        //退商户款
+        this.refundMerchant(refundOrder, payOrder);
+        //手续费出款
+        this.refundPoundageOutAccount(refundOrder, payOrder);
+        //请求退款
+        final PaymentSdkRefundRequest paymentSdkRefundRequest = new PaymentSdkRefundRequest();
+        paymentSdkRefundRequest.setAppId(refundOrder.getAppId());
+        paymentSdkRefundRequest.setOrderNo(payOrder.getOrderNo());
+        paymentSdkRefundRequest.setRefundOrderNo(refundOrder.getOrderNo());
+        paymentSdkRefundRequest.setAmount(refundOrder.getRefundAmount().toPlainString());
+        try {
+            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_REFUND, SdkSerializeUtil.convertObjToMap(paymentSdkRefundRequest));
+            final PaymentSdkRefundResponse paymentSdkRefundResponse = JSON.parseObject(content, PaymentSdkRefundResponse.class);
+            final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkRefundResponse.getCode());
+            switch (status) {
+                case FAIL:
+                    log.error("退款[{}], 失败", refundOrder.getId());
+                    this.refundOrderService.updateStatus(refundOrder.getId(), EnumRefundOrderStatus.REFUND_FAIL.getId());
+                    return Pair.of(-1, "退款失败");
+                case SUCCESS:
+                    this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
+                    this.refundOrderService.updateStatus(refundOrder.getId(), EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
+                        try {
+                            this.sendMsgService.refundSendMessage(payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
+                        } catch (final Throwable e) {
+                            log.error("推送失败");
+                        }
+                    }
+                    return Pair.of(0, "退款成功");
+                default:
+                    log.error("退款[{}]， 网关返回状态异常", refundOrder.getId());
+                    return Pair.of(-1, "退款网关异常");
+            }
+
+        } catch (final Throwable e) {
+            log.error("退款单[{}], 请求网关退款异常", refundOrder.getOrderNo());
+            return Pair.of(-1, "请求网关退款异常");
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundOrder  退款单
+     * @param payOrder  交易单
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> refund2Poundage(final RefundOrder refundOrder, final Order payOrder) {
+        final List<SplitAccountRecord> splitAccountRecords = this.splitAccountRecordService.getByOrderNo(payOrder.getOrderNo());
+        if (!CollectionUtils.isEmpty(splitAccountRecords)) {
+            for (SplitAccountRecord splitAccountRecord : splitAccountRecords) {
+                final SplitAccountRefundRecord splitAccountRefundRecord = new SplitAccountRefundRecord();
+                splitAccountRefundRecord.setPayOrderNo(payOrder.getOrderNo());
+                splitAccountRefundRecord.setBatchNo(refundOrder.getBatchNo());
+                splitAccountRefundRecord.setRefundOrderNo(refundOrder.getOrderNo());
+                splitAccountRefundRecord.setAccountUserType(splitAccountRecord.getAccountUserType());
+                splitAccountRefundRecord.setOriginalSplitSn(splitAccountRecord.getSplitSn());
+                splitAccountRefundRecord.setRefundAmount(splitAccountRecord.getSplitAmount());
+                splitAccountRefundRecord.setSplitAmount(splitAccountRecord.getSplitAmount());
+                splitAccountRefundRecord.setSplitTotalAmount(splitAccountRecord.getSplitTotalAmount());
+                splitAccountRefundRecord.setOutMoneyAccountId(splitAccountRecord.getReceiptMoneyAccountId());
+                splitAccountRefundRecord.setOutMoneyUserName(splitAccountRecord.getReceiptMoneyUserName());
+                splitAccountRefundRecord.setReceiptMoneyAccountId(splitAccountRecord.getOutMoneyAccountId());
+                splitAccountRefundRecord.setRemark("收单分润退款");
+                splitAccountRefundRecord.setRefundTime(new Date());
+                this.splitAccountRefundRecordService.add(splitAccountRefundRecord);
+            }
+        }
+        final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getByOrderNo(payOrder.getOrderNo());
+        if (!CollectionUtils.isEmpty(settleAccountFlows)) {
+            for (SettleAccountFlow settleAccountFlow: settleAccountFlows) {
+                if (settleAccountFlow.getAccountId() == payOrder.getPayee()) {
+                    continue;
+                }
+                //TODO
+                Preconditions.checkState(EnumAccountFlowType.INCREASE.getId() == settleAccountFlow.getType(),
+                        "订单[{}], 全额退款，出现已结算的待结算流水", payOrder.getId());
+                final Account account = this.accountService.getByIdWithLock(settleAccountFlow.getAccountId()).get();
+                Preconditions.checkState(account.getDueSettleAmount().compareTo(settleAccountFlow.getIncomeAmount()) >= 0, "账户[{}]余额不足，退分润失败", account.getId());
+                this.accountService.decreaseTotalAmount(account.getId(), settleAccountFlow.getIncomeAmount());
+                this.accountService.decreaseSettleAmount(account.getId(), settleAccountFlow.getIncomeAmount());
+                final SettleAccountFlow decreaseSettleAccountFlow = new SettleAccountFlow();
+                decreaseSettleAccountFlow.setFlowNo("");
+                decreaseSettleAccountFlow.setAccountId(settleAccountFlow.getAccountId());
+                decreaseSettleAccountFlow.setAccountUserType(settleAccountFlow.getAccountUserType());
+                decreaseSettleAccountFlow.setOrderNo(payOrder.getOrderNo());
+                decreaseSettleAccountFlow.setRefundOrderNo(refundOrder.getOrderNo());
+                decreaseSettleAccountFlow.setBeforeAmount(account.getDueSettleAmount());
+                decreaseSettleAccountFlow.setAfterAmount(account.getDueSettleAmount().subtract(settleAccountFlow.getIncomeAmount()));
+                decreaseSettleAccountFlow.setOutAmount(settleAccountFlow.getIncomeAmount());
+                decreaseSettleAccountFlow.setIncomeAmount(new BigDecimal("0.00"));
+                decreaseSettleAccountFlow.setAppId(settleAccountFlow.getAppId());
+                decreaseSettleAccountFlow.setTradeDate(settleAccountFlow.getTradeDate());
+                decreaseSettleAccountFlow.setSettleDate(settleAccountFlow.getSettleDate());
+                decreaseSettleAccountFlow.setChangeTime(new Date());
+                decreaseSettleAccountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+                decreaseSettleAccountFlow.setRemark("收单分润退款");
+                this.settleAccountFlowService.add(decreaseSettleAccountFlow);
+            }
+        }
+        final Account account = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+        this.accountService.increaseTotalAmount(account.getId(), refundOrder.getPoundageRefundAmount());
+        this.accountService.increaseAvailableAmount(account.getId(), refundOrder.getPoundageRefundAmount());
+        final AccountFlow accountFlow = new AccountFlow();
+        accountFlow.setAccountId(account.getId());
+        accountFlow.setOrderNo(payOrder.getOrderNo());
+        accountFlow.setRefundOrderNo(refundOrder.getOrderNo());
+        accountFlow.setBeforeAmount(account.getAvailable());
+        accountFlow.setAfterAmount(account.getAvailable().add(payOrder.getPoundage()));
+        accountFlow.setIncomeAmount(refundOrder.getPoundageRefundAmount());
+        accountFlow.setOutAmount(new BigDecimal("0.00"));
+        accountFlow.setChangeTime(new Date());
+        accountFlow.setType(EnumAccountFlowType.INCREASE.getId());
+        accountFlow.setRemark("收单分润退款");
+        this.accountFlowService.add(accountFlow);
+        return Pair.of(0, "success");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundOrder 退款单
+     * @param payOrder 交易单
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> refundMerchant(final RefundOrder refundOrder, final Order payOrder) {
+        //TODO
+        final Optional<SettleAccountFlow> decreaseSettleAccountFlowOptional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(payOrder.getOrderNo(),
+                payOrder.getPayee(), EnumAccountFlowType.DECREASE.getId());
+        if (decreaseSettleAccountFlowOptional.isPresent()) {
+            log.error("商户账户[{}],待结算[{}]流水，已结算", payOrder.getPayee(), decreaseSettleAccountFlowOptional.get().getId());
+            return Pair.of(-1, "商户流水已结算");
+        }
+        final Account account = this.accountService.getByIdWithLock(payOrder.getPayee()).get();
+        Preconditions.checkState(account.getDueSettleAmount().compareTo(refundOrder.getMerchantRefundAmount()) >= 0,
+                "退款单[{}]，商户账户[{}]待结算金额不足", refundOrder.getOrderNo(), account.getId());
+        this.accountService.decreaseTotalAmount(account.getId(), refundOrder.getMerchantRefundAmount());
+        this.accountService.decreaseSettleAmount(account.getId(), refundOrder.getMerchantRefundAmount());
+        final SettleAccountFlow increaseSettleAccountFlow = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(payOrder.getOrderNo(),
+                account.getId(), EnumAccountFlowType.INCREASE.getId()).get();
+        final SettleAccountFlow decreaseSettleAccountFlow = new SettleAccountFlow();
+        decreaseSettleAccountFlow.setFlowNo("");
+        decreaseSettleAccountFlow.setAccountId(increaseSettleAccountFlow.getAccountId());
+        decreaseSettleAccountFlow.setAccountUserType(increaseSettleAccountFlow.getAccountUserType());
+        decreaseSettleAccountFlow.setOrderNo(payOrder.getOrderNo());
+        decreaseSettleAccountFlow.setRefundOrderNo(refundOrder.getOrderNo());
+        decreaseSettleAccountFlow.setBeforeAmount(account.getDueSettleAmount());
+        decreaseSettleAccountFlow.setAfterAmount(account.getDueSettleAmount().subtract(increaseSettleAccountFlow.getIncomeAmount()));
+        decreaseSettleAccountFlow.setOutAmount(increaseSettleAccountFlow.getIncomeAmount());
+        decreaseSettleAccountFlow.setIncomeAmount(new BigDecimal("0.00"));
+        decreaseSettleAccountFlow.setAppId(increaseSettleAccountFlow.getAppId());
+        decreaseSettleAccountFlow.setTradeDate(increaseSettleAccountFlow.getTradeDate());
+        decreaseSettleAccountFlow.setSettleDate(increaseSettleAccountFlow.getSettleDate());
+        decreaseSettleAccountFlow.setChangeTime(new Date());
+        decreaseSettleAccountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+        decreaseSettleAccountFlow.setRemark("支付退款");
+        this.settleAccountFlowService.add(decreaseSettleAccountFlow);
+        return Pair.of(0, "success");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundOrder
+     * @param payOrder
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> refundPoundageOutAccount(final RefundOrder refundOrder, final Order payOrder) {
+        final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+        Preconditions.checkState(poundageAccount.getAvailable().compareTo(refundOrder.getPoundageRefundAmount()) >= 0);
+        this.accountService.decreaseTotalAmount(poundageAccount.getId(), refundOrder.getPoundageRefundAmount());
+        this.accountService.decreaseAvailableAmount(poundageAccount.getId(), refundOrder.getPoundageRefundAmount());
+        final AccountFlow accountFlow = new AccountFlow();
+        accountFlow.setAccountId(poundageAccount.getId());
+        accountFlow.setOrderNo(payOrder.getOrderNo());
+        accountFlow.setRefundOrderNo(refundOrder.getOrderNo());
+        accountFlow.setBeforeAmount(poundageAccount.getAvailable());
+        accountFlow.setAfterAmount(poundageAccount.getAvailable().subtract(refundOrder.getPoundageRefundAmount()));
+        accountFlow.setIncomeAmount(new BigDecimal("0.00"));
+        accountFlow.setOutAmount(refundOrder.getPoundageRefundAmount());
+        accountFlow.setChangeTime(new Date());
+        accountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+        accountFlow.setRemark("收单分润退款");
+        this.accountFlowService.add(accountFlow);
+        return Pair.of(0, "success");
     }
 
     /**

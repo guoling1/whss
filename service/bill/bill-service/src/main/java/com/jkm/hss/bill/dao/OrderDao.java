@@ -1,12 +1,14 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.*;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,16 @@ public interface OrderDao {
      * @return
      */
     int markSettleSuccess(@Param("id") long id, @Param("status") int status, @Param("successSettleTime") Date successSettleTime);
+
+    /**
+     * 更新退款信息
+     *
+     * @param id
+     * @param refundAmount
+     * @param refundStatus
+     * @return
+     */
+    int updateRefundInfo(@Param("id") long id, @Param("refundAmount") String refundAmount, @Param("refundStatus") int refundStatus);
 
     /**
      * 按id查询
@@ -205,10 +217,13 @@ public interface OrderDao {
      *
      * @param accountId
      * @param appId
+     * @param payChannelSigns
+     * @param startTime
+     * @param endTime
      * @return
      */
-    long selectPageOrdersCountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
-                                          @Param("date") Date date);
+    long selectOrderCountByParam(@Param("accountId") long accountId, @Param("appId") String appId,
+                                          @Param("payChannelSigns") List<Integer> payChannelSigns, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     /**
      * 分页查询--查询记录
@@ -219,10 +234,10 @@ public interface OrderDao {
      * @param count
      * @return
      */
-    List<Order> selectPageOrdersByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+    List<Order> selectOrdersByParam(@Param("accountId") long accountId, @Param("appId") String appId,
                                             @Param("offset") int offset, @Param("count") int count,
-
-                                            @Param("date") Date date);
+                                           @Param("payChannelSigns") List<Integer> payChannelSigns, @Param("startTime") Date startTime,
+                                           @Param("endTime") Date endTime);
 
     /**
      * 批量查询
@@ -355,4 +370,16 @@ public interface OrderDao {
      * @return
      */
     List<Order> selectByAppParam(@Param("orderNos") List<String> orderNos, @Param("offset") int offset, @Param("count") int count);
+
+    /**
+     * 统计金额
+     *
+     * @param accountId
+     * @param appId
+     * @param payChannelSigns
+     * @param sDate
+     * @param eDate
+     * @return
+     */
+    AppStatisticsOrder statisticsByParam(@Param("accountId") long accountId, @Param("appId") String appId, @Param("payChannelSigns") ArrayList<Integer> payChannelSigns, @Param("sDate") String sDate, @Param("eDate") String eDate);
 }

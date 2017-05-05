@@ -6,6 +6,7 @@ import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -89,4 +90,12 @@ public interface SplitAccountRecordService {
      * @return
      */
     boolean checkExistBySplitSn(String splitSn);
+
+    /**
+     * 按交易订单号查询
+     *
+     * @param orderNo
+     * @return
+     */
+    List<SplitAccountRecord> getByOrderNo(String orderNo);
 }

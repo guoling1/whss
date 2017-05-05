@@ -21,6 +21,7 @@ import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.*;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -345,6 +346,19 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      *
      * @param id
+     * @param refundAmount
+     * @param refundStatus
+     * @return
+     */
+    @Override
+    public int updateRefundInfo(final long id, final BigDecimal refundAmount, final EnumOrderRefundStatus refundStatus) {
+        return this.orderDao.updateRefundInfo(id, refundAmount.toPlainString(), refundStatus.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
      * @return
      */
     @Override
@@ -658,11 +672,14 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param accountId
      * @param appId
+     * @param payChannelSigns
+     * @param startTime
+     * @param endTime
      * @return
      */
     @Override
-    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date date) {
-        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, date);
+    public long getOrderCountByParam(final long accountId, final String appId, final List<Integer> payChannelSigns, final Date startTime, final Date endTime) {
+        return this.orderDao.selectOrderCountByParam(accountId, appId, payChannelSigns, startTime, endTime);
     }
 
     /**
@@ -675,9 +692,9 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
-                                                final int count, final Date date) {
-        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
+    public List<Order> getOrdersByParam(final long accountId, final String appId, final int offset,
+                                                final int count, final List<Integer> payChannelSigns, final Date startTime, final Date endTime) {
+        return this.orderDao.selectOrdersByParam(accountId, appId, offset, count, payChannelSigns, startTime, endTime);
     }
 
     /**
@@ -1200,6 +1217,22 @@ public class OrderServiceImpl implements OrderService {
             return Collections.emptyList();
         }
         return this.orderDao.selectByAppParam(orderNos, offset, pageSize);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @param payChannelSigns
+     * @param sDate
+     * @param eDate
+     * @return
+     */
+    @Override
+    public AppStatisticsOrder statisticsByParam(final long accountId, final String appId, final ArrayList<Integer> payChannelSigns,
+                                                final String sDate, final String eDate) {
+        return this.orderDao.statisticsByParam(accountId, appId, payChannelSigns, sDate, eDate);
     }
 
 

@@ -207,6 +207,17 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         return count == 0;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public List<SplitAccountRecord> getByOrderNo(final String orderNo) {
+        return this.splitAccountRecordDao.selectByOrderNo(orderNo);
+    }
+
 
     /**
      * 获取分账单流水号
