@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.entity.UpgradeRules;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class UpgradeRulesAndRateResponse {
     /**
      * 商户升级规则
      */
-    private List<UpgradeRules> upgradeRulesList;
+    private List<PartnerRuleSetting> PartnerRuleSettingList;
     /**
      * 邀请用户达标标准
      */
@@ -27,8 +28,5 @@ public class UpgradeRulesAndRateResponse {
      * 收单分润
      */
     private BigDecimal tradeRate;
-    /**
-     * 收单奖励分润池
-     */
-    private BigDecimal rewardRate;
+
 }

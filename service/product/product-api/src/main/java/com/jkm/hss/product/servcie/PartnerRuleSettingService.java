@@ -13,5 +13,10 @@ public interface PartnerRuleSettingService {
      * @param partnerRuleSetting
      */
     void insert(PartnerRuleSetting partnerRuleSetting);
-    List<PartnerRuleSetting> selectAll();
+
+    /**
+     * 根据产品编码查询升级规则
+     * @return
+     */
+    List<PartnerRuleSetting> selectAllByProductId(long productId);
 }

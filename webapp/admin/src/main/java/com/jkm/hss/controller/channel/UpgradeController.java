@@ -6,17 +6,11 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.UpgradeAndRecommendRequest;
 import com.jkm.hss.helper.request.UpgradeRequest;
 import com.jkm.hss.helper.response.UpgradeRulesAndRateResponse;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.UpgradeRecommendRules;
-import com.jkm.hss.product.entity.UpgradeRules;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumUpgrade;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
-import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
-import com.jkm.hss.product.servcie.UpgradeRulesService;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +38,8 @@ public class UpgradeController extends BaseController {
     private ProductChannelDetailService productChannelDetailService;
     @Autowired
     private UpgradeRecommendRulesService upgradeRecommendRulesService;
-
+    @Autowired
+    private PartnerRuleSettingService partnerRuleSettingService;
     /**
      * 升级推荐设置
      *
@@ -53,45 +48,15 @@ public class UpgradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "init", method = RequestMethod.POST)
     public CommonResponse add(@RequestBody final UpgradeRequest req) {
+        UpgradeRulesAndRateResponse upgradeRulesAndRateResponse = new  UpgradeRulesAndRateResponse();
         Optional<Product> productOptional = productService.selectById(req.getProductId());
         if(!productOptional.isPresent()){
             return CommonResponse.simpleResponse(-1,"该产品不存在");
         }
         //商户升级规则设置
-        List<UpgradeRules> upgradeRulesList = new ArrayList<UpgradeRules>();
-        UpgradeRules upgradeRules = new UpgradeRules();
+        List<PartnerRuleSetting> partnerRuleSettings = partnerRuleSettingService.selectAllByProductId(productOptional.get().getId());
+        upgradeRulesAndRateResponse.setPartnerRuleSettingList(partnerRuleSettings);
 
-        List<UpgradeRules> upgradeRulesArr =  upgradeRulesService.selectAll(req.getProductId());//升级规则
-
-        if (upgradeRulesArr.size()==0){
-            for(int i=1;i<4;i++){
-                UpgradeRules upgradeRulesTemp = new UpgradeRules();
-                upgradeRulesTemp.setType(i);
-                upgradeRulesList.add(upgradeRulesTemp);
-            }
-        }else {
-            for (int i=0;i<upgradeRulesArr.size();i++){
-                if(upgradeRulesArr.get(i).getType()==1||upgradeRulesArr.get(i).getType()==2||upgradeRulesArr.get(i).getType()==3){
-//                    final CommonResponse commonResponse = this.rewardJudge(upgradeRulesArr);
-//                    if (1 != commonResponse.getCode()) {
-//                        return commonResponse;
-//                    }
-                    BigDecimal weixinRate = upgradeRulesArr.get(i).getWeixinRate();
-                    BigDecimal alipayRate = upgradeRulesArr.get(i).getAlipayRate();
-                    BigDecimal fastRate = upgradeRulesArr.get(i).getFastRate();
-                    BigDecimal b1 = new BigDecimal(100);
-                    upgradeRulesArr.get(i).setWeixinRate(weixinRate.multiply(b1));
-                    upgradeRulesArr.get(i).setAlipayRate(alipayRate.multiply(b1));
-                    upgradeRulesArr.get(i).setFastRate(fastRate.multiply(b1));
-                }
-            }
-
-        }
-
-
-        upgradeRulesList.addAll(upgradeRulesArr);
-        UpgradeRulesAndRateResponse upgradeRulesAndRateResponse = new  UpgradeRulesAndRateResponse();
-        upgradeRulesAndRateResponse.setUpgradeRulesList(upgradeRulesList);
         //升级推荐分润设置及达标标准设置
         Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
         if(upgradeRecommendRulesOptional.isPresent()){

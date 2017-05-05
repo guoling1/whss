@@ -6,6 +6,8 @@ import com.jkm.hss.product.servcie.PartnerRuleSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by xingliujie on 2017/5/4.
  */
@@ -21,5 +23,16 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
     @Override
     public void insert(PartnerRuleSetting partnerRuleSetting) {
         partnerRuleSettingDao.insert(partnerRuleSetting);
+    }
+
+    /**
+     * 根据产品编码查询升级规则
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<PartnerRuleSetting> selectAllByProductId(long productId) {
+        return partnerRuleSettingDao.selectAllByProductId(productId);
     }
 }

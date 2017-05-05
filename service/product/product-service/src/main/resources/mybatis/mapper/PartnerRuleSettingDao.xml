@@ -64,4 +64,8 @@
         </trim>
     </insert>
 
+    <select id="selectAllByProductId" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
+        select <include refid="Base_Column_List" /> from tb_partner_rule_setting where product_id =#{productId} and status=1 order by create_time desc
+    </select>
+
 </mapper>
