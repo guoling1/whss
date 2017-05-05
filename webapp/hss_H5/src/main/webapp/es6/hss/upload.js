@@ -19,19 +19,48 @@ let identityOppositePic_src = document.getElementById('identityOppositePic_src')
 let identityHandPic_src = document.getElementById('identityHandPic_src');
 let bankHandPic_src = document.getElementById('bankHandPic_src');
 
+let ua = navigator.userAgent.toLowerCase();
+// 获取本地图片
+let getLocalImg = function (id, localId) {
+  wx.getLocalImgData({
+    localId: localId,
+    success: function (res) {
+      alert(res.localData);
+      document.getElementById(id).setAttribute('src', res.localData);
+    }
+  });
+};
+
 let upload_identityFacePic = new Upload('identityFacePic', function (localId) {
+  if (ua.indexOf('iphone') >= 0) {
+    getLocalImg('identityFacePic_src', localId);
+    return;
+  }
+  alert(localId);
   document.getElementById('identityFacePic_src').setAttribute('src', localId);
 });
 
 let upload_identityOppositePic = new Upload('identityOppositePic', function (localId) {
+  if (ua.indexOf('iphone') >= 0) {
+    getLocalImg('identityOppositePic_src', localId);
+    return;
+  }
   document.getElementById('identityOppositePic_src').setAttribute('src', localId);
 });
 
 let upload_identityHandPic = new Upload('identityHandPic', function (localId) {
+  if (ua.indexOf('iphone') >= 0) {
+    getLocalImg('identityHandPic_src', localId);
+    return;
+  }
   document.getElementById('identityHandPic_src').setAttribute('src', localId);
 });
 
 let upload_bankHandPic = new Upload('bankHandPic', function (localId) {
+  if (ua.indexOf('iphone') >= 0) {
+    getLocalImg('bankHandPic_src', localId);
+    return;
+  }
   document.getElementById('bankHandPic_src').setAttribute('src', localId);
 });
 
