@@ -25,6 +25,7 @@ import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -1200,6 +1201,11 @@ public class OrderServiceImpl implements OrderService {
             return Collections.emptyList();
         }
         return this.orderDao.selectByAppParam(orderNos, offset, pageSize);
+    }
+
+    @Override
+    public void save(GeTuiResponse geTuiResponse) {
+        this.orderDao.save(geTuiResponse);
     }
 
 
