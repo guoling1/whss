@@ -100,6 +100,18 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      * {@inheritDoc}
      *
      * @param id
+     * @param status
+     */
+    @Override
+    @Transactional
+    public int updateStatus(final long id, final int status) {
+        return this.settleAccountFlowDao.updateStatus(id, status);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
      * @return
      */
     @Override

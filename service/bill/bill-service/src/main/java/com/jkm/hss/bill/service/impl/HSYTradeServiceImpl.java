@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
@@ -198,7 +199,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 final AppStatisticsOrder statisticsOrder = statisticsOrderHashMap.get(parseDate);
                 jo.put("number", statisticsOrder.getNumber());
                 jo.put("totalAmount", statisticsOrder.getAmount().toPlainString());
-                jo.put("refundStatus", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
+                jo.put("refundStatus", order.getRefundStatus());
+                jo.put("refundStatusValue", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
                 if (EnumTradeType.PAY.getId() == order.getTradeType()) {
                     jo.put("tradeType", "1");
                 } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
@@ -270,6 +272,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         result.put("merchantName", appBizShop.getName());
         result.put("time", order.getCreateTime());
         result.put("status", EnumOrderStatus.of(order.getStatus()).getValue());
+        result.put("refundStatus", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
         result.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue());
         result.put("orderNo", order.getOrderNo());
         result.put("settleStatus", EnumSettleStatus.of(order.getSettleStatus()).getValue());
@@ -339,6 +342,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         if (0 == resultPair.getLeft()) {
             result.put("code", 0);
             result.put("msg", "退款成功");
+            result.put("refundTime", this.refundOrderService.getById(refundOrder.getId()).get().getFinishTime());
         } else {
             result.put("code", -1);
             result.put("msg", "退款失败");
@@ -379,7 +383,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                     return Pair.of(-1, "退款失败");
                 case SUCCESS:
                     this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
-                    this.refundOrderService.updateStatus(refundOrder.getId(), EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    final RefundOrder refundOrder1 = new RefundOrder();
+                    refundOrder1.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    refundOrder1.setFinishTime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                    this.refundOrderService.update(refundOrder1);
                     if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
                         try {
                             this.sendMsgService.refundSendMessage(payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
@@ -460,6 +467,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 decreaseSettleAccountFlow.setType(EnumAccountFlowType.DECREASE.getId());
                 decreaseSettleAccountFlow.setRemark("收单分润退款");
                 this.settleAccountFlowService.add(decreaseSettleAccountFlow);
+                this.settleAccountFlowService.updateStatus(settleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
             }
         }
         final Account account = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
@@ -521,6 +529,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         decreaseSettleAccountFlow.setType(EnumAccountFlowType.DECREASE.getId());
         decreaseSettleAccountFlow.setRemark("支付退款");
         this.settleAccountFlowService.add(decreaseSettleAccountFlow);
+        this.settleAccountFlowService.updateStatus(increaseSettleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
         return Pair.of(0, "success");
     }
 
