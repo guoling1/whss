@@ -5,8 +5,6 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
-import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
-import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
@@ -409,6 +407,13 @@ public interface OrderService {
      * @return
      */
     AppStatisticsOrder statisticsByParam(long accountId, String appId, ArrayList<Integer> payChannelSigns, String sDate, String eDate);
+
+    /**
+     * 查询退款单号
+     * @param orderNo
+     * @return
+     */
+    String getRefundOrder(String orderNo);
 
     /**
      * 查询交易详情

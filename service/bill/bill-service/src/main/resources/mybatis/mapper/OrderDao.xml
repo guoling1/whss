@@ -916,6 +916,11 @@
 
     </select>
 
+    <!-- 交易详情 -->
+    <select id="getRefundOrder" resultType="java.lang.String">
+        SELECT DISTINCT refund_order_no FROM tb_split_account_refund_record WHERE pay_order_no=#{orderNo}
+    </select>
+
     <select id="selectOrderListCount"  resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM
