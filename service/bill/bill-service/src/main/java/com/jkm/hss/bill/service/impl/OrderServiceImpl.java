@@ -1287,6 +1287,11 @@ public class OrderServiceImpl implements OrderService {
         return this.orderDao.statisticsByParam(accountId, appId, payChannelSigns, sDate, eDate);
     }
 
+    @Override
+    public String getRefundOrder(String orderNo) {
+        return this.orderDao.getRefundOrder(orderNo);
+    }
+
 
     /**
      * 手续费由待结算入余额
