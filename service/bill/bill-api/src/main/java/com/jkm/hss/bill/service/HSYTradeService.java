@@ -2,7 +2,6 @@ package com.jkm.hss.bill.service;
 
 
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.product.enums.EnumUpperChannel;
@@ -156,4 +155,6 @@ public interface HSYTradeService {
      * @param shop
      */
     void withdrawSplitAccount(Order order, AppBizShop shop);
+
+
 }
