@@ -386,6 +386,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             case FAIL:
                 log.error("退款[{}], 失败", refundOrder.getId());
                 final RefundOrder refundOrder1 = new RefundOrder();
+                refundOrder1.setId(refundOrder.getId());
                 refundOrder1.setStatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
                 refundOrder1.setRemark("退款失败");
                 refundOrder1.setMessage(paymentSdkRefundResponse.getMessage());
@@ -394,6 +395,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             case SUCCESS:
                 this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
                 final RefundOrder refundOrder2 = new RefundOrder();
+                refundOrder2.setId(refundOrder.getId());
                 refundOrder2.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
                 refundOrder2.setRemark("退款成功");
                 refundOrder2.setMessage(paymentSdkRefundResponse.getMessage());
