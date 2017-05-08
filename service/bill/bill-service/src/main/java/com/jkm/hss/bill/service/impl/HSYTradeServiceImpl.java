@@ -327,6 +327,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         }
         final RefundOrder refundOrder = new RefundOrder();
         refundOrder.setBatchNo("");
+        refundOrder.setAppId(payOrder.getAppId());
         refundOrder.setOrderNo(SnGenerator.generateRefundSn());
         refundOrder.setPayOrderId(payOrder.getId());
         refundOrder.setPayOrderNo(payOrder.getOrderNo());
@@ -372,37 +373,43 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         paymentSdkRefundRequest.setOrderNo(payOrder.getOrderNo());
         paymentSdkRefundRequest.setRefundOrderNo(refundOrder.getOrderNo());
         paymentSdkRefundRequest.setAmount(refundOrder.getRefundAmount().toPlainString());
+        PaymentSdkRefundResponse paymentSdkRefundResponse;
         try {
             final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_REFUND, SdkSerializeUtil.convertObjToMap(paymentSdkRefundRequest));
-            final PaymentSdkRefundResponse paymentSdkRefundResponse = JSON.parseObject(content, PaymentSdkRefundResponse.class);
-            final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkRefundResponse.getCode());
-            switch (status) {
-                case FAIL:
-                    log.error("退款[{}], 失败", refundOrder.getId());
-                    this.refundOrderService.updateStatus(refundOrder.getId(), EnumRefundOrderStatus.REFUND_FAIL.getId());
-                    return Pair.of(-1, "退款失败");
-                case SUCCESS:
-                    this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
-                    final RefundOrder refundOrder1 = new RefundOrder();
-                    refundOrder1.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
-                    refundOrder1.setFinishTime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-                    this.refundOrderService.update(refundOrder1);
-                    if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
-                        try {
-                            this.sendMsgService.refundSendMessage(payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
-                        } catch (final Throwable e) {
-                            log.error("推送失败");
-                        }
-                    }
-                    return Pair.of(0, "退款成功");
-                default:
-                    log.error("退款[{}]， 网关返回状态异常", refundOrder.getId());
-                    return Pair.of(-1, "退款网关异常");
-            }
-
+            paymentSdkRefundResponse = JSON.parseObject(content, PaymentSdkRefundResponse.class);
         } catch (final Throwable e) {
-            log.error("退款单[{}], 请求网关退款异常", refundOrder.getOrderNo());
+            log.error("退款单[" + refundOrder.getOrderNo() + "], 请求网关退款异常", e);
             return Pair.of(-1, "请求网关退款异常");
+        }
+        final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkRefundResponse.getCode());
+        switch (status) {
+            case FAIL:
+                log.error("退款[{}], 失败", refundOrder.getId());
+                final RefundOrder refundOrder1 = new RefundOrder();
+                refundOrder1.setStatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+                refundOrder1.setRemark("退款失败");
+                refundOrder1.setMessage(paymentSdkRefundResponse.getMessage());
+                this.refundOrderService.update(refundOrder1);
+                return Pair.of(-1, paymentSdkRefundResponse.getMessage());
+            case SUCCESS:
+                this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
+                final RefundOrder refundOrder2 = new RefundOrder();
+                refundOrder2.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                refundOrder2.setRemark("退款成功");
+                refundOrder2.setMessage(paymentSdkRefundResponse.getMessage());
+                refundOrder2.setFinishTime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyyMMddHHmmss));
+                this.refundOrderService.update(refundOrder2);
+                if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
+                    try {
+                        this.sendMsgService.refundSendMessage(payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
+                    } catch (final Throwable e) {
+                        log.error("推送失败");
+                    }
+                }
+                return Pair.of(0, "退款成功");
+            default:
+                log.error("退款[{}]， 网关返回状态异常", refundOrder.getId());
+                return Pair.of(-1, "退款网关异常");
         }
     }
 
