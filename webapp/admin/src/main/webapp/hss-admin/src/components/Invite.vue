@@ -43,7 +43,7 @@
                         <th style="line-height: 250%">老板</th>
                       </tr>
                       <tr v-for="(upgrade,index) in $$partnerRuleSettingList">
-                        <td>{{upgrade.channelShortName}}</td>
+                        <td>{{upgrade.channelName}}</td>
                         <td><input type="text" name="name" v-model="upgrade.defaultProfitSpace">%</td>
                         <td><input type="text" name="name" v-model="upgrade.commonRate">%</td>
                         <td><input type="text" name="name" v-model="upgrade.clerkRate">%</td>
@@ -196,7 +196,7 @@
       return{
         productList:[],
         channelList:[],
-        channel:{},//要添加的通道
+        channel:"",//要添加的通道
         defaultProfitSpace:'',//默认分润空间
         channelShortName:"",
         supportWay:'',
@@ -224,29 +224,43 @@
     methods: {
       clickAdd:function () {
         this.isAdd = true;
-        this.channel = {};
+        this.channel = "";
         this.defaultProfitSpace = '';
       },
       add:function () {
-        var flag = false;
-        for(let i=0; i<this.partnerRuleSettingList.length; i++){
-          if(this.partnerRuleSettingList[i].channelShortName == this.channel.channelShortName){
-            this.isAdd = false;
-            flag = true;
-            this.$message({
-              showClose: true,
-              message: '通道已存在',
-              type: 'info'
-            });
-            break;
+        if(this.channel==""){
+          this.$message({
+            showClose: true,
+            message: '请选择通道',
+            type: 'error'
+          });
+        }else if(this.defaultProfitSpace==''){
+          this.$message({
+            showClose: true,
+            message: '请填写默认分润空间',
+            type: 'error'
+          });
+        }else {
+          var flag = false;
+          for(let i=0; i<this.partnerRuleSettingList.length; i++){
+            if(this.partnerRuleSettingList[i].channelShortName == this.channel.channelShortName){
+              this.isAdd = false;
+              flag = true;
+              this.$message({
+                showClose: true,
+                message: '通道已存在',
+                type: 'info'
+              });
+              break;
+            }
           }
-        }
-        if(!flag){
-          this.isAdd = false;
-          this.isSub = true;
-          this.channel.defaultProfitSpace = this.defaultProfitSpace;
-          this.channelShortName = this.channel.channelShortName;
-          this.supportWay = this.channel.supportWay;
+          if(!flag){
+            this.isAdd = false;
+            this.isSub = true;
+            this.channel.defaultProfitSpace = this.defaultProfitSpace;
+            this.channelShortName = this.channel.channelShortName;
+            this.supportWay = this.channel.supportWay;
+          }
         }
       },
       channelAdd: function () {
@@ -254,6 +268,7 @@
         let partnerRuleSetting = {};
         partnerRuleSetting.id = this.channel.id;
         partnerRuleSetting.channelShortName = this.channel.channelShortName;
+        partnerRuleSetting.channelName = this.channel.channelName;
         partnerRuleSetting.productId = this.productId;
         partnerRuleSetting.channelTypeSign = this.channel.channelTypeSign;
         partnerRuleSetting.defaultProfitSpace = this.defaultProfitSpace;
@@ -290,28 +305,36 @@
           })
       },
       save: function () {
-        var query = {
-          productId:this.productId,
-          standard:this.result.standard,
-          upgradeRate:this.result.upgradeRate,
-          tradeRate:this.result.tradeRate,
-          upgradeRulesRequestList:this.upgradeRulesList,
-          partnerRuleSettingList:this.partnerRuleSettingList,
-        };
-        this.$http.post('/admin/upgrade/addOrUpdate',query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '操作成功',
-              type: 'success'
-            });
-          },function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+        if(this.partnerRuleSettingList.length==0){
+          this.$message({
+            showClose: true,
+            message: '请添加通道',
+            type: 'error'
+          });
+        }else {
+          var query = {
+            productId:this.productId,
+            standard:this.result.standard,
+            upgradeRate:this.result.upgradeRate,
+            tradeRate:this.result.tradeRate,
+            upgradeRulesRequestList:this.upgradeRulesList,
+            partnerRuleSettingList:this.partnerRuleSettingList,
+          };
+          this.$http.post('/admin/upgrade/addOrUpdate',query)
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '操作成功',
+                type: 'success'
+              });
+            },function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              });
+            })
+        }
       }
     },
     computed:{
