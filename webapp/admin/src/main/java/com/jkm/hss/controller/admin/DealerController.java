@@ -590,6 +590,7 @@ public class DealerController extends BaseController {
                         return CommonResponse.simpleResponse(-1, "请设置"+request.getDealerProfits().get(i).getChannelName()+"的推荐分润");
                     }
                 }
+
             }
             final HssDealerAddOrUpdateRequest.Product productParam = request.getProduct();
             final long productId = productParam.getProductId();
