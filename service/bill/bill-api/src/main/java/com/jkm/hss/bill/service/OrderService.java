@@ -5,7 +5,11 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
+import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
+import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
+import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
@@ -167,6 +171,22 @@ public interface OrderService {
     int selectOrderListCount(OrderTradeRequest orderRecord);
 
     String downloadExcel(OrderTradeRequest req, String baseUrl);
+
+    /**
+     * 查询支付中心支付流水
+     *
+     * @param orderNo
+     * @return
+     */
+    List<PaymentSdkQueryPayOrderByOrderNoResponse> queryPayOrderByOrderNo(String orderNo);
+
+    /**
+     * 查询支付中心退款流水
+     *
+     * @param refundOrderNo
+     * @return
+     */
+    List<PaymentSdkQueryRefundOrderByOrderNoResponse> queryRefundOrderByOrderNo(String refundOrderNo);
 
     /**
      * 交易详情
@@ -396,4 +416,7 @@ public interface OrderService {
      * @return
      */
 //    MerchantTradeResponse selectOrderListByPageAll(OrderListRequest orderRecord);
+
+
+
 }
