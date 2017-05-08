@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>好收收</title>
+  <title>公告信息</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
@@ -22,5 +22,5 @@
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.1/noticeDetail.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/2.0.1.1/noticeDetail.min.js"></script>
 </html>
