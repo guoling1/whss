@@ -17,6 +17,18 @@ public interface PartnerRuleSettingDao{
      */
     void insert(PartnerRuleSetting partnerRuleSetting);
     /**
+     * 修改
+     * @param partnerRuleSetting
+     */
+    void update(PartnerRuleSetting partnerRuleSetting);
+
+    /**
+     * 根据编码查询
+     * @param id
+     * @return
+     */
+    PartnerRuleSetting selectById(@Param("id") long id);
+    /**
      * 根据产品编码查询升级规则
      * @return
      */
