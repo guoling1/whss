@@ -118,10 +118,10 @@
           </el-table>
         </div>
       </div>
-      <div class="box box-primary" v-if="profitRefundList.length!=0">
+      <div class="box box-primary" v-if="refundList.length!=0">
         <p class="lead"> 支付退款流水</p>
         <div class="table-responsive">
-          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="profitRefundList" border>
+          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="refundList" border>
             <el-table-column prop="orderNo" label="退款批次号"></el-table-column>
             <el-table-column prop="sn" label="退款流水号"></el-table-column>
             <el-table-column prop="amount" label="退款金额(元)"></el-table-column>
@@ -135,7 +135,7 @@
       <div class="box box-primary">
         <p class="lead"> 分润记录</p>
         <div class="table-responsive">
-          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="refundList" border>
+          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="profitRefundList" border>
             <el-table-column prop="splitSn" label="分润流水号"></el-table-column>
             <el-table-column prop="splitAmount" label="分润金额(元)"></el-table-column>
             <!--<el-table-column prop="appId" label="已退款金额"></el-table-column>-->
