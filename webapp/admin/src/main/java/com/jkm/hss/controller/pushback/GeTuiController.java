@@ -79,7 +79,7 @@ public class GeTuiController extends BaseController{
             log.error("错误信息时",e.getStackTrace());
             jsonObject.put("code",-1);
             jsonObject.put("result","ok");
-            return null;
+            return jsonObject;
         }
     }
 
