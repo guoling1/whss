@@ -129,13 +129,16 @@ public class OrderTradeController extends BaseController{
         List<PaymentSdkQueryRefundOrderByOrderNoResponse> refundList = this.orderService.queryRefundOrderByOrderNo(refundOrder);
         List<ProfitRefundResponse> profitRefundList = this.orderService.getProfitRefundList(req.getOrderNo());
         List<SplitAccountRefundRecord> splitAccountRefundList = this.orderService.splitAccountRefundList(req.getOrderNo());
-        jsonObject.put("orderList",orderList);
-        jsonObject.put("payList",payList);
-        jsonObject.put("refundList",refundList);
-        jsonObject.put("profitRefundList",profitRefundList);
-        jsonObject.put("splitAccountRefundList",splitAccountRefundList);
         jsonObject.put("msg","ok");
         jsonObject.put("code",1);
+        JSONObject jo = new JSONObject();
+        jo.put("orderList",orderList);
+        jo.put("payList",payList);
+        jo.put("refundList",refundList);
+        jo.put("profitRefundList",profitRefundList);
+        jo.put("splitAccountRefundList",splitAccountRefundList);
+        jsonObject.put("result",jo);
+
         return jsonObject;
     }
 
