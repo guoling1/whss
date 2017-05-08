@@ -1483,21 +1483,21 @@ public class LoginController extends BaseController {
                                 model.addAttribute("message","暂无此级别信息");
                                 return "/message";
                             }else{
-                                if(upgradeRulesOptional.get().getWeixinRate()==null){
-                                    model.addAttribute("message","合伙人微信配置有误");
-                                    return "/message";
-                                }
-                                if(upgradeRulesOptional.get().getAlipayRate()==null){
-                                    model.addAttribute("message","合伙人支付宝配置有误");
-                                    return "/message";
-                                }
-                                if(upgradeRulesOptional.get().getFastRate()==null){
-                                    model.addAttribute("message","合伙人快捷配置有误");
-                                    return "/message";
-                                }
-                                upgradeRulesOptional.get().setWeixinRate(upgradeRulesOptional.get().getWeixinRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
-                                upgradeRulesOptional.get().setAlipayRate(upgradeRulesOptional.get().getAlipayRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
-                                upgradeRulesOptional.get().setFastRate(upgradeRulesOptional.get().getFastRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
+//                                if(upgradeRulesOptional.get().getWeixinRate()==null){
+//                                    model.addAttribute("message","合伙人微信配置有误");
+//                                    return "/message";
+//                                }
+//                                if(upgradeRulesOptional.get().getAlipayRate()==null){
+//                                    model.addAttribute("message","合伙人支付宝配置有误");
+//                                    return "/message";
+//                                }
+//                                if(upgradeRulesOptional.get().getFastRate()==null){
+//                                    model.addAttribute("message","合伙人快捷配置有误");
+//                                    return "/message";
+//                                }
+//                                upgradeRulesOptional.get().setWeixinRate(upgradeRulesOptional.get().getWeixinRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
+//                                upgradeRulesOptional.get().setAlipayRate(upgradeRulesOptional.get().getAlipayRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
+//                                upgradeRulesOptional.get().setFastRate(upgradeRulesOptional.get().getFastRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
                                 BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
                                 model.addAttribute("needMoney",needMoney);
                                 model.addAttribute("upgradeRules",upgradeRulesOptional.get());
