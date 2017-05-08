@@ -465,7 +465,7 @@ public class DealerController extends BaseController {
             firstLevelDealerGet2Response.setInviteCode(dealer.getInviteCode());
             firstLevelDealerGet2Response.setInviteBtn(dealer.getInviteBtn());
             //设置分润空间
-            List<DealerProfitSettingResponse> dealerProfitResponses = dealerProfitService.selectByDealerIdAndProductId(productId);
+            List<DealerProfitSettingResponse> dealerProfitResponses = dealerProfitService.selectByDealerIdAndProductId(productOptional.get().getId());
             firstLevelDealerGet2Response.setDealerProfits(dealerProfitResponses);
 
             Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(product.getId());
