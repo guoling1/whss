@@ -85,9 +85,9 @@
           tb_notice
         WHERE
           id=#{id}
-    <if test="productType!=null and productType!=''">
-        AND product_type=#{productType}
-    </if>
+    <!--<if test="productType!=null and productType!=''">-->
+        <!--AND product_type=#{productType}-->
+    <!--</if>-->
     </select>
     
     <!-- 修改公告 -->
