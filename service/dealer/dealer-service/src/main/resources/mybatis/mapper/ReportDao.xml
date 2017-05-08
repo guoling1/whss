@@ -265,4 +265,66 @@ VALUES
       AND sys_type=#{sysType}#
     </select>
 
+    <insert id="insertstdealerhistory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `st_dealer_history`
+(
+`dealerId`,
+`proxy_name`,
+`recordDay`,
+`sys_type`,
+`allMertradeAmountDir`,
+`allMertradeAmountSub`,
+`allProfit`,
+`allregMerNumberDir`,
+`allregMerNumberSub`,
+`allcheckMerNumberDir`,
+`allcheckMerNumberSub`,)
+VALUES
+(
+#{dealerId}#,
+#{proxy_name}#,
+#{recordDay}#,
+#{sys_type}#,
+#{allMertradeAmountDir}#,
+#{allMertradeAmountSub}#,
+#{allProfit}#,
+#{allregMerNumberDir}#,
+#{allregMerNumberSub}#,
+#{allcheckMerNumberDir}#,
+#{allcheckMerNumberSub}#);
+    </insert>
+
+    <update id="updatestdealerhistory">
+        UPDATE `st_dealer_history`
+SET
+`recordDay` = #{recordDay}#,
+`allMertradeAmountDir` = #{allMertradeAmountDir}#,
+`allMertradeAmountSub` = #{allMertradeAmountSub}#,
+`allProfit` = #{allProfit}#,
+`allregMerNumberDir` = #{allregMerNumberDir}#,
+`allregMerNumberSub` = #{allregMerNumberSub}#,
+`allcheckMerNumberDir` = #{allcheckMerNumberDir}#,
+`allcheckMerNumberSub` = #{allcheckMerNumberSub}#
+WHERE `id` = #{id};
+
+    </update>
+
+    <select id="getstdealerhistory" resultType="com.jkm.hss.dealer.entity.STDealerHistory">
+        SELECT `id`,
+    `dealerId`,
+    `proxy_name`,
+    `recordDay`,
+    `sys_type`,
+    `allMertradeAmountDir`,
+    `allMertradeAmountSub`,
+    `allProfit`,
+    `allregMerNumberDir`,
+    `allregMerNumberSub`,
+    `allcheckMerNumberDir`,
+    `allcheckMerNumberSub`,
+    `create_time`,
+    `upate_time`
+FROM `st_dealer_history`
+    </select>
+
 </mapper>

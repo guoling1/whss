@@ -166,4 +166,6 @@ public interface ReportDao {
     void insertstdealerrecord(STDealerRecord stDealerRecord);
 
     STDealerRecord getstdealerrecord(@Param("dealerid") long dealerid,@Param("recordDay") String recordDay,@Param("sysType") String sysType);
+
+
 }
