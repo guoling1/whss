@@ -916,9 +916,34 @@
 
     </select>
 
-    <!-- 交易详情 -->
+    <!-- 查询退款单号 -->
     <select id="getRefundOrder" resultType="java.lang.String">
         SELECT DISTINCT refund_order_no FROM tb_split_account_refund_record WHERE pay_order_no=#{orderNo}
+    </select>
+
+    <!-- 根据订单号查分润列表 -->
+    <select id="getProfitRefundList" resultType="com.jkm.hss.bill.entity.ProfitRefundResponse">
+            SELECT
+                a.*,
+                d.settle_type
+            FROM
+                tb_split_account_record a
+
+            LEFT JOIN tb_split_account_refund_record c ON c.pay_order_no = a.order_no
+            LEFT JOIN tb_order d ON d.order_no = a.order_no
+            WHERE
+                d.order_no = #{orderNo}
+    </select>
+
+    <!-- 分润退款记录 -->
+    <select id="splitAccountRefundList" resultType="com.jkm.hss.account.entity.SplitAccountRefundRecord">
+        SELECT
+          a.*
+        FROM
+          tb_split_account_refund_record a
+        LEFT JOIN tb_order b ON b.order_no = a.pay_order_no
+        WHERE
+          b.order_no = #{orderNo}
     </select>
 
     <select id="selectOrderListCount"  resultType="java.lang.Integer">

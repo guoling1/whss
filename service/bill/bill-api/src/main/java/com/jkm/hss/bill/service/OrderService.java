@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
@@ -414,6 +415,20 @@ public interface OrderService {
      * @return
      */
     String getRefundOrder(String orderNo);
+
+    /**
+     * 根据订单号查询分润列表
+     * @param orderNo
+     * @return
+     */
+    List<ProfitRefundResponse> getProfitRefundList(String orderNo);
+
+    /**
+     * 分润退款记录
+     * @param orderNo
+     * @return
+     */
+    List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
 
     /**
      * 查询交易详情

@@ -14,6 +14,7 @@ import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.SettleAccountFlow;
+import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.AccountFlowService;
@@ -1290,6 +1291,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String getRefundOrder(String orderNo) {
         return this.orderDao.getRefundOrder(orderNo);
+    }
+
+    @Override
+    public List<ProfitRefundResponse> getProfitRefundList(String orderNo) {
+        List<ProfitRefundResponse> list = this.orderDao.getProfitRefundList(orderNo);
+        return list;
+    }
+
+    @Override
+    public List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo) {
+        List<SplitAccountRefundRecord> list = this.orderDao.splitAccountRefundList(orderNo);
+        return list;
     }
 
 

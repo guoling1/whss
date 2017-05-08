@@ -5,7 +5,9 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
+import com.jkm.hss.bill.entity.ProfitRefundResponse;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.bill.service.OrderService;
@@ -121,10 +123,19 @@ public class OrderTradeController extends BaseController{
     public JSONObject orderListAll(@RequestBody OrderTradeRequest req) throws ParseException {
         JSONObject jsonObject = new JSONObject();
         MerchantTradeResponse orderList =  orderService.selectOrderListByPageAll(req);
+
         List<PaymentSdkQueryPayOrderByOrderNoResponse> payList = this.orderService.queryPayOrderByOrderNo(req.getOrderNo());
         String refundOrder = this.orderService.getRefundOrder(req.getOrderNo());
         List<PaymentSdkQueryRefundOrderByOrderNoResponse> refundList = this.orderService.queryRefundOrderByOrderNo(refundOrder);
-
+        List<ProfitRefundResponse> profitRefundList = this.orderService.getProfitRefundList(req.getOrderNo());
+        List<SplitAccountRefundRecord> splitAccountRefundList = this.orderService.splitAccountRefundList(req.getOrderNo());
+        jsonObject.put("orderList",orderList);
+        jsonObject.put("payList",payList);
+        jsonObject.put("refundList",refundList);
+        jsonObject.put("profitRefundList",profitRefundList);
+        jsonObject.put("splitAccountRefundList",splitAccountRefundList);
+        jsonObject.put("msg","ok");
+        jsonObject.put("code",1);
         return jsonObject;
     }
 
