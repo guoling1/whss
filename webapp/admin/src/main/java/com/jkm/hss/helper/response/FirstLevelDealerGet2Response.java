@@ -32,10 +32,6 @@ public class FirstLevelDealerGet2Response {
     private int inviteBtn;
 
     /**
-     * 收单总分润空间
-     */
-    private BigDecimal totalProfitSpace;
-    /**
      * 合伙人推荐分润
      */
     private List<DealerUpgerdeRate> dealerUpgerdeRates;
