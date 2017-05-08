@@ -567,6 +567,17 @@ public class DealerController extends BaseController {
     }
 
 
+    private BigDecimal getDvalue(List<HssDealerAddOrUpdateRequest.Channel> channels,int currentChannelTypeSign){
+        BigDecimal dvalue = null;
+        for(int i=0;i<channels.size();i++){
+            if(channels.get(i).getChannelType()==currentChannelTypeSign){
+                BigDecimal merchantSettleRate = new BigDecimal(channels.get(i).getMerchantSettleRate()).divide(new BigDecimal("100"));
+                BigDecimal paymentSettleRate = new BigDecimal(channels.get(i).getPaymentSettleRate()).divide(new BigDecimal("100"));
+                dvalue = merchantSettleRate.subtract(paymentSettleRate);
+            }
+        }
+        return dvalue;
+    }
     /**
      * 新增或添加代理商
      *
@@ -588,6 +599,10 @@ public class DealerController extends BaseController {
                 for(int i=0;i<request.getDealerProfits().size();i++){
                     if(request.getDealerProfits().get(i).getProfitSpace()==null){
                         return CommonResponse.simpleResponse(-1, "请设置"+request.getDealerProfits().get(i).getChannelName()+"的推荐分润");
+                    }
+                    BigDecimal dvalue = getDvalue(request.getProduct().getChannels(),request.getDealerProfits().get(i).getChannelTypeSign());
+                    if ((request.getDealerProfits().get(i).getProfitSpace().divide(new BigDecimal("100"))).compareTo(dvalue) > 0) {
+                        return CommonResponse.simpleResponse(-1,"总分润空间不得大于"+request.getDealerProfits().get(i).getChannelName()+"通道商户费率与一级代理商结算价之差");
                     }
                 }
 
