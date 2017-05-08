@@ -1059,9 +1059,9 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
                         list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
