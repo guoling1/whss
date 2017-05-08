@@ -64,8 +64,43 @@
         </trim>
     </insert>
 
+    <!-- 修 改-->
+    <update id="update">
+        UPDATE tb_partner_rule_setting
+        <set>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="channelTypeSign != null">
+                channel_type_sign = #{channelTypeSign},
+            </if>
+            <if test="defaultProfitSpace != null">
+                default_profit_space = #{defaultProfitSpace},
+            </if>
+            <if test="commonRate != null">
+                common_rate = #{commonRate},
+            </if>
+            <if test="clerkRate != null">
+                clerk_rate = #{clerkRate},
+            </if>
+            <if test="shopownerRate!=null">
+                shopowner_rate = #{shopownerRate},
+            </if>
+            <if test="bossRate!=null">
+                boss_rate = #{bossRate},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
     <select id="selectAllByProductId" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
         select <include refid="Base_Column_List" /> from tb_partner_rule_setting where product_id =#{productId} and status=1 order by create_time desc
     </select>
 
+    <select id="selectById" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
+        select <include refid="Base_Column_List" /> from tb_partner_rule_setting where id =#{id} and status=1
+    </select>
 </mapper>

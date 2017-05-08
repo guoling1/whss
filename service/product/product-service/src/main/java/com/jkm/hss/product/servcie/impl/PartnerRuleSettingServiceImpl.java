@@ -1,5 +1,6 @@
 package com.jkm.hss.product.servcie.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.PartnerRuleSettingDao;
 import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.servcie.PartnerRuleSettingService;
@@ -23,6 +24,25 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
     @Override
     public void insert(PartnerRuleSetting partnerRuleSetting) {
         partnerRuleSettingDao.insert(partnerRuleSetting);
+    }
+
+    /**
+     * 修改
+     *
+     * @param partnerRuleSetting
+     */
+    @Override
+    public void update(PartnerRuleSetting partnerRuleSetting) {
+        partnerRuleSettingDao.update(partnerRuleSetting);
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<PartnerRuleSetting> selectById(long id) {
+        return Optional.fromNullable(partnerRuleSettingDao.selectById(id));
     }
 
     /**

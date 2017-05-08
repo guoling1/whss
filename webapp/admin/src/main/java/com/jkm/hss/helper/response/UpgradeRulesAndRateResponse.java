@@ -2,6 +2,7 @@ package com.jkm.hss.helper.response;
 
 import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.entity.UpgradeRules;
+import com.jkm.hss.product.helper.response.UpgradeRulesResponse;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,7 +16,11 @@ public class UpgradeRulesAndRateResponse {
     /**
      * 商户升级规则
      */
-    private List<PartnerRuleSetting> PartnerRuleSettingList;
+    private List<PartnerRuleSetting> partnerRuleSettingList;
+    /**
+     * 升级规则
+     */
+    private List<UpgradeRulesResponse>  upgradeRulesList;
     /**
      * 邀请用户达标标准
      */
