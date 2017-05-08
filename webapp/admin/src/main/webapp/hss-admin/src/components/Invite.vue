@@ -22,7 +22,7 @@
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info" v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">商户升级规则设置</h3>
         </div>
@@ -42,26 +42,16 @@
                         <th style="line-height: 250%">店长</th>
                         <th style="line-height: 250%">老板</th>
                       </tr>
-                      <!--<tr>
-                        <td>普通</td>
-                        <td>{{result.upgradeRulesList[0].weixinRate}}%</td>
-                        <td>{{result.upgradeRulesList[0].alipayRate}}%</td>
-                        <td>{{result.upgradeRulesList[0].fastRate}}%</td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>无</td>
-                      </tr>-->
-                      <tr v-for="(upgrade,index) in $$upgradeRulesList" v-if="index!=0">
+                      <tr v-for="(upgrade,index) in $$partnerRuleSettingList">
                         <td>{{upgrade.channelShortName}}</td>
                         <td><input type="text" name="name" v-model="upgrade.defaultProfitSpace">%</td>
                         <td><input type="text" name="name" v-model="upgrade.commonRate">%</td>
                         <td><input type="text" name="name" v-model="upgrade.clerkRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.shopownerRate">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.bossRate">人</td>
+                        <td><input type="text" name="name" v-model="upgrade.shopownerRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.bossRate">%</td>
                       </tr>
                       <tr >
-                        <td><el-button type="text" size="small" @click="isAdd = true">点击添加通道</el-button></td>
+                        <td><el-button type="text" size="small" @click="clickAdd">点击添加通道</el-button></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -120,30 +110,30 @@
                       <tr>
                         <td>升级费</td>
                         <td>无</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].upgradeCost">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].upgradeCost">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].upgradeCost">元</td>
                       </tr>
                       <tr>
                         <td>直推升级费奖励</td>
                         <td>无</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].directPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].directPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].directPromoteShall">元</td>
                       </tr>
                       <tr>
                         <td>间推升级费奖励</td>
                         <td>无</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].inDirectPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].inDirectPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].inDirectPromoteShall">元</td>
                       </tr>
                       <tr>
                         <td>邀请升级达标人数</td>
                         <td>无</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].promotionNum">人</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].promotionNum">人</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].promotionNum">人</td>
                       </tr>
                       <tr >
                         <td>邀请用户有效标准</td>
@@ -160,7 +150,7 @@
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info"  v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">升级推荐分润设置</h3>
         </div>
@@ -193,7 +183,7 @@
           </div>
         </form>
       </div>
-      <div class="btn btn-primary" @click="save">保 存</div>
+      <div class="btn btn-primary" @click="save" v-if="result.length!=0">保 存</div>
       <span v-if="result.length!=0">(对新审核通过的有效)</span>
     </div>
   </div>
@@ -210,20 +200,12 @@
         defaultProfitSpace:'',//默认分润空间
         channelShortName:"",
         supportWay:'',
+        partnerRuleSettingList:[],
+        upgradeRulesList:[],
         isAdd:false,
         isSub:false,
-        tableData1:[{
-          name:'微信',
-          data1:'',
-          data2:'',
-          data3:'',
-          data4:'',
-          data5:'',
-        }],
         result: '',
-        lists:[], //产品列表
-        productId:'',
-        query:''
+        productId:''
       }
     },
     created: function () {
@@ -238,34 +220,34 @@
             type: 'error'
           });
         });
-      //内容
-      this.$http.post('/admin/upgrade/init', {productId: this.productId})
-        .then(function (res) {
-          this.result = res.data;
-
-          /*this.$data.result.upgradeRulesList.sort(function (a, b) {
-            return a.type-b.type
-          })
-          this.$data.result.upgradeRulesList[0].name = '普通'
-          this.$data.result.upgradeRulesList[1].name = '店员'
-          this.$data.result.upgradeRulesList[2].name = '店长'
-          this.$data.result.upgradeRulesList[3].name = '老板'*/
-        }, function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
     },
     methods: {
+      clickAdd:function () {
+        this.isAdd = true;
+        this.channel = {};
+        this.defaultProfitSpace = '';
+      },
       add:function () {
-        this.isAdd = false;
-        this.isSub = true;
-        console.log(this.channel);
-        this.channel.defaultProfitSpace = this.defaultProfitSpace;
-        this.channelShortName = this.channel.channelShortName;
-        this.supportWay = this.channel.supportWay;
+        var flag = false;
+        for(let i=0; i<this.partnerRuleSettingList.length; i++){
+          if(this.partnerRuleSettingList[i].channelShortName == this.channel.channelShortName){
+            this.isAdd = false;
+            flag = true;
+            this.$message({
+              showClose: true,
+              message: '通道已存在',
+              type: 'info'
+            });
+            break;
+          }
+        }
+        if(!flag){
+          this.isAdd = false;
+          this.isSub = true;
+          this.channel.defaultProfitSpace = this.defaultProfitSpace;
+          this.channelShortName = this.channel.channelShortName;
+          this.supportWay = this.channel.supportWay;
+        }
       },
       channelAdd: function () {
         this.isSub = false;
@@ -279,7 +261,7 @@
         partnerRuleSetting.clerkRate = '';
         partnerRuleSetting.shopownerRate = '';
         partnerRuleSetting.bossRate = '';
-        this.partnerRuleSettingList.push(this.partnerRuleSetting)
+        this.partnerRuleSettingList.push(partnerRuleSetting)
       },
       search: function () {
         this.result = '';
@@ -298,14 +280,7 @@
           .then(function (res) {
             this.result = res.data;
             this.partnerRuleSettingList = res.data.partnerRuleSettingList;
-            /*this.$data.result.upgradeRulesList.sort(function (a, b) {
-              return a.type-b.type
-            })
-            console.log(this.$data.result.upgradeRulesList)
-            this.$data.result.upgradeRulesList[0].name = '普通'
-            this.$data.result.upgradeRulesList[1].name = '店员'
-            this.$data.result.upgradeRulesList[2].name = '店长'
-            this.$data.result.upgradeRulesList[3].name = '老板'*/
+            this.upgradeRulesList = res.data.upgradeRulesList;
           }, function (err) {
             this.$message({
               showClose: true,
@@ -315,16 +290,14 @@
           })
       },
       save: function () {
-        var upgradeRulesList= this.$data.result.upgradeRulesList.concat()
-        upgradeRulesList.shift()
         var query = {
-          productId:this.$data.productId,
-          standard:this.$data.result.standard,
-          upgradeRate:this.$data.result.upgradeRate,
-          tradeRate:this.$data.result.tradeRate,
-          rewardRate:this.$data.result.rewardRate,
-          upgradeRulesList:upgradeRulesList
-        }
+          productId:this.productId,
+          standard:this.result.standard,
+          upgradeRate:this.result.upgradeRate,
+          tradeRate:this.result.tradeRate,
+          upgradeRulesList:this.upgradeRulesList,
+          partnerRuleSettingList:this.partnerRuleSettingList,
+        };
         this.$http.post('/admin/upgrade/addOrUpdate',query)
           .then(function (res) {
             this.$message({
@@ -342,8 +315,8 @@
       }
     },
     computed:{
-      $$upgradeRulesList: function () {
-        return this.upgradeRulesList;
+      $$partnerRuleSettingList: function () {
+        return this.partnerRuleSettingList;
       }
     }
   }
