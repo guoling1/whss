@@ -394,6 +394,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 return Pair.of(-1, paymentSdkRefundResponse.getMessage());
             case SUCCESS:
                 this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
+                this.orderService.updateRemark(payOrder.getId(), paymentSdkRefundResponse.getMessage());
                 final RefundOrder refundOrder2 = new RefundOrder();
                 refundOrder2.setId(refundOrder.getId());
                 refundOrder2.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
