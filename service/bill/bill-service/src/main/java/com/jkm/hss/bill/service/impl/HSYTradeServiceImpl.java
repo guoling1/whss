@@ -206,7 +206,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
                     jo.put("tradeType", "2");
                 }
-                jo.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue());
+                jo.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId());
                 if (EnumOrderStatus.PAY_SUCCESS.getId() == order.getStatus()) {
                     jo.put("msg", "收款成功");
                 } else if (EnumOrderStatus.WITHDRAW_SUCCESS.getId() == order.getStatus()) {
