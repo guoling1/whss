@@ -11,9 +11,9 @@
               <div class="col-xs-12">
                 产品选择：
                 <el-select v-model="productId" placeholder="请选择" size="small">
-                  <el-option v-for="list in lists" :key="list.productId"
-                    :label="list.productName"
-                    :value="list.productId">
+                  <el-option v-for="product in productList" :key="product.productId"
+                    :label="product.productName"
+                    :value="product.productId">
                   </el-option>
                 </el-select>
                 <div @click="search" class="btn btn-primary">确定</div>
@@ -51,17 +51,15 @@
                         <td>无</td>
                         <td>无</td>
                         <td>无</td>
-                      </tr>
-                      <tr v-for="(upgrade,index) in result.upgradeRulesList" v-if="index!=0">
-                        <td>{{upgrade.name}}</td>
-                        <td><input type="text" name="name" v-model="upgrade.weixinRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.alipayRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
-                        <td><input type="text" name="name" v-model="upgrade.directPromoteShall">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.inDirectPromoteShall">元</td>
                       </tr>-->
+                      <tr v-for="(upgrade,index) in $$upgradeRulesList" v-if="index!=0">
+                        <td>{{upgrade.channelShortName}}</td>
+                        <td><input type="text" name="name" v-model="upgrade.defaultProfitSpace">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.commonRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.clerkRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.shopownerRate">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.bossRate">人</td>
+                      </tr>
                       <tr >
                         <td><el-button type="text" size="small" @click="isAdd = true">点击添加通道</el-button></td>
                         <td></td>
@@ -75,14 +73,15 @@
                   <el-dialog title="添加通道" v-model="isAdd">
                     <el-form :label-position="right" label-width="150px">
                       <el-form-item label="选择通道：" width="120" style="margin-bottom: 0">
-                        <el-select size="small" placeholder="请选择" v-model="addQuery.a">
-                          <el-option label="切换金开门直属" value="1"></el-option>
-                          <el-option label="切换为一级直属" value="2"></el-option>
-                          <el-option label="切换到二级" value="3"></el-option>
+                        <el-select size="small" placeholder="请选择" v-model="channel">
+                          <el-option v-for="channel in channelList"
+                                     :label="channel.channelShortName"
+                                     :value="channel">
+                          </el-option>
                         </el-select>
                       </el-form-item>
                       <el-form-item label="默认分润空间：" width="120" style="margin-bottom: 0">
-                        <el-input style="width: 70%" size="small" v-model="addQuery.b"></el-input>
+                        <el-input style="width: 70%" size="small" v-model="defaultProfitSpace"></el-input>
                       </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer" style="text-align: center">
@@ -93,15 +92,15 @@
                   <el-dialog title="确认添加" v-model="isSub">
                     <el-form :label-position="right" label-width="150px">
                       <el-form-item label="通道名称：" width="120" style="margin-bottom: 0">
-                        <span>xx</span>
+                        <span>{{channelShortName}}</span>
                       </el-form-item>
                       <el-form-item label="支付方式：" width="120" style="margin-bottom: 0">
-                        <span>xx</span>
+                        <span>{{supportWay}}</span>
                       </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer" style="text-align: center">
                       <el-button @click="isSub = false" style="position: relative;top: -20px;">取 消</el-button>
-                      <el-button @click="isSub = false" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+                      <el-button @click="channelAdd" type="primary" style="position: relative;top: -20px;">确 定</el-button>
                     </div>
                   </el-dialog>
                 </div>
@@ -205,12 +204,14 @@
     name:"invite",
     data(){
       return{
+        productList:[],
+        channelList:[],
+        channel:{},//要添加的通道
+        defaultProfitSpace:'',//默认分润空间
+        channelShortName:"",
+        supportWay:'',
         isAdd:false,
         isSub:false,
-        addQuery:{
-           a:'',
-          b:''
-        },
         tableData1:[{
           name:'微信',
           data1:'',
@@ -229,52 +230,82 @@
       //产品列表
       this.$http.post("/admin/product/list")
         .then(function (res) {
-          this.$data.lists = res.data
+          this.productList = res.data
         },function (err) {
           this.$message({
             showClose: true,
             message: err.statusMessage,
             type: 'error'
           });
-        })
+        });
       //内容
-      /*this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+      this.$http.post('/admin/upgrade/init', {productId: this.productId})
         .then(function (res) {
-          console.log(res)
-          this.$data.result = res.data;
+          this.result = res.data;
 
-          this.$data.result.upgradeRulesList.sort(function (a, b) {
+          /*this.$data.result.upgradeRulesList.sort(function (a, b) {
             return a.type-b.type
           })
-          console.log(this.$data.result.upgradeRulesList)
           this.$data.result.upgradeRulesList[0].name = '普通'
           this.$data.result.upgradeRulesList[1].name = '店员'
           this.$data.result.upgradeRulesList[2].name = '店长'
-          this.$data.result.upgradeRulesList[3].name = '老板'
+          this.$data.result.upgradeRulesList[3].name = '老板'*/
         }, function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-        })*/
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
     },
     methods: {
       add:function () {
         this.isAdd = false;
         this.isSub = true;
+        console.log(this.channel);
+        this.channel.defaultProfitSpace = this.defaultProfitSpace;
+        this.channelShortName = this.channel.channelShortName;
+        this.supportWay = this.channel.supportWay;
+      },
+      channelAdd: function () {
+        this.isSub = false;
+        let partnerRuleSetting = {};
+        partnerRuleSetting.id = this.channel.id;
+        partnerRuleSetting.channelShortName = this.channel.channelShortName;
+        partnerRuleSetting.productId = this.productId;
+        partnerRuleSetting.channelTypeSign = this.channel.channelTypeSign;
+        partnerRuleSetting.defaultProfitSpace = this.defaultProfitSpace;
+        partnerRuleSetting.commonRate = '';
+        partnerRuleSetting.clerkRate = '';
+        partnerRuleSetting.shopownerRate = '';
+        partnerRuleSetting.bossRate = '';
+        this.partnerRuleSettingList.push(this.partnerRuleSetting)
       },
       search: function () {
-        this.$data.result = ''
-        this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+        this.result = '';
+        //通道列表
+        this.$http.post("/admin/upgrade/getProductChannelList",{productId: this.productId})
           .then(function (res) {
-            this.$data.result = res.data;
-            this.$data.result.upgradeRulesList.sort(function (a, b) {
+            this.channelList = res.data;
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+        this.$http.post('/admin/upgrade/init', {productId: this.productId})
+          .then(function (res) {
+            this.result = res.data;
+            this.partnerRuleSettingList = res.data.partnerRuleSettingList;
+            /*this.$data.result.upgradeRulesList.sort(function (a, b) {
               return a.type-b.type
             })
             console.log(this.$data.result.upgradeRulesList)
             this.$data.result.upgradeRulesList[0].name = '普通'
             this.$data.result.upgradeRulesList[1].name = '店员'
             this.$data.result.upgradeRulesList[2].name = '店长'
-            this.$data.result.upgradeRulesList[3].name = '老板'
+            this.$data.result.upgradeRulesList[3].name = '老板'*/
           }, function (err) {
             this.$message({
               showClose: true,
@@ -310,6 +341,11 @@
           })
       }
     },
+    computed:{
+      $$upgradeRulesList: function () {
+        return this.upgradeRulesList;
+      }
+    }
   }
 </script>
 <style scoped lang="less">
