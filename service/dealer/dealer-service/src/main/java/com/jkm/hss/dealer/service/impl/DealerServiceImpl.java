@@ -103,6 +103,8 @@ public class DealerServiceImpl implements DealerService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+    @Autowired
+    private DealerProfitService dealerProfitService;
     /**
      * {@inheritDoc}
      * 有问题
@@ -1928,7 +1930,26 @@ public class DealerServiceImpl implements DealerService {
             dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
         }
         dealer.setInviteBtn(request.getInviteBtn());
-        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
+        for(int i=0;i<request.getDealerProfits().size();i++){
+            Optional<DealerProfit> dealerProfitOptional = dealerProfitService.selectByDealerIdAndProductIdAndChannelTypeSign(request.getDealerId(),
+                    request.getProduct().getProductId(),request.getDealerProfits().get(i).getChannelTypeSign());
+            if(dealerProfitOptional.isPresent()){
+                DealerProfit dealerProfit = dealerProfitOptional.get();
+                if(dealerProfit.getProfitSpace()!=null){
+                    dealerProfit.setProfitSpace(dealerProfit.getProfitSpace().divide(new BigDecimal("100")));
+                }
+                dealerProfitService.update(dealerProfit);
+            }else{
+                DealerProfit dealerProfit = new DealerProfit();
+                if(request.getDealerProfits().get(i).getProfitSpace()!=null){
+                    dealerProfit.setProfitSpace(request.getDealerProfits().get(i).getProfitSpace().divide(new BigDecimal("100")));
+                }
+                dealerProfit.setChannelTypeSign(request.getDealerProfits().get(i).getChannelTypeSign());
+                dealerProfit.setDealerId(request.getDealerId());
+                dealerProfit.setProductId(request.getProduct().getProductId());
+                dealerProfitService.insert(dealerProfit);
+            }
+        }
         this.updateRecommendBtnAndTotalProfitSpace(dealer);
         final HssDealerAddOrUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();

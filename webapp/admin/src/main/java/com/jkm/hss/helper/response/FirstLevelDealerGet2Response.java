@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -142,4 +143,9 @@ public class FirstLevelDealerGet2Response {
          */
         private String merchantWithdrawFee;
     }
+
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerProfitSettingResponse> dealerProfits;
 }
