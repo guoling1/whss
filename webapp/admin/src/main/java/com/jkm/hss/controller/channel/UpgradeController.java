@@ -152,7 +152,7 @@ public class UpgradeController extends BaseController {
         if(req.getPartnerRuleSettingList()==null||req.getPartnerRuleSettingList().size()==0){
             return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
         }
-        if(req.getPartnerRuleSettingList()==null||req.getPartnerRuleSettingList().size()==0){
+        if(req.getUpgradeRulesRequestList()==null||req.getUpgradeRulesRequestList().size()==0){
             return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
         }
         Optional<Product> productOptional = productService.selectById(req.getProductId());
