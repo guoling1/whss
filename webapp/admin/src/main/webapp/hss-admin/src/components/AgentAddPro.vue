@@ -178,13 +178,13 @@
           this.channels = res.data.product.channels;
           this.dealerProfits = res.data.dealerProfits;
           if(this.$route.query.product == 'hss'){
-            res.data.totalProfitSpace = res.data.totalProfitSpace*100;
-            res.data.dealerUpgerdeRates[0].bossDealerShareRate = res.data.dealerUpgerdeRates[0].bossDealerShareRate*100;
-            res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
-            res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
-            res.data.dealerUpgerdeRates[1].bossDealerShareRate = res.data.dealerUpgerdeRates[1].bossDealerShareRate*100;
-            res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
-            res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+            res.data.totalProfitSpace = (res.data.totalProfitSpace*100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].bossDealerShareRate = (res.data.dealerUpgerdeRates[0].bossDealerShareRate*100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].bossDealerShareRate = (res.data.dealerUpgerdeRates[1].bossDealerShareRate*100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100).toFixed(0);
             this.$data.dealerUpgerdeRate1 = res.data.dealerUpgerdeRates[0];
             this.$data.dealerUpgerdeRate2 = res.data.dealerUpgerdeRates[1];
           }
@@ -205,12 +205,12 @@
       change: function () {
         if(this.$route.query.product == 'hss'){
           this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace/100;
-          this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate/100;
-          this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate/100;
-          this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate/100;
-          this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate/100;
-          this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate/100;
-          this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate/100;
+          this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate/100).toFixed(2)
+          this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate/100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate/100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate/100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate/100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate/100).toFixed(2);
           this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
           this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
         }
@@ -235,13 +235,13 @@
 //            this.$router.go(-1)
           }, function (err) {
             if(this.$route.query.product == "hss"){
-              this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace*100;
-              this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate*100;
-              this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
-              this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
-              this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate*100;
-              this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
-              this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+              this.$data.records.totalProfitSpace = (this.$data.records.totalProfitSpace*100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate*100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate*100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate*100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate*100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate*100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate*100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
               this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
             }
