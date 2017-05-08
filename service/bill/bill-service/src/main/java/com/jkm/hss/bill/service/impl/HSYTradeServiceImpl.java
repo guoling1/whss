@@ -273,7 +273,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         result.put("time", order.getCreateTime());
         result.put("status", EnumOrderStatus.of(order.getStatus()).getValue());
         result.put("refundStatus", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
-        result.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue());
+        result.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId());
         result.put("orderNo", order.getOrderNo());
         result.put("settleStatus", EnumSettleStatus.of(order.getSettleStatus()).getValue());
         return result.toJSONString();
