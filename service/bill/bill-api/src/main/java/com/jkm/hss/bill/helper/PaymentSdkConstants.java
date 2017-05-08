@@ -59,6 +59,16 @@ public final class PaymentSdkConstants {
      */
     public static final String SDK_PAY_REFUND;
 
+    /**
+     * 查询支付流水
+     */
+    public static final String SDK_QUERY_PAY_ORDER_URL;
+
+    /**
+     * 查询退款流水
+     */
+    public static final String SDK_QUERY_REFUND_ORDER_URL;
+
     static {
         final PaymentSdkConfig config = getConfig();
         APP_ID= config.appId();
@@ -81,6 +91,10 @@ public final class PaymentSdkConstants {
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_CONFRIM), "加载支付中心快捷支付-确认下单url失败");
         SDK_PAY_REFUND = config.sdkPayRefund();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_REFUND), "加载支付中心退款url失败");
+        SDK_QUERY_PAY_ORDER_URL = config.sdkQueryPayOrderUrl();
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_QUERY_PAY_ORDER_URL), "加载支付中心查询支付流水url失败");
+        SDK_QUERY_REFUND_ORDER_URL = config.sdkQueryRefundOrderUrl();
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_QUERY_REFUND_ORDER_URL), "加载支付中心查询退款流水url失败");
     }
 
     private static PaymentSdkConfig getConfig() {
@@ -136,16 +150,49 @@ public final class PaymentSdkConstants {
         @DefaultValue("http://pay.qianbaojiajia.com/km/merchant/query")
         String sdkPayQueryIn();
 
+        /**
+         * 无卡下单
+         *
+         * @return
+         */
         @Key("payment.sdk.pay.unionpay.prepare")
         @DefaultValue("http://pay.qianbaojiajia.com/pay/fastPlaceOrder")
         String sdkPayUnionPayPrepare();
 
+        /**
+         * 无卡确认支付
+         *
+         * @return
+         */
         @Key("payment.sdk.pay.unionpay.confirm")
         @DefaultValue("http://pay.qianbaojiajia.com/pay/confirmPlaceOrder")
         String sdkPayUnionPayConfirm();
 
+        /**
+         * 退款
+         *
+         * @return
+         */
         @Key("payment.sdk.pay.refund.url")
         @DefaultValue("http://pay.qianbaojiajia.com/pay/refund")
         String sdkPayRefund();
+
+        /**
+         * 查询支付流水
+         *
+         * @return
+         */
+        @Key("payment.sdk.pay.query.pay.order.url")
+        @DefaultValue("http://pay.qianbaojiajia.com/order/queryPayByOrderNo")
+        String sdkQueryPayOrderUrl();
+
+        /**
+         * 查询退款流水
+         *
+         * @return
+         */
+        @Key("payment.sdk.pay.query.pay.order.url")
+        @DefaultValue("http://pay.qianbaojiajia.com/order/queryPayByOrderNo")
+        String sdkQueryRefundOrderUrl();
     }
 }

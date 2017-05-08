@@ -1,10 +1,12 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.ExcelUtil;
@@ -22,7 +24,13 @@ import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
+import com.jkm.hss.bill.helper.PaymentSdkConstants;
+import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
+import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
+import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -80,6 +88,8 @@ public class OrderServiceImpl implements OrderService {
     private WithdrawService withdrawService;
     @Autowired
     private PayService payService;
+    @Autowired
+    private HttpClientFacade httpClientFacade;
 
     /**
      * {@inheritDoc}
@@ -549,6 +559,48 @@ public class OrderServiceImpl implements OrderService {
         }
         return "";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public List<PaymentSdkQueryPayOrderByOrderNoResponse> queryPayOrderByOrderNo(final String orderNo) {
+
+        final PaymentSdkQueryPayOrderByOrderNoRequest paymentSdkQueryPayOrderByOrderNoRequest = new PaymentSdkQueryPayOrderByOrderNoRequest();
+        paymentSdkQueryPayOrderByOrderNoRequest.setOrderNo(orderNo);
+        try {
+            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_QUERY_PAY_ORDER_URL, SdkSerializeUtil.convertObjToMap(paymentSdkQueryPayOrderByOrderNoRequest));
+            final List<PaymentSdkQueryPayOrderByOrderNoResponse> responses = JSONArray.parseArray(content, PaymentSdkQueryPayOrderByOrderNoResponse.class);
+            return responses;
+        } catch (final Throwable e) {
+            log.error("查询网关异常");
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundOrderNo
+     * @return
+     */
+    @Override
+    public List<PaymentSdkQueryRefundOrderByOrderNoResponse> queryRefundOrderByOrderNo(final String refundOrderNo) {
+        final PaymentSdkQueryRefundOrderByOrderNoRequest paymentSdkQueryRefundOrderByOrderNoRequest = new PaymentSdkQueryRefundOrderByOrderNoRequest();
+        paymentSdkQueryRefundOrderByOrderNoRequest.setOrderNo(refundOrderNo);
+        try {
+            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_QUERY_REFUND_ORDER_URL, SdkSerializeUtil.convertObjToMap(paymentSdkQueryRefundOrderByOrderNoRequest));
+            final List<PaymentSdkQueryRefundOrderByOrderNoResponse> responses = JSONArray.parseArray(content, PaymentSdkQueryRefundOrderByOrderNoResponse.class);
+            return responses;
+        } catch (final Throwable e) {
+            log.error("查询网关异常");
+        }
+        return Collections.emptyList();
+    }
+
 
     @Override
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
@@ -1233,6 +1285,11 @@ public class OrderServiceImpl implements OrderService {
     public AppStatisticsOrder statisticsByParam(final long accountId, final String appId, final ArrayList<Integer> payChannelSigns,
                                                 final String sDate, final String eDate) {
         return this.orderDao.statisticsByParam(accountId, appId, payChannelSigns, sDate, eDate);
+    }
+
+    @Override
+    public String getRefundOrder(String orderNo) {
+        return this.orderDao.getRefundOrder(orderNo);
     }
 
 

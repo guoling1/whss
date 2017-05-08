@@ -49,7 +49,7 @@
             <if test="merchantRefundAmount != null">
                 merchant_refund_amount = #{merchantRefundAmount},
             </if>
-            <if test="poundage_refund_amount != null">
+            <if test="poundageRefundAmount != null">
                 poundage_refund_amount = #{poundageRefundAmount},
             </if>
             <if test="finishTime != null">

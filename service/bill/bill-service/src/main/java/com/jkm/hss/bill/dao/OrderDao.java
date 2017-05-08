@@ -382,4 +382,11 @@ public interface OrderDao {
      * @return
      */
     AppStatisticsOrder statisticsByParam(@Param("accountId") long accountId, @Param("appId") String appId, @Param("payChannelSigns") ArrayList<Integer> payChannelSigns, @Param("sDate") String sDate, @Param("eDate") String eDate);
+
+    /**
+     * 查询退款单号
+     * @param orderNo
+     * @return
+     */
+    String getRefundOrder(@Param("orderNo") String orderNo);
 }
