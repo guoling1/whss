@@ -144,18 +144,19 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long accountId = dataJo.getLongValue("accountId");
         final int pageNo = dataJo.getIntValue("pageNo");
         final int pageSize = dataJo.getIntValue("pageSize");
-        final List<Integer> paymentChannels = (List<Integer>) dataJo.get("channel");
+        final String channel = dataJo.getString("channel");
+        final String[] paymentChannels = channel.split(",");
         final String startTimeStr = dataJo.getString("startTime");
         final String endTimeStr = dataJo.getString("endTime");
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
-        if (CollectionUtils.isEmpty(paymentChannels)) {
+        if (paymentChannels.length == 0) {
             pageModel.setCount(0);
             pageModel.setRecords(Collections.<JSONObject>emptyList());
             return JSON.toJSONString(pageModel);
         }
         final ArrayList<Integer> payChannelSigns = new ArrayList<>();
-        for (int i = 0; i < paymentChannels.size(); i++) {
-            payChannelSigns.addAll(EnumPayChannelSign.getIdListByPaymentChannel(paymentChannels.get(i)));
+        for (int i = 0; i < paymentChannels.length; i++) {
+            payChannelSigns.addAll(EnumPayChannelSign.getIdListByPaymentChannel(Integer.valueOf(paymentChannels[i])));
         }
         Date startTime = null;
         Date endTime = null;
