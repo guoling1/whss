@@ -49,12 +49,7 @@ public enum  EnumOrderStatus {
     /**
      *充值失败
      */
-    RECHARGE_FAIL(8, "充值失败"),
-
-    /**
-     * 已退款
-     */
-    REFUNDED(9, "已退款")
+    RECHARGE_FAIL(8, "充值失败")
     ;
 
     @Getter
