@@ -514,25 +514,25 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                         settleAccountFlow.getAccountId(), EnumAccountFlowType.DECREASE.getId());
                 Preconditions.checkState(!optional.isPresent(), "账户[{}],结算流水[{}],已结算,结算异常", settleAccountFlow.getAccountId(), settleAccountFlow.getFlowNo());
                 final Account account = this.accountService.getByIdWithLock(settleAccountFlow.getAccountId()).get();
-                final SettleAccountFlow merchantIncreaseSettleAccountFlow =
+                final SettleAccountFlow increaseSettleAccountFlow =
                         this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(settleAccountFlow.getOrderNo(), settleAccountFlow.getAccountId(),
                                 EnumAccountFlowType.INCREASE.getId()).get();
                 //待结算金额减少
-                Preconditions.checkState(account.getDueSettleAmount().compareTo(merchantIncreaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
-                this.accountService.decreaseSettleAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-                final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                        merchantIncreaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
-                        merchantIncreaseSettleAccountFlow.getSettleDate(), merchantIncreaseSettleAccountFlow.getAccountUserType());
-                this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettlementRecordId());
-                this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettleAuditRecordId());
-                this.settleAccountFlowService.updateStatus(merchantIncreaseSettleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
+                Preconditions.checkState(account.getDueSettleAmount().compareTo(increaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
+                this.accountService.decreaseSettleAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
+                final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), increaseSettleAccountFlow.getIncomeAmount(),
+                        increaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, increaseSettleAccountFlow.getAppId(), increaseSettleAccountFlow.getTradeDate(),
+                        increaseSettleAccountFlow.getSettleDate(), increaseSettleAccountFlow.getAccountUserType());
+                this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, increaseSettleAccountFlow.getSettlementRecordId());
+                this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, increaseSettleAccountFlow.getSettleAuditRecordId());
+                this.settleAccountFlowService.updateStatus(increaseSettleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
                 //可用余额流水增加
                 if (EnumAccountUserType.MERCHANT.getId() != settleAccountFlow.getAccountUserType()) {
-                    this.accountService.increaseAvailableAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-                    this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
+                    this.accountService.increaseAvailableAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
+                    this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), increaseSettleAccountFlow.getIncomeAmount(),
                             "支付结算", EnumAccountFlowType.INCREASE);
                 } else {
-                    this.accountService.decreaseTotalAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
+                    this.accountService.decreaseTotalAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
                     final Optional<Order> orderOptional = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo());
                     Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", settleAccountFlow.getOrderNo());
                     if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
