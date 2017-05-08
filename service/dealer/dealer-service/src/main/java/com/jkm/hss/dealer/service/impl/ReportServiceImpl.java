@@ -10,6 +10,7 @@ import com.jkm.hss.dealer.helper.response.HomeReportResponse;
 import com.jkm.hss.dealer.service.ReportService;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import com.jkm.hss.dealer.dao.ReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,17 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
    public HomeReportResponse getHomeReport(final long dealerId,final long acountid,final int level, final String startTime, final String endTime) {
+
+        //明日日期
+        Date nowD = new Date();
+        //TODO计算后一天日期， 此功能后期结构优化调整
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(nowD);
+        int day = cl.get(Calendar.DATE);
+        cl.set(Calendar.DATE, day+1);
+        String tmDate=DateFormatUtil.format(cl.getTime(), "yyyy-MM-dd")+" 00:00:00";
+        //
+
         String startDate=startTime+" 00:00:00";
         String endDate=endTime+" 00:00:00";
         STDealerRecord hssstDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,EnumQRCodeSysType.HSS.getId());
@@ -63,13 +75,13 @@ public class ReportServiceImpl implements ReportService{
         Integer hsyyDayregMerNumberSub;//=reportDao.getHSYDayregMerNumberSub(dealerId,startTime,endTime);
 
         //HSS商户注册数-直属
-        Integer hssregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,null,null);
+        Integer hssregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,null,tmDate);
         //HSS商户注册数-下级代理
-        Integer hssregMerNumberSub=reportDao.getHSSDayregMerNumberSub(dealerId,null,null);
+        Integer hssregMerNumberSub=reportDao.getHSSDayregMerNumberSub(dealerId,null,tmDate);
         //HSY商户注册数-直属
-        Integer hsyregMerNumberDir=reportDao.getHSYDayregMerNumberDir(dealerId,null,null);
+        Integer hsyregMerNumberDir=reportDao.getHSYDayregMerNumberDir(dealerId,null,tmDate);
         //HSY商户注册数-下级代理
-        Integer hsyregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,null,null);
+        Integer hsyregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,null,tmDate);
 
         //HSS昨日商户审核数-直属
         Integer hssyDaycheckMerNumberDir;//=reportDao.getHSSDaycheckMerNumberDir(dealerId,startDate,endDate);
@@ -81,13 +93,13 @@ public class ReportServiceImpl implements ReportService{
         Integer hsyyDaycheckMerNumberSub;//=reportDao.getHSYDaycheckMerNumberSub(dealerId,startTime,endTime);
 
         //HSS商户审核数-直属
-        Integer hsscheckMerNumberDir=reportDao.getHSSDaycheckMerNumberDir(dealerId,null,null);
+        Integer hsscheckMerNumberDir=reportDao.getHSSDaycheckMerNumberDir(dealerId,null,tmDate);
         //HSS商户审核数-下级代理
-        Integer hsscheckMerNumberSub=reportDao.getHSSDaycheckMerNumberSub(dealerId,null,null);
+        Integer hsscheckMerNumberSub=reportDao.getHSSDaycheckMerNumberSub(dealerId,null,tmDate);
         //HSY商户审核数-直属
-        Integer hsycheckMerNumberDir=reportDao.getHSYDaycheckMerNumberDir(dealerId,null,null);
+        Integer hsycheckMerNumberDir=reportDao.getHSYDaycheckMerNumberDir(dealerId,null,tmDate);
         //HSY商户审核数-下级代理
-        Integer hsycheckMerNumberSub=reportDao.getHSYDaycheckMerNumberSub(dealerId,null,null);
+        Integer hsycheckMerNumberSub=reportDao.getHSYDaycheckMerNumberSub(dealerId,null,tmDate);
 
         //HSS二维码总数
         Integer hssqrCodeNumber=0;
