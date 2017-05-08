@@ -2,6 +2,7 @@ package com.jkm.hss.product.servcie;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.product.entity.PartnerRuleSetting;
+import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 
 import java.util.List;
 
@@ -31,5 +32,5 @@ public interface PartnerRuleSettingService {
      * 根据产品编码查询升级规则
      * @return
      */
-    List<PartnerRuleSetting> selectAllByProductId(long productId);
+    List<PartnerRuleSettingResponse> selectAllByProductId(long productId);
 }

@@ -12,6 +12,7 @@ import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumUpGradeType;
 import com.jkm.hss.product.enums.EnumUpgrade;
+import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import com.jkm.hss.product.helper.response.ProductAndBasicResponse;
 import com.jkm.hss.product.helper.response.UpgradeRulesResponse;
 import com.jkm.hss.product.servcie.*;
@@ -72,7 +73,7 @@ public class UpgradeController extends BaseController {
             return CommonResponse.simpleResponse(-1,"该产品不存在");
         }
         //商户升级规则设置
-        List<PartnerRuleSetting> partnerRuleSettings = partnerRuleSettingService.selectAllByProductId(productOptional.get().getId());
+        List<PartnerRuleSettingResponse> partnerRuleSettings = partnerRuleSettingService.selectAllByProductId(productOptional.get().getId());
         upgradeRulesAndRateResponse.setPartnerRuleSettingList(partnerRuleSettings);
 
         List<UpgradeRulesResponse>  upgradeRulesList = new ArrayList<UpgradeRulesResponse>();

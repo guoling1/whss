@@ -1,6 +1,7 @@
 package com.jkm.hss.product.dao;
 
 import com.jkm.hss.product.entity.PartnerRuleSetting;
+import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -32,5 +33,5 @@ public interface PartnerRuleSettingDao{
      * 根据产品编码查询升级规则
      * @return
      */
-    List<PartnerRuleSetting> selectAllByProductId(@Param("productId") long productId);
+    List<PartnerRuleSettingResponse> selectAllByProductId(@Param("productId") long productId);
 }

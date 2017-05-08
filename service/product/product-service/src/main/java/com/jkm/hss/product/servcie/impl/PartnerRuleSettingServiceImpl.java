@@ -3,10 +3,12 @@ package com.jkm.hss.product.servcie.impl;
 import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.PartnerRuleSettingDao;
 import com.jkm.hss.product.entity.PartnerRuleSetting;
+import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import com.jkm.hss.product.servcie.PartnerRuleSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -52,7 +54,27 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
      * @return
      */
     @Override
-    public List<PartnerRuleSetting> selectAllByProductId(long productId) {
-        return partnerRuleSettingDao.selectAllByProductId(productId);
+    public List<PartnerRuleSettingResponse> selectAllByProductId(long productId) {
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllByProductId(productId);
+        if(partnerRuleSettingResponses.size()>0){
+            for(int i=0;i<partnerRuleSettingResponses.size();i++){
+                if(partnerRuleSettingResponses.get(i).getBossRate()!=null){
+                    partnerRuleSettingResponses.get(i).setBossRate(partnerRuleSettingResponses.get(i).getBossRate().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getDefaultProfitSpace()!=null){
+                    partnerRuleSettingResponses.get(i).setDefaultProfitSpace(partnerRuleSettingResponses.get(i).getDefaultProfitSpace().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getClerkRate()!=null){
+                    partnerRuleSettingResponses.get(i).setClerkRate(partnerRuleSettingResponses.get(i).getClerkRate().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getShopownerRate()!=null){
+                    partnerRuleSettingResponses.get(i).setShopownerRate(partnerRuleSettingResponses.get(i).getShopownerRate().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getCommonRate()!=null){
+                    partnerRuleSettingResponses.get(i).setCommonRate(partnerRuleSettingResponses.get(i).getCommonRate().multiply(new BigDecimal("100")));
+                }
+            }
+        }
+        return partnerRuleSettingResponses;
     }
 }

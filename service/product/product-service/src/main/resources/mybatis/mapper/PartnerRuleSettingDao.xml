@@ -96,8 +96,10 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectAllByProductId" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
-        select <include refid="Base_Column_List" /> from tb_partner_rule_setting where product_id =#{productId} and status=1 order by create_time desc
+    <select id="selectAllByProductId" resultType="com.jkm.hss.product.helper.response.PartnerRuleSettingResponse">
+        select p.id,p.product_id, p.channel_type_sign,p.default_profit_space,p.common_rate,	p.clerk_rate,p.shopowner_rate,p.boss_rate,b.channel_short_name as channel_name
+        from tb_partner_rule_setting as p left join tb_basic_channel as b on p.channel_type_sign=b.channel_type_sign
+        where p.product_id =#{productId} and p.status=1 order by p.create_time desc
     </select>
 
     <select id="selectById" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
