@@ -51,12 +51,12 @@ gulp.task('es', () => {
     .pipe(uglify())
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/2.0.1'));
+    .pipe(gulp.dest('js/2.0.1.1'));
 });
 
 gulp.task('replace', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('0.1.19', '0.1.19'))
+    .pipe(replace('/2.0.1/', '/2.0.1.1/'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 

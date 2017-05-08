@@ -73,5 +73,5 @@
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.1/payment.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/2.0.1.1/payment.min.js"></script>
 </html>
