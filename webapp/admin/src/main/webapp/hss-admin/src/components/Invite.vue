@@ -295,7 +295,7 @@
           standard:this.result.standard,
           upgradeRate:this.result.upgradeRate,
           tradeRate:this.result.tradeRate,
-          upgradeRulesList:this.upgradeRulesList,
+          upgradeRulesRequestList:this.upgradeRulesList,
           partnerRuleSettingList:this.partnerRuleSettingList,
         };
         this.$http.post('/admin/upgrade/addOrUpdate',query)
