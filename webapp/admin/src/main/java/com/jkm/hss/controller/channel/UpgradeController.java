@@ -102,6 +102,7 @@ public class UpgradeController extends BaseController {
                 upgradeRulesList.add(upgradeRulesResponse);
             }
         }
+        upgradeRulesAndRateResponse.setUpgradeRulesList(upgradeRulesList);
         //升级推荐分润设置及达标标准设置
         Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
         if(upgradeRecommendRulesOptional.isPresent()){
