@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.dao;
 
+import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -389,4 +390,18 @@ public interface OrderDao {
      * @return
      */
     String getRefundOrder(@Param("orderNo") String orderNo);
+
+    /**
+     * 根据订单号查分润列表
+     * @param orderNo
+     * @return
+     */
+    List<ProfitRefundResponse> getProfitRefundList(@Param("orderNo") String orderNo);
+
+    /**
+     * 分润退款记录
+     * @param orderNo
+     * @return
+     */
+    List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
 }
