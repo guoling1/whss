@@ -2,6 +2,7 @@ package com.jkm.hss.controller.hsyMerchant;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
@@ -10,6 +11,8 @@ import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by zhangbin on 2017/1/20.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/hsyMerchantList")
 public class HsyMerchantListController extends BaseController {
@@ -46,8 +54,38 @@ public class HsyMerchantListController extends BaseController {
         }
         pageModel.setCount(count);
         pageModel.setRecords(list);
+        String downLoadHsyMerchant = downLoadHsyMerchant(hsyMerchantAuditRequest);
+        pageModel.setExt(downLoadHsyMerchant);
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
+
+    /**
+     * 导出全部
+     * @return
+     */
+    private String downLoadHsyMerchant(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        final String fileZip = this.hsyMerchantAuditService.downLoadHsyMerchant(hsyMerchantAuditRequest, ApplicationConsts.getApplicationConfig().ossBucke());
+
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setCacheControl("public, max-age=31536000");
+        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+        meta.setContentType("application/x-xls");
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+        String nowDate = sdf.format(new Date());
+        String fileName = "hss/"+  nowDate + "/" + "hsyMerchant.xls";
+        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+        URL url = null;
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+            return url.getHost() + url.getFile();
+        } catch (IOException e) {
+            log.error("上传文件失败", e);
+        }
+        return null;
+    }
+
+
     @ResponseBody
     @RequestMapping(value = "/getDetails",method = RequestMethod.POST)
     public JSONObject getDetails(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){

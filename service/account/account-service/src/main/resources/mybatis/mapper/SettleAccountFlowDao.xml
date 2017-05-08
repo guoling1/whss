@@ -70,7 +70,12 @@
         WHERE app_id = 'hsy'
         AND settle_date = #{settleDate}
         AND account_id = #{accountId}
+        AND status = 0
         AND type = 1
+    </update>
+
+    <update id="updateStatus">
+        UPDATE tb_settle_account_flow SET status = #{status} WHERE id = #{id}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
@@ -87,6 +92,7 @@
         WHERE app_id = 'hsy'
         AND settle_date = #{settleDate}
         AND type = 1
+        AND status = 0
         GROUP BY account_user_type, account_id;
     </select>
 

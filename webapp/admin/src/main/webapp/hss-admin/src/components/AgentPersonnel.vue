@@ -117,12 +117,16 @@
         this.loading = true;
         this.$http.post('/admin/dealer/userList', this.$data.query)
           .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.total = res.data.totalPage;
             this.$data.count = res.data.count;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -160,14 +164,18 @@
                 this.records[i].status = '1'
               }
             }
-            this.loading = false;
+        setTimeout(()=>{
+          this.loading = false;
+      },1000)
             this.$message({
               showClose: true,
               message: '开启成功',
               type: 'success'
             });
           },(err)=>{
-            this.$data.loading = false;
+          setTimeout(()=>{
+            this.loading = false;
+        },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -184,14 +192,18 @@
                 this.records[i].status = '2'
               }
             }
-            this.loading = false;
+        setTimeout(()=>{
+          this.loading = false;
+      },1000)
             this.$message({
               showClose: true,
               message: '禁用成功',
               type: 'success'
             });
           },(err)=>{
-            this.$data.loading = false;
+          setTimeout(()=>{
+            this.loading = false;
+        },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

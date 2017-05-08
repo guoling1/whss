@@ -189,36 +189,27 @@
         this.loading = true;
         this.$http.post(this.$data.path, this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+            },1000)
             this.$data.count = res.data.count;
-            this.$data.loading = false;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0,price = 0;
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
-              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
-              price = toFix(parseFloat(price)+parseFloat(this.$data.records[i].splitAmount))
+            for (let i = 0; i < res.data.records.length; i++) {
+              res.data.records[i].splitTotalAmount = toFix(res.data.records[i].splitTotalAmount);
+              res.data.records[i].splitAmount = toFix(res.data.records[i].splitAmount);
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitTotalAmount))
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotal = total;
             this.pageTotal1 = price;
-            /*if(this.records.length!=0){
-              this.records.push({
-                settleType:"当页总额",
-                splitTotalAmount:total,
-                splitAmount:price
-              },{
-                settleType:"筛选条件统计",
-                splitTotalAmount:'',
-                splitAmount:''
-              });
-              this.records[this.records.length-1].splitTotalAmount = this.total;
-              this.records[this.records.length-1].splitAmount = this.price;
-            }*/
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

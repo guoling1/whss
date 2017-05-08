@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.SnGenerator;
@@ -250,13 +251,13 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public void generateHsySettleAuditRecordTask() {
         final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
-        final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(settleDate);
-        if (count > 0) {
-            log.error("###############存在已经结算的待结算流水#################");
-            return;
-        }
+//        final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(settleDate);
+//        if (count > 0) {
+//            log.error("###############存在已经结算的待结算流水#################");
+//            return;
+//        }
         final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
-        log.info("今日[{}]的待结算流水统计是[{}]", settleDate, settleAccountFlowStatisticses);
+        log.info("今日[{}]的待结算流水-生成结算审核记录,个数[{}]", settleDate, settleAccountFlowStatisticses.size());
         final ArrayList<Long> dealerAccountIds = new ArrayList<>();
         final ArrayList<Long> shopAccountIds = new ArrayList<>();
         if (!CollectionUtils.isEmpty(settleAccountFlowStatisticses)) {
@@ -524,6 +525,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                         merchantIncreaseSettleAccountFlow.getSettleDate(), merchantIncreaseSettleAccountFlow.getAccountUserType());
                 this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettlementRecordId());
                 this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettleAuditRecordId());
+                this.settleAccountFlowService.updateStatus(merchantIncreaseSettleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
                 //可用余额流水增加
                 if (EnumAccountUserType.MERCHANT.getId() != settleAccountFlow.getAccountUserType()) {
                     this.accountService.increaseAvailableAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());

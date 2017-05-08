@@ -450,21 +450,25 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/companyProfit',this.queryCom)
           .then(function (res) {
-            this.loading = false;
-            this.recordsCom = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.recordsCom = res.data.records;
+          },1000)
             this.countCom = res.data.count;
             this.loadUrlCom = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsCom.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsCom[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalCom = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -476,21 +480,25 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/firstProfit',this.queryFir)
           .then(function (res) {
-            this.loading = false;
-            this.recordsFir = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.recordsFir = res.data.records;
+          },1000)
             this.countFir = res.data.count;
             this.loadUrlFir = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsFir.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsFir[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalFir = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -502,21 +510,25 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/secondProfit',this.querySec)
           .then(function (res) {
-            this.loading = false;
-            this.recordsSec = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.recordsSec = res.data.records;
+          },1000)
             this.countSec = res.data.count;
             this.loadUrlSec = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsSec.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsSec[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalSec = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -554,21 +566,18 @@
       handleSizeChangeCom: function (val) {
         this.queryCom.pageNo = 1;
         this.queryCom.pageSize = val;
-        this.loading = true;
         this.getDataCom()
         this.getAddTotalCom();
       },
       handleSizeChangeFir: function (val) {
         this.queryFir.pageNo = 1;
         this.queryFir.pageSize = val;
-        this.loading = true;
         this.getDataFir()
         this.getAddTotalFir();
       },
       handleSizeChangeSec: function (val) {
         this.querySec.pageNo = 1;
         this.querySec.pageSize = val;
-        this.loading = true;
         this.getDataSec()
         this.getAddTotalSec();
       },
@@ -578,7 +587,6 @@
             this.addTotalCom = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -592,7 +600,6 @@
             this.addTotalFir = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -606,7 +613,6 @@
             this.addTotalSec = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
