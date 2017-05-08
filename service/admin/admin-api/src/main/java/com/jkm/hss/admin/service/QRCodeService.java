@@ -491,4 +491,21 @@ public interface QRCodeService {
      * @return
      */
     int updateDealerInfo(String code, long firstDealerId, long secondDealerId);
+    /**
+     * 回收二维码
+     * @param sysType
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    long revokeQrCode(String sysType,String startCode,String endCode);
+    /**
+     * 获取范围内待回收二维码个数
+     * @param sysType
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    long getRevokeTotalCount(String sysType,String startCode,String endCode);
+
 }

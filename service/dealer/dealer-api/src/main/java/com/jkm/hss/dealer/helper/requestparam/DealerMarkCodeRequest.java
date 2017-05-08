@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class DealerMarkCodeRequest {
     /**
+     * 二代编码
+     */
+    private long secondDealerId;
+    /**
      * 代理商编码
      */
     private String markCode;

@@ -72,7 +72,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderSN" label="交易流水" ></el-table-column>
-            <el-table-column label="交易金额" align="right">
+            <el-table-column label="交易金额" align="right" min-width="90">
               <template scope="scope">
                 {{scope.row.tradeAmount|toFix}}
               </template>
@@ -199,11 +199,16 @@
         this.loading = true;
         this.$http.post(this.url, this.query,{emulateJSON: true})
           .then(function (res) {
-            this.records = res.data.list;
+
             this.count = res.data.page.totalRecord;
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.list;
+          },1000)
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

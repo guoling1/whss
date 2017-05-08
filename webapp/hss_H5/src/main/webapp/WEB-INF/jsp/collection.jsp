@@ -12,8 +12,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.12.css">
+  <title>付款给商家</title>
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.15.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -29,9 +29,9 @@
       <input type="hidden" id="key-input" value="">
     </div>
   </div>
-  <div class="prompt-deep">支付宝与微信收款实时到账，无卡快捷T1到账<span id="know"></span>
-    <br>支付宝与微信限额1万，无卡快捷限额2万
-  </div>
+  <%--<div class="prompt-deep">支付宝与微信收款实时到账，无卡快捷T1到账<span id="know"></span>--%>
+    <%--<br>支付宝与微信限额1万，无卡快捷限额2万--%>
+  <%--</div>--%>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
@@ -76,7 +76,6 @@
 </div>
 
 
-
 <div class="message-space" id="layer">
   <div class="message-box">
     <div class="message-box-head">
@@ -101,6 +100,6 @@
     bankId: '${bankId}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.19/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.24/collection.min.js"></script>
 </html>
