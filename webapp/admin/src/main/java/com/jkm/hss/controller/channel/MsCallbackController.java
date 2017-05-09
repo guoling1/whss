@@ -34,6 +34,7 @@ public class MsCallbackController{
     @RequestMapping(value = "pay", method = RequestMethod.POST)
     public void handlePayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         log.info(request.getParameter("encryptData")+"............");
+        log.info(request.getParameter("encryptKey")+"............");
 
         ResponseWriter.writeTxtResponse(response, "000000");
 
@@ -42,18 +43,19 @@ public class MsCallbackController{
 
     @RequestMapping(value = "merchant", method = RequestMethod.POST)
     public void handleMerchantPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-        log.info(request.getParameter("merchantId")+"............");
-        final JSONObject requestJsonParams = this.getRequestJsonParams(request);
-        log.info(requestJsonParams.toString());
+        log.info(request.getParameter("encryptData")+"............");
+        log.info(request.getParameter("encryptKey")+"............");
         ResponseWriter.writeTxtResponse(response, "000000");
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
     public void handleWithdrawPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
-        final JSONObject requestJsonParams = this.getRequestJsonParams(request);
-        log.info(requestJsonParams.toString());
+        log.info(request.getParameter("encryptData")+"............");
+        log.info(request.getParameter("encryptKey")+"............");
         ResponseWriter.writeTxtResponse(response, "000000");
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
 
