@@ -1293,6 +1293,7 @@
         WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
         AND app_id = #{appId}
         AND status in (4, 6)
+        AND refund_status = 0
         AND pay_channel_sign IN
         <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
             #{item}
