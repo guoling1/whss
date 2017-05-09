@@ -189,34 +189,47 @@ where d.first_level_dealer_id=#{dealerid}
             and a.AUDITTIME <![CDATA[ < ]]> '${endTime}'
         </if>
     </select>
-    <select id="getHSSQrCodeNumberfirst"  resultType="java.lang.Integer">
+    <select id="getQrCodeNumberfirst"  resultType="java.lang.Integer">
         SELECT count(1)
         FROM
         tb_qr_code as c
-        WHERE  c.sys_type='hss'
+        WHERE  c.sys_type='${productType}'
         and c.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and c.create_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and c.create_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+
     </select>
-    <select id="getHSYQrCodeNumberfirst"  resultType="java.lang.Integer">
+    <!--<select id="getHSYQrCodeNumberfirst"  resultType="java.lang.Integer">-->
+        <!--SELECT count(1)-->
+        <!--FROM-->
+        <!--tb_qr_code as c-->
+        <!--WHERE  c.sys_type='hsy'-->
+        <!--and c.first_level_dealer_id=#{dealerid}-->
+    <!--</select>-->
+    <select id="getQrCodeNumbersecond"  resultType="java.lang.Integer">
         SELECT count(1)
         FROM
         tb_qr_code as c
-        WHERE  c.sys_type='hsy'
-        and c.first_level_dealer_id=#{dealerid}
-    </select>
-    <select id="getHSSQrCodeNumbersecond"  resultType="java.lang.Integer">
-        SELECT count(1)
-        FROM
-        tb_qr_code as c
-        WHERE  c.sys_type='hss'
+        WHERE  c.sys_type='${productType}'
         and c.second_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and c.create_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and c.create_time <![CDATA[ < ]]> '${endTime}'
+        </if>
     </select>
-    <select id="getHSYQrCodeNumbersecond"  resultType="java.lang.Integer">
-        SELECT count(1)
-        FROM
-        tb_qr_code as c
-        WHERE  c.sys_type='hsy'
-        and c.second_level_dealer_id=#{dealerid}
-    </select>
+    <!--<select id="getHSYQrCodeNumbersecond"  resultType="java.lang.Integer">-->
+        <!--SELECT count(1)-->
+        <!--FROM-->
+        <!--tb_qr_code as c-->
+        <!--WHERE  c.sys_type='hsy'-->
+        <!--and c.second_level_dealer_id=#{dealerid}-->
+    <!--</select>-->
 
     <insert id="insertstdealerrecord" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `st_dealer_record`
@@ -326,5 +339,205 @@ WHERE `id` = #{id};
     `upate_time`
 FROM `st_dealer_history`
     </select>
+
+    <!--历史统计-->
+
+    <!--HSS历史直属商户注册数-->
+    <select id="getHSSHisTJregMerNumberDir" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        select dealer_id as dealerId, count(1) as mCount
+        from tb_merchant_info
+        where dealer_id>0
+        <if test="startTime!=null">
+            and create_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and create_time <![CDATA[ < ]]> '${endTime}'
+        group by dealer_id
+    </select>
+    <!--HSS历史下级代理商户注册数-->
+    <select id="getHSSHisTJregMerNumberSub" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        select d.first_level_dealer_id as dealerId,count(1) as mCount
+        from tb_merchant_info m
+        inner join tb_dealer d on m.dealer_id=d.id
+        where d.first_level_dealer_id>0
+        <if test="startTime!=null">
+            and create_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and create_time <![CDATA[ < ]]> '${endTime}'
+        group by d.first_level_dealer_id
+    </select>
+
+    <!--HSS历史直属商户审核数-->
+    <select id="getHSSHisTJcheckMerNumberDir" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        select dealer_id as dealerId, count(1) as mCount
+        from tb_merchant_info
+        where dealer_id>0
+        <if test="startTime!=null">
+            and checked_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and checked_time <![CDATA[ < ]]> '${endTime}'
+        group by dealer_id
+    </select>
+    <!--HSS历史下级代理商户审核数-->
+    <select id="getHSSHisTJcheckMerNumberSub" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        select d.first_level_dealer_id as dealerId,count(1) as mCount
+        from tb_merchant_info m
+        inner join tb_dealer d on m.dealer_id=d.id
+        where d.first_level_dealer_id>0
+        <if test="startTime!=null">
+            and checked_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and checked_time <![CDATA[ < ]]> '${endTime}'
+        group by dealer_id
+    </select>
+
+    <!--HSY历史直属商户注册数-->
+    <select id="getHSYHisTJregMerNumberDir" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        SELECT  c.DEALERID as dealerId , COUNT(1) as mCount
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+        b.ROLE = 1
+        AND c.DEALERID >0
+        <if test="startTime!=null">
+            and a.CREATETIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and a.CREATETIME <![CDATA[ < ]]> '${endTime}'
+        group by c.DEALERID
+    </select>
+    <!--HSY历史下级代理商户注册数-->
+    <select id="getHSYHisTJregMerNumberSub" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        SELECT d.first_level_dealer_id as dealerId, COUNT(1) as mCount
+        FROM   app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        INNER JOIN tb_dealer d ON c.DEALERID=d.id
+        WHERE
+        b.ROLE = 1 AND d.first_level_dealer_id>0
+        <if test="startTime!=null">
+            and a.CREATETIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and a.CREATETIME <![CDATA[ < ]]> '${endTime}'
+        group by d.first_level_dealer_id
+    </select>
+
+    <!--HSY历史直属商户审核数-->
+    <select id="getHSYHisTJcheckMerNumberDir" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        SELECT  c.DEALERID as dealerId , COUNT(1) as mCount
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+        b.ROLE = 1
+        AND c.DEALERID >0
+        <if test="startTime!=null">
+            and a.AUDITTIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and a.AUDITTIME <![CDATA[ < ]]> '${endTime}'
+        group by c.DEALERID
+    </select>
+    <!--HSY历史下级代理商户审核数-->
+    <select id="getHSYHisTJcheckMerNumberSub" resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        SELECT d.first_level_dealer_id as dealerId, COUNT(1) as mCount
+        FROM   app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        INNER JOIN tb_dealer d ON c.DEALERID=d.id
+        WHERE
+        b.ROLE = 1 AND d.first_level_dealer_id>0
+        <if test="startTime!=null">
+            and a.AUDITTIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        and a.AUDITTIME <![CDATA[ < ]]> '${endTime}'
+        group by d.first_level_dealer_id
+    </select>
+
+
+    <select id="getHisTJQrCodeNumberfirst"  resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        SELECT c.first_level_dealer_id as dealerId, COUNT(1) as mCount
+        FROM
+        tb_qr_code as c
+        WHERE  c.sys_type=${productType}
+        and c.first_level_dealer_id>0
+        and c.create_time <![CDATA[ < ]]> '${endTime}'
+        GROUP  BY c.first_level_dealer_id
+    </select>
+    <select id="getHisTJQrCodeNumbersecond"  resultType="com.jkm.hss.dealer.helper.response.DealerRegCheck">
+        SELECT c.second_level_dealer_id as dealerId, COUNT(1) as mCount
+        FROM
+        tb_qr_code as c
+        WHERE  c.sys_type=${productType}
+        and c.second_level_dealer_id>0
+        and c.create_time <![CDATA[ < ]]> '${endTime}'
+        GROUP  BY c.second_level_dealer_id
+    </select>
+
+    <select id="getdealerhistory" resultType="com.jkm.hss.dealer.entity.STDealerHistory">
+        SELECT `id`,
+    `dealerId`,
+    `proxy_name`,
+    `recordDay`,
+    `sys_type`,
+    `allMertradeAmountDir`,
+    `allMertradeAmountSub`,
+    `allProfit`,
+    `allregMerNumberDir`,
+    `allregMerNumberSub`,
+    `allcheckMerNumberDir`,
+    `allcheckMerNumberSub`,
+    `allqrCode`,
+    `create_time`,
+    `upate_time`
+        FROM st_dealer_history
+        WHERE dealerId=#{dealerId}
+    </select>
+    <insert id="insertdealerhistory"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `st_dealer_history`
+        (`dealerId`,
+        `proxy_name`,
+        `recordDay`,
+        `sys_type`,
+        `allMertradeAmountDir`,
+        `allMertradeAmountSub`,
+        `allProfit`,
+        `allregMerNumberDir`,
+        `allregMerNumberSub`,
+        `allcheckMerNumberDir`,
+        `allcheckMerNumberSub`,
+        `allqrCode`)
+        VALUES
+        (
+        #{dealerId},
+        #{proxyname},
+        #{recordDay},
+        #{systype},
+        #{allMertradeAmountDir},
+        #{allMertradeAmountSub},
+        #{allProfit},
+        #{allregMerNumberDir},
+        #{allregMerNumberSub},
+        #{allcheckMerNumberDir},
+        #{allcheckMerNumberSub},
+        #{allqrCode});
+    </insert>
+    <update id="updatedealerhistory">
+        UPDATE `st_dealer_history`
+SET
+`proxy_name` = #{proxyname},
+`recordDay` = #{recordDay},
+`sys_type` = #{systype},
+`allMertradeAmountDir` = #{allMertradeAmountDir},
+`allMertradeAmountSub` = #{allMertradeAmountSub},
+`allProfit` = #{allProfit},
+`allregMerNumberDir` = #{allregMerNumberDir},
+`allregMerNumberSub` = #{allregMerNumberSub},
+`allcheckMerNumberDir` = #{allcheckMerNumberDir},
+`allcheckMerNumberSub` = #{allcheckMerNumberSub},
+`allqrCode` = #{allqrCode}
+WHERE `id` = #{id};
+
+    </update>
 
 </mapper>
