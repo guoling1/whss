@@ -33,11 +33,11 @@ public class MsCallbackController{
      */
     @RequestMapping(value = "pay", method = RequestMethod.POST)
     public void handlePayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-        log.info(request.getParameter("totalAmount")+"............");
+        log.info(request.getParameter("encryptData")+"............");
 
-        final JSONObject requestJsonParams = this.getRequestJsonParams(request);
-        log.info(requestJsonParams.toString());
         ResponseWriter.writeTxtResponse(response, "000000");
+
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     @RequestMapping(value = "merchant", method = RequestMethod.POST)
