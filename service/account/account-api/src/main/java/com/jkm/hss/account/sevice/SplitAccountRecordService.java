@@ -49,7 +49,7 @@ public interface SplitAccountRecordService {
      */
     void addPaySplitAccountRecord(String splitBusinessType, String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, BigDecimal> triple,
-                                  String receiptMoneyUserName, String remark, int accountUserType);
+                                  String receiptMoneyUserName, String remark, int accountUserType, String settleType);
 
     /**
      * 添加分账记录(商户升级支付)
