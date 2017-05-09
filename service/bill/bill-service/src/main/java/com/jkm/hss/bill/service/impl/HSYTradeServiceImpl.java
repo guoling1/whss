@@ -298,7 +298,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final Order payOrder = this.orderService.getByIdWithLock(payOrderId).get();
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(payOrder.getPayee()).get(0);
         if (StringUtils.isEmpty(password) || !password.equals(appAuUser.getPassword())) {
-            result.put("code", -1);
+            result.put("code", -2);
             result.put("msg", "密码错误");
             return result.toJSONString();
         }
