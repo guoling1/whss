@@ -1936,8 +1936,9 @@ public class DealerServiceImpl implements DealerService {
             if(dealerProfitOptional.isPresent()){
                 DealerProfit dealerProfit = dealerProfitOptional.get();
                 if(dealerProfit.getProfitSpace()!=null){
-                    dealerProfit.setProfitSpace(dealerProfit.getProfitSpace().divide(new BigDecimal("100")));
+                    dealerProfit.setProfitSpace((request.getDealerProfits().get(i).getProfitSpace()).divide(new BigDecimal("100")));
                 }
+                dealerProfit.setStatus(EnumDealerStatus.NORMAL.getId());
                 dealerProfitService.update(dealerProfit);
             }else{
                 DealerProfit dealerProfit = new DealerProfit();
@@ -1947,6 +1948,7 @@ public class DealerServiceImpl implements DealerService {
                 dealerProfit.setChannelTypeSign(request.getDealerProfits().get(i).getChannelTypeSign());
                 dealerProfit.setDealerId(request.getDealerId());
                 dealerProfit.setProductId(request.getProduct().getProductId());
+                dealerProfit.setStatus(EnumDealerStatus.NORMAL.getId());
                 dealerProfitService.insert(dealerProfit);
             }
         }
