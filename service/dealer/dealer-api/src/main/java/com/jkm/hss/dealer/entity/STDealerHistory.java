@@ -18,7 +18,7 @@ public class STDealerHistory extends BaseEntity {
     /**
      * 代理商名称
      */
-    private String proxy_name;
+    private String proxyname;
     /**
      * 统计日期
      */
@@ -26,7 +26,7 @@ public class STDealerHistory extends BaseEntity {
     /**
      * 业务类型
      */
-    private String sys_type;
+    private String systype;
     /**
      * 历史分润
      */
@@ -55,4 +55,8 @@ public class STDealerHistory extends BaseEntity {
      * 历史商户审核数-下级代理
      */
     private Integer allcheckMerNumberSub;
+    /**
+     * 二维码总数
+     */
+    private Integer allqrCode;
 }
