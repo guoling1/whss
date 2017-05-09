@@ -1299,8 +1299,8 @@ public class OrderServiceImpl implements OrderService {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if(list.size()>0){
             for (int i=0;i<list.size();i++){
-                if (list.get(i).getSplitDates()!= null && !"".equals(list.get(i).getSplitDates())){
-                    String st = df.format(list.get(i).getSplitDates());
+                if (list.get(i).getSplitDate()!= null && !"".equals(list.get(i).getSplitDate())){
+                    String st = df.format(list.get(i).getSplitDate());
                     list.get(i).setSplitDates(st);
                 }
             }
