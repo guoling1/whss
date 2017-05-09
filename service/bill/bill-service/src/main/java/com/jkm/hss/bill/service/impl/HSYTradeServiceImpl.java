@@ -374,14 +374,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         paymentSdkRefundRequest.setOrderNo(payOrder.getOrderNo());
         paymentSdkRefundRequest.setRefundOrderNo(refundOrder.getOrderNo());
         paymentSdkRefundRequest.setAmount(refundOrder.getRefundAmount().toPlainString());
-        PaymentSdkRefundResponse paymentSdkRefundResponse;
-        try {
-            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_REFUND, SdkSerializeUtil.convertObjToMap(paymentSdkRefundRequest));
-            paymentSdkRefundResponse = JSON.parseObject(content, PaymentSdkRefundResponse.class);
-        } catch (final Throwable e) {
-            log.error("退款单[" + refundOrder.getOrderNo() + "], 请求网关退款异常", e);
-            return Pair.of(-1, "请求网关退款异常");
-        }
+        final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_REFUND, SdkSerializeUtil.convertObjToMap(paymentSdkRefundRequest));
+        final PaymentSdkRefundResponse paymentSdkRefundResponse = JSON.parseObject(content, PaymentSdkRefundResponse.class);
         final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkRefundResponse.getCode());
         switch (status) {
             case FAIL:
