@@ -97,4 +97,9 @@ public class ProfitRefundResponse {
      * 分账日期
      */
     private Date splitDate;
+
+    /**
+     * 分账日期
+     */
+    private String splitDates;
 }
