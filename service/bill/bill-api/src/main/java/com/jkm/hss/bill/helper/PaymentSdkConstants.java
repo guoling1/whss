@@ -191,8 +191,8 @@ public final class PaymentSdkConstants {
          *
          * @return
          */
-        @Key("payment.sdk.pay.query.pay.order.url")
-        @DefaultValue("http://pay.qianbaojiajia.com/order/queryPayByOrderNo")
+        @Key("payment.sdk.pay.query.refund.order.url")
+        @DefaultValue("http://pay.qianbaojiajia.com/order/queryRefundByOrderNo")
         String sdkQueryRefundOrderUrl();
     }
 }
