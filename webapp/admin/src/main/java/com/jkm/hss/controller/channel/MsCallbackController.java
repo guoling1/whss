@@ -39,6 +39,38 @@ public class MsCallbackController{
         ResponseWriter.writeTxtResponse(response, "000000");
     }
 
+    @RequestMapping(value = "merchant", method = RequestMethod.POST)
+    public void handleMerchantPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+
+        final JSONObject requestJsonParams = this.getRequestJsonParams(request);
+        log.info(requestJsonParams.toString());
+        ResponseWriter.writeTxtResponse(response, "000000");
+    }
+
+    @RequestMapping(value = "withdraw", method = RequestMethod.POST)
+    public void handleWithdrawPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+
+        final JSONObject requestJsonParams = this.getRequestJsonParams(request);
+        log.info(requestJsonParams.toString());
+        ResponseWriter.writeTxtResponse(response, "000000");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * 获取参数
      * @return
