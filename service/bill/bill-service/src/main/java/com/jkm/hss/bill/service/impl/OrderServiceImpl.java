@@ -1296,6 +1296,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<ProfitRefundResponse> getProfitRefundList(String orderNo) {
         List<ProfitRefundResponse> list = this.orderDao.getProfitRefundList(orderNo);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getSplitDates()!= null && !"".equals(list.get(i).getSplitDates())){
+                    String st = df.format(list.get(i).getSplitDates());
+                    list.get(i).setSplitDates(st);
+                }
+            }
+        }
         return list;
     }
 
