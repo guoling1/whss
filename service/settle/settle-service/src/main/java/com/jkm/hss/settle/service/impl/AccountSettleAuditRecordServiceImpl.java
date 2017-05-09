@@ -249,13 +249,13 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
      */
     @Override
     @Transactional
-    public void generateHsySettleAuditRecordTask() {
+    public Pair<Integer, String> generateHsySettleAuditRecordTask() {
         final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
-//        final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(settleDate);
-//        if (count > 0) {
-//            log.error("###############存在已经结算的待结算流水#################");
-//            return;
-//        }
+        final int count = this.accountSettleAuditRecordDao.selectCountBySettleDate(settleDate);
+        if (count > 0) {
+            log.error("###############今日记录已经生成，不可以重复生成#################");
+            return Pair.of(-1, "今日记录已经生成，不可以重复生成");
+        }
         final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
         log.info("今日[{}]的待结算流水-生成结算审核记录,个数[{}]", settleDate, settleAccountFlowStatisticses.size());
         final ArrayList<Long> dealerAccountIds = new ArrayList<>();
@@ -346,6 +346,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 Preconditions.checkState(updateCount == updateCount2, "将结算单id更新到结算流水，个数异常");
             }
         }
+        return Pair.of(0, "success");
     }
 
     /**
