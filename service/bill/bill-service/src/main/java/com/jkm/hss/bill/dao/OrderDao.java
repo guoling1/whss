@@ -2,6 +2,7 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -355,4 +356,10 @@ public interface OrderDao {
      * @return
      */
     List<Order> selectByAppParam(@Param("orderNos") List<String> orderNos, @Param("offset") int offset, @Param("count") int count);
+
+    /**
+     * 保存回调信息
+     * @param geTuiResponse
+     */
+    void save(GeTuiResponse geTuiResponse);
 }
