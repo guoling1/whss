@@ -923,7 +923,7 @@
 
     <!-- 根据订单号查分润列表 -->
     <select id="getProfitRefundList" resultType="com.jkm.hss.bill.entity.ProfitRefundResponse">
-            SELECT
+            SELECT DISTINCT
                 a.*,
                 d.settle_type
             FROM
