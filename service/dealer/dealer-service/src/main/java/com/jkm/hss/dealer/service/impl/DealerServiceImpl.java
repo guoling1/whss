@@ -570,7 +570,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
                 (merchantInfo.getFirstDealerId(), EnumDealerRateType.TRADE, product.getId());
-        final BigDecimal totalProfitSpace = firstDealer.getTotalProfitSpace();
+        final BigDecimal totalProfitSpace = null;
         //二级代理信息
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
         //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -1493,7 +1493,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAddRequest.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(firstLevelDealerAddRequest.getBankReserveMobile()));
         dealer.setIdCard(DealerSupport.encryptIdenrity(firstLevelDealerAddRequest.getIdCard()));
-        dealer.setTotalProfitSpace(firstLevelDealerAddRequest.getTotalProfitSpace());
+//        dealer.setTotalProfitSpace(firstLevelDealerAddRequest.getTotalProfitSpace());
         dealer.setRecommendBtn(firstLevelDealerAddRequest.getRecommendBtn());
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         this.add(dealer);
@@ -1686,7 +1686,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
-        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
+//        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
         this.update(dealer);
         final FirstLevelDealerUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
@@ -1989,7 +1989,7 @@ public class DealerServiceImpl implements DealerService {
                 dealerProfitService.insert(dealerProfit);
             }
         }
-        this.updateRecommendBtnAndTotalProfitSpace(dealer);
+        this.updateRecommendBtn(dealer);
         final HssDealerAddOrUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
         final List<HssDealerAddOrUpdateRequest.Channel> channels = product.getChannels();
@@ -2100,8 +2100,8 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     @Transactional
-    public int updateRecommendBtnAndTotalProfitSpace(final Dealer dealer) {
-        return this.dealerDao.updateRecommendBtnAndTotalProfitSpace(dealer);
+    public int updateRecommendBtn(final Dealer dealer) {
+        return this.dealerDao.updateRecommendBtn(dealer);
     }
     /**
      * {@inheritDoc}

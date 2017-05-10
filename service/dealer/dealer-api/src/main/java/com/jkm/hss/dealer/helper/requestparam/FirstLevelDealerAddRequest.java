@@ -60,7 +60,7 @@ public class FirstLevelDealerAddRequest {
     /**
      * 收单总分润空间
      */
-    private BigDecimal totalProfitSpace;
+//    private BigDecimal totalProfitSpace;
 
     /**
      * 产品列表

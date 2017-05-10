@@ -417,12 +417,11 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateRecommendBtnAndTotalProfitSpace">
+    <update id="updateRecommendBtn">
         UPDATE tb_dealer
         SET
         recommend_btn = #{recommendBtn},
-        invite_btn = #{inviteBtn},
-        total_profit_space = #{totalProfitSpace}
+        invite_btn = #{inviteBtn}
         WHERE id = #{id}
     </update>
 
