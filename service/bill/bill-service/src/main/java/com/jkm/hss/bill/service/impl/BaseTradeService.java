@@ -36,5 +36,5 @@ public interface BaseTradeService {
      * @param receiptMemberMoneyAccountId
      * @param order
      */
-    void memberPayImpl(long receiptMemberMoneyAccountId, Order order);
+    Pair<Integer, String> memberPayImpl(long receiptMemberMoneyAccountId, Order order);
 }

@@ -108,8 +108,7 @@ public class TradeServiceImpl implements TradeService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         if (payParams.getMemberCardPay()) {
-
-
+            //从卡扣钱
             return null;
         } else {
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.MemberAccountDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_member_account
+        (
+        available,
+        consume_total_amount,
+        recharge_total_amount,
+        status,
+        )
+        values
+        (
+        #{available},
+        #{consumeTotalAmount},
+        #{rechargeTotalAmount},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_member_account
+        <set>
+            <if test="available != null">
+                available = #{available},
+            </if>
+            <if test="consumeTotalAmount != null">
+                consume_total_amount = #{consumeTotalAmount},
+            </if>
+            <if test="rechargeTotalAmount != null">
+                recharge_total_amount = #{rechargeTotalAmount},
+            </if>
+            <if test="status > 0">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.account.entity.MemberAccount">
+        SELECT * FROM tb_member_account WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.account.entity.MemberAccount">
+        SELECT * FROM tb_member_account WHERE id = #{id} FOR UPDATE
+    </select>
+</mapper>

@@ -9,6 +9,8 @@ import java.math.BigDecimal;
  * Created by yulong.zhang on 2017/5/3.
  *
  * 会员账户
+ *
+ * tb_member_account
  */
 @Data
 public class MemberAccount extends BaseEntity {

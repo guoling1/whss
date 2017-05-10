@@ -79,6 +79,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
      * @return
      */
     @Override
+    @Transactional
     public Pair<Integer, String> handlePlaceOrderResult(final PaymentSdkPlaceOrderResponse placeOrderResponse,
                                                         final EnumMerchantPayType merchantPayType, final Order order) {
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(placeOrderResponse.getCode());
@@ -102,7 +103,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             case FAIL:
                 log.info("业务方[{}],订单[{}]-下单失败【{}】", order.getAppId(), order.getId(), placeOrderResponse.getMessage());
                 this.orderService.updateRemark(order.getId(), placeOrderResponse.getMessage());
-                return Pair.of(-1, "下单失败");
+                return Pair.of(-1, placeOrderResponse.getMessage());
         }
         return Pair.of(-1, "下单网关返回状态异常");
     }
@@ -110,14 +111,15 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     /**
      * {@inheritDoc}
      *
-     * @param receiptMemberMoneyAccountId
-     * @param order
+     * @param receiptMemberMoneyAccountId  商户收会员款账户id
+     * @param order 此时，order对象中的payer是会员账户id
      */
     @Override
     @Transactional
-    public void memberPayImpl(final long receiptMemberMoneyAccountId, final Order order) {
+    public Pair<Integer, String> memberPayImpl(final long receiptMemberMoneyAccountId, final Order order) {
 
 
+        return null;
 
     }
 }
