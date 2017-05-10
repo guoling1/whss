@@ -32,6 +32,9 @@
             tb_notice
         WHERE
             1 = 1
+    <if test="productType!=null and productType!=''">
+        AND product_type=#{productType}
+    </if>
     <if test="startTime!=null and startTime!=''">
         AND create_time <![CDATA[ >= ]]> #{startTime}
     </if>
@@ -60,6 +63,9 @@
           tb_notice
         WHERE
           1 = 1
+    <if test="productType!=null and productType!=''">
+        AND product_type=#{productType}
+    </if>
     <if test="startTime!=null and startTime!=''">
         AND create_time <![CDATA[ >= ]]> #{startTime}
     </if>
@@ -79,6 +85,9 @@
           tb_notice
         WHERE
           id=#{id}
+    <!--<if test="productType!=null and productType!=''">-->
+        <!--AND product_type=#{productType}-->
+    <!--</if>-->
     </select>
     
     <!-- 修改公告 -->
@@ -102,6 +111,9 @@
             tb_notice
         WHERE
             DATE_ADD(create_time, INTERVAL 5 DAY) <![CDATA[ >= ]]>#{dates}
+    <if test="productType!=null and productType!=''">
+        AND product_type=#{productType}
+    </if>
         ORDER BY
             create_time DESC LIMIT 0,1
 

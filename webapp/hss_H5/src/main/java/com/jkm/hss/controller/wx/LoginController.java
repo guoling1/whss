@@ -1158,7 +1158,7 @@ public class LoginController extends BaseController {
     private String getNameByLevel(int level){
         String name = "";
         if(level==0){
-            name="普通会员";
+            name="普通";
         }
         if(level==1){
             name="店员";

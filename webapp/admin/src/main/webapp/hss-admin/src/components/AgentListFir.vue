@@ -175,11 +175,13 @@
         this.$data.loading = true;
         this.$http.post('/admin/dealer/listFirstDealer', this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.pageSize = res.data.pageSize;
-            this.$data.loading = false;
             var changeTime = function (val) {
               if (val == '' || val == null) {
                 return ''
@@ -199,14 +201,16 @@
                 return year + "-" + tod(month) + "-" + tod(date);
               }
             }
-            for (var i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-              if (this.$data.records[i].belongProvinceName != null && this.$data.records[i].belongCityName != null) {
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName + "-" + this.$data.records[i].belongCityName;
+            for (var i = 0; i < res.data.records.length; i++) {
+              res.data.records[i].createTime = changeTime(res.data.records[i].createTime)
+              if (res.data.records[i].belongProvinceName != null && res.data.records[i].belongCityName != null) {
+                res.data.records[i].belong = res.data.records[i].belongProvinceName + "-" + res.data.records[i].belongCityName;
               }
             }
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -221,7 +225,6 @@
             this.$data.citys = res.data;
             this.$data.isOpen1 = true;
           }, function (err) {
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -256,7 +259,6 @@
       },
       search: function () {
         this.$data.query.pageNo = 1;
-        this.$data.records = '';
         this.getData()
       },
       list: function (val) {

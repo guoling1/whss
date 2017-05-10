@@ -101,11 +101,15 @@
         this.loading = true;
         this.$http.post('/admin/channel/querySupportBank',this.$data.query)
           .then(function (res) {
-            this.loading = false;
-            this.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+          },1000)
             this.count = res.data.count;
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -127,14 +131,18 @@
 
               }
             }
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: '操作成功',
               type: 'success'
             });
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

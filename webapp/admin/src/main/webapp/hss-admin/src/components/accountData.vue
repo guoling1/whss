@@ -29,7 +29,7 @@
                 </el-table-column>
                 <el-table-column prop="orderSN" label="交易流水"></el-table-column>
                 <el-table-column prop="tradeDate" label="交易时间"></el-table-column>
-                <el-table-column prop="tradeAmount" label="交易金额" align="right" header-align="left"></el-table-column>
+                <el-table-column prop="tradeAmount" label="交易金额" align="right" min-width="90" header-align="left"></el-table-column>
               </el-table>
             </el-tab-pane>
             <el-tab-pane :label='"帐平笔数("+balanceCount+"笔)"' name="third">

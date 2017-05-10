@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.SplitAccountRefundRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_split_account_refund_record
+        (
+        pay_order_no,
+        batch_no,
+        refund_order_no,
+        split_sn,
+        split_amount,
+        refund_amount,
+        original_split_sn,
+        split_total_amount,
+        out_money_account_id,
+        out_money_user_name,
+        receipt_money_account_id,
+        account_user_type,
+        refund_time,
+        remark,
+        status
+        )
+        values
+        (
+        #{payOrderNo},
+        #{batchNo},
+        #{refundOrderNo},
+        #{splitSn},
+        #{splitAmount},
+        #{refundAmount},
+        #{originalSplitSn},
+        #{splitTotalAmount},
+        #{outMoneyAccountId},
+        #{outMoneyUserName},
+        #{receiptMoneyAccountId},
+        #{accountUserType},
+        #{refundTime},
+        #{remark},
+        #{status}
+        );
+    </insert>
+
+    <select id="selectByRefundOrderNo" resultType="com.jkm.hss.account.entity.SplitAccountRefundRecord">
+        SELECT * FROM tb_split_account_refund_record WHERE refund_order_no = #{refundOrderNo}
+    </select>
+
+    <select id="selectByPayOrderNo" resultType="com.jkm.hss.account.entity.SplitAccountRefundRecord">
+        SELECT * FROM tb_split_account_refund_record WHERE pay_order_no = #{payOrderNo}
+    </select>
+
+    <select id="selectCountBySplitSn" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_split_account_refund_record WHERE split_sn = #{splitSn}
+    </select>
+</mapper>

@@ -34,6 +34,11 @@ public class AccountFlow extends BaseEntity {
     private String orderNo;
 
     /**
+     * 退款单号
+     */
+    private String refundOrderNo;
+
+    /**
      * 发生前余额
      */
     private BigDecimal beforeAmount;

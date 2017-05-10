@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
+import com.jkm.hss.bill.entity.RefundOrder;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.product.enums.EnumUpperChannel;
@@ -41,6 +42,60 @@ public interface HSYTradeService {
      * @return
      */
     String appReceipt(String paramData, AppParam appParam);
+
+    /**
+     * 交易详情
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    String appOrderDetail(String paramData, AppParam appParam);
+
+    /**
+     * app退款
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    String appRefund(String paramData, AppParam appParam);
+
+    /**
+     * 退款实现
+     *
+     * @param refundOrder 退款单
+     * @param payOrder 交易单
+     * @return
+     */
+    Pair<Integer, String> refundImpl(RefundOrder refundOrder, Order payOrder);
+
+    /**
+     * 退款到手续费
+     *
+     * @param payOrder  交易单
+     * @param refundOrder  退款单
+     * @return
+     */
+    Pair<Integer, String> refund2Poundage(RefundOrder refundOrder, Order payOrder);
+
+    /**
+     * 商户账户退款
+     *
+     * @param refundOrder 退款单
+     * @param payOrder 交易单
+     * @return
+     */
+    Pair<Integer, String> refundMerchant(RefundOrder refundOrder, Order payOrder);
+
+    /**
+     * 退款手续费出账
+     *
+     * @param refundOrder
+     * @param payOrder
+     * @return
+     */
+    Pair<Integer, String> refundPoundageOutAccount(RefundOrder refundOrder, Order payOrder);
 
     /**
      * 收款

@@ -21,6 +21,8 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
+import com.jkm.hss.helper.response.CurrentRulesResponse;
+import com.jkm.hss.helper.response.ToUpgradeResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -35,10 +37,7 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
@@ -112,6 +111,10 @@ public class WxPubController extends BaseController {
     private AccountBankService accountBankService;
     @Autowired
     private ProductChannelGatewayService productChannelGatewayService;
+    @Autowired
+    private PartnerRuleSettingService partnerRuleSettingService;
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
 
 
 
@@ -536,7 +539,12 @@ public class WxPubController extends BaseController {
                                         merchantChannelRate.setProductId(productId);
                                         merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                         merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
-                                        merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                        Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,dealerChannelRateList.get(i).getChannelTypeSign());
+                                        if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                            merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                        }else{
+                                            merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                        }
                                         merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
 
                                         Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
@@ -1357,7 +1365,12 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENT_FAIL.getId()){
             log.info("商户入网失败");
-            return CommonResponse.simpleResponse(-1, "商户入网失败");
+            if(merchantChannelRate.getRemarks()!=null&&merchantChannelRate.getRemarks().contains("重复")){
+                return CommonResponse.simpleResponse(-1, "底层通道检测到您为重复入网，请使用其他通道");
+            }else{
+                return CommonResponse.simpleResponse(-1, "入网失败，请使用其他通道");
+            }
+
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
@@ -1366,8 +1379,74 @@ public class WxPubController extends BaseController {
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
             log.info("商户需入网");
             JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getAccountId(),merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
-            return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+            if(jo.getInt("code")==-1&&jo.getString("msg")!=null&&!"".equals(jo.getString("msg"))&&jo.getString("msg").contains("重复")){
+                return CommonResponse.simpleResponse(-1, "底层通道检测到您为重复入网，请使用其他通道");
+            }else{
+                return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+            }
         }
         return null;
+    }
+
+    private BigDecimal needMoney(long productId,int currentLevel,int needLevel){
+        BigDecimal needMoney = null;
+        //所升级别需付费
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,needLevel);
+        //当前级别需付费
+        Optional<UpgradeRules> currentUpgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,currentLevel);
+        if(!currentUpgradeRulesOptional.isPresent()){
+            needMoney = upgradeRulesOptional.get().getUpgradeCost();
+        }else{
+            needMoney = upgradeRulesOptional.get().getUpgradeCost().subtract(currentUpgradeRulesOptional.get().getUpgradeCost());
+        }
+        return needMoney;
+    }
+
+    /**
+     * 升级
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "toUpgrade", method = RequestMethod.POST)
+    public CommonResponse toUpgrade(final HttpServletRequest request, final HttpServletResponse response) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        ToUpgradeResponse toUpgradeResponse = new ToUpgradeResponse();
+
+        List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(merchantInfo.get().getProductId());
+        List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
+        int hasCount = recommendService.selectFriendCount(merchantInfo.get().getId());
+        if(upgradeRules.size()>0){
+            for(int i=0;i<upgradeRules.size();i++){
+                CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
+                BigDecimal needMoney = needMoney(merchantInfo.get().getProductId(),merchantInfo.get().getLevel(),upgradeRules.get(i).getType());
+                currentRulesResponse.setId(upgradeRules.get(i).getId());
+                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                currentRulesResponse.setType(upgradeRules.get(i).getType());
+                currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
+                currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
+                currentRulesResponse.setNeedMoney(needMoney);
+                list.add(currentRulesResponse);
+            }
+        }
+        toUpgradeResponse.setMerchantId(merchantInfo.get().getId());
+        toUpgradeResponse.setCurrentLevel(merchantInfo.get().getLevel());
+        toUpgradeResponse.setUpgradeRules(list);
+        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", toUpgradeResponse);
     }
 }

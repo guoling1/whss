@@ -49,4 +49,12 @@ public interface SplitAccountRecordDao {
      * @return
      */
     int selectCountBySplitSn(@Param("splitSn") String splitSn);
+
+    /**
+     * 按交易订单号查询
+     *
+     * @param orderNo
+     * @return
+     */
+    List<SplitAccountRecord> selectByOrderNo(@Param("orderNo") String orderNo);
 }

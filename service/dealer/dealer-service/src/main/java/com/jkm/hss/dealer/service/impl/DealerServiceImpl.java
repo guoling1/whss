@@ -2349,9 +2349,15 @@ public class DealerServiceImpl implements DealerService {
                 DistributeRecordResponse distributeRecordResponse = new DistributeRecordResponse();
                 distributeRecordResponse.setId(distributeQRCodeRecord.getId());
                 distributeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
-                Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
-                distributeRecordResponse.setProxyName(dealer.getProxyName());
-                distributeRecordResponse.setMarkCode(dealer.getMarkCode());
+                if(distributeQRCodeRecord.getSecondLevelDealerId()==0){
+                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getFirstLevelDealerId());
+                    distributeRecordResponse.setProxyName(dealer.getProxyName());
+                    distributeRecordResponse.setMarkCode(dealer.getMarkCode());
+                }else{
+                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                    distributeRecordResponse.setProxyName(dealer.getProxyName());
+                    distributeRecordResponse.setMarkCode(dealer.getMarkCode());
+                }
                 distributeRecordResponse.setCount(distributeQRCodeRecord.getCount());
                 distributeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 distributeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
@@ -2401,16 +2407,24 @@ public class DealerServiceImpl implements DealerService {
                 BossDistributeQRCodeRecordResponse bossDistributeQRCodeRecordResponse = new BossDistributeQRCodeRecordResponse();
                 bossDistributeQRCodeRecordResponse.setId(distributeQRCodeRecord.getId());
                 bossDistributeQRCodeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
-                Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
-                bossDistributeQRCodeRecordResponse.setProxyName(dealer.getProxyName());
-                bossDistributeQRCodeRecordResponse.setMarkCode(dealer.getMarkCode());
                 if(distributeQRCodeRecord.getFirstLevelDealerId()==0){
                     bossDistributeQRCodeRecordResponse.setFristProxyName("金开门");
                     bossDistributeQRCodeRecordResponse.setFirstMarkCode("000000000000");
+                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                    bossDistributeQRCodeRecordResponse.setProxyName(dealer.getProxyName());
+                    bossDistributeQRCodeRecordResponse.setMarkCode(dealer.getMarkCode());
                 }else{
                     Dealer firstDealer = dealerDao.selectById(distributeQRCodeRecord.getFirstLevelDealerId());
                     bossDistributeQRCodeRecordResponse.setFristProxyName(firstDealer.getProxyName());
                     bossDistributeQRCodeRecordResponse.setFirstMarkCode(firstDealer.getMarkCode());
+                    if(distributeQRCodeRecord.getSecondLevelDealerId()==0){
+                        bossDistributeQRCodeRecordResponse.setProxyName(firstDealer.getProxyName());
+                        bossDistributeQRCodeRecordResponse.setMarkCode(firstDealer.getMarkCode());
+                    }else{
+                        Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                        bossDistributeQRCodeRecordResponse.setProxyName(dealer.getProxyName());
+                        bossDistributeQRCodeRecordResponse.setMarkCode(dealer.getMarkCode());
+                    }
                 }
                 bossDistributeQRCodeRecordResponse.setCount(distributeQRCodeRecord.getCount());
                 bossDistributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
@@ -2561,6 +2575,19 @@ public class DealerServiceImpl implements DealerService {
     public int dealerMerchantSecondCount(QueryMerchantRequest req) {
         return this.dealerDao.dealerMerchantSecondCount(req);
     }
+
+    /**
+     * 二代切换一代
+     *
+     * @param secondDealerId
+     * @param firstDealerId
+     */
+    @Override
+    public int updateBelong(long secondDealerId, long firstDealerId) {
+        return this.dealerDao.updateBelong(secondDealerId,firstDealerId);
+    }
+
+
 
     //判断所属通道是否属于升级网关通道
     private boolean isBelongPartnerRulesSetting(int channelSign){

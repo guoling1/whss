@@ -110,31 +110,15 @@
         this.loading = true;
         this.$http.post('/admin/code/productionList',this.query)
           .then(function (res) {
-            this.records = res.data.records;
             this.count = res.data.count;
-            this.$data.loading = false;
-            /*var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
-              }
-            }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }*/
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+          },1000)
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
