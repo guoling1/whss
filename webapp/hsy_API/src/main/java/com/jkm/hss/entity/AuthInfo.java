@@ -1,0 +1,56 @@
+package com.jkm.hss.entity;
+
+/**
+ * Created by Allen on 2017/5/10.
+ */
+public class AuthInfo {
+    private boolean successFlag;
+    private String sidEncode;
+    private String userID;
+    private String openID;
+    private String infoDetail;
+
+    public boolean isSuccessFlag() {
+        return successFlag;
+    }
+
+    public void setSuccessFlag(boolean successFlag) {
+        this.successFlag = successFlag;
+    }
+
+    public String getSidEncode() {
+        return sidEncode;
+    }
+
+    public void setSidEncode(String sidEncode) {
+        this.sidEncode = sidEncode;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getOpenID() {
+        return openID;
+    }
+
+    public void setOpenID(String openID) {
+        this.openID = openID;
+    }
+
+    public String getInfoDetail() {
+        return infoDetail;
+    }
+
+    public void setInfoDetail(String infoDetail) {
+        this.infoDetail = infoDetail;
+    }
+
+    public String toString() {
+        return "successFlag:"+successFlag+",sidEncode:"+sidEncode+",userID:"+userID+",openID:"+openID+",infoDetail:"+infoDetail;
+    }
+}
