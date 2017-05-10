@@ -43,5 +43,5 @@ public class AlipayServiceConstants {
 
     public static final String OAUTH_URL_LATER = "&scope=auth_base&redirect_uri=";
 
-    public static final String MEMBERSHIP_REDIRECT_URI = "http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2fmembership%2fgetAuthInfo";
+    public static final String MEMBERSHIP_REDIRECT_URI = "http%3a%2f%2fhsy.qianbaojiajia.com%2fmembership%2fgetAuthInfo";
 }

@@ -33,6 +33,7 @@ public class MembershipController {
 
         }
         if (agent.indexOf("aliapp") > -1) {
+            System.out.println(AlipayServiceConstants.OAUTH_URL+sidEncode+"|ZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI);
             return "redirect:"+ AlipayServiceConstants.OAUTH_URL+sidEncode+"|ZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI;
         }
         return "/tips";
