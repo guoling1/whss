@@ -211,7 +211,7 @@
           <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
           <span slot="footer" class="dialog-footer">
             <el-button @click="isReenter = false">取 消</el-button>
-            <el-button type="primary" @click="reenter">确 定</el-button>
+            <el-button type="primary" @click="reenter" :disabled="reenterClick">确 定</el-button>
           </span>
         </el-dialog>
         <el-dialog title="驳回重填" v-model="isReject" size="tiny">
@@ -219,7 +219,7 @@
           <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
           <span slot="footer" class="dialog-footer">
             <el-button @click="isReject = false">取 消</el-button>
-            <el-button type="primary" @click="reject">确 定</el-button>
+            <el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>
           </span>
         </el-dialog>
       </div>
@@ -303,6 +303,8 @@
         isReject:false,
         reason:'',
         isShow:true,
+        reenterClick:false,
+        rejectClick:false,
         res: [],
         tableData:[{
           name:'支付宝',
@@ -358,11 +360,13 @@
     methods: {
       // 重新入网
       reenter:function () {
+        this.reenterClick = true;
         this.$http.post('/admin/hsyMerchantAudit/reenter', {
           shopId: this.$data.id,//店铺编码
           userId: this.$data.msg.uid,//商户编码
         }).then(function (res) {
           this.isReenter = false;
+          this.reenterClick = false;
           this.$message({
             showClose: true,
             message: '重新入网成功',
@@ -370,6 +374,7 @@
           })
         }, function (err) {
           this.isReenter = false;
+          this.reenterClick = false;
           this.$message({
             showClose: true,
             message: err.statusMessage,
@@ -379,11 +384,13 @@
       },
       // 驳回
       reject:function () {
+        this.rejectClick = true;
         this.$http.post('/admin/hsyMerchantAudit/reject', {
           id: this.$data.id,
           uid: this.$data.msg.uid,
         }).then(function (res) {
           this.isReject = false;
+          this.rejectClick = false;
           this.$message({
             showClose: true,
             message: '驳回重填成功',
@@ -391,6 +398,7 @@
           })
         }, function (err) {
           this.isReject = false;
+          this.rejectClick = false;
           this.$message({
             showClose: true,
             message: err.statusMessage,
