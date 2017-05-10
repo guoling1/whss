@@ -570,7 +570,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
                 (merchantInfo.getFirstDealerId(), EnumDealerRateType.TRADE, product.getId());
-        final BigDecimal totalProfitSpace = null;
+        final BigDecimal totalProfitSpace = this.getDealerTotalProfitSpace(firstDealer, channelSign);
         //二级代理信息
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
         //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -782,6 +782,16 @@ public class DealerServiceImpl implements DealerService {
             }
         }
 
+    }
+
+    private BigDecimal getDealerTotalProfitSpace(Dealer firstDealer, int channelSign) {
+        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
+        final Optional<DealerProfit> dealerProfitOptional = this.dealerProfitService.selectByDealerIdAndProductIdAndChannelTypeSign(firstDealer.getId(), product.getId(), channelSign);
+        if (dealerProfitOptional.isPresent()){
+            return dealerProfitOptional.get().getProfitSpace();
+        }
+        final PartnerRuleSetting partnerRuleSetting = this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign).get();
+        return partnerRuleSetting.getDefaultProfitSpace();
     }
 
     private Map<String, Triple<Long, BigDecimal, BigDecimal>> getShallProfitNotBelongPartner(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
