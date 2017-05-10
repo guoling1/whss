@@ -33,4 +33,9 @@ public interface PartnerRuleSettingService {
      * @return
      */
     List<PartnerRuleSettingResponse> selectAllByProductId(long productId);
+    /**
+     * 根据产品编码查询升级规则
+     * @return
+     */
+    List<PartnerRuleSettingResponse> selectAll(long productId);
 }

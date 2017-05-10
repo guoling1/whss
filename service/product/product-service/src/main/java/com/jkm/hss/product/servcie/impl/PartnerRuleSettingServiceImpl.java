@@ -77,4 +77,16 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
         }
         return partnerRuleSettingResponses;
     }
+
+    /**
+     * 根据产品编码查询升级规则
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<PartnerRuleSettingResponse> selectAll(long productId) {
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllByProductId(productId);
+        return partnerRuleSettingResponses;
+    }
 }

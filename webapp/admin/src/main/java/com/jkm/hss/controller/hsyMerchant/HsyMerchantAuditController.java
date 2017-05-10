@@ -114,6 +114,7 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/reenter",method = RequestMethod.POST)
     public CommonResponse reenter(@RequestBody final AppUserAndShopRequest appUserAndShopRequest){
+        log.info("进入重新入网");
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(appUserAndShopRequest.getShopId());
         if(appBizShop.getStatus()!=AppConstant.SHOP_STATUS_NORMAL){
             return CommonResponse.simpleResponse(-1,"该商户未通过审核，不能重新入网");

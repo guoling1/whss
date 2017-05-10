@@ -103,6 +103,6 @@
     <update id="toUpgrade">
         UPDATE tb_merchant_channel_rate
         SET merchant_pay_rate = #{rate}
-        WHERE merchant_id = #{merchantId} and product_id=#{productId} and third_company=#{thirdCompany} and status=0
+        WHERE merchant_id = #{merchantId} and product_id=#{productId} and channel_type_sign=#{channelTypeSign}
     </update>
 </mapper>
