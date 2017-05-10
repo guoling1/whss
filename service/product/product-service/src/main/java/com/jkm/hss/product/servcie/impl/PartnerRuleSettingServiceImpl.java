@@ -89,4 +89,17 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
         List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllByProductId(productId);
         return partnerRuleSettingResponses;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param productId
+     * @param channelSign
+     * @return
+     */
+    @Override
+    public Optional<PartnerRuleSetting> selectByProductIdAndChannelSign(long productId, int channelSign) {
+
+        return Optional.fromNullable(this.partnerRuleSettingDao.selectByProductIdAndChannelSign(productId, channelSign));
+    }
 }

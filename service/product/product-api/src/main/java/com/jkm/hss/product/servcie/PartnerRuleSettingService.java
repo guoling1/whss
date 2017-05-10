@@ -38,4 +38,12 @@ public interface PartnerRuleSettingService {
      * @return
      */
     List<PartnerRuleSettingResponse> selectAll(long productId);
+
+    /**
+     * 根据产品id和通道标示查
+     * @param productId
+     * @param channelSign
+     * @return
+     */
+    Optional<PartnerRuleSetting> selectByProductIdAndChannelSign(long productId, int channelSign);
 }

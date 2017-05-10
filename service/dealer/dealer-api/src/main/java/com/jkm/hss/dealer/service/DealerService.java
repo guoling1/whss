@@ -30,6 +30,9 @@ import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/11/23.
+ * {@link ShallProfitDetailService} 、、提现分润
+ *  CalculateService 、、计算
+ *
  */
 public interface DealerService {
     /**

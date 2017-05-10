@@ -105,4 +105,7 @@
     <select id="selectById" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
         select <include refid="Base_Column_List" /> from tb_partner_rule_setting where id =#{id} and status=1
     </select>
+    <select id="selectByProductIdAndChannelSign" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
+        SELECT <include refid="Base_Column_List"/> FROM tb_partner_rule_setting WHERE product_id =#{productId} AND channel_type_sign = #{channelSign} and status=1
+    </select>
 </mapper>
