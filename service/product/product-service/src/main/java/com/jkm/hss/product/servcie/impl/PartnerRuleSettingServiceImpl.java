@@ -89,4 +89,16 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
         List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllByProductId(productId);
         return partnerRuleSettingResponses;
     }
+
+    /**
+     * 根据产品编码和通道编码查询
+     *
+     * @param productId
+     * @param channelTypeSign
+     * @return
+     */
+    @Override
+    public Optional<PartnerRuleSetting> selectByProductIdAndChannelTypeSign(long productId, int channelTypeSign) {
+        return Optional.fromNullable(partnerRuleSettingDao.selectByProductIdAndChannelTypeSign(productId,channelTypeSign));
+    }
 }
