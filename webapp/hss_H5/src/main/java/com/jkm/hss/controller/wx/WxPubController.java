@@ -1425,6 +1425,9 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
+        if(merchantInfo.get().getLevel()==EnumUpGradeType.BOSS.getId()){
+            return CommonResponse.simpleResponse(-1, "您已经是最高等级，无需升级");
+        }
         ToUpgradeResponse toUpgradeResponse = new ToUpgradeResponse();
 
         List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(merchantInfo.get().getProductId());
