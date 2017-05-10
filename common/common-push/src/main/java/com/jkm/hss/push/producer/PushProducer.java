@@ -14,7 +14,6 @@ import com.gexin.rp.sdk.template.LinkTemplate;
 import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.NotyPopLoadTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
-import com.jkm.hss.push.config.PushConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -30,18 +29,18 @@ public class PushProducer {
 
 
     //发送消息需要配置的参数
-    private static String appId = PushConfig.APPID;
-    private static String appKey = PushConfig.APPKEY;
-    private static String masterSecret = PushConfig.MASTERSECRET;
-    private static String url = PushConfig.URL;
+//    private static String appId = PushConfig.APPID;
+//    private static String appKey = PushConfig.APPKEY;
+//    private static String masterSecret = PushConfig.MASTERSECRET;
+//    private static String url = PushConfig.URL;
 
 
 
 
-//    private static String appId = "IglbCXAlFFAbv0RJK64619";
-//    private static String appKey = "iqviYHBtLL8aEVvdB7QVn1";
-//    private static String masterSecret = "F7gCfOPvPu6HSY81gb8hR9";
-//    private static String url = "http://sdk.open.api.igexin.com/apiex.htm";
+    private static String appId = "IglbCXAlFFAbv0RJK64619";
+    private static String appKey = "iqviYHBtLL8aEVvdB7QVn1";
+    private static String masterSecret = "F7gCfOPvPu6HSY81gb8hR9";
+    private static String url = "http://sdk.open.api.igexin.com/apiex.htm";
 
 
 //    private static String appId = "E8K5ZHZmLO6RzIZVFbij9";
@@ -192,15 +191,15 @@ public class PushProducer {
         // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
         template.setTransmissionType(type);
         template.setTransmissionContent(content);
-
-        JSONObject jsonObject = JSONObject.parseObject(content);
-        String resultMessage = jsonObject.getString("resultMessage");
+//
+//        JSONObject jsonObject = JSONObject.parseObject(content);
+//        String resultMessage = jsonObject.getString("resultMessage");
 
         //ios透传需要设置的内容
         APNPayload payload = new APNPayload();
         payload.setContentAvailable(0);
         payload.setSound("suc1.wav");
-        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
+//        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
 //        payload.setCategory(content);
         payload.addCustomMsg("date",content);
 //        payload.addCustomMsg("code",100);

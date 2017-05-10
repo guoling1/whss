@@ -298,19 +298,20 @@ public class PushServiceImpl implements PushService {
         push.setPid(UUID.randomUUID().toString());
         push.setTitle("");
         push.setContent(content);
-        push.setClientId(clientId);
+
 //        push.setClientId("3c3002bf2b52d12798a5d29673d91437");
         push.setPushType(pushType);
         push.setTempType("4");
-        push.setTargets(target);
-        push.setTaskId((String) ret.get("taskId"));
+
+
         if(ret.containsValue("result=ok")){
             push.setStatus(1);
         }else{
             push.setStatus(0);
         }
-
-
+        push.setTaskId((String) ret.get("taskId"));
+        push.setClientId(clientId);
+        push.setTargets(target);
         pushDao.insert(push);
         return ret;
     }
@@ -364,7 +365,7 @@ public class PushServiceImpl implements PushService {
 
         PushServiceImpl impl=new PushServiceImpl();
 
-        impl.pushTransmissionMsg(1,"测试","2","006a9d8dfe23240e6df826b32e586173",null);
+        impl.pushTransmissionMsgTask(1,"测试","2","3c3002bf2b52d12798a5d29673d91437",null);
     }
 }
 
