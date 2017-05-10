@@ -3,6 +3,7 @@ package com.jkm.hss.account.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.DateFormatThreadUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.SplitAccountRecordDao;
 import com.jkm.hss.account.entity.SplitAccountRecord;
@@ -200,8 +201,8 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         Date beginTime = null;
         Date endTime = null;
         if (beginDate != null && !beginDate.equals("")){
-            beginTime = DateFormatUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-            endTime = DateFormatUtil.parse(endDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            beginTime = DateFormatThreadUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatThreadUtil.parse(endDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
        return this.splitAccountRecordDao.selectStatisticsByParam(accountId,orderNo,businessType,beginTime,endTime);
     }
