@@ -388,7 +388,7 @@ public interface DealerService {
      * @param dealer
      * @return
      */
-    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    int updateRecommendBtn(Dealer dealer);
     /**
      * 更新
      *

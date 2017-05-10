@@ -80,7 +80,7 @@ public class Dealer extends BaseEntity {
     /**
      * 收单总分润空间
      */
-    private BigDecimal totalProfitSpace;
+//    private BigDecimal totalProfitSpace;
 
     /**
      * 所属区域
