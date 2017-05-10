@@ -63,6 +63,14 @@ public final class SnGenerator {
         return tradeType + "0" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
+    /**
+     * 生成退款订单号
+     *
+     * @return
+     */
+    public static String generateRefundSn() {
+        return "40" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
+    }
 
     /**
      * 生成length位订单号

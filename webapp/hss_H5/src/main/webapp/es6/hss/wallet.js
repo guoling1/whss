@@ -44,7 +44,9 @@ if (pageData.showRecommend == 2) {
 }
 
 // 获取公告数据
-http.post('/notice/pageAnnouncement', {}, function (data) {
+http.post('/notice/pageAnnouncement', {
+  productType: 'hss',
+}, function (data) {
   if (data) {
     announcement.style.display = 'block';
     announcement_text.innerHTML = data.title.replace(/<[^>]+>/g, "");

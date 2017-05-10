@@ -60,7 +60,17 @@ public enum EnumVerificationCodeType {
     /**
      * 官网申请 Official website
      */
-    OFFICIAL_WEBSITE(11,EnumNoticeType.OFFICIAL_WEBSITE,1000),
+    OFFICIAL_WEBSITE(11,EnumNoticeType.OFFICIAL_WEBSITE,100),
+
+    /**
+     * hsy审核通过短信消息
+     */
+    PASS_MESSAGE(12,EnumNoticeType.PASS_MESSAGE,100),
+
+    /**
+     * hsy审核通过短信消息
+     */
+    NOT_PASS_MESSAGE(13,EnumNoticeType.NOT_PASS_MESSAGE,100),
 
 
     /**

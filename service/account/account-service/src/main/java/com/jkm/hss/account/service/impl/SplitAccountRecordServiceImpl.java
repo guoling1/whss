@@ -75,9 +75,10 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Transactional
     public void addPaySplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                          final BigDecimal poundage, final Triple<Long, BigDecimal, BigDecimal> triple,
-                                         final String receiptMoneyUserName, final String remark, final int accountUserType) {
+                                         final String receiptMoneyUserName, final String remark, final int accountUserType, final String settleType) {
 
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
+        splitAccountRecord.setSettleType(settleType);
         splitAccountRecord.setBusinessType(splitBusinessType);
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
@@ -205,6 +206,17 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     public boolean checkExistBySplitSn(final String splitSn) {
         final int count = this.splitAccountRecordDao.selectCountBySplitSn(splitSn);
         return count == 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public List<SplitAccountRecord> getByOrderNo(final String orderNo) {
+        return this.splitAccountRecordDao.selectByOrderNo(orderNo);
     }
 
 

@@ -70,8 +70,11 @@ public class SettleController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "generateRecord")
     public CommonResponse generateSettleAuditRecord() {
-        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+        final Pair<Integer, String> result = this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
+        if (0 == result.getLeft()) {
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+        }
+        return CommonResponse.simpleResponse(-1, result.getRight());
     }
 
 

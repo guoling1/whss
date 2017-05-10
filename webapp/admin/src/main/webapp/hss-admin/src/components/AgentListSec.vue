@@ -52,7 +52,7 @@
             </el-col>
           </el-row>
           <!--表格-->
-          <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column label="代理商名称">
               <template scope="scope">
                 <router-link target="_blank" :to="'/admin/details/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
@@ -141,7 +141,6 @@
       this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
           this.$data.provinces = res.data;
-          this.$data.loading = false;
         })
         .catch(function (err) {
           this.$message({
@@ -170,11 +169,13 @@
         this.loading = true;
         this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.pageSize = res.data.pageSize;
-            this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
                 return ''
@@ -192,15 +193,17 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(var i=0;i<this.$data.records.length;i++){
-              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            for(var i=0;i<res.data.records.length;i++){
+              res.data.records[i].createTime = changeTime(res.data.records[i].createTime)
+              if(res.data.records[i].belongProvinceName!=null&&res.data.records[i].belongCityName!=null){
+                res.data.records[i].belong = res.data.records[i].belongProvinceName+"-"+res.data.records[i].belongCityName;
               }
             }
           })
           .catch(function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -241,7 +244,6 @@
       },
       search: function () {
         this.$data.query.pageNo = 1;
-        this.$data.records = '';
         this.getData()
       },
       list: function (val) {

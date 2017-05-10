@@ -130,6 +130,10 @@
         UPDATE tb_order SET settle_status = #{status}, success_settle_time = #{successSettleTime} WHERE id = #{id}
     </update>
 
+    <update id="updateRefundInfo">
+        UPDATE tb_order SET refund_amount = #{refundAmount}, refund_status = #{refundStatus} WHERE id = #{id}
+    </update>
+
     <select id="selectById" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE id = #{id}
     </select>
@@ -912,6 +916,36 @@
 
     </select>
 
+    <!-- 查询退款单号 -->
+    <select id="getRefundOrder" resultType="java.lang.String">
+        SELECT DISTINCT refund_order_no FROM tb_split_account_refund_record WHERE pay_order_no=#{orderNo}
+    </select>
+
+    <!-- 根据订单号查分润列表 -->
+    <select id="getProfitRefundList" resultType="com.jkm.hss.bill.entity.ProfitRefundResponse">
+            SELECT DISTINCT
+                a.*,
+                d.settle_type
+            FROM
+                tb_split_account_record a
+
+            LEFT JOIN tb_split_account_refund_record c ON c.pay_order_no = a.order_no
+            LEFT JOIN tb_order d ON d.order_no = a.order_no
+            WHERE
+                d.order_no = #{orderNo}
+    </select>
+
+    <!-- 分润退款记录 -->
+    <select id="splitAccountRefundList" resultType="com.jkm.hss.account.entity.SplitAccountRefundRecord">
+        SELECT
+          a.*
+        FROM
+          tb_split_account_refund_record a
+        LEFT JOIN tb_order b ON b.order_no = a.pay_order_no
+        WHERE
+          b.order_no = #{orderNo}
+    </select>
+
     <select id="selectOrderListCount"  resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM
@@ -984,7 +1018,10 @@
         SUM(a.trade_amount)
         FROM
         tb_order a
-        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
+        LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
+        LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
+        LEFT JOIN app_biz_shop x  ON x.ID=y.SID
         WHERE
         a.trade_type = 1
         <if test="startTime!=null and startTime!=''">
@@ -998,6 +1035,9 @@
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="shortName != null and shortName!=''">
+            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -1013,6 +1053,9 @@
         </if>
         <if test="markCode != null and markCode!=''">
             AND b.mark_code = #{markCode}
+        </if>
+        <if test="globalId != null and globalId!=''">
+            AND x.GLOBALID = #{globalId}
         </if>
         <if test="appId != null and appId!=''">
             AND a.app_id = #{appId}
@@ -1032,6 +1075,7 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
+
         <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
@@ -1158,27 +1202,36 @@
         AND checked_status = 1
     </select>
 
-    <select id="selectPageOrdersCountByAccountId" resultType="java.lang.Long">
+    <select id="selectOrderCountByParam" resultType="java.lang.Long">
         SELECT COUNT(0) FROM tb_order
         WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
         AND app_id = #{appId}
-        AND status in (4, 6)
-        <if test="date != null">
-            AND create_time &lt;= #{date}
+        AND status in (4, 6, 7 ,9)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
         </if>
     </select>
 
-    <select id="selectPageOrdersByAccountId" resultType="com.jkm.hss.bill.entity.Order">
+    <select id="selectOrdersByParam" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order
         WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
         AND app_id = #{appId}
-        AND status in (4, 6)
-        <if test="date != null">
-            AND create_time &lt;= #{date}
+        AND status in (4, 6, 7 ,9)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
         </if>
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>
+
     <select id="getByOrderNos" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE order_no
         in <foreach collection="orderNos" index="index" item="item" open="(" close=")" separator=",">
@@ -1232,5 +1285,21 @@
         </foreach>
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
+    </select>
+
+    <select id="statisticsByParam" resultType="com.jkm.hss.bill.helper.AppStatisticsOrder">
+        SELECT SUM(trade_amount) as amount, COUNT(id) as number
+        FROM tb_order
+        WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
+        AND app_id = #{appId}
+        AND status in (4, 6)
+        AND refund_status = 0
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="sDate != null and eDate != null">
+            AND create_time BETWEEN #{sDate} AND #{eDate}
+        </if>
     </select>
 </mapper>
