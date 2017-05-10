@@ -10,6 +10,7 @@
         content,
         temp_type,
         push_type,
+        task_id,
         client_id,
         targets,
         status
@@ -21,6 +22,7 @@
         #{content},
         #{tempType},
         #{pushType},
+        #{taskId},
         #{clientId},
         #{targets},
         #{status}

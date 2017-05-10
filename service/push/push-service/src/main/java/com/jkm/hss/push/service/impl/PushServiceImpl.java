@@ -191,7 +191,7 @@ public class PushServiceImpl implements PushService {
     }
 
     @Override
-    public String pushCashMsg(Long sid, String payChannel, Double amount, String code) {
+    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code) {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
@@ -211,7 +211,8 @@ public class PushServiceImpl implements PushService {
         appResult.setResultMessage(content);
 
 
-        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
+//        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
+        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients);
         return ret;
     }
 
@@ -277,6 +278,39 @@ public class PushServiceImpl implements PushService {
             push.setStatus(0);
         }
 
+
+        pushDao.insert(push);
+        return ret;
+    }
+
+
+    public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets) {
+
+
+        String target="";
+        if(targets!=null){
+            target= targets.toString();
+        }
+
+        Map ret= PushProducer.pushTransmissionMsgTask(type,content,pushType,clientId,targets);
+
+        Push push= new Push();
+        push.setPid(UUID.randomUUID().toString());
+        push.setTitle("");
+        push.setContent(content);
+        push.setClientId(clientId);
+//        push.setClientId("3c3002bf2b52d12798a5d29673d91437");
+        push.setPushType(pushType);
+        push.setTempType("4");
+        push.setTargets(target);
+        push.setTaskId((String) ret.get("taskId"));
+        if(ret.containsValue("result=ok")){
+            push.setStatus(1);
+        }else{
+            push.setStatus(0);
+        }
+
+
         pushDao.insert(push);
         return ret;
     }
@@ -328,9 +362,9 @@ public class PushServiceImpl implements PushService {
 
         // String ret= PushProducer.pushNotificationMsg("title","ios测试","","3",null,null);
 
-        PushServiceImpl   impl=new PushServiceImpl();
+        PushServiceImpl impl=new PushServiceImpl();
 
-        impl.pushTransmissionMsg(1,"ios测试123456","1","7c26b6edb57421af16d0dafba23ea1eb",null);
+        impl.pushTransmissionMsg(1,"测试","2","006a9d8dfe23240e6df826b32e586173",null);
     }
 }
 

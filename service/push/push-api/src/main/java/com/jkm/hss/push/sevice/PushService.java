@@ -59,7 +59,7 @@ public interface PushService {
      * @param targets：clientID字符串集合
      * @return  json串形如{result=ok, taskId=OSS-0109_8a01b93476a0ec948435a3f9357f02b2, status=successed_online}，  result=ok 成功
      */
-    public  String pushNotificationMsg(String title, String text,String logoUrl, String pushType, String clientId, List<String> targets);
+    public String pushNotificationMsg(String title, String text,String logoUrl, String pushType, String clientId, List<String> targets);
 
 
 
@@ -97,7 +97,7 @@ public interface PushService {
      *            code: 收款码
      *
      */
-    public String pushCashMsg(Long sid,  String payChannel,Double amount, String code );
+    public Map pushCashMsg(Long sid,  String payChannel,Double amount, String code );
 
     /**
      * 提现消息推送
