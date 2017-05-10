@@ -308,23 +308,7 @@ public class PushProducer {
         Map map = new HashMap();
         String taskId = null;
         IPushResult ret=null;
-        if(pushType.equals("1")){
-            SingleMessage messageS = new SingleMessage();
-            messageS.setData(template);
-            messageS.setOffline(true);
-            // 离线有效时间，单位为毫秒，可选
-            messageS.setOfflineExpireTime(24 * 3600 * 1000);
-            Target target = new Target();
-            target.setAppId(appId);
-            target.setClientId(clientId);
-            //target.setAlias(Alias);
-            try {
-                ret = push.pushMessageToSingle(messageS, target);
-            } catch (RequestException e) {
-                e.printStackTrace();
-                ret = push.pushMessageToSingle(messageS, target, e.getRequestId());
-            }
-        }else if(pushType.equals("2")){
+        if(pushType.equals("2")){
             ListMessage messageL = new ListMessage();
             messageL.setData(template);
             // 设置消息离线，并设置离线时间
