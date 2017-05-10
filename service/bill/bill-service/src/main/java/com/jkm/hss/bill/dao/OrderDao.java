@@ -218,6 +218,30 @@ public interface OrderDao {
      *
      * @param accountId
      * @param appId
+     * @return
+     */
+    long selectPageOrdersCountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+                                          @Param("date") Date date);
+
+    /**
+     * 分页查询--查询记录
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> selectPageOrdersByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+                                            @Param("offset") int offset, @Param("count") int count,
+
+                                            @Param("date") Date date);
+
+    /**
+     * 分页查询--查询个数
+     *
+     * @param accountId
+     * @param appId
      * @param payChannelSigns
      * @param startTime
      * @param endTime

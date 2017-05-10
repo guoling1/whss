@@ -236,6 +236,27 @@ public interface OrderService {
     List<String> getCheckedOrderNosByOrderNos(List<String> strings);
 
     /**
+     * 分页查询--查询个数version 1
+
+     *
+     * @param accountId
+     * @param appId
+     * @return
+     */
+    long getPageOrdersCountByAccountId(long accountId, String appId, Date date);
+
+    /**
+     * 分页查询--查询记录version 1
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> getPageOrdersByAccountId(long accountId, String appId, int offset, int count, Date date);
+
+    /**
      * 分页查询--查询个数
      *
      * @param accountId

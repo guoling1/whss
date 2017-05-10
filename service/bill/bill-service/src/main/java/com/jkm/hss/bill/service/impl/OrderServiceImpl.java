@@ -725,6 +725,33 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param accountId
      * @param appId
+     * @return
+     */
+    @Override
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date date) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, date);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
+                                                final int count, final Date date) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
      * @param payChannelSigns
      * @param startTime
      * @param endTime

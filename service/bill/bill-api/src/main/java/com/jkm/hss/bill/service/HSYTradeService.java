@@ -35,6 +35,15 @@ public interface HSYTradeService {
     String tradeList(String dataParam, AppParam appParam);
 
     /**
+     * app交易记录
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String tradeList1(String dataParam, AppParam appParam);
+
+    /**
      * app收款
      *
      * @param paramData
