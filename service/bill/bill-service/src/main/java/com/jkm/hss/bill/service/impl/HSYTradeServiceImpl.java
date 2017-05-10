@@ -288,6 +288,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @return
      */
     @Override
+    @Transactional
     synchronized public String appRefund(final String paramData, final AppParam appParam) {
         final JSONObject result = new JSONObject();
         final JSONObject paramJo = JSONObject.parseObject(paramData);
