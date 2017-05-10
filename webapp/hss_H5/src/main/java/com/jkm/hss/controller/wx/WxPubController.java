@@ -397,7 +397,7 @@ public class WxPubController extends BaseController {
     }
 
     /**
-     * 登录
+     * 注册
      *
      * @return
      */
