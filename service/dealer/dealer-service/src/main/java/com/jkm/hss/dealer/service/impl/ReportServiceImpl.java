@@ -85,6 +85,10 @@ public class ReportServiceImpl implements ReportService{
                 hssstDealerHistory.setAllcheckMerNumberSub(reportDao.getHSSDaycheckMerNumberSub(dealerId,null,endDateHis));
                 hssstDealerHistory.setAllMertradeAmountDir(reportDao.getHSSDayMertradeAmountDir(dealerId,null,endDateHis));
                 hssstDealerHistory.setAllMertradeAmountSub(reportDao.getHSSDayMertradeAmountSub(dealerId,null,endDateHis));
+                BigDecimal m_nallprofit=reportDao.getDayProfit(acountid,null,endDateHis);//历史分润统计
+                if (m_nallprofit==null){m_nallprofit=new BigDecimal(0);}
+                hssstDealerHistory.setAllProfit(m_nallprofit);
+
                 if(level== EnumDealerLevel.FIRST.getId()) {
                     hssstDealerHistory.setAllqrCode(reportDao.getQrCodeNumberfirst(EnumQRCodeSysType.HSS.getId(),dealerId, null, endDateHis));
                 }
@@ -140,7 +144,12 @@ public class ReportServiceImpl implements ReportService{
         //昨日分润统计
         BigDecimal yDayProfit;//=reportDao.getDayProfit(acountid,startDate,endDate);
         //分润统计
-        BigDecimal allProfit=reportDao.getDayProfit(acountid,null,null);
+        BigDecimal allProfit=reportDao.getDayProfit(acountid,endDateHis,tmDate);
+        if(allProfit==null){
+            allProfit=new BigDecimal(0);
+        }
+        allProfit=allProfit.add(hssstDealerHistory.getAllProfit());
+
         //待结算金额
          Optional<Account>  accountOptional=accountService.getById(acountid);
         BigDecimal duesettleAmount=accountOptional.get().getDueSettleAmount();
