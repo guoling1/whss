@@ -199,7 +199,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 final Date parseDate = DateFormatUtil.parse(DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
                 final AppStatisticsOrder statisticsOrder = statisticsOrderHashMap.get(parseDate);
                 jo.put("number", statisticsOrder.getNumber());
-                jo.put("totalAmount", null != statisticsOrder.getAmount() ? statisticsOrder.getAmount().toPlainString() : 0.00);
+                jo.put("totalAmount", null != statisticsOrder.getAmount() ? statisticsOrder.getAmount().toPlainString() : "0.00");
                 jo.put("refundStatus", order.getRefundStatus());
                 jo.put("refundStatusValue", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
                 if (EnumTradeType.PAY.getId() == order.getTradeType()) {
