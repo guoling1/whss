@@ -201,7 +201,7 @@ public class PushServiceImpl implements PushService {
      * @return
      */
     @Override
-    public Map pushCashMsg1(Long sid, String payChannel, Double amount, String code) {
+    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code) {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
@@ -227,7 +227,7 @@ public class PushServiceImpl implements PushService {
     }
 
     @Override
-    public String pushCashMsg(Long sid, String payChannel, Double amount, String code) {
+    public String pushCashMsg1(Long sid, String payChannel, Double amount, String code) {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
@@ -394,14 +394,14 @@ public class PushServiceImpl implements PushService {
         // PushProducer  push = new PushProducer();
 
 
-        //String ret= PushProducer.pushTransmissionMsg(1,"ios测试123456","1","7c26b6edb57421af16d0dafba23ea1eb",null);
+        Map ret= PushProducer.pushTransmissionMsgTask(1,"ios测试123456","1","86a8bca1f74ab42d9a7d119943bcdc1b",null);
 
 
         // String ret= PushProducer.pushNotificationMsg("title","ios测试","","3",null,null);
-
-        PushServiceImpl impl=new PushServiceImpl();
-
-        impl.pushTransmissionMsgTask(1,"测试","2","86a8bca1f74ab42d9a7d119943bcdc1b",null);
+//
+//        PushServiceImpl impl=new PushServiceImpl();
+//
+//        impl.pushTransmissionMsgTask(1,"测试","2","86a8bca1f74ab42d9a7d119943bcdc1b",null);
     }
 }
 
