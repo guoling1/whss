@@ -38,6 +38,11 @@ public class PushProducer {
 
 
 
+//    private static String appId = "ygse2nnwTp6CkuW0o2kxS3";
+//    private static String appKey = "44Ho1HGR5jAHmnLbcD2mb7";
+//    private static String masterSecret = "O1M2iE6dqI8lyBAsZwPRX1";
+//    private static String url = "http://sdk.open.api.igexin.com/apiex.htm";
+
 //    private static String appId = "IglbCXAlFFAbv0RJK64619";
 //    private static String appKey = "iqviYHBtLL8aEVvdB7QVn1";
 //    private static String masterSecret = "F7gCfOPvPu6HSY81gb8hR9";
