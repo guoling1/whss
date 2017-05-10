@@ -111,7 +111,22 @@
             </tr>
             <tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>
+                <!--<img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardf" alt="" v-if="$msg.idcardf!=null&&$msg.idcardf!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardf!=null&&$msg.idcardf!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>
@@ -205,16 +220,15 @@
             </el-table>
           </template>
         </div>
-        </div>
-
-        <el-dialog title="重新入网" v-model="isReenter" size="tiny">
+      </div>
+      <el-dialog title="重新入网" v-model="isReenter" size="tiny">
           <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
           <span slot="footer" class="dialog-footer">
             <el-button @click="isReenter = false">取 消</el-button>
             <el-button type="primary" @click="reenter">确 定</el-button>
           </span>
         </el-dialog>
-        <el-dialog title="驳回重填" v-model="isReject" size="tiny">
+      <el-dialog title="驳回重填" v-model="isReject" size="tiny">
           <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
           <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
           <span slot="footer" class="dialog-footer">
@@ -222,7 +236,6 @@
             <el-button type="primary" @click="reject">确 定</el-button>
           </span>
         </el-dialog>
-      </div>
       <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -270,6 +283,25 @@
           </table>
         </div>
       </div>
+      <el-dialog title="更换认证资料" v-model="isUpload">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="上传照片：" width="120" style="margin-bottom: 0">
+            <el-upload
+              class="upload-demo"
+              action="/admin/photoChange/savePhotoChang"
+              name="photo"
+              :data={merchantId:id,type:photoType}
+              :on-preview="handlePreview"
+              :on-success="handleSuccess"
+              :on-error="handleErr"
+              :on-remove="handleRemove"
+              :file-list="fileList">
+              <el-button id="btn" size="small" type="primary">点击上传</el-button>
+              <div style="position: absolute;top: 36px;left:-1px;width: 220px;height: 30px;background: #fff"></div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -281,24 +313,7 @@
     data () {
       return {
         id: '',
-        msg:{
-          id:'',
-          merchantName:'',
-          identity:'',
-          address:'',
-          bankNo:'',
-          mobile:'',
-          identityFacePic: '',
-          identityOppositePic: '',
-          identityHandPic: '',
-          bankHandPic: '',
-          proxyName1:'',
-          proxyName: '',
-          reserveMobile:'',
-          createTime:'',
-          proxyNameYQ:'',
-          proxyNameYQ1:'',
-        },
+        msg:{},
         isReenter:false,
         isReject:false,
         reason:'',
@@ -322,45 +337,69 @@
           product:'--',
           msg:'--',
           proMsg:''
-        }]
+        }],
+        isUpload: false,
+        photoType:'',
       }
     },
     created: function () {
-      this.$data.id = this.$route.query.id;
+      this.id = this.$route.query.id;
       this.status = this.$route.query.status;
       if(this.$route.query.status !=2){
-        this.$data.isShow = false;
+        this.isShow = false;
       }
-      this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
-        .then(function (res) {
-          this.$data.msg = res.data.res;
-          this.$data.res = res.data.list;
-          if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
-            this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
-          }
-          if(res.data.res.alipayRate!=null&&res.data.res.alipayRate!=''&&res.data.res.alipayRate!=0){
-            this.tableData[0].rate = parseFloat(res.data.res.alipayRate * 100).toFixed(2) + '%';
-          }
-          this.tableData[0].product = this.tableData[1].product = res.data.res.hxbOpenProduct;
-          this.tableData[0].status = this.tableData[1].status = res.data.res.hxbStatus;
-          this.tableData[0].msg = this.tableData[1].msg = res.data.res.hxbRemarks;
-          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenProductRemarks;
-
-        },function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
-
+      this.getData();
     },
     methods: {
+      getData: function () {
+        this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.id})
+          .then(function (res) {
+            this.msg = res.data.res;
+            this.res = res.data.list;
+            if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
+              this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
+            }
+            if(res.data.res.alipayRate!=null&&res.data.res.alipayRate!=''&&res.data.res.alipayRate!=0){
+              this.tableData[0].rate = parseFloat(res.data.res.alipayRate * 100).toFixed(2) + '%';
+            }
+            this.tableData[0].product = this.tableData[1].product = res.data.res.hxbOpenProduct;
+            this.tableData[0].status = this.tableData[1].status = res.data.res.hxbStatus;
+            this.tableData[0].msg = this.tableData[1].msg = res.data.res.hxbRemarks;
+            this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenProductRemarks;
+
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      changePhoto: function (val) {
+        this.photoType = val;
+        this.isUpload = true
+      },
+      handleSuccess: function (response, file, fileList) {
+        this.$message({
+          showClose: true,
+          message: '上传成功',
+          type: 'success'
+        });
+        this.isUpload = false;
+        this.getData()
+      },
+      handleErr:function (err) {
+        this.$message({
+          showClose: true,
+          message: '上传失败',
+          type: 'error'
+        });
+      },
       // 重新入网
       reenter:function () {
         this.$http.post('/admin/hsyMerchantAudit/reenter', {
-          shopId: this.$data.id,//店铺编码
-          userId: this.$data.msg.uid,//商户编码
+          shopId: this.id,//店铺编码
+          userId: this.msg.uid,//商户编码
         }).then(function (res) {
           this.isReenter = false;
           this.$message({
@@ -380,8 +419,8 @@
       // 驳回
       reject:function () {
         this.$http.post('/admin/hsyMerchantAudit/reject', {
-          id: this.$data.id,
-          uid: this.$data.msg.uid,
+          id: this.id,
+          uid: this.msg.uid,
         }).then(function (res) {
           this.isReject = false;
           this.$message({
@@ -400,10 +439,10 @@
       },
       audit: function (event) {
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
-          id: this.$data.id,
-          uid: this.$data.msg.uid,
+          id: this.id,
+          uid: this.msg.uid,
           name: this.msg.name,
-          checkErrorInfo: this.$data.reason,
+          checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -419,10 +458,10 @@
       },
       unAudit: function () {
         this.$http.post('/admin/hsyMerchantAudit/rejectToExamine', {
-          id: this.$data.id,
-          uid: this.$data.msg.uid,
+          id: this.id,
+          uid: this.msg.uid,
           name: this.msg.name,
-          checkErrorInfo: this.$data.reason,
+          checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
         })
           .then(function (res) {
@@ -449,6 +488,11 @@
         document.getElementById('mask').style.display='none'
       }
     },
+    computed:{
+      $msg:function () {
+        return this.msg
+      }
+    },
     filters: {
       status: function (val) {
         val = Number(val)
@@ -464,26 +508,6 @@
           val="审核未通过"
         }
         return val;
-      },
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
       },
       changeDeal: function (val) {
         return val=val?val:'无'
