@@ -5,7 +5,7 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_push_message_record
         (
-        pid,
+        id,
         title,
         content,
         temp_type,
