@@ -39,4 +39,5 @@ public interface HsyShopDao {
     public Integer findBankBranchListByPageCount(AppBizBankBranch entity);
     public List<AppBizBankBranch> findBankListByPage(Page<AppBizBankBranch> entity);
     public Integer findBankListByPageCount(AppBizBankBranch entity);
+    public List<AppBizShop> findShopListByUID(@Param("uid")Long uid);
 }

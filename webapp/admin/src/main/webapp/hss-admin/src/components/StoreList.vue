@@ -318,13 +318,17 @@
         this.loading = true;
         this.$http.post('/admin/query/getAll',this.queryHss)
           .then(function (res) {
-            this.loading = false;
-            this.$data.recordsHss = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.recordsHss = res.data.records;
+            },1000)
             this.$data.countHss = res.data.count;
             this.$data.totalHss = res.data.totalPage;
             this.$data.loadUrlHss = res.data.ext;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -336,13 +340,17 @@
         this.loading = true;
         this.$http.post('/admin/hsyMerchantList/getMerchantList',this.queryHsy)
           .then(function (res) {
-            this.$data.loading = false;
-            this.$data.recordsHsy = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.recordsHsy = res.data.records;
+            },1000)
             this.$data.countHsy = res.data.count;
             this.$data.totalHsy = res.data.totalPage;
             this.$data.loadUrlHsy = res.data.ext;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -355,7 +363,9 @@
         this.loading = true;
         this.$http.get('/admin/merchantIn/update')
           .then(res => {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: '同步成功',
@@ -363,7 +373,9 @@
             });
           })
           .catch(err => {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

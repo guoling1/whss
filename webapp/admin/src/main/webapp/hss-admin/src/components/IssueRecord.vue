@@ -5,6 +5,7 @@
         <div class="box-header">
           <h3 class="box-title">二维码分配记录</h3>
           <a @click="_$power(issue,'boss_qr_code_distribute')" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</a>
+          <a @click="revoke" class="pull-right btn btn-primary" style="margin-left: 20px">撤回二维码</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -89,22 +90,12 @@
       }
     },
     created: function () {
-      this.$http.post('/admin/user/distributeRecord',this.$data.query)
-        .then(function (res) {
-          this.$data.loading = false;
-          this.$data.records   = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-        }, function (err) {
-          this.$data.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      this.getData();
     },
     methods: {
+      revoke: function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/codeRevoke')
+      },
       reset: function () {
         this.query = {
           pageNo:1,
@@ -115,6 +106,27 @@
           firstName:"",
           type:"0"
         };
+      },
+      getData: function () {
+        this.loading = true;
+        this.$http.post('/admin/user/distributeRecord',this.query)
+          .then(function (res) {
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records   = res.data.records;
+            },1000)
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+          }, function (err) {
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/issue')
@@ -144,46 +156,15 @@
       },
       search(){
         this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$http.post('/admin/user/distributeRecord',this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
-        this.$data.loading = true;
         this.$data.records = '';
-        this.$http.post('/admin/user/distributeRecord',this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData();
       },
-    },
-    watch:{
-
-    },
+    }
   }
 </script>
 <style scoped lang="less">

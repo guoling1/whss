@@ -411,7 +411,8 @@
           id: this.$data.id,
           uid: this.$data.msg.uid,
           name: this.msg.name,
-          checkErrorInfo: this.$data.reason
+          checkErrorInfo: this.$data.reason,
+          cellphone: this.msg.cellphone,
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'
@@ -429,7 +430,8 @@
           id: this.$data.id,
           uid: this.$data.msg.uid,
           name: this.msg.name,
-          checkErrorInfo: this.$data.reason
+          checkErrorInfo: this.$data.reason,
+          cellphone: this.msg.cellphone,
         })
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {

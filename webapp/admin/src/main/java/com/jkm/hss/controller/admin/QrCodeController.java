@@ -9,6 +9,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.QRCodeUtil;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.entity.RevokeQrCodeRecord;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.helper.requestparam.DownLoadQrCodeRequest;
@@ -20,12 +21,17 @@ import com.jkm.hss.admin.helper.responseparam.QrCodeDetailResponse;
 import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.admin.service.RevokeQrCodeRecordService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.ProductionQrCodeRequest;
+import com.jkm.hss.helper.request.RevokeQrCodeRequest;
 import com.jkm.hss.helper.response.ProductionQrCodeResponse;
+import com.jkm.hss.helper.response.RevokeQrCodeResponse;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
+import com.jkm.hss.merchant.enums.EnumPlatformType;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +71,9 @@ public class QrCodeController extends BaseController {
 
     @Autowired
     private ProductionQrCodeRecordService productionQrCodeRecordService;
+
+    @Autowired
+    private RevokeQrCodeRecordService revokeQrCodeRecordService;
 
     /**
      * 产码
@@ -232,5 +241,51 @@ public class QrCodeController extends BaseController {
         URL downloadUrl = ossClient.generatePresignedUrl("jkm-file", fileName, expireDate);
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "下载成功")
                 .addParam("url", "http://"+downloadUrl.getHost() + downloadUrl.getFile()).build();
+    }
+
+
+    /**
+     * 回收二维码
+     * @param revokeQrCodeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/revokeQrCode", method = RequestMethod.POST)
+    public CommonResponse revokeQrCode (@RequestBody RevokeQrCodeRequest revokeQrCodeRequest) {
+        if(revokeQrCodeRequest.getSysType()==null||"".equals(revokeQrCodeRequest.getSysType())){
+            return CommonResponse.simpleResponse(-1, "请选择产品类型");
+        }
+        if(revokeQrCodeRequest.getStartCode()==null||"".equals(revokeQrCodeRequest.getStartCode())){
+            return CommonResponse.simpleResponse(-1, "请填写开始码段");
+        }
+        if(revokeQrCodeRequest.getEndCode()==null||"".equals(revokeQrCodeRequest.getEndCode())){
+            return CommonResponse.simpleResponse(-1, "请填写结束码段");
+        }
+        Optional<Product> productOptional = productService.selectByType(revokeQrCodeRequest.getSysType());
+        if(!productOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "请选择产品");
+        }
+        if((Long.parseLong(revokeQrCodeRequest.getEndCode())-Long.parseLong(revokeQrCodeRequest.getStartCode()))<0){
+            return CommonResponse.simpleResponse(-1, "结束码段必须大于开始码段");
+        }
+        long totalCount = qrCodeService.getRevokeTotalCount(revokeQrCodeRequest.getSysType(),revokeQrCodeRequest.getStartCode(),revokeQrCodeRequest.getEndCode());
+        long resultCount = qrCodeService.revokeQrCode(revokeQrCodeRequest.getSysType(),revokeQrCodeRequest.getStartCode(),revokeQrCodeRequest.getEndCode());
+        RevokeQrCodeRecord revokeQrCodeRecord = new RevokeQrCodeRecord();
+        revokeQrCodeRecord.setStartCode(revokeQrCodeRequest.getStartCode());
+        revokeQrCodeRecord.setEndCode(revokeQrCodeRequest.getEndCode());
+        revokeQrCodeRecord.setSysType(revokeQrCodeRequest.getSysType());
+        revokeQrCodeRecord.setStatus(EnumCommonStatus.NORMAL.getId());
+        revokeQrCodeRecord.setFailCount(totalCount-resultCount);
+        revokeQrCodeRecord.setSuccessCount(resultCount);
+        revokeQrCodeRecord.setOperatorId(1);
+        revokeQrCodeRecord.setPlatformType(EnumPlatformType.BOSS.getId());
+        revokeQrCodeRecordService.add(revokeQrCodeRecord);
+        RevokeQrCodeResponse revokeQrCodeResponse = new RevokeQrCodeResponse();
+        revokeQrCodeResponse.setStartCode(revokeQrCodeRequest.getStartCode());
+        revokeQrCodeResponse.setEndCode(revokeQrCodeRequest.getEndCode());
+        revokeQrCodeResponse.setSuccessCount(revokeQrCodeRecord.getSuccessCount());
+        revokeQrCodeResponse.setFailCount(revokeQrCodeRecord.getFailCount());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "回收二维码成功",revokeQrCodeResponse);
+
     }
 }

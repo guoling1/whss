@@ -1365,7 +1365,12 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENT_FAIL.getId()){
             log.info("商户入网失败");
-            return CommonResponse.simpleResponse(-1, "商户入网失败");
+            if(merchantChannelRate.getRemarks()!=null&&merchantChannelRate.getRemarks().contains("重复")){
+                return CommonResponse.simpleResponse(-1, "底层通道检测到您为重复入网，请使用其他通道");
+            }else{
+                return CommonResponse.simpleResponse(-1, "入网失败，请使用其他通道");
+            }
+
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
@@ -1374,7 +1379,11 @@ public class WxPubController extends BaseController {
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
             log.info("商户需入网");
             JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getAccountId(),merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
-            return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+            if(jo.getInt("code")==-1&&jo.getString("msg")!=null&&!"".equals(jo.getString("msg"))&&jo.getString("msg").contains("重复")){
+                return CommonResponse.simpleResponse(-1, "底层通道检测到您为重复入网，请使用其他通道");
+            }else{
+                return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+            }
         }
         return null;
     }

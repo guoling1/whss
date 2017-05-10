@@ -96,6 +96,13 @@ http.post('/channel/list', {}, function (list) {
     time.className = 'channel-con small';
     time.innerHTML = list[i].settleType;
     let fee = document.createElement('div');
+    // 是否显示推荐
+    if (list[i].recommend == 1) {
+      // 展示  推荐
+      let recommend = document.createElement('span');
+      recommend.className = 'recommend';
+      name.appendChild(recommend);
+    }
     // 5月活动
     if (list[i].channelSign == 601) {
       let now = new Date().getTime();
