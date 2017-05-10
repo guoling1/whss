@@ -66,6 +66,6 @@ public class V1BizMapper {
 		/**交易详情*/
 		bizMapper.put("HSY001045", new String[]{"hsyTradeService", "appOrderDetail"});
 		/**交易记录-version1.5*/
-		bizMapper.put("HSY001046", new String[]{"hsyTradeService", "tradeList"});
+		bizMapper.put("HSY001046", new String[]{"hsyTradeService", "tradeList1"});
 	}
 }
