@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.HttpClientPost;
+import com.jkm.hss.account.entity.MemberAccount;
+import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderRequest;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
@@ -12,7 +14,6 @@ import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.PlaceOrderParams;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.service.OrderService;
-import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private MemberAccountService memberAccountService;
     /**
      * {@inheritDoc}
      *
@@ -112,11 +115,17 @@ public class BaseTradeServiceImpl implements BaseTradeService {
      * {@inheritDoc}
      *
      * @param receiptMemberMoneyAccountId  商户收会员款账户id
-     * @param order 此时，order对象中的payer是会员账户id
+     * @param order 此时，order对象中的payer是会员账户id;payee是商户基础账户的id
      */
     @Override
     @Transactional
     public Pair<Integer, String> memberPayImpl(final long receiptMemberMoneyAccountId, final Order order) {
+        final MemberAccount memberAccount = this.memberAccountService.getByIdWithLock(order.getPayer()).get();
+        if (memberAccount.getAvailable().compareTo(order.getRealPayAmount()) < 0) {
+            return Pair.of(-1, "金额不足");
+        }
+        final MemberAccount updateMemberAccount = new MemberAccount();
+        updateMemberAccount.setId(order.getPayer());
 
 
         return null;
