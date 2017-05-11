@@ -173,4 +173,18 @@ public interface MerchantInfoQueryDao {
      * @param map
      */
     void saveHsyPhotoChang5(Map map);
+
+    /**
+     * 查询hsy历史
+     * @param request
+     * @return
+     */
+    List<HsyHistoryPhotoChangeResponse> selectHsyHistory(HistoryPhotoChangeRequest request);
+
+    /**
+     * 查询hsy历史总数
+     * @param request
+     * @return
+     */
+    int selectHsyHistoryCount(HistoryPhotoChangeRequest request);
 }

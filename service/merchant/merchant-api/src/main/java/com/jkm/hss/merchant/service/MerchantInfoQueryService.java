@@ -169,9 +169,16 @@ public interface MerchantInfoQueryService {
     void saveHsyPhotoChang5(String photoName, long sid);
 
     /**
-     * 查好hsy的
+     * 查好hsy的历史
      * @param request
      * @return
      */
     List<HsyHistoryPhotoChangeResponse> selectHsyHistory(HistoryPhotoChangeRequest request);
+
+    /**
+     * 查好hsy的历史总数
+     * @param request
+     * @return
+     */
+    int selectHsyHistoryCount(HistoryPhotoChangeRequest request);
 }

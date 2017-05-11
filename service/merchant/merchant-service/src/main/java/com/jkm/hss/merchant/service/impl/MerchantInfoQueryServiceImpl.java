@@ -261,6 +261,26 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     }
 
     @Override
+    public List<HsyHistoryPhotoChangeResponse> selectHsyHistory(HistoryPhotoChangeRequest request) {
+        List<HsyHistoryPhotoChangeResponse> list = this.merchantInfoQueryDao.selectHsyHistory(request);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int selectHsyHistoryCount(HistoryPhotoChangeRequest request) {
+        return this.merchantInfoQueryDao.selectHsyHistoryCount(request);
+    }
+
+    @Override
     public List<MerchantInfoResponse> getRecord(MerchantInfoRequest req) {
 
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(req);
