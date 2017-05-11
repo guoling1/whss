@@ -34,12 +34,8 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="recordsCom" border :row-style="tableFoot">
-                <el-table-column   width="100" label="序号">
-                  <template scope="scope">
-                    <span>{{scope.$index+1}}</span>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="recordsCom" border>
+                <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column label="收益日期">
                   <template scope="scope">
                     <span>{{scope.row.splitDate|changeDate}}</span>
@@ -53,8 +49,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDate}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细
-                    </router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDate}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -111,12 +106,8 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsFir" border :row-style="tableFoot">
-                <el-table-column   width="100" label="序号">
-                  <template scope="scope">
-                    <div>{{scope.$index+1}}</div>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsFir" border>
+                <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column prop="proxyName" label="代理商名称"></el-table-column>
                 <el-table-column prop="markCode" label="代理商编号"></el-table-column>
                 <el-table-column label="收益日期">
@@ -132,8 +123,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitFirDet',query:{type:recordsFir[scope.$index].businessType,id:recordsFir[scope.$index].receiptMoneyAccountId,time:recordsFir[scope.$index].splitDate}}" v-if="recordsFir[scope.$index].splitAmount!=0" type="text" size="small">明细
-                    </router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitFirDet',query:{type:recordsFir[scope.$index].businessType,id:recordsFir[scope.$index].receiptMoneyAccountId,time:recordsFir[scope.$index].splitDate}}" v-if="recordsFir[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -193,12 +183,8 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsSec" border :row-style="tableFoot">
-                <el-table-column   width="100" label="序号">
-                  <template scope="scope">
-                    <div>{{scope.$index+1}}</div>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsSec" border>
+                <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column prop="proxyName" label="上级代理商名称"></el-table-column>
                 <el-table-column prop="proxyName1" label="二级代理商名称"></el-table-column>
                 <el-table-column prop="markCode" label="代理编号"></el-table-column>
@@ -215,8 +201,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitSecDet',query:{type:recordsSec[scope.$index].businessType,id:recordsSec[scope.$index].receiptMoneyAccountId,time:recordsSec[scope.$index].splitDate}}" v-if="recordsSec[scope.$index].splitAmount!=0" type="text" size="small">明细
-                    </router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitSecDet',query:{type:recordsSec[scope.$index].businessType,id:recordsSec[scope.$index].receiptMoneyAccountId,time:recordsSec[scope.$index].splitDate}}" v-if="recordsSec[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -438,11 +423,11 @@
       },
       onload: function () {
         if(this.activeName == 'first'){
-          this.$data.loadUrl = this.loadUrlCom;
+          this.loadUrl = this.loadUrlCom;
         }else if(this.activeName == 'second'){
-          this.$data.loadUrl = this.loadUrlFir;
+          this.loadUrl = this.loadUrlFir;
         }else if(this.activeName == 'third'){
-          this.$data.loadUrl = this.loadUrlSec;
+          this.loadUrl = this.loadUrlSec;
         }
         this.$data.isMask = true;
       },
