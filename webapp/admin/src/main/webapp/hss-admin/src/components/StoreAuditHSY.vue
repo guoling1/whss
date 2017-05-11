@@ -98,6 +98,7 @@
       </div>
       <div class="box box-primary">
         <p class="lead">商户认证资料</p>
+        <el-button type="text" @click="toDet">认证资料历史</el-button>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -470,6 +471,10 @@
           type: 'error'
         });
       },
+      toDet:function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id);
+//        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
+      }
       // 重新入网
       reenter:function () {
         this.$http.post('/admin/hsyMerchantAudit/reenter', {
