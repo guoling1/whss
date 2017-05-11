@@ -124,8 +124,12 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         if (memberAccount.getAvailable().compareTo(order.getRealPayAmount()) < 0) {
             return Pair.of(-1, "金额不足");
         }
+        //会员账户额度变更
         final MemberAccount updateMemberAccount = new MemberAccount();
         updateMemberAccount.setId(order.getPayer());
+
+
+
 
 
         return null;
