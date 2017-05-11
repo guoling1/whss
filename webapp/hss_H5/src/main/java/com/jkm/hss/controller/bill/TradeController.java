@@ -767,4 +767,17 @@ public class TradeController extends BaseController {
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
     }
+
+
+    /**
+     * do not use
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "testT1Withdraw/{orderId}")
+    public CommonResponse testT1Withdraw(@PathVariable long orderId) {
+        this.orderService.t1WithdrawByOrderId(orderId);
+        return CommonResponse.simpleResponse(0, "success");
+    }
 }
