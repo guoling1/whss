@@ -4,10 +4,7 @@ import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.dao.MerchantInfoQueryDao;
-import com.jkm.hss.merchant.entity.HistoryPhotoChangeRequest;
-import com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoRequest;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -196,6 +193,71 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     @Override
     public int selectHistoryCount(HistoryPhotoChangeRequest request) {
         return this.merchantInfoQueryDao.selectHistoryCount(request);
+    }
+
+    @Override
+    public HsyHistoryPhotoChangeResponse getHsyPhoto(long sid) {
+        return this.merchantInfoQueryDao.getHsyPhoto(sid);
+    }
+
+    @Override
+    public void saveHsyHistory(long sid, String photo, int hsyType, String reasonDescription, String cardName, String operator) {
+        Map map = new HashMap();
+        map.put("sid",sid);
+        map.put("photo",photo);
+        map.put("hsyType",hsyType);
+        map.put("reasonDescription",reasonDescription);
+        map.put("cardName",cardName);
+        map.put("operator",operator);
+        this.merchantInfoQueryDao.saveHsyHistory(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang1(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang1(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang2(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang2(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang3(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang3(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang4(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang4(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang5(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang5(map);
     }
 
     @Override
