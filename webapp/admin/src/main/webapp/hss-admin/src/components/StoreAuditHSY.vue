@@ -204,7 +204,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID!=null&&$msg.indoorID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status!=1||$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -416,6 +416,7 @@
         }],
         isUpload: false,
         photoType:'',
+        fileList:[]
       }
     },
     created: function () {
@@ -461,6 +462,7 @@
           message: '上传成功',
           type: 'success'
         });
+        location.reload()
         this.isUpload = false;
         this.getData()
       },

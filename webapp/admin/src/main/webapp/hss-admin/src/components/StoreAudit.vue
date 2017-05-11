@@ -510,6 +510,7 @@
           message: '上传成功',
           type: 'success'
         });
+        location.reload()
         this.isUpload = false;
         this.getData()
       },
