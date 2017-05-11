@@ -1,12 +1,10 @@
 package com.jkm.hss.bill.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.ExcelUtil;
@@ -14,7 +12,6 @@ import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.SettleAccountFlow;
-import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.AccountFlowService;
@@ -24,17 +21,11 @@ import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.*;
-import com.jkm.hss.bill.helper.AppStatisticsOrder;
-import com.jkm.hss.bill.helper.PaymentSdkConstants;
-import com.jkm.hss.bill.helper.SdkSerializeUtil;
-import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
-import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
-import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
-import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -89,8 +80,6 @@ public class OrderServiceImpl implements OrderService {
     private WithdrawService withdrawService;
     @Autowired
     private PayService payService;
-    @Autowired
-    private HttpClientFacade httpClientFacade;
 
     /**
      * {@inheritDoc}
@@ -357,19 +346,6 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      *
      * @param id
-     * @param refundAmount
-     * @param refundStatus
-     * @return
-     */
-    @Override
-    public int updateRefundInfo(final long id, final BigDecimal refundAmount, final EnumOrderRefundStatus refundStatus) {
-        return this.orderDao.updateRefundInfo(id, refundAmount.toPlainString(), refundStatus.getId());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param id
      * @return
      */
     @Override
@@ -561,94 +537,52 @@ public class OrderServiceImpl implements OrderService {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param orderNo
-     * @return
-     */
-    @Override
-    public List<PaymentSdkQueryPayOrderByOrderNoResponse> queryPayOrderByOrderNo(final String orderNo) {
-
-        final PaymentSdkQueryPayOrderByOrderNoRequest paymentSdkQueryPayOrderByOrderNoRequest = new PaymentSdkQueryPayOrderByOrderNoRequest();
-        paymentSdkQueryPayOrderByOrderNoRequest.setOrderNo(orderNo);
-        try {
-            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_QUERY_PAY_ORDER_URL, SdkSerializeUtil.convertObjToMap(paymentSdkQueryPayOrderByOrderNoRequest));
-            final List<PaymentSdkQueryPayOrderByOrderNoResponse> responses = JSONArray.parseArray(content, PaymentSdkQueryPayOrderByOrderNoResponse.class);
-            return responses;
-        } catch (final Throwable e) {
-            log.error("查询网关异常");
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param refundOrderNo
-     * @return
-     */
-    @Override
-    public List<PaymentSdkQueryRefundOrderByOrderNoResponse> queryRefundOrderByOrderNo(final String refundOrderNo) {
-        final PaymentSdkQueryRefundOrderByOrderNoRequest paymentSdkQueryRefundOrderByOrderNoRequest = new PaymentSdkQueryRefundOrderByOrderNoRequest();
-        paymentSdkQueryRefundOrderByOrderNoRequest.setOrderNo(refundOrderNo);
-        try {
-            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_QUERY_REFUND_ORDER_URL, SdkSerializeUtil.convertObjToMap(paymentSdkQueryRefundOrderByOrderNoRequest));
-            final List<PaymentSdkQueryRefundOrderByOrderNoResponse> responses = JSONArray.parseArray(content, PaymentSdkQueryRefundOrderByOrderNoResponse.class);
-            return responses;
-        } catch (final Throwable e) {
-            log.error("查询网关异常");
-        }
-        return Collections.emptyList();
-    }
-
-
     @Override
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
 
-                if (list.getAppId().equals("hss")){
-                    String hss="好收收";
-                    list.setAppId(hss);
-                }
-                if (list.getAppId().equals("hsy")){
-                    String hsy="好收银";
-                    list.setAppId(hsy);
-                }
+            if (list.getAppId().equals("hss")){
+                String hss="好收收";
+                list.setAppId(hss);
+            }
+            if (list.getAppId().equals("hsy")){
+                String hsy="好收银";
+                list.setAppId(hsy);
+            }
 
-                if (list.getMobile()!=null&&!"".equals(list.getMobile())){
-                    list.setMobile(MerchantSupport.decryptMobile(list.getMobile()));
-                }
-                if (list.getBankNo()!=null&&!"".equals(list.getBankNo())){
-                    list.setBankNo(MerchantSupport.decryptBankCard(list.getBankNo()));
-                }
-                if (list.getReserveMobile()!=null&&!"".equals(list.getReserveMobile())){
-                    list.setReserveMobile(MerchantSupport.decryptMobile(list.getReserveMobile()));
-                }
-                if (list.getIdentity()!=null&&!"".equals(list.getIdentity())){
-                    list.setIdentity(MerchantSupport.decryptIdentity(list.getIdentity()));
-                }
+            if (list.getMobile()!=null&&!"".equals(list.getMobile())){
+                list.setMobile(MerchantSupport.decryptMobile(list.getMobile()));
+            }
+            if (list.getBankNo()!=null&&!"".equals(list.getBankNo())){
+                list.setBankNo(MerchantSupport.decryptBankCard(list.getBankNo()));
+            }
+            if (list.getReserveMobile()!=null&&!"".equals(list.getReserveMobile())){
+                list.setReserveMobile(MerchantSupport.decryptMobile(list.getReserveMobile()));
+            }
+            if (list.getIdentity()!=null&&!"".equals(list.getIdentity())){
+                list.setIdentity(MerchantSupport.decryptIdentity(list.getIdentity()));
+            }
+            if (list.getPayChannelSign()!=0) {
+                list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
+            }
+
+            if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                 if (list.getPayChannelSign()!=0) {
-                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
-                }
-
-                if (list.getPayType()!=null&&!list.getPayType().equals("")) {
-                    if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
-                    }
-
-                }
-                if (list.getLevel()==1){
-                    list.setProxyName(list.getProxyName());
-                }
-                if (list.getLevel()==2){
-                    list.setProxyName1(list.getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.getFirstLevelDealerId());
-                    list.setProxyName(proxyName);
+                    list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
                 }
 
             }
+            if (list.getLevel()==1){
+                list.setProxyName(list.getProxyName());
+            }
+            if (list.getLevel()==2){
+                list.setProxyName1(list.getProxyName());
+                String proxyName = dealerService.selectProxyName(list.getFirstLevelDealerId());
+                list.setProxyName(proxyName);
+            }
+
+        }
         return list;
     }
 
@@ -725,14 +659,11 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param accountId
      * @param appId
-     * @param payChannelSigns
-     * @param startTime
-     * @param endTime
      * @return
      */
     @Override
-    public long getOrderCountByParam(final long accountId, final String appId, final List<Integer> payChannelSigns, final Date startTime, final Date endTime) {
-        return this.orderDao.selectOrderCountByParam(accountId, appId, payChannelSigns, startTime, endTime);
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date date) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, date);
     }
 
     /**
@@ -745,9 +676,9 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<Order> getOrdersByParam(final long accountId, final String appId, final int offset,
-                                                final int count, final List<Integer> payChannelSigns, final Date startTime, final Date endTime) {
-        return this.orderDao.selectOrdersByParam(accountId, appId, offset, count, payChannelSigns, startTime, endTime);
+    public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
+                                                final int count, final Date date) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
     }
 
     /**
@@ -1128,9 +1059,9 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
                         list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
@@ -1272,46 +1203,9 @@ public class OrderServiceImpl implements OrderService {
         return this.orderDao.selectByAppParam(orderNos, offset, pageSize);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param accountId
-     * @param appId
-     * @param payChannelSigns
-     * @param sDate
-     * @param eDate
-     * @return
-     */
     @Override
-    public AppStatisticsOrder statisticsByParam(final long accountId, final String appId, final ArrayList<Integer> payChannelSigns,
-                                                final String sDate, final String eDate) {
-        return this.orderDao.statisticsByParam(accountId, appId, payChannelSigns, sDate, eDate);
-    }
-
-    @Override
-    public String getRefundOrder(String orderNo) {
-        return this.orderDao.getRefundOrder(orderNo);
-    }
-
-    @Override
-    public List<ProfitRefundResponse> getProfitRefundList(String orderNo) {
-        List<ProfitRefundResponse> list = this.orderDao.getProfitRefundList(orderNo);
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if(list.size()>0){
-            for (int i=0;i<list.size();i++){
-                if (list.get(i).getSplitDate()!= null && !"".equals(list.get(i).getSplitDate())){
-                    String st = df.format(list.get(i).getSplitDate());
-                    list.get(i).setSplitDates(st);
-                }
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo) {
-        List<SplitAccountRefundRecord> list = this.orderDao.splitAccountRefundList(orderNo);
-        return list;
+    public void save(GeTuiResponse geTuiResponse) {
+        this.orderDao.save(geTuiResponse);
     }
 
 
