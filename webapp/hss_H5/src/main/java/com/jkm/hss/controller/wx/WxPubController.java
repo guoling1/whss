@@ -539,12 +539,17 @@ public class WxPubController extends BaseController {
                                         merchantChannelRate.setProductId(productId);
                                         merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                         merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
-                                        Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,dealerChannelRateList.get(i).getChannelTypeSign());
-                                        if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
-                                            merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                        if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                            Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,dealerChannelRateList.get(i).getChannelTypeSign());
+                                            if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                                merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                            }else{
+                                                merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                            }
                                         }else{
                                             merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
                                         }
+
                                         merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
 
                                         Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
@@ -581,7 +586,16 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
-                                merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                    Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,productChannelDetailList.get(i).getChannelTypeSign());
+                                    if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                        merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                    }else{
+                                        merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                    }
+                                }else{
+                                    merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                }
                                 merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
                                 Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 if(!basicChannelOptionalTemp.isPresent()){
@@ -661,7 +675,18 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
-                                merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+
+                                if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                    Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,dealerChannelRateList.get(i).getChannelTypeSign());
+                                    if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                        merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                    }else{
+                                        merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                    }
+                                }else{
+                                    merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                }
+//                                merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
                                 merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
                                 Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                 if(!basicChannelOptionalTemp.isPresent()){
@@ -727,7 +752,16 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
-                                merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                    Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,productChannelDetailList.get(i).getChannelTypeSign());
+                                    if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                        merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                    }else{
+                                        merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                    }
+                                }else{
+                                    merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                }
                                 merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
                                 Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 if(!basicChannelOptionalTemp.isPresent()){
