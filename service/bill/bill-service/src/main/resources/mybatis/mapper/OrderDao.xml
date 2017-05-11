@@ -1228,6 +1228,28 @@
         AND checked_status = 1
     </select>
 
+    <select id="selectPageOrdersCountByAccountId" resultType="java.lang.Long">
+        SELECT COUNT(0) FROM tb_order
+        WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
+        AND app_id = #{appId}
+        AND status in (4, 6)
+        <if test="date != null">
+            AND create_time &lt;= #{date}
+        </if>
+    </select>
+
+    <select id="selectPageOrdersByAccountId" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order
+        WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
+        AND app_id = #{appId}
+        AND status in (4, 6)
+        <if test="date != null">
+            AND create_time &lt;= #{date}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
+
     <select id="selectOrderCountByParam" resultType="java.lang.Long">
         SELECT COUNT(0) FROM tb_order
         WHERE ((trade_type = 1 and payee = #{accountId}) or (trade_type = 3 and payer = #{accountId}))
