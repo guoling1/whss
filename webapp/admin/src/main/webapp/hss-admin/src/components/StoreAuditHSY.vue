@@ -129,19 +129,94 @@
                 </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardb" alt="" v-if="$msg.idcardb!=null&&$msg.idcardb!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardb!=null&&$msg.idcardb!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.licenceID!=null&&$msg.licenceID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.storefrontID" alt="" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.counterID" alt="" v-if="$msg.counterID!=null&&$msg.counterID!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.counterID!=null&&$msg.counterID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID!=null&&$msg.indoorID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
             </tr>
             </tbody>
