@@ -54,7 +54,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="isClear">
               </el-date-picker>
             </li>
             <li class="same">
@@ -197,8 +197,19 @@
   import Clipboard from "clipboard"
   export default{
     name: 'deal',
+    props:{
+      userProp:{
+        type:String
+      }
+    },
     data(){
       return {
+        isClear:false,
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         query:{
           page:1,
           size:10,

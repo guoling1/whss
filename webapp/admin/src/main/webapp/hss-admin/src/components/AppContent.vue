@@ -74,7 +74,7 @@ export default {
         >
           <span slot="label">{{item.title}}<i class="el-icon-circle-cross" @click.stop="removeTab(item.url)" style="margin-left: 8px;color: #a09e9e"></i></span>
           <keep-alive>
-            <router-view></router-view>
+            <router-view :user-prop=editableTabsValue2></router-view>
           </keep-alive>
 
         </el-tab-pane>
