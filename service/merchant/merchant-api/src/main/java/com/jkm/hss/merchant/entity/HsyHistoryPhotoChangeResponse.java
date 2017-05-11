@@ -23,9 +23,9 @@ public class HsyHistoryPhotoChangeResponse {
     private String indoorID;//室内ID
 
     /**
-     * 商户id
+     * hsy店铺id
      */
-    private long merchantId;
+    private long sid;
 
     /**
      * 照片
@@ -37,6 +37,12 @@ public class HsyHistoryPhotoChangeResponse {
      *
      */
     private int type;
+
+    /**
+     * hsy类型
+     *
+     */
+    private int hsyType;
 
     /**
      * 原因描述

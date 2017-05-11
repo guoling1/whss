@@ -15,6 +15,11 @@ public class HistoryPhotoChange extends BaseEntity {
     private long merchantId;
 
     /**
+     * hsy店铺id
+     */
+    private long sid;
+
+    /**
      * 照片
      */
     private String photo;
@@ -24,6 +29,12 @@ public class HistoryPhotoChange extends BaseEntity {
      *
      */
     private int type;
+
+    /**
+     * hsy类型
+     *
+     */
+    private int hsyType;
 
     /**
      * 原因描述

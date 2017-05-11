@@ -189,9 +189,9 @@ public class PhotoChangeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/selectHsyHistory", method = RequestMethod.POST)
     public CommonResponse selectHsyHistory(@RequestBody HistoryPhotoChangeRequest request) {
-        final PageModel<HistoryPhotoChangeResponse> pageModel = new PageModel<HistoryPhotoChangeResponse>(request.getPageNo(), request.getPageSize());
+        final PageModel<HsyHistoryPhotoChangeResponse> pageModel = new PageModel<HsyHistoryPhotoChangeResponse>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
-        List<HistoryPhotoChangeResponse> list = merchantInfoQueryService.selectHistory(request);
+        List<HsyHistoryPhotoChangeResponse> list = merchantInfoQueryService.selectHsyHistory(request);
         if (list!=null&&list.size()>0) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getPohto() != null && !"".equals(list.get(i).getPohto())) {
@@ -203,7 +203,7 @@ public class PhotoChangeController extends BaseController {
                 }
             }
         }
-        int count = merchantInfoQueryService.selectHistoryCount(request);
+        int count = merchantInfoQueryService.selectHsyHistoryCount(request);
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1,"success",pageModel);
