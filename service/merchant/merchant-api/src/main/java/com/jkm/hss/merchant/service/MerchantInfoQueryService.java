@@ -1,9 +1,6 @@
 package com.jkm.hss.merchant.service;
 
-import com.jkm.hss.merchant.entity.HistoryPhotoChangeRequest;
-import com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoRequest;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.*;
 
 import java.util.List;
 
@@ -111,6 +108,63 @@ public interface MerchantInfoQueryService {
      */
     int selectHistoryCount(HistoryPhotoChangeRequest request);
 
+    /**
+     * 根据店铺id查询原来的照片
+     * @param sid
+     * @return
+     */
+    HsyHistoryPhotoChangeResponse getHsyPhoto(long sid);
 
+    /**
+     * 保存hsy历史照片
+     * @param sid
+     * @param photo
+     * @param hsyType
+     * @param reasonDescription
+     * @param cardName
+     * @param operator
+     */
+    void saveHsyHistory(long sid, String photo, int hsyType, String reasonDescription, String cardName, String operator);
 
+    /**
+     * 更改或上传身份证正面
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang(String photoName, long sid);
+
+    /**
+     * 更改或上传身份证反面
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang1(String photoName, long sid);
+
+    /**
+     * 更改或上传营业执照
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang2(String photoName, long sid);
+
+    /**
+     * 更改或上传店面照片
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang3(String photoName, long sid);
+
+    /**
+     * 更改或上传收银台
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang4(String photoName, long sid);
+
+    /**
+     * 更改或上传室内照片
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang5(String photoName, long sid);
 }
