@@ -48,6 +48,9 @@ public class Push extends BaseEntity {
      */
     private String targets;
 
-
+    /**
+     * 任务id
+     */
+    private String taskId;
 
 }
