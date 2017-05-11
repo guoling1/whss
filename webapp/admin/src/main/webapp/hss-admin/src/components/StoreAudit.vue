@@ -510,6 +510,7 @@
           message: '上传成功',
           type: 'success'
         });
+        location.reload()
         this.isUpload = false;
         this.getData()
       },
@@ -665,7 +666,7 @@
         document.getElementById('mask').style.display = 'none'
       },
       toDet:function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id);
+        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id+'&type=hss');
 //        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
       }
     },
