@@ -115,10 +115,10 @@
                 <!--<img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardf" alt="" v-if="$msg.idcardf!=null&&$msg.idcardf!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardf!=null&&$msg.idcardf!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:4}
+                           :data={sid:id,hsyType:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -133,10 +133,10 @@
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardb" alt="" v-if="$msg.idcardb!=null&&$msg.idcardb!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardb!=null&&$msg.idcardb!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:4}
+                           :data={sid:id,hsyType:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -151,10 +151,10 @@
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.licenceID!=null&&$msg.licenceID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:4}
+                           :data={sid:id,hsyType:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -169,10 +169,10 @@
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.storefrontID" alt="" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:4}
+                           :data={sid:id,hsyType:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -187,10 +187,10 @@
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.counterID" alt="" v-if="$msg.counterID!=null&&$msg.counterID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.counterID!=null&&$msg.counterID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:4}
+                           :data={sid:id,hsyType:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -205,10 +205,10 @@
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID!=null&&$msg.indoorID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:4}
+                           :data={sid:id,hsyType:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
