@@ -12,11 +12,6 @@ public enum EnumUpperChannel {
     /**
      * 扫米
      */
-    MEMBER(0, "MEMBER", "会员卡"),
-
-    /**
-     * 扫米
-     */
     SAOMI(1, "SM", "扫米"),
 
     /**
@@ -52,7 +47,12 @@ public enum EnumUpperChannel {
     /**
      * 收银家
      */
-    SYJ(8, "SYJ", "收银家")
+    SYJ(8, "SYJ", "收银家"),
+
+    /**
+     * 会员卡
+     */
+    MEMBER(9, "MEMBER", "会员卡")
     ;
 
     @Getter

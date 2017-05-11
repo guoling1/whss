@@ -1,8 +1,11 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
+import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PayParams;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
@@ -16,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by yulong.zhang on 2017/5/2.
@@ -109,8 +113,9 @@ public class TradeServiceImpl implements TradeService {
         this.orderService.add(order);
         if (payParams.getMemberCardPay()) {
             //从卡扣钱
-            return null;
+            return this.baseTradeService.memberPayImpl(payParams.getReceiptMemberMoneyAccountId(), order.getId());
         } else {
+            //获取支付url
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()
                     .merchantNo(payParams.getMerchantNo())
                     .returnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId())
@@ -126,6 +131,31 @@ public class TradeServiceImpl implements TradeService {
             final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
             return this.baseTradeService.handlePlaceOrderResult(paymentSdkPlaceOrderResponse, payParams.getMerchantPayType(), order);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> handlePayOrRechargeCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
+        log.info("交易单[{}], 处理回调");
+        final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
+        final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
+        Preconditions.checkState(orderOptional.isPresent(), "交易订单[{}]不存在", orderNo);
+        if (orderOptional.get().isDuePay() || orderOptional.get().isPaying()) {
+            final Order order = this.orderService.getByIdWithLock(orderOptional.get().getId()).get();
+            if (order.isDuePay() || order.isPaying()) {
+//                this.handlePayCallbackMsgImpl(paymentSdkPayCallbackResponse, order);
+            }
+        }
+
+
+
+        return null;
     }
 
     @Override

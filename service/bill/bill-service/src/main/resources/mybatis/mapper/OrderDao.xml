@@ -78,35 +78,86 @@
 
     <update id="update">
         UPDATE tb_order
-        SET
-        order_no = #{orderNo},
-        sn = #{sn},
-        trade_amount = #{tradeAmount},
-        real_pay_amount = #{realPayAmount},
-        trade_type = #{tradeType},
-        payer = #{payer},
-        payee = #{payee},
-        pay_account = #{payAccount},
-        pay_account_type = #{payAccountType},
-        pay_type = #{payType},
-        pay_success_time = #{paySuccessTime},
-        poundage = #{poundage},
-        pay_rate = #{payRate},
-        goods_name = #{goodsName},
-        goods_describe = #{goodsDescribe},
-        settle_status = #{settleStatus},
-        settle_time = #{settleTime},
-        success_settle_time = #{successSettleTime},
-        pay_channel_sign = #{payChannelSign},
-        bank_trade_no = #{bankTradeNo},
-        trade_card_no = #{tradeCardNo},
-        trade_card_type = #{tradeCardType},
-        wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
-        pay_info = #{payInfo},
-        pay_salt = #{paySalt},
-        pay_sign = #{paySign},
-        remark = #{remark},
-        status = #{status}
+        <set>
+            <if test="orderNo != null and orderNo != ''">
+                order_no = #{orderNo},
+            </if>
+            <if test="sn != null and sn != ''">
+                sn = #{sn},
+            </if>
+            <if test="tradeAmount != null">
+                trade_amount = #{tradeAmount},
+            </if>
+            <if test="realPayAmount != null">
+                real_pay_amount = #{realPayAmount},
+            </if>
+            <if test="tradeType > 0">
+                trade_type = #{tradeType},
+            </if>
+            <if test="payer > 0">
+                payer = #{payer},
+            </if>
+            <if test="payee > 0">
+                payee = #{payee},
+            </if>
+            <if test="payAccount != null and payAccount != ''">
+                pay_account = #{payAccount},
+            </if>
+            <if test="payAccountType > 0">
+                pay_account_type = #{payAccountType},
+            </if>
+            <if test="payType != null and payType != ''">
+                pay_type = #{payType},
+            </if>
+            <if test="paySuccessTime != null">
+                pay_success_time = #{paySuccessTime},
+            </if>
+            <if test="poundage != null">
+                poundage = #{poundage},
+            </if>
+            <if test="payRate != null">
+                pay_rate = #{payRate},
+            </if>
+            <if test="settleStatus > 0">
+                settle_status = #{settleStatus},
+            </if>
+            <if test="settleTime != null">
+                settle_time = #{settleTime},
+            </if>
+            <if test="successSettleTime != null">
+                success_settle_time = #{successSettleTime},
+            </if>
+            <if test="payChannelSign > 0">
+                pay_channel_sign = #{payChannelSign},
+            </if>
+            <if test="bankTradeNo != null and bankTradeNo != ''">
+                bank_trade_no = #{bankTradeNo},
+            </if>
+            <if test="tradeCardNo != null and tradeCardNo != ''">
+                trade_card_no = #{tradeCardNo},
+            </if>
+            <if test="tradeCardType > -1">
+                trade_card_type = #{tradeCardType},
+            </if>
+            <if test="wechatOrAlipayOrderNo != null and wechatOrAlipayOrderNo != ''">
+                wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
+            </if>
+            <if test="payInfo != null and payInfo != ''">
+                pay_info = #{payInfo},
+            </if>
+            <if test="paySalt != null and paySalt != ''">
+                pay_salt = #{paySalt},
+            </if>
+            <if test="paySign != null and paySign != ''">
+                pay_sign = #{paySign},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="status > 0">
+                status = #{status}
+            </if>
+        </set>
         WHERE id = #{id}
     </update>
 

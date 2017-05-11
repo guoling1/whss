@@ -23,4 +23,12 @@ public interface ReceiptMemberMoneyAccountFlowDao {
      * @return
      */
     ReceiptMemberMoneyAccountFlow selectById(@Param("id") long id);
+
+    /**
+     * 按流水号查询
+     *
+     * @param flowNo
+     * @return
+     */
+    int selectCountByFlowNo(@Param("flowNo") String flowNo);
 }

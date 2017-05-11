@@ -31,7 +31,12 @@
         #{status}
         )
     </insert>
+
     <select id="selectById" resultType="com.jkm.hss.account.entity.MemberAccountFlow">
         SELECT * FROM tb_member_account_flow WHERE id = #{id}
+    </select>
+
+    <select id="selectCountByFlowNo" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_member_account_flow WHERE flow_no = #{flowNo}
     </select>
 </mapper>

@@ -22,4 +22,11 @@ public interface MemberAccountFlowService {
      * @return
      */
     Optional<MemberAccountFlow> selectById(long id);
+
+    /**
+     * 获得流水号
+     *
+     * @return
+     */
+    String getFlowNo();
 }

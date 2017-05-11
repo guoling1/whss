@@ -22,4 +22,11 @@ public interface ReceiptMemberMoneyAccountFlowService {
      * @return
      */
     Optional<ReceiptMemberMoneyAccountFlow> getById(long id);
+
+    /**
+     * 获得流水号
+     *
+     * @return
+     */
+    String getFlowNo();
 }

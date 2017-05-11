@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service.impl;
 
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
+import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.helper.PlaceOrderParams;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import org.apache.commons.lang3.tuple.Pair;
@@ -34,7 +35,15 @@ public interface BaseTradeService {
      * 会员付款实现
      *
      * @param receiptMemberMoneyAccountId
-     * @param order
+     * @param orderId
      */
-    Pair<Integer, String> memberPayImpl(long receiptMemberMoneyAccountId, Order order);
+    Pair<Integer, String> memberPayImpl(long receiptMemberMoneyAccountId, long orderId);
+
+    /**
+     *
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param orderId
+     */
+    void handlePayOrRechargeCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final long orderId);
 }

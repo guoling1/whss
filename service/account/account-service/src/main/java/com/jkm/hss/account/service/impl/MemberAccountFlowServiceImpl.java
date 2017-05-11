@@ -1,6 +1,7 @@
 package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.MemberAccountFlowDao;
 import com.jkm.hss.account.entity.MemberAccountFlow;
 import com.jkm.hss.account.sevice.MemberAccountFlowService;
@@ -39,5 +40,19 @@ public class MemberAccountFlowServiceImpl implements MemberAccountFlowService {
     @Override
     public Optional<MemberAccountFlow> selectById(final long id) {
         return Optional.fromNullable(this.memberAccountFlowDao.selectById(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public String getFlowNo() {
+        final String flowNo = SnGenerator.generateFlowSn();
+        if (this.memberAccountFlowDao.selectCountByFlowNo(flowNo) == 0) {
+            return flowNo;
+        }
+        return this.getFlowNo();
     }
 }

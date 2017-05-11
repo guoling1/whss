@@ -1,6 +1,7 @@
 package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.ReceiptMemberMoneyAccountFlowDao;
 import com.jkm.hss.account.entity.ReceiptMemberMoneyAccountFlow;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountFlowService;
@@ -38,5 +39,19 @@ public class ReceiptMemberMoneyAccountFlowServiceImpl implements ReceiptMemberMo
     @Override
     public Optional<ReceiptMemberMoneyAccountFlow> getById(final long id) {
         return Optional.fromNullable(this.receiptMemberMoneyAccountFlowDao.selectById(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public String getFlowNo() {
+        final String flowNo = SnGenerator.generateFlowSn();
+        if (this.receiptMemberMoneyAccountFlowDao.selectCountByFlowNo(flowNo) == 0) {
+            return flowNo;
+        }
+        return this.getFlowNo();
     }
 }

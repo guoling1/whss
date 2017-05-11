@@ -24,4 +24,12 @@ public interface MemberAccountFlowDao {
      * @return
      */
     MemberAccountFlow selectById(@Param("id") long id);
+
+    /**
+     * 按流水号查询个数
+     *
+     * @param flowNo
+     * @return
+     */
+    int selectCountByFlowNo(@Param("flowNo") String flowNo);
 }
