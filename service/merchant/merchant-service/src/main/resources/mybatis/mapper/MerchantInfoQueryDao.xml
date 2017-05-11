@@ -600,6 +600,31 @@
         LIMIT #{offset}, #{pageSize}
     </select>
 
+    <!-- 查询hsy历史 -->
+    <select id="selectHistory"  resultType="com.jkm.hss.merchant.entity.HsyHistoryPhotoChangeResponse">
+        SELECT
+        *
+        FROM
+        tb_history_photo_change
+        WHERE
+        sid = #{sid}
+        ORDER BY
+        create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 查询hsy历史总数 -->
+    <select id="selectHsyHistoryCount"  resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        tb_history_photo_change
+        WHERE
+        sid = #{sid}
+        ORDER BY
+        create_time DESC
+    </select>
+
     <select id="selectHistoryCount"  resultType="java.lang.Integer">
         SELECT
             COUNT(1)
