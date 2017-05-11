@@ -97,7 +97,7 @@
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead">商户认证资料</p>
+        <span class="lead">商户认证资料</span>
         <el-button type="text" @click="toDet">认证资料历史</el-button>
         <div class="table-responsive">
           <table class="table">
@@ -105,7 +105,7 @@
             <tr class="row">
               <th class="col-md-3" style="text-align: center;">身份证正面:</th>
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
-              <th class="col-md-3" style="text-align: center;">营业执照:</th>
+              <th class="col-md-3" style="text-align: center;" v-if="msg.isPublic==1">营业执照:</th>
               <th class="col-md-3" style="text-align: center;">店面照片:</th>
               <th class="col-md-3" style="text-align: center;">收银台:</th>
               <th class="col-md-3" style="text-align: center;">室内照片:</th>
@@ -114,11 +114,11 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardf" alt="" v-if="$msg.idcardf!=null&&$msg.idcardf!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardf!=null&&$msg.idcardf!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardf!=null&&$msg.idcardf!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('1')">点击更换</el-button>
+                <!--<el-upload v-if="$msg.idcardf==null&&$msg.idcardf==''&&$msg.status!=1&&$msg.status!==2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={sid:id,hsyType:4}
+                           :data={sid:id,hsyType:1}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -127,16 +127,16 @@
                   <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>
+                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardb" alt="" v-if="$msg.idcardb!=null&&$msg.idcardb!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardb!=null&&$msg.idcardb!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardb!=null&&$msg.idcardb!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('2')">点击更换</el-button>
+                <!--<el-upload v-if="$msg.idcardb==null&&$msg.idcardb==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={sid:id,hsyType:4}
+                           :data={sid:id,hsyType:2}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -145,16 +145,16 @@
                   <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>
+                </el-upload>-->
               </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
+              <td class="col-md-3" style="text-align: center;border: none;" v-if="msg.isPublic==1">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.licenceID!=null&&$msg.licenceID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.licenceID!=null&&$msg.licenceID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
+                <!--<el-upload v-if="$msg.licenceID==null&&$msg.licenceID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={sid:id,hsyType:4}
+                           :data={sid:id,hsyType:3}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -163,13 +163,13 @@
                   <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>
+                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.storefrontID" alt="" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <!--<el-upload v-if="$msg.storefrontID==null&&$msg.storefrontID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
                            :data={sid:id,hsyType:4}
@@ -181,16 +181,16 @@
                   <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>
+                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.counterID" alt="" v-if="$msg.counterID!=null&&$msg.counterID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.counterID!=null&&$msg.counterID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.counterID!=null&&$msg.counterID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('5')">点击更换</el-button>
+                <!--<el-upload v-if="$msg.counterID==null&&$msg.counterID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={sid:id,hsyType:4}
+                           :data={sid:id,hsyType:5}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -199,16 +199,16 @@
                   <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>
+                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID!=null&&$msg.indoorID!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
+                <!--<el-upload v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status!=1||$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={sid:id,hsyType:4}
+                           :data={sid:id,hsyType:6}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -217,7 +217,7 @@
                   <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>
+                </el-upload>-->
               </td>
             </tr>
             </tbody>
@@ -364,9 +364,9 @@
           <el-form-item label="上传照片：" width="120" style="margin-bottom: 0">
             <el-upload
               class="upload-demo"
-              action="/admin/photoChange/savePhotoChang"
+              action="/admin/photoChange/hsySavePhotoChang"
               name="photo"
-              :data={merchantId:id,type:photoType}
+              :data={sid:id,hsyType:photoType}
               :on-preview="handlePreview"
               :on-success="handleSuccess"
               :on-error="handleErr"
@@ -472,9 +472,9 @@
         });
       },
       toDet:function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id);
+        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id+'&type=hsy');
 //        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
-      }
+      },
       // 重新入网
       reenter:function () {
         this.$http.post('/admin/hsyMerchantAudit/reenter', {
@@ -574,21 +574,6 @@
       }
     },
     filters: {
-      status: function (val) {
-        val = Number(val)
-        if(val == 0){
-          val = "已注册"
-        }else if(val == 1){
-          val = "已提交基本资料"
-        }else if(val == 2){
-          val = "待审核"
-        }else if(val == 3){
-          val = "审核通过"
-        }else if(val == 4){
-          val="审核未通过"
-        }
-        return val;
-      },
       changeDeal: function (val) {
         return val=val?val:'无'
       }
