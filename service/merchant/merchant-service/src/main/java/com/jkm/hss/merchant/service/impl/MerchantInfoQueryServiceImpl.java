@@ -272,7 +272,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
                 }
             }
         }
-        return null;
+        return list;
     }
 
     @Override

@@ -540,6 +540,7 @@
     <insert id="saveHsyHistory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_history_photo_change
         (
+        merchant_id,
         sid,
         pohto,
         hsy_type,
@@ -549,6 +550,7 @@
         )
         VALUES
         (
+         #{merchantId},
         #{sid},
         #{photo},
         #{hsyType},
@@ -638,33 +640,51 @@
 
     <!--- 以下六个hsy图片更新 -->
     <update id="saveHsyPhotoChang">
-        UPDATE    app_au_user a
-        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.UID
-        LEFT JOIN app_biz_shop c ON c.ID=b.SID
-        SET a.IDCARDF = #{photoName} WHERE c.ID=#{sid} AND b.ROLE=1 AND b.TYPE=1;
+        UPDATE app_au_user a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.UID
+        LEFT JOIN app_biz_shop c ON c.ID = b.SID
+        LEFT JOIN app_cm_file d ON d.UUID = a.IDCARDF
+        SET d.PATH = #{photoName}
+        WHERE
+            c.ID = #{sid}
+        AND b.ROLE = 1
+        AND b.TYPE = 1;
     </update>
 
     <update id="saveHsyPhotoChang1">
-        UPDATE    app_au_user a
-        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.UID
-        LEFT JOIN app_biz_shop c ON c.ID=b.SID
-        SET a.IDCARDB = #{photoName} WHERE c.ID=#{sid} AND b.ROLE=1 AND b.TYPE=1;
+        UPDATE app_au_user a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.UID
+        LEFT JOIN app_biz_shop c ON c.ID = b.SID
+        LEFT JOIN app_cm_file d ON d.UUID = a.IDCARDB
+        SET d.PATH = #{photoName}
+        WHERE
+            c.ID = #{sid}
+        AND b.ROLE = 1
+        AND b.TYPE = 1;
     </update>
 
     <update id="saveHsyPhotoChang2">
-        UPDATE app_biz_shop SET LICENCEID = #{photoName} WHERE ID=#{sid}
+        UPDATE app_biz_shop a
+        LEFT JOIN app_cm_file b ON b.UUID = a.LICENCEID
+        SET b.PATH = #{photoName} WHERE ID=#{sid}
     </update>
 
     <update id="saveHsyPhotoChang3">
-        UPDATE app_biz_shop SET STOREFRONTID = #{photoName} WHERE ID=#{sid}
+        UPDATE app_biz_shop a
+        LEFT JOIN app_cm_file b ON b.UUID = a.STOREFRONTID
+        SET b.PATH = #{photoName} WHERE ID=#{sid}
     </update>
 
     <update id="saveHsyPhotoChang4">
-        UPDATE app_biz_shop SET COUNTERID = #{photoName} WHERE ID=#{sid}
+        UPDATE app_biz_shop a
+        LEFT JOIN app_cm_file b ON b.UUID = a.COUNTERID
+        SET b.PATH = #{photoName} WHERE ID=#{sid}
     </update>
 
     <update id="saveHsyPhotoChang5">
-        UPDATE app_biz_shop SET INDOORID = #{photoName} WHERE ID=#{sid}
+        UPDATE app_biz_shop a
+        LEFT JOIN app_cm_file b ON b.UUID = a.INDOORID
+        SET b.PATH = #{photoName} WHERE ID=#{sid}
     </update>
 
 </mapper>
