@@ -339,19 +339,17 @@ public class PushProducer {
             // 配置推送目标
             // taskId用于在推送时去查找对应的message
             taskId = push.getContentId(messageL);
+            List targetss = new ArrayList();
 
-
-            if(targets.size()<0) {
-                List targetss = new ArrayList();
+            if(targets!=null) {
                 for (int i = 0; i < targets.size(); i++) {
                     Target target1 = new Target();
                     target1.setAppId(appId);
                     target1.setClientId(targets.get(i));
                     targetss.add(target1);
                 }
-                ret = push.pushMessageToList(taskId, targetss);
             }
-//            ret = push.pushMessageToList(taskId, targetss);
+            ret = push.pushMessageToList(taskId, targetss);
         }else{
             AppMessage messageA = new AppMessage();
             messageA.setData(template);
