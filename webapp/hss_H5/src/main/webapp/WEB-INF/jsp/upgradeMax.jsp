@@ -8,8 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>我的推广</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.4.css">--%>
-  <link rel="stylesheet" href="/css/hss/style.2.0.4.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.4.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -25,28 +24,25 @@
   </div>
   <div class="upgrade">
     <div class="small" onclick="javascript:location.href='/sqb/suansuan'">升级合伙人，不仅能降费率，推广好友还能拿分润</div>
+
     <div class="table">
       <div class="t-head">
         <div class="li t m">合伙人等级</div>
-        <div class="li t"><span class="star1"></span>普通</div>
         <div class="li t"><span class="star2"></span>店员</div>
         <div class="li t"><span class="star3"></span>店长</div>
         <div class="li t"><span class="star4"></span>老板</div>
       </div>
-      <div class="t-body">
-        <div class="li p b">摩宝快捷</div>
-        <div class="li w">0.48%</div>
-        <div class="li w">0.46%</div>
-        <div class="li w">0.42%</div>
-        <div class="li w">0.38%</div>
-      </div>
-      <div class="t-body">
-        <div class="li p b">摩宝快捷一</div>
-        <div class="li w">0.48%</div>
-        <div class="li w">0.46%</div>
-        <div class="li w">0.42%</div>
-        <div class="li w">0.38%</div>
-      </div>
+      <c:forEach items="${upgradeArray}" var="item">
+        <div class="t-body">
+          <div class="li p b">
+            <span class="name">${item.channelName}</span>
+            <span class="name-small">原价 <fmt:formatNumber value="${item.commonRate}" pattern="0.00#"/>%</span>
+          </div>
+          <div class="li w"><fmt:formatNumber value="${item.clerkRate}" pattern="0.00#"/>%</div>
+          <div class="li w"><fmt:formatNumber value="${item.shopownerRate}" pattern="0.00#"/>%</div>
+          <div class="li w"><fmt:formatNumber value="${item.bossRate}" pattern="0.00#"/>%</div>
+        </div>
+      </c:forEach>
     </div>
     <div class="btn">
       <div id="upBtn">立即升级</div>
@@ -58,6 +54,25 @@
       <%-- 动态添加 --%>
     </div>
     <div class="point" id="point"></div>
+  </div>
+  <div class="layer" id="layer">
+    <div class="space flexBox flex-box-column">
+      <div class="content flexBox flex-box-column">
+        <div class="logo"></div>
+        <div class="qr-code">
+          <div id="qr"></div>
+        </div>
+        <div class="word">微信识别二维码，即刻开通收款</div>
+      </div>
+      <div class="divider"></div>
+      <div class="describe">
+        <p>使用方法</p>
+
+        <p>1. 好友扫描二维码完成注册，即可成为您推广的好友；</p>
+
+        <p>2. 推广二维码永久有效，您可以截图保存图片发给好友。</p>
+      </div>
+    </div>
   </div>
   <div class="rocket" id="rocket"></div>
   <div class="notice flexBox flex-box-column miss" id="notice">
@@ -94,7 +109,7 @@
 
 </body>
 
+<script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.24/upgrade.min.js"></script>--%>
-<script src="/js/hss/2.2.24/upgrade.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.24/upgrade.min.js"></script>
 </html>

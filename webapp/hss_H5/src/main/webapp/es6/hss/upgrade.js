@@ -28,6 +28,7 @@ xx.addEventListener('click', function () {
 let banner = document.getElementById('banner');
 let point = document.getElementById('point');
 let nowLevel = 0;
+let upType = 0;
 
 let up = document.getElementById('up');
 let upBtn = document.getElementById('upBtn');
@@ -90,189 +91,256 @@ up.addEventListener('touchmove', function (e) {
 upBtn.addEventListener('click', function () {
   up.style.display = 'block';
 });
+const layer = document.getElementById('layer');
+layer.addEventListener('click', function () {
+  layer.style.display = 'none';
+});
 
 // 获取升级
 http.post('/wx/toUpgrade', {}, function (data) {
   nowLevel = data.currentLevel;
+  new QRCode(qr, {
+    text: data.shareUrl,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
   for (let i = 2; i > nowLevel - 1; i--) {
     moveLength++;
     switch (data.upgradeRules[i].type) {
       case 3:
-        var banner_list = document.createElement('div');
-        banner_list.className = 'list active';
-        var banner_head = document.createElement('div');
-        banner_head.className = 'head boss';
-        var banner_text = document.createElement('div');
-        banner_text.className = 'text';
-        banner_text.innerHTML = '老板';
-        var banner_type = document.createElement('ul');
-        banner_type.className = 'upType';
+        var boss_banner_list = document.createElement('div');
+        boss_banner_list.className = 'list active';
+        var boss_banner_head = document.createElement('div');
+        boss_banner_head.className = 'head boss';
+        var boss_banner_text = document.createElement('div');
+        boss_banner_text.className = 'text';
+        boss_banner_text.innerHTML = '老板';
+        var boss_banner_type = document.createElement('ul');
+        boss_banner_type.className = 'upType';
         //li 1
-        var banner_type_li1 = document.createElement('li');
-        var banner_type_li1_left = document.createElement('div');
-        banner_type_li1_left.className = 'left';
-        var banner_type_li1_span1 = document.createElement('span');
-        banner_type_li1_span1.className = 'check active';
-        var banner_type_li1_span2 = document.createElement('span');
-        banner_type_li1_span2.innerHTML = '方式一：付费升级';
-        banner_type_li1_left.appendChild(banner_type_li1_span1);
-        banner_type_li1_left.appendChild(banner_type_li1_span2);
-        var banner_type_li1_right = document.createElement('div');
-        banner_type_li1_right.className = 'right';
-        banner_type_li1_right.innerHTML = '￥' + data.upgradeRules[i].needMoney;
-        var banner_type_li1_small = document.createElement('div');
-        banner_type_li1_small.className = 'small';
-        banner_type_li1_small.innerHTML = '￥';
-        banner_type_li1.appendChild(banner_type_li1_left);
-        banner_type_li1.appendChild(banner_type_li1_right);
-        banner_type_li1.appendChild(banner_type_li1_small);
+        var boss_banner_type_li1 = document.createElement('li');
+        boss_banner_type_li1.addEventListener('click', function () {
+          boss_banner_type_li1_span1.className = 'check active';
+          boss_banner_type_li2_span1.className = 'check';
+          boss_banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
+          upType = 0;
+        });
+        var boss_banner_type_li1_left = document.createElement('div');
+        boss_banner_type_li1_left.className = 'left';
+        var boss_banner_type_li1_span1 = document.createElement('span');
+        boss_banner_type_li1_span1.className = 'check active';
+        var boss_banner_type_li1_span2 = document.createElement('span');
+        boss_banner_type_li1_span2.innerHTML = '方式一：付费升级';
+        boss_banner_type_li1_left.appendChild(boss_banner_type_li1_span1);
+        boss_banner_type_li1_left.appendChild(boss_banner_type_li1_span2);
+        var boss_banner_type_li1_right = document.createElement('div');
+        boss_banner_type_li1_right.className = 'right';
+        boss_banner_type_li1_right.innerHTML = '￥' + data.upgradeRules[i].needMoney;
+        var boss_banner_type_li1_small = document.createElement('s');
+        boss_banner_type_li1_small.className = 'small';
+        boss_banner_type_li1_small.innerHTML = '￥' + data.upgradeRules[i].upgradeCost;
+        boss_banner_type_li1.appendChild(boss_banner_type_li1_left);
+        boss_banner_type_li1.appendChild(boss_banner_type_li1_right);
+        boss_banner_type_li1.appendChild(boss_banner_type_li1_small);
         //li 2
-        var banner_type_li2 = document.createElement('li');
-        var banner_type_li2_left = document.createElement('div');
-        banner_type_li2_left.className = 'left';
-        var banner_type_li2_span1 = document.createElement('span');
-        banner_type_li2_span1.className = 'check';
-        var banner_type_li2_span2 = document.createElement('span');
-        banner_type_li2_span2.innerHTML = '方式二：推广' + data.upgradeRules[i].needCount + '个好友';
-        banner_type_li2_left.appendChild(banner_type_li2_span1);
-        banner_type_li2_left.appendChild(banner_type_li2_span2);
-        var banner_type_li2_right = document.createElement('div');
-        banner_type_li2_right.className = 'right';
-        banner_type_li2_right.innerHTML = '还差' + data.upgradeRules[i].restCount + '个';
-        var banner_type_li2_small = document.createElement('div');
-        banner_type_li2_small.className = 'small';
-        banner_type_li2_small.innerHTML = '达到推广好友数量，系统将自动为您升级';
-        banner_type_li2.appendChild(banner_type_li2_left);
-        banner_type_li2.appendChild(banner_type_li2_right);
-        banner_type_li2.appendChild(banner_type_li2_small);
-        banner_type.appendChild(banner_type_li1);
-        banner_type.appendChild(banner_type_li2);
-        var banner_bottom = document.createElement('div');
-        banner_bottom.className = 'bottom';
-        banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
-        banner_list.appendChild(banner_head);
-        banner_list.appendChild(banner_text);
-        banner_list.appendChild(banner_type);
-        banner_list.appendChild(banner_bottom);
-        banner.appendChild(banner_list);
+        var boss_banner_type_li2 = document.createElement('li');
+        boss_banner_type_li2.addEventListener('click', function () {
+          boss_banner_type_li1_span1.className = 'check';
+          boss_banner_type_li2_span1.className = 'check active';
+          boss_banner_bottom.innerHTML = '去推广';
+          upType = 1;
+        });
+        var boss_banner_type_li2_left = document.createElement('div');
+        boss_banner_type_li2_left.className = 'left';
+        var boss_banner_type_li2_span1 = document.createElement('span');
+        boss_banner_type_li2_span1.className = 'check';
+        var boss_banner_type_li2_span2 = document.createElement('span');
+        boss_banner_type_li2_span2.innerHTML = '方式二：推广' + data.upgradeRules[i].needCount + '个好友';
+        boss_banner_type_li2_left.appendChild(boss_banner_type_li2_span1);
+        boss_banner_type_li2_left.appendChild(boss_banner_type_li2_span2);
+        var boss_banner_type_li2_right = document.createElement('div');
+        boss_banner_type_li2_right.className = 'right';
+        boss_banner_type_li2_right.innerHTML = '还差' + data.upgradeRules[i].restCount + '个';
+        var boss_banner_type_li2_small = document.createElement('div');
+        boss_banner_type_li2_small.className = 'small';
+        boss_banner_type_li2_small.innerHTML = '达到推广好友数量，系统将自动为您升级';
+        boss_banner_type_li2.appendChild(boss_banner_type_li2_left);
+        boss_banner_type_li2.appendChild(boss_banner_type_li2_right);
+        boss_banner_type_li2.appendChild(boss_banner_type_li2_small);
+        boss_banner_type.appendChild(boss_banner_type_li1);
+        boss_banner_type.appendChild(boss_banner_type_li2);
+        var boss_banner_bottom = document.createElement('div');
+        boss_banner_bottom.className = 'bottom';
+        boss_banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
+        boss_banner_bottom.addEventListener('click', function () {
+          if (upType) {
+            layer.style.display = 'block';
+          } else {
+            window.location.href = '/sqb/toBuy/' + data.upgradeRules[i].id;
+          }
+        });
+        boss_banner_list.appendChild(boss_banner_head);
+        boss_banner_list.appendChild(boss_banner_text);
+        boss_banner_list.appendChild(boss_banner_type);
+        boss_banner_list.appendChild(boss_banner_bottom);
+        banner.appendChild(boss_banner_list);
         break;
       case 2:
-        var banner_list = document.createElement('div');
-        banner_list.className = 'list left';
-        var banner_head = document.createElement('div');
-        banner_head.className = 'head manager';
-        var banner_text = document.createElement('div');
-        banner_text.className = 'text';
-        banner_text.innerHTML = '店长';
-        var banner_type = document.createElement('ul');
-        banner_type.className = 'upType';
+        var manager_banner_list = document.createElement('div');
+        manager_banner_list.className = 'list left';
+        var manager_banner_head = document.createElement('div');
+        manager_banner_head.className = 'head manager';
+        var manager_banner_text = document.createElement('div');
+        manager_banner_text.className = 'text';
+        manager_banner_text.innerHTML = '店长';
+        var manager_banner_type = document.createElement('ul');
+        manager_banner_type.className = 'upType';
         //li 1
-        var banner_type_li1 = document.createElement('li');
-        var banner_type_li1_left = document.createElement('div');
-        banner_type_li1_left.className = 'left';
-        var banner_type_li1_span1 = document.createElement('span');
-        banner_type_li1_span1.className = 'check active';
-        var banner_type_li1_span2 = document.createElement('span');
-        banner_type_li1_span2.innerHTML = '方式一：付费升级';
-        banner_type_li1_left.appendChild(banner_type_li1_span1);
-        banner_type_li1_left.appendChild(banner_type_li1_span2);
-        var banner_type_li1_right = document.createElement('div');
-        banner_type_li1_right.className = 'right';
-        banner_type_li1_right.innerHTML = '￥' + data.upgradeRules[i].needMoney;
-        var banner_type_li1_small = document.createElement('div');
-        banner_type_li1_small.className = 'small';
-        banner_type_li1_small.innerHTML = '￥';
-        banner_type_li1.appendChild(banner_type_li1_left);
-        banner_type_li1.appendChild(banner_type_li1_right);
-        banner_type_li1.appendChild(banner_type_li1_small);
+        var manager_banner_type_li1 = document.createElement('li');
+        manager_banner_type_li1.addEventListener('click', function () {
+          manager_banner_type_li1_span1.className = 'check active';
+          manager_banner_type_li2_span1.className = 'check';
+          manager_banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
+          upType = 0;
+        });
+        var manager_banner_type_li1_left = document.createElement('div');
+        manager_banner_type_li1_left.className = 'left';
+        var manager_banner_type_li1_span1 = document.createElement('span');
+        manager_banner_type_li1_span1.className = 'check active';
+        var manager_banner_type_li1_span2 = document.createElement('span');
+        manager_banner_type_li1_span2.innerHTML = '方式一：付费升级';
+        manager_banner_type_li1_left.appendChild(manager_banner_type_li1_span1);
+        manager_banner_type_li1_left.appendChild(manager_banner_type_li1_span2);
+        var manager_banner_type_li1_right = document.createElement('div');
+        manager_banner_type_li1_right.className = 'right';
+        manager_banner_type_li1_right.innerHTML = '￥' + data.upgradeRules[i].needMoney;
+        var manager_banner_type_li1_small = document.createElement('s');
+        manager_banner_type_li1_small.className = 'small';
+        manager_banner_type_li1_small.innerHTML = '￥' + data.upgradeRules[i].upgradeCost;
+        manager_banner_type_li1.appendChild(manager_banner_type_li1_left);
+        manager_banner_type_li1.appendChild(manager_banner_type_li1_right);
+        manager_banner_type_li1.appendChild(manager_banner_type_li1_small);
         //li 2
-        var banner_type_li2 = document.createElement('li');
-        var banner_type_li2_left = document.createElement('div');
-        banner_type_li2_left.className = 'left';
-        var banner_type_li2_span1 = document.createElement('span');
-        banner_type_li2_span1.className = 'check';
-        var banner_type_li2_span2 = document.createElement('span');
-        banner_type_li2_span2.innerHTML = '方式二：推广' + data.upgradeRules[i].needCount + '个好友';
-        banner_type_li2_left.appendChild(banner_type_li2_span1);
-        banner_type_li2_left.appendChild(banner_type_li2_span2);
-        var banner_type_li2_right = document.createElement('div');
-        banner_type_li2_right.className = 'right';
-        banner_type_li2_right.innerHTML = '还差' + data.upgradeRules[i].restCount + '个';
-        var banner_type_li2_small = document.createElement('div');
-        banner_type_li2_small.className = 'small';
-        banner_type_li2_small.innerHTML = '达到推广好友数量，系统将自动为您升级';
-        banner_type_li2.appendChild(banner_type_li2_left);
-        banner_type_li2.appendChild(banner_type_li2_right);
-        banner_type_li2.appendChild(banner_type_li2_small);
-        banner_type.appendChild(banner_type_li1);
-        banner_type.appendChild(banner_type_li2);
-        var banner_bottom = document.createElement('div');
-        banner_bottom.className = 'bottom';
-        banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
-        banner_list.appendChild(banner_head);
-        banner_list.appendChild(banner_text);
-        banner_list.appendChild(banner_type);
-        banner_list.appendChild(banner_bottom);
-        banner.appendChild(banner_list);
+        var manager_banner_type_li2 = document.createElement('li');
+        manager_banner_type_li2.addEventListener('click', function () {
+          manager_banner_type_li1_span1.className = 'check';
+          manager_banner_type_li2_span1.className = 'check active';
+          manager_banner_bottom.innerHTML = '去推广';
+          upType = 1;
+        });
+        var manager_banner_type_li2_left = document.createElement('div');
+        manager_banner_type_li2_left.className = 'left';
+        var manager_banner_type_li2_span1 = document.createElement('span');
+        manager_banner_type_li2_span1.className = 'check';
+        var manager_banner_type_li2_span2 = document.createElement('span');
+        manager_banner_type_li2_span2.innerHTML = '方式二：推广' + data.upgradeRules[i].needCount + '个好友';
+        manager_banner_type_li2_left.appendChild(manager_banner_type_li2_span1);
+        manager_banner_type_li2_left.appendChild(manager_banner_type_li2_span2);
+        var manager_banner_type_li2_right = document.createElement('div');
+        manager_banner_type_li2_right.className = 'right';
+        manager_banner_type_li2_right.innerHTML = '还差' + data.upgradeRules[i].restCount + '个';
+        var manager_banner_type_li2_small = document.createElement('div');
+        manager_banner_type_li2_small.className = 'small';
+        manager_banner_type_li2_small.innerHTML = '达到推广好友数量，系统将自动为您升级';
+        manager_banner_type_li2.appendChild(manager_banner_type_li2_left);
+        manager_banner_type_li2.appendChild(manager_banner_type_li2_right);
+        manager_banner_type_li2.appendChild(manager_banner_type_li2_small);
+        manager_banner_type.appendChild(manager_banner_type_li1);
+        manager_banner_type.appendChild(manager_banner_type_li2);
+        var manager_banner_bottom = document.createElement('div');
+        manager_banner_bottom.className = 'bottom';
+        manager_banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
+        manager_banner_bottom.addEventListener('click', function () {
+          if (upType) {
+            layer.style.display = 'block';
+          } else {
+            window.location.href = '/sqb/toBuy/' + data.upgradeRules[i].id;
+          }
+        });
+        manager_banner_list.appendChild(manager_banner_head);
+        manager_banner_list.appendChild(manager_banner_text);
+        manager_banner_list.appendChild(manager_banner_type);
+        manager_banner_list.appendChild(manager_banner_bottom);
+        banner.appendChild(manager_banner_list);
         break;
       case 1:
-        var banner_list = document.createElement('div');
-        banner_list.className = 'list left none';
-        var banner_head = document.createElement('div');
-        banner_head.className = 'head assistant';
-        var banner_text = document.createElement('div');
-        banner_text.className = 'text';
-        banner_text.innerHTML = '店员';
-        var banner_type = document.createElement('ul');
-        banner_type.className = 'upType';
+        var assistant_banner_list = document.createElement('div');
+        assistant_banner_list.className = 'list left none';
+        var assistant_banner_head = document.createElement('div');
+        assistant_banner_head.className = 'head assistant';
+        var assistant_banner_text = document.createElement('div');
+        assistant_banner_text.className = 'text';
+        assistant_banner_text.innerHTML = '店员';
+        var assistant_banner_type = document.createElement('ul');
+        assistant_banner_type.className = 'upType';
         //li 1
-        var banner_type_li1 = document.createElement('li');
-        var banner_type_li1_left = document.createElement('div');
-        banner_type_li1_left.className = 'left';
-        var banner_type_li1_span1 = document.createElement('span');
-        banner_type_li1_span1.className = 'check active';
-        var banner_type_li1_span2 = document.createElement('span');
-        banner_type_li1_span2.innerHTML = '方式一：付费升级';
-        banner_type_li1_left.appendChild(banner_type_li1_span1);
-        banner_type_li1_left.appendChild(banner_type_li1_span2);
-        var banner_type_li1_right = document.createElement('div');
-        banner_type_li1_right.className = 'right';
-        banner_type_li1_right.innerHTML = '￥' + data.upgradeRules[i].needMoney;
-        var banner_type_li1_small = document.createElement('div');
-        banner_type_li1_small.className = 'small';
-        banner_type_li1_small.innerHTML = '￥';
-        banner_type_li1.appendChild(banner_type_li1_left);
-        banner_type_li1.appendChild(banner_type_li1_right);
-        banner_type_li1.appendChild(banner_type_li1_small);
+        var assistant_banner_type_li1 = document.createElement('li');
+        assistant_banner_type_li1.addEventListener('click', function () {
+          assistant_banner_type_li1_span1.className = 'check active';
+          assistant_banner_type_li2_span1.className = 'check';
+          assistant_banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
+          upType = 0;
+        });
+        var assistant_banner_type_li1_left = document.createElement('div');
+        assistant_banner_type_li1_left.className = 'left';
+        var assistant_banner_type_li1_span1 = document.createElement('span');
+        assistant_banner_type_li1_span1.className = 'check active';
+        var assistant_banner_type_li1_span2 = document.createElement('span');
+        assistant_banner_type_li1_span2.innerHTML = '方式一：付费升级';
+        assistant_banner_type_li1_left.appendChild(assistant_banner_type_li1_span1);
+        assistant_banner_type_li1_left.appendChild(assistant_banner_type_li1_span2);
+        var assistant_banner_type_li1_right = document.createElement('div');
+        assistant_banner_type_li1_right.className = 'right';
+        assistant_banner_type_li1_right.innerHTML = '￥' + data.upgradeRules[i].needMoney;
+        var assistant_banner_type_li1_small = document.createElement('s');
+        assistant_banner_type_li1_small.className = 'small';
+        assistant_banner_type_li1_small.innerHTML = '￥' + data.upgradeRules[i].upgradeCost;
+        assistant_banner_type_li1.appendChild(assistant_banner_type_li1_left);
+        assistant_banner_type_li1.appendChild(assistant_banner_type_li1_right);
+        assistant_banner_type_li1.appendChild(assistant_banner_type_li1_small);
         //li 2
-        var banner_type_li2 = document.createElement('li');
-        var banner_type_li2_left = document.createElement('div');
-        banner_type_li2_left.className = 'left';
-        var banner_type_li2_span1 = document.createElement('span');
-        banner_type_li2_span1.className = 'check';
-        var banner_type_li2_span2 = document.createElement('span');
-        banner_type_li2_span2.innerHTML = '方式二：推广' + data.upgradeRules[i].needCount + '个好友';
-        banner_type_li2_left.appendChild(banner_type_li2_span1);
-        banner_type_li2_left.appendChild(banner_type_li2_span2);
-        var banner_type_li2_right = document.createElement('div');
-        banner_type_li2_right.className = 'right';
-        banner_type_li2_right.innerHTML = '还差' + data.upgradeRules[i].restCount + '个';
-        var banner_type_li2_small = document.createElement('div');
-        banner_type_li2_small.className = 'small';
-        banner_type_li2_small.innerHTML = '达到推广好友数量，系统将自动为您升级';
-        banner_type_li2.appendChild(banner_type_li2_left);
-        banner_type_li2.appendChild(banner_type_li2_right);
-        banner_type_li2.appendChild(banner_type_li2_small);
-        banner_type.appendChild(banner_type_li1);
-        banner_type.appendChild(banner_type_li2);
-        var banner_bottom = document.createElement('div');
-        banner_bottom.className = 'bottom';
-        banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
-        banner_list.appendChild(banner_head);
-        banner_list.appendChild(banner_text);
-        banner_list.appendChild(banner_type);
-        banner_list.appendChild(banner_bottom);
-        banner.appendChild(banner_list);
+        var assistant_banner_type_li2 = document.createElement('li');
+        assistant_banner_type_li2.addEventListener('click', function () {
+          assistant_banner_type_li1_span1.className = 'check';
+          assistant_banner_type_li2_span1.className = 'check active';
+          assistant_banner_bottom.innerHTML = '去推广';
+          upType = 1;
+        });
+        var assistant_banner_type_li2_left = document.createElement('div');
+        assistant_banner_type_li2_left.className = 'left';
+        var assistant_banner_type_li2_span1 = document.createElement('span');
+        assistant_banner_type_li2_span1.className = 'check';
+        var assistant_banner_type_li2_span2 = document.createElement('span');
+        assistant_banner_type_li2_span2.innerHTML = '方式二：推广' + data.upgradeRules[i].needCount + '个好友';
+        assistant_banner_type_li2_left.appendChild(assistant_banner_type_li2_span1);
+        assistant_banner_type_li2_left.appendChild(assistant_banner_type_li2_span2);
+        var assistant_banner_type_li2_right = document.createElement('div');
+        assistant_banner_type_li2_right.className = 'right';
+        assistant_banner_type_li2_right.innerHTML = '还差' + data.upgradeRules[i].restCount + '个';
+        var assistant_banner_type_li2_small = document.createElement('div');
+        assistant_banner_type_li2_small.className = 'small';
+        assistant_banner_type_li2_small.innerHTML = '达到推广好友数量，系统将自动为您升级';
+        assistant_banner_type_li2.appendChild(assistant_banner_type_li2_left);
+        assistant_banner_type_li2.appendChild(assistant_banner_type_li2_right);
+        assistant_banner_type_li2.appendChild(assistant_banner_type_li2_small);
+        assistant_banner_type.appendChild(assistant_banner_type_li1);
+        assistant_banner_type.appendChild(assistant_banner_type_li2);
+        var assistant_banner_bottom = document.createElement('div');
+        assistant_banner_bottom.className = 'bottom';
+        assistant_banner_bottom.innerHTML = '微信立即支付 ￥' + data.upgradeRules[i].needMoney;
+        assistant_banner_bottom.addEventListener('click', function () {
+          if (upType) {
+            layer.style.display = 'block';
+          } else {
+            window.location.href = '/sqb/toBuy/' + data.upgradeRules[i].id;
+          }
+        });
+        assistant_banner_list.appendChild(assistant_banner_head);
+        assistant_banner_list.appendChild(assistant_banner_text);
+        assistant_banner_list.appendChild(assistant_banner_type);
+        assistant_banner_list.appendChild(assistant_banner_bottom);
+        banner.appendChild(assistant_banner_list);
         break;
     }
   }
