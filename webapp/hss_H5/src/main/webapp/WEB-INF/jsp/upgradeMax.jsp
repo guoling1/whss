@@ -8,12 +8,13 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>我的推广</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.15.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.16.css">--%>
+  <link rel="stylesheet" href="/css/hss/style.2.2.16.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
-<div id="upgrade">
+<div id="_upgrade">
   <div class="info">
     <div class="head">
       <c:if test="${empty headimgUrl}"><img src="http://static.jinkaimen.cn/hss/assets/hss-default-head.png"
@@ -26,114 +27,35 @@
     <div class="small" onclick="javascript:location.href='/sqb/suansuan'">升级合伙人，不仅能降费率，推广好友还能拿分润</div>
     <div class="table">
       <div class="t-head">
-        <div class="li t">合伙人等级</div>
-        <div class="li t">微信费率</div>
-        <div class="li t">支付宝费率</div>
-        <div class="li t">无卡费率</div>
-        <div class="li t">升级</div>
+        <div class="li t m">合伙人等级</div>
+        <div class="li t"><span class="star1"></span>普通</div>
+        <div class="li t"><span class="star2"></span>店员</div>
+        <div class="li t"><span class="star3"></span>店长</div>
+        <div class="li t"><span class="star4"></span>老板</div>
       </div>
-      <c:forEach items="${upgradeArray}" var="item" varStatus="status">
-        <c:if test="${status.index==0}">
-          <div class="t-body">
-            <div class="li p">
-              <span class="star${status.index+1} upn"></span>
-                ${item.name}
-            </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
-            <c:if test="${level==item.type}">
-              <div class="li w b">
-                <div class="me">&nbsp;我的等级</div>
-              </div>
-            </c:if>
-            <c:if test="${level<item.type}">
-              <div class="li w b">
-                <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
-              </div>
-            </c:if>
-            <c:if test="${level>item.type}">
-              <div class="li w b">- -</div>
-            </c:if>
-          </div>
-        </c:if>
-        <c:if test="${status.index==1}">
-          <div class="t-body">
-            <div class="li p">
-              <span class="star${status.index+1} upn"></span>
-                ${item.name}
-            </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
-            <c:if test="${level==item.type}">
-              <div class="li w b">
-                <div class="me">&nbsp;我的等级</div>
-              </div>
-            </c:if>
-            <c:if test="${level<item.type}">
-              <div class="li w b">
-                <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
-              </div>
-            </c:if>
-            <c:if test="${level>item.type}">
-              <div class="li w b">- -</div>
-            </c:if>
-          </div>
-        </c:if>
-        <c:if test="${status.index==2}">
-          <div class="t-body">
-            <div class="li p">
-              <span class="star${status.index+1} upn"></span>
-                ${item.name}
-            </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
-            <c:if test="${level==item.type}">
-              <div class="li w b">
-                <div class="me">&nbsp;我的等级</div>
-              </div>
-            </c:if>
-            <c:if test="${level<item.type}">
-              <div class="li w b">
-                <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
-              </div>
-            </c:if>
-            <c:if test="${level>item.type}">
-              <div class="li w b">- -</div>
-            </c:if>
-          </div>
-        </c:if>
-        <c:if test="${status.index==3}">
-          <div class="t-body">
-            <div class="li p">
-              <span class="star${status.index+1} upn"></span>
-                ${item.name}
-            </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
-            <c:if test="${level==item.type}">
-              <div class="li w b">
-                <div class="me">&nbsp;我的等级</div>
-              </div>
-            </c:if>
-            <c:if test="${level<item.type}">
-              <div class="li w b">
-                <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
-              </div>
-            </c:if>
-            <c:if test="${level>item.type}">
-              <div class="li w b">- -</div>
-            </c:if>
-          </div>
-        </c:if>
-      </c:forEach>
+      <div class="t-body">
+        <div class="li p b">摩宝快捷</div>
+        <div class="li w">0.48%</div>
+        <div class="li w">0.46%</div>
+        <div class="li w">0.42%</div>
+        <div class="li w">0.38%</div>
+      </div>
+      <div class="t-body">
+        <div class="li p b">摩宝快捷一</div>
+        <div class="li w">0.48%</div>
+        <div class="li w">0.46%</div>
+        <div class="li w">0.42%</div>
+        <div class="li w">0.38%</div>
+      </div>
     </div>
     <div class="btn">
-      <div onclick="javascript:location.href='/sqb/suansuan'">算算能挣多少钱</div>
+      <div>立即升级</div>
     </div>
+    <div class="ss" onclick="javascript:location.href='/sqb/suansuan'">算算能挣多少钱?</div>
+  </div>
+  <div class="up">
+    <div class="banner"></div>
+    <div class="point"></div>
   </div>
   <div class="rocket" id="rocket"></div>
   <div class="notice flexBox flex-box-column miss" id="notice">
@@ -171,21 +93,6 @@
 </body>
 
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
-<script>
-  var notice = document.getElementById('notice');
-  var rocket = document.getElementById('rocket');
-  var xx = document.getElementById('xx');
-  rocket.addEventListener('click', function () {
-    notice.className = 'notice flexBox flex-box-column';
-    setTimeout(function () {
-      notice.style.opacity = 1;
-    }, 0);
-  });
-  xx.addEventListener('click', function () {
-    notice.style.opacity = 0;
-    setTimeout(function () {
-      notice.className = 'notice flexBox flex-box-column miss';
-    }, 400);
-  })
-</script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.24/upgrade.min.js"></script>--%>
+<script src="/js/hss/2.2.24/upgrade.min.js"></script>
 </html>
