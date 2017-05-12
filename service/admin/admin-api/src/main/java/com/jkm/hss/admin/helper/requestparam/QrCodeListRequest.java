@@ -30,6 +30,10 @@ public class QrCodeListRequest extends PageQueryParams {
      */
     private String sysType;
     /**
+     * 子公司名称
+     */
+    private String subCompanyName;
+    /**
      *
      */
     private int offset;
