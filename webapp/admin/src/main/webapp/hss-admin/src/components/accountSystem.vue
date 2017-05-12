@@ -178,7 +178,11 @@
     name: 'tAuditStore',
     data(){
       return{
-        pickerOptions: {},
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         date:'',
         fileList: [],
         records:[],
