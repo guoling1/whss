@@ -1477,6 +1477,7 @@ public class WxPubController extends BaseController {
                 currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
                 currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
                 currentRulesResponse.setNeedMoney(needMoney);
+                currentRulesResponse.setUpgradeCost(upgradeRules.get(i).getUpgradeCost());
                 list.add(currentRulesResponse);
             }
         }
