@@ -21,6 +21,11 @@ public enum EnumPayChannelSign {
     //UN_USE(100, "un_use", EnumPaymentChannel.WECHAT_PAY, "维护通道", EnumUpperChannel.SAOMI, false),
     //#################################阳光万维########################################
     /**
+     * 会员卡支付
+     */
+    MEMBER(901, "member_card", EnumPaymentChannel.MEMBER_PAY, "会员卡", EnumUpperChannel.MEMBER, false, EnumBalanceTimeType.T1, false),
+
+    /**
      * 阳光微信
      */
     YG_WECHAT(101, "sm_wechat", EnumPaymentChannel.WECHAT_PAY, "阳光微信", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0, false),

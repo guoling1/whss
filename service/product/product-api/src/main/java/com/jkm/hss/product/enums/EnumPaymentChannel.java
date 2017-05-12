@@ -11,6 +11,10 @@ import lombok.Getter;
  */
 public enum EnumPaymentChannel {
 
+    /**
+     * 会员卡支付
+     */
+    MEMBER_PAY(4, "会员卡"),
 
     /**
      * 微信
