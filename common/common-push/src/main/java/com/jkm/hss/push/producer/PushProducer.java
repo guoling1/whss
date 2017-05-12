@@ -347,8 +347,8 @@ public class PushProducer {
                     target1.setAppId(appId);
                     target1.setClientId(targets.get(i));
                     targetss.add(target1);
-                    System.out.print("========================================================================");
-                    System.out.print(targetss);
+                    System.out.print("================================TTTTTTTTT========================================");
+                    System.out.print(targets.get(i));
                 }
             }
 
