@@ -274,7 +274,8 @@
           if(res.data.result=='操作成功'){
           this.isDownload = false;
           sessionStorage.setItem('data',JSON.stringify(res.data.jsonPayResult))
-          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+//          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+          this.$router.push('/admin/details/accountData')
           }else{
           this.isDownload = false;
           this.$message({

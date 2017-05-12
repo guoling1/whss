@@ -5,6 +5,7 @@
         <div class="box-header">
           <h3 class="box-title">对账数据</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
+          <a @click="goBack" class="pull-right btn btn-primary">返回</a>
         </div>
         <div class="box-body">
           <ul>
@@ -92,7 +93,8 @@
     },
     methods: {
       goBack:function () {
-        this.$router.push('/admin/record/accountSystem')
+//        this.$router.push('/admin/record/accountSystem')
+        this.$router.go(-1)
       },
       submit:function () {
           this.$http.post(this.url,{batchNO:JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.batchNO},{emulateJSON: true})
