@@ -89,6 +89,7 @@
                 <el-option label="微信支付" value="wechat"></el-option>
                 <el-option label="支付宝支付" value="alipay"></el-option>
                 <el-option label="快捷支付" value="unionpay"></el-option>
+                <el-option label="QQ钱包" value="qqpay"></el-option>
               </el-select>
             </li>
             <li class="same">
@@ -359,8 +360,8 @@
 
       },
       onload: function () {
-        this.$data.loadUrl = this.loadUrl1;
-        this.$data.isMask = true;
+        this.loadUrl = this.loadUrl1;
+        this.isMask = true;
       },
       changeSettleStatus: function (row, column) {
         var val = row.settleStatus;
@@ -388,12 +389,6 @@
       handleCurrentChange(val) {
         this.query.page = val;
         this.getData()
-      },
-      tableFoot(row, index) {
-        if (row.proxyName1 === '当页总额'||row.proxyName1 === '筛选条件统计') {
-          return {background:'#eef1f6'}
-        }
-        return '';
       },
       getAddTotal(){
         this.$http.post('/admin/queryOrder/amountCount',this.query)
@@ -434,7 +429,7 @@
       },
       appId: function (val) {
         if(val == ''){
-          this.markCode=''
+          this.markCode='';
           this.merchantName=''
         }
       }

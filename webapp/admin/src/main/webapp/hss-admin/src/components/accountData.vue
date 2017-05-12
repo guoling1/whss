@@ -7,6 +7,14 @@
           <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="box-body">
+          <ul>
+            <li>帐平笔数：{{record.balanceCount}}笔</li>
+            <li>帐平金额：{{record.balanceSum|toFix}}元</li>
+            <li>对方单边笔数：{{record.exCount}}笔</li>
+            <li>对方单边金额：{{record.exSum|toFix}}元</li>
+            <li>己方单边笔数：{{record.inCountWD}}笔</li>
+            <li>己方单边金额：{{record.inSumWD|toFix}}元</li>
+          </ul>
           <el-tabs class="tab" v-model="activeName" type="border-card" style="margin-bottom: 20px">
             <el-tab-pane :label='"对方单边笔数("+exCount+"笔)"' name="first">
               <el-table  style="font-size: 12px;margin:15px 0" :data="exDetailList" border :row-style="tableFoot">
@@ -20,7 +28,7 @@
                 <el-table-column prop="tradeAmount" label="交易金额" align="right" header-align="left"></el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane :label='"己方单边笔数("+inCount+"笔)"' name="second">
+            <el-tab-pane :label='"己方单边笔数("+inCountWD+"笔)"' name="second">
               <el-table style="font-size: 12px;margin:15px 0" :data="inDetailList" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
@@ -65,7 +73,8 @@
         balanceList:[],
         balanceCount:'',
         exCount:'',
-        inCount:'',
+        inCountWD:'',
+        record:"",
         //正式
         url:"http://checking.qianbaojiajia.com/external/confirmBanlanceAccount"
         //测试
@@ -78,7 +87,8 @@
       this.balanceList = JSON.parse(sessionStorage.getItem('data')).balanceList;
       this.balanceCount = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.balanceCount;
       this.exCount = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.exCount;
-      this.inCount = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.inCount;
+      this.inCountWD = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.inCountWD;
+      this.record = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic;
     },
     methods: {
       goBack:function () {
@@ -126,5 +136,9 @@
 <style scoped lang="less">
   ul{
     padding: 0;
+    li{
+      display: inline-block;
+      margin-right: 10px;
+    }
   }
 </style>

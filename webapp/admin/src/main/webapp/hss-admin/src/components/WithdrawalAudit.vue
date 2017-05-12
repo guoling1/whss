@@ -119,9 +119,9 @@
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/audit',
-         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',*/
+//        queryUrl:'http://192.168.1.20:8076/order/withdraw/audit',
+//         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
+//         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
       }
     },
     created: function () {
@@ -179,7 +179,7 @@
               showClose: true,
               message: err.statusMessage,
               type: 'error'
-            })
+            });
             this.isBtn=false;
             this.$data.isMask = false;
 //            this.$router.push('/admin/record/newWithdrawalQuery')

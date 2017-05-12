@@ -54,7 +54,7 @@
             <el-table-column width="62" label="序号" type="index"></el-table-column>
             <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="userName" label="账户名称">
@@ -65,7 +65,7 @@
             <el-table-column prop="userType" label="用户类型"></el-table-column>
             <el-table-column label="业务订单号">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="tradeAmount" label="提现金额" align="right">
@@ -82,7 +82,7 @@
             <el-table-column prop="payChannelName" label="渠道名称"></el-table-column>
             <el-table-column label="打款流水号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.sn" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.sn" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="createTimes" label="提现时间" width="162"></el-table-column>
@@ -216,15 +216,15 @@
       onload:function () {
         this.$http.post('/admin/order/downLoad',this.query)
           .then(function (res) {
-            this.$data.isMask = true;
-            this.$data.url = res.data;
+            this.isMask = true;
+            this.url = res.data;
           },function (err) {
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             });
-            this.$data.isMask = false;
+            this.isMask = false;
           })
       },
       getData: function () {
@@ -260,49 +260,6 @@
             });
           })
 
-      },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeNum: function (row, column) {
-        var val = row.tradeAmount;
-        if(val!=''){
-          return parseFloat(val).toFixed(2);
-        }else {
-          return val
-        }
-
-      },
-      changeSettleStatus: function (row, column) {
-        var val = row.settleStatus;
-        if(val == 2){
-          return '结算中'
-        }else if(val == 1){
-          return '待结算'
-        }else if(val == 3){
-          return '已结算'
-        }
       },
       search(){
         this.query.pageNo = 1;
@@ -367,23 +324,6 @@
           val = val.replace(val.substring(3,val.length-6),"…");
         }
         return val
-      },
-      changeStatus: function (val) {
-        if(val == 1){
-          return "待支付"
-        }else if(val == 3){
-          return "支付失败"
-        }else if(val == 4){
-          return "支付成功"
-        }else if(val == 5){
-          return "提现中"
-        }else if(val == 6){
-          return "提现成功"
-        }else if(val == 7){
-          return "充值成功"
-        }else if(val == 6){
-          return "充值失败"
-        }
       },
     }
   }

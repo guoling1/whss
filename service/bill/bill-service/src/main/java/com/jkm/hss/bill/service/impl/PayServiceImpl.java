@@ -459,7 +459,7 @@ public class PayServiceImpl implements PayService {
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), channelMoneyTriple, "通道账户",
-                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.JKM.getId());
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.JKM.getId(), order.getSettleType());
             final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), channelMoneyTriple.getMiddle());
@@ -470,7 +470,7 @@ public class PayServiceImpl implements PayService {
         if (null != productMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), productMoneyTriple, "产品账户",
-                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.JKM.getId());
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.JKM.getId(), order.getSettleType());
             final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), productMoneyTriple.getMiddle());
@@ -482,7 +482,7 @@ public class PayServiceImpl implements PayService {
             final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(),
-                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.FIRST_DEALER.getId());
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.FIRST_DEALER.getId(), order.getSettleType());
             final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
@@ -504,7 +504,7 @@ public class PayServiceImpl implements PayService {
             final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(),
-                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.SECOND_DEALER.getId());
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.SECOND_DEALER.getId(), order.getSettleType());
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
@@ -525,7 +525,7 @@ public class PayServiceImpl implements PayService {
             final Account account = this.accountService.getById(firstMerchantMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), firstMerchantMoneyTriple, merchant.getMerchantName(),
-                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.MERCHANT.getId());
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.MERCHANT.getId(), order.getSettleType());
             this.accountService.increaseTotalAmount(account.getId(), firstMerchantMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMerchantMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMerchantMoneyTriple.getMiddle(),
@@ -545,7 +545,7 @@ public class PayServiceImpl implements PayService {
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(secondMerchantMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), secondMerchantMoneyTriple, merchant.getMerchantName(),
-                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.MERCHANT.getId());
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.MERCHANT.getId(), order.getSettleType());
             final Account account = this.accountService.getById(secondMerchantMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
@@ -998,30 +998,39 @@ public class PayServiceImpl implements PayService {
             paymentSdkConfirmUnionPayRequest.setOrderNo(order.getOrderNo());
             paymentSdkConfirmUnionPayRequest.setCode(order.getPayType());
             paymentSdkConfirmUnionPayRequest.setYzm(code);
-            final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_CONFRIM, SdkSerializeUtil.convertObjToMap(paymentSdkConfirmUnionPayRequest));
-            log.info("订单号[{}], 快捷确认下单结果[{}]", order.getOrderNo(), resultStr);
-            final PaymentSdkConfirmUnionPayResponse paymentSdkConfirmUnionPayResponse = JSONObject.parseObject(resultStr, PaymentSdkConfirmUnionPayResponse.class);
-            final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkConfirmUnionPayResponse.getCode());
-            switch (enumBasicStatus) {
-                case SUCCESS:
-                    this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
-                    final Optional<AccountBank> accountBankOptional = this.accountBankService.selectCreditCardByBankNo(order.getPayee(),
-                            MerchantSupport.decryptBankCard(order.getPayBankCard()));
-                    if (accountBankOptional.isPresent()) {
-                        this.handleBankExpireDateAndCvv(order, accountBankOptional.get());
-                        this.accountBankService.setDefaultCreditCard(accountBankOptional.get().getId());
-                    } else {
-                        final AccountBank accountBank = this.accountBankService.selectCreditCardByBankNoAndStateless(order.getPayee(),
-                                MerchantSupport.decryptBankCard(order.getPayBankCard())).get();
-                        this.accountBankService.setDefaultCreditCard(accountBank.getId());
-                    }
-                    return Pair.of(0, "");
-                case FAIL:
-                    this.orderService.updateStatus(orderId, EnumOrderStatus.PAY_FAIL.getId(), paymentSdkConfirmUnionPayResponse.getMessage());
-                    return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
+            try {
+                final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_CONFRIM, SdkSerializeUtil.convertObjToMap(paymentSdkConfirmUnionPayRequest));
+                log.info("订单号[{}], 快捷确认下单结果[{}]", order.getOrderNo(), resultStr);
+                final PaymentSdkConfirmUnionPayResponse paymentSdkConfirmUnionPayResponse = JSONObject.parseObject(resultStr, PaymentSdkConfirmUnionPayResponse.class);
+                final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkConfirmUnionPayResponse.getCode());
+                switch (enumBasicStatus) {
+                    case SUCCESS:
+                        this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
+                        final Optional<AccountBank> accountBankOptional = this.accountBankService.selectCreditCardByBankNo(order.getPayee(),
+                                MerchantSupport.decryptBankCard(order.getPayBankCard()));
+                        if (accountBankOptional.isPresent()) {
+                            this.handleBankExpireDateAndCvv(order, accountBankOptional.get());
+                            this.accountBankService.setDefaultCreditCard(accountBankOptional.get().getId());
+                        } else {
+                            final AccountBank accountBank = this.accountBankService.selectCreditCardByBankNoAndStateless(order.getPayee(),
+                                    MerchantSupport.decryptBankCard(order.getPayBankCard())).get();
+                            this.accountBankService.setDefaultCreditCard(accountBank.getId());
+                        }
+                        return Pair.of(0, "success");
+                    case HANDLING:
+                        this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
+                        return Pair.of(0, paymentSdkConfirmUnionPayResponse.getMessage());
+                    case FAIL:
+                        this.orderService.updateStatus(orderId, EnumOrderStatus.PAY_FAIL.getId(), paymentSdkConfirmUnionPayResponse.getMessage());
+                        return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
+                }
+            } catch (final Throwable e) {
+                log.error("订单[" + order.getOrderNo() + "],确认支付超时", e);
+                this.orderService.updateRemark(orderId, "请求网关超时");
+                return Pair.of(-1, "支付结果未知，请确认是否扣款或者联系客服");
             }
         }
-        return Pair.of(-1, "请重新发送验证码");
+        return Pair.of(-1, "订单状态错误，请重新发送验证码");
     }
 
     private void handleBankExpireDateAndCvv(final Order order, final AccountBank accountBank) {

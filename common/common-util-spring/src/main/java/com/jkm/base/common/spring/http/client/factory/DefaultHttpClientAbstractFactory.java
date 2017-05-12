@@ -28,7 +28,7 @@ public class DefaultHttpClientAbstractFactory implements HttpClientAbstractFacto
      */
     private final static RequestConfig requestConfig = RequestConfig.copy(RequestConfig.DEFAULT)
             .setConnectTimeout(5000)
-            .setSocketTimeout(30000)
+            .setSocketTimeout(120000)
             .setConnectionRequestTimeout(120000)
             .build();
 

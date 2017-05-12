@@ -1,9 +1,6 @@
 package com.jkm.hss.merchant.dao;
 
-import com.jkm.hss.merchant.entity.HistoryPhotoChangeRequest;
-import com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoRequest;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -127,4 +124,67 @@ public interface MerchantInfoQueryDao {
      * @return
      */
     int selectHistoryCount(HistoryPhotoChangeRequest request);
+
+    /**
+     * 根据店铺id查询原来的照片
+     * @param sid
+     * @return
+     */
+    HsyHistoryPhotoChangeResponse getHsyPhoto(@Param("sid") long sid);
+
+    /**
+     * 保存hsy历史照片
+     * @param map
+     */
+    void saveHsyHistory(Map map);
+
+    /**
+     * 更改或上传身份证正面
+     * @param map
+     */
+    void saveHsyPhotoChang(Map map);
+
+    /**
+     * 更改或上传身份证反面
+     * @param map
+     */
+    void saveHsyPhotoChang1(Map map);
+
+    /**
+     * 更改或上传营业执照
+     * @param map
+     */
+    void saveHsyPhotoChang2(Map map);
+
+    /**
+     * 更改或上传店面照片
+     * @param map
+     */
+    void saveHsyPhotoChang3(Map map);
+
+    /**
+     * 更改或上传收银台
+     * @param map
+     */
+    void saveHsyPhotoChang4(Map map);
+
+    /**
+     * 更改或上传室内照片
+     * @param map
+     */
+    void saveHsyPhotoChang5(Map map);
+
+    /**
+     * 查询hsy历史
+     * @param request
+     * @return
+     */
+    List<HsyHistoryPhotoChangeResponse> selectHsyHistory(HistoryPhotoChangeRequest request);
+
+    /**
+     * 查询hsy历史总数
+     * @param request
+     * @return
+     */
+    int selectHsyHistoryCount(HistoryPhotoChangeRequest request);
 }

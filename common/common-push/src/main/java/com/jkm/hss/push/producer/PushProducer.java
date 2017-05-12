@@ -38,6 +38,11 @@ public class PushProducer {
 
 
 
+//    private static String appId = "ygse2nnwTp6CkuW0o2kxS3";
+//    private static String appKey = "44Ho1HGR5jAHmnLbcD2mb7";
+//    private static String masterSecret = "O1M2iE6dqI8lyBAsZwPRX1";
+//    private static String url = "http://sdk.open.api.igexin.com/apiex.htm";
+
 //    private static String appId = "IglbCXAlFFAbv0RJK64619";
 //    private static String appKey = "iqviYHBtLL8aEVvdB7QVn1";
 //    private static String masterSecret = "F7gCfOPvPu6HSY81gb8hR9";
@@ -193,15 +198,15 @@ public class PushProducer {
         template.setTransmissionType(type);
         template.setTransmissionContent(content);
 
-        JSONObject jsonObject = JSONObject.parseObject(content);
-        String resultMessage = jsonObject.getString("resultMessage");
+//        JSONObject jsonObject = JSONObject.parseObject(content);
+//        String resultMessage = jsonObject.getString("resultMessage");
 
         //ios透传需要设置的内容
         APNPayload payload = new APNPayload();
         payload.setContentAvailable(0);
         payload.setSound("suc1.wav");
-        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
-//        payload.setCategory(content);
+//        payload.setAlertMsg(new APNPayload.SimpleAlertMsg("resultMessage"));
+        payload.setCategory(content);
         payload.addCustomMsg("date",content);
 //        payload.addCustomMsg("code",100);
         template.setAPNInfo(payload);
@@ -308,7 +313,23 @@ public class PushProducer {
         Map map = new HashMap();
         String taskId = null;
         IPushResult ret=null;
-        if(pushType.equals("2")){
+        if(pushType.equals("1")){
+            SingleMessage messageS = new SingleMessage();
+            messageS.setData(template);
+            messageS.setOffline(true);
+            // 离线有效时间，单位为毫秒，可选
+            messageS.setOfflineExpireTime(24 * 3600 * 1000);
+            Target target = new Target();
+            target.setAppId(appId);
+            target.setClientId(clientId);
+            //target.setAlias(Alias);
+            try {
+                ret = push.pushMessageToSingle(messageS, target);
+            } catch (RequestException e) {
+                e.printStackTrace();
+                ret = push.pushMessageToSingle(messageS, target, e.getRequestId());
+            }
+        }else if(pushType.equals("2")){
             ListMessage messageL = new ListMessage();
             messageL.setData(template);
             // 设置消息离线，并设置离线时间

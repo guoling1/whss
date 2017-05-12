@@ -9,6 +9,8 @@ import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
@@ -48,6 +50,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private SendMessageRecordDao sendMessageRecordDao;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private QRCodeService qRCodeService;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -299,6 +303,30 @@ public class HsyUserServiceImpl implements HsyUserService {
             }
         }).create();
         Map map=new HashMap();
+
+        List<AppBizShop> userShopList=hsyShopDao.findShopListByUID(appAuUserFind.getId());
+        List shopQRList=new ArrayList();
+        if(userShopList!=null&&userShopList.size()!=0) {
+            for (AppBizShop shopQR : userShopList) {
+                Map qrMap=new HashMap();
+                List<QRCodeList> qrList = qRCodeService.bindShopList(shopQR.getId(), AppConstant.FIlE_ROOT);
+                qrMap.put("shortName",shopQR.getShortName());
+                qrMap.put("name",shopQR.getName());
+                qrMap.put("type",shopQR.getType());
+                if(qrList!=null&&qrList.size()!=0)
+                    qrMap.put("qrList",qrList);
+                shopQRList.add(qrMap);
+            }
+        }
+        else
+        {
+            shopQRList=null;
+        }
+        Map qr=new HashMap();
+        qr.put("shopQRList",shopQRList);
+        qr.put("qrUrl",AppConstant.QR_URL);
+        map.put("qr",qr);
+
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
@@ -951,6 +979,29 @@ public class HsyUserServiceImpl implements HsyUserService {
             map.put("dueSettleAmount", "");
             map.put("frozenAmount", "");
         }
+
+        List<AppBizShop> userShopList=hsyShopDao.findShopListByUID(appAuUserFind.getId());
+        List shopQRList=new ArrayList();
+        if(userShopList!=null&&userShopList.size()!=0) {
+            for (AppBizShop shopQR : userShopList) {
+                Map qrMap=new HashMap();
+                List<QRCodeList> qrList = qRCodeService.bindShopList(shopQR.getId(), AppConstant.FIlE_ROOT);
+                qrMap.put("shortName",shopQR.getShortName());
+                qrMap.put("name",shopQR.getName());
+                qrMap.put("type",shopQR.getType());
+                if(qrList!=null&&qrList.size()!=0)
+                    qrMap.put("qrList",qrList);
+                shopQRList.add(qrMap);
+            }
+        }
+        else
+        {
+            shopQRList=null;
+        }
+        Map qr=new HashMap();
+        qr.put("shopQRList",shopQRList);
+        qr.put("qrUrl",AppConstant.QR_URL);
+        map.put("qr",qr);
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
