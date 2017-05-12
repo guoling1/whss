@@ -14,7 +14,7 @@ public class V1o6BizMapper {
         bizMapper.put("HSY001003", new String[]{"hsyUserService","insertAndSendVerificationCode","发送验证码成功"});
         bizMapper.put("HSY001004", new String[]{"hsyUserService","updateHsyUserForSetPassword","找回密码成功"});
         bizMapper.put("HSY001005", new String[]{"hsyShopService","updateHsyShop","修改店铺信息成功"});
-        bizMapper.put("HSY001006", new String[]{"hsyShopService","updateHsyShopContact","修改店铺信息成功"});
+        bizMapper.put("HSY001006", new String[]{"hsyShopService","updateHsyShopContact1o6","修改店铺信息成功"});
         bizMapper.put("HSY001007", new String[]{"hsyShopService","insertHsyCard","保存结算账户成功"});
         bizMapper.put("HSY001008", new String[]{"hsyShopService","findHsyCardBankByBankNO"});
         bizMapper.put("HSY001009", new String[]{"hsyShopService","findDistrictByParentCode"});

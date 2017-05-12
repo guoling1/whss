@@ -179,6 +179,75 @@ public class HsyShopServiceImpl implements HsyShopService {
         hsyUserDao.updateByID(appAuUser);
         return "{\"auStep\":\"3\"}";
     }
+    /**HSY001006 更新店铺资料联系人 v1o6版本增加 by wayne*/
+    public String updateHsyShopContact1o6(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+
+        /**参数转化*/
+        AppBizShop appBizShop=null;
+        try{
+            appBizShop=gson.fromJson(dataParam, AppBizShop.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appBizShop.getId()!=null&&!appBizShop.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
+        if(!(appBizShop.getContactName()!=null&&!appBizShop.getContactName().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"联系人");
+        if(!(appBizShop.getContactCellphone()!=null&&!appBizShop.getContactCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"联系人手机");
+        if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+        if (!ValidateUtils.isMobile(appBizShop.getContactCellphone()))
+            throw new ApiHandleException(ResultCode.CELLPHONE_NOT_CORRECT_FORMAT);
+
+        MultipartFile fileA=files.get("fileA");
+        if(fileA==null||(fileA!=null&&fileA.getSize()==0))
+            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileA");
+        MultipartFile fileB=files.get("fileB");
+        if(fileB==null||(fileB!=null&&fileB.getSize()==0))
+            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileB");
+
+        AppAuUser appAuUser=new AppAuUser();
+        appAuUser.setId(appBizShop.getUid());
+        files.remove("fileC");
+        Set<String> set=files.keySet();
+        Iterator<String> it=set.iterator();
+        while(it.hasNext()){
+            String fileKey=it.next();
+            MultipartFile file=files.get(fileKey);
+            String type="";
+            if(fileKey.equals("fileA")&&FileType.contains(appBizShop.getFileA()))
+                type=appBizShop.getFileA();
+            else if(fileKey.equals("fileB")&&FileType.contains(appBizShop.getFileB()))
+                type=appBizShop.getFileB();
+            else
+                throw new ApiHandleException(ResultCode.FILE_TYPE_NOT_EXSIT);
+            String uuid="";
+            try {
+                uuid=hsyFileService.insertFileAndUpload(file, type);
+            }catch(Exception e){
+                e.printStackTrace();
+                throw new ApiHandleException(ResultCode.FILE_UPLOAD_FAIL);
+            }
+            if(type.equals(FileType.IDCARDF.fileIndex))
+                appAuUser.setIdcardf(uuid);
+            else if(type.equals(FileType.IDCARDB.fileIndex))
+                appAuUser.setIdcardb(uuid);
+        }
+
+        /**商铺 用户修改*/
+        Date date=new Date();
+        appBizShop.setUpdateTime(date);
+        hsyShopDao.update(appBizShop);
+        appAuUser.setUpdateTime(date);
+        appAuUser.setAuStep("3");
+        appAuUser.setRealname(appBizShop.getContactName());
+        hsyUserDao.updateByID(appAuUser);
+        return "{\"auStep\":\"3\"}";
+    }
 
     /**HSY001007 保存结算账户*/
     public String insertHsyCard(String dataParam,AppParam appParam)throws ApiHandleException{

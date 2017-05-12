@@ -18,6 +18,7 @@ public class AppAuUser {
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
     private String idcardh;//身份证手持照
+    private String idcardc;//结算卡号正面照
     private Long accountID;//账户ID
     private Long dealerID;//代理商ID
     private Long productID;//产品ID
@@ -137,6 +138,13 @@ public class AppAuUser {
 
     public void setIdcardh(String idcardh) {
         this.idcardh = idcardh;
+    }
+    public String getIdcardc() {
+        return idcardc;
+    }
+
+    public void setIdcardc(String idcardc) {
+        this.idcardc = idcardc;
     }
 
     public Date getCreateTime() {
