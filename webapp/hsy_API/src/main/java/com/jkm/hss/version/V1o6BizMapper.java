@@ -70,5 +70,7 @@ public class V1o6BizMapper {
         bizMapper.put("HSY001045", new String[]{"hsyTradeService", "appOrderDetail"});
         /**交易记录-version1.5*/
         bizMapper.put("HSY001046", new String[]{"hsyTradeService", "tradeList1"});
+        /**创建会员卡*/
+        bizMapper.put("HSY001047", new String[]{"hsyMembershipService", "insertMemshipCard"});
     }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyMembershipDao">
+    <insert id="insertMembershipCard" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        insert into app_policy_membership_card(ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME)
+        values(#{id},#{uid},#{membershipName},#{membershipShopName},#{discount},#{isDeposited},#{depositAmount},#{isPresentedViaActivate},#{presentAmount},#{isPresentedViaRecharge},#{rechargeLimitAmount},#{rechargePresentAmount},#{weight},#{status},#{createTime},#{updateTime})
+    </insert>
+
+    <insert id="insertMembershipCardShop" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
+        insert into app_policy_membership_card(MCID,SID)
+        values(#{mcid},#{sid})
+    </insert>
+
+    <insert id ="insertMembershipCardShopBatch" parameterType="java.util.List" >
+        insert into app_policy_membership_card_shop
+        (MCID,SID)
+        values
+        <foreach collection ="list" item="data" index= "index" separator =",">
+            (
+              #{mcid},#{sid}
+            )
+        </foreach >
+    </insert>
+</mapper>

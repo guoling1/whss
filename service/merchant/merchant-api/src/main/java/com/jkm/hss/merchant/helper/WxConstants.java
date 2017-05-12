@@ -2,7 +2,7 @@ package com.jkm.hss.merchant.helper;
 
 public class WxConstants {
     public final static String DOMAIN = "hss.qianbaojiajia.com";
-    public final static String DOMAIN1 = "hsy.qianbaojiajia.com/hsy";
+    public final static String DOMAIN1 = "hsy.qianbaojiajia.com";
     /**
      * 微信公众账号
      */
