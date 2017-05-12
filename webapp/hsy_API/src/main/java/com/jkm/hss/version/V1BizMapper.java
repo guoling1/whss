@@ -47,7 +47,7 @@ public class V1BizMapper {
 		bizMapper.put("HSY001034", new String[]{"hsyAccountService", "getVerifyCode"});
 		/**结算记录*/
 		bizMapper.put("HSY001035", new String[]{"accountSettleAuditRecordService", "appSettleRecordList"});
-		/**交易记录*/
+		/**交易记录-version1*/
 		bizMapper.put("HSY001036", new String[]{"hsyTradeService", "tradeList"});
 		bizMapper.put("HSY001037", new String[]{"hsyAppVersionService","findVersionDetailByVersionCode"});
 		/**结算详情*/
@@ -65,5 +65,7 @@ public class V1BizMapper {
 		bizMapper.put("HSY001044", new String[]{"hsyTradeService", "appRefund"});
 		/**交易详情*/
 		bizMapper.put("HSY001045", new String[]{"hsyTradeService", "appOrderDetail"});
+		/**交易记录-version1.5*/
+		bizMapper.put("HSY001046", new String[]{"hsyTradeService", "tradeList1"});
 	}
 }

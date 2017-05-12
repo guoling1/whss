@@ -2,7 +2,7 @@ package com.jkm.hss.merchant.helper;
 
 public class WxConstants {
     public final static String DOMAIN = "hss.qianbaojiajia.com";
-    public final static String DOMAIN1 = "hsy.qianbaojiajia.com";
+    public final static String DOMAIN1 = "hsy.qianbaojiajia.com/hsy";
     /**
      * 微信公众账号
      */
@@ -34,5 +34,6 @@ public class WxConstants {
      * 好收银
      */
     public final static String WEIXIN_HSY_MERCHANT_USERINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_HSY_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN1+"%2fsqb%2ftoSkip&response_type=code&scope=snsapi_base&state=";
+    public final static String WEIXIN_HSY_MEMBERSHIP_AUTHINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_HSY_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN1+"%2fmembership%2fgetAuthInfo&response_type=code&scope=snsapi_base&state=";
 
 }

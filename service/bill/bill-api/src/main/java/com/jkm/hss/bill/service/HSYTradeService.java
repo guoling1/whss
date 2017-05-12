@@ -2,7 +2,6 @@ package com.jkm.hss.bill.service;
 
 
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.RefundOrder;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
@@ -33,6 +32,15 @@ public interface HSYTradeService {
      * @return
      */
     String tradeList(String dataParam, AppParam appParam);
+
+    /**
+     * app交易记录
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String tradeList1(String dataParam, AppParam appParam);
 
     /**
      * app收款
@@ -211,4 +219,6 @@ public interface HSYTradeService {
      * @param shop
      */
     void withdrawSplitAccount(Order order, AppBizShop shop);
+
+
 }

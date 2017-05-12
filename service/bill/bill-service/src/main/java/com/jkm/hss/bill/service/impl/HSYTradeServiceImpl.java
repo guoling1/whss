@@ -144,6 +144,57 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long accountId = dataJo.getLongValue("accountId");
         final int pageNo = dataJo.getIntValue("pageNo");
         final int pageSize = dataJo.getIntValue("pageSize");
+        final String dateStr = dataJo.getString("date");
+        Date date = null;
+        if (!StringUtils.isEmpty(dateStr) && !StringUtils.isEmpty(dateStr)) {
+            date = DateFormatUtil.parse(dateStr + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
+        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), date);
+        final List<Order> orders = this.orderService.getPageOrdersByAccountId(accountId, EnumAppType.HSY.getId(),
+                pageModel.getFirstIndex(), pageSize, date);
+        pageModel.setCount(count);
+        if (!CollectionUtils.isEmpty(orders)) {
+            final List<JSONObject> recordList = new ArrayList<>();
+            pageModel.setRecords(recordList);
+            for (Order order : orders) {
+                final JSONObject jo = new JSONObject();
+                recordList.add(jo);
+                if (EnumTradeType.PAY.getId() == order.getTradeType()) {
+                    jo.put("tradeType", "1");
+                } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
+                    jo.put("tradeType", "2");
+                }
+                jo.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue());
+                if (EnumOrderStatus.PAY_SUCCESS.getId() == order.getStatus()) {
+                    jo.put("msg", "收款成功");
+                } else if (EnumOrderStatus.WITHDRAW_SUCCESS.getId() == order.getStatus()) {
+                    jo.put("msg", "提现成功");
+                }
+                jo.put("amount", order.getTradeAmount().toPlainString());
+                jo.put("time", order.getCreateTime());
+                jo.put("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            }
+        } else {
+            pageModel.setRecords(Collections.<JSONObject>emptyList());
+        }
+
+        return JSON.toJSONString(pageModel);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String tradeList1(final String dataParam, final AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final long accountId = dataJo.getLongValue("accountId");
+        final int pageNo = dataJo.getIntValue("pageNo");
+        final int pageSize = dataJo.getIntValue("pageSize");
         final String channel = dataJo.getString("channel");
         final String[] paymentChannels = channel.split(",");
         final String startTimeStr = dataJo.getString("startTime");
@@ -199,7 +250,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 final Date parseDate = DateFormatUtil.parse(DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
                 final AppStatisticsOrder statisticsOrder = statisticsOrderHashMap.get(parseDate);
                 jo.put("number", statisticsOrder.getNumber());
-                jo.put("totalAmount", null != statisticsOrder.getAmount() ? statisticsOrder.getAmount().toPlainString() : 0.00);
+                jo.put("totalAmount", null != statisticsOrder.getAmount() ? statisticsOrder.getAmount().toPlainString() : "0.00");
                 jo.put("refundStatus", order.getRefundStatus());
                 jo.put("refundStatusValue", EnumOrderRefundStatus.of(order.getRefundStatus()).getValue());
                 if (EnumTradeType.PAY.getId() == order.getTradeType()) {

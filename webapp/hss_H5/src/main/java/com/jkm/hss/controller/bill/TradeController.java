@@ -761,10 +761,23 @@ public class TradeController extends BaseController {
         }
         final Pair<Integer, String> result = this.payService.confirmUnionPay(confirmUnionPayRequest.getOrderId(), confirmUnionPayRequest.getCode());
         if (0 == result.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, result.getRight())
                     .addParam("orderId", confirmUnionPayRequest.getOrderId())
                     .build();
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
+    }
+
+
+    /**
+     * do not use
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "testT1Withdraw/{orderId}")
+    public CommonResponse testT1Withdraw(@PathVariable long orderId) {
+        this.orderService.t1WithdrawByOrderId(orderId);
+        return CommonResponse.simpleResponse(0, "success");
     }
 }
