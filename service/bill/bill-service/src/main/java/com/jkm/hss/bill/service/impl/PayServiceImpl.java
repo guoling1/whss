@@ -112,7 +112,7 @@ public class PayServiceImpl implements PayService {
             return Pair.of(-1, "订单号重复");
         }
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        final String channelCode = this.basicChannelService.selectCodeByChannelSign(EnumPayChannelSign.YG_WECHAT.getId(), EnumMerchantPayType.MERCHANT_JSAPI);
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(EnumPayChannelSign.YG_WECHAT.getId(), EnumMerchantPayType.MERCHANT_CODE);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrderNo);
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
