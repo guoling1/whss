@@ -18,7 +18,9 @@ import com.jkm.hss.push.config.PushConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 消息生产
@@ -35,6 +37,11 @@ public class PushProducer {
 
 
 
+
+//    private static String appId = "ygse2nnwTp6CkuW0o2kxS3";
+//    private static String appKey = "44Ho1HGR5jAHmnLbcD2mb7";
+//    private static String masterSecret = "O1M2iE6dqI8lyBAsZwPRX1";
+//    private static String url = "http://sdk.open.api.igexin.com/apiex.htm";
 
 //    private static String appId = "IglbCXAlFFAbv0RJK64619";
 //    private static String appKey = "iqviYHBtLL8aEVvdB7QVn1";
@@ -182,6 +189,30 @@ public class PushProducer {
         template.setAPNInfo(payload);
         return pushTemplate(push,template,pushType,clientId,targets);
     }
+    public static Map pushTransmissionMsgTask(Integer  type, String content, String pushType, String clientId, List<String> targets){
+        IGtPush push = new IGtPush(url, appKey, masterSecret);
+        TransmissionTemplate template = new TransmissionTemplate();
+        template.setAppId(appId);
+        template.setAppkey(appKey);
+        // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
+        template.setTransmissionType(type);
+        template.setTransmissionContent(content);
+
+//        JSONObject jsonObject = JSONObject.parseObject(content);
+//        String resultMessage = jsonObject.getString("resultMessage");
+
+        //ios透传需要设置的内容
+        APNPayload payload = new APNPayload();
+        payload.setContentAvailable(0);
+        payload.setSound("suc1.wav");
+//        payload.setAlertMsg(new APNPayload.SimpleAlertMsg("resultMessage"));
+        payload.setCategory(content);
+        payload.addCustomMsg("date",content);
+//        payload.addCustomMsg("code",100);
+        template.setAPNInfo(payload);
+        return pushTemplate1(push,template,pushType,clientId,targets);
+    }
+
 
     /**
      * 审核透传
@@ -217,7 +248,6 @@ public class PushProducer {
 
 
     public static String pushTemplate(IGtPush push , ITemplate template , String pushType, String clientId, List<String> targets){
-
 
 
         IPushResult ret=null;
@@ -277,6 +307,71 @@ public class PushProducer {
         } else {
             return "服务器响应异常";
         }
+    }
+
+    public static Map pushTemplate1(IGtPush push , ITemplate template , String pushType, String clientId, List<String> targets){
+        Map map = new HashMap();
+        String taskId = null;
+        IPushResult ret=null;
+        if(pushType.equals("1")){
+            SingleMessage messageS = new SingleMessage();
+            messageS.setData(template);
+            messageS.setOffline(true);
+            // 离线有效时间，单位为毫秒，可选
+            messageS.setOfflineExpireTime(24 * 3600 * 1000);
+            Target target = new Target();
+            target.setAppId(appId);
+            target.setClientId(clientId);
+            //target.setAlias(Alias);
+            try {
+                ret = push.pushMessageToSingle(messageS, target);
+            } catch (RequestException e) {
+                e.printStackTrace();
+                ret = push.pushMessageToSingle(messageS, target, e.getRequestId());
+            }
+        }else if(pushType.equals("2")){
+            ListMessage messageL = new ListMessage();
+            messageL.setData(template);
+            // 设置消息离线，并设置离线时间
+            messageL.setOffline(true);
+            // 离线有效时间，单位为毫秒，可选
+            messageL.setOfflineExpireTime(24 * 1000 * 3600);
+            // 配置推送目标
+            // taskId用于在推送时去查找对应的message
+            taskId = push.getContentId(messageL);
+            List targetss = new ArrayList();
+
+            if(targets!=null) {
+                for (int i = 0; i < targets.size(); i++) {
+                    Target target1 = new Target();
+                    target1.setAppId(appId);
+                    target1.setClientId(targets.get(i));
+                    targetss.add(target1);
+                }
+            }
+            ret = push.pushMessageToList(taskId, targetss);
+        }else{
+            AppMessage messageA = new AppMessage();
+            messageA.setData(template);
+            messageA.setOffline(true);
+
+            //离线有效时间，单位为毫秒，可选
+            messageA.setOfflineExpireTime(24 * 1000 * 3600);
+            //推送给App的目标用户需要满足的条件
+            List<String> appIdList = new ArrayList<String>();
+            appIdList.add(appId);
+            messageA.setAppIdList(appIdList);
+            ret = push.pushMessageToApp(messageA);
+        }
+
+        if (ret != null) {
+            map.put("response",ret.getResponse().toString());
+            map.put("taskId",taskId);
+        } else {
+            map.put("response","服务器响应异常");
+            map.put("taskId",taskId);
+        }
+        return map;
     }
 
 

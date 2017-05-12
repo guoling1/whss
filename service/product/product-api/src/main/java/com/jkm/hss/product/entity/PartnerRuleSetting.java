@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 
 /**
  * Created by xingliujie on 2017/5/4.
+ *
+ *  升级通道网关配置
+ *
+ *  1正常 2禁止
  */
 @Data
 public class PartnerRuleSetting extends BaseEntity {

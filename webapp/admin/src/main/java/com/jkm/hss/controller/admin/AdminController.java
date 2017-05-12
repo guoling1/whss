@@ -336,12 +336,12 @@ public class AdminController extends BaseController {
             if(!ValidationUtil.isIdCard(firstLevelDealerAddRequest.getIdCard())){
                 return CommonResponse.simpleResponse(-1, "身份证格式不正确");
             }
-            if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
-                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
-            }
-            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
-                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
-            }
+//            if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
+//                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+//            }
+//            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+//                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+//            }
             final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
             final long productId = productParam.getProductId();
             final Optional<Product> productOptional = this.productService.selectById(productId);
@@ -418,12 +418,12 @@ public class AdminController extends BaseController {
             if(!ValidationUtil.isIdCard(request.getIdCard())){
                 return CommonResponse.simpleResponse(-1, "身份证格式不正确");
             }
-            if(request.getTotalProfitSpace()==null){
-                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
-            }
-            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
-                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
-            }
+//            if(request.getTotalProfitSpace()==null){
+//                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+//            }
+//            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+//                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+//            }
             final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
             final long productId = productParam.getProductId();
             final Optional<Product> productOptional = this.productService.selectById(productId);

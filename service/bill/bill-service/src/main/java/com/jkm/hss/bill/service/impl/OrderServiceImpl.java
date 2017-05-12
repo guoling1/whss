@@ -35,6 +35,7 @@ import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNo
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -725,6 +726,33 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param accountId
      * @param appId
+     * @return
+     */
+    @Override
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date date) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, date);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
+                                                final int count, final Date date) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
      * @param payChannelSigns
      * @param startTime
      * @param endTime
@@ -1128,9 +1156,9 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
                         list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
@@ -1312,6 +1340,11 @@ public class OrderServiceImpl implements OrderService {
     public List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo) {
         List<SplitAccountRefundRecord> list = this.orderDao.splitAccountRefundList(orderNo);
         return list;
+    }
+
+    @Override
+    public void save(GeTuiResponse geTuiResponse) {
+        this.orderDao.save(geTuiResponse);
     }
 
 

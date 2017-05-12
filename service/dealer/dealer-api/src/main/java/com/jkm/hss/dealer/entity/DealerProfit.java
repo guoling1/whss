@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 /**
  * Created by xingliujie on 2017/5/8.
+ * 1 正常 2禁用
  */
 @Data
 public class DealerProfit extends BaseEntity{

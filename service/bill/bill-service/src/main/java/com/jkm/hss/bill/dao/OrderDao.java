@@ -4,6 +4,7 @@ import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -218,6 +219,30 @@ public interface OrderDao {
      *
      * @param accountId
      * @param appId
+     * @return
+     */
+    long selectPageOrdersCountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+                                          @Param("date") Date date);
+
+    /**
+     * 分页查询--查询记录
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> selectPageOrdersByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+                                            @Param("offset") int offset, @Param("count") int count,
+
+                                            @Param("date") Date date);
+
+    /**
+     * 分页查询--查询个数
+     *
+     * @param accountId
+     * @param appId
      * @param payChannelSigns
      * @param startTime
      * @param endTime
@@ -371,6 +396,12 @@ public interface OrderDao {
      * @return
      */
     List<Order> selectByAppParam(@Param("orderNos") List<String> orderNos, @Param("offset") int offset, @Param("count") int count);
+
+    /**
+     * 保存回调信息
+     * @param geTuiResponse
+     */
+    void save(GeTuiResponse geTuiResponse);
 
     /**
      * 统计金额

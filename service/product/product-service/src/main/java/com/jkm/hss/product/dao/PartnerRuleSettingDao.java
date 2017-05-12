@@ -36,6 +36,14 @@ public interface PartnerRuleSettingDao{
     List<PartnerRuleSettingResponse> selectAllByProductId(@Param("productId") long productId);
 
     /**
+     * 查询
+     * @param productId
+     * @param channelSign
+     * @return
+     */
+    PartnerRuleSetting selectByProductIdAndChannelSign(@Param("productId") long productId, @Param("channelSign") int channelSign);
+
+    /**
      * 根据产品编码和通道编码查询
      * @param productId
      * @param channelTypeSign

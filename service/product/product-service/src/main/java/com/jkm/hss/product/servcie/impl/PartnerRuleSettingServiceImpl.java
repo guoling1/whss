@@ -101,4 +101,17 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
     public Optional<PartnerRuleSetting> selectByProductIdAndChannelTypeSign(long productId, int channelTypeSign) {
         return Optional.fromNullable(partnerRuleSettingDao.selectByProductIdAndChannelTypeSign(productId,channelTypeSign));
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param productId
+     * @param channelSign
+     * @return
+     */
+    @Override
+    public Optional<PartnerRuleSetting> selectByProductIdAndChannelSign(long productId, int channelSign) {
+
+        return Optional.fromNullable(this.partnerRuleSettingDao.selectByProductIdAndChannelSign(productId, channelSign));
+    }
 }

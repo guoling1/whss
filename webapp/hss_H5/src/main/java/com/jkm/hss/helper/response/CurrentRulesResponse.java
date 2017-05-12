@@ -34,4 +34,8 @@ public class CurrentRulesResponse {
      * 还差多少好友
      */
     private int restCount;
+    /**
+     * 升级费用
+     */
+    private BigDecimal upgradeCost;
 }
