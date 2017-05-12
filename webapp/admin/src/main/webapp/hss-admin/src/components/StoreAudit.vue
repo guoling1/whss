@@ -408,10 +408,10 @@
             </tr>
             <tr>
               <th style="text-align: right">
-                <div class="btn btn-danger" @click="unAudit">不 通 过</div>
+                <el-button type="danger" @click="unAudit" :disabled="auditClick">不 通 过</el-button>
               </th>
               <td>
-                <div class="btn btn-success" @click="audit($event)">通 过</div>
+                <el-button type="success" @click="audit($event)" :disabled="auditClick">通 过</el-button>
               </td>
             </tr>
             </tbody>
@@ -447,6 +447,7 @@
     name: 'storeAudit',
     data () {
       return {
+        auditClick:false,
         loading: true,
         dealerMask: false,
         id: '',
@@ -600,21 +601,25 @@
         });
       },
       audit: function (event) {
+        this.auditClick = true;
         this.$http.post('/admin/merchantInfoCheckRecord/record', {
           merchantId: this.$data.id
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'
           })
+          this.auditClick = false;
         }, function (err) {
           this.$message({
             showClose: true,
             message: err.statusMessage,
             type: 'error'
           })
+          this.auditClick = false;
         })
       },
       unAudit: function () {
+        this.auditClick = true;
         this.$http.post('/admin/merchantInfoCheckRecord/auditFailure', {
           merchantId: this.$data.id,
           descr: this.$data.reason
@@ -623,12 +628,14 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '操作成功'
             })
+            this.auditClick = false;
           }, function (err) {
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       // 修改结算卡
