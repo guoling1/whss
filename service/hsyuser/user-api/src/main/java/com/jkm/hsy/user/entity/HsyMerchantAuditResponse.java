@@ -16,6 +16,12 @@ public class HsyMerchantAuditResponse {
 //    private String markCode;    //一级代理商编码
 //    private String markCode1;   //二级级代理商编码
     private String proxyNames; //所属代理商
+
+    /**
+     * 所属分公司
+     */
+    private String dealerBelong;
+
     private String proxyName; //所属一级代理商
     private String proxyName1; //所属二级代理商
     private String code;//省市码

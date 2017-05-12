@@ -1264,6 +1264,7 @@ public class OrderServiceImpl implements OrderService {
         heads.add("交易日期");
         heads.add("收款商户名称");
         heads.add("商户编号");
+        heads.add("所属分公司");
         heads.add("所属一级");
         heads.add("所属二级");
         heads.add("支付金额");
@@ -1292,6 +1293,7 @@ public class OrderServiceImpl implements OrderService {
                 }
                 columns.add(list.get(i).getMerchantName());
                 columns.add(list.get(i).getMarkCode());
+                columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));

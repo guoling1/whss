@@ -96,7 +96,8 @@
         tb_dealer
         WHERE
         id = c.DEALERID
-        ) as proxyNames
+        ) as proxyNames,
+        (SELECT dealer_belong FROM tb_dealer WHERE id=c.DEALERID) AS dealerBelong
         FROM
         app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
