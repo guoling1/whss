@@ -36,8 +36,8 @@ public class MembershipController {
             return "redirect:"+ WxConstants.WEIXIN_HSY_MEMBERSHIP_AUTHINFO+sidEncode+"%7CWX"+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }
         if (agent.indexOf("aliapp") > -1) {
-            System.out.println(AlipayServiceConstants.OAUTH_URL+sidEncode+"|ZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI);
-            return "redirect:"+ AlipayServiceConstants.OAUTH_URL+sidEncode+"|ZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI;
+            System.out.println(AlipayServiceConstants.OAUTH_URL+sidEncode+"%7CZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI);
+            return "redirect:"+ AlipayServiceConstants.OAUTH_URL+sidEncode+"%7CZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI;
         }
         return "/tips";
     }
