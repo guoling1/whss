@@ -14,12 +14,14 @@ import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
+import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.PlaceOrderParams;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,6 +45,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     private AccountService accountService;
     @Autowired
     private AccountFlowService accountFlowService;
+    @Autowired
+    private BasicChannelService basicChannelService;
     @Autowired
     private MemberAccountService memberAccountService;
     @Autowired
@@ -192,8 +196,93 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         return Pair.of(-1, "交易状态异常");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param orderId
+     */
     @Override
-    public void handlePayOrRechargeCallbackMsgImpl(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, long orderId) {
+    @Transactional
+    public void handlePayOrRechargeCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final long orderId) {
+        final Order order = this.orderService.getByIdWithLock(orderId).get();
+        if (EnumTradeType.PAY.getId() == order.getTradeType()) {
+            this.handlePayCallbackMsgImpl(paymentSdkPayCallbackResponse, order);
+            return;
+        } else if (EnumTradeType.RECHARGE.getId() == order.getTradeType()) {
+            this.handleRechargeCallbackMsgImpl(paymentSdkPayCallbackResponse, order);
+            return;
+        }
+        log.error("业务方[{}]-交易单[{}], 处理支付中心回调，交易类型[{}],错误", order.getAppId(), order.getOrderNo(), order.getTradeType());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    @Override
+    @Transactional
+    public void handlePayCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
+        final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkPayCallbackResponse.getStatus());
+        switch (status) {
+            case SUCCESS:
+                log.info("业务方[{}]-交易单[{}], 支付成功回调处理", order.getAppId(), order.getOrderNo());
+//                this.markPaySuccess(paymentSdkPayCallbackResponse, order);
+                break;
+            case FAIL:
+                log.info("业务方[{}]-交易单[{}], 支付失败回调处理", order.getAppId(), order.getOrderNo());
+//                this.markPayFail(paymentSdkPayCallbackResponse, order);
+                break;
+            case HANDLING:
+                log.info("业务方[{}]-交易单[{}], 支付处理中回调处理", order.getAppId(), order.getOrderNo());
+//                this.markPayHandling(paymentSdkPayCallbackResponse, order);
+                break;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    @Override
+    @Transactional
+    public void handleRechargeCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    @Override
+    @Transactional
+    public void markPayOrRechargeSuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
+        final Order updateOrder = new Order();
+        updateOrder.setId(order.getId());
+        updateOrder.setPayType(paymentSdkPayCallbackResponse.getPayType());
+        updateOrder.setRemark(paymentSdkPayCallbackResponse.getMessage());
+        updateOrder.setSn(paymentSdkPayCallbackResponse.getSn());
+        if (EnumTradeType.PAY.getId() == order.getTradeType()) {
+            updateOrder.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
+        } else {
+            updateOrder.setStatus(EnumOrderStatus.RECHARGE_SUCCESS.getId());
+        }
+        log.info("业务方[{}]-交易订单[{}]，支付/充值成功, 支付渠道[{}]", order.getAppId(), order.getOrderNo(), paymentSdkPayCallbackResponse.getPayType());
+        final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
+        updateOrder.setPayChannelSign(enumPayChannelSign.getId());
+
+
+
+
+
+
+
 
     }
 }

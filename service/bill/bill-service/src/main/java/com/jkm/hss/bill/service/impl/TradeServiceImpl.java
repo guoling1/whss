@@ -141,7 +141,7 @@ public class TradeServiceImpl implements TradeService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> handlePayOrRechargeCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
+    public void handlePayOrRechargeCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
         log.info("交易单[{}], 处理回调");
         final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
@@ -149,13 +149,9 @@ public class TradeServiceImpl implements TradeService {
         if (orderOptional.get().isDuePay() || orderOptional.get().isPaying()) {
             final Order order = this.orderService.getByIdWithLock(orderOptional.get().getId()).get();
             if (order.isDuePay() || order.isPaying()) {
-//                this.handlePayCallbackMsgImpl(paymentSdkPayCallbackResponse, order);
+                this.baseTradeService.handlePayOrRechargeCallbackMsgImpl(paymentSdkPayCallbackResponse, order.getId());
             }
         }
-
-
-
-        return null;
     }
 
     @Override

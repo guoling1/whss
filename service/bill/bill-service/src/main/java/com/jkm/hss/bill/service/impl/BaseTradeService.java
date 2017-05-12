@@ -40,10 +40,34 @@ public interface BaseTradeService {
     Pair<Integer, String> memberPayImpl(long receiptMemberMoneyAccountId, long orderId);
 
     /**
-     *
+     * 支付/充值-支付中心回调实现
      *
      * @param paymentSdkPayCallbackResponse
      * @param orderId
      */
     void handlePayOrRechargeCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final long orderId);
+
+    /**
+     * 支付-支付中心回调实现
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    void handlePayCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order);
+
+    /**
+     * 充值-支付中心回调实现
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    void handleRechargeCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order);
+
+    /**
+     * 标记为支付/充值成功
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    void markPayOrRechargeSuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order);
 }

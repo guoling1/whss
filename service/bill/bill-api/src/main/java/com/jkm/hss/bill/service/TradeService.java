@@ -31,9 +31,8 @@ public interface TradeService {
      * 处理支付中心，支付/充值回调
      *
      * @param paymentSdkPayCallbackResponse
-     * @return
      */
-    Pair<Integer, String> handlePayOrRechargeCallbackMsg(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse);
+    void handlePayOrRechargeCallbackMsg(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse);
 
 
     Pair<Integer, String> withdraw();
