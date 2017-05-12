@@ -292,6 +292,7 @@ public class DealerController extends BaseController {
             dealerDetailResponse.setLoginName(adminUserOptional.get().getUsername());
         }
         dealerDetailResponse.setEmail(dealer.getEmail());
+        dealerDetailResponse.setDealerBelong(dealer.getDealerBelong());
         dealerDetailResponse.setMarkCode(dealer.getMarkCode());
         dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
         dealerDetailResponse.setBelongProvinceName(dealer.getBelongProvinceName());
