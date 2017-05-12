@@ -346,7 +346,7 @@ public class PushServiceImpl implements PushService {
             push.setStatus(0);
         }
         push.setTaskId((String) ret.get("taskId"));
-        push.setClientId(clientId);
+        push.setClientId((String) ret.get("clientId"));
         push.setTargets(target);
         pushDao.insert(push);
         return ret;

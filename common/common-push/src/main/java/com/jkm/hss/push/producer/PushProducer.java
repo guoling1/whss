@@ -198,15 +198,15 @@ public class PushProducer {
         template.setTransmissionType(type);
         template.setTransmissionContent(content);
 
-//        JSONObject jsonObject = JSONObject.parseObject(content);
-//        String resultMessage = jsonObject.getString("resultMessage");
+        JSONObject jsonObject = JSONObject.parseObject(content);
+        String resultMessage = jsonObject.getString("resultMessage");
 
         //ios透传需要设置的内容
         APNPayload payload = new APNPayload();
         payload.setContentAvailable(0);
         payload.setSound("suc1.wav");
-//        payload.setAlertMsg(new APNPayload.SimpleAlertMsg("resultMessage"));
-        payload.setCategory(content);
+        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
+//        payload.setCategory(content);
         payload.addCustomMsg("date",content);
 //        payload.addCustomMsg("code",100);
         template.setAPNInfo(payload);
@@ -367,9 +367,11 @@ public class PushProducer {
         if (ret != null) {
             map.put("response",ret.getResponse().toString());
             map.put("taskId",taskId);
+            map.put("clientId",clientId);
         } else {
             map.put("response","服务器响应异常");
             map.put("taskId",taskId);
+            map.put("clientId",clientId);
         }
         return map;
     }
