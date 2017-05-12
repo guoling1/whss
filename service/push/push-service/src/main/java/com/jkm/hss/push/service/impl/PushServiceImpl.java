@@ -340,6 +340,8 @@ public class PushServiceImpl implements PushService {
         push.setTempType("4");
         System.out.print("===================================================================");
         System.out.print(ret.get("response"));
+        System.out.print(ret);
+        System.out.print(ret.get("clientId"));
         if(ret.containsValue("result=ok")){
             push.setStatus(1);
         }else{
