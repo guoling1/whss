@@ -11,7 +11,7 @@ let query = tools.GetUrlArg();
 let title = document.getElementById('title');
 let date = document.getElementById('date');
 let context = document.getElementById('context');
-http.post('/hsy/notice/noticeDetails', {
+http.post('/notice/noticeDetails', {
   id: query.noticeId
 }, function (data) {
   title.innerHTML = data.title;
