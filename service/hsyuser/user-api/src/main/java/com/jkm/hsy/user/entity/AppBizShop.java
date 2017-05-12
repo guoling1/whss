@@ -40,6 +40,7 @@ public class AppBizShop {
     private String fileA;
     private String fileB;
     private String fileC;
+    private String fileD;
 
     private Integer countEmployee;//员工个数
     private Integer countQR;//二维码个数
@@ -229,6 +230,14 @@ public class AppBizShop {
 
     public void setFileC(String fileC) {
         this.fileC = fileC;
+    }
+
+    public String getFileD() {
+        return fileD;
+    }
+
+    public void setFileD(String fileD) {
+        this.fileD = fileD;
     }
 
     public String getStorefrontURL() {
