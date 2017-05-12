@@ -249,7 +249,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
      */
     @Override
     @Transactional
-    public Pair<Integer, String> generateHsySettleAuditRecordTask() {
+    synchronized public Pair<Integer, String> generateHsySettleAuditRecordTask() {
         final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         final int count = this.accountSettleAuditRecordDao.selectCountBySettleDate(settleDate);
         if (count > 0) {
