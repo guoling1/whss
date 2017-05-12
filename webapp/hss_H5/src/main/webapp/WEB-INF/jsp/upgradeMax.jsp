@@ -8,8 +8,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>我的推广</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.16.css">--%>
-  <link rel="stylesheet" href="/css/hss/style.2.2.16.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.4.css">--%>
+  <link rel="stylesheet" href="/css/hss/style.2.0.4.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -49,13 +49,15 @@
       </div>
     </div>
     <div class="btn">
-      <div>立即升级</div>
+      <div id="upBtn">立即升级</div>
     </div>
     <div class="ss" onclick="javascript:location.href='/sqb/suansuan'">算算能挣多少钱?</div>
   </div>
-  <div class="up">
-    <div class="banner"></div>
-    <div class="point"></div>
+  <div class="up" id="up">
+    <div class="banner" id="banner">
+      <%-- 动态添加 --%>
+    </div>
+    <div class="point" id="point"></div>
   </div>
   <div class="rocket" id="rocket"></div>
   <div class="notice flexBox flex-box-column miss" id="notice">

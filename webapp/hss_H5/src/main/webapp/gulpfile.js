@@ -71,7 +71,7 @@ gulp.task('less-hss-beta', function () {
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
     .pipe(px2rem(px2remOptions, postCssOptions))
-    .pipe(rename({basename: "style.2.0.3"}))
+    .pipe(rename({basename: "style.2.0.4"}))
     .pipe(gulp.dest('css'));
 });
 
@@ -90,7 +90,7 @@ gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
     .pipe(replace('vendor.1.0.9.9.min.js', 'vendor.1.0.9.10.min.js'))
     .pipe(replace('style.2.2.15.css', 'style.2.2.16.css'))
-    .pipe(replace('style.2.0.2.css', 'style.2.0.3.css'))
+    .pipe(replace('style.2.0.3.css', 'style.2.0.4.css'))
     .pipe(replace('/hss/2.2.23/', '/hss/2.2.24/'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
