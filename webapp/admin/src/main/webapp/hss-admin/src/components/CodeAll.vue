@@ -1,7 +1,7 @@
 <template>
   <div id="cordAll">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">所有二维码</h3>
         </div>
@@ -33,6 +33,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -92,6 +93,17 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          code:'',
+          merchantName:'',
+          firstDealerName:'',
+          secondDealerName:'',
+          sysType:'hss'
+        };
+      },
       checkDetail: function (event, code) {
         window.open('http://admin.qianbaojiajia.com/admin/details/codeDet?code='+code);
 //        this.$router.push({path: '/admin/record/codeDet', query: {code: code}});
@@ -100,11 +112,15 @@
         this.loading = true;
         this.$http.post('/admin/code/selectQrCodeList', this.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

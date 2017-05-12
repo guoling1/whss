@@ -260,6 +260,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         zhifubaoMerchantPayRate = list.get(i).getMerchantPayRate();
                         signIdList.add(list.get(i).getChannelTypeSign());
                     }
+                    signIdList.add(list.get(i).getChannelTypeSign());
                 }
             }
             if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
@@ -301,7 +302,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         } else {
                             merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId,"入网超时");
                             resultJo.put("code",-1);
-                            resultJo.put("msg","入网超时");
+                            resultJo.put("msg","网络超时，请重试");
                         }
                     }else{
                         log.info("微信或支付宝费率不存在，商户已入网");

@@ -52,16 +52,32 @@
         count: 0,
         currentPage: 1,
         loading: true,
+        url:''
       }
     },
     created: function () {
-      this.query.merchantId = this.$route.query.merchantId;
+      if(this.$route.query.type=='hss'){
+        this.url = '/admin/photoChange/selectHistory';
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          merchantId:this.$route.query.merchantId
+        }
+      }else if(this.$route.query.type=='hsy'){
+        this.url = '/admin/photoChange/selectHsyHistory';
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          sid:this.$route.query.merchantId
+        }
+      }
+//      this.query.merchantId = this.$route.query.merchantId;
       this.getData();
     },
     methods: {
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/photoChange/selectHistory',this.query)
+        this.$http.post(this.url,this.query)
           .then(function (res) {
             this.loading = false;
             this.count = res.data.count;

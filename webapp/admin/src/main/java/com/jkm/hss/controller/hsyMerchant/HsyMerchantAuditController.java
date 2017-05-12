@@ -3,6 +3,11 @@ package com.jkm.hss.controller.hsyMerchant;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.notifier.enums.EnumNoticeType;
+import com.jkm.hss.notifier.enums.EnumUserType;
+import com.jkm.hss.notifier.helper.SendMessageParams;
+import com.jkm.hss.notifier.service.SendMessageService;
+import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
@@ -47,6 +52,12 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private HsyCmbcDao hsyCmbcDao;
 
+    @Autowired
+    private SmsAuthService smsAuthService;
+
+    @Autowired
+    private SendMessageService sendMessageService;
+
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -64,6 +75,15 @@ public class HsyMerchantAuditController extends BaseController {
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_NORMAL);
         hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),true);
+
+        //审核通过发短信
+        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
+                .uid("")
+                .userType(EnumUserType.BACKGROUND_USER)
+                .noticeType(EnumNoticeType.PASS_MESSAGE)
+                .build()
+        );
+
         CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId());
         if(cmbcResponse.getCode()==1){
             hsyUserDao.updateHxbsStatus(EnumHxbsStatus.PASS.getId(),cmbcResponse.getMsg(),hsyMerchantAuditRequest.getUid());
@@ -100,11 +120,21 @@ public class HsyMerchantAuditController extends BaseController {
             hsyMerchantAuditService.stepChange(uid);
         }
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
+
+        //审核未通过发短信
+        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
+                .uid("")
+                .userType(EnumUserType.BACKGROUND_USER)
+                .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
+                .build()
+        );
+
         hsyMerchantAuditRequest.setStat(1);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(1,"审核未通过");
 
     }
+
 
     /**
      * 重新入网

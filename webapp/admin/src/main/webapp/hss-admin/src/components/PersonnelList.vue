@@ -1,7 +1,7 @@
 <template>
   <div id="personnelList">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">员工管理</h3>
           <a @click="_$power(issue,'boss_staff_add')" class="btn btn-primary" style="float: right;">新增员工</a>
@@ -23,6 +23,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -89,6 +90,15 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          markCode: "",
+          realname: "",
+          mobile: ""
+        };
+      },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/personnelAdd')
 //        this.$router.push('/admin/record/personnelAdd')
@@ -101,12 +111,16 @@
         this.loading = true;
         this.$http.post('/admin/user/userList', this.$data.query)
           .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.total = res.data.totalPage;
             this.$data.count = res.data.count;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -144,14 +158,18 @@
                 this.records[i].status = '1'
               }
             }
-            this.loading = false;
+        setTimeout(()=>{
+          this.loading = false;
+      },1000)
             this.$message({
               showClose: true,
               message: '开启成功',
               type: 'success'
             });
           },(err)=>{
-            this.$data.loading = false;
+          setTimeout(()=>{
+            this.loading = false;
+        },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -168,14 +186,18 @@
                 this.records[i].status = '2'
               }
             }
-            this.loading = false;
+        setTimeout(()=>{
+          this.loading = false;
+      },1000)
             this.$message({
               showClose: true,
               message: '禁用成功',
               type: 'success'
             });
           },(err)=>{
-            this.$data.loading = false;
+          setTimeout(()=>{
+            this.loading = false;
+        },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

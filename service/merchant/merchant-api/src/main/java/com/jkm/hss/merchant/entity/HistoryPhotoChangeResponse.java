@@ -66,12 +66,12 @@ public class HistoryPhotoChangeResponse {
     private String operator;
 
     /**
-     * 更新时间
+     * 创建时间
      */
     private Date createTime;
 
     /**
-     * 更新时间
+     * 创建时间
      */
     private String createTimes;
 }

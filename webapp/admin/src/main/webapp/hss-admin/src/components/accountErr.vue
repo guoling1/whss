@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">对账异常记录</h3>
         </div>
@@ -9,15 +9,15 @@
           <ul>
             <li class="same">
               <label>交易流水:</label>
-              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <label>对账渠道:</label>
-              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <label>单边方向:</label>
-              <el-select clearable v-model="query.side" size="small" style="width: 220px">
+              <el-select clearable v-model="query.side" size="small" style="width: 190px">
                 <el-option v-for="item in item_side" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
@@ -28,12 +28,12 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions2" size="small" style="width: 190px">
               </el-date-picker>
             </li>
             <li class="same">
               <label>交易类型:</label>
-              <el-select clearable v-model="query.tradeType" size="small" style="width: 220px">
+              <el-select clearable v-model="query.tradeType" size="small" style="width: 190px">
                 <el-option label="全部" value=""></el-option>
                 <el-option label="交易" value="1"></el-option>
                 <el-option label="提现" value="3"></el-option>
@@ -41,16 +41,17 @@
             </li>
             <li class="same">
               <label>处理结果:</label>
-              <el-select clearable v-model="query.status" size="small" style="width: 220px">
+              <el-select clearable v-model="query.status" size="small" style="width: 190px">
                 <el-option v-for="item in item_status" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
             <li class="same">
               <label>对账单号:</label>
-              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -71,7 +72,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderSN" label="交易流水" ></el-table-column>
-            <el-table-column label="交易金额" align="right">
+            <el-table-column label="交易金额" align="right" min-width="90">
               <template scope="scope">
                 {{scope.row.tradeAmount|toFix}}
               </template>
@@ -170,26 +171,44 @@
         loading:true,
         isShow:false,
         //正式
-        url:"http://checking.qianbaojiajia.com/external/detailList",
-        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
+        /*url:"http://checking.qianbaojiajia.com/external/detailList",
+        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'*/
         //测试
-//         url:'http://192.168.1.99:8080/balance/external/detailList',
-//         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
+         url:'http://192.168.1.99:8080/balance/external/detailList',
+         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
       }
     },
     created: function () {
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          currentPage:1,
+          pageSize:10,
+          orderSN:'',
+          side:'',
+          status:'',
+          channelName:'',
+          tradeType:'',
+          startDateStr:'',
+          endDateStr:''
+        }
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.url, this.query,{emulateJSON: true})
           .then(function (res) {
-            this.records = res.data.list;
+
             this.count = res.data.page.totalRecord;
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.list;
+          },1000)
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

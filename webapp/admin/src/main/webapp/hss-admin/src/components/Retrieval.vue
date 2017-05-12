@@ -1,7 +1,7 @@
 <template>
   <div id="retrieval">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">提现查询</h3>
           <span @click="onload()" download="提现查询" class="btn btn-primary" style="float: right;color: #fff">导出</span>
@@ -46,6 +46,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -53,7 +54,7 @@
             <el-table-column width="62" label="序号" type="index"></el-table-column>
             <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="userName" label="账户名称">
@@ -64,7 +65,7 @@
             <el-table-column prop="userType" label="用户类型"></el-table-column>
             <el-table-column label="业务订单号">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="tradeAmount" label="提现金额" align="right">
@@ -81,7 +82,7 @@
             <el-table-column prop="payChannelName" label="渠道名称"></el-table-column>
             <el-table-column label="打款流水号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.sn" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.sn" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="createTimes" label="提现时间" width="162"></el-table-column>
@@ -174,63 +175,84 @@
           type: 'success'
         });
       });
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.query.startTime = str;
-        } else {
-          this.query.endTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.query.startTime = str;
+          } else {
+            this.query.endTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          orderNo:'',
+          businessOrderNo:'',
+          sn:'',
+          userName: '',
+          startTime: '',
+          endTime: '',
+          withdrawStatus: ''
+        };
+        this.currentDate()
+      },
       onload:function () {
         this.$http.post('/admin/order/downLoad',this.query)
           .then(function (res) {
-            this.$data.isMask = true;
-            this.$data.url = res.data;
+            this.isMask = true;
+            this.url = res.data;
           },function (err) {
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             });
-            this.$data.isMask = false;
+            this.isMask = false;
           })
       },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/order/withdrawList',this.query)
           .then(function (res) {
-            this.loading = false;
-            this.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+            },1000)
             this.count = res.data.count;
             var price=0,total=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
-            for (var i = 0; i < this.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(this.records[i].tradeAmount));
-              total = toFix(parseFloat(total)+parseFloat(this.records[i].poundage));
-              if (this.records[i].payRate != null) {
-                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
+            for (var i = 0; i < res.data.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].tradeAmount));
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].poundage));
+              if (res.data.records[i].payRate != null) {
+                res.data.records[i].payRate = (parseFloat(res.data.records[i].payRate) * 100).toFixed(2) + '%';
               }
             }
             this.pageTotal = price;
             this.pageTotal1 = total;
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -238,49 +260,6 @@
             });
           })
 
-      },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeNum: function (row, column) {
-        var val = row.tradeAmount;
-        if(val!=''){
-          return parseFloat(val).toFixed(2);
-        }else {
-          return val
-        }
-
-      },
-      changeSettleStatus: function (row, column) {
-        var val = row.settleStatus;
-        if(val == 2){
-          return '结算中'
-        }else if(val == 1){
-          return '待结算'
-        }else if(val == 3){
-          return '已结算'
-        }
       },
       search(){
         this.query.pageNo = 1;
@@ -307,7 +286,6 @@
             this.addTotal1 = res.data.poundage;
           })
           .catch(err=>{
-            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -346,23 +324,6 @@
           val = val.replace(val.substring(3,val.length-6),"…");
         }
         return val
-      },
-      changeStatus: function (val) {
-        if(val == 1){
-          return "待支付"
-        }else if(val == 3){
-          return "支付失败"
-        }else if(val == 4){
-          return "支付成功"
-        }else if(val == 5){
-          return "提现中"
-        }else if(val == 6){
-          return "提现成功"
-        }else if(val == 7){
-          return "充值成功"
-        }else if(val == 6){
-          return "充值失败"
-        }
       },
     }
   }

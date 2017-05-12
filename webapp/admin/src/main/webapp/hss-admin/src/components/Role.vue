@@ -1,7 +1,7 @@
 <template>
   <div id="role">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">角色管理</h3>
           <a @click="_$power(issue,'boss_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
@@ -83,11 +83,15 @@
         this.loading = true;
         this.$http.post('/admin/user/roleListByPage', this.$data.query)
           .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -104,14 +108,18 @@
                 this.records[i].statusName = '正常'
               }
             }
-            this.loading = false;
+        setTimeout(()=>{
+          this.loading = false;
+      },1000)
             this.$message({
               showClose: true,
               message: '开启成功',
               type: 'success'
             });
           },(err)=>{
-            this.$data.loading = false;
+          setTimeout(()=>{
+            this.loading = false;
+        },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -128,14 +136,18 @@
                 this.records[i].statusName = '禁用'
               }
             }
-            this.loading = false;
+        setTimeout(()=>{
+          this.loading = false;
+      },1000)
             this.$message({
               showClose: true,
               message: '禁用成功',
               type: 'success'
             });
           },(err)=>{
-            this.$data.loading = false;
+          setTimeout(()=>{
+            this.loading = false;
+        },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

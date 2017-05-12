@@ -29,7 +29,9 @@ public enum EnumPaymentChannel {
     /**
      * 快捷
      */
-    UNIONPAY(3, "快捷");
+    UNIONPAY(3, "快捷"),
+
+    QQPAY(4, "QQ钱包");
 
     @Getter
     private int id;

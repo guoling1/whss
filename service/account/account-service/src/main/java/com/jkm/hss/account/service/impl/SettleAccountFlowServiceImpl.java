@@ -40,6 +40,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      */
     @Override
     public void add(final SettleAccountFlow accountFlow) {
+        accountFlow.setFlowNo(this.getSettleAccountFlowNo());
         this.settleAccountFlowDao.insert(accountFlow);
     }
 
@@ -93,6 +94,18 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Transactional
     public int updateSettleAuditRecordIdBySettleDateAndAccountId(final Date settleDate, final long accountId, final long settleAuditRecordId) {
         return this.settleAccountFlowDao.updateSettleAuditRecordIdBySettleDateAndAccountId(settleDate, accountId, settleAuditRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     * @param status
+     */
+    @Override
+    @Transactional
+    public int updateStatus(final long id, final int status) {
+        return this.settleAccountFlowDao.updateStatus(id, status);
     }
 
     /**

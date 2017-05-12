@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">代理商结算记录</h3>
         </div>
@@ -35,6 +35,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -164,26 +165,43 @@
       }
     },
     created: function () {
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.starDate = str;
-        } else {
-          this.$data.query.endDate = str;
-        }
-      }
+      this.currentDate();
       this.getData()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.starDate = str;
+          } else {
+            this.$data.query.endDate = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          userNo:"",//编号
+          userName:"",  //名字
+          settleNo:"",//结算单号
+          userType:3,//(2：商户，3：代理商)
+          starDate:"", // 开始
+          endDate:"", //结束
+          settleStatus:''
+        };
+        this.currentDate()
+      },
       changeTime: function (row, column) {
         var val = row.settleDate;
         if (val == '' || val == null) {
@@ -215,10 +233,12 @@
         this.loading = true;
         this.$http.post('/admin/settlementRecord/list',this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
                 return ''
@@ -236,11 +256,13 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            for(let i = 0; i < res.data.records.length; i++){
+              res.data.records[i].tradeDate = changeTime(res.data.records[i].tradeDate)
             }
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

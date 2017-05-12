@@ -1,6 +1,5 @@
 package com.jkm.hss.product.servcie.impl;
 
-import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.ProductChannelGatewayDao;
 import com.jkm.hss.product.entity.ProductChannelGateway;
 import com.jkm.hss.product.enums.EnumGatewayType;
@@ -39,7 +38,15 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
      */
     @Override
     public List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductId(EnumProductType enumProductType, EnumGatewayType enumGatewayType, long productId) {
-        return this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductId(enumProductType.getId(), enumGatewayType.getId(),productId);
+        List<ProductChannelGateway> list = this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductId(enumProductType.getId(), enumGatewayType.getId(),productId);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (("").equals(list.get(i).getRecommend())){
+                    list.get(i).setRecommend(0);
+                }
+            }
+        }
+        return list;
     }
 
     /**
@@ -51,6 +58,11 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
     public void update(ProductChannelGateway productChannelGateway) {
 
         this.productChannelGatewayDao.update(productChannelGateway);
+    }
+
+    @Override
+    public void recommend(ProductChannelGateway request) {
+        this.productChannelGatewayDao.recommend(request);
     }
 
 }

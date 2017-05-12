@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>请选择通道</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.12.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.15.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -31,6 +31,15 @@
       <%-- 动态添加 --%>
     </div>
     <div class="channel-small"><span></span>各通道限额动态变化，一次不通过可换其他通道重试</div>
+
+    <div class="channel-mpt-box">
+      <div class="channel-mpt">
+        <div class="channel-mpt-title">结算时间说明</div>
+        <div class="channel-mpt-group"><span class="channel-mpt-li"></span>D0：结算的通道，当天到账，一般在十分钟内</div>
+        <div class="channel-mpt-group"><span class="channel-mpt-li"></span>T1：是指下一个工作日，遇到周末及法定假日顺延</div>
+        <div class="channel-mpt-group-small">“摩宝”通道在22:56分以后支付成功的，算到下一个工作日</div>
+      </div>
+    </div>
   </div>
 
   <div class="message-space" id="layer-channel">
@@ -54,6 +63,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.19/channelList.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.24/channelList.min.js"></script>
 </html>

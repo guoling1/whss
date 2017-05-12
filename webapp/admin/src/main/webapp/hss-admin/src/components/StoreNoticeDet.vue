@@ -14,7 +14,7 @@
             <el-col :span="10">
               <div class="grid-content bg-purple-light">
                 <el-radio class="radio" v-model="query.productName" label="好收收">好收收</el-radio>
-                <el-radio class="radio" v-model="query.productName" label="好收银" disabled>好收银</el-radio>
+                <el-radio class="radio" v-model="query.productName" label="好收银">好收银</el-radio>
               </div>
             </el-col>
             <el-col :span="6">
@@ -126,6 +126,11 @@
     attached() {},
     methods: {
       open() {
+        if(this.query.productName == '好收收'){
+          this.query.productType = 'hss'
+        }else if(this.query.productName == '好收银'){
+          this.query.productType = 'hsy'
+        }
         this.query.text = this.outputContent;
         if(this.query.title==''||this.query.text==''){
           this.$message({
@@ -200,8 +205,11 @@
       },
       change(){
         this.query.id = this.$route.query.id;
-        console.log(this.inputContent)
-        console.log(this.outputContent)
+        if(this.query.productName == '好收收'){
+          this.query.productType = 'hss'
+        }else if(this.query.productName == '好收银'){
+          this.query.productType = 'hsy'
+        }
         this.query.text = this.outputContent;
         console.log(this.query.text)
         if(this.inputContent!=''&&this.outputContent==''){
