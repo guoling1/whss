@@ -206,6 +206,8 @@ public class PushServiceImpl implements PushService {
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
             String clientid=map.get("CLIENTID").toString();
+            System.out.print("------------------------------------");
+            System.out.print(clientid);
             clients.add(clientid);
         }
          SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
