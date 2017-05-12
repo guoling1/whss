@@ -48,7 +48,7 @@ Vue.filter('changeDate', function (val) {
 
 
 Vue.filter('toFix', function (val) {
-  if (val == '' || val == null) {
+  if (val === '' || val == null) {
     return ''
   } else {
     return parseFloat(val).toFixed(2);

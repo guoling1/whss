@@ -343,7 +343,7 @@ public class PushServiceImpl implements PushService {
         if(ret.containsValue("result=ok")){
             push.setStatus(1);
         }else{
-            push.setStatus(1);
+            push.setStatus(0);
         }
         push.setTaskId((String) ret.get("taskId"));
         push.setClientId(clientId);

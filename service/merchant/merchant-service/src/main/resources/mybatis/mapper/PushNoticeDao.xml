@@ -111,9 +111,7 @@
             tb_notice
         WHERE
             DATE_ADD(create_time, INTERVAL 5 DAY) <![CDATA[ >= ]]>#{dates}
-    <if test="productType!=null and productType!=''">
-        AND product_type=#{productType}
-    </if>
+        AND product_type = 'hss'
         ORDER BY
             create_time DESC LIMIT 0,1
 

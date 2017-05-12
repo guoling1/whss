@@ -34,6 +34,10 @@ public class FirstLevelDealerUpdate2Request {
      * 邮箱
      */
     private String email;
+    /**
+     * 代理商归属
+     */
+    private String dealerBelong;
 
     /**
      * 所在省code

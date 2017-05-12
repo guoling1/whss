@@ -764,6 +764,7 @@
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            (SELECT dealer_belong FROM tb_dealer WHERE id = b.first_dealer_id) AS dealerBelong,
             x.SHORTNAME AS merchantName,
             x.GLOBALID AS markCode
         FROM

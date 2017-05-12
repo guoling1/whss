@@ -561,6 +561,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         excelSheetVO.setName("hsyMerchant");
         heads.add("商户编号");
         heads.add("商户名称");
+        heads.add("所属分公司");
         heads.add("所属代理商");
         heads.add("注册时间");
         heads.add("注册手机号");
@@ -573,6 +574,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getGlobalID());
                 columns.add(list.get(i).getShortName());
+                columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
