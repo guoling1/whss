@@ -80,6 +80,11 @@ public class MerchantTradeResponse {
     private long firstLevelDealerId;
 
     /**
+     * 所属分公司
+     */
+    private String dealerBelong;
+
+    /**
      * 一级代理商名
      */
     private String proxyName;
