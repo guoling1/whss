@@ -44,11 +44,11 @@
                       </tr>
                       <tr v-for="(upgrade,index) in $$partnerRuleSettingList">
                         <td>{{upgrade.channelName}}</td>
-                        <td><input type="text" name="name" v-model="upgrade.defaultProfitSpace">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.commonRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.clerkRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.shopownerRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.bossRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.defaultProfitSpace">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.commonRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.clerkRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.shopownerRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.bossRate">%</td>
                       </tr>
                       <tr >
                         <td><el-button type="text" size="small" @click="clickAdd">点击添加通道</el-button></td>
@@ -243,7 +243,7 @@
         }else {
           var flag = false;
           for(let i=0; i<this.partnerRuleSettingList.length; i++){
-            if(this.partnerRuleSettingList[i].channelShortName == this.channel.channelShortName){
+            if(this.partnerRuleSettingList[i].channelName == this.channel.channelShortName){
               this.isAdd = false;
               flag = true;
               this.$message({
@@ -268,7 +268,7 @@
         let partnerRuleSetting = {};
         partnerRuleSetting.id = this.channel.id;
         partnerRuleSetting.channelShortName = this.channel.channelShortName;
-        partnerRuleSetting.channelName = this.channel.channelName;
+        partnerRuleSetting.channelName = this.channel.channelShortName;
         partnerRuleSetting.productId = this.productId;
         partnerRuleSetting.channelTypeSign = this.channel.channelTypeSign;
         partnerRuleSetting.defaultProfitSpace = this.defaultProfitSpace;
