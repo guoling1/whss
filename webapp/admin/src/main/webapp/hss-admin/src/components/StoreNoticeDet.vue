@@ -126,6 +126,11 @@
     attached() {},
     methods: {
       open() {
+        if(this.query.productName == '好收收'){
+          this.query.productType = 'hss'
+        }else if(this.query.productName == '好收银'){
+          this.query.productType = 'hsy'
+        }
         this.query.text = this.outputContent;
         if(this.query.title==''||this.query.text==''){
           this.$message({
@@ -138,11 +143,6 @@
             cancelButtonText: '取消',
             type: 'info'
           }).then(() => {
-            if(this.query.productName == '好收收'){
-            this.query.productType = 'hss'
-          }else if(this.query.productName == '好收银'){
-            this.query.productType = 'hsy'
-          }
             this.$http.post('/admin/pushNotice/notice',this.query)
               .then(res=>{
                 this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -205,7 +205,13 @@
       },
       change(){
         this.query.id = this.$route.query.id;
+        if(this.query.productName == '好收收'){
+          this.query.productType = 'hss'
+        }else if(this.query.productName == '好收银'){
+          this.query.productType = 'hsy'
+        }
         this.query.text = this.outputContent;
+        console.log(this.query.text)
         if(this.inputContent!=''&&this.outputContent==''){
           this.$message({
             type: 'warning',
@@ -222,11 +228,6 @@
               cancelButtonText: '取消',
               type: 'info'
             }).then(() => {
-              if(this.query.productName == '好收收'){
-            this.query.productType = 'hss'
-          }else if(this.query.productName == '好收银'){
-            this.query.productType = 'hsy'
-          }
               this.$http.post('/admin/pushNotice/updateNotice', this.query)
                 .then(res => {
                   this.$store.commit('MESSAGE_ACCORD_SHOW', {

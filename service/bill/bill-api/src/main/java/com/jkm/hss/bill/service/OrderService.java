@@ -10,6 +10,7 @@ import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -417,6 +418,12 @@ public interface OrderService {
      * @return
      */
    List<Order> getOrderByOrderNos(List<String> orderNos, int offset, int pageSize);
+
+    /**
+     * 保存推送回调信息
+     * @param geTuiResponse
+     */
+    void save(GeTuiResponse geTuiResponse);
 
     /**
      * 统计金额，笔数
