@@ -91,6 +91,7 @@
             <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
             <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
             <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="idcardc!=null and idcardc!=''">IDCARDC=#{idcardc},</if>
             <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
             <if test="dealerID!=null">DEALERID=#{dealerID},</if>
             <if test="productID!=null">PRODUCTID=#{productID},</if>
