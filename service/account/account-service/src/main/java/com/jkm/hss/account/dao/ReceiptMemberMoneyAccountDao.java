@@ -37,6 +37,15 @@ public interface ReceiptMemberMoneyAccountDao {
     int increaseIncomeAmount(@Param("id") long id, @Param("income") BigDecimal income);
 
     /**
+     * 充值金额增加
+     *
+     * @param id
+     * @param recharge
+     * @return
+     */
+    int increaseRechargeAmount(@Param("id") long id, @Param("recharge") BigDecimal recharge);
+
+    /**
      * 按id查询
      *
      * @param id

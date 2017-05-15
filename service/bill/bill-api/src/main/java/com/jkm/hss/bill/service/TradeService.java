@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.helper.PayParams;
 import com.jkm.hss.bill.helper.RechargeParams;
+import com.jkm.hss.bill.helper.SplitProfitParams;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -33,6 +34,14 @@ public interface TradeService {
      * @param paymentSdkPayCallbackResponse
      */
     void handlePayOrRechargeCallbackMsg(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse);
+
+    /**
+     * 分润实现
+     *
+     * @param splitProfitParams
+     * @return
+     */
+    Pair<Integer, String> splitProfitImpl(SplitProfitParams splitProfitParams);
 
 
     Pair<Integer, String> withdraw();

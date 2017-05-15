@@ -73,6 +73,7 @@ public class ActiveController {
             method = clazz.getMethod(strs[1],String.class,AppParam.class);
             appResult = (String) method.invoke(obj, appParam.getRequestData(), appParam);
         } catch (Exception e) {
+            log.error("调用接口异常", e);
             e.printStackTrace();
             if(e.getCause() instanceof ApiHandleException)
             {

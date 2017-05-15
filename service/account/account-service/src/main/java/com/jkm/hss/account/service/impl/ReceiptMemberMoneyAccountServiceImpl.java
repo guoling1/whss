@@ -77,6 +77,19 @@ public class ReceiptMemberMoneyAccountServiceImpl implements ReceiptMemberMoneyA
      * {@inheritDoc}
      *
      * @param id
+     * @param recharge
+     * @return
+     */
+    @Override
+    @Transactional
+    public int increaseRechargeAmount(long id, BigDecimal recharge) {
+        return this.receiptMemberMoneyAccountDao.increaseRechargeAmount(id, recharge);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
      * @return
      */
     @Override

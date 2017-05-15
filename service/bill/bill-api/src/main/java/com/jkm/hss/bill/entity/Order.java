@@ -30,6 +30,16 @@ public class Order extends BaseEntity {
     private String appId;
 
     /**
+     * 商户编号-具有唯一性
+     */
+    private String merchantNo;
+
+    /**
+     * 商户名字
+     */
+    private String merchantName;
+
+    /**
      * 业务类型
      *
      * {@link com.jkm.hss.bill.enums.EnumServiceType}
@@ -87,6 +97,16 @@ public class Order extends BaseEntity {
      * 收款人(accountId)
      */
     private long payee;
+
+    /**
+     * 会员账户id
+     */
+    private long memberAccountId;
+
+    /**
+     * 商户收款账户id
+     */
+    private long merchantReceiveAccountId;
 
     /**
      * 付款账户（支付宝，微信，快捷)
@@ -271,6 +291,15 @@ public class Order extends BaseEntity {
      */
     public boolean isPaySuccess() {
         return EnumOrderStatus.PAY_SUCCESS.getId() == this.status;
+    }
+
+    /**
+     * 是否充值成功
+     *
+     * @return
+     */
+    public boolean isRechargeSuccess() {
+        return EnumOrderStatus.RECHARGE_SUCCESS.getId() == this.status;
     }
 
     /**

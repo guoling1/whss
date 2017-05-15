@@ -35,6 +35,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
      */
     @Override
     public void add(final SplitAccountRecord record) {
+        record.setSplitSn(this.getSplitSn());
         this.splitAccountRecordDao.insert(record);
     }
 

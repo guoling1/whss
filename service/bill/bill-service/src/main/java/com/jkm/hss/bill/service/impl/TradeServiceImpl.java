@@ -7,10 +7,7 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
-import com.jkm.hss.bill.helper.PayParams;
-import com.jkm.hss.bill.helper.PaymentSdkConstants;
-import com.jkm.hss.bill.helper.PlaceOrderParams;
-import com.jkm.hss.bill.helper.RechargeParams;
+import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -21,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 /**
  * Created by yulong.zhang on 2017/5/2.
  */
@@ -30,9 +29,11 @@ public class TradeServiceImpl implements TradeService {
     @Autowired
     private OrderService orderService;
     @Autowired
+    private BaseTradeService baseTradeService;
+    @Autowired
     private BasicChannelService basicChannelService;
     @Autowired
-    private BaseTradeService baseTradeService;
+    private BaseSplitProfitService baseSplitProfitService;
 
     /**
      * {@inheritDoc}
@@ -44,7 +45,7 @@ public class TradeServiceImpl implements TradeService {
     public Pair<Integer, String> recharge(final RechargeParams rechargeParams) {
         log.info("业务方[{}],通过渠道[{}]进行充值[{}],实付金额[{}]，充值账户[{}]，收款账户[{}], 会员标识[{}], 商户号[{}]",
                 rechargeParams.getAppId(), rechargeParams.getChannel(), rechargeParams.getTradeAmount(), rechargeParams.getRealPayAmount(),
-                rechargeParams.getPayerAccountId(), rechargeParams.getPayeeAccountId(), rechargeParams.getMemberId(), rechargeParams.getMerchantNo());
+                rechargeParams.getMemberAccountId(), rechargeParams.getPayeeAccountId(), rechargeParams.getMemberId(), rechargeParams.getMerchantNo());
         //TODO
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(rechargeParams.getChannel(), rechargeParams.getMerchantPayType());
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(rechargeParams.getChannel());
@@ -54,10 +55,14 @@ public class TradeServiceImpl implements TradeService {
         order.setTradeAmount(rechargeParams.getTradeAmount());
         order.setRealPayAmount(rechargeParams.getRealPayAmount());
         order.setAppId(rechargeParams.getAppId());
+        order.setMerchantNo(rechargeParams.getMerchantNo());
+        order.setMerchantName(rechargeParams.getMerchantName());
         order.setTradeType(EnumTradeType.RECHARGE.getId());
         order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
-        order.setPayer(rechargeParams.getPayerAccountId());
+        order.setPayer(0);
         order.setPayee(rechargeParams.getPayeeAccountId());
+        order.setMemberAccountId(rechargeParams.getMemberAccountId());
+        order.setMerchantReceiveAccountId(rechargeParams.getMerchantReceiveAccountId());
         order.setGoodsName(rechargeParams.getGoodsName());
         order.setGoodsDescribe(rechargeParams.getGoodsDescribe());
         order.setPayType(channelCode);
@@ -97,10 +102,14 @@ public class TradeServiceImpl implements TradeService {
         order.setTradeAmount(payParams.getTradeAmount());
         order.setRealPayAmount(payParams.getRealPayAmount());
         order.setAppId(payParams.getAppId());
+        order.setMerchantNo(payParams.getMerchantNo());
+        order.setMerchantName(payParams.getMerchantName());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
-        order.setPayer(payParams.getPayerAccountId());
+        order.setPayer(0);
         order.setPayee(payParams.getPayeeAccountId());
+        order.setMemberAccountId(payParams.getMemberAccountId());
+        order.setMerchantReceiveAccountId(payParams.getMerchantReceiveAccountId());
         order.setGoodsName(payParams.getGoodsName());
         order.setGoodsDescribe(payParams.getGoodsDescribe());
         order.setPayType(payParams.getMemberCardPay() ? payChannelSign.getCode() : channelCode);
@@ -110,10 +119,11 @@ public class TradeServiceImpl implements TradeService {
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(payChannelSign.getSettleType().getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
+        order.setPoundage(new BigDecimal("0.00"));
         this.orderService.add(order);
         if (payParams.getMemberCardPay()) {
             //从卡扣钱
-            return this.baseTradeService.memberPayImpl(payParams.getReceiptMemberMoneyAccountId(), order.getId());
+            return this.baseTradeService.memberPayImpl(order.getId());
         } else {
             //获取支付url
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()
@@ -152,6 +162,25 @@ public class TradeServiceImpl implements TradeService {
                 this.baseTradeService.handlePayOrRechargeCallbackMsgImpl(paymentSdkPayCallbackResponse, order.getId());
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param splitProfitParams
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> splitProfitImpl(final SplitProfitParams splitProfitParams) {
+        Preconditions.checkState(splitProfitParams.getSplitProfitDetails().size() > 0);
+        final Optional<Order> orderOptional = this.orderService.getByOrderNo(splitProfitParams.getOrderNo());
+        if (!orderOptional.isPresent()) {
+            return Pair.of(-1, "交易单不存在");
+        }
+        log.info("交易单[{}]，执行分润", splitProfitParams.getOrderNo());
+
+        return this.baseSplitProfitService.exePaySplitAccount(splitProfitParams);
     }
 
     @Override
