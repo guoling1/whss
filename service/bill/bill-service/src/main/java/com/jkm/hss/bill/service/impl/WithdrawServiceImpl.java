@@ -110,6 +110,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile(accountBank.getReserveMobile());
             paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
+            paymentSdkDaiFuRequest.setBankCode(accountBank.getBankBin());
             paymentSdkDaiFuRequest.setAccountName(merchant.getName());
             paymentSdkDaiFuRequest.setAccountNumber(accountBank.getBankNo());
             paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
