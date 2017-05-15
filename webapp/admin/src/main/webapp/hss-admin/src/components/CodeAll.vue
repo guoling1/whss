@@ -10,11 +10,17 @@
           <ul class="search">
             <li class="same">
               <label>二维码编号:</label>
-              <el-input style="width: 188px" v-model="query.code" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.startCode" placeholder="请输入内容" size="small"></el-input>
+              <span style="margin: 0 1px;">至</span>
+              <el-input style="width: 188px" v-model="query.endCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>商户名称:</label>
               <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>分公司:</label>
+              <el-input style="width: 188px" v-model="query.subCompanyName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>一代名称:</label>
@@ -32,6 +38,24 @@
               </el-select>
             </li>
             <li class="same">
+              <label>激活状态:</label>
+              <el-select style="width: 188px" v-model="query.activateStatus" placeholder="请选择" size="small">
+                <el-option label="全部" value="0"></el-option>
+                <el-option label="未激活" value="1"></el-option>
+                <el-option label="已激活" value="2"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <label>商户状态:</label>
+              <el-select style="width: 188px" v-model="query.merchantStatus" placeholder="请选择" size="small">
+                <el-option label="全部" value="0">全部</el-option>
+                <el-option label="已注册" value="1">已注册</el-option>
+                <el-option label="待审核" value="2">待审核</el-option>
+                <el-option label="审核通过" value="4">审核通过</el-option>
+                <el-option label="审核未通过" value="3">审核未通过</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
@@ -44,7 +68,12 @@
                 <el-button type="text" @click="checkDetail($event,scope.row.code)">{{scope.row.code}}</el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="activateTime" :formatter="changeTime" label="激活时间"></el-table-column>
+            <el-table-column label="激活时间">
+              <template scope="scope">
+                <span>{{scope.row.activateTime|changeTime}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="subCompanyName" label="分公司"></el-table-column>
             <el-table-column prop="firstDealerName" label="一代名称"></el-table-column>
             <el-table-column prop="secondDealerName" label="二代名称"></el-table-column>
             <el-table-column prop="merchantName" label="商户名称"></el-table-column>
@@ -76,16 +105,20 @@
         query:{
           pageNo:1,
           pageSize:10,
-          code:'',
-          merchantName:'',
-          firstDealerName:'',
-          secondDealerName:'',
-          sysType:'hss'
+          startCode:"",
+          endCode:"",
+          subCompanyName:"",
+          merchantName:"",
+          firstDealerName:"",
+          secondDealerName:"",
+          sysType:"hss",
+          activateStatus:"0",
+          merchantStatus:"0"
         },
         records: [],
         count: 0,
         currentPage: 1,
-        loading: true,
+        loading: true
       }
     },
     created: function () {
@@ -112,27 +145,6 @@
             });
           })
       },
-      changeTime: function (row, column) {
-        var val=row.activateTime;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
-      },
       search(){
         this.query.pageNo = 1;
         this.getData()
@@ -148,10 +160,7 @@
         this.$data.query.pageSize = val;
         this.getData()
       },
-    },
-    watch:{
-
-    },
+    }
   }
 </script>
 <style scoped lang="less">

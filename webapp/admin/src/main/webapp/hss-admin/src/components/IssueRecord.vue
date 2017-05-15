@@ -28,9 +28,10 @@
             <li class="same">
               <label>分配方:</label>
               <el-select style="width: 188px" v-model="query.type" clearable placeholder="请选择" size="small">
-                <el-option label="全部" value="0">全部</el-option>
-                <el-option label="金开门" value="1">金开门</el-option>
-                <el-option label="一级代理" value="2">一级代理</el-option>
+                <el-option label="全部" value="0"></el-option>
+                <el-option label="金开门" value="1"></el-option>
+                <el-option label="分公司" value="3"></el-option>
+                <el-option label="一级代理" value="2"></el-option>
               </el-select>
             </li>
             <li class="same">
