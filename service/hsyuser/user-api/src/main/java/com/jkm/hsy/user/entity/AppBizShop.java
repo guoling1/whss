@@ -1,8 +1,11 @@
 package com.jkm.hsy.user.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**app_biz_shop*/
+@Data
 public class AppBizShop {
     private Long id;
     private String globalID;//对外ID
@@ -21,6 +24,8 @@ public class AppBizShop {
     private Integer status;//状态：1 正常 99禁用
     private Integer isPublic;//是否对公1是 2否'
     private String checkErrorInfo;//审核错误原因
+    private Date auditTime;
+    private String auditTimes; //审核时间
     private Date createTime;
     private Date updateTime;
     private String licenceNO;//营业执照号

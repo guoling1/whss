@@ -21,7 +21,8 @@ public class HsyMerchantAuditResponse {
      * 所属分公司
      */
     private String dealerBelong;
-
+    private Date auditTime; //审核时间
+    private String auditTimes; // 审核时间
     private String proxyName; //所属一级代理商
     private String proxyName1; //所属二级代理商
     private String code;//省市码

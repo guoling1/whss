@@ -8,10 +8,22 @@
     </select>
     <!-- 查询总条数 -->
     <select id="getCount" resultType="java.lang.Integer">
-        SELECT COUNT(a.ID) FROM app_biz_shop a
-        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
-        LEFT JOIN app_au_user c ON c.ID=b.UID
-        where b.ROLE=1 AND b.TYPE=1
+        SELECT
+        COUNT(a.ID)
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
+        WHERE
+        b.ROLE = 1 AND b.TYPE=1
+        <if test="proxyName!=null and proxyName!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
+        </if>
+        <if test="proxyName1!=null and proxyName1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName1}
+        </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -47,21 +59,23 @@
     <!-- 查询商户列表 -->
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,
-        (
-        SELECT
-        proxy_name
-        FROM
-        tb_dealer
-        WHERE
-        id = c.DEALERID
-        ) as proxyNames
+        a.*, c.CELLPHONE,c.DEALERID,e.realname,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
         app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="proxyName!=null and proxyName!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
+        </if>
+        <if test="proxyName1!=null and proxyName1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName1}
+        </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -88,22 +102,23 @@
     <!-- 导出hsy商户列表 -->
     <select id="hsyMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,
-        (
-        SELECT
-        proxy_name
-        FROM
-        tb_dealer
-        WHERE
-        id = c.DEALERID
-        ) as proxyNames,
-        (SELECT dealer_belong FROM tb_dealer WHERE id=c.DEALERID) AS dealerBelong
+        a.*, c.CELLPHONE,c.DEALERID,e.realname,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
         app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="proxyName!=null and proxyName!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
+        </if>
+        <if test="proxyName1!=null and proxyName1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName1}
+        </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
