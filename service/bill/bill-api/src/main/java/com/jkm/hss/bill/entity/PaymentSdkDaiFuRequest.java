@@ -93,4 +93,9 @@ public class PaymentSdkDaiFuRequest {
      * 业务方回调url
      */
     private String notifyUrl;
+
+    /**
+     * 商户编号
+     */
+    private String merNo;
 }
