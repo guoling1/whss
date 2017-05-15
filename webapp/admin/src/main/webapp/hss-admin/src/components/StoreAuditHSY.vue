@@ -327,7 +327,7 @@
               </thead>
               <tbody id="content">
               <tr role="row" class="odd" v-for="re in this.$data.res">
-                <td class="sorting_1">{{re.status|status}}</td>
+                <td class="sorting_1">{{re.stat}}</td>
                 <td>{{re.createTimes}}</td>
                 <td>{{re.name}}</td>
                 <td>{{re.descr}}</td>
