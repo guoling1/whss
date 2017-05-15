@@ -119,7 +119,6 @@ public class WithdrawServiceImpl implements WithdrawService {
             paymentSdkDaiFuRequest.setSystemCode(settlementRecord.getAppId());
             paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
             paymentSdkDaiFuRequest.setPayOrderSn(payOrderSn);
-            paymentSdkDaiFuRequest.setMerNo(merchant.getMarkCode());
             //请求网关
             PaymentSdkDaiFuResponse response;
             try {

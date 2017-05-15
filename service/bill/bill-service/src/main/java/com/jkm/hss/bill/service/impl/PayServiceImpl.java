@@ -945,6 +945,7 @@ public class PayServiceImpl implements PayService {
         paymentSdkUnionPayRequest.setGoodsDescribe(merchant.getMerchantChangeName());
         paymentSdkUnionPayRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
         paymentSdkUnionPayRequest.setMerName(merchant.getName());
+        paymentSdkUnionPayRequest.setMerNo(merchant.getMarkCode());
         paymentSdkUnionPayRequest.setTotalAmount(order.getRealPayAmount().toPlainString());
         paymentSdkUnionPayRequest.setCardByName(merchant.getName());
         paymentSdkUnionPayRequest.setCardByNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), accountBank.getBankNo()));
