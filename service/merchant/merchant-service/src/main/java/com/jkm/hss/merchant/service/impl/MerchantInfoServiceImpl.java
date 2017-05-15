@@ -399,6 +399,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                 upgradePayRecordService.updatePayResult(result,reqSn);
                 List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAll(upgradePayRecord.getProductId());
                 if(partnerRuleSettingResponses.size()>0){
+                    merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradePayRecord.getLevel());
                     for(int j=0;j<partnerRuleSettingResponses.size();j++){
                         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
                         merchantChannelRateRequest.setMerchantId(upgradePayRecord.getMerchantId());
