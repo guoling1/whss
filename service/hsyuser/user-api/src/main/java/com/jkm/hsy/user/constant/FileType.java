@@ -11,8 +11,8 @@ public enum FileType {
     IDCARDF(5,"IDCARDF","身份证正面照"),
     IDCARDB(6,"IDCARDB","身份证背面照"),
     IDCARDH(7,"IDCARDH","身份证手持照"),
-    IDCARDC(8,"IDCARDC","结算卡号正面照"),
-    CONTRACTID(9,"CONTRACTID","签约合同照");
+    CONTRACT(8,"CONTRACT","签约合同照"),
+    IDCARDC(9,"IDCARDC","结算卡号正面照");
 
     public int fileKey;
     public String fileIndex;

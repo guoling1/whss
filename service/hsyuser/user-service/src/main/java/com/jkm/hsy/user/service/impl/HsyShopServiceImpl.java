@@ -248,7 +248,7 @@ public class HsyShopServiceImpl implements HsyShopService {
                 appAuUser.setIdcardb(uuid);
             else if(type.equals(FileType.IDCARDC.fileIndex))
                 appAuUser.setIdcardc(uuid);
-            else if(type.equals(FileType.CONTRACTID.fileIndex))
+            else if(type.equals(FileType.CONTRACT.fileIndex))
                 appAuUser.setContractID(uuid);
         }
 
