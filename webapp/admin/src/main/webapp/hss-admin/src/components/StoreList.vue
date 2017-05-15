@@ -153,7 +153,7 @@
                 </li>
                 <li class="same">
                   <label>报单员:</label>
-                  <el-input style="width: 188px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>审核状态:</label>
@@ -182,7 +182,8 @@
                 <!--<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>-->
                 <el-table-column prop="proxyName" label="所属一级代理"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
-                <el-table-column prop="realname" label="报单员"></el-table-column>
+                <el-table-column prop="username" label="报单员"></el-table-column>
+                <el-table-column prop="realname" label="姓名"></el-table-column>
                 <!--<el-table-column prop="proxyNames" label="所属代理商"></el-table-column>-->
                 <el-table-column label="注册时间">
                   <template scope="scope">
@@ -315,8 +316,12 @@
           proxyName:'',
           proxyName1:'',
           cellphone:'',
-          realname:'',
-          status:''
+          username:'',
+          status:'',
+          startTime:'',
+          endTime:'',
+          auditTime:'',
+          auditTime1:''
         },
         recordsHss: [],
         recordsHsy: [],
@@ -569,14 +574,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.queryHss.startTime2 = str;
+              this.queryHsy.startTime = str;
             }else {
-              this.$data.queryHss.endTime2 = str;
+              this.queryHsy.endTime = str;
             }
           }
         }else {
-          this.$data.queryHss.startTime2 = '';
-          this.$data.queryHss.endTime2 = '';
+          this.queryHsy.startTime = '';
+          this.queryHsy.endTime = '';
         }
       },
       dateHsy1:function (val,oldVal) {
@@ -591,14 +596,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.queryHss.startTime2 = str;
+              this.queryHsy.auditTime = str;
             }else {
-              this.$data.queryHss.endTime2 = str;
+              this.queryHsy.auditTime1 = str;
             }
           }
         }else {
-          this.$data.queryHss.startTime2 = '';
-          this.$data.queryHss.endTime2 = '';
+          this.queryHsy.auditTime = '';
+          this.queryHsy.auditTime1 = '';
         }
       },
     },
