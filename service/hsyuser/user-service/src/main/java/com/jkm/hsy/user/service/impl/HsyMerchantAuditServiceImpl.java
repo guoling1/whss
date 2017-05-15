@@ -442,6 +442,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                     String dates = format.format(list.get(i).getCreateTime());
                     list.get(i).setCreateTimes(dates);
                 }
+                if (list.get(i).getStatus()==0){
+                    list.get(i).setStat("审核成功");
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStat("审核失败");
+                }
             }
         }
         return list;
