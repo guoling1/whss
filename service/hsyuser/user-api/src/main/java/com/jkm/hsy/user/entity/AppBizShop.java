@@ -28,6 +28,7 @@ public class AppBizShop {
     private String auditTimes; //审核时间
     private Date createTime;
     private Date updateTime;
+    private Date commitTime;//资料提交时间
     private String licenceNO;//营业执照号
     private Date licenceStartDate;//营业执照起期
     private Date licenceEndDate;//营业执照止期
@@ -178,6 +179,14 @@ public class AppBizShop {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Date getCommitTime() {
+        return commitTime;
+    }
+
+    public void setCommitTime(Date commitTime) {
+        this.commitTime = commitTime;
     }
 
     public Long getUid() {
