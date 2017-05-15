@@ -22,7 +22,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
         </if>
         <if test="proxyName1!=null and proxyName1!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName1}
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) =#{proxyName1}
         </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
@@ -74,7 +74,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
         </if>
         <if test="proxyName1!=null and proxyName1!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName1}
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) =#{proxyName1}
         </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
@@ -117,7 +117,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
         </if>
         <if test="proxyName1!=null and proxyName1!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName1}
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) =#{proxyName1}
         </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
