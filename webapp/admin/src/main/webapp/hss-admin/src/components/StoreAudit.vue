@@ -393,7 +393,11 @@
       </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
         <p @click="isNo">×</p>
-        <img src="" alt="">
+        <div style="width: 100%;height: 90%;overflow: auto">
+          <img src="" alt="" id="img">
+        </div>
+
+        <el-button @click.prevent.stop="enlarge">放大</el-button>
       </div>
       <div class="box box-primary" v-if="isShow">
         <p class="lead">审核</p>
@@ -489,7 +493,8 @@
         },
         isUpload: false,
         photoType:'',
-        bankDis:false
+        bankDis:false,
+        src:''
       }
     },
     created: function () {
@@ -501,6 +506,25 @@
       this.getData();
     },
     methods: {
+      enlarge: function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        img.onload = function(){
+          height1 = img.height;//图片的高度
+          width1 = img.width;//图片的宽度
+          v_left=(document.body.clientWidth-width1)/2;
+          v_top=(document.body.clientHeight-height1)/2;
+          img.style.left=v_left;
+          img.style.top=v_top;
+          console.log(img,height1,width1,v_left,v_top)
+          height1 = img.height;
+          width1 = img.width;
+          img.height = height1 * 1.1;
+          img.width = width1 * 1.1;
+        }
+
+      },
       changePhoto: function (val) {
         this.photoType = val;
         this.isUpload = true
@@ -666,7 +690,7 @@
         var obj = e.srcElement || e.target;
         var mask = document.getElementById('mask'),
           img = mask.getElementsByTagName('img')[0];
-        img.src = obj.src;
+        this.src = img.src = obj.src;
         mask.style.display = 'block'
       },
       isNo: function () {
