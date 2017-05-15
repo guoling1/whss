@@ -36,7 +36,7 @@ gulp.task('vendor', () => {
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(concat('vendor.2.0.1.js'))
+    .pipe(concat('vendor.2.0.1.1.js'))
     .pipe(uglify())
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
@@ -57,6 +57,7 @@ gulp.task('es', () => {
 gulp.task('replace', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
     .pipe(replace('/2.0.1/', '/2.0.1.1/'))
+    .pipe(replace('vendor.2.0.1.min.js', 'vendor.2.0.1.1.min.js'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 
