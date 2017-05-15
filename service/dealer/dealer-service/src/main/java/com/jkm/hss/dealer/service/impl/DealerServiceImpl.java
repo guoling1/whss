@@ -1034,6 +1034,15 @@ public class DealerServiceImpl implements DealerService {
             case SYJ:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return  basicMoney;
+            case HE_LI_UNIONPAY:
+                if (new BigDecimal("0.1").compareTo(basicTrade) == 1){
+                    //通道成本不足一毛, 按一毛收
+                    basicMoney = new BigDecimal("0.1");
+                }else{
+                    //超过一毛,四舍五入,保留两位有效数字
+                    basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+                return basicMoney;
             default:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;
