@@ -143,7 +143,7 @@ public interface AdminUserService {
      * @param endCode
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type, String sysType, long dealerId,  String startCode, String endCode);
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type, String sysType, long dealerId,  String startCode, String endCode,long operatorId);
 
     /**
      * 按个数分配
@@ -152,7 +152,7 @@ public interface AdminUserService {
      * @param count
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count);
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count,long operatorId);
 
     /**
      * 剩余二维码个数

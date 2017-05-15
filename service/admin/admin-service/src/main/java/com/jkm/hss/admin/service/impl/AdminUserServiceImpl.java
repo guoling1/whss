@@ -266,7 +266,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType, final long dealerId,
-                                                               final String startCode, final String endCode) {
+                                                               final String startCode, final String endCode,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByCodeAndSysType(startCode, endCode,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -291,6 +291,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setCreateTime(new Date());
             distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
+            distributeQRCodeRecord.setOperatorId(operatorId);
             distributeQRCodeRecord.setType(type);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
@@ -307,7 +308,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @return
      */
     @Override
-    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count) {
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeBySysType(sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -335,6 +336,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
             distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
+            distributeQRCodeRecord.setOperatorId(operatorId);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }

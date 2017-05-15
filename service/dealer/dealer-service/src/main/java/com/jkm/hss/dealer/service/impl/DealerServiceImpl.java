@@ -12,6 +12,7 @@ import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
@@ -19,6 +20,7 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
@@ -102,6 +104,8 @@ public class DealerServiceImpl implements DealerService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+    @Autowired
+    private AdminUserService adminUserService;
     /**
      * {@inheritDoc}
      * 有问题
@@ -2405,7 +2409,12 @@ public class DealerServiceImpl implements DealerService {
                 bossDistributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 bossDistributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
                 bossDistributeQRCodeRecordResponse.setType(distributeQRCodeRecord.getType());
-                bossDistributeQRCodeRecordResponse.setOperateUser("admin");
+                Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(distributeQRCodeRecord.getOperatorId());
+                if(adminUserOptional.isPresent()){
+                    bossDistributeQRCodeRecordResponse.setOperateUser(adminUserOptional.get().getUsername());
+                }else{
+                    bossDistributeQRCodeRecordResponse.setOperateUser("");
+                }
                 bossDistributeQRCodeRecordResponses.add(bossDistributeQRCodeRecordResponse);
             }
         }

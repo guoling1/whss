@@ -11,7 +11,8 @@
         end_code,
         status,
         type,
-        distribute_type
+        distribute_type,
+        operator_id
         )
         VALUES
         (
@@ -22,7 +23,8 @@
         #{endCode},
         #{status},
         #{type},
-        #{distributeType}
+        #{distributeType},
+        #{operatorId}
         );
     </insert>
 

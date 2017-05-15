@@ -524,14 +524,14 @@ public class AdminController extends BaseController {
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
         if(distributeQrCodeRequest.getDistributeType()==1){//按码段
             distributeQRCodeRecords = this.adminUserService.distributeQRCodeByCode(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),
-                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode(),super.getAdminUser().getId());
         }
         if(distributeQrCodeRequest.getDistributeType()==2){//按个数
             if (distributeQrCodeRequest.getCount() <= 0) {
                 return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
             }
             distributeQRCodeRecords = this.adminUserService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),
-                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount());
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount(),super.getAdminUser().getId());
         }
         if(distributeQRCodeRecords.size()<=0){
             return CommonResponse.simpleResponse(-1, "二维码数量不足");

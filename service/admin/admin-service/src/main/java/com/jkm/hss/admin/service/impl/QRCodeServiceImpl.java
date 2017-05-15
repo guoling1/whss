@@ -937,9 +937,13 @@ public class QRCodeServiceImpl implements QRCodeService {
         long count = 0l;
         List<QrCodeListResponse> qrCodeList = null;
         if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeListRequest.getSysType())){
+            List<Integer> tempStatus = getMerchantStatus(qrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+            qrCodeListRequest.setMerchantStatusList(tempStatus);
             count=qrCodeDao.getHSSQrCodeCount(qrCodeListRequest);
             qrCodeList=qrCodeDao.getHSSQrCodeList(qrCodeListRequest);
         }else{
+            List<Integer> tempStatus = getMerchantStatus(qrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSY.getId());
+            qrCodeListRequest.setMerchantStatusList(tempStatus);
             count=qrCodeDao.getHSYQrCodeCount(qrCodeListRequest);
             qrCodeList=qrCodeDao.getHSYQrCodeList(qrCodeListRequest);
         }
