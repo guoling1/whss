@@ -137,7 +137,7 @@
               </div>
               <div slot="footer" class="dialog-footer" style="text-align: center;">
                 <el-button @click="isgenerateRecord = false">取 消</el-button>
-                <el-button @click="generate">立即生成</el-button>
+                <el-button @click="generate" :disabled="generateClick">立即生成</el-button>
               </div>
             </el-dialog>
           </div>
@@ -148,7 +148,7 @@
               </div>
               <div slot="footer" class="dialog-footer" style="text-align: center;">
                 <el-button @click="ismarkSettled = false">取 消</el-button>
-                <el-button @click="markSettled">立即更新</el-button>
+                <el-button @click="markSettled" :disabled="markSettledClick">立即更新</el-button>
               </div>
             </el-dialog>
           </div>
@@ -163,6 +163,8 @@
       name: 't1Audit',
       data(){
             return{
+              generateClick:false,
+              markSettledClick:false,
               pickerOptions: {
                 disabledDate(time) {
                   return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
@@ -229,6 +231,7 @@
           this.currentDate()
         },
         generate:function () {
+          this.generateClick = true;
           this.$http.post('/admin/settle/generateRecord')
             .then(function (res) {
               this.$message({
@@ -236,7 +239,8 @@
                 message: '生成成功',
                 type: 'success'
               });
-              this.isgenerateRecord = false
+              this.isgenerateRecord = false;
+              this.generateClick = false;
             })
             .catch(function (err) {
               this.$message({
@@ -244,9 +248,11 @@
                 message: err.statusMessage,
                 type: 'error'
               })
+              this.generateClick = false;
             })
         },
         markSettled:function () {
+          this.markSettledClick = true;
           this.$http.post('/admin/settle/markSettled')
             .then(function (res) {
               this.$message({
@@ -254,14 +260,16 @@
                 message: '更新成功',
                 type: 'success'
               });
-              this.ismarkSettled = false
+              this.ismarkSettled = false;
+              this.markSettledClick = false;
             })
             .catch(function (err) {
               this.$message({
                 showClose: true,
                 message: err.statusMessage,
                 type: 'error'
-              })
+              });
+              this.markSettledClick = false;
             })
         },
         getData: function () {

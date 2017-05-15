@@ -93,7 +93,7 @@ public interface AccountSettleAuditRecordService {
     /**
      * 处理 T1 结算审核, 生成记录
      */
-    void generateHsySettleAuditRecordTask();
+    Pair<Integer, String> generateHsySettleAuditRecordTask();
 
     /**
      * 处理 T1 结算审核,自动结算

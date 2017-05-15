@@ -38,6 +38,7 @@ public class AccountFlowServiceImpl implements AccountFlowService {
      */
     @Override
     public void add(final AccountFlow accountFlow) {
+        accountFlow.setFlowNo(this.getFlowNo());
         this.accountFlowDao.insert(accountFlow);
     }
 

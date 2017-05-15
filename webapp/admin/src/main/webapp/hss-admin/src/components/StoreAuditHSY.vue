@@ -352,8 +352,12 @@
               <td><input type="text" name="name" placeholder="不通过必填" v-model="reason" style="height: 35px;line-height: 35px;width: 50%;"></td>
             </tr>
             <tr>
-              <th style="text-align: right"><div class="btn btn-danger" @click="unAudit">不 通 过</div></th>
-              <td><div class="btn btn-success" @click="audit($event)">通 过</div></td>
+              <th style="text-align: right">
+                <el-button type="danger" @click="unAudit" :disabled="auditClick">不 通 过</el-button>
+              </th>
+              <td>
+                <el-button type="success" @click="audit($event)" :disabled="auditClick">通 过</el-button>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -390,6 +394,7 @@
       return {
         id: '',
         msg:{},
+        auditClick:false,
         isReenter:false,
         isReject:false,
         reason:'',
@@ -520,6 +525,7 @@
         })
       },
       audit: function (event) {
+        this.auditClick = true;
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.id,
           uid: this.msg.uid,
@@ -530,15 +536,18 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'
           })
+          this.auditClick = false;
         }, function (err) {
           this.$message({
             showClose: true,
             message: err.statusMessage,
             type: 'error'
           })
+          this.auditClick = false;
         })
       },
       unAudit: function () {
+        this.auditClick = true;
         this.$http.post('/admin/hsyMerchantAudit/rejectToExamine', {
           id: this.id,
           uid: this.msg.uid,
@@ -550,12 +559,14 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '操作成功'
             })
+            this.auditClick = false;
           },function (err) {
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       changeBig: function (e) {

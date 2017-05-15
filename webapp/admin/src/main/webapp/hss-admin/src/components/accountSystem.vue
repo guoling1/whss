@@ -164,7 +164,7 @@
             </div>
             <div class="foot">
               <a href="javascript:void(0)" @click="isDownload=false" class="el-button el-button--default">取消</a>
-              <a @click="download()" class="el-button el-button-default el-button--primary ">确定</a>
+              <el-button @click="download()" class="el-button el-button-default el-button--primary" :disabled="downloadClick">确定</el-button>
             </div>
           </div>
         </div>
@@ -183,6 +183,7 @@
             return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
           }
         },
+        downloadClick:false,
         date:'',
         fileList: [],
         records:[],
@@ -269,6 +270,7 @@
         this.downloadId = id;
       },
       download:function () {
+        this.downloadClick = true
         this.$http.post(this.downloadUrl,{id:this.downloadId},{emulateJSON: true})
           .then(res => {
           if(res.data.result=='操作成功'){
@@ -276,6 +278,7 @@
           sessionStorage.setItem('data',JSON.stringify(res.data.jsonPayResult))
 //          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
           this.$router.push('/admin/details/accountData')
+            this.downloadClick = false
           }else{
           this.isDownload = false;
           this.$message({
@@ -283,6 +286,7 @@
             message: res.data.result,
             type: 'warning'
           });
+            this.downloadClick = false
           }
 
           })
@@ -335,9 +339,9 @@
           type: 'info'
         });
         if(file.result.result=='操作成功'){
-//          this.$router.push('/admin/record/accountData');
-          sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult))
-          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+          sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult));
+          this.$router.push('/admin/details/accountData');
+//          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
         }
       },
       getData: function () {

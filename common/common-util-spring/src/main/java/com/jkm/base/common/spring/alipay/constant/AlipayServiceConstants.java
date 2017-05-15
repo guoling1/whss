@@ -40,4 +40,8 @@ public class AlipayServiceConstants {
     public static final String OAUTH_URL = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+APP_ID+"&state=";
 
     public static final String OAUTH_URL_AFTER = "&scope=auth_base&redirect_uri="+REDIRECT_URI;
+
+    public static final String OAUTH_URL_LATER = "&scope=auth_base&redirect_uri=";
+
+    public static final String MEMBERSHIP_REDIRECT_URI = "http%3a%2f%2fhsy.qianbaojiajia.com%2fmembership%2fgetAuthInfo";
 }

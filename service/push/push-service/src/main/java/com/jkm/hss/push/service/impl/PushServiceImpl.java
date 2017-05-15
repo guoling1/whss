@@ -206,6 +206,8 @@ public class PushServiceImpl implements PushService {
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
             String clientid=map.get("CLIENTID").toString();
+            System.out.print("------------------------------------");
+            System.out.print(clientid);
             clients.add(clientid);
         }
          SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
@@ -338,15 +340,17 @@ public class PushServiceImpl implements PushService {
 //        push.setClientId("3c3002bf2b52d12798a5d29673d91437");
         push.setPushType(pushType);
         push.setTempType("4");
-        System.out.print("===================================================================");
+        System.out.print("++++++++++++++++");
         System.out.print(ret.get("response"));
+        System.out.print(ret);
+        System.out.print(ret.get("clientId"));
         if(ret.containsValue("result=ok")){
             push.setStatus(1);
         }else{
-            push.setStatus(1);
+            push.setStatus(0);
         }
         push.setTaskId((String) ret.get("taskId"));
-        push.setClientId(clientId);
+        push.setClientId((String) ret.get("clientId"));
         push.setTargets(target);
         pushDao.insert(push);
         return ret;

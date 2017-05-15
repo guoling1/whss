@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service.impl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.SendMsgService;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +87,53 @@ public class SendMsgServiceImpl implements SendMsgService {
                 client.getConnectionManager().shutdown();
             }
         }
+
+    @Override
+    public void refundSendMessage(final String orderNo, final BigDecimal refundAmount, final String touser) {
+        final Map<String, String> ret = new HashMap<String, String>();
+        final String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken(WxConstants.APP_HSY_ID, WxConstants.APP_HSY_SECRET);
+        final HttpClient client = new DefaultHttpClient();
+        final HttpPost method = new HttpPost(turl);
+        final JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
+        try
+        {
+            final JSONObject jsonParam = new JSONObject();
+            final JSONObject jo = new JSONObject();
+            final JSONObject first =new JSONObject();
+            first.put("value","钱包++提醒您，您有一笔退款成功，请留意。");
+            jo.put("first",first);
+            final JSONObject keyword1 =new JSONObject();
+            keyword1.put("value", orderNo);
+            jo.put("keyword1", keyword1);
+            final JSONObject keyword2 =new JSONObject();
+            keyword2.put("value", "￥" + refundAmount.toPlainString());
+            jo.put("keyword2", keyword2);
+            final  JSONObject remark = new JSONObject();
+            remark.put("value","更多精彩福利，尽请关注~");
+            jo.put("remark",remark);
+            jsonParam.put("touser",touser);
+            jsonParam.put("template_id","Pr1819gVEMAKcr0bB2wJXCo_q2gaW3pt1hXzRpbPY1I");
+            jsonParam.put("data",jo);
+            method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
+            final HttpResponse res = client.execute(method);
+            final HttpEntity entity = res.getEntity();
+            final String responseContent = EntityUtils.toString(entity, "UTF-8");
+            final JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
+            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+            {
+                log.info("交易成功推送:{}",json.toString());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            // 关闭连接 ,释放资源
+            client.getConnectionManager().shutdown();
+        }
+    }
 
     @Override
     public void sendPushMessage(final BigDecimal totalAmount, final Date withdrawTime, final BigDecimal poundage,
@@ -299,5 +347,8 @@ public class SendMsgServiceImpl implements SendMsgService {
             client.getConnectionManager().shutdown();
         }
     }
+
+
+
 
 }

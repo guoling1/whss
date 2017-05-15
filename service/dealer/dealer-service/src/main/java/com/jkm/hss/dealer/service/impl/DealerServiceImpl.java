@@ -1741,6 +1741,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginName(firstLevelDealerAdd2Request.getLoginName());
         dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
+        dealer.setDealerBelong(firstLevelDealerAdd2Request.getDealerBelong());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
@@ -1869,6 +1870,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBankAccountName(request.getBankAccountName());
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
+        dealer.setDealerBelong(request.getDealerBelong());
         this.update2(dealer);
     }
     /**

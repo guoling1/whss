@@ -89,6 +89,7 @@
                 <el-option label="微信支付" value="wechat"></el-option>
                 <el-option label="支付宝支付" value="alipay"></el-option>
                 <el-option label="快捷支付" value="unionpay"></el-option>
+                <el-option label="QQ钱包" value="qqpay"></el-option>
               </el-select>
             </li>
             <li class="same">

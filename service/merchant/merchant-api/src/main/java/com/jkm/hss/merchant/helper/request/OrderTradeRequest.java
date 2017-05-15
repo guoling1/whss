@@ -8,6 +8,11 @@ import lombok.Data;
 @Data
 public class OrderTradeRequest {
 
+//    /**
+//     * 退款单号
+//     */
+//    private String refundOrderNo;
+
     /**
      * 店铺shop编码
      */
