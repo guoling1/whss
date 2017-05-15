@@ -248,6 +248,7 @@ public enum EnumPayChannelSign {
     public static boolean isUnionPay(final int channelSign) {
         return MB_UNIONPAY.getId() == channelSign
                 || MB_UNIONPAY_DO.getId() == channelSign
-                || EL_UNIONPAY.getId() == channelSign;
+                || EL_UNIONPAY.getId() == channelSign
+                || HE_LI_UNIONPAY.getId() == channelSign;
     }
 }
