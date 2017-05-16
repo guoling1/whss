@@ -18,6 +18,12 @@
         LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="realname!=null and realname!=''">
+            AND e.realname =#{realname}
+        </if>
+        <if test="username!=null and username!=''">
+            AND e.username =#{username}
+        </if>
         <if test="proxyName!=null and proxyName!=''">
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
         </if>
@@ -76,6 +82,12 @@
         LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="realname!=null and realname!=''">
+            AND e.realname =#{realname}
+        </if>
+        <if test="username!=null and username!=''">
+            AND e.username =#{username}
+        </if>
         <if test="proxyName!=null and proxyName!=''">
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
         </if>
@@ -125,6 +137,12 @@
         LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="realname!=null and realname!=''">
+            AND e.realname =#{realname}
+        </if>
+        <if test="username!=null and username!=''">
+            AND e.username =#{username}
+        </if>
         <if test="proxyName!=null and proxyName!=''">
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
         </if>
