@@ -8,15 +8,33 @@
     </select>
     <!-- 查询总条数 -->
     <select id="getCount" resultType="java.lang.Integer">
-        SELECT COUNT(a.ID) FROM app_biz_shop a
-        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
-        LEFT JOIN app_au_user c ON c.ID=b.UID
-        where b.ROLE=1 AND b.TYPE=1
+        SELECT
+        COUNT(a.ID)
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
+        WHERE
+        b.ROLE = 1 AND b.TYPE=1
+        <if test="proxyName!=null and proxyName!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
+        </if>
+        <if test="proxyName1!=null and proxyName1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) =#{proxyName1}
+        </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME=#{shortName}
+        </if>
+        <if test="auditTime!=null and auditTime!=''">
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+        </if>
+        <if test="auditTime1!=null and auditTime1!=''">
+            AND a.AUDITTIME <![CDATA[ <= ]]> #{auditTime1}
         </if>
         <if test="startTime!=null and startTime!=''">
             AND a.CREATETIME <![CDATA[ >= ]]> #{startTime}
@@ -47,21 +65,23 @@
     <!-- 查询商户列表 -->
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,
-        (
-        SELECT
-        proxy_name
-        FROM
-        tb_dealer
-        WHERE
-        id = c.DEALERID
-        ) as proxyNames
+        a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
         app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="proxyName!=null and proxyName!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
+        </if>
+        <if test="proxyName1!=null and proxyName1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) =#{proxyName1}
+        </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -77,6 +97,12 @@
         <if test="endTime!=null and endTime!=''">
             AND a.CREATETIME <![CDATA[ <= ]]> #{endTime}
         </if>
+        <if test="auditTime!=null and auditTime!=''">
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+        </if>
+        <if test="auditTime1!=null and auditTime1!=''">
+            AND a.AUDITTIME <![CDATA[ <= ]]> #{auditTime1}
+        </if>
         <if test="status!=null and status!=''">
             AND a.`STATUS` = #{status}
         </if>
@@ -88,22 +114,23 @@
     <!-- 导出hsy商户列表 -->
     <select id="hsyMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,
-        (
-        SELECT
-        proxy_name
-        FROM
-        tb_dealer
-        WHERE
-        id = c.DEALERID
-        ) as proxyNames,
-        (SELECT dealer_belong FROM tb_dealer WHERE id=c.DEALERID) AS dealerBelong
+        a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
         app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
         b.ROLE = 1 AND b.TYPE=1
+        <if test="proxyName!=null and proxyName!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) =#{proxyName}
+        </if>
+        <if test="proxyName1!=null and proxyName1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) =#{proxyName1}
+        </if>
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -112,6 +139,18 @@
         </if>
         <if test="cellphone!=null and cellphone!=''">
             AND c.CELLPHONE=#{cellphone}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.CREATETIME <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.CREATETIME <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="auditTime!=null and auditTime!=''">
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+        </if>
+        <if test="auditTime1!=null and auditTime1!=''">
+            AND a.AUDITTIME <![CDATA[ <= ]]> #{auditTime1}
         </if>
         ORDER BY
         a.CREATETIME DESC
@@ -147,6 +186,10 @@
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.STOREFRONTID) AS STOREFRONTID,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.COUNTERID) AS COUNTERID,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.INDOORID) AS INDOORID,
+            (SELECT proxy_name FROM tb_dealer WHERE id=b.DEALERID AND `level`=1) AS proxyName,
+            (SELECT proxy_name FROM tb_dealer WHERE id=b.DEALERID AND `level`=2) AS proxyName1,
+            (SELECT mark_code FROM tb_dealer WHERE id=b.DEALERID AND `level`=1) AS markCode,
+            (SELECT mark_code FROM tb_dealer WHERE id=b.DEALERID AND `level`=2) AS markCode1,
             c.CONTACTNAME,
             c.CONTACTCELLPHONE,
             c.ISPUBLIC,
@@ -154,6 +197,7 @@
             c.CREATETIME,
             c.UPDATETIME,
             c.ISPUBLIC,
+            c.COMMITTIME,
             c.`STATUS`,
             d.UID,
             d.SID,
@@ -170,7 +214,9 @@
             e.CARDACCOUNTNAME,
             e.CARDBANK,
             e.BANKADDRESS,
-						e.CREATETIME,
+			e.CREATETIME,
+			g.realname,
+			g.username,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
@@ -179,6 +225,8 @@
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
         LEFT JOIN app_biz_card e ON e.SID=c.ID
+        LEFT JOIN app_au_user_admin f ON f.SID=c.ID
+		LEFT JOIN tb_admin_user g ON g.id = f.AUID
         WHERE c.ID=#{id} AND d.TYPE=1 AND d.role=1
     </select>
 

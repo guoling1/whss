@@ -14,10 +14,21 @@ public class HsyMerchantAuditRequest {
      */
     private int stat;
 
+    private String username;//报单员真实姓名
+
     /**
      * 审核时间
      */
     private String auditTime;
+
+    /**
+     * 审核时间
+     */
+    private String auditTime1;
+
+    private String commitTime;//提交开始时间
+
+    private String commitTime1;//提交结束时间
 
     private Long id;
     private String globalID;//对外ID
