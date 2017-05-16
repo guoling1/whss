@@ -1,10 +1,7 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
-import com.jkm.hss.bill.helper.PayParams;
-import com.jkm.hss.bill.helper.PayResponse;
-import com.jkm.hss.bill.helper.RechargeParams;
-import com.jkm.hss.bill.helper.SplitProfitParams;
+import com.jkm.hss.bill.helper.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -44,6 +41,13 @@ public interface TradeService {
      */
     Pair<Integer, String> splitProfitImpl(SplitProfitParams splitProfitParams);
 
+    /**
+     * 退分润实现
+     *
+     * @param refundProfitParams
+     * @return
+     */
+    Pair<Integer, String> refundProfitImpl(RefundProfitParams refundProfitParams);
 
     Pair<Integer, String> withdraw();
 }

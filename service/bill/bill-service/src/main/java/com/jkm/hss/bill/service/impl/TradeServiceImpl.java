@@ -2,17 +2,21 @@ package com.jkm.hss.bill.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
+import com.jkm.hss.bill.entity.RefundOrder;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.RefundOrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/5/2.
@@ -29,6 +35,8 @@ import java.math.BigDecimal;
 public class TradeServiceImpl implements TradeService {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private RefundOrderService refundOrderService;
     @Autowired
     private BaseTradeService baseTradeService;
     @Autowired
@@ -196,10 +204,53 @@ public class TradeServiceImpl implements TradeService {
         if (!orderOptional.isPresent()) {
             return Pair.of(-1, "交易单不存在");
         }
-        log.info("交易单[{}]，执行分润", splitProfitParams.getOrderNo());
-
-        return this.baseSplitProfitService.exePaySplitAccount(splitProfitParams);
+        log.info("交易单[{}]，执行分润操作", splitProfitParams.getOrderNo());
+        return this.baseSplitProfitService.exeSplitProfit(splitProfitParams);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundProfitParams
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Pair<Integer, String> refundProfitImpl(final RefundProfitParams refundProfitParams) {
+        final Optional<Order> orderOptional = this.orderService.getByOrderNo(refundProfitParams.getOrderNo());
+        if (!orderOptional.isPresent()) {
+            return Pair.of(-1, "交易单不存在");
+        }
+        log.info("交易单[{}]，执行退分润操作", refundProfitParams.getOrderNo());
+        final Order order = orderOptional.get();
+        if (order.isRefundSuccess()) {
+            return Pair.of(-1, "已经退款成功，不可以重复退款");
+        }
+        final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(order.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+        final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+        if (order.isSettled() || order.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
+            return Pair.of(-1, "只可以退当日订单");
+        }
+        if (this.refundOrderService.getUnRefundErrorCountByPayOrderId(order.getId()) > 0) {
+            return Pair.of(-1, "当前交易已经存在退款单");
+        }
+        final RefundOrder refundOrder = new RefundOrder();
+        refundOrder.setBatchNo("");
+        refundOrder.setAppId(order.getAppId());
+        refundOrder.setOrderNo(SnGenerator.generateRefundSn());
+        refundOrder.setPayOrderId(order.getId());
+        refundOrder.setPayOrderNo(order.getOrderNo());
+        refundOrder.setSn("");
+        refundOrder.setRefundAccountId(order.getPayee());
+        refundOrder.setRefundAmount(order.getRealPayAmount());
+        refundOrder.setMerchantRefundAmount(order.getRealPayAmount().subtract(order.getPoundage()));
+        refundOrder.setPoundageRefundAmount(order.getPoundage());
+        refundOrder.setUpperChannel(EnumPayChannelSign.idOf(order.getPayChannelSign()).getUpperChannel().getId());
+        refundOrder.setStatus(EnumRefundOrderStatus.REFUNDING.getId());
+        this.refundOrderService.add(refundOrder);
+        return this.baseSplitProfitService.exeRefundProfit(refundProfitParams, refundOrder.getId());
+    }
+
 
     @Override
     public Pair<Integer, String> withdraw() {

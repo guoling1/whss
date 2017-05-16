@@ -115,6 +115,17 @@ public class RefundOrderServiceImpl implements RefundOrderService {
     /**
      * {@inheritDoc}
      *
+     * @param payOrderId
+     * @return
+     */
+    @Override
+    public int getUnRefundErrorCountByPayOrderId(final long payOrderId) {
+        return this.refundOrderDao.selectUnRefundErrorCountByPayOrderId(payOrderId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param payOrderNo
      * @return
      */
