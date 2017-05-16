@@ -156,6 +156,10 @@
                   <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>姓名:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
                   <label>审核状态:</label>
                   <el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
                     <el-option label="全部" value="">全部</el-option>
@@ -321,7 +325,8 @@
           startTime:'',
           endTime:'',
           auditTime:'',
-          auditTime1:''
+          auditTime1:'',
+          realname:''
         },
         recordsHss: [],
         recordsHsy: [],
@@ -373,11 +378,23 @@
             status:''
           }
         }else if(val == 'hsy'){
+          this.dateHsy='';
+          this.dateHsy1='';
           this.queryHsy = {
             pageNo:1,
-              pageSize:10,
-              shortName:'',
-              globalID:'',
+            pageSize:10,
+            shortName:'',
+            globalID:'',
+            proxyName:'',
+            proxyName1:'',
+            cellphone:'',
+            username:'',
+            status:'',
+            startTime:'',
+            endTime:'',
+            auditTime:'',
+            auditTime1:'',
+            realname:''
           }
         }
       },

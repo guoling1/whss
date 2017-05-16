@@ -20,9 +20,11 @@ var global = {
   },
   __lockNum: function (url) {
     var num = -1;
-    for (var i = 0; i < this.__lockUrl.length; i++) {
-      if (url.indexOf(this.__lockUrl[i]) > 1) {
-        num = i;
+    if (url) {
+      for (var i = 0; i < this.__lockUrl.length; i++) {
+        if (url.indexOf(this.__lockUrl[i]) > 1) {
+          num = i;
+        }
       }
     }
     return num;
