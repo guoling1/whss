@@ -87,7 +87,7 @@ if (pageData.status == 1) {
 // 定义支付
 submit.addEventListener('click', function () {
   if (pageData.canPay) {
-    if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+    if ((pageData.showExpireDate == 0 || validate.empty(expireDate.innerHTML, '信用卡有效期')) &&
       (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
       validate.empty(code.value, '验证码')) {
       if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
@@ -111,11 +111,11 @@ submit.addEventListener('click', function () {
 sendCode.addEventListener('click', function () {
   if (pageData.canPay) {
     if (countdown.check()) {
-      if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+      if ((pageData.showExpireDate == 0 || validate.empty(expireDate.innerHTML, '信用卡有效期')) &&
         (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2'))) {
         if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
           message.load_show('正在发送');
-          let expire = expireDate.value.split('/');
+          let expire = expireDate.innerHTML.split('/');
           http.post('/trade/againUnionPay', {
             amount: amount,
             channel: channel,

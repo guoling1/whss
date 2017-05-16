@@ -245,6 +245,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setId(appBizCard.getSid());
         appBizShop.setStatus(AppConstant.SHOP_STATUS_NO_CHECK);
+        appBizShop.setCommitTime(new Date());
         hsyShopDao.update(appBizShop);
         return "{\"id\":"+appBizCard.getId()+",\"auStep\":\"4\",\"status\":"+AppConstant.SHOP_STATUS_NO_CHECK+"}";
     }

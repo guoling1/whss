@@ -31,7 +31,8 @@
             <if test="licenceStartDate!=null">LICENCESTARTDATE=#{licenceStartDate},</if>
             <if test="licenceEndDate!=null">LICENCEENDDATE=#{licenceEndDate},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
-            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime},</if>
+            <if test="commitTime!=null">COMMITTIME=#{commitTime}</if>
         </set> where ID=#{id}
     </update>
 
