@@ -332,7 +332,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         map.put("appBizCard",appBizCard);
         return gson.toJson(map);
     }
-
+    /**HSY001048 刷新用户登录*/
     public String refreshlogin(String dataParam,AppParam appParam)throws ApiHandleException {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
@@ -350,7 +350,43 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"密码");
         if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
-        return gson.toJson("");
+        /**查询用户*/
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
+        if (!(list != null && list.size() != 0))
+            throw new ApiHandleException(ResultCode.CEELLPHONE_HAS_NOT_BEEN_REGISTERED);
+        AppAuUser appAuUserFind=list.get(0);
+        if(!appAuUserFind.getPassword().equals(appAuUser.getPassword()))
+            throw new ApiHandleException(ResultCode.PASSWORD_NOT_CORRECT);
+        if(appAuUserFind.getStatus().equals(AppConstant.USER_STATUS_FORBID))
+            throw new ApiHandleException(ResultCode.USER_FORBID);
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
+
+            AppAuUserToken appAuUserToken=new AppAuUserToken();
+            appAuUserToken.setUid(appAuUserFind.getId());
+            appAuUserToken.setTid(tokenList.get(0).getId());
+            List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
+            {
+                AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
+                appAuUserTokenUpdate.setStatus(1);
+                appAuUserTokenUpdate.setLoginTime(new Date());
+                hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
+            }
+            else
+            {
+                appAuUserToken.setStatus(1);
+                appAuUserToken.setLoginTime(new Date());
+                hsyUserDao.insertAppAuUserToken(appAuUserToken);
+            }
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+
+        return "";
     }
 
     /**HSY001003 发送验证码*/
