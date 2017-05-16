@@ -17,10 +17,7 @@ import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
-import com.jkm.hss.bill.helper.HolidaySettlementConstants;
-import com.jkm.hss.bill.helper.PaymentSdkConstants;
-import com.jkm.hss.bill.helper.PlaceOrderParams;
-import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.MergeTableSettlementDateService;
 import com.jkm.hss.bill.service.OrderService;
@@ -33,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -117,13 +115,16 @@ public class BaseTradeServiceImpl implements BaseTradeService {
      * @return
      */
     @Override
-    @Transactional
-    public Pair<Integer, String> handlePlaceOrderResult(final PaymentSdkPlaceOrderResponse placeOrderResponse,
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public PayResponse handlePlaceOrderResult(final PaymentSdkPlaceOrderResponse placeOrderResponse,
                                                         final EnumMerchantPayType merchantPayType, final Order order) {
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(placeOrderResponse.getCode());
         final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
         Preconditions.checkState(orderOptional.get().isDuePay());
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
+        final PayResponse payResponse = new PayResponse();
+        payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        payResponse.setTradeOrderNo(order.getOrderNo());
         switch (enumBasicStatus) {
             case SUCCESS:
                 log.info("业务方[{}],订单[{}]-下单成功【{}】", order.getAppId(), order.getId(), placeOrderResponse);
@@ -134,16 +135,26 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                     order.setPaySign(order.getSignCode());
                     this.orderService.update(order);
                     final String url = "/trade/pay?" + "o_n=" + order.getOrderNo() + "&sign=" + order.getPaySign();
-                    return Pair.of(0, url);
+                    payResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+                    payResponse.setUrl(url);
+                    payResponse.setMessage("下单成功");
+                    return payResponse;
                 }
                 this.orderService.update(order);
-                return Pair.of(0, placeOrderResponse.getPayUrl());
+                payResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+                payResponse.setUrl(placeOrderResponse.getPayUrl());
+                payResponse.setMessage("下单成功");
+                return payResponse;
             case FAIL:
                 log.info("业务方[{}],订单[{}]-下单失败【{}】", order.getAppId(), order.getId(), placeOrderResponse.getMessage());
                 this.orderService.updateRemark(order.getId(), placeOrderResponse.getMessage());
-                return Pair.of(-1, placeOrderResponse.getMessage());
+                payResponse.setCode(EnumBasicStatus.FAIL.getId());
+                payResponse.setMessage(placeOrderResponse.getMessage());
+                return payResponse;
         }
-        return Pair.of(-1, "下单网关返回状态异常");
+        payResponse.setCode(EnumBasicStatus.FAIL.getId());
+        payResponse.setMessage("网关异常");
+        return payResponse;
     }
 
     /**
@@ -152,14 +163,19 @@ public class BaseTradeServiceImpl implements BaseTradeService {
      * @param orderId
      */
     @Override
-    @Transactional
-    public Pair<Integer, String> memberPayImpl(final long orderId) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public PayResponse memberPayImpl(final long orderId) {
         final Order order = this.orderService.getByIdWithLock(orderId).get();
+        final PayResponse payResponse = new PayResponse();
+        payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        payResponse.setTradeOrderNo(order.getOrderNo());
         if (order.isDuePay()) {
             final MemberAccount memberAccount = this.memberAccountService.getByIdWithLock(order.getMemberAccountId()).get();
             final ReceiptMemberMoneyAccount receiptMemberMoneyAccount = this.receiptMemberMoneyAccountService.getByIdWithLock(order.getMerchantReceiveAccountId()).get();
             if (memberAccount.getAvailable().compareTo(order.getRealPayAmount()) < 0) {
-                return Pair.of(-1, "金额不足");
+                payResponse.setCode(EnumBasicStatus.FAIL.getId());
+                payResponse.setMessage("金额不足");
+                return payResponse;
             }
             //会员账户额度减少
             final MemberAccount updateMemberAccount = new MemberAccount();
@@ -205,9 +221,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             updateOrder.setSettleTime(new Date());
             updateOrder.setSettleStatus(EnumSettleStatus.SETTLED.getId());
             this.orderService.update(updateOrder);
-            return Pair.of(0, "支付成功");
+
+            payResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+            payResponse.setMessage("支付成功");
+            return payResponse;
         }
-        return Pair.of(-1, "交易状态异常");
+        payResponse.setCode(EnumBasicStatus.FAIL.getId());
+        payResponse.setMessage("交易状态异常");
+        return payResponse;
     }
 
     /**

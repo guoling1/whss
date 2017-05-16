@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -42,11 +43,19 @@ public class TradeServiceImpl implements TradeService {
      * @return
      */
     @Override
-    public Pair<Integer, String> recharge(final RechargeParams rechargeParams) {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public PayResponse recharge(final RechargeParams rechargeParams) {
         log.info("业务方[{}],通过渠道[{}]进行充值[{}],实付金额[{}]，充值账户[{}]，收款账户[{}], 会员标识[{}], 商户号[{}]",
                 rechargeParams.getAppId(), rechargeParams.getChannel(), rechargeParams.getTradeAmount(), rechargeParams.getRealPayAmount(),
                 rechargeParams.getMemberAccountId(), rechargeParams.getPayeeAccountId(), rechargeParams.getMemberId(), rechargeParams.getMerchantNo());
-        //TODO
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(rechargeParams.getBusinessOrderNo());
+        if (orderOptional.isPresent()) {
+            final PayResponse payResponse = new PayResponse();
+            payResponse.setCode(EnumBasicStatus.FAIL.getId());
+            payResponse.setMessage("业务订单号重复");
+            payResponse.setBusinessOrderNo(rechargeParams.getBusinessOrderNo());
+            return payResponse;
+        }
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(rechargeParams.getChannel(), rechargeParams.getMerchantPayType());
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(rechargeParams.getChannel());
         final Order order = new Order();
@@ -92,8 +101,17 @@ public class TradeServiceImpl implements TradeService {
      * @return
      */
     @Override
-    public Pair<Integer, String> pay(final PayParams payParams) {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public PayResponse pay(final PayParams payParams) {
         log.info("业务方[{}],通过渠道[{}]进行支付[{}],实付金额[{}]", payParams.getAppId(), payParams.getChannel(), payParams.getTradeAmount(), payParams.getRealPayAmount());
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(payParams.getBusinessOrderNo());
+        if (orderOptional.isPresent()) {
+            final PayResponse payResponse = new PayResponse();
+            payResponse.setBusinessOrderNo(payParams.getBusinessOrderNo());
+            payResponse.setCode(EnumBasicStatus.FAIL.getId());
+            payResponse.setMessage("业务订单号重复");
+            return payResponse;
+        }
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(payParams.getChannel(), payParams.getMerchantPayType());
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payParams.getChannel());
         final Order order = new Order();
@@ -171,7 +189,7 @@ public class TradeServiceImpl implements TradeService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Pair<Integer, String> splitProfitImpl(final SplitProfitParams splitProfitParams) {
         Preconditions.checkState(splitProfitParams.getSplitProfitDetails().size() > 0);
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(splitProfitParams.getOrderNo());
