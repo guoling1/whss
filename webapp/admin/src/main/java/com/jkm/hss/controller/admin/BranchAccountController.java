@@ -19,7 +19,7 @@ import java.util.List;
  * Created by zhangbin on 2017/5/3.
  */
 @Controller
-@RequestMapping(value = "/branchAccount")
+@RequestMapping(value = "/admin/branchAccount")
 public class BranchAccountController extends BaseController {
 
     @Autowired
