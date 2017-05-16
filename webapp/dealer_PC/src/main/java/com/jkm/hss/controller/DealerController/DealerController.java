@@ -368,11 +368,10 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
         dealerDetailResponse.setBelongArea(dealer.getBelongArea());
         final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealerOptional.get().getFirstLevelDealerId());
-        if(!firstDealerOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "上级代理信息有误");
+        if(firstDealerOptional.isPresent()){
+            dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
+            dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
         }
-        dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
-        dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
         dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
         dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
         dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
@@ -467,6 +466,90 @@ public class DealerController extends BaseController {
         }
     }
 
+    /**
+     * 更新一级代理商
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateFirstDealer", method = RequestMethod.POST)
+    public CommonResponse updateFirstDealer(@RequestBody FirstLevelDealerUpdate2Request request) {
+        try{
+            if(!ValidateUtils.isMobile(request.getMobile())) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            if(StringUtils.isBlank(request.getName())) {
+                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
+            }
+            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), EnumOemType.DEALER.getId(), request.getDealerId());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+            }
+
+            if(StringUtils.isBlank(request.getLoginName())) {
+                return CommonResponse.simpleResponse(-1, "登录名不能为空");
+            }
+            Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndTypeUnIncludeNow(request.getLoginName(),EnumAdminType.FIRSTDEALER.getCode(),request.getDealerId());
+            if (adminUserOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "登录名已经存在");
+            }
+            if(StringUtils.isBlank(request.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongProvinceCode())) {
+                return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongProvinceName())) {
+                return CommonResponse.simpleResponse(-1, "所在省份不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongCityCode())) {
+                return CommonResponse.simpleResponse(-1, "所在市编码不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongCityName())) {
+                return CommonResponse.simpleResponse(-1, "所在市不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongArea())) {
+                return CommonResponse.simpleResponse(-1, "详细地址不能为空");
+            }
+            final String bankCard = request.getBankCard();
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+            if (!bankCardBinOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+            }
+            request.setBankName(bankCardBinOptional.get().getBankName());
+
+            if(StringUtils.isBlank(request.getBankAccountName())) {
+                return CommonResponse.simpleResponse(-1, "开户名称不能为空");
+            }
+            if(!ValidationUtil.isIdCard(request.getIdCard())){
+                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+            }
+            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
+            }
+            this.dealerService.updateDealer2(request);
+            //更改登录用户
+            AdminUser adminUser = new AdminUser();
+            adminUser.setEmail(request.getEmail());
+            adminUser.setUsername(request.getLoginName());
+            adminUser.setRealname(request.getBankAccountName());
+            adminUser.setMobile(AdminUserSupporter.encryptMobile(request.getMobile()));
+            adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(request.getIdCard()));
+            adminUser.setDealerId(request.getDealerId());
+            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
+            this.adminUserService.updateDealerUser(adminUser);
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
+                    .addParam("dealerId", request.getDealerId()).build();
+        }catch (Exception e){
+            log.error("错误信息时",e.getStackTrace());
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
+    }
     /**
      * 修改密码
      *
