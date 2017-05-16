@@ -21,7 +21,7 @@
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.firstDealerId==0?'':msg.firstDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode==0?'':msg.markCode" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
               <th></th>
@@ -29,9 +29,17 @@
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.secondDealerId==0?'':msg.secondDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode1==0?'':msg.markCode1" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
+              <th></th>
+              <td></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">报单员:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.username" readonly></td>
+              <th style="text-align: right">姓名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.realname" readonly></td>
               <th></th>
               <td></td>
             </tr>

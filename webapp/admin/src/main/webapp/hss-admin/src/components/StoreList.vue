@@ -192,7 +192,7 @@
                 </el-table-column>
                 <el-table-column label="提交时间">
                   <template scope="scope">
-                    <span>{{scope.row.createTime|changeTime}}</span>
+                    <span>{{scope.row.commitTime|changeTime}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="审核时间">
