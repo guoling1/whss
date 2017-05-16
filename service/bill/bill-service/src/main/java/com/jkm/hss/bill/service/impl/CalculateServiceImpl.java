@@ -133,11 +133,11 @@ public class CalculateServiceImpl implements CalculateService {
             //HSS
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
             final Product product = this.productService.selectByType(type.getId()).get();
-            if (0 == merchant.getDealerId()) {
+            /*if (0 == merchant.getDealerId()) {
 
                 final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
-            }
+            }*/
             return this.getMerchantWithdrawFee(merchant, channelSign);
 
         }else {
