@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.wx;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
@@ -35,10 +36,7 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
@@ -112,7 +110,8 @@ public class WxPubController extends BaseController {
     private AccountBankService accountBankService;
     @Autowired
     private ProductChannelGatewayService productChannelGatewayService;
-
+    @Autowired
+    private ChannelSupportDebitCardService channelSupportDebitCardService;
 
 
     /**
@@ -1333,7 +1332,13 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
-
+        //通道结算卡拦截
+        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
+        final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
+        if (!channelSupportDebitCardOptional.isPresent()){
+            //通道结算卡不可用
+            return CommonResponse.simpleResponse(-1, "该通道仅支持结算到大型银行，请联系客服更改结算卡再使用");
+        }
         //通道限额拦截，通道可用拦截，
         final BasicChannel basicChannel =
                 this.basicChannelService.selectByChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign()).get();
