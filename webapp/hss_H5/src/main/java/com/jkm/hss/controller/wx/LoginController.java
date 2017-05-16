@@ -1561,7 +1561,10 @@ public class LoginController extends BaseController {
                             log.info("返回right:{}",pair.getRight());
                             if(pair.getLeft()==0){
                                 isRedirect= true;
-                                url = URLDecoder.decode(pair.getRight(), "UTF-8");
+                                String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
+                                url = "/toBuy";
+                                model.addAttribute("payUrl",payUrl);
+                                model.addAttribute("amount",needMoney);
                             }else{
                                 model.addAttribute("message",pair.getRight());
                                 url = "/message";
@@ -1580,7 +1583,7 @@ public class LoginController extends BaseController {
             }
             if(isRedirect){
                 log.info("直接跳转{}",url);
-                return "redirect:"+url;
+                return url;
             }else{
                 return url;
             }

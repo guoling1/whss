@@ -20,7 +20,7 @@
 <div id="chargeCode" class="flexBox flex-box-column">
   <div class="content">
     <div class="top">
-      <p class="shop">${subMerName}</p>
+      <p class="shop">升级费</p>
 
       <p class="price">￥<span>${amount}</span></p>
       <i class="left"></i>
@@ -29,15 +29,14 @@
     <div class="bottom">
       <div class="qr" id="qr"></div>
 
-      <div class="red_mpt">请勿在微信内长按二维码识别</div>
+
       <div class="bar">
         <img src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
-        <img src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>
-        <span>截图保存后识别二维码付款</span>
+        <span>长按识别二维码付款</span>
       </div>
     </div>
   </div>
-  <div class="explain">
+  <div class="explain"  style="display: none">
     <p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh">
       <img src="http://static.jinkaimen.cn/hss/assets/reload.png"/>点击刷新</span></p>
 
