@@ -1287,9 +1287,11 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "只能删除信用卡");
         }
         accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
-        Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
-        if(accountBankOptional1.isPresent()){
-            accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+        if(accountBankOptional.get().getIsDefault()==EnumBankDefault.DEFAULT.getId()){
+            Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
+            if(accountBankOptional1.isPresent()){
+                accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+            }
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
     }
