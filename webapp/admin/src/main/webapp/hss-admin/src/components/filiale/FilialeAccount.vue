@@ -13,7 +13,7 @@
             </li>
             <li class="same">
               <label>分公司名称:</label>
-              <el-input style="width: 188px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -23,14 +23,14 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column prop="appId" label="分公司编号" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="分公司名称" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="账户总额（元）" align="right" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="待结算金额（元）" align="right" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="可用余额（元）" align="right" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="操作" min-width="85">
+            <el-table-column prop="markCode" label="分公司编号" min-width="85"></el-table-column>
+            <el-table-column prop="proxyName" label="分公司名称" min-width="85"></el-table-column>
+            <el-table-column prop="totalAmount" label="账户总额（元）" align="right" min-width="85"></el-table-column>
+            <el-table-column prop="dueSettleAmount" label="待结算金额（元）" align="right" min-width="85"></el-table-column>
+            <el-table-column prop="available" label="可用余额（元）" align="right" min-width="85"></el-table-column>
+            <el-table-column label="操作" min-width="85">
               <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')">查看明细</a>
+                <!--<a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')">查看明细</a>-->
               </template>
             </el-table-column>
           </el-table>
@@ -58,43 +58,29 @@
         query:{
           pageNo:1,
           pageSize:10,
-          mobile:'',
-          name:"",
           markCode:"",
-          districtCode:"",
-          status:'hss'
+          proxyName:""
         },
         records: [],
         count: 0,
         loading: true,
-        citys:[],
-        city:'',
-        selectCon:'全部',
-        isOpen:false,
-        isOpen1:false
       }
     },
     created: function () {
-      this.$http.post('/admin/district/findAllProvinces')
-        .then(res =>{
-          this.provinces = res.data;
-        })
-        .catch(err =>{
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
       this.getData();
     },
     methods: {
       reset:function () {
-
+        this.query = {
+          pageNo: 1,
+          pageSize: 10,
+          markCode: "",
+          proxyName: ""
+        }
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList',this.query)
+        this.$http.post('/admin/branchAccount/getBranch',this.query)
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
