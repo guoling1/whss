@@ -29,6 +29,7 @@ public class BranchAccountController extends BaseController {
     @RequestMapping(value = "/getBranch",method = RequestMethod.POST)
     public CommonResponse getBranch(@RequestBody BranchAccountRequest req){
         final PageModel<BranchAccountResponse> pageModel = new PageModel<BranchAccountResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
         List<BranchAccountResponse> list = this.dealerService.getBranch(req);
         int count = this.dealerService.getBranchCount(req);
         pageModel.setCount(count);
