@@ -14,6 +14,8 @@ public class HsyMerchantAuditRequest {
      */
     private int stat;
 
+    private String username;//报单员真实姓名
+
     /**
      * 审核时间
      */
