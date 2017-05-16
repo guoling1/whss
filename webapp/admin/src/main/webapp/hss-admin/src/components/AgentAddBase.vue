@@ -186,7 +186,11 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.dealerBelong" placeholder="请输入内容"></el-input>
+                  <!--<el-input size="small" v-model="query.dealerBelong"  placeholder="请输入内容"></el-input>-->
+                  <el-select v-model="query.dealerBelong" clearable placeholder="请选择" size="small" style="width: 100%">
+                    <el-option label="宿迁代理" value="宿迁代理"></el-option>
+                    <el-option label="直销团队" value="直销团队"></el-option>
+                  </el-select>
                 </div>
               </el-col>
               <el-col :span="8">

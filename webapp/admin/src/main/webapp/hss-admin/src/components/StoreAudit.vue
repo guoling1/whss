@@ -3,7 +3,7 @@
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
-      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary" style="color: #fff">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -393,7 +393,7 @@
       </div>
       <div class="mask" id="mask" style="display: none">
         <p @click="isNo">×</p>
-        <div style="width: 50%;height: 90%;margin: 0 auto;overflow: auto;cursor: move;position: absolute;" id="imgBox" @mousedown.prevent.stop="move">
+        <div style="cursor: move;position: absolute;" id="imgBox" @mousedown.prevent.stop="move">
           <img src="" alt="" id="img">
         </div>
         <div style="width:280px;position: absolute;left: 43%;top: 2%;">
@@ -542,32 +542,17 @@
         $box[0].setCapture&&$box[0].setCapture();
         return false;
       })
-
     },
     methods: {
       move:function (e) {
         var oBox=document.getElementById("imgBox");
         e=e||window.event;
-        console.log(e)
         var disX= e.clientX-oBox.offsetLeft;
         var disY= e.clientY-oBox.offsetTop;
-        console.log(disX,disY);
         document.onmousemove=function(e){
           e=e||window.event;
           var l= e.clientX-disX;
           var t= e.clientY-disY;
-          /*var maxL=(document.documentElement.clientWidth||document.body.clientWidth)-oBox.offsetWidth;
-          var maxT=(document.documentElement.clientHeight||document.body.clientHeight)-oBox.offsetHeight;
-          if(l>=maxL){
-            l=maxL;
-          }else if(l<=0){
-            l=0;
-          }
-          if(t>=maxT){
-            t=maxT;
-          }else if(t<=0){
-            t=0;
-          }*/
           oBox.style.left=l+"px";
           oBox.style.top=t+"px";
         };
@@ -578,7 +563,6 @@
         };
         oBox.setCapture && oBox.setCapture();
         return false;
-
       },
       reduction:function () {
         let img,height1,width1,v_left,v_top;
@@ -591,8 +575,6 @@
           img.width = this.width;//图片的宽度
           document.getElementById('imgBox').style.transform = 'rotate(0deg)';
           var img1 = mask.getElementsByTagName('img')[0];
-//          height1 = img1.height;
-//          width1 = img1.width;
           img1.height = this.height;
           img1.width = this.width;
         }
@@ -812,10 +794,8 @@
         Img.onload = ()=>{
           this.height = Img.height;//图片的高度
           this.width = Img.width;//图片的宽度
-          console.log(this.height)
           this.reduction()
         }
-
       },
       isNo: function () {
         document.getElementById('mask').style.display = 'none'
@@ -908,7 +888,7 @@
     color: #20a0ff;
   }
   .mask {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 1100;
     width: 100%;
     height: 100%;
@@ -924,9 +904,9 @@
       height: 65px;
       line-height: 55px;
       font-size: 65px;
-      color: #d2d1d1;
+      color: #f5f2f2;
       text-align: center;
-      border: 6px solid #adaaaa;
+      border: 6px solid #f5f2f2;
       border-radius: 50%;
       box-shadow: 0 0 16px #000;
       text-shadow: 0 0 16px #000;
