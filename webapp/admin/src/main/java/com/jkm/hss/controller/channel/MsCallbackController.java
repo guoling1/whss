@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 /**
  * Created by yuxiang on 2017-05-09.
@@ -33,6 +34,23 @@ public class MsCallbackController{
      */
     @RequestMapping(value = "pay", method = RequestMethod.POST)
     public void handlePayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("rt1_bizType",request.getParameter("rt1_bizType"));
+        map.put("rt2_retCode",request.getParameter("rt2_retCode"));
+        map.put("rt3_retMsg",request.getParameter("rt3_retMsg"));
+        map.put("rt4_customerNumber",request.getParameter("rt4_customerNumber"));
+        map.put("rt5_orderId",request.getParameter("rt5_orderId"));
+        map.put("rt6_serialNumber",request.getParameter("rt6_serialNumber"));
+        map.put("rt7_completeDate",request.getParameter("rt7_completeDate"));
+        map.put("rt8_orderAmount",request.getParameter("rt8_orderAmount"));
+        map.put("rt9_orderStatus",request.getParameter("rt9_orderStatus"));
+        map.put("rt10_bindId",request.getParameter("rt10_bindId"));
+        map.put("rt11_bankId",request.getParameter("rt11_bankId"));
+        map.put("rt12_onlineCardType",request.getParameter("rt12_onlineCardType"));
+        map.put("rt13_cardAfterFour",request.getParameter("rt13_cardAfterFour"));
+        map.put("rt14_userId",request.getParameter("rt14_userId"));
+        final JSONObject jsonObject = (JSONObject) JSONObject.toJSON(map);
+        log.info("收到合利宝支付回调通知，参数[{}]", jsonObject.toJSONString());
         log.info(request.getParameter("encryptData")+"............");
         log.info(request.getParameter("encryptKey")+"............");
 
