@@ -42,6 +42,14 @@ public interface ReceiptMemberMoneyAccountService {
     int increaseIncomeAmount(long id, BigDecimal income);
 
     /**
+     * 充值总金额增加
+     *
+     * @param id
+     * @param recharge
+     * @return
+     */
+    int increaseRechargeAmount(long id, BigDecimal recharge);
+    /**
      * 按id查询
      *
      * @param id
