@@ -19,6 +19,7 @@ public class HsyMerchantAuditResponse {
     private Date commitTime;//提交时间
     private String realname;//报单员
     private String username;//报单员真实姓名
+    private String createTimes;
     /**
      * 所属分公司
      */
