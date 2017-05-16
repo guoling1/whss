@@ -20,7 +20,7 @@ public class FirstDealerResponse {
 
 
     /**
-     * 代理手机号
+     * 代理编码
      */
     private String markCode;
 

@@ -253,10 +253,10 @@ public interface DealerDao {
     /**
      * 【代理商后台】查询二级代理个数
      *
-     * @param listFirstDealerRequest
+     * @param secondDealerSearchRequest
      * @return
      */
-    int selectSecondDealerCountByPage(SecondDealerSearchRequest listFirstDealerRequest);
+    int selectSecondDealerCountByPage(SecondDealerSearchRequest secondDealerSearchRequest);
     /**
      * 【代理商后台】分页查询二级代理
      *
@@ -264,6 +264,26 @@ public interface DealerDao {
      * @return
      */
     List<SecondDealerResponse> selectSecondDealersByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+
+
+    /**
+     * 【代理商后台】查询一级代理个数
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    int selectFirstDealerCountByPage(FirstDealerSearchRequest firstDealerSearchRequest);
+
+    /**
+     * 【代理商后台】分页查询一级代理
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    List<FirstDealerResponse> selectFirstDealersByPage(FirstDealerSearchRequest firstDealerSearchRequest);
+
+
+
 
     /**
      * 按登陆名称查询

@@ -439,6 +439,13 @@ public interface DealerService {
      */
     PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
     /**
+     * 【代理商后台】一级代理商列表
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    PageModel<FirstDealerResponse> listFirstDealer(FirstDealerSearchRequest firstDealerSearchRequest);
+    /**
      * 【代理商后台】新增或修改代理商产品
      *
      * @param request

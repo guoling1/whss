@@ -106,6 +106,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      * {@inheritDoc}
      *
      * @param username
+     * 由于业务需要，不再根据类型查登录名，直接改sql
      * @return
      */
     @Override

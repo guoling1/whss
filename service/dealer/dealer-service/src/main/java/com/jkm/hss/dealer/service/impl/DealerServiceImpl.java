@@ -1790,6 +1790,8 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginName(secondLevelDealerAdd2Request.getLoginName());
         dealer.setLoginPwd(DealerSupport.passwordDigest(secondLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(secondLevelDealerAdd2Request.getEmail());
+        dealer.setOemId(secondLevelDealerAdd2Request.getOemId());
+        dealer.setOemType(secondLevelDealerAdd2Request.getOemType());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.SECORDDEALER,dealer.getId()+""),dealer.getId());
@@ -2172,7 +2174,23 @@ public class DealerServiceImpl implements DealerService {
         pageModel.setRecords(dealers);
         return pageModel;
     }
-
+    /**
+     * 【代理商后台】一级代理商列表
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    @Override
+    public PageModel<FirstDealerResponse> listFirstDealer(FirstDealerSearchRequest firstDealerSearchRequest) {
+        final PageModel<FirstDealerResponse> pageModel = new PageModel<>(firstDealerSearchRequest.getPageNo(), firstDealerSearchRequest.getPageSize());
+        firstDealerSearchRequest.setOffset(pageModel.getFirstIndex());
+        firstDealerSearchRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectFirstDealerCountByPage(firstDealerSearchRequest);
+        final List<FirstDealerResponse> dealers = this.dealerDao.selectFirstDealersByPage(firstDealerSearchRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
+    }
     /**
      * {@inheritDoc}
      *
