@@ -19,7 +19,7 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(rename({basename: "style"}))
+    .pipe(rename({basename: "style.1.0.0"}))
     .pipe(gulp.dest('css'));
 });
 
@@ -56,6 +56,7 @@ gulp.task('es', () => {
 
 gulp.task('replace', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
+    .pipe(replace('style.css', 'style.1.0.0.css'))
     .pipe(replace('/2.0.1/', '/2.0.1.1/'))
     .pipe(replace('vendor.2.0.1.min.js', 'vendor.2.0.1.1.min.js'))
     .pipe(gulp.dest('WEB-INF/jsp'));
