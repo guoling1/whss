@@ -64,13 +64,9 @@
           districtCode:"",
           status:'hss'
         },
-        date: '',
         records: [],
         count: 0,
-        total: '',
         loading: true,
-        url: '',
-        options:[],
         citys:[],
         city:'',
         selectCon:'全部',
@@ -96,73 +92,38 @@
       reset:function () {
 
       },
-      addFiliale:function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/filialeAdd');
-      },
-      selectCity: function (valCol,val) {
-        this.province = val;
-        this.$http.post('/admin/district/findAllCities',{code:valCol})
-          .then(function (res) {
-            this.$data.citys = res.data;
-            this.$data.isOpen1 = true;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      open:function () {
-        console.log(this.isOpen)
-        this.isOpen = !this.isOpen;
-        this.isOpen1 = false;
-        document.getElementById('select').style.borderColor = '#20a0ff';
-      },
-      select:function (valCode,val) {
-        this.selectCon = val;
-        this.query.districtCode = valCode;
-        this.isOpen = !this.isOpen;
-        this.isOpen1 = !this.isOpen1;
-      },
-      selectAll: function () {
-        this.selectCon = val;
-        this.query.districtCode = '';
-        this.isOpen = !this.isOpen;
-        this.isOpen1 = false;
-      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/queryOrder/orderList',this.query)
           .then(function (res) {
-            this.loading = false;
-            this.records = res.data.records;
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+            },1000)
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             });
           })
-
       },
       search(){
-        this.total = '';
-        this.query.page = 1;
+        this.query.pageNo = 1;
         this.getData();
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.query.page = 1;
-        this.query.size = val;
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
         this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.query.page = val;
+        this.query.pageNo = val;
         this.getData()
       }
     }
