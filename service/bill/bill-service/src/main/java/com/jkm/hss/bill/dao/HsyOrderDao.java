@@ -1,0 +1,16 @@
+package com.jkm.hss.bill.dao;
+
+import com.jkm.hss.bill.entity.HsyOrder;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Created by wayne on 17/5/16.
+ */
+@Repository
+public interface HsyOrderDao {
+    /**
+     * 插入
+     * @param hsyOrder
+     */
+    void insert(HsyOrder hsyOrder);
+}

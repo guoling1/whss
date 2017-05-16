@@ -333,6 +333,26 @@ public class HsyUserServiceImpl implements HsyUserService {
         return gson.toJson(map);
     }
 
+    public String refreshlogin(String dataParam,AppParam appParam)throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getCellphone()!=null&&!appAuUser.getCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"手机号");
+        if(!(appAuUser.getPassword()!=null&&!appAuUser.getPassword().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"密码");
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+        return gson.toJson("");
+    }
+
     /**HSY001003 发送验证码*/
     public String insertAndSendVerificationCode(String dataParam,AppParam appParam)throws ApiHandleException{
         Date date=new Date();
