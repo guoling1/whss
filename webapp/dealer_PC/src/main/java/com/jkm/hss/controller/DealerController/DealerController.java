@@ -683,25 +683,22 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
         final Dealer dealer = dealerOptional.get();
-        final SecondDealerProductDetailResponse secondDealerProductDetailResponse = new SecondDealerProductDetailResponse();
+        final FirstDealerProductDetailResponse firstDealerProductDetailResponse = new FirstDealerProductDetailResponse();
         if(request.getProductId()>0){//修改
             Optional<Product> productOptional = this.productService.selectById(request.getProductId());
             if(!productOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "产品不存在");
             }
-            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),request.getProductId());
-            final SecondDealerProductDetailResponse.Product productResponse = secondDealerProductDetailResponse.new Product();
+            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(request.getDealerId(),request.getProductId());
+            final FirstDealerProductDetailResponse.Product productResponse = firstDealerProductDetailResponse.new Product();
             productResponse.setProductId(productOptional.get().getId());
             productResponse.setProductName(productOptional.get().getProductName());
-            final List<SecondDealerProductDetailResponse.Channel> channels = new ArrayList<>();
+            final List<FirstDealerProductDetailResponse.Channel> channels = new ArrayList<>();
             productResponse.setChannels(channels);
             for (DealerChannelRate dealerChannelRate:channelRates) {
-                final SecondDealerProductDetailResponse.Channel channel = new SecondDealerProductDetailResponse.Channel();
-                Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(request.getDealerId(),request.getProductId(),dealerChannelRate.getChannelTypeSign());
-                if(dealerChannelRateOptional.isPresent()){
-                    channel.setPaymentSettleRate(dealerChannelRateOptional.get().getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                    channel.setWithdrawSettleFee(dealerChannelRateOptional.get().getDealerWithdrawFee().toPlainString());
-                }
+                final FirstDealerProductDetailResponse.Channel channel = new FirstDealerProductDetailResponse.Channel();
+                channel.setPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
                 channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                 channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
                 channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
@@ -712,14 +709,14 @@ public class DealerController extends BaseController {
                 channel.setSettleType(dealerChannelRate.getDealerBalanceType());
                 channels.add(channel);
             }
-            secondDealerProductDetailResponse.setProduct(productResponse);
+            firstDealerProductDetailResponse.setProduct(productResponse);
             String tempTypeName="好收收";
             if("hsy".equals(request.getSysType())){
                 tempTypeName = "好收银";
             }
-            secondDealerProductDetailResponse.setProductName(tempTypeName);
-            secondDealerProductDetailResponse.setInviteCode(dealer.getInviteCode());
-            secondDealerProductDetailResponse.setInviteBtn(dealer.getInviteBtn());
+            firstDealerProductDetailResponse.setProductName(tempTypeName);
+            firstDealerProductDetailResponse.setInviteCode(dealer.getInviteCode());
+            firstDealerProductDetailResponse.setInviteBtn(dealer.getInviteBtn());
         }else{//新增
             Optional<Product> productOptional = this.productService.selectByType(request.getSysType());
             if(!productOptional.isPresent()){
@@ -727,37 +724,33 @@ public class DealerController extends BaseController {
             }
             final Product product = productOptional.get();
             //根据产品查找产品详情
-            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),product.getId());
+            final List<ProductChannelDetail> channelRates = this.productChannelDetailService.selectByProductId(product.getId());
             if(channelRates.size()==0){
                 return CommonResponse.simpleResponse(-1, "您的产品信息尚未完善");
             }
-            final SecondDealerProductDetailResponse.Product productResponse = secondDealerProductDetailResponse.new Product();
+            final FirstDealerProductDetailResponse.Product productResponse = firstDealerProductDetailResponse.new Product();
             productResponse.setProductId(product.getId());
             productResponse.setProductName(product.getProductName());
-            final List<SecondDealerProductDetailResponse.Channel> channels = new ArrayList<>();
+            final List<FirstDealerProductDetailResponse.Channel> channels = new ArrayList<>();
             productResponse.setChannels(channels);
-            for (DealerChannelRate dealerChannelRate : channelRates) {
-                final SecondDealerProductDetailResponse.Channel channel = new SecondDealerProductDetailResponse.Channel();
-                channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
-                channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
-                channel.setChannelType(dealerChannelRate.getChannelTypeSign());
-                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign());
+            for (ProductChannelDetail productChannelDetail : channelRates) {
+                final FirstDealerProductDetailResponse.Channel channel = new FirstDealerProductDetailResponse.Channel();
+                channel.setChannelType(productChannelDetail.getChannelTypeSign());
+                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
-                channel.setSettleType(dealerChannelRate.getDealerBalanceType());
+                channel.setSettleType(productChannelDetail.getProductBalanceType());
                 channels.add(channel);
             }
-            secondDealerProductDetailResponse.setProduct(productResponse);
+            firstDealerProductDetailResponse.setProduct(productResponse);
             String tempTypeName="好收收";
             if("hsy".equals(request.getSysType())){
                 tempTypeName = "好收银";
             }
-            secondDealerProductDetailResponse.setProductName(tempTypeName);
-            secondDealerProductDetailResponse.setInviteCode(dealer.getInviteCode());
-            secondDealerProductDetailResponse.setInviteBtn(dealer.getInviteBtn());
+            firstDealerProductDetailResponse.setProductName(tempTypeName);
+            firstDealerProductDetailResponse.setInviteCode(dealer.getInviteCode());
+            firstDealerProductDetailResponse.setInviteBtn(dealer.getInviteBtn());
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", secondDealerProductDetailResponse);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", firstDealerProductDetailResponse);
     }
     /**
      * 新增或添加二级代理商产品
