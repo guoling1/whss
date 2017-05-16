@@ -254,13 +254,8 @@ public class CalculateServiceImpl implements CalculateService {
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
                 return  waitMoney;
             case HE_LI_UNIONPAY:
-                if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
-                    //手续费不足2毛 , 按2毛收
-                    waitMoney = basicChannel.getLowestFee();
-                }else{
-                    //收手续费,进一位,保留两位有效数字
-                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
-                }
+                //收手续费,进一位,保留两位有效数字
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
