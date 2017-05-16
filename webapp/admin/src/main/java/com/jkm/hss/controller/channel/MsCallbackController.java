@@ -49,6 +49,7 @@ public class MsCallbackController{
         map.put("rt12_onlineCardType",request.getParameter("rt12_onlineCardType"));
         map.put("rt13_cardAfterFour",request.getParameter("rt13_cardAfterFour"));
         map.put("rt14_userId",request.getParameter("rt14_userId"));
+        map.put("sign",request.getParameter("sign"));
         final JSONObject jsonObject = (JSONObject) JSONObject.toJSON(map);
         log.info("收到合利宝支付回调通知，参数[{}]", jsonObject.toJSONString());
         log.info(request.getParameter("encryptData")+"............");
