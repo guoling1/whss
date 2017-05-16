@@ -26,6 +26,10 @@ public class HsyMerchantAuditRequest {
      */
     private String auditTime1;
 
+    private String commitTime;//提交开始时间
+
+    private String commitTime1;//提交结束时间
+
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称
