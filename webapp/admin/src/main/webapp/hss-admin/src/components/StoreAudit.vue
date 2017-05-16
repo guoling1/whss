@@ -391,13 +391,17 @@
           </div>
         </div>
       </div>
-      <div class="mask" id="mask" style="display: none" @click="isNo()">
+      <div class="mask" id="mask" style="display: none">
         <p @click="isNo">×</p>
-        <div style="width: 100%;height: 90%;overflow: auto">
+        <div style="width: 50%;height: 90%;margin: 0 auto;overflow: auto;cursor: move;position: absolute;" id="imgBox" @mousedown.prevent.stop="move">
           <img src="" alt="" id="img">
         </div>
-
-        <el-button @click.prevent.stop="enlarge">放大</el-button>
+        <div style="width:280px;position: absolute;left: 43%;top: 2%;">
+          <el-button @click.prevent.stop="enlarge">放大</el-button>
+          <el-button @click.prevent.stop="lessen">缩小</el-button>
+          <el-button @click.prevent.stop="rotate">旋转</el-button>
+          <el-button @click.prevent.stop="reduction">还原</el-button>
+        </div>
       </div>
       <div class="box box-primary" v-if="isShow">
         <p class="lead">审核</p>
@@ -494,7 +498,10 @@
         isUpload: false,
         photoType:'',
         bankDis:false,
-        src:''
+        src:'',
+        current:0,
+        height:0,
+        width:0
       }
     },
     created: function () {
@@ -504,8 +511,95 @@
         this.$data.isShow = false;
       }
       this.getData();
+      var $box=$("#imgBox");
+      $box.on("mousedown",function(e){
+        var disX= e.clientX-$(this).offset().left;
+        var disY= e.clientY-$(this).offset().top;
+        $(document).on("mousemove.move",function(e){
+          var l= e.clientX-disX;
+          var t= e.clientY-disY;
+          var maxL=$(document).width()-$box.width();
+          var maxT=$(document).height()-$box.height();
+          if(l>=maxL){
+            l=maxL;
+          }else if(l<=0){
+            l=0;
+          }
+          if(t>=maxT){
+            t=maxT;
+          }else if(t<=0){
+            t=0;
+          }
+          $box.css({
+            left:l,
+            top:t
+          });
+        });
+        $(document).on("mouseup.move",function(){
+          $(document).off(".move");
+          $box[0].releaseCapture&& $box[0].releaseCapture();
+        });
+        $box[0].setCapture&&$box[0].setCapture();
+        return false;
+      })
+
     },
     methods: {
+      move:function (e) {
+        var oBox=document.getElementById("imgBox");
+        e=e||window.event;
+        console.log(e)
+        var disX= e.clientX-oBox.offsetLeft;
+        var disY= e.clientY-oBox.offsetTop;
+        console.log(disX,disY);
+        document.onmousemove=function(e){
+          e=e||window.event;
+          var l= e.clientX-disX;
+          var t= e.clientY-disY;
+          /*var maxL=(document.documentElement.clientWidth||document.body.clientWidth)-oBox.offsetWidth;
+          var maxT=(document.documentElement.clientHeight||document.body.clientHeight)-oBox.offsetHeight;
+          if(l>=maxL){
+            l=maxL;
+          }else if(l<=0){
+            l=0;
+          }
+          if(t>=maxT){
+            t=maxT;
+          }else if(t<=0){
+            t=0;
+          }*/
+          oBox.style.left=l+"px";
+          oBox.style.top=t+"px";
+        };
+        document.onmouseup=function(){
+          document.onmousemove=null;
+          document.onmouseup=null;
+          oBox.releaseCapture && oBox.releaseCapture();
+        };
+        oBox.setCapture && oBox.setCapture();
+        return false;
+
+      },
+      reduction:function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        console.log(1,this.height)
+        img.onload = ()=>{
+          console.log(2,this.height)
+          img.height = this.height;//图片的高度
+          img.width = this.width;//图片的宽度
+          document.getElementById('imgBox').style.transform = 'rotate(0deg)';
+          var img1 = mask.getElementsByTagName('img')[0];
+//          height1 = img1.height;
+//          width1 = img1.width;
+          img1.height = this.height;
+          img1.width = this.width;
+        }
+        var oBox = document.getElementById('imgBox');
+        oBox.style.left="0px";
+        oBox.style.top="0px";
+      },
       enlarge: function () {
         let img,height1,width1,v_left,v_top;
         img = new Image;
@@ -517,13 +611,34 @@
           v_top=(document.body.clientHeight-height1)/2;
           img.style.left=v_left;
           img.style.top=v_top;
-          console.log(img,height1,width1,v_left,v_top)
-          height1 = img.height;
-          width1 = img.width;
-          img.height = height1 * 1.1;
-          img.width = width1 * 1.1;
+          var img1 = mask.getElementsByTagName('img')[0];
+          height1 = img1.height;
+          width1 = img1.width;
+          img1.height = height1 * 1.1;
+          img1.width = width1 * 1.1;
         }
-
+      },
+      lessen: function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        img.onload = function(){
+          height1 = img.height;//图片的高度
+          width1 = img.width;//图片的宽度
+          v_left=(document.body.clientWidth-width1)/2;
+          v_top=(document.body.clientHeight-height1)/2;
+          img.style.left=v_left;
+          img.style.top=v_top;
+          var img1 = mask.getElementsByTagName('img')[0];
+          height1 = img1.height;
+          width1 = img1.width;
+          img1.height = height1 / 1.1;
+          img1.width = width1 / 1.1;
+        }
+      },
+      rotate:function () {
+        this.current = (this.current+90)%360;
+        document.getElementById('imgBox').style.transform = 'rotate('+this.current+'deg)';
       },
       changePhoto: function (val) {
         this.photoType = val;
@@ -692,6 +807,15 @@
           img = mask.getElementsByTagName('img')[0];
         this.src = img.src = obj.src;
         mask.style.display = 'block'
+        var Img = new Image;
+        Img.src = this.src;
+        Img.onload = ()=>{
+          this.height = Img.height;//图片的高度
+          this.width = Img.width;//图片的宽度
+          console.log(this.height)
+          this.reduction()
+        }
+
       },
       isNo: function () {
         document.getElementById('mask').style.display = 'none'
@@ -810,7 +934,7 @@
 
     img {
       display: inherit;
-      height: 100%;
+      /*height: 850px;*/
       margin: 0 auto;
     }
   }
