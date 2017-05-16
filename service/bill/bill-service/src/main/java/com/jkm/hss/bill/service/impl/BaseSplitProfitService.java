@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.helper.RefundProfitParams;
 import com.jkm.hss.bill.helper.SplitProfitParams;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -15,10 +16,34 @@ public interface BaseSplitProfitService {
      * @param splitProfitParams
      * @return
      */
-    Pair<Integer, String> exePaySplitAccount(SplitProfitParams splitProfitParams);
+    Pair<Integer, String> exeSplitProfit(SplitProfitParams splitProfitParams);
 
+    /**
+     * 执行退分润
+     *
+     * @param refundProfitParams
+     * @param refundOrderId
+     * @return
+     */
+    Pair<Integer, String> exeRefundProfit(RefundProfitParams refundProfitParams, long refundOrderId);
 
-//    Pair<Integer, String> exeRefundSplitAccount();
+    /**
+     * 执行退分润-全额退
+     *
+     * @param refundProfitParams
+     * @param refundOrderId
+     * @return
+     */
+    Pair<Integer, String> exeRefundAllProfit(RefundProfitParams refundProfitParams, long refundOrderId);
+
+    /**
+     * 执行退分润-部分退
+     *
+     * @param refundProfitParams
+     * @param refundOrderId
+     * @return
+     */
+    Pair<Integer, String> exeRefundPartProfit(RefundProfitParams refundProfitParams, long refundOrderId);
 
     /**
      * 添加分润记录
