@@ -14,7 +14,7 @@ public class TimeScheduled {
     @Autowired
     private DailyProfitDetailService dailyProfitDetailService;
 
-    @Scheduled(cron = "0 1 0 * * ?")
+    //@Scheduled(cron = "0 1 0 * * ?")
     public void otherPay(){
         try{
             this.dailyProfitDetailService.dailyProfitCount();
