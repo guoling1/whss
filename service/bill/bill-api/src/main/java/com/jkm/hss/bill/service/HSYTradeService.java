@@ -42,6 +42,8 @@ public interface HSYTradeService {
      */
     String tradeList1(String dataParam, AppParam appParam);
 
+    String tradeListhsy(String dataParam, AppParam appParam);
+
     /**
      * app收款
      *
