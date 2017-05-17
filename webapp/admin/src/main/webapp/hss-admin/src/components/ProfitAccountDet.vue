@@ -41,7 +41,13 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
         </div>
@@ -165,15 +171,19 @@
           })
       },
       search(){
-        this.currentPage = 1;
         this.query.pageNo = 1;
         this.getData()
+      },
+      handleSizeChange(val) {
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
+        this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.query.pageNo = val;
-        this.getData();
-      },
+        this.getData()
+      }
     },
     watch:{
       date:function (val,oldVal) {
