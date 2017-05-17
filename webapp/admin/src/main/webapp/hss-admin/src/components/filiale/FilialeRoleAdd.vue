@@ -79,7 +79,7 @@
         id = this.$route.query.id;
         this.isAdd = false;
       }
-      this.$http.post('/admin/user/getRoleDetail',{id:id,type:4})
+      this.$http.post('/admin/dealer/getRoleDetail',{id:id,type:4})
         .then(res => {
           this.tableData = res.data.list;
           this.roleName = res.data.roleName;
@@ -119,7 +119,7 @@
           id = this.$route.query.id;
           this.isAdd = false;
         }
-        this.$http.post('/admin/user/saveRole',{
+        this.$http.post('/admin/dealer/saveRole',{
           roleId:id,
           roleName:this.roleName,
           type:4,
