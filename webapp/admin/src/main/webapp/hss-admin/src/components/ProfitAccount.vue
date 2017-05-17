@@ -47,7 +47,7 @@
       }
     },
     created: function () {
-      this.$http.post('/admin/queryJkmProfit/accountList', this.$data.query)
+      this.$http.post('/admin/queryJkmProfit/accountList', this.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;

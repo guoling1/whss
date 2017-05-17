@@ -95,6 +95,7 @@
         currentPage: 1,
         loading: false,
         index: '',
+        url:''
       }
     },
     created: function () {
@@ -116,7 +117,13 @@
         }
       }
       this.$data.query.id = this.$route.query.id;
-      this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
+      console.log(this.$route.query.type)
+      if(this.$route.query.type=='filiale'){
+        this.url = '/admin/branchAccount/branchDetail'
+      }else {
+        this.url = '/admin/queryJkmProfit/accountDetails'
+      }
+      this.$http.post(this.url, this.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;

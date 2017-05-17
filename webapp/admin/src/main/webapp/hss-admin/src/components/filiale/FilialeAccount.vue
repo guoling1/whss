@@ -30,7 +30,9 @@
             <el-table-column prop="available" label="可用余额（元）" align="right" min-width="85"></el-table-column>
             <el-table-column label="操作" min-width="85">
               <template scope="scope">
-                <!--<a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')">查看明细</a>-->
+                <!--<a @click="details">查看明细</a>-->
+                <router-link target="_blank" :to="{path:'/admin/details/profitAccountDet',query:{id:scope.row.id,type:'filiale'}}" type="text" size="small" v-if="scope.row.totalAmount!=0||scope.row.dueSettleAmount!=0||scope.row.available!=0">明细
+                </router-link>
               </template>
             </el-table-column>
           </el-table>
