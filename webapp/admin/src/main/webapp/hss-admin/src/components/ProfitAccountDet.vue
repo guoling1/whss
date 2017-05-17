@@ -123,42 +123,7 @@
       }else {
         this.url = '/admin/queryJkmProfit/accountDetails'
       }
-      this.$http.post(this.url, this.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.loading = false;
-          /*var changeTime = function (val) {
-            if (val == '' || val == null) {
-              return ''
-            } else {
-              val = new Date(val)
-              var year = val.getFullYear();
-              var month = val.getMonth() + 1;
-              var date = val.getDate();
-
-              function tod(a) {
-                if (a < 10) {
-                  a = "0" + a
-                }
-                return a;
-              }
-
-              return year + "-" + tod(month) + "-" + tod(date);
-            }
-          }
-          for (let i = 0; i < this.$data.records.length; i++) {
-            this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-          }*/
-        }, function (err) {
-          this.$data.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      this.getData();
     },
     methods: {
       //格式化时间
@@ -183,40 +148,15 @@
           return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
-      search(){
-          this.currentPage = 1;
-        this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
+      getData: function () {
+        this.loading = true;
+        this.$http.post(this.url, this.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var changeTime = function (val) {
-              if (val == '' || val == null) {
-                return ''
-              } else {
-                val = new Date(val)
-                var year = val.getFullYear();
-                var month = val.getMonth() + 1;
-                var date = val.getDate();
-
-                function tod(a) {
-                  if (a < 10) {
-                    a = "0" + a
-                  }
-                  return a;
-                }
-
-                return year + "-" + tod(month) + "-" + tod(date);
-              }
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
+            this.records = res.data.records;
+            this.count = res.data.count;
+            this.loading = false;
           }, function (err) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -224,46 +164,15 @@
             })
           })
       },
+      search(){
+        this.currentPage = 1;
+        this.query.pageNo = 1;
+        this.getData()
+      },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
-        this.$data.loading = true;
-        this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var changeTime = function (val) {
-              if (val == '' || val == null) {
-                return ''
-              } else {
-                val = new Date(val)
-                var year = val.getFullYear();
-                var month = val.getMonth() + 1;
-                var date = val.getDate();
-
-                function tod(a) {
-                  if (a < 10) {
-                    a = "0" + a
-                  }
-                  return a;
-                }
-
-                return year + "-" + tod(month) + "-" + tod(date);
-              }
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.query.pageNo = val;
+        this.getData();
       },
     },
     watch:{
