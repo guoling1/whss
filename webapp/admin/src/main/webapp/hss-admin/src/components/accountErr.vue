@@ -28,7 +28,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small" style="width: 190px">
+                :picker-options="pickerOptions" size="small" style="width: 190px" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -136,7 +136,11 @@
     name: 'tAuditStore',
     data(){
       return{
-        pickerOptions: {},
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         records:[],
         count:0,
         date:'',
@@ -179,9 +183,29 @@
       }
     },
     created: function () {
+      this.currentDate()
       this.getData()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startSettleDate = str;
+          } else {
+            this.$data.query.endSettleDate = str;
+          }
+        }
+      },
       reset: function () {
         this.query = {
           currentPage:1,
@@ -194,6 +218,7 @@
           startDateStr:'',
           endDateStr:''
         }
+        this.currentDate()
       },
       getData: function () {
         this.loading = true;

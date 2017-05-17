@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,9 +46,24 @@ public class HsyMerchantListController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/getMerchantList",method = RequestMethod.POST)
-    public CommonResponse getMerchantList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+    public CommonResponse getMerchantList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         final PageModel<HsyMerchantAuditResponse> pageModel = new PageModel<HsyMerchantAuditResponse>(hsyMerchantAuditRequest.getPageNo(), hsyMerchantAuditRequest.getPageSize());
         hsyMerchantAuditRequest.setOffset(pageModel.getFirstIndex());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if(hsyMerchantAuditRequest.getEndTime()!=null&&!"".equals(hsyMerchantAuditRequest.getEndTime())){
+            Date dt = sdf.parse(hsyMerchantAuditRequest.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            hsyMerchantAuditRequest.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        if(hsyMerchantAuditRequest.getAuditTime1()!=null&&!"".equals(hsyMerchantAuditRequest.getAuditTime1())){
+            Date dt = sdf.parse(hsyMerchantAuditRequest.getAuditTime1());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            hsyMerchantAuditRequest.setAuditTime1(sdf.format(rightNow.getTime()));
+        }
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditService.getMerchant(hsyMerchantAuditRequest);
         int count = hsyMerchantAuditService.getCount(hsyMerchantAuditRequest);
         if (list == null){
@@ -63,7 +80,7 @@ public class HsyMerchantListController extends BaseController {
      * 导出全部
      * @return
      */
-    private String downLoadHsyMerchant(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+    private String downLoadHsyMerchant(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         final String fileZip = this.hsyMerchantAuditService.downLoadHsyMerchant(hsyMerchantAuditRequest, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();

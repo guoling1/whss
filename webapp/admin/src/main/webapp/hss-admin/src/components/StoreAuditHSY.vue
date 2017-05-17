@@ -21,7 +21,7 @@
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.firstDealerId==0?'':msg.firstDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode==0?'':msg.markCode" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
               <th></th>
@@ -29,9 +29,17 @@
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.secondDealerId==0?'':msg.secondDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode1==0?'':msg.markCode1" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
+              <th></th>
+              <td></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">报单员:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.username" readonly></td>
+              <th style="text-align: right">姓名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.realname" readonly></td>
               <th></th>
               <td></td>
             </tr>
@@ -327,7 +335,7 @@
               </thead>
               <tbody id="content">
               <tr role="row" class="odd" v-for="re in this.$data.res">
-                <td class="sorting_1">{{re.status|status}}</td>
+                <td class="sorting_1">{{re.stat}}</td>
                 <td>{{re.createTimes}}</td>
                 <td>{{re.name}}</td>
                 <td>{{re.descr}}</td>
@@ -337,9 +345,17 @@
           </div>
         </div>
       </div>
-      <div class="mask" id="mask" style="display: none" @click="isNo()">
+      <div class="mask" id="mask" style="display: none">
         <p @click="isNo">×</p>
-        <img src="" alt="">
+        <div style="cursor: move;position: absolute;" id="imgBox" @mousedown.prevent.stop="move">
+          <img src="" alt="" id="img">
+        </div>
+        <div style="width:280px;position: absolute;left: 43%;top: 2%;">
+          <el-button @click.prevent.stop="enlarge">放大</el-button>
+          <el-button @click.prevent.stop="lessen">缩小</el-button>
+          <el-button @click.prevent.stop="rotate">旋转</el-button>
+          <el-button @click.prevent.stop="reduction">还原</el-button>
+        </div>
       </div>
       <div class="box box-primary" v-if="isShow">
         <p class="lead">审核</p>
@@ -421,7 +437,11 @@
         }],
         isUpload: false,
         photoType:'',
-        fileList:[]
+        fileList:[],
+        src:'',
+        current:0,
+        height:0,
+        width:0
       }
     },
     created: function () {
@@ -431,8 +451,117 @@
         this.isShow = false;
       }
       this.getData();
+      var $box=$("#imgBox");
+      $box.on("mousedown",function(e){
+        var disX= e.clientX-$(this).offset().left;
+        var disY= e.clientY-$(this).offset().top;
+        $(document).on("mousemove.move",function(e){
+          var l= e.clientX-disX;
+          var t= e.clientY-disY;
+          var maxL=$(document).width()-$box.width();
+          var maxT=$(document).height()-$box.height();
+          if(l>=maxL){
+            l=maxL;
+          }else if(l<=0){
+            l=0;
+          }
+          if(t>=maxT){
+            t=maxT;
+          }else if(t<=0){
+            t=0;
+          }
+          $box.css({
+            left:l,
+            top:t
+          });
+        });
+        $(document).on("mouseup.move",function(){
+          $(document).off(".move");
+          $box[0].releaseCapture&& $box[0].releaseCapture();
+        });
+        $box[0].setCapture&&$box[0].setCapture();
+        return false;
+      })
     },
     methods: {
+      move:function (e) {
+        var oBox=document.getElementById("imgBox");
+        e=e||window.event;
+        var disX= e.clientX-oBox.offsetLeft;
+        var disY= e.clientY-oBox.offsetTop;
+        document.onmousemove=function(e){
+          e=e||window.event;
+          var l= e.clientX-disX;
+          var t= e.clientY-disY;
+          oBox.style.left=l+"px";
+          oBox.style.top=t+"px";
+        };
+        document.onmouseup=function(){
+          document.onmousemove=null;
+          document.onmouseup=null;
+          oBox.releaseCapture && oBox.releaseCapture();
+        };
+        oBox.setCapture && oBox.setCapture();
+        return false;
+      },
+      reduction:function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        console.log(1,this.height)
+        img.onload = ()=>{
+          console.log(2,this.height)
+          img.height = this.height;//图片的高度
+          img.width = this.width;//图片的宽度
+          document.getElementById('imgBox').style.transform = 'rotate(0deg)';
+          var img1 = mask.getElementsByTagName('img')[0];
+          img1.height = this.height;
+          img1.width = this.width;
+        }
+        var oBox = document.getElementById('imgBox');
+        oBox.style.left="0px";
+        oBox.style.top="0px";
+      },
+      enlarge: function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        img.onload = function(){
+          height1 = img.height;//图片的高度
+          width1 = img.width;//图片的宽度
+          v_left=(document.body.clientWidth-width1)/2;
+          v_top=(document.body.clientHeight-height1)/2;
+          img.style.left=v_left;
+          img.style.top=v_top;
+          var img1 = document.getElementById('img');
+          height1 = img1.height;
+          width1 = img1.width;
+          img1.height = height1 * 1.1;
+          img1.width = width1 * 1.1;
+        }
+      },
+      lessen: function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        img.onload = function(){
+          height1 = img.height;//图片的高度
+          width1 = img.width;//图片的宽度
+          v_left=(document.body.clientWidth-width1)/2;
+          v_top=(document.body.clientHeight-height1)/2;
+          img.style.left=v_left;
+          img.style.top=v_top;
+          var img1 = document.getElementById('img');
+          height1 = img1.height;
+          width1 = img1.width;
+          img1.height = height1 / 1.1;
+          img1.width = width1 / 1.1;
+        }
+      },
+      rotate:function () {
+        this.current = (this.current+90)%360;
+        document.getElementById('imgBox').style.transform = 'rotate('+this.current+'deg)';
+      },
       getData: function () {
         this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.id})
           .then(function (res) {
@@ -574,8 +703,15 @@
         var obj = e.srcElement||e.target;
         var mask = document.getElementById('mask'),
           img = mask.getElementsByTagName('img')[0];
-        img.src = obj.src;
-        mask.style.display= 'block'
+        this.src = img.src = obj.src;
+        mask.style.display= 'block';
+        var Img = new Image;
+        Img.src = this.src;
+        Img.onload = ()=>{
+          this.height = Img.height;//图片的高度
+          this.width = Img.width;//图片的宽度
+          this.reduction()
+        }
       },
       isNo: function () {
         document.getElementById('mask').style.display='none'
@@ -597,7 +733,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
   .mask{
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.3);
     z-index: 1100;
     width: 100%;
     height: 100%;
@@ -613,9 +749,9 @@
     height: 65px;
     line-height: 55px;
     font-size: 65px;
-    color: #d2d1d1;
+    color: #f5f2f2;
     text-align: center;
-    border: 6px solid #adaaaa;
+    border: 6px solid #f5f2f2;
     border-radius: 50%;
     box-shadow: 0 0 16px #000;
     text-shadow: 0 0 16px #000;
@@ -623,7 +759,7 @@
 
   img{
     display: inherit;
-    height: 100%;
+    /*height: 100%;*/
     margin: 0 auto;
   }
   }

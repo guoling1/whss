@@ -12,7 +12,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -76,7 +76,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -149,7 +149,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -256,31 +256,9 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
         },
         date:'',
         date1:'',

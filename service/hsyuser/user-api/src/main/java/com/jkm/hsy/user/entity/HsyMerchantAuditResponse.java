@@ -13,15 +13,19 @@ public class HsyMerchantAuditResponse {
 
 //    private long firstLevelDealerId;//一级代理商id
 //    private int level; //代理商级别
-//    private String markCode;    //一级代理商编码
-//    private String markCode1;   //二级级代理商编码
+    private String markCode;    //一级代理商编码
+    private String markCode1;   //二级级代理商编码
     private String proxyNames; //所属代理商
-
+    private Date commitTime;//提交时间
+    private String realname;//报单员
+    private String username;//报单员真实姓名
+    private String createTimes;
     /**
      * 所属分公司
      */
     private String dealerBelong;
-
+    private Date auditTime; //审核时间
+    private String auditTimes; // 审核时间
     private String proxyName; //所属一级代理商
     private String proxyName1; //所属二级代理商
     private String code;//省市码

@@ -108,9 +108,17 @@
           <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="payList" border>
             <el-table-column prop="sn" label="支付流水号"></el-table-column>
             <el-table-column prop="payAmount" label="支付金额（元）"></el-table-column>
-            <el-table-column prop="payStartTimes" label="支付发起时间"></el-table-column>
+            <el-table-column label="支付发起时间">
+              <template scope="scope">
+                {{scope.row.payStartTime|changeTime}}
+              </template>
+            </el-table-column>
             <el-table-column prop="payStatus" label="支付状态"></el-table-column>
-            <el-table-column prop="paySuccessTimes" label="支付完成时间"></el-table-column>
+            <el-table-column label="支付完成时间">
+              <template scope="scope">
+                {{scope.row.paySuccessTime|changeTime}}
+              </template>
+            </el-table-column>
             <el-table-column prop="payChannel" label="支付渠道"></el-table-column>
             <el-table-column prop="payType" label="支付方式"></el-table-column>
             <el-table-column prop="upperChannel" label="渠道方"></el-table-column>
@@ -125,9 +133,17 @@
             <el-table-column prop="orderNo" label="退款批次号"></el-table-column>
             <el-table-column prop="sn" label="退款流水号"></el-table-column>
             <el-table-column prop="amount" label="退款金额(元)"></el-table-column>
-            <el-table-column prop="refundStartTimes" label="退款发起时间"></el-table-column>
+            <el-table-column label="退款发起时间">
+              <template scope="scope">
+                {{scope.row.refundStartTime|changeTime}}
+              </template>
+            </el-table-column>
             <el-table-column prop="status" label="退款状态"></el-table-column>
-            <el-table-column prop="refundSuccessTimes" label="退款完成时间"></el-table-column>
+            <el-table-column label="退款完成时间">
+              <template scope="scope">
+                {{scope.row.refundSuccessTime|changeTime}}
+              </template>
+            </el-table-column>
             <el-table-column prop="message" label="渠道信息"></el-table-column>
           </el-table>
         </div>
@@ -159,7 +175,11 @@
             <el-table-column prop="splitAmount" label="分润金额(元)"></el-table-column>
             <!--<el-table-column prop="appId" label="分润收款方名称"></el-table-column>-->
             <el-table-column prop="accountUserType" label="收款方类型"></el-table-column>
-            <el-table-column prop="refundTime" label="退款时间"></el-table-column>
+            <el-table-column prop="refundTime" label="退款时间">
+              <template scope="scope">
+                {{scope.row.refundTime|changeTime}}
+              </template>
+            </el-table-column>
             <el-table-column prop="splitTotalAmount" label="分润总额"></el-table-column>
             <el-table-column prop="appId" label="备注"></el-table-column>
           </el-table>
