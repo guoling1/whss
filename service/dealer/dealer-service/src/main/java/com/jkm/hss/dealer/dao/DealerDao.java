@@ -397,7 +397,7 @@ public interface DealerDao {
      * @param id
      * @return
      */
-    List<BranchAccountDetailResponse> getBranchDetail(@Param("id") long id);
+    List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req);
 
     /**
      * 分公司账户明细总数

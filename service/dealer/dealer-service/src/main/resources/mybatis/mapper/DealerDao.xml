@@ -869,10 +869,10 @@
             tb_account_flow
         WHERE account_id=#{id}
     <if test="startTime!=null and startTime!=''">
-        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        AND create_time <![CDATA[ >= ]]> #{startTime}
     </if>
     <if test="endTime!=null and endTime!=''">
-        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        AND create_time <![CDATA[ <= ]]> #{endTime}
     </if>
         ORDER BY
         `create_time` DESC LIMIT #{offset},#{pageSize}
@@ -886,12 +886,12 @@
           tb_account_flow
         WHERE account_id=#{id}
         <if test="startTime!=null and startTime!=''">
-            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+            AND create_time <![CDATA[ >= ]]> #{startTime}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+            AND create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         ORDER BY
-        `create_time` DESC LIMIT #{offset},#{pageSize}
+        `create_time` DESC
     </select>
 </mapper>

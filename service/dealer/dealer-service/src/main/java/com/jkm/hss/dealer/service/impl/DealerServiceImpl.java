@@ -2590,8 +2590,8 @@ public class DealerServiceImpl implements DealerService {
     }
 
     @Override
-    public List<BranchAccountDetailResponse> getBranchDetail(long id) {
-        List<BranchAccountDetailResponse> list = this.dealerDao.getBranchDetail(id);
+    public List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req) {
+        List<BranchAccountDetailResponse> list = this.dealerDao.getBranchDetail(req);
         return list;
     }
 

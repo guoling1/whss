@@ -56,7 +56,7 @@ public class BranchAccountController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
-        List<BranchAccountDetailResponse> list = this.dealerService.getBranchDetail(req.getId());
+        List<BranchAccountDetailResponse> list = this.dealerService.getBranchDetail(req);
         int count = this.dealerService.getBranchDetailCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);

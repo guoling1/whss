@@ -577,7 +577,7 @@ public interface DealerService {
      * @param id
      * @return
      */
-    List<BranchAccountDetailResponse> getBranchDetail(long id);
+    List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req);
 
     /**
      * 分公司账户明细总数
