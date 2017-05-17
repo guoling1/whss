@@ -12,6 +12,7 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.AccountFlow;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -64,11 +65,11 @@ public class AccountController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/dealerInfo", method = RequestMethod.POST)
     public CommonResponse getDealerInfo(){
-        final Dealer dealer = this.getDealer().get();
-
+//        final Dealer dealer = this.getDealer().get();
+        final AdminUser adminUser = this.getAdminUser().get();
         DealerInfoResponse response = new DealerInfoResponse();
-        response.setDealerInfo(dealer.getProxyName());
-        response.setDealerLeavel(dealer.getLevel());
+        response.setDealerInfo(adminUser.getRealname());
+        response.setDealerLeavel(this.getDealer().get().getLevel());
 
         return CommonResponse.objectResponse(1, "success", response);
     }
