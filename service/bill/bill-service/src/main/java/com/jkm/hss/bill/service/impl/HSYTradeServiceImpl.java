@@ -299,12 +299,26 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
         hsyTradeListResponse.setAmount(new BigDecimal(10));
         hsyTradeListResponse.setNumber(1);
-        hsyTradeListResponse.setConfirmcode("1234");
-        hsyTradeListResponse.setOrderstatusname("收款成功");
+        hsyTradeListResponse.setValidationCode("1234");
+        hsyTradeListResponse.setOrderstatusName("收款成功");
         hsyTradeListResponseList.add(hsyTradeListResponse);
         pageModel.setRecords(hsyTradeListResponseList);
 
         return gson.toJson(pageModel);
+    }
+
+    public String appOrderDetailhsy(String dataParam, AppParam appParam){
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
+        return gson.toJson(hsyTradeListResponse);
+    }
+
+    public String tradeStatisticshsy(String dataParam, AppParam appParam){
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        Map<String,Object> map=new HashMap<>();
+        map.put("amount",10);
+        map.put("number",1);
+        return gson.toJson(map);
     }
 
 
