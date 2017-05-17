@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hss.bill.enums.EnumRefundOrderStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -78,4 +79,31 @@ public class RefundOrder extends BaseEntity {
      * {@link com.jkm.hss.product.enums.EnumUpperChannel}
      */
     private int upperChannel;
+
+    /**
+     * 是否是退款中
+     *
+     * @return
+     */
+    public boolean isRefunding() {
+        return EnumRefundOrderStatus.REFUNDING.getId() == this.status;
+    }
+
+    /**
+     * 是否退款成功
+     *
+     * @return
+     */
+    public boolean isRefundSuccess() {
+        return EnumRefundOrderStatus.REFUND_SUCCESS.getId() == this.status;
+    }
+
+    /**
+     * 是否是退款失败
+     *
+     * @return
+     */
+    public boolean isRefundFail() {
+        return EnumRefundOrderStatus.REFUND_FAIL.getId() == this.status;
+    }
 }

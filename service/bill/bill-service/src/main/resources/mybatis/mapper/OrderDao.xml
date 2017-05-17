@@ -50,6 +50,7 @@
         pay_type,
         pay_success_time,
         poundage,
+        settle_poundage,
         pay_rate,
         goods_name,
         goods_describe,
@@ -90,6 +91,7 @@
         #{payType},
         #{paySuccessTime},
         #{poundage},
+        #{settlePoundage},
         #{payRate},
         #{goodsName},
         #{goodsDescribe},
@@ -149,6 +151,9 @@
             <if test="poundage != null">
                 poundage = #{poundage},
             </if>
+            <if test="settlePoundage != null">
+                settle_poundage = #{settlePoundage},
+            </if>
             <if test="payRate != null">
                 pay_rate = #{payRate},
             </if>
@@ -189,7 +194,7 @@
                 remark = #{remark},
             </if>
             <if test="status > 0">
-                status = #{status}
+                status = #{status},
             </if>
         </set>
         WHERE id = #{id}

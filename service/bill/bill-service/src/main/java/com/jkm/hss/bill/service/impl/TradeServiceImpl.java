@@ -1,22 +1,30 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
-import com.jkm.hss.bill.entity.RefundOrder;
+import com.jkm.hss.account.entity.SettleAccountFlow;
+import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.enums.EnumSplitBusinessType;
+import com.jkm.hss.account.sevice.SettleAccountFlowService;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
+import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.*;
+import com.jkm.hss.bill.helper.responseparam.RefundProfitResponse;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.RefundOrderService;
+import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.bill.service.TradeService;
+import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/5/2.
@@ -36,6 +43,8 @@ public class TradeServiceImpl implements TradeService {
     @Autowired
     private OrderService orderService;
     @Autowired
+    private HttpClientFacade httpClientFacade;
+    @Autowired
     private RefundOrderService refundOrderService;
     @Autowired
     private BaseTradeService baseTradeService;
@@ -43,6 +52,10 @@ public class TradeServiceImpl implements TradeService {
     private BasicChannelService basicChannelService;
     @Autowired
     private BaseSplitProfitService baseSplitProfitService;
+    @Autowired
+    private SettlementRecordService settlementRecordService;
+    @Autowired
+    private SettleAccountFlowService settleAccountFlowService;
 
     /**
      * {@inheritDoc}
@@ -200,12 +213,21 @@ public class TradeServiceImpl implements TradeService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Pair<Integer, String> splitProfitImpl(final SplitProfitParams splitProfitParams) {
         Preconditions.checkState(splitProfitParams.getSplitProfitDetails().size() > 0);
-        final Optional<Order> orderOptional = this.orderService.getByOrderNo(splitProfitParams.getOrderNo());
-        if (!orderOptional.isPresent()) {
-            return Pair.of(-1, "交易单不存在");
+        if (EnumSplitBusinessType.HSSWITHDRAW.getId() == splitProfitParams.getSplitType()) {
+            final Optional<SettlementRecord> settlementRecordOptional = this.settlementRecordService.getBySettleNo(splitProfitParams.getOrderNo());
+            if (!settlementRecordOptional.isPresent()) {
+                return Pair.of(-1, "结算单不存在");
+            }
+            log.info("结算单[{}]，执行分润操作, 分润类型[{}]", splitProfitParams.getOrderNo(), splitProfitParams.getSplitType());
+            return this.baseSplitProfitService.exeWithdrawSplitProfit(splitProfitParams);
+        } else {
+            final Optional<Order> orderOptional = this.orderService.getByOrderNo(splitProfitParams.getOrderNo());
+            if (!orderOptional.isPresent()) {
+                return Pair.of(-1, "交易单不存在");
+            }
+            log.info("交易单OR结算单[{}]，执行分润操作, 分润类型[{}]", splitProfitParams.getOrderNo(), splitProfitParams.getSplitType());
+            return this.baseSplitProfitService.exePaySplitProfit(splitProfitParams);
         }
-        log.info("交易单[{}]，执行分润操作", splitProfitParams.getOrderNo());
-        return this.baseSplitProfitService.exeSplitProfit(splitProfitParams);
     }
 
     /**
@@ -216,23 +238,36 @@ public class TradeServiceImpl implements TradeService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Pair<Integer, String> refundProfitImpl(final RefundProfitParams refundProfitParams) {
+    public RefundProfitResponse refundProfitImpl(final RefundProfitParams refundProfitParams) {
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(refundProfitParams.getOrderNo());
+        final RefundProfitResponse refundProfitResponse = new RefundProfitResponse();
         if (!orderOptional.isPresent()) {
-            return Pair.of(-1, "交易单不存在");
+            refundProfitResponse.setTradeOrderNo(refundProfitParams.getOrderNo());
+            refundProfitResponse.setCode(EnumBasicStatus.FAIL.getId());
+            refundProfitResponse.setMessage("交易单不存在");
+            return refundProfitResponse;
         }
         log.info("交易单[{}]，执行退分润操作", refundProfitParams.getOrderNo());
         final Order order = orderOptional.get();
         if (order.isRefundSuccess()) {
-            return Pair.of(-1, "已经退款成功，不可以重复退款");
+            refundProfitResponse.setTradeOrderNo(refundProfitParams.getOrderNo());
+            refundProfitResponse.setCode(EnumBasicStatus.FAIL.getId());
+            refundProfitResponse.setMessage("已经退款成功，不可以重复退款");
+            return refundProfitResponse;
         }
         final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(order.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
         final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
         if (order.isSettled() || order.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
-            return Pair.of(-1, "只可以退当日订单");
+            refundProfitResponse.setTradeOrderNo(refundProfitParams.getOrderNo());
+            refundProfitResponse.setCode(EnumBasicStatus.FAIL.getId());
+            refundProfitResponse.setMessage("只可以退当日订单");
+            return refundProfitResponse;
         }
         if (this.refundOrderService.getUnRefundErrorCountByPayOrderId(order.getId()) > 0) {
-            return Pair.of(-1, "当前交易已经存在退款单");
+            refundProfitResponse.setTradeOrderNo(refundProfitParams.getOrderNo());
+            refundProfitResponse.setCode(EnumBasicStatus.FAIL.getId());
+            refundProfitResponse.setMessage("当前交易已经存在退款单");
+            return refundProfitResponse;
         }
         final RefundOrder refundOrder = new RefundOrder();
         refundOrder.setBatchNo("");
@@ -248,12 +283,124 @@ public class TradeServiceImpl implements TradeService {
         refundOrder.setUpperChannel(EnumPayChannelSign.idOf(order.getPayChannelSign()).getUpperChannel().getId());
         refundOrder.setStatus(EnumRefundOrderStatus.REFUNDING.getId());
         this.refundOrderService.add(refundOrder);
-        return this.baseSplitProfitService.exeRefundProfit(refundProfitParams, refundOrder.getId());
+        final Pair<Integer, String> resultPair = this.baseSplitProfitService.exeRefundProfit(refundProfitParams, refundOrder.getId());
+        if (0 == resultPair.getLeft()) {
+            refundProfitResponse.setTradeOrderNo(refundProfitParams.getOrderNo());
+            refundProfitResponse.setRefundOrderNo(refundOrder.getOrderNo());
+            refundProfitResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+            refundProfitResponse.setMessage("success");
+            return refundProfitResponse;
+        }
+        refundProfitResponse.setTradeOrderNo(refundProfitParams.getOrderNo());
+        refundProfitResponse.setRefundOrderNo(refundOrder.getOrderNo());
+        refundProfitResponse.setCode(EnumBasicStatus.FAIL.getId());
+        refundProfitResponse.setMessage(resultPair.getRight());
+        return refundProfitResponse;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param refundOrderNo
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Pair<Integer, String> refund(final String refundOrderNo) {
+        final Optional<RefundOrder> refundOrderOptional = this.refundOrderService.getByOrderNo(refundOrderNo);
+        if (refundOrderOptional.get().isRefunding()) {
+            final RefundOrder refundOrder = this.refundOrderService.getByIdWithLock(refundOrderOptional.get().getId()).get();
+            final Order order = this.orderService.getByOrderNo(refundOrder.getPayOrderNo()).get();
+            //请求退款
+            final PaymentSdkRefundRequest paymentSdkRefundRequest = new PaymentSdkRefundRequest();
+            paymentSdkRefundRequest.setAppId(refundOrder.getAppId());
+            paymentSdkRefundRequest.setOrderNo(refundOrder.getPayOrderNo());
+            paymentSdkRefundRequest.setRefundOrderNo(refundOrder.getOrderNo());
+            paymentSdkRefundRequest.setAmount(refundOrder.getRefundAmount().toPlainString());
+            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_REFUND, SdkSerializeUtil.convertObjToMap(paymentSdkRefundRequest));
+            final PaymentSdkRefundResponse paymentSdkRefundResponse = JSON.parseObject(content, PaymentSdkRefundResponse.class);
+            final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkRefundResponse.getCode());
+            switch (status) {
+                case FAIL:
+                    log.error("交易[{}],退款[{}], 失败", refundOrder.getPayOrderNo(), refundOrder.getOrderNo());
+                    final RefundOrder updateRefundOrder = new RefundOrder();
+                    updateRefundOrder.setId(refundOrder.getId());
+                    updateRefundOrder.setStatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+                    updateRefundOrder.setRemark("退款失败");
+                    updateRefundOrder.setMessage(paymentSdkRefundResponse.getMessage());
+                    this.refundOrderService.update(updateRefundOrder);
+                    return Pair.of(-1, paymentSdkRefundResponse.getMessage());
+                case SUCCESS:
+                    this.orderService.updateRefundInfo(order.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
+                    this.orderService.updateRemark(order.getId(), paymentSdkRefundResponse.getMessage());
+                    final RefundOrder refundOrder2 = new RefundOrder();
+                    refundOrder2.setId(refundOrder.getId());
+                    refundOrder2.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    refundOrder2.setRemark("退款成功");
+                    refundOrder2.setMessage(paymentSdkRefundResponse.getMessage());
+                    refundOrder2.setFinishTime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyyMMddHHmmss));
+                    this.refundOrderService.update(refundOrder2);
+
+                    //TODO
+
+//                    if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId()) {
+//                        try {
+//                            this.sendMsgService.refundSendMessage(order.getOrderNo(), refundOrder.getRefundAmount(), order.getPayAccount());
+//                        } catch (final Throwable e) {
+//                            log.error("推送失败");
+//                        }
+//                    }
+                    return Pair.of(0, "退款成功");
+                default:
+                    log.error("退款[{}]， 网关返回状态异常", refundOrder.getId());
+                    return Pair.of(-1, "退款网关异常");
+            }
+        }
+        return Pair.of(-1, "退款流水异常");
     }
 
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param withdrawParams
+     * @return
+     */
     @Override
-    public Pair<Integer, String> withdraw() {
-        return null;
+    public Pair<Integer, String> withdraw(final WithdrawParams withdrawParams) {
+        log.info("业务方[{}],账户[{}],发起提现[{}]", withdrawParams.getAppId(), withdrawParams.getAccountId(), withdrawParams.getWithdrawAmount());
+        final long orderId = this.orderService.createWithdrawOrder(withdrawParams);
+        return this.baseTradeService.withdrawImpl(withdrawParams, orderId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paymentSdkWithdrawCallbackResponse
+     */
+    @Override
+    @Transactional
+    public void handleWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
+        Optional<SettlementRecord> settlementRecordOptional;
+        if (paymentSdkWithdrawCallbackResponse.getAutoSettle()) {
+            //渠道结算
+            final Order payOrder = this.orderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
+            settlementRecordOptional = this.settlementRecordService.getById(this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(payOrder.getOrderNo(),
+                    payOrder.getPayee(), EnumAccountFlowType.INCREASE.getId()).get().getSettlementRecordId());
+        } else {
+            settlementRecordOptional = this.settlementRecordService.getBySettleNo(paymentSdkWithdrawCallbackResponse.getOrderNo());
+        }
+
+        if (settlementRecordOptional.isPresent()) {//结算单提现
+            if (settlementRecordOptional.get().isWithdrawing()) {
+                this.baseTradeService.handleWithdrawBySettlementResult(settlementRecordOptional.get().getId(), paymentSdkWithdrawCallbackResponse);
+            }
+        } else {//余额提现
+            final Optional<Order> orderOptional = this.orderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo());
+            if (orderOptional.get().isWithDrawing()) {
+                final Order order = this.orderService.getByIdWithLock(orderOptional.get().getId()).get();
+                this.baseTradeService.handleWithdrawByAccountResult(order, paymentSdkWithdrawCallbackResponse);
+            }
+        }
     }
 }

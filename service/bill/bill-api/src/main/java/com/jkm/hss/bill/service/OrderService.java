@@ -6,6 +6,7 @@ import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
+import com.jkm.hss.bill.helper.WithdrawParams;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
@@ -76,6 +77,14 @@ public interface OrderService {
      * @return
      */
     long createMerchantPlayMoneyOrder(MerchantInfo merchantInfo, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
+
+    /**
+     * 创建提现单
+     *
+     * @param withdrawParams
+     * @return
+     */
+    long createWithdrawOrder(WithdrawParams withdrawParams);
 
     /**
      * 更新
