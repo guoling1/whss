@@ -175,11 +175,11 @@
         loading:true,
         isShow:false,
         //正式
-//        url:"http://checking.qianbaojiajia.com/external/detailList",
-//        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
+        url:"http://checking.qianbaojiajia.com/external/detailList",
+        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
         //测试
-         url:'http://192.168.1.99:8080/balance/external/detailList',
-         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
+//         url:'http://192.168.1.99:8080/balance/external/detailList',
+//         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
       }
     },
     created: function () {
