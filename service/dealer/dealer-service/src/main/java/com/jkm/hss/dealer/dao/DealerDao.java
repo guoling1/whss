@@ -391,4 +391,18 @@ public interface DealerDao {
      * @return
      */
     int getBranchCount(BranchAccountRequest req);
+
+    /**
+     * 分公司账户明细
+     * @param id
+     * @return
+     */
+    List<BranchAccountDetailResponse> getBranchDetail(@Param("id") long id);
+
+    /**
+     * 分公司账户明细总数
+     * @param req
+     * @return
+     */
+    int getBranchDetailCount(BranchAccountRequest req);
 }

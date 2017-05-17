@@ -827,7 +827,8 @@
             a.proxy_name,
             b.total_amount,
             b.due_settle_amount,
-            b.available
+            b.available,
+            b.id
         FROM
             tb_dealer a
         LEFT JOIN tb_account b ON b.id=a.account_id
@@ -860,4 +861,37 @@
     </if>
     </select>
 
+    <!-- 查询分公司账户明细 -->
+    <select id="getBranchDetail" resultType="com.jkm.hss.dealer.entity.BranchAccountDetailResponse">
+        SELECT
+            *
+        FROM
+            tb_account_flow
+        WHERE account_id=#{id}
+    <if test="startTime!=null and startTime!=''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime!=null and endTime!=''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+        ORDER BY
+        `create_time` DESC LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询分公司账户明细总数 -->
+    <select id="getBranchDetailCount" resultType="java.lang.Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          tb_account_flow
+        WHERE account_id=#{id}
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        ORDER BY
+        `create_time` DESC LIMIT #{offset},#{pageSize}
+    </select>
 </mapper>

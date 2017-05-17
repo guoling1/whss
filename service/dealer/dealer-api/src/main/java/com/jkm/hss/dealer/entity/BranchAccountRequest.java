@@ -9,6 +9,21 @@ import lombok.Data;
 public class BranchAccountRequest {
 
     /**
+     * 开始日期
+     */
+    private String startTime;
+
+    /**
+     * 结束日期
+     */
+    private String endTime;
+
+    /**
+     * 账户id
+     */
+    private long id;
+
+    /**
      * 分公司名称
      */
     private String proxyName;

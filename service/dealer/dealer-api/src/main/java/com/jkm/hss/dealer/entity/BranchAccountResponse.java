@@ -11,6 +11,11 @@ import java.math.BigDecimal;
 public class BranchAccountResponse {
 
     /**
+     * 账户id
+     */
+    private long id;
+
+    /**
      * 分公司名称
      */
     private String proxyName;

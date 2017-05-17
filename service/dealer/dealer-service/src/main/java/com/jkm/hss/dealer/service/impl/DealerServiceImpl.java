@@ -2588,4 +2588,15 @@ public class DealerServiceImpl implements DealerService {
     public int getBranchCount(BranchAccountRequest req) {
         return this.dealerDao.getBranchCount(req);
     }
+
+    @Override
+    public List<BranchAccountDetailResponse> getBranchDetail(long id) {
+        List<BranchAccountDetailResponse> list = this.dealerDao.getBranchDetail(id);
+        return list;
+    }
+
+    @Override
+    public int getBranchDetailCount(BranchAccountRequest req) {
+        return this.dealerDao.getBranchDetailCount(req);
+    }
 }
