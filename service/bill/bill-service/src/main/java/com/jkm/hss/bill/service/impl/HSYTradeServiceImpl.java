@@ -7,6 +7,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
@@ -26,6 +28,8 @@ import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.HolidaySettlementConstants;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
+import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -37,11 +41,15 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
+import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.exception.ApiHandleException;
+import com.jkm.hsy.user.exception.ResultCode;
+import com.sun.tools.javac.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -55,6 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/1/17.
@@ -274,6 +283,42 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         }
 
         return JSON.toJSONString(pageModel);
+    }
+
+    @Override
+    public String tradeListhsy(final String dataParam, final AppParam appParam) {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+
+        /**参数转化*/
+        TradeListRequestParam tradeListRequestParam=null;
+            tradeListRequestParam=gson.fromJson(dataParam, TradeListRequestParam.class);
+        final PageModel<HsyTradeListResponse> pageModel = new PageModel<>(tradeListRequestParam.getPageNo(), tradeListRequestParam.getPageSize());
+        pageModel.setCount(1);
+
+        List<HsyTradeListResponse> hsyTradeListResponseList=new ArrayList<HsyTradeListResponse>();
+        HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
+        hsyTradeListResponse.setAmount(new BigDecimal(10));
+        hsyTradeListResponse.setNumber(1);
+        hsyTradeListResponse.setValidationCode("1234");
+        hsyTradeListResponse.setOrderstatusName("收款成功");
+        hsyTradeListResponseList.add(hsyTradeListResponse);
+        pageModel.setRecords(hsyTradeListResponseList);
+
+        return gson.toJson(pageModel);
+    }
+
+    public String appOrderDetailhsy(String dataParam, AppParam appParam){
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
+        return gson.toJson(hsyTradeListResponse);
+    }
+
+    public String tradeStatisticshsy(String dataParam, AppParam appParam){
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        Map<String,Object> map=new HashMap<>();
+        map.put("amount",10);
+        map.put("number",1);
+        return gson.toJson(map);
     }
 
 
