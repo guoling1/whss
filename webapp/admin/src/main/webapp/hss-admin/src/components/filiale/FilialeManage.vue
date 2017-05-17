@@ -75,7 +75,7 @@
               <template scope="scope">
                 <a @click="openProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId==0" style="color: #20a0ff;margin-right: 10px;">开通产品</a>
                 <a @click="auditProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">修改产品设置</a>
-                <a @click="auditProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置网关</a>
+                <a @click="configureGateway(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置网关</a>
                 <a @click="configureOem(scope.row.id)" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置O单</a>
               </template>
             </el-table-column>
@@ -246,6 +246,9 @@
       },
       configureOem:function (id) {
         window.open('http://admin.qianbaojiajia.com/admin/details/configureOem?dealerId='+id);
+      },
+      configureGateway:function (id) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/configureGateway')
       }
     }
   }
