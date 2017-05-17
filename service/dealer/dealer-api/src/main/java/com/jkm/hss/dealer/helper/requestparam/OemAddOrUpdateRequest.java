@@ -1,29 +1,20 @@
-package com.jkm.hss.helper.response;
+package com.jkm.hss.dealer.helper.requestparam;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/9.
  */
 @Data
-public class FirstDealerProductDetailResponse {
-    /**
-     * 产品名称
-     */
-    private String productName;
+public class OemAddOrUpdateRequest {
 
     /**
-     * 邀请码
+     * 一级代理商id
      */
-    private String inviteCode;
-
-    /**
-     * 推广功能
-     * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
-     */
-    private int inviteBtn;
+    private long dealerId;
 
     /**
      * 产品列表
@@ -33,17 +24,10 @@ public class FirstDealerProductDetailResponse {
     @Data
     public class Product {
 
-
         /**
          * 产品id
          */
         private long productId;
-
-        /**
-         * 产品名称 快收银
-         */
-        private String productName;
-
 
         /**
          * 通道列表
@@ -62,16 +46,6 @@ public class FirstDealerProductDetailResponse {
         private int channelType;
 
         /**
-         * 通道名称
-         */
-        private String channelName;
-
-
-        /**
-         * 最小支付结算手续费
-         */
-        private String minPaymentSettleRate;
-        /**
          * 支付结算手续费
          */
         private String paymentSettleRate;
@@ -82,10 +56,7 @@ public class FirstDealerProductDetailResponse {
          * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
          */
         private String settleType;
-        /**
-         * 最小提现结算费
-         */
-        private String minWithdrawSettleFee;
+
         /**
          * 提现结算费
          */
@@ -95,18 +66,10 @@ public class FirstDealerProductDetailResponse {
          * 商户结算手续费（商户支付手续费）
          */
         private String merchantSettleRate;
-        /**
-         * 最大商户结算手续费
-         */
-        private String maxMerchantSettleRate;
 
         /**
          * 商户提现手续费
          */
         private String merchantWithdrawFee;
-        /**
-         * 最大商户提现手续费
-         */
-        private String maxMerchantWithdrawFee;
     }
 }

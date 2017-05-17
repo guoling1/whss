@@ -374,6 +374,12 @@ public interface DealerService {
      */
     void addOrUpdateHssDealer(HssDealerAddOrUpdateRequest request);
     /**
+     * 更新或新增分公司Hss配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssOem(OemAddOrUpdateRequest request);
+    /**
      * 更新或新增好收收分公司配置信息
      *
      * @param request
@@ -574,7 +580,7 @@ public interface DealerService {
 
     /**
      * 分公司账户明细
-     * @param id
+     * @param req
      * @return
      */
     List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req);
