@@ -467,7 +467,7 @@
     </select>
 
     <select id="getProxyName" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstLevelDealerId}
+        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstDealerId}
     </select>
 
     <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
@@ -706,7 +706,9 @@
         SELECT
           a.*,
           (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
-          (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+          (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
+          (SELECT proxy_name FROM tb_dealer WHERE id=b.oem_id) as branchCompany,
+          a.oem_id
         FROM
           tb_merchant_info a
         WHERE
@@ -727,6 +729,10 @@
           AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
     </if>
 
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
+    </if>
+
     <if test="mobile!=null and mobile!=''">
           AND a.mobile = #{mobile}
     </if>
@@ -740,7 +746,9 @@
         SELECT
             a.*,
             (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
-            (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+            (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
+            (SELECT proxy_name FROM tb_dealer WHERE id=b.oem_id) as branchCompany,
+            a.oem_id
         FROM
             tb_merchant_info a
         WHERE
@@ -759,6 +767,10 @@
 
     <if test="proxyName1 != null and proxyName1!=''">
         AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
     </if>
 
     <if test="mobile!=null and mobile!=''">
@@ -787,6 +799,10 @@
         AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
     </if>
 
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
+    </if>
+
     <if test="mobile!=null and mobile!=''">
         AND a.mobile = #{mobile}
     </if>
@@ -809,6 +825,10 @@
 
     <if test="proxyName1 != null and proxyName1!=''">
         AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
     </if>
 
     <if test="mobile!=null and mobile!=''">

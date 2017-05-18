@@ -512,9 +512,9 @@ public interface DealerService {
 
     /**
      * 根据一级代理商id查询名称
-     * @param firstLevelDealerId
+     * @param firstDealerId
      */
-    MerchantInfoResponse getProxyName(int firstLevelDealerId);
+    MerchantInfoResponse getProxyName(long firstDealerId);
 
     /**
      * 查询一级代理商的编码和名称

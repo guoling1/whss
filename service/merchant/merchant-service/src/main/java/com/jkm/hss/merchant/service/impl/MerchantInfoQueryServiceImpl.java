@@ -56,6 +56,9 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
                         if (list.get(i).getMobile() != null && !list.get(i).getMobile().equals("")) {
                             list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
                         }
+                        if (list.get(i).getOemId()==0){
+                            list.get(i).setBranchCompany("金开门");
+                        }
 
                     }
                 }

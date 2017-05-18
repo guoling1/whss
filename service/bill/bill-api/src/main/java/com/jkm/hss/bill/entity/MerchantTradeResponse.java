@@ -20,6 +20,21 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 分公司id
+     */
+    private long oemId;
+
+    /**
+     * 分公司编码
+     */
+    private String companyCode;
+
+    /**
+     * 分公司
+     */
+    private String branchCompany;
+
+    /**
      * 业务订单号
      */
     private String businessOrderNo;
