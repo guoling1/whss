@@ -35,6 +35,14 @@
               <th style="text-align: right">推荐人:</th>
               <td>—</td>
             </tr>
+            <tr>
+              <th style="text-align: right">分公司名称名称:</th>
+              <td>{{record.branchCompany}}</td>
+              <th style="text-align: right">分公司编号:</th>
+              <td>{{record.companyCode}}</td>
+              <th style="text-align: right"></th>
+              <td>—</td>
+            </tr>
             </tbody></table>
         </div>
       </div>
