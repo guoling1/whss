@@ -38,13 +38,17 @@ public class RechargeParams {
      */
     private BigDecimal realPayAmount;
     /**
-     * 付款人账户id（会员账户）
-     */
-    private long payerAccountId;
-    /**
      * 收款人账户id（商户基础账户）
      */
     private long payeeAccountId;
+    /**
+     * 会员账户id（会员账户）
+     */
+    private long memberAccountId;
+    /**
+     * 商户收款账户id(统计账户)
+     */
+    private long merchantReceiveAccountId;
     /**
      * 商品名字
      */
@@ -61,4 +65,8 @@ public class RechargeParams {
      * 商户号
      */
     private String merchantNo;
+    /**
+     * 商户名
+     */
+    private String merchantName;
 }

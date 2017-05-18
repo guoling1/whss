@@ -460,7 +460,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), channelMoneyTriple, "通道账户",
                     EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.JKM.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
@@ -471,7 +471,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), productMoneyTriple, "产品账户",
                     EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.JKM.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
@@ -483,7 +483,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(),
                     EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.FIRST_DEALER.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
@@ -501,7 +501,7 @@ public class PayServiceImpl implements PayService {
         //二级代理商利润--到结算--可用余额
         if (null != secondMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
-            final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(),
                     EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.SECOND_DEALER.getId(), order.getSettleType());
@@ -522,7 +522,7 @@ public class PayServiceImpl implements PayService {
         //直推商户利润--到结算--可用余额
         if (null != firstMerchantMoneyTriple) {
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(firstMerchantMoneyTriple.getLeft()).get();
-            final Account account = this.accountService.getById(firstMerchantMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(firstMerchantMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), firstMerchantMoneyTriple, merchant.getMerchantName(),
                     EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.MERCHANT.getId(), order.getSettleType());
@@ -546,7 +546,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), secondMerchantMoneyTriple, merchant.getMerchantName(),
                     EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.MERCHANT.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(secondMerchantMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(secondMerchantMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMerchantMoneyTriple.getMiddle(),
@@ -698,7 +698,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getRealPayAmount(), firstMoneyTriple, dealer.getProxyName(),
                     "商户升级-反润", EnumSplitAccountUserType.FIRST_DEALER.getId());
-            final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
@@ -732,7 +732,7 @@ public class PayServiceImpl implements PayService {
         //二级代理商利润--到结算--可用余额
         if (null != secondMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
-            final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getRealPayAmount(), secondMoneyTriple, dealer.getProxyName(),
                     "商户升级-反润", EnumSplitAccountUserType.SECOND_DEALER.getId());
@@ -772,7 +772,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getRealPayAmount(), directMoneyTriple, merchant.getMerchantName(),
                     "商户升级-直推", EnumSplitAccountUserType.MERCHANT.getId());
-            final Account account = this.accountService.getById(directMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(directMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), directMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), directMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), directMoneyTriple.getMiddle(),
@@ -806,7 +806,7 @@ public class PayServiceImpl implements PayService {
         //间推商户--到结算--可用余额
         if (null != inDirectMoneyTriple) {
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(inDirectMoneyTriple.getLeft()).get();
-            final Account account = this.accountService.getById(inDirectMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(inDirectMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getRealPayAmount(), inDirectMoneyTriple, merchant.getMerchantName(),
                     "商户升级-间推", EnumSplitAccountUserType.MERCHANT.getId());

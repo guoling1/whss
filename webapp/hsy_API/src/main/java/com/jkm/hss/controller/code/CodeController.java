@@ -82,6 +82,7 @@ public class CodeController extends BaseController {
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
             model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
+            model.addAttribute("code",code);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
             if (agent.indexOf("micromessenger") > -1) {
                 if(openId==null||"".equals(openId)){

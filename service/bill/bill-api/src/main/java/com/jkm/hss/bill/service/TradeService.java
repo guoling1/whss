@@ -1,8 +1,7 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
-import com.jkm.hss.bill.helper.PayParams;
-import com.jkm.hss.bill.helper.RechargeParams;
+import com.jkm.hss.bill.helper.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -17,7 +16,7 @@ public interface TradeService {
      * @param rechargeParams
      * @return
      */
-    Pair<Integer, String> recharge(RechargeParams rechargeParams);
+    PayResponse recharge(RechargeParams rechargeParams);
 
     /**
      * 支付
@@ -25,7 +24,7 @@ public interface TradeService {
      * @param payParams
      * @return
      */
-    Pair<Integer, String> pay(PayParams payParams);
+    PayResponse pay(PayParams payParams);
 
     /**
      * 处理支付中心，支付/充值回调
@@ -34,6 +33,21 @@ public interface TradeService {
      */
     void handlePayOrRechargeCallbackMsg(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse);
 
+    /**
+     * 分润实现
+     *
+     * @param splitProfitParams
+     * @return
+     */
+    Pair<Integer, String> splitProfitImpl(SplitProfitParams splitProfitParams);
+
+    /**
+     * 退分润实现
+     *
+     * @param refundProfitParams
+     * @return
+     */
+    Pair<Integer, String> refundProfitImpl(RefundProfitParams refundProfitParams);
 
     Pair<Integer, String> withdraw();
 }

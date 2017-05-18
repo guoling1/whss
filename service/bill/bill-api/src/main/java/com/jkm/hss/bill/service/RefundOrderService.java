@@ -74,6 +74,14 @@ public interface RefundOrderService {
     List<RefundOrder> getByPayOrderId(long payOrderId);
 
     /**
+     * 按支付交易单id查询未退款失败的个数
+     *
+     * @param payOrderId
+     * @return
+     */
+    int getUnRefundErrorCountByPayOrderId(long payOrderId);
+
+    /**
      * 按支付交易单号查询
      *
      * @param payOrderNo

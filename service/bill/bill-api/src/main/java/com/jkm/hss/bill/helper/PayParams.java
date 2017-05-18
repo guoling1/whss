@@ -56,6 +56,10 @@ public class PayParams {
      * 商户号
      */
     private String merchantNo;
+    /**
+     * 商户名
+     */
+    private String merchantName;
 
     //#######会员卡支付############
 
@@ -66,11 +70,11 @@ public class PayParams {
     /**
      * 付款人账户id（会员账户）
      */
-    private long payerAccountId;
+    private long memberAccountId;
     /**
      * 收会员款账户id
      */
-    private long receiptMemberMoneyAccountId;
+    private long merchantReceiveAccountId;
 
     //#############特殊渠道-支付参数##########
 

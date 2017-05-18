@@ -19,4 +19,6 @@ public interface HsyUserService {
     public String updateHsyUserStatusViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException;
     public String findLoginInfo(String dataParam,AppParam appParam)throws ApiHandleException;
     public String findLoginInfoShort(String dataParam,AppParam appParam)throws ApiHandleException;
+
+    public String refreshlogin(String dataParam,AppParam appParam)throws ApiHandleException;
 }
