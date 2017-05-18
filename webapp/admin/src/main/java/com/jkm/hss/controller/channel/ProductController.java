@@ -201,8 +201,8 @@ public class ProductController extends BaseController {
 
         try{
             final Product product = this.productService.selectByType(request.getProductType()).get();
-            final List<ProductChannelGateway> list =
-                    this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductId(EnumProductType.of(request.getProductType()), EnumGatewayType.PRODUCT,product.getId());
+            final List<ProductChannelGateway> list = this.productChannelGatewayService.
+                    selectByProductTypeAndGatewayAndProductIdAndDealerId(EnumProductType.of(request.getProductType()), EnumGatewayType.PRODUCT,product.getId(),request.getDealerId());
             return CommonResponse.objectResponse(1, "success", list);
         }catch (final Throwable e){
 
@@ -231,6 +231,27 @@ public class ProductController extends BaseController {
         }catch (final Throwable e){
 
             log.error("修改网关失败，异常信息:" + e.getMessage());
+            return CommonResponse.simpleResponse(-1, "fail");
+        }
+    }
+
+    /**
+     * 删除网关通道
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delGateway", method = RequestMethod.POST)
+    public CommonResponse delProductChannelGateway(@RequestBody final ProductChannelGateway request){
+
+
+        try{
+
+            this.productChannelGatewayService.deleteGateway(request.getId());
+            return CommonResponse.simpleResponse(1, "success");
+        }catch (final Throwable e){
+
+            log.error("删除网关失败，异常信息:" + e.getMessage());
             return CommonResponse.simpleResponse(-1, "fail");
         }
     }

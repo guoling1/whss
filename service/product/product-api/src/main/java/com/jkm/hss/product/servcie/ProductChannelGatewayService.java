@@ -23,7 +23,8 @@ public interface ProductChannelGatewayService {
      * @param enumProductType
      * @return
      */
-    List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductId(EnumProductType enumProductType, EnumGatewayType enumGatewayType,long productId);
+    List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductIdAndDealerId(EnumProductType enumProductType,
+                                                                           EnumGatewayType enumGatewayType,long productId,long dealerId);
 
     /**
      * 修改
@@ -32,4 +33,15 @@ public interface ProductChannelGatewayService {
      */
     void update(ProductChannelGateway productChannelGateway);
 
+    /**
+     * 初始化分公司网关通道
+     * @param dealerId
+     */
+    void initOemGateway(long dealerId);
+
+    /**
+     * 删除网关
+     * @param id
+     */
+    void deleteGateway(long id);
 }

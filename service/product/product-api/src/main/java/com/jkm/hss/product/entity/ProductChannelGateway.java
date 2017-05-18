@@ -48,4 +48,9 @@ public class ProductChannelGateway extends BaseEntity {
      */
     private String channelShortName;
 
+    /**
+     *  分公司id ， 若为好收收 则 0
+     */
+    private long dealerId;
+
 }
