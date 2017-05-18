@@ -51,6 +51,17 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
+            <div class="label">分公司编号：<span>{{$msg.companyCode}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">分公司名称：<span>{{$msg.branchCompany}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
             <div class="label">推荐商户编号：<span>{{$msg.recommenderCode}}</span></div>
           </el-col>
           <el-col :span="5">
