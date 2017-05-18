@@ -67,8 +67,10 @@
 <script>
   var pageData = {
     memberId: '${openId}',
-    merchantId: '${mid}'
+    merchantId: '${mid}',
+    code: '${code}'
   }
+  alert(pageData.code);
 </script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
