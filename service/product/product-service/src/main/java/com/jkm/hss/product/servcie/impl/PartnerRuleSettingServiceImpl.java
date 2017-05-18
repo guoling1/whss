@@ -79,6 +79,36 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
     }
 
     /**
+     * 升级降费率升级页
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<PartnerRuleSettingResponse> selectAllItemByProductId(long productId) {
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllItemByProductId(productId);
+        if(partnerRuleSettingResponses.size()>0){
+            for(int i=0;i<partnerRuleSettingResponses.size();i++){
+                if(partnerRuleSettingResponses.get(i).getBossRate()!=null){
+                    partnerRuleSettingResponses.get(i).setBossRate(partnerRuleSettingResponses.get(i).getBossRate().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getDefaultProfitSpace()!=null){
+                    partnerRuleSettingResponses.get(i).setDefaultProfitSpace(partnerRuleSettingResponses.get(i).getDefaultProfitSpace().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getClerkRate()!=null){
+                    partnerRuleSettingResponses.get(i).setClerkRate(partnerRuleSettingResponses.get(i).getClerkRate().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getShopownerRate()!=null){
+                    partnerRuleSettingResponses.get(i).setShopownerRate(partnerRuleSettingResponses.get(i).getShopownerRate().multiply(new BigDecimal("100")));
+                }
+                if(partnerRuleSettingResponses.get(i).getCommonRate()!=null){
+                    partnerRuleSettingResponses.get(i).setCommonRate(partnerRuleSettingResponses.get(i).getCommonRate().multiply(new BigDecimal("100")));
+                }
+            }
+        }
+        return partnerRuleSettingResponses;
+    }
+    /**
      * 根据产品编码查询升级规则
      *
      * @param productId

@@ -1219,7 +1219,7 @@ public class LoginController extends BaseController {
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
                         Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-                        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllByProductId(productOptional.get().getId());
+                        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(productOptional.get().getId());
                         model.addAttribute("upgradeArray",partnerRuleSettingResponses);
                         url = "/upgradeMax";
                     }
@@ -1286,7 +1286,7 @@ public class LoginController extends BaseController {
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
                         Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-                        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllByProductId(productOptional.get().getId());
+                        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(productOptional.get().getId());
                         model.addAttribute("upgradeArray",partnerRuleSettingResponses);
                         url = "/upgradeMin";
                     }
