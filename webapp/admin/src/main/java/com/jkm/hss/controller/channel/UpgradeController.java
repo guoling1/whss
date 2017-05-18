@@ -183,7 +183,7 @@ public class UpgradeController extends BaseController {
                 if(partnerRuleSettings.get(i).getBossRate()==null){
                     return CommonResponse.simpleResponse(-1,"老板费率不能为空");
                 }
-                Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectById(partnerRuleSettings.get(i).getId());
+                Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelSign(req.getProductId(),partnerRuleSettings.get(i).getChannelTypeSign());
                 if(partnerRuleSettingOptional.isPresent()){
                     PartnerRuleSetting partnerRuleSetting = new PartnerRuleSetting();
                     partnerRuleSetting.setId(partnerRuleSettingOptional.get().getId());
