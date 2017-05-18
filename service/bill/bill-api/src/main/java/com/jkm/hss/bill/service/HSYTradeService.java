@@ -59,14 +59,6 @@ public interface HSYTradeService {
     String appOrderDetailhsy(String dataParam, AppParam appParam);
 
     /**
-     * 好收银订单统计数据
-     * @param dataParam
-     * @param appParam
-     * @return
-     */
-    String tradeStatisticshsy(String dataParam, AppParam appParam);
-
-    /**
      * app收款
      *
      * @param paramData
@@ -139,7 +131,7 @@ public interface HSYTradeService {
      * @param memberId 会员id
      * @return
      */
-    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId, final String memberId);
+    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId, final String memberId,final String code);
 
     /**
      * 下单实现

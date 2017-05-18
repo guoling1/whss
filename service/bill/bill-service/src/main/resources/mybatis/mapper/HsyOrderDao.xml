@@ -6,14 +6,40 @@
         (
         `ordernumber`,
         `shopid`,
-        `orderid`,
-        `validationcode`)
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_type`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`)
         VALUES
         (
         #{ordernumber},
         #{shopid},
-        #{orderid},
-        #{validationcode});
-
+        #{shopname},
+        #{merchantname},
+        #{order_no},
+        #{orderstatus},
+        #{sourcetype},
+        #{validationcode},
+        #{amount},
+        #{qrcode},
+        #{cashierid},
+        #{cashiername},
+        #{pay_type},
+        #{goods_name},
+        #{goods_describe},
+        #{remark});
     </insert>
+    <update id="update">
+
+    </update>
 </mapper>

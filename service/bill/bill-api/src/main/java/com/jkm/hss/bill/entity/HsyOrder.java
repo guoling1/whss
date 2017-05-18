@@ -14,6 +14,9 @@ public class HsyOrder extends BaseEntity {
      * 订单号
      */
     private String ordernumber;
+    /**
+     *订单状态
+     */
     private int orderstatus;
     /**
      * 店铺ID
@@ -21,6 +24,8 @@ public class HsyOrder extends BaseEntity {
     private long shopid;
 
     private String shopname;
+
+    private String merchantname;
     /**
      * 交易订单
      */
@@ -43,6 +48,10 @@ public class HsyOrder extends BaseEntity {
     private String goodsname;
     private String goodsdescribe;
     private String remark;
+    /**
+     * 支付类型  1二维码付款/2充值
+     */
+    private int sourcetype;
 
     public String getOrdernumber() {
         return ordernumber;
@@ -90,6 +99,14 @@ public class HsyOrder extends BaseEntity {
 
     public void setShopname(String shopname) {
         this.shopname = shopname;
+    }
+
+    public String getMerchantname() {
+        return merchantname;
+    }
+
+    public void setMerchantname(String merchantname) {
+        this.merchantname = merchantname;
     }
 
     public long getOrderno() {
@@ -210,5 +227,13 @@ public class HsyOrder extends BaseEntity {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public int getSourcetype() {
+        return sourcetype;
+    }
+
+    public void setSourcetype(int sourcetype) {
+        this.sourcetype = sourcetype;
     }
 }

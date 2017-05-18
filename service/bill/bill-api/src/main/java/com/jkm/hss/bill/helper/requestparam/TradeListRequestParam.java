@@ -10,6 +10,7 @@ public class TradeListRequestParam extends PageQueryParams {
     private String endTime;
     private String channel;
     private String[] paymentChannels;
+    private int stType;
 
     public int getShopId() {
         return shopId;
@@ -50,4 +51,5 @@ public class TradeListRequestParam extends PageQueryParams {
     public void setPaymentChannels(String[] paymentChannels) {
         this.paymentChannels = paymentChannels;
     }
+
 }
