@@ -317,7 +317,10 @@
     </if>
 
     <if test="auditTime!=null and auditTime!=''">
-        AND a.AUDITTIME=#{auditTime}
+        AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+    </if>
+    <if test="auditTime1!=null and auditTime1!=''">
+        AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime1}
     </if>
 
     <!--<if test="proxyName!=null and proxyName!=''">-->
@@ -362,7 +365,10 @@
             AND a.SHORTNAME=#{shortName}
         </if>
         <if test="auditTime!=null and auditTime!=''">
-            AND a.AUDITTIME=#{auditTime}
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+        </if>
+        <if test="auditTime1!=null and auditTime1!=''">
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime1}
         </if>
         ORDER BY
         a.CREATETIME DESC
@@ -386,7 +392,10 @@
             AND a.SHORTNAME=#{shortName}
         </if>
         <if test="auditTime!=null and auditTime!=''">
-            AND a.AUDITTIME=#{auditTime}
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+        </if>
+        <if test="auditTime1!=null and auditTime1!=''">
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime1}
         </if>
         <if test="startTime!=null and startTime!=''">
             AND a.CREATETIME <![CDATA[ >= ]]> #{startTime}
@@ -424,7 +433,10 @@
             AND a.SHORTNAME=#{shortName}
         </if>
         <if test="auditTime!=null and auditTime!=''">
-            AND a.AUDITTIME=#{auditTime}
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
+        </if>
+        <if test="auditTime1!=null and auditTime1!=''">
+            AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime1}
         </if>
         ORDER BY
         a.CREATETIME DESC
