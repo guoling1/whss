@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.HsyOrder;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,4 +14,17 @@ public interface HsyOrderDao {
      * @param hsyOrder
      */
     void insert(HsyOrder hsyOrder);
+
+    /**
+     * 更新
+     * @param hsyOrder
+     * @return
+     */
+    int update(HsyOrder hsyOrder);
+
+    /**
+     * 根据交易号查找订单
+     * @return
+     */
+    HsyOrder selectByOrderNo(@Param("orderNo") String orderNo);
 }

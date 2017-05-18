@@ -26,7 +26,7 @@
         #{shopid},
         #{shopname},
         #{merchantname},
-        #{order_no},
+        #{orderno},
         #{orderstatus},
         #{sourcetype},
         #{validationcode},
@@ -34,12 +34,67 @@
         #{qrcode},
         #{cashierid},
         #{cashiername},
-        #{pay_type},
-        #{goods_name},
-        #{goods_describe},
+        #{paytype},
+        #{goodsname},
+        #{goodsdescribe},
         #{remark});
     </insert>
     <update id="update">
-
+        UPDATE tb_hsy_order
+        <set>
+          <if test="orderno!=null and orderno!='' ">
+              order_no=#{orderno},
+          </if>
+          <if test="orderstatus>0">
+              orderstatus=#{orderstatus},
+          </if>
+          <if test="poundage!=null ">
+              poundage=#{poundage},
+          </if>
+          <if test="paysn!=null and paysn!='' ">
+              pay_sn=#{paysn},
+          </if>
+          <if test="paysuccesstime!=null">
+              pay_success_time=#{paysuccesstime},
+          </if>
+          <if test="refundamount!=null">
+              refund_amount=#{refundamount},
+          </if>
+          <if test="refundtime!=null">
+              refund_time=#{refundtime}
+          </if>
+        </set>
+        WHERE id = #{id}
     </update>
+    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+    `ordernumber`,
+    `shopid`,
+    `shopname`,
+    `merchantname`,
+    `order_no`,
+    `orderstatus`,
+    `sourcetype`,
+    `validationcode`,
+    `amount`,
+    `poundage`,
+    `qrcode`,
+    `cashierid`,
+    `cashiername`,
+    `pay_sn`,
+    `pay_type`,
+    `pay_success_time`,
+    `refund_amount`,
+    `refund_status`,
+    `refund_time`,
+    `goods_name`,
+    `goods_describe`,
+    `remark`,
+    `create_time`,
+    `update_time`
+FROM `tb_hsy_order`
+WHERE order_no = #{orderNo}
+;
+
+    </select>
 </mapper>

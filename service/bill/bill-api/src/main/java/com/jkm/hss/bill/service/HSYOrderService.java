@@ -1,6 +1,8 @@
 package com.jkm.hss.bill.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.bill.entity.HsyOrder;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * Created by wayne on 17/5/17.
@@ -19,4 +21,6 @@ public interface HSYOrderService {
      * @return
      */
     int update(HsyOrder hsyOrder);
+
+    Optional<HsyOrder> selectByOrderNo(String orderNo);
 }
