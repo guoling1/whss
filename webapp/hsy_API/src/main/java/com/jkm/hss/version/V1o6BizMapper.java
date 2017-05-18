@@ -74,5 +74,7 @@ public class V1o6BizMapper {
         bizMapper.put("HSY001047", new String[]{"hsyMembershipService", "insertMemshipCard"});
         /**刷新登录*/
         bizMapper.put("HSY001048", new String[]{"hsyUserService","refreshlogin","刷新登录"});
+        /**好收银店铺对账邮件保存*/
+        bizMapper.put("HSY001049", new String[]{"HsyShopService","","好收银店铺对账邮件保存"});
     }
 }
