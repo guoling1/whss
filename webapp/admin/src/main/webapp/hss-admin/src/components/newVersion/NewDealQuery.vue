@@ -31,16 +31,16 @@
               <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>所属分公司:</label>
+              <el-input style="width: 188px" v-model="query.branchCompany" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
               <label>所属一级代理:</label>
               <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>所属二级代理:</label>
               <el-input style="width: 188px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>所属分公司:</label>
-              <el-input style="width: 188px" v-model="query.branchCompany" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易日期:</label>
@@ -132,9 +132,9 @@
             </el-table-column>
             <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
             <el-table-column prop="markCode" label="收款商户编号" min-width="120"></el-table-column>
+            <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
-            <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
             <el-table-column label="支付金额" align="right">
               <template scope="scope">
                 <span>{{scope.row.tradeAmount|toFix}}</span>

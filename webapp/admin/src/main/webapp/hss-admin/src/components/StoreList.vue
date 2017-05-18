@@ -20,16 +20,16 @@
                   <el-input style="width: 188px" v-model="queryHss.merchantName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>所属分公司:</label>
+                  <el-input style="width: 188px" v-model="queryHss.branchCompany" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
                   <label>所属一级代理:</label>
                   <el-input style="width: 188px" v-model="queryHss.proxyName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>所属二级代理:</label>
                   <el-input style="width: 188px" v-model="queryHss.proxyName1" placeholder="请输入内容" size="small"></el-input>
-                </li>
-                <li class="same">
-                  <label>所属分公司:</label>
-                  <el-input style="width: 188px" v-model="queryHss.branchCompany" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册手机号:</label>
@@ -74,9 +74,9 @@
                 <el-table-column type="index" width="62" label="序号"></el-table-column>
                 <el-table-column prop="markCode" label="商户编号"></el-table-column>
                 <el-table-column prop="merchantName" label="商户名称"></el-table-column>
+                <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
                 <el-table-column prop="proxyName" label="所属一级代理商"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
-                <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
                 <el-table-column label="注册时间">
                   <template scope="scope">
                     <span>{{scope.row.createTime|changeTime}}</span>

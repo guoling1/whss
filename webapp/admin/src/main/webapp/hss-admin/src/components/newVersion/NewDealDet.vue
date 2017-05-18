@@ -28,19 +28,19 @@
               <td>{{record.reserveMobile}}</td>
             </tr>
             <tr>
-              <th style="text-align: right">一级代理名称:</th>
-              <td>{{record.proxyName}}</td>
-              <th style="text-align: right">二级代理名称:</th>
-              <td>{{record.proxyName1}}</td>
-              <th style="text-align: right">推荐人:</th>
-              <td>—</td>
-            </tr>
-            <tr>
               <th style="text-align: right">分公司名称名称:</th>
               <td>{{record.branchCompany}}</td>
               <th style="text-align: right">分公司编号:</th>
               <td>{{record.companyCode}}</td>
               <th style="text-align: right"></th>
+              <td>—</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">一级代理名称:</th>
+              <td>{{record.proxyName}}</td>
+              <th style="text-align: right">二级代理名称:</th>
+              <td>{{record.proxyName1}}</td>
+              <th style="text-align: right">推荐人:</th>
               <td>—</td>
             </tr>
             </tbody></table>
