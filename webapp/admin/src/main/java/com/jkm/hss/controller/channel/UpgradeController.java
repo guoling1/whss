@@ -171,6 +171,18 @@ public class UpgradeController extends BaseController {
             return CommonResponse.simpleResponse(-1,"请填写商户费率");
         }else{
             for(int i=0;i<partnerRuleSettings.size();i++){
+                if(partnerRuleSettings.get(i).getCommonRate()==null){
+                    return CommonResponse.simpleResponse(-1,"普通费率不能为空");
+                }
+                if(partnerRuleSettings.get(i).getClerkRate()==null){
+                    return CommonResponse.simpleResponse(-1,"店员费率不能为空");
+                }
+                if(partnerRuleSettings.get(i).getShopownerRate()==null){
+                    return CommonResponse.simpleResponse(-1,"店长费率不能为空");
+                }
+                if(partnerRuleSettings.get(i).getBossRate()==null){
+                    return CommonResponse.simpleResponse(-1,"老板费率不能为空");
+                }
                 Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectById(partnerRuleSettings.get(i).getId());
                 if(partnerRuleSettingOptional.isPresent()){
                     PartnerRuleSetting partnerRuleSetting = new PartnerRuleSetting();
