@@ -27,6 +27,19 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
+    public void findMemshipCards()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001051");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.6");
+        String param="{\"uid\":71}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void testEnAndDe()throws Exception{
         String data="71";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");

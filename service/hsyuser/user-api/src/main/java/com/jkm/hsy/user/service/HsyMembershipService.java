@@ -15,6 +15,7 @@ import java.util.List;
 public interface HsyMembershipService {
     /**app*/
     public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMemshipCards(String dataParam, AppParam appParam)throws ApiHandleException;
     /**web*/
     public AppPolicyConsumer findConsumerByOpenID(String openID);
     public AppPolicyConsumer findConsumerByUserID(String userID);

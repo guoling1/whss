@@ -26,4 +26,7 @@ public interface HsyMembershipDao {
     public void insertMember(AppPolicyMember appPolicyMember);
     public void updateMember(AppPolicyMember appPolicyMember);
     public List<AppPolicyMember> findMemberInfoByID(@Param("id")Long id);
+    public Integer findMembershipCardCountOfUserByUID(@Param("uid")Long uid);
+    public List<AppPolicyMembershipCard> findMemberCardList(AppPolicyMembershipCard appPolicyMembershipCard);
+    public Integer findMemberCountOfUserByUID(@Param("uid")Long uid);
 }

@@ -96,4 +96,18 @@
         left join app_policy_membership_card card on member.MCID=card.ID
         where member.ID=${id}
     </select>
+
+    <select id="findMembershipCardCountOfUserByUID" resultType="java.lang.Integer">
+        select count(*) from app_policy_membership_card where UID=#{uid}
+    </select>
+
+    <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
+        from app_policy_membership_card where UID=#{uid}
+    </select>
+
+    <select id="findMemberCountOfUserByUID" resultType="java.lang.Integer">
+        select count(*) from app_policy_member member left join app_policy_membership_card card on card.ID=member.MCID
+        where card.UID=#{uid}
+    </select>
 </mapper>
