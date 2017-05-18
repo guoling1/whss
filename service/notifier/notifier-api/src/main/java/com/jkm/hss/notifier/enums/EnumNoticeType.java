@@ -108,7 +108,12 @@ public enum EnumNoticeType {
     /**
      * hsy审核未通过短信消息
      */
-    NOT_PASS_MESSAGE(1002,"hsy审核未通过");
+    NOT_PASS_MESSAGE(1002,"hsy审核未通过"),
+
+    /**
+     * hsy结算完成
+     */
+    SETTLEMENT_SUCCESS(1101, "hsy结算完成");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();

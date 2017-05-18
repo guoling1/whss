@@ -1,7 +1,6 @@
 package com.jkm.hss.settle.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -12,8 +11,6 @@ import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.base.common.util.DateTimeUtil;
-import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
@@ -32,10 +29,12 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
+import com.jkm.hss.notifier.enums.EnumNoticeType;
+import com.jkm.hss.notifier.enums.EnumUserType;
+import com.jkm.hss.notifier.helper.SendMessageParams;
+import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
@@ -46,6 +45,7 @@ import com.jkm.hss.settle.helper.responseparam.AppSettleRecordDetailResponse;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -82,6 +83,8 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     private SettlementRecordService settlementRecordService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private SendMessageService sendMessageService;
 
      /**
      * {@inheritDoc}
@@ -544,6 +547,27 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
             final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
+            try {
+                final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
+                final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
+                final AppBizCard appBizCard = new AppBizCard();
+                appBizCard.setSid(appBizShop.getId());
+                final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+                final String cardNO = appBizCard1.getCardNO();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
+                final Map<String, String> params = ImmutableMap.of("date", dateFormat.format(settlementRecord.getSettleDate()),
+                        "bankCardNo", cardNO.substring(cardNO.length() - 4));
+                this.sendMessageService.sendMessage(SendMessageParams.builder()
+                        .mobile(appAuUser.getCellphone())
+                        .uid(recordId + "")
+                        .data(params)
+                        .userType(EnumUserType.FOREGROUND_USER)
+                        .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS)
+                        .build()
+                );
+            } catch (final Throwable e) {
+                log.error("hsy结算单[" + recordId + "],发送短信失败", e);
+            }
         }
     }
 
