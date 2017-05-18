@@ -14,4 +14,6 @@ public class AppPolicyConstant {
 
     public static String REGISTER_VERIFICATION_MESSAGE="【钱包++】${code}（会员注册验证码，请完成验证），5分钟有效，千万不要告诉被人哦！";
     public static int REGISTER_VERIFICATION_NOTICE_TYPE_ID=707;
+
+    public static Integer CARD_LIMIT=10;
 }
