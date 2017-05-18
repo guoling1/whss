@@ -72,17 +72,6 @@
                       <el-input v-model="hsy.shortName" placeholder="商户名称" size="small" style="width:240px"></el-input>
                     </div>
                     <div class="screen-item">
-                      <span class="screen-title">审核日期</span>
-                      <el-date-picker size="small"
-                                      v-model="date"
-                                      type="daterange"
-                                      align="right"
-                                      @change="datetimeSelect"
-                                      placeholder="选择日期范围"
-                                      :picker-options="pickerOptions2">
-                      </el-date-picker>
-                    </div>
-                    <div class="screen-item">
                       <span class="screen-title"></span>
                       <el-button type="primary" size="small" @click="screen_hsy">筛选</el-button>
                     </div>
@@ -97,11 +86,6 @@
                       <el-table-column label="注册时间">
                         <template scope="scope">
                           {{ scope.row.createTimes | datetime }}
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="审核时间">
-                        <template scope="scope">
-                          {{ scope.row.auditTime | datetime }}
                         </template>
                       </el-table-column>
                       <el-table-column prop="cellphone" label="注册手机号"></el-table-column>
@@ -156,10 +140,7 @@
           tableLoading: false,
           globalID: '',
           shortName: '',
-          auditTime:'',
-          auditTime1:''
         },
-        date: ''
       }
     },
     created() {
@@ -167,16 +148,6 @@
       this.getData_hsy();
     },
     methods: {
-      datetimeSelect: function (val) {
-        if(val == undefined){
-          this.hsy.auditTime = '';
-          this.hsy.auditTime1 = '';
-        }else {
-          let format = val.split(' - ');
-          this.hsy.auditTime = format[0];
-          this.hsy.auditTime1 = format[1];
-        }
-      },
       handleClick(tab, event) {
         console.log(tab, event);
       },
@@ -212,9 +183,7 @@
           pageSize: this.hsy.pageSize,
           pageNo: this.hsy.pageNo,
           globalID: this.hsy.globalID,
-          shortName: this.hsy.shortName,
-          auditTime:this.hsy.auditTime,
-          auditTime1:this.hsy.auditTime1
+          shortName: this.hsy.shortName
         }).then(res => {
           this.hsy.tableLoading = false;
           this.hsy.total = res.data.count;
