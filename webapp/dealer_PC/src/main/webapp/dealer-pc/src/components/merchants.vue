@@ -140,7 +140,7 @@
           tableLoading: false,
           globalID: '',
           shortName: '',
-        }
+        },
       }
     },
     created() {
