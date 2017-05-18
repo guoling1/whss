@@ -467,7 +467,7 @@
     </select>
 
     <select id="getProxyName" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstLevelDealerId}
+        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstDealerId}
     </select>
 
     <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">

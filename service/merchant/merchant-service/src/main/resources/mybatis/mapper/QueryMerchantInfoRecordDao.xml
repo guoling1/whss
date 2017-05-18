@@ -48,6 +48,9 @@
                 WHERE
                     id = a.second_dealer_id
             ) AS proxyName1,
+            (SELECT proxy_name FROM tb_dealer WHERE id = a.oem_id ) AS branchCompany,
+            (SELECT mark_code FROM tb_dealer WHERE id = a.oem_id ) AS companyCode,
+            a.oem_id,
             b.mark_code AS markCode1,
             b.first_level_dealer_id,
             b.`level`

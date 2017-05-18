@@ -65,9 +65,12 @@ public class QueryMerchantInfoRecordController extends BaseController {
 
         if (list.size()>0 || response!=null){
             for (int i=0;i<list.size();i++){
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
+                }
                 if (list.get(i).getSecondDealerId()>0){
                     list.get(i).setMarkCode2(list.get(i).getMarkCode1());
-                    MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstLevelDealerId());
+                    MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstDealerId());
                     if (list.get(i).getMarkCode1()!=null&&!list.get(i).getMarkCode1().equals("")){
                         list.get(i).setMarkCode1(proxyNames.getMarkCode());
                     }

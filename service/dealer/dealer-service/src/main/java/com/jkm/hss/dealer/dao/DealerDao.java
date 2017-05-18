@@ -318,10 +318,10 @@ public interface DealerDao {
 
     /**
      * 查询代理商名称和编码
-     * @param firstLevelDealerId
+     * @param firstDealerId
      * @return
      */
-    MerchantInfoResponse getProxyName(int firstLevelDealerId);
+    MerchantInfoResponse getProxyName(@Param("firstDealerId") long firstDealerId);
 
     /**
      * 查询一级代理商的编码和名称
