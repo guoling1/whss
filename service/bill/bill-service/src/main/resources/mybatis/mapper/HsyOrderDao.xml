@@ -42,6 +42,12 @@
     <update id="update">
         UPDATE tb_hsy_order
         <set>
+          <if test="ordernumber!=null and ordernumber!='' ">
+              ordernumber=#{ordernumber},
+          </if>
+            <if test="validationcode!=null and validationcode!='' ">
+                validationcode=#{validationcode},
+            </if>
           <if test="orderno!=null and orderno!='' ">
               order_no=#{orderno},
           </if>

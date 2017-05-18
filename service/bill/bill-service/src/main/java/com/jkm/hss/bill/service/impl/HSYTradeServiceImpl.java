@@ -697,10 +697,12 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         hsyOrder.setPaytype(channelCode);
         hsyOrderService.insert(hsyOrder);
         log.info("好收银订单[{}]-下单成功【{}】", hsyOrder.getOrdernumber(), hsyOrder);
+
         //====================================================^^^^^^^^^^===============================================
 
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
+        order.setBusinessOrderNo(hsyOrder.getOrdernumber());
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
@@ -727,6 +729,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
         return this.handlePlaceOrder(shop, channelCode, order);
     }
+
+
 
     /**
      * {@inheritDoc}
