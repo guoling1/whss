@@ -45,7 +45,7 @@
               </el-col>
               <el-col :span="14">
                 <div class="grid-content bg-purple-light tableSel">
-                  <el-table :data="channels" @selection-change="handleSelectionChange" border v-if="tableHas"
+                  <el-table :data="$channels" @selection-change="handleSelectionChange" border v-if="tableHas"
                             style="font-size: 12px">
                     <el-table-column label="通道名称">
                       <template scope="scope">
@@ -420,6 +420,11 @@
           })
       }
     },
+    computed: {
+      $channels: function () {
+        return this.channels
+      }
+    }
   }
 </script>
 

@@ -111,7 +111,11 @@ public enum EnumPayChannelSign {
     /**
      * 收银家zfb
      */
-    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
+    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    /**
+     * 合利宝快捷
+     */
+    HE_LI_UNIONPAY(901, "he_li_unionpay", EnumPaymentChannel.UNIONPAY, "合利宝快捷", EnumUpperChannel.HE_LI_UNIONPAY, false, EnumBalanceTimeType.D0, false);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
@@ -244,6 +248,7 @@ public enum EnumPayChannelSign {
     public static boolean isUnionPay(final int channelSign) {
         return MB_UNIONPAY.getId() == channelSign
                 || MB_UNIONPAY_DO.getId() == channelSign
-                || EL_UNIONPAY.getId() == channelSign;
+                || EL_UNIONPAY.getId() == channelSign
+                || HE_LI_UNIONPAY.getId() == channelSign;
     }
 }

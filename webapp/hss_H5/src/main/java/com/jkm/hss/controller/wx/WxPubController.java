@@ -112,6 +112,8 @@ public class WxPubController extends BaseController {
     @Autowired
     private ProductChannelGatewayService productChannelGatewayService;
     @Autowired
+    private ChannelSupportDebitCardService channelSupportDebitCardService;
+    @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
     @Autowired
     private UpgradeRulesService upgradeRulesService;
@@ -1330,9 +1332,11 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "只能删除信用卡");
         }
         accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
-        Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
-        if(accountBankOptional1.isPresent()){
-            accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+        if(accountBankOptional.get().getIsDefault()==EnumBankDefault.DEFAULT.getId()){
+            Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
+            if(accountBankOptional1.isPresent()){
+                accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+            }
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
     }
@@ -1375,7 +1379,13 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
-
+        //通道结算卡拦截
+        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
+        final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
+        if (!channelSupportDebitCardOptional.isPresent()){
+            //通道结算卡不可用
+            return CommonResponse.simpleResponse(-1, "该通道仅支持结算到大型银行，请联系客服更改结算卡再使用");
+        }
         //通道限额拦截，通道可用拦截，
         final BasicChannel basicChannel =
                 this.basicChannelService.selectByChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign()).get();
