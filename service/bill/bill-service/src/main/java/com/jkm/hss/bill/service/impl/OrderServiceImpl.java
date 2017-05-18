@@ -409,6 +409,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("payChannelSign",req.getPayChannelSign());
         map.put("markCode",req.getMarkCode());
         map.put("appId",req.getAppId());
+        map.put("branchCompany",req.getBranchCompany());
         List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -458,6 +459,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("payChannelSign",req.getPayChannelSign());
         map.put("markCode",req.getMarkCode());
         map.put("appId",req.getAppId());
+        map.put("branchCompany",req.getBranchCompany());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -536,7 +538,9 @@ public class OrderServiceImpl implements OrderService {
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
-
+                if (list.getOemId()==0){
+                    list.setBranchCompany("金开门");
+                }
                 if (list.getAppId().equals("hss")){
                     String hss="好收收";
                     list.setAppId(hss);
@@ -1330,6 +1334,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("payChannelSign",req.getPayChannelSign());
         map.put("markCode",req.getMarkCode());
         map.put("appId",req.getAppId());
+        map.put("branchCompany",req.getBranchCompany());
         return orderDao.selectOrderListCount(map);
     }
 

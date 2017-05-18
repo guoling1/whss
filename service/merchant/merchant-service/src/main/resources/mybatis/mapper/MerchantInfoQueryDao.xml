@@ -161,7 +161,8 @@
         a.checked_time,
         (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
         (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
-        (select proxy_name from tb_dealer where id=a.oem_id) as branchCompany
+        (select proxy_name from tb_dealer where id=a.oem_id) as branchCompany,
+        a.oem_id
         FROM
         tb_merchant_info a
         LEFT JOIN tb_dealer b ON a.dealer_id = b.id

@@ -376,7 +376,9 @@
             a.sn,
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-            (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+            (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
+            b.oem_id
         FROM
             tb_order a
         LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
@@ -399,6 +401,9 @@
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="branchCompany != null and branchCompany!=''">
+            AND b.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
@@ -722,7 +727,9 @@
         a.sn,
         a.app_id,
         (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+        (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
+        b.oem_id
         FROM
         tb_order a
         LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
@@ -745,6 +752,9 @@
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="branchCompany != null and branchCompany!=''">
+            AND b.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
@@ -869,6 +879,9 @@
             b.bank_no,
             b.reserve_mobile,
             b.mark_code,
+            (SELECT proxy_name FROM tb_dealer WHERE id=b.oem_id) as branchCompany,
+            (SELECT mark_code FROM tb_dealer WHERE id=b.oem_id) as companyCode,
+            b.oem_id,
             a.sn,
             a.app_id,
             a.settle_type,
@@ -910,6 +923,9 @@
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="branchCompany != null and branchCompany!=''">
+            AND b.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
@@ -969,6 +985,9 @@
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="branchCompany != null and branchCompany!=''">
+            AND b.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}

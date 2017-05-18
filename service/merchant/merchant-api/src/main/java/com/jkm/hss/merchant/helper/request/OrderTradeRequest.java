@@ -9,6 +9,11 @@ import lombok.Data;
 public class OrderTradeRequest {
 
     /**
+     * 分公司
+     */
+    private String branchCompany;
+
+    /**
      * 商户编码
      */
     private String markCode;
