@@ -177,7 +177,7 @@ http.post('/wx/toUpgrade', {}, function (data) {
           if (upType) {
             layer.style.display = 'block';
           } else {
-            window.location.href = '/sqb/toBuy/' + data.upgradeRules[i].id;
+            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id);
           }
         });
         boss_banner_list.appendChild(boss_banner_head);
@@ -255,7 +255,7 @@ http.post('/wx/toUpgrade', {}, function (data) {
           if (upType) {
             layer.style.display = 'block';
           } else {
-            window.location.href = '/sqb/toBuy/' + data.upgradeRules[i].id;
+            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id);
           }
         });
         manager_banner_list.appendChild(manager_banner_head);
@@ -333,7 +333,7 @@ http.post('/wx/toUpgrade', {}, function (data) {
           if (upType) {
             layer.style.display = 'block';
           } else {
-            window.location.href = '/sqb/toBuy/' + data.upgradeRules[i].id;
+            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id);
           }
         });
         assistant_banner_list.appendChild(assistant_banner_head);
