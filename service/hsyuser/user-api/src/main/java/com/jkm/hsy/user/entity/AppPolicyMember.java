@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -8,15 +9,21 @@ import java.util.Date;
 /**app_policy_member*/
 public class AppPolicyMember {
     private Long id;
+    private Long cid;//消费者ID
+    private Long mcid;//卡ID
     private Long accountID;//账户ID
-    private String memberCellphone;//会员手机号
     private String memberCardNO;//会员卡号
-    private String userID;//支付宝ID
-    private String openID;//微信ID
-    private String payPassword;//支付密码
-    private Integer status;//状态
+    private Integer status;//状态1正常
     private Date createTime;
     private Date updateTime;
+
+    private Long uid;//主店ID
+    private String consumerCellphone;//消费者手机号
+    private String userID;//支付宝ID
+    private String openID;//微信ID
+    private String membershipName;//会员卡名称
+    private String membershipShopName;//会员卡上显示的店铺名称
+    private BigDecimal discount;//会员卡折扣(折)
 
     public Long getId() {
         return id;
@@ -24,6 +31,14 @@ public class AppPolicyMember {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 
     public Long getAccountID() {
@@ -34,44 +49,12 @@ public class AppPolicyMember {
         this.accountID = accountID;
     }
 
-    public String getMemberCellphone() {
-        return memberCellphone;
-    }
-
-    public void setMemberCellphone(String memberCellphone) {
-        this.memberCellphone = memberCellphone;
-    }
-
     public String getMemberCardNO() {
         return memberCardNO;
     }
 
     public void setMemberCardNO(String memberCardNO) {
         this.memberCardNO = memberCardNO;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public String getOpenID() {
-        return openID;
-    }
-
-    public void setOpenID(String openID) {
-        this.openID = openID;
-    }
-
-    public String getPayPassword() {
-        return payPassword;
-    }
-
-    public void setPayPassword(String payPassword) {
-        this.payPassword = payPassword;
     }
 
     public Integer getStatus() {
@@ -96,5 +79,70 @@ public class AppPolicyMember {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Long getMcid() {
+        return mcid;
+    }
+
+    public void setMcid(Long mcid) {
+        this.mcid = mcid;
+    }
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    public String getConsumerCellphone() {
+        return consumerCellphone;
+    }
+
+    public void setConsumerCellphone(String consumerCellphone) {
+        this.consumerCellphone = consumerCellphone;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getOpenID() {
+        return openID;
+    }
+
+    public String getMembershipName() {
+        return membershipName;
+    }
+
+    public void setMembershipName(String membershipName) {
+        this.membershipName = membershipName;
+    }
+
+    public String getMembershipShopName() {
+        return membershipShopName;
+    }
+
+    public void setMembershipShopName(String membershipShopName) {
+        this.membershipShopName = membershipShopName;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public void setOpenID(String openID) {
+        this.openID = openID;
+
     }
 }
