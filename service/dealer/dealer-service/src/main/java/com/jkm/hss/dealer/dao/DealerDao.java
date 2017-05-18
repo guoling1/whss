@@ -394,7 +394,7 @@ public interface DealerDao {
 
     /**
      * 分公司账户明细
-     * @param id
+     * @param req
      * @return
      */
     List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req);
@@ -405,4 +405,11 @@ public interface DealerDao {
      * @return
      */
     int getBranchDetailCount(BranchAccountRequest req);
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 }

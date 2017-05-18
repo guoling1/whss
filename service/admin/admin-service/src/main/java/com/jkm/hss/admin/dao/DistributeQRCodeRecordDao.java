@@ -60,7 +60,7 @@ public interface DistributeQRCodeRecordDao {
      * @return
      */
     int selectDistributeCountByContions(@Param("firstLevelDealerId") long firstLevelDealerId,
-                                                                 @Param("markCode") String markCode,@Param("name") String name);
+                                                                 @Param("markCode") String markCode,@Param("name") String name,@Param("dtype") int dtype);
     /**
      * 查询分配给二级代理商的二维码记录
      *
@@ -69,7 +69,7 @@ public interface DistributeQRCodeRecordDao {
      */
     List<DistributeQRCodeRecord> selectDistributeRecordsByContions(@Param("firstLevelDealerId") long firstLevelDealerId,
                                                                  @Param("markCode") String markCode,@Param("name") String name,
-                                                                   @Param("offset") int offset,@Param("count") int count);
+                                                                   @Param("offset") int offset,@Param("count") int count,@Param("dtype") int dtype);
     /**
      * boss后台查询分配二维码记录条数
      *

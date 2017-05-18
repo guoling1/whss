@@ -914,4 +914,33 @@
         ORDER BY
         create_time DESC
     </select>
+
+    <select id="selectListOfOem" resultType="com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse">
+        SELECT
+        d.id,
+        d.mobile,
+        d.proxy_name,
+        (SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = #{sysType})) as isDistribute
+        FROM tb_dealer as d
+        WHERE
+        d.level = 1
+        <if test="condition!=null and condition!=''">
+            AND (d.mobile LIKE "%"#{condition}"%" OR d.proxy_name LIKE "%"#{condition}"%")
+        </if>
+        <if test="oem_id > 0">
+            AND d.oem_id = #{oemId}
+        </if>
+    </select>
 </mapper>

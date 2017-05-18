@@ -466,7 +466,7 @@ public interface DealerService {
      * @param endCode
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type,String sysType, long dealerId, long toDealerId, String startCode, String endCode);
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type,String sysType, long dealerId, long toDealerId, String startCode, String endCode,int dtype,long operatorId);
 
     /**
      * 按个数分配
@@ -476,7 +476,7 @@ public interface DealerService {
      * @param count
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count);
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count,int dtype,long operatorId);
     /**
      * 根据产品类型和手机号或代理商名称模糊查询
      * @param dealerOfFirstDealerRequest
@@ -495,7 +495,7 @@ public interface DealerService {
      * @param distributeRecordRequest
      * @return
      */
-    PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId);
+    PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId,int dtype);
     /**
      * 【boss后台】二维码分配记录
      * @param distributeRecordRequest
@@ -591,4 +591,11 @@ public interface DealerService {
      * @return
      */
     int getBranchDetailCount(BranchAccountRequest req);
+    //    一下为分公司新增
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 }
