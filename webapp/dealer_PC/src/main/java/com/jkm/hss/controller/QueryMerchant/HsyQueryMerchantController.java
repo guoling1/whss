@@ -45,6 +45,14 @@ public class HsyQueryMerchantController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             request.setEndTime(sdf.format(rightNow.getTime()));
         }
+        if(request.getAuditTime1()!=null&&!"".equals(request.getAuditTime1())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(request.getAuditTime1());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            request.setAuditTime1(sdf.format(rightNow.getTime()));
+        }
         if (level==1){
             List<HsyQueryMerchantResponse> list = hsyMerchantAuditService.hsyMerchantList(request);
             int count = hsyMerchantAuditService.hsyMerchantListCount(request);

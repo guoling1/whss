@@ -24,13 +24,11 @@
     <select id="selectProfitDetails" resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
         SELECT
         a.*, b.id AS ids,
-        c.`level`,
         a.account_user_type,
         d.settle_type
         FROM
         tb_split_account_record a
         LEFT JOIN tb_account b ON b.id = a.receipt_money_account_id
-        LEFT JOIN tb_dealer c ON c.account_id = a.receipt_money_account_id
         LEFT JOIN tb_order d ON d.order_no = a.order_no
         WHERE
         1 = 1
