@@ -40,5 +40,9 @@ public class OemInfo extends BaseEntity {
      * 公众号二维码
      */
     private String qrCode;
+    /**
+     * 分公司机构号
+     */
+    private String oemNo;
 
 }

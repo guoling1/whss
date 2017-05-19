@@ -4,7 +4,7 @@
 <mapper namespace="com.jkm.hss.dealer.dao.OemInfoDao">
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	dealer_id,brand_name,	wechat_name,wechat_code,app_id,app_secret,logo,qr_code,status,create_time,update_time
+        id,	dealer_id,brand_name,	wechat_name,wechat_code,app_id,app_secret,logo,qr_code,status,create_time,update_time,oem_no
     </sql>
 
     <!-- 添加 -->
@@ -18,7 +18,8 @@
         app_secret,
         logo,
         qr_code,
-        status
+        status,
+        oem_no
         )VALUES (
         #{dealerId},
         #{brandName},
@@ -28,7 +29,8 @@
         #{appSecret},
         #{logo},
         #{qrCode},
-        #{status}
+        #{status},
+         upper(replace(uuid(), '-', ''))
         )
     </insert>
 
