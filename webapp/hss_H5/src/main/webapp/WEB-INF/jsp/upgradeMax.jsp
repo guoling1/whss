@@ -44,7 +44,7 @@
         </div>
       </c:forEach>
     </div>
-    <div class="btn">
+    <div class="btn" id="isUpBtn">
       <div id="upBtn">立即升级</div>
     </div>
     <div class="ss" onclick="javascript:location.href='/sqb/suansuan'">算算能挣多少钱?</div>

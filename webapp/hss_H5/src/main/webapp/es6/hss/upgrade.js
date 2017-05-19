@@ -32,6 +32,7 @@ let upType = 0;
 
 let up = document.getElementById('up');
 let upBtn = document.getElementById('upBtn');
+let isUpBtn = document.getElementById('isUpBtn');
 let touchS = 0;
 let touchE = 0;
 let move = false;
@@ -99,6 +100,9 @@ layer.addEventListener('click', function () {
 // 获取升级
 http.post('/wx/toUpgrade', {}, function (data) {
   nowLevel = data.currentLevel;
+  if (nowLevel == 3) {
+    isUpBtn.style.display = 'none';
+  }
   new QRCode(qr, {
     text: data.shareUrl,
     colorDark: "#000000",
