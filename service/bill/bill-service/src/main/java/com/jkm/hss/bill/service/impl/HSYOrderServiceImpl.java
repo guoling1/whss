@@ -166,6 +166,8 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
                 hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
                 hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+                hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
+                hsyTradeListResponse.setId(hsyOrder.getId());
                 hsyTradeListResponseList.add(hsyTradeListResponse);
             }
         }
@@ -181,5 +183,26 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         resultMap.put("number",hsyOrderSTResponse.getNumber());
         resultMap.put("pageModel",pageModel);
         return gson.toJson(resultMap);
+    }
+
+    @Override
+    public String appOrderDetail(String dataParam, AppParam appParam) {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        final JSONObject paramJo = JSONObject.parseObject(dataParam);
+        final long payOrderId = paramJo.getLongValue("payOrderId");
+        final HsyOrder hsyOrder=hsyOrderDao.selectById(payOrderId);
+        HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
+        hsyTradeListResponse.setAmount(hsyOrder.getAmount());
+        hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+        hsyTradeListResponse.setOrderstatus(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getId());
+        hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
+        hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
+        hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getId());
+        hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
+        hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
+        hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+        hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
+        hsyTradeListResponse.setId(hsyOrder.getId());
+        return gson.toJson(hsyTradeListResponse);
     }
 }

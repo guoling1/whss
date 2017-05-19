@@ -33,6 +33,10 @@ public class HsyOrder extends BaseEntity {
      */
     private String orderno;
     /**
+     * 交易订单ID
+     */
+    private long orderid;
+    /**
      * 确认码
      */
     private String validationcode;

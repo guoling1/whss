@@ -725,6 +725,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
         //add by wayne 2017/05/18===========================================更新好收银订单
         hsyOrder.setOrderno(order.getOrderNo());
+        hsyOrder.setOrderid(order.getId());
         hsyOrderService.update(hsyOrder);
         //===============================================================================
 

@@ -51,6 +51,9 @@
             <if test="validationcode!=null and validationcode!='' ">
                 validationcode=#{validationcode},
             </if>
+            <if test="orderid>0 ">
+                order_id=#{orderid},
+            </if>
           <if test="orderno!=null and orderno!='' ">
               order_no=#{orderno},
           </if>
@@ -82,6 +85,7 @@
     `shopname`,
     `merchantname`,
     `order_no`,
+    `order_id`,
     `orderstatus`,
     `sourcetype`,
     `validationcode`,
@@ -92,6 +96,7 @@
     `cashiername`,
     `pay_sn`,
     `pay_type`,
+    `pay_channel_sign`,
     `pay_success_time`,
     `refund_amount`,
     `refund_status`,
@@ -105,6 +110,38 @@ FROM `tb_hsy_order`
 WHERE order_no = #{orderNo}
 ;
     </select>
+    <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE id = #{id}
+        ;
+    </select>
     <select id="selectOrdersByParam" resultType="com.jkm.hss.bill.entity.HsyOrder">
         SELECT `id`,
     `ordernumber`,
@@ -112,6 +149,7 @@ WHERE order_no = #{orderNo}
     `shopname`,
     `merchantname`,
     `order_no`,
+    `order_id`,
     `orderstatus`,
     `sourcetype`,
     `validationcode`,

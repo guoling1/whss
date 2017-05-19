@@ -32,6 +32,13 @@ public interface HsyOrderDao {
      */
     HsyOrder selectByOrderNo(@Param("orderNo") String orderNo);
 
+    /**
+     * 根据订单ID查找订单
+     * @param id
+     * @return
+     */
+    HsyOrder selectById(@Param("id") long id);
+
    List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
                                       @Param("offset") int offset,
                                       @Param("count") int count,

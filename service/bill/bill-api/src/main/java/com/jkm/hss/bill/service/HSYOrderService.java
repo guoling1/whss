@@ -37,4 +37,12 @@ public interface HSYOrderService {
      * @return
      */
     String orderListst(String dataParam, AppParam appParam);
+
+    /**
+     * 订单详情
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String appOrderDetail(String dataParam, AppParam appParam);
 }

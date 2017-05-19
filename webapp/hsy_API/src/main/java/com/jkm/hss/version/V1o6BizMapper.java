@@ -67,7 +67,7 @@ public class V1o6BizMapper {
         /**退款*/
         bizMapper.put("HSY001044", new String[]{"hsyTradeService", "appRefund"});
         /**交易详情*/
-        bizMapper.put("HSY001045", new String[]{"hsyTradeService", "appOrderDetailhsy"});
+        bizMapper.put("HSY001045", new String[]{"HsyOrderService", "appOrderDetail"});
         /**交易记录-version1.5*/
         bizMapper.put("HSY001046", new String[]{"HsyOrderService", "orderListst"});
         /**创建会员卡*/

@@ -11,7 +11,11 @@ import java.util.Date;
  */
 @Data
 public class HsyTradeListResponse {
-    private int id;
+    private long id;
+    /**
+     * 交易订单ID
+     */
+    private long orderId;
     //private int canRefund;
     /**
      * 笔数
