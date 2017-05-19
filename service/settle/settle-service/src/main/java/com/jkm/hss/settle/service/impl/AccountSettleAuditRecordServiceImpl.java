@@ -556,6 +556,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 final String cardNO = appBizCard1.getCardNO();
                 final SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
                 final Map<String, String> params = ImmutableMap.of("date", dateFormat.format(settlementRecord.getSettleDate()),
+                        "amount", settlementRecord.getSettleAmount().toPlainString(),
                         "bankCardNo", cardNO.substring(cardNO.length() - 4));
                 this.sendMessageService.sendMessage(SendMessageParams.builder()
                         .mobile(appAuUser.getCellphone())

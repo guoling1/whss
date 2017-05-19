@@ -1379,12 +1379,14 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
-        //通道结算卡拦截
-        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
-        final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
-        if (!channelSupportDebitCardOptional.isPresent()){
-            //通道结算卡不可用
-            return CommonResponse.simpleResponse(-1, "该通道仅支持结算到大型银行，请联系客服更改结算卡再使用");
+        //hlb通道结算卡拦截
+        if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
+            final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
+            if (!channelSupportDebitCardOptional.isPresent()){
+                //通道结算卡不可用
+                return CommonResponse.simpleResponse(-1, "该通道仅支持结算到大型银行，请联系客服更改结算卡再使用");
+            }
         }
         //通道限额拦截，通道可用拦截，
         final BasicChannel basicChannel =
