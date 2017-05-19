@@ -82,7 +82,7 @@
         records: [],
         isRecommend:false,
         isNoRecommend:false,
-        id:''
+        id:'',
         dealerId:0,
         name:'',
         code:'',
@@ -144,8 +144,8 @@
             message: '已取消删除'
           });
         });
-      },
-      this.getData()
+      }
+//      this.getData()
     },
     methods: {
       getData:function () {
