@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>付款给商家</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.16.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.17.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -101,5 +101,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.24/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.26/collection.min.js"></script>
 </html>
