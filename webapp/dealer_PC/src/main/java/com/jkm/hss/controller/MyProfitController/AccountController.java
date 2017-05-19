@@ -16,6 +16,7 @@ import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.helper.request.DealerWithdrawRequest;
 import com.jkm.hss.helper.request.FlowDetailsSelectRequest;
@@ -69,8 +70,11 @@ public class AccountController extends BaseController{
         final AdminUser adminUser = this.getAdminUser().get();
         DealerInfoResponse response = new DealerInfoResponse();
         response.setDealerInfo(adminUser.getRealname());
+        final Dealer dealer = this.getDealer().get();
         response.setDealerLeavel(this.getDealer().get().getLevel());
-
+        if(dealer.getOemType()== EnumOemType.OEM.getId()){
+            response.setDealerLeavel(3);
+        }
         return CommonResponse.objectResponse(1, "success", response);
     }
 
