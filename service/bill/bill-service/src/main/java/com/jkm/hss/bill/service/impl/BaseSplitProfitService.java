@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.helper.RefundProfitParams;
 import com.jkm.hss.bill.helper.SplitProfitParams;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,12 +12,20 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface BaseSplitProfitService {
 
     /**
-     * 执行分账
+     * 执行支付/充值/升级分账
      *
      * @param splitProfitParams
      * @return
      */
-    Pair<Integer, String> exeSplitProfit(SplitProfitParams splitProfitParams);
+    Pair<Integer, String> exePaySplitProfit(SplitProfitParams splitProfitParams);
+
+    /**
+     * 执行提现分账
+     *
+     * @param splitProfitParams
+     * @return
+     */
+    Pair<Integer, String> exeWithdrawSplitProfit(SplitProfitParams splitProfitParams);
 
     /**
      * 执行退分润
@@ -50,19 +59,29 @@ public interface BaseSplitProfitService {
      *
      * @param splitProfitDetail
      * @param order
-     * @param businessType
+     * @param splitProfitParams
      * @param remark
      */
-    void addSplitAccountRecord(SplitProfitParams.SplitProfitDetail splitProfitDetail, Order order, String businessType, String remark);
+    void addSplitAccountRecord(SplitProfitParams.SplitProfitDetail splitProfitDetail, Order order, SplitProfitParams splitProfitParams, String remark);
+
+    /**
+     * 按结算单添加分润记录
+     *
+     * @param splitProfitDetail
+     * @param settlementRecord
+     * @param splitProfitParams
+     * @param remark
+     */
+    void addSplitAccountRecordBySettlementRecord(SplitProfitParams.SplitProfitDetail splitProfitDetail, SettlementRecord settlementRecord, SplitProfitParams splitProfitParams, String remark);
 
     /**
      * 分润 可用余额增加
      *
      * @param splitProfitDetail
-     * @param order
+     * @param orderNo
      * @param remark
      */
-    void splitProfit4IncreaseAvailableAccount(SplitProfitParams.SplitProfitDetail splitProfitDetail, Order order, String remark);
+    void splitProfit4IncreaseAvailableAccount(SplitProfitParams.SplitProfitDetail splitProfitDetail, String orderNo, String remark);
 
     /**
      * 分润 待结算余额增加

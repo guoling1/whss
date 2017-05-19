@@ -1,7 +1,9 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
+import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.helper.*;
+import com.jkm.hss.bill.helper.responseparam.RefundProfitResponse;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -47,7 +49,28 @@ public interface TradeService {
      * @param refundProfitParams
      * @return
      */
-    Pair<Integer, String> refundProfitImpl(RefundProfitParams refundProfitParams);
+    RefundProfitResponse refundProfitImpl(RefundProfitParams refundProfitParams);
 
-    Pair<Integer, String> withdraw();
+    /**
+     * 退款
+     *
+     * @param refundOrderNo
+     * @return
+     */
+    Pair<Integer, String> refund(String refundOrderNo);
+
+    /**
+     *
+     *
+     * @param withdrawParams
+     * @return
+     */
+    Pair<Integer, String> withdraw(WithdrawParams withdrawParams);
+
+    /**
+     * 处理提现回调
+     *
+     * @param paymentSdkWithdrawCallbackResponse
+     */
+    void  handleWithdrawCallbackMsg(PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse);
 }

@@ -7,7 +7,7 @@
         available,
         consume_total_amount,
         recharge_total_amount,
-        status,
+        status
         )
         values
         (

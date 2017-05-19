@@ -1,10 +1,12 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.PaymentSdkDaiFuResponse;
 import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.PlaceOrderParams;
+import com.jkm.hss.bill.helper.WithdrawParams;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -124,4 +126,39 @@ public interface BaseTradeService {
      * @param order
      */
     void memberAccountIncrease(Order order);
+
+    /**
+     * 按结算单提现
+     *
+     * @param settlementRecordId
+     * @param payOrderSn
+     * @param payChannelSign
+     */
+    void withdrawBySettlement(long settlementRecordId, String payOrderSn, int payChannelSign);
+
+    /**
+     * 余额提现实现
+     *
+     * @param withdrawParams
+     * @param orderId
+     * @return
+     */
+    Pair<Integer, String> withdrawImpl(WithdrawParams withdrawParams, long orderId);
+
+    /**
+     * 处理按结算单提现的结果
+     *
+     * @param settlementRecordId
+     * @param response
+     */
+    void handleWithdrawBySettlementResult(long settlementRecordId, PaymentSdkDaiFuResponse response);
+
+    /**
+     * 处理从账户余额提现的结果
+     *
+     * @param order
+     * @param response
+     * @return
+     */
+    Pair<Integer, String> handleWithdrawByAccountResult(Order order, PaymentSdkDaiFuResponse response);
 }

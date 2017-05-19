@@ -38,6 +38,10 @@ public class RechargeParams {
      */
     private BigDecimal realPayAmount;
     /**
+     * 营销金额
+     */
+    private BigDecimal marketingAmount;
+    /**
      * 收款人账户id（商户基础账户）
      */
     private long payeeAccountId;

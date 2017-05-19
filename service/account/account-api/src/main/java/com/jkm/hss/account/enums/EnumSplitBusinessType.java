@@ -1,5 +1,7 @@
 package com.jkm.hss.account.enums;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -22,5 +24,21 @@ public enum EnumSplitBusinessType {
     EnumSplitBusinessType(final String id, final String value) {
         this.id = id;
         this.value = value;
+    }
+
+
+    private static final ImmutableMap<String, EnumSplitBusinessType> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<String, EnumSplitBusinessType> builder = new ImmutableMap.Builder<>();
+        for (EnumSplitBusinessType businessType : EnumSplitBusinessType.values()) {
+            builder.put(businessType.getId(), businessType);
+        }
+        INIT_MAP = builder.build();
+    }
+
+    public static EnumSplitBusinessType of (final String businessType) {
+        Preconditions.checkState(INIT_MAP.containsKey(businessType), "unknown businessType[{}]", businessType);
+        return INIT_MAP.get(businessType);
     }
 }

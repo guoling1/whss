@@ -17,7 +17,7 @@ import java.util.List;
 public class SplitProfitParams {
 
     /**
-     * 交易单号
+     * 交易单号/结算单号
      */
     private String orderNo;
     /**
@@ -32,6 +32,13 @@ public class SplitProfitParams {
      * 注：不要给null
      */
     private BigDecimal cost;
+
+    /**
+     * 结算类型
+     *
+     * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
+     */
+    private String settleType;
     /**
      * 分润方集合
      */

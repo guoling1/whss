@@ -137,6 +137,11 @@ public class Order extends BaseEntity {
     private BigDecimal poundage;
 
     /**
+     * 结算手续费
+     */
+    private BigDecimal settlePoundage;
+
+    /**
      * 支付费率（只有支付时，有费率，提现没有）
      */
     private BigDecimal payRate;
