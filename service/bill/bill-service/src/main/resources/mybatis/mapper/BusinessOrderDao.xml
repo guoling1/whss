@@ -41,8 +41,8 @@
         #{payRate},
         #{goodsName},
         #{goodsDescribe},
-        #{bankName},
         #{payChannelSign},
+        #{bankName},
         #{bankTradeNo},
         #{tradeCardType},
         #{tradeCardNo},
@@ -96,6 +96,9 @@
             </if>
             <if test="payChannelSign > 0">
                 pay_channel_sign = #{payChannelSign},
+            </if>
+            <if test="bankName != null and bankName != ''">
+                bank_name = #{bankName},
             </if>
             <if test="bankTradeNo != null and bankTradeNo != ''">
                 bank_trade_no = #{bankTradeNo},

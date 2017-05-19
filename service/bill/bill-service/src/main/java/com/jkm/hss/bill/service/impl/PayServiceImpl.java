@@ -1044,7 +1044,6 @@ public class PayServiceImpl implements PayService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Pair<Integer, String> unionPay(final long orderId, final long merchantId, final String amount, final int channel,
                                           final long creditBankCardId, final String appId) {
-        log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
@@ -1140,12 +1139,17 @@ public class PayServiceImpl implements PayService {
                         return Pair.of(0, paymentSdkConfirmUnionPayResponse.getMessage());
                     case FAIL:
                         this.orderService.updateStatus(orderId, EnumOrderStatus.PAY_FAIL.getId(), paymentSdkConfirmUnionPayResponse.getMessage());
-                        this.businessOrderService.updateStatusByOrderNo(EnumBusinessOrderStatus.PAY_FAIL.getId(), order.getBusinessOrderNo());
+                        final BusinessOrder businessOrder = this.businessOrderService.getByOrderNo(order.getBusinessOrderNo()).get();
+                        final BusinessOrder updateBusinessOrder = new BusinessOrder();
+                        updateBusinessOrder.setId(businessOrder.getId());
+                        updateBusinessOrder.setRemark(paymentSdkConfirmUnionPayResponse.getMessage());
+                        updateBusinessOrder.setStatus(EnumBusinessOrderStatus.PAY_FAIL.getId());
+                        this.businessOrderService.update(businessOrder);
                         return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
                 }
             } catch (final Throwable e) {
                 log.error("订单[" + order.getOrderNo() + "],确认支付超时", e);
-                this.orderService.updateStatus(orderId, EnumOrderStatus.PAY_FAIL.getId(), "请求网关超时");
+                this.orderService.updateRemark(orderId, "请求网关超时");
                 this.businessOrderService.updateRemarkByOrderNo("请求网关超时", order.getBusinessOrderNo());
                 return Pair.of(-1, "支付异常，请确认是否扣款或者联系客服");
             }
