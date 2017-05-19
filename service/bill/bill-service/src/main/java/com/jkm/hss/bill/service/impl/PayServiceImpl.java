@@ -349,7 +349,7 @@ public class PayServiceImpl implements PayService {
             log.error("##############商户交易金额达到升级标准，调用商户升级业务异常##############", e);
         }
 
-        //通知交易
+        //通知业务
         final BusinessOrder businessOrder = this.businessOrderService.getByOrderNo(order.getBusinessOrderNo()).get();
         if (businessOrder.isDuePay()) {
             final BusinessOrder businessOrder1 = this.businessOrderService.getByIdWithLock(businessOrder.getId()).get();
@@ -1073,6 +1073,7 @@ public class PayServiceImpl implements PayService {
         } catch (final Throwable e) {
             log.error("商户[ " + merchantId +" ], 订单号[{ " + order.getOrderNo() + " ], 下单失败", e);
             this.orderService.updateRemark(order.getId(), "下单失败");
+            this.businessOrderService.updateRemarkByOrderNo("下单失败", order.getBusinessOrderNo());
             return Pair.of(-1, "稍后请重试");
         }
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkUnionPayResponse.getCode());
@@ -1081,10 +1082,14 @@ public class PayServiceImpl implements PayService {
                 order.setSn(paymentSdkUnionPayResponse.getSn());
                 order.setRemark(paymentSdkUnionPayResponse.getMessage());
                 this.orderService.update(order);
+
+                this.businessOrderService.updateRemarkByOrderNo(paymentSdkUnionPayResponse.getMessage(), order.getBusinessOrderNo());
                 return Pair.of(0, order.getId() + "");
             case FAIL:
                 order.setRemark(paymentSdkUnionPayResponse.getMessage());
                 this.orderService.update(order);
+
+                this.businessOrderService.updateRemarkByOrderNo(paymentSdkUnionPayResponse.getMessage(), order.getBusinessOrderNo());
                 log.info("订单[{}], 下单失败", order.getId());
                 return Pair.of(-1, "稍后请重试");
         }
