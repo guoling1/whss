@@ -1472,7 +1472,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         if(merchantInfo.get().getLevel()==EnumUpGradeType.BOSS.getId()){
-            return CommonResponse.simpleResponse(-1, "您已经是最高等级，无需升级");
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "您已经是最高等级，无需升级");
         }
         ToUpgradeResponse toUpgradeResponse = new ToUpgradeResponse();
 
