@@ -1147,7 +1147,7 @@ public class PayServiceImpl implements PayService {
                 log.error("订单[" + order.getOrderNo() + "],确认支付超时", e);
                 this.orderService.updateStatus(orderId, EnumOrderStatus.PAY_FAIL.getId(), "请求网关超时");
                 this.businessOrderService.updateRemarkByOrderNo("请求网关超时", order.getBusinessOrderNo());
-                return Pair.of(-1, "支付结果未知，请确认是否扣款或者联系客服");
+                return Pair.of(-1, "支付异常，请确认是否扣款或者联系客服");
             }
         }
         return Pair.of(-1, "订单状态错误，请重新发送验证码");
