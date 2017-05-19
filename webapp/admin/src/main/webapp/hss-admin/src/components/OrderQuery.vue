@@ -52,7 +52,7 @@
                 </li>
                 <li class="same">
                   <label>订单状态：</label>
-                  <el-select style="width: 188px" clearable v-model="queryHss.statusValue" size="small">
+                  <el-select style="width: 188px" clearable v-model="queryHss.status" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="待支付" value="1"></el-option>
                     <el-option label="支付成功" value="3"></el-option>
@@ -242,7 +242,7 @@
           proxyName:'',
           proxyName1:'',
           paymentMethod:'',
-          statusValue:'',
+          status:'',
           startTime:'',
           endTime:'',
           paySuccessTime:'',
@@ -320,7 +320,7 @@
             proxyName:'',
             proxyName1:'',
             paymentMethod:'',
-            statusValue:''
+            status:''
           }
         }else if(val == 'hsy'){
           this.dateHsy='';
