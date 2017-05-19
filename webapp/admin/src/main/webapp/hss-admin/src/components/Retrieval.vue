@@ -141,9 +141,9 @@
     data(){
       return {
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
-          }
+//          disabledDate(time) {
+//            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+//          }
         },
         query:{
           pageNo:1,

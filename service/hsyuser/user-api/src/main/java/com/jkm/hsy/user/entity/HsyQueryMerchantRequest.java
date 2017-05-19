@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class HsyQueryMerchantRequest {
 
+    private String auditTime; //审核时间
+
+    private String auditTime1; //审核时间
+
     private String globalID;//商户编号
 
     private String shortName;//商户名称
