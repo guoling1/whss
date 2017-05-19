@@ -435,4 +435,18 @@ public interface OrderDao {
      * @return
      */
     List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
+
+    /**
+     * 查询hss订单（订单查询）
+     * @param req
+     * @return
+     */
+    List<QueryOrderResponse> queryOrderList(QueryOrderRequest req);
+
+    /**
+     * 查询hss订单总数（订单查询）
+     * @param req
+     * @return
+     */
+    int queryOrderListCount(QueryOrderRequest req);
 }
