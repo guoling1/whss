@@ -1354,6 +1354,16 @@
         </if>
     </select>
 
+    <!-- hss订单查询 -->
+    <select id="queryOrderList" resultType="com.jkm.hss.bill.entity.QueryOrderResponse">
+      SELECT * FROM tb_business_order
+    </select>
+
+    <!-- hss订单查询总数 -->
+    <select id="queryOrderListCount" resultType="java.lang.Integer">
+      SELECT COUNT(*) FROM tb_business_order
+    </select>
+
     <select id="selectCountByBusinessOrder" resultType="java.lang.Integer">
         SELECT COUNT(0) FROM tb_order WHERE business_order_no = #{businessOrderNo} AND status NOT IN (2, 3, 4)
     </select>

@@ -1354,6 +1354,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<QueryOrderResponse> queryOrderList(QueryOrderRequest req) {
+        List<QueryOrderResponse> list = this.orderDao.queryOrderList(req);
+        return list;
+    }
+
+    @Override
+    public int queryOrderListCount(QueryOrderRequest req) {
+        return this.orderDao.queryOrderListCount(req);
+    }
+
+    @Override
     public void save(GeTuiResponse geTuiResponse) {
         this.orderDao.save(geTuiResponse);
     }
