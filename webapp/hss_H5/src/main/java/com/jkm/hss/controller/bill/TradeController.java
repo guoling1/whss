@@ -391,13 +391,14 @@ public class TradeController extends BaseController {
         }
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
+        final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
         if (creditBankCount <= 0) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("url", "/trade/firstUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel())
+                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel())
                     .build();
         }
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                .addParam("url", "/trade/againUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel())
+                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel())
                 .build();
     }
 
@@ -810,6 +811,19 @@ public class TradeController extends BaseController {
         return CommonResponse.simpleResponse(-1, result.getRight());
     }
 
+    /**
+     * 快捷支付失败错误页面
+     *
+     * @param orderId
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "unionPay2Error/${orderId}", method = RequestMethod.POST)
+    public String unionPay2Error(@PathVariable final long orderId, final Model model) {
+        final Order order = this.orderService.getById(orderId).get();
+        model.addAttribute("errorMsg", order.getRemark());
+        return "error";
+    }
 
     /**
      * do not use
