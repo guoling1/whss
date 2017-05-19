@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 public class HsyTradeListResponse {
     private int id;
-    private int canRefund;
+    //private int canRefund;
     /**
      * 笔数
      */
@@ -21,18 +21,6 @@ public class HsyTradeListResponse {
      * 金额
      */
     private BigDecimal totalAmount;
-    /**
-     * 退款状态
-     */
-    private int refundStatus;
-    /**
-     * 退款状态
-     */
-    private String refundStatusValue;
-    /**
-     * 交易类型
-     */
-    private int tradeType;
     /**
      * 支付
      * com.jkm.hss.product.enums.EnumPaymentChannel
@@ -62,6 +50,9 @@ public class HsyTradeListResponse {
      * 订单状态
      */
     private String orderstatusName;
+
+    private int orderstatus;
+
     /**
      * 退款金额
      */

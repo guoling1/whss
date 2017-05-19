@@ -46,6 +46,7 @@ public class HsyOrder extends BaseEntity {
      */
     private String paysn;
     private String paytype;
+    private int paychannelsign;
     private Date paysuccesstime;
     private BigDecimal refundamount;
     private int refundstatus;

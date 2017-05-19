@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.bill.dao.HsyOrderDao">
+
     <insert id="insert"  useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `tb_hsy_order`
         (
@@ -17,6 +18,7 @@
         `cashierid`,
         `cashiername`,
         `pay_type`,
+        `pay_channel_sign`,
         `goods_name`,
         `goods_describe`,
         `remark`)
@@ -35,6 +37,7 @@
         #{cashierid},
         #{cashiername},
         #{paytype},
+        #{paychannelsign},
         #{goodsname},
         #{goodsdescribe},
         #{remark});
@@ -101,6 +104,69 @@
 FROM `tb_hsy_order`
 WHERE order_no = #{orderNo}
 ;
-
+    </select>
+    <select id="selectOrdersByParam" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+    `ordernumber`,
+    `shopid`,
+    `shopname`,
+    `merchantname`,
+    `order_no`,
+    `orderstatus`,
+    `sourcetype`,
+    `validationcode`,
+    `amount`,
+    `poundage`,
+    `qrcode`,
+    `cashierid`,
+    `cashiername`,
+    `pay_sn`,
+    `pay_type`,
+    `pay_channel_sign`,
+    `pay_success_time`,
+    `refund_amount`,
+    `refund_status`,
+    `refund_time`,
+    `goods_name`,
+    `goods_describe`,
+    `remark`,
+    `create_time`,
+    `update_time`
+FROM `tb_hsy_order`
+WHERE  shopid=#{shopId}
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
+    <select id="selectOrderCountByParam" resultType="java.lang.Long">
+      SELECT COUNT(1)
+        FROM `tb_hsy_order`
+        WHERE
+        shopid=#{shopId}
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectOrderStByParm" resultType="com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse">
+        select sum(amount) as totalAmount,count(1) as number  from tb_hsy_order
+        WHERE  shopid=#{shopId}
+        AND orderstatus=2
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 </mapper>

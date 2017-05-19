@@ -694,6 +694,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         hsyOrder.setSourcetype(EnumHsySourceType.QRCODE.getId());
         hsyOrder.setValidationcode("");
         hsyOrder.setQrcode(code);
+        hsyOrder.setPaychannelsign(channel);
         hsyOrder.setPaytype(channelCode);
         hsyOrderService.insert(hsyOrder);
         log.info("好收银订单[{}]-下单成功【{}】", hsyOrder.getOrdernumber(), hsyOrder);

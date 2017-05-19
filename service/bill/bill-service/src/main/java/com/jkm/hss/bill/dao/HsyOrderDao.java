@@ -1,8 +1,12 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wayne on 17/5/16.
@@ -27,4 +31,22 @@ public interface HsyOrderDao {
      * @return
      */
     HsyOrder selectByOrderNo(@Param("orderNo") String orderNo);
+
+   List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
+                                      @Param("offset") int offset,
+                                      @Param("count") int count,
+                                      @Param("payChannelSigns") List<Integer> payChannelSigns,
+                                      @Param("startTime") Date startTime,
+                                      @Param("endTime") Date endTime);
+
+   long selectOrderCountByParam(@Param("shopId") long shopId,
+                                @Param("payChannelSigns") List<Integer> payChannelSigns,
+                                @Param("startTime") Date startTime,
+                                @Param("endTime") Date endTime);
+
+   HsyOrderSTResponse selectOrderStByParm(@Param("shopId") long shopId,
+                                          @Param("payChannelSigns") List<Integer> payChannelSigns,
+                                          @Param("startTime") Date startTime,
+                                          @Param("endTime") Date endTime);
+
 }

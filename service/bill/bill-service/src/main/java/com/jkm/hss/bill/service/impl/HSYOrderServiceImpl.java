@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,12 +9,18 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
+import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
 import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,23 +86,100 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     public String orderListst(final String dataParam, final AppParam appParam) {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
-        TradeListRequestParam tradeListRequestParam=null;
-        tradeListRequestParam=gson.fromJson(dataParam, TradeListRequestParam.class);
-        final PageModel<HsyTradeListResponse> pageModel = new PageModel<>(tradeListRequestParam.getPageNo(), tradeListRequestParam.getPageSize());
-        pageModel.setCount(1);
+        TradeListRequestParam requestParam=null;
+        requestParam=gson.fromJson(dataParam, TradeListRequestParam.class);
+        if(requestParam.getPaymentChannels()==null){
+            requestParam.setPaymentChannels(requestParam.getChannel().split(","));
+        }
+        Map<String,Object> resultMap=new HashMap<>();
+
+        final PageModel<HsyTradeListResponse> pageModel = new PageModel<>(requestParam.getPageNo(),
+                requestParam.getPageSize());
+        if (requestParam.getPaymentChannels().length == 0) {
+            pageModel.setCount(0);
+            pageModel.setRecords(Collections.<HsyTradeListResponse>emptyList());
+            resultMap.put("amount",0);
+            resultMap.put("number",0);
+            resultMap.put("pageModel",pageModel);
+            return JSON.toJSONString(pageModel);
+        }
+        final ArrayList<Integer> payChannelSigns = new ArrayList<>();
+        for (int i = 0; i < requestParam.getPaymentChannels().length; i++) {
+            payChannelSigns.addAll(EnumPayChannelSign.getIdListByPaymentChannel(Integer.valueOf(requestParam.getPaymentChannels()[i])));
+        }
+        Date startTime = null;
+        Date endTime = null;
+        if (!StringUtils.isEmpty(requestParam.getStartTime())) {
+            startTime = DateFormatUtil.parse(requestParam.getStartTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        if (!StringUtils.isEmpty(requestParam.getEndTime())) {
+            endTime = DateFormatUtil.parse(requestParam.getEndTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        final long count=hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(),payChannelSigns,startTime,endTime);
+        final List<HsyOrder> hsyOrders=hsyOrderDao.selectOrdersByParam( requestParam.getShopId(),
+                                                                        pageModel.getFirstIndex(),
+                                                                        requestParam.getPageSize(),
+                                                                        payChannelSigns,
+                                                                        startTime,endTime);
+        pageModel.setCount(count);
 
         List<HsyTradeListResponse> hsyTradeListResponseList=new ArrayList<HsyTradeListResponse>();
-        HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
-        hsyTradeListResponse.setAmount(new BigDecimal(10));
-        hsyTradeListResponse.setNumber(1);
-        hsyTradeListResponse.setValidationCode("1234");
-        hsyTradeListResponse.setOrderstatusName("收款成功");
-        hsyTradeListResponseList.add(hsyTradeListResponse);
+        if (!CollectionUtils.isEmpty(hsyOrders)) {
+            final HashMap<String, AppStatisticsOrder> statisticsOrderHashMap = new HashMap<>();
+            AppStatisticsOrder appStatisticsOrder=null;
+            String readedTime="";
+            String readingTime="";
+            for(HsyOrder hsyOrder:hsyOrders){
+                readingTime=DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
+                if(readedTime.equals(readingTime)){
+                    appStatisticsOrder.setAmount(appStatisticsOrder.getAmount().add(hsyOrder.getAmount()));
+                    appStatisticsOrder.setNumber(appStatisticsOrder.getNumber()+1);
+                }
+                else
+                {
+                    if(appStatisticsOrder!=null) {
+                        statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
+                    }
+                    readedTime=readingTime;
+                    appStatisticsOrder=new AppStatisticsOrder();
+                    appStatisticsOrder.setNumber(1);
+                    appStatisticsOrder.setAmount(hsyOrder.getAmount());
+
+                }
+            }
+            if(appStatisticsOrder!=null) {
+                statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
+            }
+            
+            HsyTradeListResponse hsyTradeListResponse=null;
+            for(HsyOrder hsyOrder:hsyOrders){
+                String curD=DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
+                hsyTradeListResponse=new HsyTradeListResponse();
+                hsyTradeListResponse.setTotalAmount(statisticsOrderHashMap.get(curD).getAmount());
+                hsyTradeListResponse.setNumber(statisticsOrderHashMap.get(curD).getNumber());
+                hsyTradeListResponse.setAmount(hsyOrder.getAmount());
+                hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+                hsyTradeListResponse.setOrderstatus(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getId());
+                hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
+                hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
+                hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getId());
+                hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
+                hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
+                hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+                hsyTradeListResponseList.add(hsyTradeListResponse);
+            }
+        }
         pageModel.setRecords(hsyTradeListResponseList);
-        Map<String,Object> map=new HashMap<>();
-        map.put("amount",10);
-        map.put("number",1);
-        map.put("pageModel",pageModel);
-        return gson.toJson(map);
+        if(requestParam.getStType()==1){
+            Date nowd=new Date();
+            startTime=DateFormatUtil.parse(DateFormatUtil.format(nowd,DateFormatUtil.yyyy_MM_dd)+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime=DateFormatUtil.parse(DateFormatUtil.format(nowd,DateFormatUtil.yyyy_MM_dd)+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        HsyOrderSTResponse hsyOrderSTResponse=hsyOrderDao.selectOrderStByParm(requestParam.getShopId(),payChannelSigns,startTime,endTime);
+
+        resultMap.put("amount",hsyOrderSTResponse.getTotalAmount());
+        resultMap.put("number",hsyOrderSTResponse.getNumber());
+        resultMap.put("pageModel",pageModel);
+        return gson.toJson(resultMap);
     }
 }
