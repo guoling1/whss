@@ -61,26 +61,31 @@ http.post('/channel/list', {}, function (list) {
         checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
             message.load_show('正在支付');
-            switch (list[i].payMethod) {
-              case '快捷':
-                http.post('/trade/unionPayRoute', {  // /wx/receipt
-                  totalFee: amount,
-                  payChannel: list[i].channelSign
-                }, function (data) {
-                  message.load_hide();
-                  window.location.replace(data.url);
-                });
-                break;
-              default:
-                http.post('/trade/dcReceipt', {  // /wx/receipt
-                  totalFee: amount,
-                  payChannel: list[i].channelSign
-                }, function (data) {
-                  message.load_hide();
-                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
-                });
-                break;
-            }
+            // 支付前下单
+            http.post('/trade/generateOrder', {
+              amount: amount
+            }, function (order) {
+              switch (list[i].payMethod) {
+                case '快捷':
+                  http.post('/trade/unionPayRoute', {  // /wx/receipt
+                    orderId: order.orderId,
+                    payChannel: list[i].channelSign
+                  }, function (data) {
+                    message.load_hide();
+                    window.location.replace(data.url);
+                  });
+                  break;
+                default:
+                  http.post('/trade/dcReceipt', {  // /wx/receipt
+                    orderId: order.orderId,
+                    payChannel: list[i].channelSign
+                  }, function (data) {
+                    message.load_hide();
+                    window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
+                  });
+                  break;
+              }
+            });
           } else {
             message.load_hide();
           }
