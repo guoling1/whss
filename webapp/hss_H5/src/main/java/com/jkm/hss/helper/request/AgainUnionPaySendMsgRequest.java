@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class AgainUnionPaySendMsgRequest {
     /**
-     * 金额
+     * 订单id
      */
-    private String amount;
+    private long orderId;
     /**
      * 渠道
      */

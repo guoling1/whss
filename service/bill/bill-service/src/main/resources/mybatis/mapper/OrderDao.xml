@@ -57,6 +57,7 @@
         pay_bank_card,
         bank_expire_date,
         cvv,
+        bank_name,
         bank_trade_no,
         trade_card_no,
         trade_card_type,
@@ -93,6 +94,7 @@
         #{payBankCard},
         #{bankExpireDate},
         #{cvv},
+        #{bankName},
         #{bankTradeNo},
         #{tradeCardNo},
         #{tradeCardType},
@@ -1350,5 +1352,9 @@
         <if test="sDate != null and eDate != null">
             AND create_time BETWEEN #{sDate} AND #{eDate}
         </if>
+    </select>
+
+    <select id="selectCountByBusinessOrder" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_order WHERE business_order_no = #{businessOrderNo} AND status NOT IN (2, 3, 4)
     </select>
 </mapper>

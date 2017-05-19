@@ -1342,6 +1342,17 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    @Override
+    public int getCountByBusinessOrder(final String businessOrderNo) {
+        return this.orderDao.selectCountByBusinessOrder(businessOrderNo);
+    }
+
     @Override
     public void save(GeTuiResponse geTuiResponse) {
         this.orderDao.save(geTuiResponse);

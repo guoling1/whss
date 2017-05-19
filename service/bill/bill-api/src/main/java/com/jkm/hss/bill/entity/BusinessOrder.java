@@ -102,6 +102,11 @@ public class BusinessOrder extends BaseEntity {
     private int payChannelSign;
 
     /**
+     * 银行名字
+     */
+    private String bankName;
+
+    /**
      * 银行流水号
      */
     private String bankTradeNo;
@@ -111,7 +116,7 @@ public class BusinessOrder extends BaseEntity {
      *
      * {@link com.jkm.hss.account.enums.EnumBankType}
      */
-    private String tradeCardType;
+    private int tradeCardType;
 
     /**
      * 交易卡号
@@ -122,4 +127,14 @@ public class BusinessOrder extends BaseEntity {
      * 支付宝/微信订单号
      */
     private String wechatOrAlipayOrderNo;
+
+    /**
+     * 是否是待支付
+     *
+     * @return
+     */
+    public boolean isDuePay() {
+        return EnumBusinessOrderStatus.DUE_PAY.getId() == this.status;
+    }
+
 }

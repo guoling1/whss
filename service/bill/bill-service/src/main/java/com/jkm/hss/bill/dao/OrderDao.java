@@ -435,4 +435,12 @@ public interface OrderDao {
      * @return
      */
     List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
+
+    /**
+     * 按业务订单号查询个数
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    int selectCountByBusinessOrder(@Param("businessOrderNo") String businessOrderNo);
 }

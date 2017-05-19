@@ -459,6 +459,14 @@ public interface OrderService {
     List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
 
     /**
+     * 按业务订单号查询个数
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    int getCountByBusinessOrder(String businessOrderNo);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

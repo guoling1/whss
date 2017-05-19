@@ -24,6 +24,32 @@ public interface BusinessOrderService {
     int update(BusinessOrder businessOrder);
 
     /**
+     * 更新订单号
+     *
+     * @param orderNo
+     * @param id
+     */
+    int updateOrderNoById(String orderNo, long id);
+
+    /**
+     * 更新备注
+     *
+     * @param remark
+     * @param businessOrderNo
+     * @return
+     */
+    int updateRemarkByOrderNo(String remark, String businessOrderNo);
+
+    /**
+     * 更新备注
+     *
+     * @param status
+     * @param orderNo
+     * @return
+     */
+    int updateStatusByOrderNo(int status, String orderNo);
+
+    /**
      * 按id查询
      *
      * @param id

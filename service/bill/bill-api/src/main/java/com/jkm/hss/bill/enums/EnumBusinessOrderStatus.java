@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.enums;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -20,27 +21,7 @@ public enum EnumBusinessOrderStatus {
     /**
      *支付成功
      */
-    PAY_SUCCESS(3, "支付成功"),
-
-    /**
-     *提现中
-     */
-    WITHDRAWING(4, "提现中"),
-
-    /**
-     *提现成功
-     */
-    WITHDRAW_SUCCESS(5, "提现成功"),
-
-    /**
-     *充值成功
-     */
-    RECHARGE_SUCCESS(6, "充值成功"),
-
-    /**
-     *充值失败
-     */
-    RECHARGE_FAIL(7, "充值失败")
+    PAY_SUCCESS(3, "支付成功")
 
     ;
 
@@ -52,5 +33,15 @@ public enum EnumBusinessOrderStatus {
     EnumBusinessOrderStatus(final int id, final String value) {
         this.id = id;
         this.value = value;
+    }
+
+    private static final ImmutableMap<Integer, EnumBusinessOrderStatus> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<Integer, EnumBusinessOrderStatus> builder = new ImmutableMap.Builder<>();
+        for (EnumBusinessOrderStatus status : EnumBusinessOrderStatus.values()) {
+            builder.put(status.getId(), status);
+        }
+        INIT_MAP = builder.build();
     }
 }

@@ -18,10 +18,12 @@
         goods_name,
         goods_describe,
         pay_channel_sign,
+        bank_name,
         bank_trade_no,
         trade_card_type,
         trade_card_no,
         wechant_or_alipay_order_no,
+        remark,
         status
         )
         values
@@ -39,11 +41,13 @@
         #{payRate},
         #{goodsName},
         #{goodsDescribe},
+        #{bankName},
         #{payChannelSign},
         #{bankTradeNo},
         #{tradeCardType},
         #{tradeCardNo},
         #{wechatOrAlipayOrderNo},
+        #{remark},
         #{status}
         )
     </insert>
@@ -105,11 +109,26 @@
             <if test="wechatOrAlipayOrderNo != null wechatOrAlipayOrderNo != ''">
                 wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
             </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
             <if test="status > 0">
                 status = #{status},
             </if>
         </set>
         WHERE id = #{id}
+    </update>
+
+    <update id="updateOrderNoById">
+         UPDATE tb_business_order SET order_no = #{orderNo} WHERE id = #{id}
+    </update>
+
+    <update id="updateRemarkByOrderNo">
+        UPDATE tb_business_order SET remark = #{remark} WHERE order_no = #{orderNo}
+    </update>
+
+    <update id="updateStatusByOrderNo">
+        UPDATE tb_business_order SET status = #{status} WHERE order_no = #{orderNo}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.BusinessOrder">

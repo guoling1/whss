@@ -45,6 +45,44 @@ public class BusinessOrderServiceImpl implements BusinessOrderService {
     /**
      * {@inheritDoc}
      *
+     * @param orderNo
+     * @param id
+     */
+    @Override
+    @Transactional
+    public int updateOrderNoById(final String orderNo, final long id) {
+        return this.businessOrderDao.updateOrderNoById(orderNo, id);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param remark
+     * @param orderNo
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateRemarkByOrderNo(final String remark, final String orderNo) {
+        return this.businessOrderDao.updateRemarkByOrderNo(remark, orderNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param status
+     * @param orderNo
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateStatusByOrderNo(final int status, final String orderNo) {
+        return this.businessOrderDao.updateStatusByOrderNo(status, orderNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param id
      * @return
      */
