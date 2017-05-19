@@ -370,7 +370,7 @@ public class BaseSplitProfitServiceImpl implements BaseSplitProfitService {
         splitAccountRecord.setBusinessType(splitProfitParams.getSplitType());
         splitAccountRecord.setOrderNo(order.getOrderNo());
         splitAccountRecord.setSplitOrderNo(order.getOrderNo());
-        splitAccountRecord.setTotalAmount(order.getTradeAmount());
+        splitAccountRecord.setTotalAmount(order.getRealPayAmount());
         splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
         splitAccountRecord.setReceiptMoneyAccountId(splitProfitDetail.getAccountId());
         splitAccountRecord.setReceiptMoneyUserName(splitProfitDetail.getUserName());
