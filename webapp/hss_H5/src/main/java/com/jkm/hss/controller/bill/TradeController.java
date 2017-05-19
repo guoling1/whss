@@ -394,11 +394,11 @@ public class TradeController extends BaseController {
         final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
         if (creditBankCount <= 0) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel())
+                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
                     .build();
         }
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel())
+                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
                 .build();
     }
 
@@ -806,9 +806,14 @@ public class TradeController extends BaseController {
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, result.getRight())
                     .addParam("orderId", confirmUnionPayRequest.getOrderId())
+                    .addParam("errorCode", 1)
+                    .build();
+        } else {
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, result.getRight())
+                    .addParam("orderId", confirmUnionPayRequest.getOrderId())
+                    .addParam("errorCode", 2)
                     .build();
         }
-        return CommonResponse.simpleResponse(-1, result.getRight());
     }
 
     /**
