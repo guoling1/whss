@@ -58,7 +58,7 @@
             <if test="appId != null and appId != ''">
                 app_id = #{appId},
             </if>
-            <if test="orderNo != null and orderNo = != ''">
+            <if test="orderNo != null and orderNo != ''">
                 order_no = #{orderNo},
             </if>
             <if test="tradeOrderNo != null and tradeOrderNo != ''">
