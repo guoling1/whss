@@ -624,15 +624,15 @@ public class TradeController extends BaseController {
         }
         if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
             firstUnionPaySendMsgRequest.setCvv2("");
-            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+            if (!StringUtils.isNumeric(firstUnionPaySendMsgRequest.getExpireDate())) {
                 return CommonResponse.simpleResponse(-1, "有效期不能为空");
             }
         }
         if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
-            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+            if (!StringUtils.isNumeric(firstUnionPaySendMsgRequest.getExpireDate())) {
                 return CommonResponse.simpleResponse(-1, "有效期不能为空");
             }
-            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getCvv2())) {
+            if (!StringUtils.isNumeric(firstUnionPaySendMsgRequest.getCvv2())) {
                 return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
             }
         }
@@ -714,12 +714,12 @@ public class TradeController extends BaseController {
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(againUnionPaySendMsgRequest.getChannel()).get();
         final boolean hasExpiryTime = this.accountBankService.isHasExpiryTime(accountBankOptional.get().getId());
         final boolean hasCvv = this.accountBankService.isHasCvv(accountBankOptional.get().getId());
-        if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getExpireDate())
+        if (!StringUtils.isNumeric(againUnionPaySendMsgRequest.getExpireDate())
                 && (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType() || EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType())
                 && !hasExpiryTime) {
             return CommonResponse.simpleResponse(-1, "有效期不能为空");
         }
-        if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())
+        if (!StringUtils.isNumeric(againUnionPaySendMsgRequest.getCvv2())
                 && EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()
                 && !hasCvv) {
             return CommonResponse.simpleResponse(-1, "CVV2 不能为空");

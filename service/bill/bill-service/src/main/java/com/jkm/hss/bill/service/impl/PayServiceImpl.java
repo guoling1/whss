@@ -1009,8 +1009,8 @@ public class PayServiceImpl implements PayService {
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
-        order.setBankExpireDate(expireDate);
-        order.setCvv(StringUtils.isEmpty(cvv) ? "" : MerchantSupport.encryptCvv(cvv));
+        order.setBankExpireDate(!StringUtils.isNumeric(expireDate) ? "" : expireDate);
+        order.setCvv(!StringUtils.isNumeric(cvv) ? "" : MerchantSupport.encryptCvv(cvv));
         order.setPayAccount(merchant.getName());
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
