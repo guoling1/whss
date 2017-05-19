@@ -30,6 +30,10 @@ public class MyQrCodeListRequest extends PageQueryParams {
     /**
      *二级代理名称
      */
+    private String firstDealerName;
+    /**
+     *二级代理名称
+     */
     private String secondDealerName;
     /**
      * 项目类型
@@ -56,6 +60,10 @@ public class MyQrCodeListRequest extends PageQueryParams {
      * 商户状态集合
      */
     private List<Integer> merchantStatusList;
+    /**
+     * 产码用户
+     */
+    private long adminId;
     /**
      *
      */

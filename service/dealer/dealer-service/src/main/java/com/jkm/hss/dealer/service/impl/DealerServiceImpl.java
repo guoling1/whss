@@ -2477,7 +2477,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType,final long dealerId, final long toDealerId,
-                                                               final String startCode, final String endCode) {
+                                                               final String startCode, final String endCode,int dtype,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -2505,8 +2505,8 @@ public class DealerServiceImpl implements DealerService {
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
-            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
-            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            distributeQRCodeRecord.setDistributeType(dtype);
+            distributeQRCodeRecord.setOperatorId(operatorId);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
@@ -2523,7 +2523,7 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count) {
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count,int dtype,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -2549,7 +2549,8 @@ public class DealerServiceImpl implements DealerService {
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
-            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            distributeQRCodeRecord.setDistributeType(dtype);
+            distributeQRCodeRecord.setOperatorId(operatorId);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
@@ -2585,10 +2586,10 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId) {
+    public PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId,int dtype) {
         final PageModel<DistributeRecordResponse> pageModel = new PageModel<>(distributeRecordRequest.getPageNo(), distributeRecordRequest.getPageSize());
-        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName());
-        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),pageModel.getFirstIndex(),pageModel.getPageSize());
+        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),dtype);
+        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),pageModel.getFirstIndex(),pageModel.getPageSize(),dtype);
         List<DistributeRecordResponse> distributeRecordResponses = new ArrayList<DistributeRecordResponse>();
         if(distributeQRCodeRecords.size()>0){
             for(int i=0;i<distributeQRCodeRecords.size();i++){
@@ -2603,7 +2604,10 @@ public class DealerServiceImpl implements DealerService {
                 distributeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 distributeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
                 distributeRecordResponse.setType(distributeQRCodeRecord.getType());
-                distributeRecordResponse.setOperateUser("admin");
+                Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(distributeQRCodeRecord.getOperatorId());
+                if(adminUserOptional.isPresent()){
+                    distributeRecordResponse.setOperateUser(adminUserOptional.get().getUsername());
+                }
                 distributeRecordResponses.add(distributeRecordResponse);
             }
         }
@@ -2834,5 +2838,16 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public int getBranchDetailCount(BranchAccountRequest req) {
         return this.dealerDao.getBranchDetailCount(req);
+    }
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     *
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    @Override
+    public List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
+        return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
     }
 }

@@ -518,4 +518,47 @@ public interface QRCodeDao {
      * @return
      */
     int updateDealerInfo(@Param("code") String code, @Param("firstDealerId") long firstDealerId, @Param("secondDealerId") long secondDealerId);
+    /**
+     * hss项目下的二维码个数[分公司]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    long getOemHSSQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * hss项目下的二维码列表[分公司]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    List<MyQrCodeListResponse> getOemHSSQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * 查询一级代理商剩余二维码数[分公司]
+     *
+     * @param adminId
+     * @return
+     */
+    int getResidueCount(@Param("adminId") long adminId,@Param("sysType") String sysType);
+
+    /**
+     * 查询一级代理商已分配二维码数[分公司]
+     *
+     * @param adminId
+     * @return
+     */
+    int getDistributeCount(@Param("adminId") long adminId,@Param("sysType") String sysType);
+
+    /**
+     * 查询一级代理商未激活二维码数[分公司]
+     *
+     * @param adminId
+     * @return
+     */
+    int getUnActivateCount(@Param("adminId") long adminId,@Param("sysType") String sysType);
+    /**
+     * 查询一级代理商已激活二维码数[分公司]
+     *
+     * @param adminId
+     * @return
+     */
+    int getActivateCount(@Param("adminId") long adminId,@Param("sysType") String sysType);
 }

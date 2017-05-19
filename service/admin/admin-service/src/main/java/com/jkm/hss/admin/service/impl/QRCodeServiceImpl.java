@@ -1131,4 +1131,69 @@ public class QRCodeServiceImpl implements QRCodeService {
         return codes;
     }
 
+
+    /**
+     * 所有二维码[分公司]
+     *
+     * @param myQrCodeListRequest
+     * @return
+     */
+    @Override
+    public PageModel<MyQrCodeListResponse> selectOemQrCodeList(MyQrCodeListRequest myQrCodeListRequest) {
+        final PageModel<MyQrCodeListResponse> pageModel = new PageModel<>(myQrCodeListRequest.getPageNo(), myQrCodeListRequest.getPageSize());
+        myQrCodeListRequest.setOffset(pageModel.getFirstIndex());
+        myQrCodeListRequest.setCount(pageModel.getPageSize());
+        List<MyQrCodeListResponse> qrCodeList = null;
+        List<Integer> tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+        myQrCodeListRequest.setMerchantStatusList(tempStatus);
+        long count=qrCodeDao.getOemHSSQrCodeCount(myQrCodeListRequest);
+        qrCodeList=qrCodeDao.getOemHSSQrCodeList(myQrCodeListRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(qrCodeList);
+        return pageModel;
+    }
+    /**
+     * 未分配个数【分公司】
+     *
+     * @param adminId
+     * @return
+     */
+    @Override
+    public int getResidueCount(long adminId,String sysType) {
+        return qrCodeDao.getResidueCount(adminId,sysType);
+    }
+
+    /**
+     * 已分配个数【分公司】
+     *
+     * @param adminId
+     * @return
+     */
+    @Override
+    public int getDistributeCount(long adminId,String sysType) {
+        return qrCodeDao.getDistributeCount(adminId,sysType);
+    }
+
+    /**
+     * 未激活个数【分公司】
+     *
+     * @param adminId
+     * @return
+     */
+    @Override
+    public int getUnActivateCount(long adminId,String sysType) {
+        return qrCodeDao.getUnActivateCount(adminId,sysType);
+    }
+
+    /**
+     * 已激活个数【分公司】
+     *
+     * @param adminId
+     * @return
+     */
+    @Override
+    public int getActivateCount(long adminId,String sysType) {
+        return qrCodeDao.getActivateCount(adminId,sysType);
+    }
+
 }

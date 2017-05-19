@@ -14,6 +14,7 @@ import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.helper.requestparam.*;
 import com.jkm.hss.admin.helper.responseparam.*;
@@ -24,6 +25,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.requestparam.DealerOfFirstDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.DistributeRecordRequest;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
@@ -189,13 +191,24 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/listSecondDealer", method = RequestMethod.POST)
     public CommonResponse listSecondDealer(@RequestBody DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
-        final String condition = dealerOfFirstDealerRequest.getCondition();
-        final String _condition = org.apache.commons.lang.StringUtils.trim(condition);
-        Preconditions.checkState(!Strings.isNullOrEmpty(_condition), "查询条件不能为空");
-        long dealerId = super.getDealerId();
-        dealerOfFirstDealerRequest.setDealerId(dealerId);
-        List<DealerOfFirstDealerResponse> dealerOfFirstDealerResponses = this.dealerService.selectListOfFirstDealer(dealerOfFirstDealerRequest);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerOfFirstDealerResponses);
+        if(super.getDealer().get().getOemType()== EnumOemType.OEM.getId()){
+            final String condition = dealerOfFirstDealerRequest.getCondition();
+            final String _condition = StringUtils.trim(condition);
+            Preconditions.checkState(!Strings.isNullOrEmpty(_condition), "查询条件不能为空");
+            long dealerId = super.getDealerId();
+//            dealerOfFirstDealerRequest.setDealerId(dealerId);
+            dealerOfFirstDealerRequest.setOemId(dealerId);
+            List<DealerOfFirstDealerResponse> dealerOfFirstDealerResponses = this.dealerService.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerOfFirstDealerResponses);
+        }else{
+            final String condition = dealerOfFirstDealerRequest.getCondition();
+            final String _condition = org.apache.commons.lang.StringUtils.trim(condition);
+            Preconditions.checkState(!Strings.isNullOrEmpty(_condition), "查询条件不能为空");
+            long dealerId = super.getDealerId();
+            dealerOfFirstDealerRequest.setDealerId(dealerId);
+            List<DealerOfFirstDealerResponse> dealerOfFirstDealerResponses = this.dealerService.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerOfFirstDealerResponses);
+        }
     }
 
     /**
@@ -208,12 +221,16 @@ public class QrCodeController extends BaseController {
     public CommonResponse distributeQrCodeToDealer (@RequestBody DistributeQrCodeRequest distributeQrCodeRequest) {
         long todealerId = 0;
         Dealer dealer = null;
+        int dtype= EnumQRCodeDistributeType2.DEALER.getCode();
+        if(super.getDealer().get().getOemType()==EnumOemType.OEM.getId()){
+            dtype = EnumQRCodeDistributeType2.OEM.getCode();
+        }
         if(distributeQrCodeRequest.getIsSelf()==EnumBoolean.FALSE.getCode()){//分配给别人
             final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
             if(!dealerOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "代理商不存在");
             }
-            Preconditions.checkState(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以分配二维码");
+            Preconditions.checkState(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "没有权限分配二维码");
             Preconditions.checkState(dealerOptional.get().getFirstLevelDealerId() == super.getDealerId(),
                     "二级代理商[{}]不是当前一级代理商[{}]的二级代理", distributeQrCodeRequest.getDealerId(), super.getDealerId());
             todealerId = dealerOptional.get().getId();
@@ -240,14 +257,14 @@ public class QrCodeController extends BaseController {
 
         if(distributeQrCodeRequest.getDistributeType()==1){//按码段
             distributeQRCodeRecords = this.dealerService.distributeQRCodeByCode(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
-                    todealerId, distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
+                    todealerId, distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode(),dtype,super.getAdminUserId());
         }
         if(distributeQrCodeRequest.getDistributeType()==2){//按个数
             if (distributeQrCodeRequest.getCount() <= 0) {
                 return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
             }
             distributeQRCodeRecords = this.dealerService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
-                    todealerId, distributeQrCodeRequest.getCount());
+                    todealerId, distributeQrCodeRequest.getCount(),dtype,super.getAdminUserId());
         }
         if(distributeQRCodeRecords.size()<=0){
             return CommonResponse.simpleResponse(-1, "二维码数量不足");
@@ -275,7 +292,11 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/distributeRecord", method = RequestMethod.POST)
     public CommonResponse distributeRecord (@RequestBody DistributeRecordRequest distributeRecordRequest) {
-        PageModel<DistributeRecordResponse> distributeQRCodeRecords = this.dealerService.distributeRecord(distributeRecordRequest,super.getDealerId());
+        int dtype= EnumQRCodeDistributeType2.DEALER.getCode();
+        if(super.getDealer().get().getOemType()==EnumOemType.OEM.getId()){
+            dtype = EnumQRCodeDistributeType2.OEM.getCode();
+        }
+        PageModel<DistributeRecordResponse> distributeQRCodeRecords = this.dealerService.distributeRecord(distributeRecordRequest,super.getDealerId(),dtype);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
     }
 
@@ -288,29 +309,45 @@ public class QrCodeController extends BaseController {
     @RequestMapping(value = "/myQrCodeList", method = RequestMethod.POST)
     public CommonResponse myQrCodeList (@RequestBody MyQrCodeListRequest myQrCodeListRequest) {
         QrCodeListPageResponse<MyQrCodeListResponse> qrCodeListPageResponse = new QrCodeListPageResponse<MyQrCodeListResponse>();
-        if(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId()){
+        if(super.getDealer().get().getOemType()==EnumOemType.OEM.getId()){
             myQrCodeListRequest.setFirstDealerId(super.getDealer().get().getId());
-            int unDistributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+            int unDistributeCount = this.qrCodeService.getResidueCount(super.getAdminUserId(),EnumQRCodeSysType.HSS.getId());
             qrCodeListPageResponse.setUnDistributeCount(unDistributeCount);
-            int distributeCount = this.qrCodeService.getFirstDistributeCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+            int distributeCount = this.qrCodeService.getDistributeCount(super.getAdminUserId(),EnumQRCodeSysType.HSS.getId());
             qrCodeListPageResponse.setDistributeCount(distributeCount);
-            int unActivateCount = this.qrCodeService.getFirstUnActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+            int unActivateCount = this.qrCodeService.getUnActivateCount(super.getAdminUserId(),EnumQRCodeSysType.HSS.getId());
             qrCodeListPageResponse.setUnActivateCount(unActivateCount);
-            int activateCount = this.qrCodeService.getFirstActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+            int activateCount = this.qrCodeService.getActivateCount(super.getAdminUserId(),EnumQRCodeSysType.HSS.getId());
             qrCodeListPageResponse.setActivateCount(activateCount);
+            myQrCodeListRequest.setAdminId(super.getAdminUserId());
+            final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectOemQrCodeList(myQrCodeListRequest);
+            qrCodeListPageResponse.setPageModel(pageModel);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", qrCodeListPageResponse);
+        }else{
+            if(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId()){
+                myQrCodeListRequest.setFirstDealerId(super.getDealer().get().getId());
+                int unDistributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+                qrCodeListPageResponse.setUnDistributeCount(unDistributeCount);
+                int distributeCount = this.qrCodeService.getFirstDistributeCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+                qrCodeListPageResponse.setDistributeCount(distributeCount);
+                int unActivateCount = this.qrCodeService.getFirstUnActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+                qrCodeListPageResponse.setUnActivateCount(unActivateCount);
+                int activateCount = this.qrCodeService.getFirstActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+                qrCodeListPageResponse.setActivateCount(activateCount);
+            }
+            if(super.getDealer().get().getLevel() == EnumDealerLevel.SECOND.getId()){
+                myQrCodeListRequest.setSecondDealerId(super.getDealer().get().getId());
+                qrCodeListPageResponse.setUnDistributeCount(0);
+                qrCodeListPageResponse.setDistributeCount(0);
+                int unActivateCount = this.qrCodeService.getSecondUnActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+                qrCodeListPageResponse.setUnActivateCount(unActivateCount);
+                int activateCount = this.qrCodeService.getSecondActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
+                qrCodeListPageResponse.setActivateCount(activateCount);
+            }
+            final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
+            qrCodeListPageResponse.setPageModel(pageModel);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", qrCodeListPageResponse);
         }
-        if(super.getDealer().get().getLevel() == EnumDealerLevel.SECOND.getId()){
-            myQrCodeListRequest.setSecondDealerId(super.getDealer().get().getId());
-            qrCodeListPageResponse.setUnDistributeCount(0);
-            qrCodeListPageResponse.setDistributeCount(0);
-            int unActivateCount = this.qrCodeService.getSecondUnActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
-            qrCodeListPageResponse.setUnActivateCount(unActivateCount);
-            int activateCount = this.qrCodeService.getSecondActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
-            qrCodeListPageResponse.setActivateCount(activateCount);
-        }
-        final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
-        qrCodeListPageResponse.setPageModel(pageModel);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", qrCodeListPageResponse);
     }
 
     /**
