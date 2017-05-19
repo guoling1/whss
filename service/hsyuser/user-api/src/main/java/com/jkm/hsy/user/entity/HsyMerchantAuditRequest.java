@@ -58,7 +58,6 @@ public class HsyMerchantAuditRequest {
     private Date createTime;
     private Date updateTime;
 
-    private String cellphone;//注册手机号
 
     /**
      * 所属1代理商名称
