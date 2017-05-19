@@ -1355,8 +1355,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<QueryOrderResponse> queryOrderList(QueryOrderRequest req) {
+        if (req.getPaymentMethod()>0){
+            req.setPayChannelSign(EnumPayChannelSign.getIdListByPaymentChannel(req.getPaymentMethod()));
+        }else {
+            req.setPayChannelSign(null);
+        }
 
         List<QueryOrderResponse> list = this.orderDao.queryOrderList(req);
+
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){

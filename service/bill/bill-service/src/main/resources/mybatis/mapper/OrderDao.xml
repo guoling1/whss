@@ -1398,6 +1398,12 @@
     <if test="status != null and status!=''">
         AND a.status = #{status}
     </if>
+    <if test="payChannelSign != null">
+        AND a.pay_channel_sign in
+        <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+          #{item}
+        </foreach>
+    </if>
         ORDER BY a.create_time DESC
         limit #{offset}, #{size}
     </select>
@@ -1442,6 +1448,12 @@
     </if>
     <if test="status != null and status!=''">
         AND a.status = #{status}
+    </if>
+    <if test="payChannelSign != null">
+        AND a.pay_channel_sign in
+        <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+            #{item}
+        </foreach>
     </if>
     </select>
 
