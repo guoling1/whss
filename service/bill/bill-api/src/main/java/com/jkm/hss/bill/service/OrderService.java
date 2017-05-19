@@ -481,6 +481,13 @@ public interface OrderService {
     int queryOrderListCount(QueryOrderRequest req);
 
     /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    List<QueryOrderResponse> getOrderCount(QueryOrderRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

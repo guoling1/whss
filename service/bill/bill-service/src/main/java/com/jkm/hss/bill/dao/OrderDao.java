@@ -457,4 +457,11 @@ public interface OrderDao {
      * @return
      */
     int selectCountByBusinessOrder(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    List<QueryOrderResponse> getOrderCount(QueryOrderRequest req);
 }

@@ -14,6 +14,16 @@ import java.util.Date;
 public class QueryOrderResponse {
 
     /**
+     * 支付总额
+     */
+    private String totalPayment;
+
+    /**
+     * 手续费总额
+     */
+    private String totalPoundage;
+
+    /**
      * 收款商户
      */
     private String merchantName;
