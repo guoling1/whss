@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">商户结算记录</h3>
         </div>
@@ -10,7 +10,7 @@
           <ul class="search">
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker style="width: 188px" v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
+              <el-date-picker style="width: 188px" v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" :clearable="false" :editable="false"></el-date-picker>
             </li>
             <li class="same">
               <label>结算单号:</label>
@@ -35,12 +35,12 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border @selection-change="handleSelectionChange">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-            <!--<el-table-column type="selection" width="55"></el-table-column>-->
             <el-table-column prop="userName" label="商户名称" ></el-table-column>
             <el-table-column prop="userNo" label="商户编号" ></el-table-column>
             <el-table-column label="业务线" >
@@ -50,8 +50,16 @@
               </template>
             </el-table-column>
             <el-table-column prop="settleNo" label="结算单号" ></el-table-column>
-            <el-table-column prop="settleDate" label="结算日期" :formatter="changeTime"></el-table-column>
-            <el-table-column prop="settleAmount" label="结算金额" :formatter="changeNum" align="right"></el-table-column>
+            <el-table-column label="结算日期">
+              <template scope="scope">
+                <span>{{scope.row.settleDate|changeDate}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="结算金额" align="right">
+              <template scope="scope">
+                <span>{{scope.row.settleAmount|toFix}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="settleModeValue" label="结算方式" ></el-table-column>
             <el-table-column prop="settleDestinationValue" label="结算类型" ></el-table-column>
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
@@ -74,7 +82,7 @@
             </el-pagination>
           </div>
           <!--审核-->
-          <div v-if="isShow">
+          <!--<div v-if="isShow">
             <el-dialog title="结算确认提醒" v-model="isShow">
               <div class="maskCon">
                 <span>商户名称：</span>
@@ -102,7 +110,7 @@
                 <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
               </div>
             </el-dialog>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -115,31 +123,9 @@
     data(){
       return{
         pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
         },
         date:'',
         records:[],
@@ -164,83 +150,57 @@
       }
     },
     created: function () {
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.starDate = str;
-        } else {
-          this.$data.query.endDate = str;
-        }
-      }
+      this.currentDate();
       this.getData()
     },
     methods: {
-      changeTime: function (row, column) {
-        var val = row.settleDate;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
             }
-            return a;
           }
-
-          return year + "-" + tod(month) + "-" + tod(date);
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.starDate = str;
+          } else {
+            this.$data.query.endDate = str;
+          }
         }
       },
-      changeNum: function (row, column) {
-        var val = row.settleAmount;
-        return parseFloat(val).toFixed(2);
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          userNo:"",//编号
+          userName:"",  //名字
+          settleNo:"",//结算单号
+          userType:2,//(2：商户，3：代理商)
+          starDate:"", // 开始
+          endDate:"", //结束
+          settleStatus:''
+        };
+        this.currentDate()
       },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/settlementRecord/list',this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
-              }
-            }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+          },1000)
+            this.count = res.data.count;
+            this.total = res.data.totalPage;
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -255,11 +215,6 @@
       list: function (val) {
         this.$data.index = val;
         this.$data.isShow = true;
-      },
-      //行选中
-      handleSelectionChange(val) {
-        console.log(val)
-        this.multipleSelection = val;
       },
       //每页条数改变
       handleSizeChange(val) {

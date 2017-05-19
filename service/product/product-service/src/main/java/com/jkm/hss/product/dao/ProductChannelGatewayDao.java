@@ -20,5 +20,10 @@ public interface ProductChannelGatewayDao {
 
     void update(ProductChannelGateway productChannelGateway);
 
+    /**
+     * 推荐通道
+     * @param request
+     */
+    void recommend(ProductChannelGateway request);
     void deleteGateway(@Param("id") long id, @Param("status") int status);
 }

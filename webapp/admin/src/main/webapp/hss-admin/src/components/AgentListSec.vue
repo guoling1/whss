@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">二级代理商列表</h3>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <el-row :gutter="20" style="">
+          <el-row :gutter="21" style="">
             <el-col :span="3">
               <label>手机号：</label>
               <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
@@ -22,7 +22,7 @@
             </el-col>
             <el-col :span="3">
               <label>省市:</label>
-              <div class="select" id="select" @click="open"><span>请选择</span>
+              <div class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
               <ul class="isShow" v-if="isOpen">
@@ -46,12 +46,13 @@
                 <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
-            <el-col  :span="1" style="margin-top: 18px">
+            <el-col  :span="3" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>
           </el-row>
           <!--表格-->
-          <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column label="代理商名称">
               <template scope="scope">
                 <router-link target="_blank" :to="'/admin/details/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
@@ -135,6 +136,7 @@
         },
         isShow:false,
         index:'',
+        selectCon:'全部'
       }
     },
     created: function () {
@@ -142,7 +144,6 @@
       this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
           this.$data.provinces = res.data;
-          this.$data.loading = false;
         })
         .catch(function (err) {
           this.$message({
@@ -154,15 +155,30 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.selectCon = '全部';
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          mobile:"",//商户编号
+          name:"",  //商户名字
+          markCode:"",
+          sysType:"",
+          firstDealerName:'',
+          districtCode:''
+        };
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.pageSize = res.data.pageSize;
-            this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
                 return ''
@@ -180,15 +196,17 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(var i=0;i<this.$data.records.length;i++){
-              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            for(var i=0;i<res.data.records.length;i++){
+              res.data.records[i].createTime = changeTime(res.data.records[i].createTime)
+              if(res.data.records[i].belongProvinceName!=null&&res.data.records[i].belongCityName!=null){
+                res.data.records[i].belong = res.data.records[i].belongProvinceName+"-"+res.data.records[i].belongCityName;
               }
             }
           })
           .catch(function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -212,6 +230,7 @@
       select:function (valCode,val) {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
         oCon.innerHTML = val;
+        this.selectCon = val;
         oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = valCode;
         this.$data.isOpen = !this.$data.isOpen;
@@ -220,6 +239,7 @@
       selectAll: function () {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
         oCon.innerHTML = '全部';
+        this.selectCon = '全部';
         oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = '';
         this.$data.isOpen = !this.$data.isOpen;
@@ -227,7 +247,6 @@
       },
       search: function () {
         this.$data.query.pageNo = 1;
-        this.$data.records = '';
         this.getData()
       },
       list: function (val) {

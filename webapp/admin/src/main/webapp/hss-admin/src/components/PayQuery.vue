@@ -1,7 +1,7 @@
 <template>
   <div id="payQuery">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">支付查询</h3>
           <span @click="_$power(onload,'boss_pay_export')" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
@@ -17,7 +17,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -28,7 +28,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -64,6 +64,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -105,7 +106,6 @@
                 <a v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" type="text" size="small" @click="synchro(records[scope.$index].sn)">补单</a>
               </template>
             </el-table-column>
-          </el-table>
           </el-table>
           <ul style="float: left;margin-top: 5px">
             <li>
@@ -154,6 +154,11 @@
     name: 'deal',
     data(){
       return {
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         isMask:false,
         phone: '',
         password: '',
@@ -184,10 +189,10 @@
          syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
          addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
-        excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
-        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',*/
+//        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+//        excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
+//        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
+//        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',
       }
     },
     created: function () {
@@ -200,41 +205,61 @@
           type: 'success'
         });
       });
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.startCreateTime = str;
-        } else {
-          this.$data.query.endCreateTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startCreateTime = str;
+          } else {
+            this.$data.query.endCreateTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          sn:'',
+          orderNo:'',
+          status: '',
+          startCreateTime: '',
+          endCreateTime: '',
+          startFinishTime: '',
+          endFinishTime: '',
+          upperChannel:''
+        };
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.queryUrl,this.$data.query)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
             this.$data.records = res.data.records;
+          },1000)
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
             var price=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
-            for (var i = 0; i < this.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(this.records[i].payAmount));
+            for (var i = 0; i < res.data.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].payAmount));
             }
             this.pageTotal = price;
             /*if(this.records.length!=0){
@@ -248,7 +273,9 @@
               this.records[this.records.length-1].payAmount = this.total;
             }*/
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -262,7 +289,6 @@
           this.addTotal = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -315,14 +341,18 @@
         this.$data.loading = true;
         this.$http.post(this.$data.syncUrl,{sn:val})
           .then(function (res) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: '操作成功',
               type: 'success'
             });
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

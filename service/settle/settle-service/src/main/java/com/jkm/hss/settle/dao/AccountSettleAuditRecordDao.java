@@ -103,4 +103,12 @@ public interface AccountSettleAuditRecordDao {
      * @return
      */
     List<Long> selectPendingSettleAuditRecordIdsBySettleDateAndSettleStatus(@Param("settleDate") Date settleDate, @Param("settleStatus") int settleStatus);
+
+    /**
+     * 查询好收银 是否已经生成结算审核记录
+     *
+     * @param settleDate
+     * @return
+     */
+    int selectCountBySettleDate(@Param("settleDate") Date settleDate);
 }

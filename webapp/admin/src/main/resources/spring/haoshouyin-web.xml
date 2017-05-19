@@ -63,7 +63,6 @@
             <mvc:mapping path="/admin/queryJkmProfit/**"/>
             <mvc:mapping path="/admin/profit/**"/>
             <mvc:mapping path="/admin/queryProfit/**"/>
-            <mvc:mapping path="/admin/code/**"/>
             <mvc:mapping path="/admin/order/**"/>
             <mvc:mapping path="/admin/channel/**"/>
             <mvc:mapping path="/admin/product/**"/>

@@ -55,6 +55,11 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
         this.productChannelGatewayDao.update(productChannelGateway);
     }
 
+    @Override
+    public void recommend(ProductChannelGateway request) {
+        this.productChannelGatewayDao.recommend(request);
+    }
+
     /**
      * {@inheritDoc}
      * @param dealerId

@@ -1,31 +1,15 @@
 <template>
   <div id="passList">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">通道列表</h3>
           <!--<router-link to="/admin/record/passAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道-->
           <!--</router-link>-->
-          <a @click="_$power(issue,'boss_channel_add')" class="pull-right btn btn-primary">
-            新增通道
-          </a>
+          <a @click="refresh" class="pull-right btn btn-primary" style="margin-left: 15px;">刷新</a>
+          <a @click="_$power(issue,'boss_channel_add')" class="pull-right btn btn-primary">新增通道</a>
         </div>
         <div class="box-body">
-          <!--筛选-->
-          <!--<ul>
-            <li class="same">
-              <label>通道名称:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>通道编码:</label>
-              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
-            </li>
-          </ul>-->
-          <!--表格-->
           <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom:15px" :data="records" border>
             <el-table-column label="通道名称">
               <template scope="scope">
@@ -59,17 +43,6 @@
             <el-table-column prop="thirdCompany" label="支付方式"></el-table-column>
             <el-table-column prop="remarks" label="备注信息"></el-table-column>
           </el-table>
-          <!--分页
-          <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="query.page"
-                           :page-sizes="[10, 20, 50]"
-                           :page-size="query.size"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="count">
-            </el-pagination>
-          </div>-->
         </div>
       </div>
     </div>
@@ -108,68 +81,32 @@
       this.getData()
     },
     methods: {
+      refresh: function () {
+        this.getData()
+      },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/passAdd')
 //        this.$router.push('/admin/record/passAdd')
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/channel/list', this.$data.query)
+        this.$http.post('/admin/channel/list', this.query)
           .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data;
+            },1000)
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             });
           })
-      },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val = row.basicBalanceType;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeNum: function (row, column) {
-        var val = row.tradeAmount;
-        return parseFloat(val).toFixed(2);
-      },
-      search(){
-        this.$data.query.page = 1;
-        this.getData()
-      },
-      //每页条数改变
-      handleSizeChange(val) {
-        this.$data.query.page = 1;
-        this.$data.query.size = val;
-        this.getData()
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.$data.query.page = val;
-        this.getData()
-      },
+      }
     },
   }
 </script>

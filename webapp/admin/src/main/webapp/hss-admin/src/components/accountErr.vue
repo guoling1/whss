@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">对账异常记录</h3>
         </div>
@@ -9,15 +9,15 @@
           <ul>
             <li class="same">
               <label>交易流水:</label>
-              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <label>对账渠道:</label>
-              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <label>单边方向:</label>
-              <el-select clearable v-model="query.side" size="small" style="width: 220px">
+              <el-select clearable v-model="query.side" size="small" style="width: 190px">
                 <el-option v-for="item in item_side" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
@@ -28,12 +28,12 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" style="width: 190px" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
               <label>交易类型:</label>
-              <el-select clearable v-model="query.tradeType" size="small" style="width: 220px">
+              <el-select clearable v-model="query.tradeType" size="small" style="width: 190px">
                 <el-option label="全部" value=""></el-option>
                 <el-option label="交易" value="1"></el-option>
                 <el-option label="提现" value="3"></el-option>
@@ -41,16 +41,17 @@
             </li>
             <li class="same">
               <label>处理结果:</label>
-              <el-select clearable v-model="query.status" size="small" style="width: 220px">
+              <el-select clearable v-model="query.status" size="small" style="width: 190px">
                 <el-option v-for="item in item_status" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
             <li class="same">
               <label>对账单号:</label>
-              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -71,7 +72,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderSN" label="交易流水" ></el-table-column>
-            <el-table-column label="交易金额" align="right">
+            <el-table-column label="交易金额" align="right" min-width="90">
               <template scope="scope">
                 {{scope.row.tradeAmount|toFix}}
               </template>
@@ -135,7 +136,11 @@
     name: 'tAuditStore',
     data(){
       return{
-        pickerOptions: {},
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         records:[],
         count:0,
         date:'',
@@ -178,18 +183,57 @@
       }
     },
     created: function () {
+      this.currentDate()
       this.getData()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startSettleDate = str;
+          } else {
+            this.$data.query.endSettleDate = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          currentPage:1,
+          pageSize:10,
+          orderSN:'',
+          side:'',
+          status:'',
+          channelName:'',
+          tradeType:'',
+          startDateStr:'',
+          endDateStr:''
+        }
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.url, this.query,{emulateJSON: true})
           .then(function (res) {
-            this.records = res.data.list;
+
             this.count = res.data.page.totalRecord;
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.list;
+          },1000)
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

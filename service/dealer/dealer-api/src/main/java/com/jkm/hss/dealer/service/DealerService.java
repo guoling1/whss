@@ -565,6 +565,14 @@ public interface DealerService {
     int dealerMerchantSecondCount(QueryMerchantRequest req);
 
     /**
+     *二代切换一代
+     */
+    int updateBelong(long secondDealerId,long firstDealerId);
+
+
+
+
+    /**
      * 分公司账户列表查询
      * @param req
      * @return

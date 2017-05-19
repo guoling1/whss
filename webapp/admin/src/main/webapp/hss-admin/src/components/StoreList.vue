@@ -358,7 +358,7 @@
     },
     created: function () {
       /*this.getDataHss()
-       this.getDataHsy()*/
+      this.getDataHsy()*/
     },
     methods: {
       reset: function (val) {
@@ -486,7 +486,7 @@
         }else if(this.activeName == 'second'){
           this.$data.loadUrl = this.loadUrlHsy;
         }
-        this.$data.isMask = true;
+         this.$data.isMask = true;
       },
       search(val){
         if(val == 'hss'){

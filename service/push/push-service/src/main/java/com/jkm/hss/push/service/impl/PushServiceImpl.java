@@ -190,12 +190,24 @@ public class PushServiceImpl implements PushService {
 
     }
 
+    /**
+     * 正式
+     * @param sid ：店铺ＩＤ
+     *        payChannel: 支付渠道， 直接传汉字
+     *            amount:  金额
+     * @param payChannel
+     * @param amount
+     * @param code
+     * @return
+     */
     @Override
-    public String pushCashMsg(Long sid, String payChannel, Double amount, String code) {
+    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code) {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
             String clientid=map.get("CLIENTID").toString();
+            System.out.print("------------------------------------");
+            System.out.print(clientid);
             clients.add(clientid);
         }
          SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
@@ -211,7 +223,34 @@ public class PushServiceImpl implements PushService {
         appResult.setResultMessage(content);
 
 
-        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
+//        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
+        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients);
+        return ret;
+    }
+
+    @Override
+    public String pushCashMsg1(Long sid, String payChannel, Double amount, String code) {
+        List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            String clientid=map.get("CLIENTID").toString();
+            clients.add(clientid);
+        }
+        SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+
+        Map  data= new HashMap();
+        data.put("code", code);
+        data.put("payChannel",payChannel );
+        data.put("amount", amount);
+
+        String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+        AppResult   appResult=new AppResult() ;
+        appResult.setResultCode(200);
+        appResult.setResultMessage(content);
+
+
+//        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
+        String  ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
         return ret;
     }
 
@@ -277,6 +316,42 @@ public class PushServiceImpl implements PushService {
             push.setStatus(0);
         }
 
+
+        pushDao.insert(push);
+        return ret;
+    }
+
+
+    public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets) {
+
+
+        String target="";
+        if(targets!=null){
+            target= targets.toString();
+        }
+
+        Map ret= PushProducer.pushTransmissionMsgTask(type,content,pushType,clientId,targets);
+
+        Push push= new Push();
+        push.setPid(UUID.randomUUID().toString());
+        push.setTitle("");
+        push.setContent(content);
+
+//        push.setClientId("3c3002bf2b52d12798a5d29673d91437");
+        push.setPushType(pushType);
+        push.setTempType("4");
+        System.out.print("++++++++++++++++");
+        System.out.print(ret.get("response"));
+        System.out.print(ret);
+        System.out.print(ret.get("clientId"));
+        if(ret.containsValue("result=ok")){
+            push.setStatus(1);
+        }else{
+            push.setStatus(0);
+        }
+        push.setTaskId((String) ret.get("taskId"));
+        push.setClientId((String) ret.get("clientId"));
+        push.setTargets(target);
         pushDao.insert(push);
         return ret;
     }
@@ -323,14 +398,14 @@ public class PushServiceImpl implements PushService {
         // PushProducer  push = new PushProducer();
 
 
-        //String ret= PushProducer.pushTransmissionMsg(1,"ios测试123456","1","7c26b6edb57421af16d0dafba23ea1eb",null);
+        Map ret= PushProducer.pushTransmissionMsgTask(1,"ios测试123456","1","86a8bca1f74ab42d9a7d119943bcdc1b",null);
 
 
         // String ret= PushProducer.pushNotificationMsg("title","ios测试","","3",null,null);
-
-        PushServiceImpl   impl=new PushServiceImpl();
-
-        impl.pushTransmissionMsg(1,"ios测试123456","1","7c26b6edb57421af16d0dafba23ea1eb",null);
+//
+//        PushServiceImpl impl=new PushServiceImpl();
+//
+//        impl.pushTransmissionMsgTask(1,"测试","2","86a8bca1f74ab42d9a7d119943bcdc1b",null);
     }
 }
 

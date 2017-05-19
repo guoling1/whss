@@ -568,9 +568,9 @@ public class TradeController extends BaseController {
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
             return CommonResponse.simpleResponse(-1, "有效期不能为空");
         }
-        if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
+       /* if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
             return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
-        }
+        }*/
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getBankCardNo())) {
             return CommonResponse.simpleResponse(-1, "银卡卡号不能为空");
         }
@@ -761,10 +761,23 @@ public class TradeController extends BaseController {
         }
         final Pair<Integer, String> result = this.payService.confirmUnionPay(confirmUnionPayRequest.getOrderId(), confirmUnionPayRequest.getCode());
         if (0 == result.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, result.getRight())
                     .addParam("orderId", confirmUnionPayRequest.getOrderId())
                     .build();
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
+    }
+
+
+    /**
+     * do not use
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "testT1Withdraw/{orderId}")
+    public CommonResponse testT1Withdraw(@PathVariable long orderId) {
+        this.orderService.t1WithdrawByOrderId(orderId);
+        return CommonResponse.simpleResponse(0, "success");
     }
 }

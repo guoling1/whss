@@ -57,6 +57,10 @@ public class FirstLevelDealerAdd2Request {
      * 详细地址
      */
     private String belongArea;
+    /**
+     * 代理商归属
+     */
+    private String dealerBelong;
     //================结算信息设置=====================
     /**
      * 结算卡

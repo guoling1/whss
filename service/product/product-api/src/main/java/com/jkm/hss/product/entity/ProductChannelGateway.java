@@ -12,6 +12,11 @@ import lombok.Data;
 public class ProductChannelGateway extends BaseEntity {
 
     /**
+     * 推荐0取消推荐，1推荐
+     */
+    private int recommend;
+
+    /**
      * 网关类型，，
      *
      * {@link com.jkm.hss.product.enums.EnumGatewayType}

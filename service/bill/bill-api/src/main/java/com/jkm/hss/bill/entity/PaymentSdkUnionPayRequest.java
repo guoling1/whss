@@ -41,6 +41,10 @@ public class PaymentSdkUnionPayRequest {
      * 商户名称
      */
     private String merName;
+    /**
+     * 商户编号
+     */
+    private String merNo;
 
     /**
      * 总金额

@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.wx;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
@@ -35,10 +36,7 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
@@ -112,7 +110,8 @@ public class WxPubController extends BaseController {
     private AccountBankService accountBankService;
     @Autowired
     private ProductChannelGatewayService productChannelGatewayService;
-
+    @Autowired
+    private ChannelSupportDebitCardService channelSupportDebitCardService;
 
 
     /**
@@ -1288,9 +1287,11 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "只能删除信用卡");
         }
         accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
-        Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
-        if(accountBankOptional1.isPresent()){
-            accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+        if(accountBankOptional.get().getIsDefault()==EnumBankDefault.DEFAULT.getId()){
+            Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
+            if(accountBankOptional1.isPresent()){
+                accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+            }
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
     }
@@ -1333,7 +1334,15 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
-
+        //hlb通道结算卡拦截
+        if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
+            final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
+            if (!channelSupportDebitCardOptional.isPresent()){
+                //通道结算卡不可用
+                return CommonResponse.simpleResponse(-1, "该通道仅支持结算到大型银行，请联系客服更改结算卡再使用");
+            }
+        }
         //通道限额拦截，通道可用拦截，
         final BasicChannel basicChannel =
                 this.basicChannelService.selectByChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign()).get();
@@ -1357,7 +1366,12 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENT_FAIL.getId()){
             log.info("商户入网失败");
-            return CommonResponse.simpleResponse(-1, "商户入网失败");
+            if(merchantChannelRate.getRemarks()!=null&&merchantChannelRate.getRemarks().contains("重复")){
+                return CommonResponse.simpleResponse(-1, "底层通道检测到您为重复入网，请使用其他通道");
+            }else{
+                return CommonResponse.simpleResponse(-1, "入网失败，请使用其他通道");
+            }
+
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
@@ -1366,7 +1380,11 @@ public class WxPubController extends BaseController {
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
             log.info("商户需入网");
             JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getAccountId(),merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
-            return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+            if(jo.getInt("code")==-1&&jo.getString("msg")!=null&&!"".equals(jo.getString("msg"))&&jo.getString("msg").contains("重复")){
+                return CommonResponse.simpleResponse(-1, "底层通道检测到您为重复入网，请使用其他通道");
+            }else{
+                return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+            }
         }
         return null;
     }

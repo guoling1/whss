@@ -29,6 +29,7 @@
         login_name,
         login_pwd,
         email,
+        dealer_belong,
         oem_type,
         oem_id
         )
@@ -59,6 +60,7 @@
         #{loginName},
         #{loginPwd},
         #{email},
+        #{dealerBelong},
         #{oemType},
         #{oemId}
         );
@@ -431,7 +433,8 @@
         bank_name = #{bankName},
         bank_account_name = #{bankAccountName},
         id_card = #{idCard},
-        bank_reserve_mobile = #{bankReserveMobile}
+        bank_reserve_mobile = #{bankReserveMobile},
+        dealer_belong=#{dealerBelong}
         WHERE id = #{id}
     </update>
 
@@ -839,6 +842,13 @@
     <select id="selectAllDealers" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer
     </select>
+
+    <update id="updateBelong">
+        UPDATE tb_dealer
+        SET
+        first_level_dealer_id = #{firstDealerId}
+        WHERE id = #{secondDealerId}
+    </update>
 
     <!-- 查询分公司账户 -->
     <select id="getBranch" resultType="com.jkm.hss.dealer.entity.BranchAccountResponse">

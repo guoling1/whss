@@ -98,7 +98,22 @@ public enum EnumNoticeType {
     /**
      * 官网验证码
      */
-    OFFICIAL_WEBSITE(1000,"官网验证码");
+    OFFICIAL_WEBSITE(1000,"官网验证码"),
+
+    /**
+     * hsy审核通过短信消息
+     */
+    PASS_MESSAGE(1001,"hsy审核通过"),
+
+    /**
+     * hsy审核未通过短信消息
+     */
+    NOT_PASS_MESSAGE(1002,"hsy审核未通过"),
+
+    /**
+     * hsy结算完成
+     */
+    SETTLEMENT_SUCCESS(1101, "hsy结算完成");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();

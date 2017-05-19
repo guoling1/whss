@@ -116,10 +116,28 @@ public class ChannelGatewayController extends BaseController {
             merchantChannelResponse.setChannelSign(channelSign);
             merchantChannelResponse.setLimitAmount(basicChannel.getLimitAmount().toString());
             merchantChannelResponse.setSettleType(merchantChannelRateMap.get(channelSign).getMerchantBalanceType());
-
+            merchantChannelResponse.setRecommend(productChannelGateway.getRecommend());
             merchantChannelResponseList.add(merchantChannelResponse);
         }
 
         return CommonResponse.objectResponse(1,"SUCCESS", merchantChannelResponseList);
     }
+
+
+//    @ResponseBody
+//    @RequestMapping(value = "/ceshi", method = RequestMethod.GET)
+//    public CommonResponse ceshi(){
+//        long productId = 6;
+//        final List<ProductChannelGateway> productChannelGatewayList =
+//                this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductId(EnumProductType.HSS, EnumGatewayType.PRODUCT, productId);
+//        final List<MerchantChannelResponse> merchantChannelResponseList = new ArrayList<>();
+//        for (ProductChannelGateway productChannelGateway : productChannelGatewayList){
+//
+//            final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
+//            merchantChannelResponse.setRecommend(productChannelGateway.getRecommend());
+//
+//            merchantChannelResponseList.add(merchantChannelResponse);
+//        }
+//        return CommonResponse.simpleResponse(1,"成功");
+//    }
 }

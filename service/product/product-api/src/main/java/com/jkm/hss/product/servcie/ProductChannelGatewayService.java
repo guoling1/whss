@@ -34,6 +34,11 @@ public interface ProductChannelGatewayService {
     void update(ProductChannelGateway productChannelGateway);
 
     /**
+     * 推荐通道
+     * @param request
+     */
+    void recommend(ProductChannelGateway request);
+    /**
      * 初始化分公司网关通道
      * @param dealerId
      */

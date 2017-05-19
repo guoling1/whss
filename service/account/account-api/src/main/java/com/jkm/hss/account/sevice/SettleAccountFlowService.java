@@ -58,6 +58,14 @@ public interface SettleAccountFlowService {
     int updateSettleAuditRecordIdBySettleDateAndAccountId(Date settleDate, long accountId, long settleAuditRecordId);
 
     /**
+     * 待结算流水出账后，将入账流水，状态标记为1,表示已出账
+     *
+     * @param id
+     * @param status
+     */
+    int updateStatus(long id, int status);
+
+    /**
      * 按id查询
      *
      * @param id

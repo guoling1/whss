@@ -1,7 +1,7 @@
 <template>
   <div id="issueProRecord">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">产码记录</h3>
           <!--<router-link to="/admin/record/codeProduct" class="pull-right btn btn-primary" style="margin-left: 20px">生产二维码</router-link>-->
@@ -32,6 +32,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -99,6 +100,14 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          sysType:'',
+          qrType:''
+        };
+      },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/codeProduct')
 //        this.$router.push('/admin/record/codeProduct')
@@ -107,11 +116,15 @@
         this.loading = true;
         this.$http.post('/admin/code/productionList',this.query)
           .then(function (res) {
-            this.records = res.data.records;
             this.count = res.data.count;
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+          },1000)
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

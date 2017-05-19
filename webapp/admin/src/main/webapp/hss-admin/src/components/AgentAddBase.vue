@@ -175,9 +175,44 @@
                 </div>
               </el-col>
               <el-col :span="8">
+                <div class="grid-content bg-purple-light">
+                  <!--<el-button type="text" @click="dealerMask = true">点击切换</el-button>-->
+                </div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">代理商所属:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <!--<el-input size="small" v-model="query.dealerBelong"  placeholder="请输入内容"></el-input>-->
+                  <el-select v-model="query.dealerBelong" clearable placeholder="请选择" size="small" style="width: 100%">
+                    <el-option label="宿迁代理" value="宿迁代理"></el-option>
+                    <el-option label="直销团队" value="直销团队"></el-option>
+                  </el-select>
+                </div>
+              </el-col>
+              <el-col :span="8">
                 <div class="grid-content bg-purple-light"></div>
               </el-col>
             </el-row>
+            <!--切换代理-->
+            <el-dialog title="切换代理" v-model="dealerMask">
+              <el-form :label-position="right" label-width="150px">
+                <el-form-item label="切换对象：" width="120" style="margin-bottom: 0">
+                  <el-input style="width: 70%" size="small" v-model="dealerNo" placeholder="请输入一级代理编号，切换为金开门直属无需输入" maxlength="12"></el-input>
+                </el-form-item>
+                <el-form-item label="名称：" width="120" style="margin-bottom: 0">
+                  {{dealerName}}
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer" style="text-align: center">
+                <el-button @click="dealerMask = false" style="position: relative;top: -20px;">取 消</el-button>
+                <el-button @click="changeDealer" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+                <div style="text-align: center;margin-bottom: 10px">切换成功后，立即生效，原商户费率信息不变</div>
+              </div>
+            </el-dialog>
           </div>
         </div>
         <div>
@@ -292,10 +327,14 @@
           bankAccountName: '',
           bankReserveMobile: '',
           idCard: '',
+          dealerBelong:''
         },
         id: 0,
         isShow: true,
-        productId: ''
+        productId: '',
+        dealerMask:false,
+        dealerName:'',
+        dealerNo:''
       }
     },
     created: function () {
@@ -314,12 +353,7 @@
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
-          .then(function (res) {
-            this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
-          })
+        this.getData()
       }
       this.$data.level = this.$route.query.level;
     },
@@ -348,9 +382,39 @@
             }
           }
         }
+      },
+      dealerNo:function (val, oldVal) {
+        if(val.length==12){
+          this.$http.post('/admin/dealer/getDealerByMarkCode',{markCode:val})
+            .then(res =>{
+              this.dealerName = res.data;
+            })
+            .catch(err =>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
       }
     },
     methods: {
+      getData:function () {
+        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+          .then(function (res) {
+            this.$data.query = res.data;
+            this.$data.province = res.data.belongProvinceName;
+            this.$data.city = res.data.belongCityName;
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
       //修改密码
       resetPw:function() {
         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
@@ -450,7 +514,30 @@
               type: 'error'
             });
           })
-      }
+      },
+      changeDealer: function () {
+        this.$http.post('/admin/dealer/changeDealer',{
+          secondDealerId:this.$route.query.id,
+          markCode:this.dealerNo
+        })
+          .then(()=>{
+            this.$message({
+              showClose: true,
+              message: '更新代理商成功',
+              type: 'success'
+            });
+            this.dealerMask = false;
+            this.query.firstMarkCode = this.dealerNo;
+            this.query.firstDealerName = this.dealerName;
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
     },
     filters: {
       changeName: function (val) {

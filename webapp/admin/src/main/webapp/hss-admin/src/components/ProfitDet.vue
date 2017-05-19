@@ -1,7 +1,7 @@
 <template>
   <div id="profitCom">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分润明细</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary" v-if="isDet">关闭</a>
@@ -35,27 +35,36 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
-            <el-table-column type="index" width="62" label="序号">
-              <template scope="scope">
-                <div v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'">{{scope.$index+1}}</div>
-              </template>
-            </el-table-column>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
+            <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
             <el-table-column prop="splitSn" label="分润流水号" width="218"></el-table-column>
             <el-table-column prop="businessType" label="业务类型"></el-table-column>
-            <el-table-column prop="splitDate" label="分润时间" :formatter="changeTime" width="152"></el-table-column>
+            <el-table-column label="分润时间" width="152">
+              <template scope="scope">
+                <span>{{scope.row.splitDate|changeTime}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="orderNo" label="交易订单号" width="218"></el-table-column>
             <el-table-column prop="settleType" label="结算周期"></el-table-column>
-            <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
-            <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
+            <el-table-column label="分润总额" align="right" min-width="90">
+              <template scope="scope">
+                <span>{{scope.row.splitTotalAmount|toFix}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额">
+              <template scope="scope">
+                <span>{{scope.row.splitAmount|toFix}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="outMoneyAccountName" label="分润出款账户"></el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
             <el-table-column prop="profitType" label="分润方类型" v-if="isShow"></el-table-column>
@@ -94,6 +103,11 @@
     name: 'profitDet',
     data(){
       return {
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         query:{
           pageNo:1,
           pageSize:10,
@@ -147,61 +161,68 @@
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.startTime = str;
-        } else {
-          this.$data.query.endTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startTime = str;
+          } else {
+            this.$data.query.endTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          orderNo:'',
+          receiptMoneyUserName:'',
+          businessType:'',
+          splitDate:'',
+          startTime:'',
+          endTime:''
+        };
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
-        this.$http.post(this.$data.path, this.$data.query)
+        this.$http.post(this.path, this.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+            },1000)
+            this.count = res.data.count;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0,price = 0;
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
-              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
-              price = toFix(parseFloat(price)+parseFloat(this.$data.records[i].splitAmount))
+            for (let i = 0; i < res.data.records.length; i++) {
+              res.data.records[i].splitTotalAmount = toFix(res.data.records[i].splitTotalAmount);
+              res.data.records[i].splitAmount = toFix(res.data.records[i].splitAmount);
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitTotalAmount))
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotal = total;
             this.pageTotal1 = price;
-            /*if(this.records.length!=0){
-              this.records.push({
-                settleType:"当页总额",
-                splitTotalAmount:total,
-                splitAmount:price
-              },{
-                settleType:"筛选条件统计",
-                splitTotalAmount:'',
-                splitAmount:''
-              });
-              this.records[this.records.length-1].splitTotalAmount = this.total;
-              this.records[this.records.length-1].splitAmount = this.price;
-            }*/
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -223,65 +244,22 @@
             });
           })
       },
-      tableFoot(row, index) {
-        if (row.settleType === '当页总额'||row.settleType === '筛选条件统计') {
-          return {background:'#eef1f6'}
-        }
-        return '';
-      },
-      //格式化时间
-      changeTime: function (row, column) {
-        var val=row.splitDate;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
-      },
-      //格式化金额
-      changeTotal: function (row, colum) {
-        var val =row.splitTotalAmount;
-        if(val!=''){
-          val = parseFloat(val).toFixed(2)
-        }
-        return val;
-      },
-      changePrice: function (row, colum) {
-        var val =row.splitAmount;
-        if(val!=''){
-          val = parseFloat(val).toFixed(2)
-        }
-        return val;
-      },
       search(){
         this.total = '';
         this.price = '';
-        this.$data.query.pageNo = 1;
+        this.query.pageNo = 1;
         this.getData();
         this.getAddTotal()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
+        this.query.pageNo = val;
         this.getData();
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.pageNo = 1;
-        this.$data.query.pageSize = val;
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
         this.getData()
       },
     },
@@ -298,14 +276,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if (j == 0) {
-              this.$data.query.startTime = str;
+              this.query.startTime = str;
             } else {
-              this.$data.query.endTime = str;
+              this.query.endTime = str;
             }
           }
         } else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
+          this.query.startTime = '';
+          this.query.endTime = '';
         }
       }
     }

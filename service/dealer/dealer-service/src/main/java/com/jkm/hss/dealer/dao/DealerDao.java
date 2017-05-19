@@ -377,6 +377,14 @@ public interface DealerDao {
      * @return
      */
     List<Dealer> selectAllDealers();
+    /**
+     * 二代切换一代
+     *
+     * @param secondDealerId
+     * @param firstDealerId
+     */
+    int updateBelong(@Param("secondDealerId") long secondDealerId,@Param("firstDealerId") long firstDealerId);
+
 
     /**
      * 分公司账户列表查询

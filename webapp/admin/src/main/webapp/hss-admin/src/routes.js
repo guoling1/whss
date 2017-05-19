@@ -86,6 +86,8 @@ const Test = r => require.ensure([], () => r(require('components/Test')), 'group
 const AAHome = r => require.ensure([], () => r(require('components/AAHome')), 'group-record');
 const Home = r => require.ensure([], () => r(require('components/Home')), 'group-record');
 const Login = r => require.ensure([], () => r(require('components/Login')), 'group-record');
+
+const CodeRevoke = r => require.ensure([], () => r(require('components/CodeRevoke')), 'group-record');
 const Crumbs = r => require.ensure([], () => r(require('./Crumbs')), 'group-record');
 //分公司
 const FilialeManage = r => require.ensure([], () => r(require('components/filiale/FilialeManage')), 'group-record');
@@ -105,6 +107,7 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
@@ -195,6 +198,8 @@ let routes = [
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
+      {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'template', name: 'Template', component: Template},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},

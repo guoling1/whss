@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead"> 交易订单</p>
+        <p class="lead"> 交易信息</p>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -110,24 +110,89 @@
             </tbody></table>
         </div>
       </div>
-      <!--<div class="box box-primary">
-        <p class="lead"> 支付流水单</p>
+      <div class="box box-primary">
+        <p class="lead"> 支付流水</p>
         <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
+          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="payList" border>
+            <el-table-column prop="sn" label="支付流水号"></el-table-column>
+            <el-table-column prop="payAmount" label="支付金额（元）"></el-table-column>
+            <el-table-column label="支付发起时间">
+              <template scope="scope">
+                {{scope.row.payStartTime|changeTime}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="payStatus" label="支付状态"></el-table-column>
+            <el-table-column label="支付完成时间">
+              <template scope="scope">
+                {{scope.row.paySuccessTime|changeTime}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="payChannel" label="支付渠道"></el-table-column>
+            <el-table-column prop="payType" label="支付方式"></el-table-column>
+            <el-table-column prop="upperChannel" label="渠道方"></el-table-column>
+            <el-table-column prop="message" label="渠道信息"></el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div class="box box-primary" v-if="refundList.length!=0">
+        <p class="lead"> 支付退款流水</p>
+        <div class="table-responsive">
+          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="refundList" border>
+            <el-table-column prop="orderNo" label="退款批次号"></el-table-column>
+            <el-table-column prop="sn" label="退款流水号"></el-table-column>
+            <el-table-column prop="amount" label="退款金额(元)"></el-table-column>
+            <el-table-column label="退款发起时间">
+              <template scope="scope">
+                {{scope.row.refundStartTime|changeTime}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="status" label="退款状态"></el-table-column>
+            <el-table-column label="退款完成时间">
+              <template scope="scope">
+                {{scope.row.refundSuccessTime|changeTime}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="message" label="渠道信息"></el-table-column>
+          </el-table>
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead"> 分帐单</p>
+        <p class="lead"> 分润记录</p>
         <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
+          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="profitRefundList" border>
+            <el-table-column prop="splitSn" label="分润流水号"></el-table-column>
+            <el-table-column prop="splitAmount" label="分润金额(元)"></el-table-column>
+            <!--<el-table-column prop="appId" label="已退款金额"></el-table-column>-->
+            <el-table-column prop="receiptMoneyUserName" label="分润收款方名称"></el-table-column>
+            <el-table-column prop="profitType" label="收款方类型"></el-table-column>
+            <el-table-column prop="settleType" label="结算周期"></el-table-column>
+            <el-table-column prop="splitDates" label="结算时间"></el-table-column>
+            <el-table-column prop="splitTotalAmount" label="分润总额"></el-table-column>
+            <el-table-column prop="remark" label="备注"></el-table-column>
+          </el-table>
         </div>
-      </div>-->
+      </div>
+      <div class="box box-primary" v-if="splitAccountRefundList.length!=0">
+        <p class="lead"> 分润退款记录</p>
+        <div class="table-responsive">
+          <el-table  style="font-size: 12px;margin: 0 15px 15px;width: 95%;" :data="splitAccountRefundList" border>
+            <el-table-column prop="batchNo" label="退款批次号"></el-table-column>
+            <el-table-column prop="splitSn" label="退款流水号"></el-table-column>
+            <el-table-column prop="refundAmount" label="退款金额(元)"></el-table-column>
+            <el-table-column prop="originalSplitSn" label="原分润流水号"></el-table-column>
+            <el-table-column prop="splitAmount" label="分润金额(元)"></el-table-column>
+            <!--<el-table-column prop="appId" label="分润收款方名称"></el-table-column>-->
+            <el-table-column prop="accountUserType" label="收款方类型"></el-table-column>
+            <el-table-column prop="refundTime" label="退款时间">
+              <template scope="scope">
+                {{scope.row.refundTime|changeTime}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="splitTotalAmount" label="分润总额"></el-table-column>
+            <el-table-column prop="appId" label="备注"></el-table-column>
+          </el-table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -138,13 +203,21 @@
     data: function () {
       return {
         record:{},
+        payList:[],
+        profitRefundList:[],
+        refundList:[],
+        splitAccountRefundList:[],
       }
     },
     created: function(){
       this.record={};
       this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo})
         .then(function (res) {
-          this.record = res.data;
+          this.record = res.data.orderList;
+          this.payList = res.data.payList;
+          this.profitRefundList = res.data.profitRefundList;
+          this.refundList = res.data.refundList;
+          this.splitAccountRefundList = res.data.splitAccountRefundList;
         },function (err) {
           this.record={};
           this.$message({

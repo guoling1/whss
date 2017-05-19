@@ -87,6 +87,10 @@ public class Dealer extends BaseEntity {
      * 所属区域
      */
     private String belongArea;
+    /**
+     * 代理商归属
+     */
+    private String dealerBelong;
 
     /**
      * 经销商级别

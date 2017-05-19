@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>付款成功</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.1.0.0.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -30,9 +30,10 @@
     <div class="left">付款金额</div>
     <div class="right">${money}元</div>
   </div>
+  <a href="https://www.yumilc.com/motherDay/html/motherDay.html" class="ad">
+    <img src="http://static.jinkaimen.cn/hsy/assets/ym-ad.jpeg" alt="">
+  </a>
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/0.1.19/common.min.js"></script>
 </html>
