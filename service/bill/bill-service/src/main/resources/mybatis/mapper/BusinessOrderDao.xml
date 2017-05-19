@@ -106,7 +106,7 @@
             <if test="tradeCardNo != null and tradeCardNo != ''">
                 trade_card_no = #{tradeCardNo},
             </if>
-            <if test="wechatOrAlipayOrderNo != null wechatOrAlipayOrderNo != ''">
+            <if test="wechatOrAlipayOrderNo != null and wechatOrAlipayOrderNo != ''">
                 wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
             </if>
             <if test="remark != null and remark != ''">
