@@ -215,11 +215,11 @@
         cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance',
         downloadUrl:'http://checking.qianbaojiajia.com/external/banlanceAccountViaDownload'
         //测试
-//        loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
-//        url:'http://192.168.0.110:8080/balance/external/statisticList',
-//        uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
-//        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance',
-//        downloadUrl:'http://192.168.0.110:8080/balance/external/banlanceAccountViaDownload'
+        /*loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
+        url:'http://192.168.0.110:8080/balance/external/statisticList',
+        uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
+        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance',
+        downloadUrl:'http://192.168.0.110:8080/balance/external/banlanceAccountViaDownload'*/
       }
     },
     created: function () {

@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-		 id,	product_id,  name,	type,	promotion_num,	upgrade_cost,	weixin_rate,	alipay_rate,	fast_rate,direct_promote_shall,in_direct_promote_shall,	status,	create_time,	update_time
+		 id,	product_id,  name,	type,	promotion_num,	upgrade_cost,direct_promote_shall,in_direct_promote_shall,	status,	create_time,	update_time
 	</sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -22,15 +22,6 @@
             </if>
             <if test="promotionNum != null">
                 promotion_num,
-            </if>
-            <if test="upgradeCost != null">
-                upgrade_cost,
-            </if>
-            <if test="weixinRate != null">
-                weixin_rate,
-            </if>
-            <if test="alipayRate != null">
-                alipay_rate,
             </if>
             <if test="fastRate != null">
                 fast_rate,
@@ -60,15 +51,6 @@
             </if>
             <if test="upgradeCost!=null">
                 #{upgradeCost},
-            </if>
-            <if test="weixinRate!=null">
-                #{weixinRate},
-            </if>
-            <if test="alipayRate!=null">
-                #{alipayRate},
-            </if>
-            <if test="fastRate!=null">
-                #{fastRate},
             </if>
             <if test="directPromoteShall!=null">
                 #{directPromoteShall},
@@ -100,15 +82,6 @@
             </if>
             <if test="upgradeCost != null">
                 upgrade_cost = #{upgradeCost},
-            </if>
-            <if test="weixinRate != null">
-                weixin_rate = #{weixinRate},
-            </if>
-            <if test="alipayRate != null">
-                alipay_rate = #{alipayRate},
-            </if>
-            <if test="fastRate != null">
-                fast_rate = #{fastRate},
             </if>
             <if test="directPromoteShall!=null">
                 direct_promote_shall = #{directPromoteShall},

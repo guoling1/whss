@@ -115,7 +115,7 @@ public class PayServiceImpl implements PayService {
             return Pair.of(-1, "订单号重复");
         }
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        final String channelCode = this.basicChannelService.selectCodeByChannelSign(EnumPayChannelSign.YG_WECHAT.getId(), EnumMerchantPayType.MERCHANT_JSAPI);
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(EnumPayChannelSign.YG_WECHAT.getId(), EnumMerchantPayType.MERCHANT_CODE);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrderNo);
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -128,8 +128,8 @@ public class PayServiceImpl implements PayService {
         order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
-        order.setGoodsName(merchant.getMerchantName());
-        order.setGoodsDescribe(merchant.getMerchantName());
+        order.setGoodsName("升级费");
+        order.setGoodsDescribe("升级费");
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleTime(new Date());
         order.setSettleType(EnumBalanceTimeType.D0.getType());
@@ -137,6 +137,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
+        merchant.setMerchantChangeName("升级费");
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
                 channelCode, accountBank, merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);

@@ -225,7 +225,7 @@ public interface DealerDao {
      * @param dealer
      * @return
      */
-    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    int updateRecommendBtn(Dealer dealer);
     /**
      * 更新推广开关
      *

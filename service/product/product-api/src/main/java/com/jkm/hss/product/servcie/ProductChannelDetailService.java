@@ -2,6 +2,8 @@ package com.jkm.hss.product.servcie;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.helper.response.ProductAndBasicResponse;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -56,4 +58,14 @@ public interface ProductChannelDetailService {
      * @return
      */
     Optional<ProductChannelDetail> selectRateByProductIdAndChannelTypeSign(long productId,  int channelTypeSign);
+
+
+    /**
+     * 根据产品编码查询产品和基本通道列表
+     * @param productId
+     * @return
+     */
+    List<ProductAndBasicResponse> getProductChannelList(long productId);
+
+
 }
