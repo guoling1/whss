@@ -823,11 +823,11 @@ public class TradeController extends BaseController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "unionPay2Error/${orderId}")
+    @RequestMapping(value = "unionPay2Error/{orderId}")
     public String unionPay2Error(@PathVariable final long orderId, final Model model) {
         final Order order = this.orderService.getById(orderId).get();
         model.addAttribute("errorMsg", order.getRemark());
-        return "error";
+        return "/error";
     }
 
     /**
