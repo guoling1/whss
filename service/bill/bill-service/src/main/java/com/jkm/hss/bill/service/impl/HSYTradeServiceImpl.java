@@ -110,6 +110,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private SplitAccountRefundRecordService splitAccountRefundRecordService;
     @Autowired
     private SendMsgService sendMsgService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
 
     /**
      * {@inheritDoc}
@@ -303,22 +305,17 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         hsyTradeListResponse.setOrderstatusName("收款成功");
         hsyTradeListResponseList.add(hsyTradeListResponse);
         pageModel.setRecords(hsyTradeListResponseList);
-
-        return gson.toJson(pageModel);
+        Map<String,Object> map=new HashMap<>();
+        map.put("amount",10);
+        map.put("number",1);
+        map.put("pageModel",pageModel);
+        return gson.toJson(map);
     }
 
     public String appOrderDetailhsy(String dataParam, AppParam appParam){
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();
         return gson.toJson(hsyTradeListResponse);
-    }
-
-    public String tradeStatisticshsy(String dataParam, AppParam appParam){
-        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
-        Map<String,Object> map=new HashMap<>();
-        map.put("amount",10);
-        map.put("number",1);
-        return gson.toJson(map);
     }
 
 
@@ -337,7 +334,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final int channel = paramJo.getIntValue("channel");
         final long shopId = paramJo.getLongValue("shopId");
         final String appId = paramJo.getString("appId");
-        final Pair<Integer, String> receiptResult = this.receipt(totalAmount, channel, shopId, appId, "");
+        final String code=paramJo.getString("code");//add by wayne 2017/05/17
+        final Pair<Integer, String> receiptResult = this.receipt(totalAmount, channel, shopId, appId, "",code);
         if (0 != receiptResult.getLeft()) {
             result.put("code", -1);
             result.put("msg", "下单失败");
@@ -675,7 +673,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @return
      */
     @Override
-    public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId, final String memberId) {
+    public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId, final String memberId,final String code) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
@@ -684,8 +682,27 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //        } else {
 //            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
 //        }
+
+        //add by wayne 2017/05/17===========================================插入好收银订单
+        final HsyOrder hsyOrder=new HsyOrder();
+        hsyOrder.setAmount(new BigDecimal(totalAmount));
+        hsyOrder.setOrdernumber("");
+        hsyOrder.setShopid(shopId);
+        hsyOrder.setShopname(shop.getShortName());
+        hsyOrder.setMerchantname(shop.getName());
+        hsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+        hsyOrder.setSourcetype(EnumHsySourceType.QRCODE.getId());
+        hsyOrder.setValidationcode("");
+        hsyOrder.setQrcode(code);
+        hsyOrder.setPaytype(channelCode);
+        hsyOrderService.insert(hsyOrder);
+        log.info("好收银订单[{}]-下单成功【{}】", hsyOrder.getOrdernumber(), hsyOrder);
+
+        //====================================================^^^^^^^^^^===============================================
+
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
+        order.setBusinessOrderNo(hsyOrder.getOrdernumber());
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
@@ -705,8 +722,15 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
 
+        //add by wayne 2017/05/18===========================================更新好收银订单
+        hsyOrder.setOrderno(order.getOrderNo());
+        hsyOrderService.update(hsyOrder);
+        //===============================================================================
+
         return this.handlePlaceOrder(shop, channelCode, order);
     }
+
+
 
     /**
      * {@inheritDoc}
@@ -821,6 +845,17 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setWechatOrAlipayOrderNo(paymentSdkPayCallbackResponse.getWechatOrAlipayOrderNo());
         order.setSettleTime(this.getHsySettleDate(order, enumPayChannelSign));
         this.orderService.update(order);
+        //好收银订单处理  add by wayne 2017/05/18
+        final Optional<HsyOrder> hsyOrderOptional=hsyOrderService.selectByOrderNo(order.getOrderNo());
+        if(hsyOrderOptional.isPresent()){
+            HsyOrder hsyOrder=hsyOrderOptional.get();
+            hsyOrder.setOrderstatus(EnumHsyOrderStatus.PAY_SUCCESS.getId());
+            hsyOrder.setPoundage(merchantPayPoundage);
+            hsyOrder.setPaysn(paymentSdkPayCallbackResponse.getSn());
+            hsyOrder.setPaysuccesstime(order.getPaySuccessTime());
+            hsyOrderService.update(hsyOrder);
+        }
+        //=============================================================================
         //入账
         this.recorded(order.getId(), shop);
         //分账
@@ -845,6 +880,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setStatus(EnumOrderStatus.PAY_FAIL.getId());
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         this.orderService.update(order);
+        //好收银订单处理  add by wayne 2017/05/18
+        final Optional<HsyOrder> hsyOrderOptional=hsyOrderService.selectByOrderNo(order.getOrderNo());
+        if(hsyOrderOptional.isPresent()){
+            HsyOrder hsyOrder=hsyOrderOptional.get();
+            hsyOrder.setOrderstatus(EnumHsyOrderStatus.PAY_FAIL.getId());
+            hsyOrderService.update(hsyOrder);
+        }
+        //=============================================================================
     }
 
     /**

@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class ActiveControllerTester {
 //    public static String url="http://192.168.1.99:8080/hsy/active/rest";
-    public static String url="http://localhost:8080/hsy/active/rest";
+    public static String url="http://localhost:8080/active/rest";
 //    public static String url="http://hsy.qianbaojiajia.com/active/rest";
 
     @Test

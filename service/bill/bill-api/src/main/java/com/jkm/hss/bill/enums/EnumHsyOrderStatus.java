@@ -1,0 +1,30 @@
+package com.jkm.hss.bill.enums;
+
+import lombok.Getter;
+
+/**
+ * Created by wayne on 17/5/17.
+ */
+public enum EnumHsyOrderStatus {
+    /**
+     * 待支付
+     */
+    DUE_PAY(1, "待支付"),
+    PAY_SUCCESS(2, "支付成功"),
+    PAY_FAIL(3, "支付失败"),
+    REFUNDING(4,"退款中"),
+    REFUND_PART(5,"部分退款"),
+    REFUND_SUCCESS(6, "退款成功"),
+    REFUND_FAIL(7, "退款失败")
+    ;
+
+    @Getter
+    private int id;
+    @Getter
+    private String value;
+
+    EnumHsyOrderStatus(final int id, final String value) {
+        this.id = id;
+        this.value = value;
+    }
+}

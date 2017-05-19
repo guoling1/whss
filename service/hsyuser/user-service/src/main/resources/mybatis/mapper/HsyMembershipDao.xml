@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hsy.user.dao.HsyMembershipDao">
-    <insert id="insertMembershipCard" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
-        insert into app_policy_membership_card(ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME)
-        values(#{id},#{uid},#{membershipName},#{membershipShopName},#{discount},#{isDeposited},#{depositAmount},#{isPresentedViaActivate},#{presentAmount},#{isPresentedViaRecharge},#{rechargeLimitAmount},#{rechargePresentAmount},#{weight},#{status},#{createTime},#{updateTime})
+    <insert id="insertMembershipCard" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        insert into app_policy_membership_card(UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME)
+        values(#{uid},#{membershipName},#{membershipShopName},#{discount},#{isDeposited},#{depositAmount},#{isPresentedViaActivate},#{presentAmount},#{isPresentedViaRecharge},#{rechargeLimitAmount},#{rechargePresentAmount},#{weight},#{status},#{createTime},#{updateTime})
     </insert>
 
     <insert id="insertMembershipCardShop" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
@@ -17,8 +17,97 @@
         values
         <foreach collection ="list" item="data" index= "index" separator =",">
             (
-              #{mcid},#{sid}
+              #{data.mcid},#{data.sid}
             )
         </foreach >
     </insert>
+
+    <select id="findConsumerByParam" resultType="com.jkm.hsy.user.entity.AppPolicyConsumer">
+        select ID,CONSUMERCELLPHONE,USERID,OPENID,PAYPASSWORD,CREATETIME,UPDATETIME
+        from app_policy_consumer
+        where 1=1
+        <if test="userID!=null and userID!=''">and USERID=#{userID}</if>
+        <if test="openID!=null and openID!=''">and OPENID=#{openID}</if>
+        <if test="consumerCellphone!=null and consumerCellphone!=''">and CONSUMERCELLPHONE=#{consumerCellphone}</if>
+    </select>
+
+    <select id="findMemberByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select ID,CID,MCID,ACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME
+        from app_policy_member
+        where 1=1
+        <if test="cid!=null and cid!=''">and CID=#{cid}</if>
+        <if test="mcid!=null and mcid!=''">and MCID=#{mcid}</if>
+    </select>
+
+    <select id="findMemberCascadeByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME
+        from app_policy_member member left join app_policy_membership_card card on member.MCID=card.ID
+        where 1=1
+        <if test="cid!=null and cid!=''">and member.CID=#{cid}</if>
+        <if test="uid!=null and uid!=''">and card.UID=#{uid}</if>
+    </select>
+
+    <select id="findMemberCardByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
+        from app_policy_membership_card
+        where 1=1
+        <if test="uid!=null and uid!=''">and UID=#{uid}</if>
+    </select>
+
+    <insert id="insertConsumer" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyConsumer">
+        insert into app_policy_consumer(ID,CONSUMERCELLPHONE,USERID,OPENID,PAYPASSWORD,CREATETIME,UPDATETIME)
+        values(#{id},#{consumerCellphone},#{userID},#{openID},#{payPassword},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateConsumer" parameterType="com.jkm.hsy.user.entity.AppPolicyConsumer">
+        update app_policy_consumer
+        <set>
+            <if test="consumerCellphone!=null and consumerCellphone!=''">CONSUMERCELLPHONE=#{consumerCellphone},</if>
+            <if test="userID!=null and userID!=''">USERID=#{userID},</if>
+            <if test="openID!=null and openID!=''">OPENID=#{openID},</if>
+            <if test="payPassword!=null and payPassword!=''">PAYPASSWORD=#{payPassword},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <insert id="insertMember" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyMember">
+        insert into app_policy_member(ID,CID,MCID,ACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME)
+        values(#{id},#{cid},#{mcid},#{accountID},#{memberCardNO},#{status},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateMember" parameterType="com.jkm.hsy.user.entity.AppPolicyMember">
+        update app_policy_member
+        <set>
+            <if test="cid!=null">CID=#{cid},</if>
+            <if test="mcid!=null">MCID=#{mcid},</if>
+            <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
+            <if test="memberCardNO!=null and memberCardNO!=''">MEMBERCARDNO=#{memberCardNO},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID
+        from app_policy_member member
+        left join app_policy_consumer consumer on member.CID=consumer.ID
+        left join app_policy_membership_card card on member.MCID=card.ID
+        where member.ID=${id}
+    </select>
+
+    <select id="findMembershipCardCountOfUserByUID" resultType="java.lang.Integer">
+        select count(*) from app_policy_membership_card where UID=#{uid}
+    </select>
+
+    <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
+        from app_policy_membership_card where UID=#{uid}
+    </select>
+
+    <select id="findMemberCountOfUserByUID" resultType="java.lang.Integer">
+        select count(*) from app_policy_member member left join app_policy_membership_card card on card.ID=member.MCID
+        where card.UID=#{uid}
+    </select>
 </mapper>
