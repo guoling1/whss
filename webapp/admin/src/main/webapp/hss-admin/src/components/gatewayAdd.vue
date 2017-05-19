@@ -8,13 +8,27 @@
         </div>
         <div class="">
           <div class="table-responsive">
+            <el-row type="flex" class="row-bg" justify="center" v-if="name!=''&&name!=undefined">
+              <el-col :span="4">
+                <div class="alignRight">分公司名称:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input :disabled="true" size="small" v-model="name" placeholder="最多5个字"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8"></el-col>
+            </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
                 <div class="alignRight">产品名称:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="productType" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="productType" clearable placeholder="请选择" size="small" :disabled="true" v-if="name!=''">
+                    <el-option v-for="product in products" :label="product.productName" :value="product.type"></el-option>
+                  </el-select>
+                  <el-select style="width: 100%" v-model="productType" clearable placeholder="请选择" size="small" v-else>
                     <el-option v-for="product in products" :label="product.productName" :value="product.type"></el-option>
                   </el-select>
                 </div>
@@ -87,13 +101,26 @@
         products:[],
         channels:[],
         productId:'',
-        id:''
+        id:'',
+        name:'',
+        dealerId:0
       }
     },
     created: function () {
+      console.log(this.$route.query.name)
+      if(this.$route.query.name!=''||this.$route.query.name!=undefined){
+        this.name = this.$route.query.proxyName;
+      }
+      console.log(this.name)
+      this.dealerId = this.$route.query.id
       this.$http.post('/admin/product/list')
         .then(function (res) {
           this.products = res.data;
+          for(var i=0;i<this.products.length;i++){
+            if(this.products[i].productId==this.$route.query.productId){
+              this.productType = this.products[i].type;
+            }
+          }
         }, function (err) {
           this.$message({
             showClose: true,
@@ -114,7 +141,7 @@
       //若为查看详情
       if (this.$route.query.index != undefined) {
         this.isShow = false;
-        this.$http.post('/admin/product/listGateway',{"productType":"hss"})
+        this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
           .then(res => {
             this.productType = res.data[this.$route.query.index].productType;
             this.viewChannelName = res.data[this.$route.query.index].viewChannelName;
@@ -136,6 +163,7 @@
           productType:this.productType,
           channelSign:this.channelSign,
           viewChannelName:this.viewChannelName,
+          dealerId:this.dealerId
         })
           .then(function (res) {
             this.$message({
@@ -143,7 +171,8 @@
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/details/gateway')
+//            this.$router.push('/admin/details/gateway')
+            this.$router.go(-1)
           }, function (err) {
             this.$message({
               showClose: true,
@@ -153,7 +182,8 @@
           })
       },
       goBack: function () {
-        this.$router.push('/admin/details/gateway')
+//        this.$router.push('/admin/details/gateway')
+        this.$router.go(-1)
       },
       change: function () {
         if(this.productType=='hss'){
@@ -166,7 +196,8 @@
           channelSign:this.channelSign,
           viewChannelName:this.viewChannelName,
           productId:this.productId,
-          id: this.id
+          id: this.id,
+          dealerId:this.dealerId
         })
           .then(function (res) {
             this.$message({
@@ -174,7 +205,8 @@
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/details/gateway')
+//            this.$router.push('/admin/details/gateway')
+            this.$router.go(-1)
           }, function (err) {
             this.$message({
               showClose: true,

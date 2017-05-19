@@ -5,19 +5,28 @@
         <div class="box-header">
           <h3 class="box-title">网关模板</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
-          <router-link to="/admin/details/gatewayAdd" class="btn btn-primary" style="float: right;margin-right: 15px">新增网关通道</router-link>
+          <router-link :to='"/admin/details/gatewayAdd?id="+dealerId+"&productId="+productId+"&proxyName="+name' class="btn btn-primary" style="float: right;margin-right: 15px">新增网关通道</router-link>
         </div>
         <div class="box-body">
           <ul>
+            <li class="same" v-if="name!=undefined&&name!=''">
+              <label class="title">分公司名称:</label>
+              <span>{{name}}</span>
+            </li>
+            <li class="same" v-if="name!=undefined&&name!=''">
+              <label class="title">分公司编码:</label>
+              <span>{{code}}</span>
+            </li>
             <li class="same">
               <label class="title">网关模板:</label>
-              <el-table max-height="637" style="font-size:12px;width:80%;display: inline-table;vertical-align: top" :data="records" border>
+              <el-table max-height="637" style="font-size:12px;width:80%;display: inline-table;vertical-align: top" :data="$$records" border>
                 <el-table-column type="index" width="70" label="序号"></el-table-column>
                 <el-table-column prop="viewChannelName" label="展示名称"></el-table-column>
                 <el-table-column prop="channelShortName" label="通道名称"></el-table-column>
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
-                    <el-button type="text" @click="detail(scope.row.productId,scope.$index)">修改</el-button>
+                    <el-button type="text" @click="detail(dealerId,scope.row.productId,name,scope.$index)">修改</el-button>
+                    <el-button type="text" @click="delt(scope.row.id)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -38,10 +47,25 @@
     data(){
       return {
         records: [],
+        dealerId:0,
+        name:'',
+        code:'',
+        productId:0
       }
     },
     created: function () {
-      this.$http.post('/admin/product/listGateway',{"productType":"hss"})
+      if(this.$route.query.id==undefined){
+        this.dealerId = 0;
+        this.name = '';
+        this.code = '';
+        this.productId = this.$route.query.productId;
+      }else {
+        this.dealerId = this.$route.query.id;
+        this.name = this.$route.query.proxyName;
+        this.code = this.$route.query.markCode;
+        this.productId = this.$route.query.productId;
+      }
+      this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
         .then(res => {
           this.records = res.data;
         })
@@ -54,6 +78,37 @@
         })
     },
     methods: {
+      delt(id) {
+        this.$confirm('此网关将被删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('/admin/product/delGateway',{id:id})
+            .then(()=>{
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
+                .then(res => {
+                  this.records = res.data;
+                })
+                .catch(err => {
+                  this.$message({
+                    showClose: true,
+                    message: err.statusMessage,
+                    type: 'error'
+                  });
+                })
+            })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
       submit:function () {
         var list = JSON.parse(JSON.stringify(this.tableData));
         for (var i = 0; i < list.length; i++) {
@@ -89,8 +144,17 @@
           });
         })
       },
-      detail: function (productId, index) {
-        this.$router.push({path:'/admin/details/gatewayAdd',query:{productId:productId,index:index}})
+      detail: function ( id, productId,name, index) {
+        if(this.name!=''){
+          this.$router.push({path:'/admin/details/gatewayAdd',query:{id:this.dealerId,productId:this.productId,proxyName:this.name,index:index}})
+        }else {
+          this.$router.push({path:'/admin/details/gatewayAdd',query:{productId:productId,index:index}})
+        }
+      }
+    },
+    computed:{
+      $$records:function () {
+        return this.records;
       }
     }
   }
