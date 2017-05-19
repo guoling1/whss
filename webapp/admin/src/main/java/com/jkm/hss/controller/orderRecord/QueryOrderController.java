@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +35,22 @@ public class QueryOrderController extends BaseController {
 
         final PageModel<QueryOrderResponse> pageModel = new PageModel<QueryOrderResponse>(req.getPage(), req.getSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        if(req.getPaySuccessTime()!=null&&!"".equals(req.getPaySuccessTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getPaySuccessTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setPaySuccessTime(sdf.format(rightNow.getTime()));
+        }
         List<QueryOrderResponse> orderList = this.orderService.queryOrderList(req);
         int count = this.orderService.queryOrderListCount(req);
         pageModel.setRecords(orderList);

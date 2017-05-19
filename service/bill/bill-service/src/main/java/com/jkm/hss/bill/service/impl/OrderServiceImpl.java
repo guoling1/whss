@@ -1355,7 +1355,34 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<QueryOrderResponse> queryOrderList(QueryOrderRequest req) {
+
         List<QueryOrderResponse> list = this.orderDao.queryOrderList(req);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null && !"".equals(list.get(i).getCreateTime())){
+                    String st = df.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(st);
+                }
+                if (list.get(i).getPaySuccessTime()!=null && !"".equals(list.get(i).getPaySuccessTime())){
+                    String st = df.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(st);
+                }
+                if (list.get(i).getPayChannelSign()>0) {
+                    list.get(i).setPaymentMethod(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                }
+                if (list.get(i).getStatus()==1) {
+                    list.get(i).setStatusValue(EnumBusinessOrderStatus.DUE_PAY.getValue());
+                }
+                if (list.get(i).getStatus()==2) {
+                    list.get(i).setStatusValue(EnumBusinessOrderStatus.PAY_FAIL.getValue());
+                }
+                if (list.get(i).getStatus()==3) {
+                    list.get(i).setStatusValue(EnumBusinessOrderStatus.PAY_SUCCESS.getValue());
+                }
+
+            }
+        }
         return list;
     }
 

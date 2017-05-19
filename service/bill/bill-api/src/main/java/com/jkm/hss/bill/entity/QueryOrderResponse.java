@@ -12,6 +12,22 @@ import java.util.Date;
  */
 @Data
 public class QueryOrderResponse {
+
+    /**
+     * 收款商户
+     */
+    private String merchantName;
+
+    /**
+     * 所属一级代理商
+     */
+    private String proxyName;
+
+    /**
+     * 所属二级代理商
+     */
+    private String proxyName1;
+
     /**
      * 业务线
      *
@@ -61,6 +77,11 @@ public class QueryOrderResponse {
      * 付款成功时间（交易成功）
      */
     private Date paySuccessTime;
+
+    /**
+     * 付款成功时间（交易成功）
+     */
+    private String paySuccessTimes;
 
     /**
      * 手续费
@@ -115,4 +136,29 @@ public class QueryOrderResponse {
      * 支付宝/微信订单号
      */
     private String wechatOrAlipayOrderNo;
+
+    /**
+     * 订单创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 订单创建时间
+     */
+    private String createTimes;
+
+    /**
+     * 订单状态
+     */
+    private int status;
+
+    /**
+     * 订单状态
+     */
+    private String statusValue;
+
+    /**
+     * 支付方式
+     */
+    private String paymentMethod;
 }
