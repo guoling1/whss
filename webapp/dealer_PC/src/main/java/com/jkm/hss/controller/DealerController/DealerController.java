@@ -233,6 +233,7 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/addFirstDealer", method = RequestMethod.POST)
     public CommonResponse addFirstDealer(@RequestBody final FirstLevelDealerAdd2Request firstLevelDealerAdd2Request) {
         try{
+            firstLevelDealerAdd2Request.setOemType(EnumOemType.DEALER.getId());
             if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "手机号格式错误");
             }
