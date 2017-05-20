@@ -133,6 +133,7 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/addSecondDealer", method = RequestMethod.POST)
     public CommonResponse addSecondDealer(@RequestBody final SecondLevelDealerAdd2Request secondLevelDealerAdd2Request) {
         try{
+            secondLevelDealerAdd2Request.setOemType(EnumOemType.DEALER.getId());
             Preconditions.checkState(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以添加二级代理");
             if(!ValidateUtils.isMobile(secondLevelDealerAdd2Request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
@@ -191,7 +192,7 @@ public class DealerController extends BaseController {
             if(!ValidateUtils.isMobile(secondLevelDealerAdd2Request.getBankReserveMobile())) {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
-            secondLevelDealerAdd2Request.setOemType(EnumOemType.DEALER.getId());
+
             secondLevelDealerAdd2Request.setOemId(super.getDealer().get().getId());
             final long dealerId = this.dealerService.createSecondDealer2(secondLevelDealerAdd2Request,super.getDealerId());
 
@@ -293,7 +294,7 @@ public class DealerController extends BaseController {
             }
             //设置为代理商类型
             firstLevelDealerAdd2Request.setOemId(super.getDealerId());
-            firstLevelDealerAdd2Request.setOemType(EnumOemType.DEALER.getId());
+
             final long dealerId = this.dealerService.createFirstDealer2(firstLevelDealerAdd2Request);
 
             //创建登录用户
