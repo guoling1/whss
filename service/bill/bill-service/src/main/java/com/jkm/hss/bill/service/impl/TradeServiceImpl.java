@@ -32,7 +32,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/5/2.
@@ -84,6 +86,7 @@ public class TradeServiceImpl implements TradeService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.RECHARGE.getId()));
         order.setTradeAmount(rechargeParams.getTradeAmount());
         order.setRealPayAmount(rechargeParams.getRealPayAmount());
+        order.setMarketingAmount(rechargeParams.getMarketingAmount());
         order.setAppId(rechargeParams.getAppId());
         order.setMerchantNo(rechargeParams.getMerchantNo());
         order.setMerchantName(rechargeParams.getMerchantName());
@@ -403,4 +406,5 @@ public class TradeServiceImpl implements TradeService {
             }
         }
     }
+
 }
