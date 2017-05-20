@@ -85,20 +85,38 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/listSecondDealer", method = RequestMethod.POST)
     public CommonResponse listSecondDealer(@RequestBody final SecondDealerSearchRequest secondDealerSearchRequest) {
         long dealerId = super.getDealerId();
-        secondDealerSearchRequest.setDealerId(dealerId);
-        final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(secondDealerSearchRequest);
-        Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
-        Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
-        long hssProduct = 0;
-        long hsyProduct = 0;
-        if(hssProductId!=null){
-            hssProduct = hssProductId;
+        if(super.getDealer().get().getOemType()==EnumOemType.OEM.getId()){//分公司
+            secondDealerSearchRequest.setDealerId(dealerId);
+            final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondOem(secondDealerSearchRequest);
+            Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
+            Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+            long hssProduct = 0;
+            long hsyProduct = 0;
+            if(hssProductId!=null){
+                hssProduct = hssProductId;
+            }
+            if(hsyProductId!=null){
+                hsyProduct = hsyProductId;
+            }
+            pageModel.setExt(hssProduct+"|"+hsyProduct);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+        }else{
+            secondDealerSearchRequest.setDealerId(dealerId);
+            final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(secondDealerSearchRequest);
+            Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
+            Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+            long hssProduct = 0;
+            long hsyProduct = 0;
+            if(hssProductId!=null){
+                hssProduct = hssProductId;
+            }
+            if(hsyProductId!=null){
+                hsyProduct = hsyProductId;
+            }
+            pageModel.setExt(hssProduct+"|"+hsyProduct);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
-        if(hsyProductId!=null){
-            hsyProduct = hsyProductId;
-        }
-        pageModel.setExt(hssProduct+"|"+hsyProduct);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+
     }
     /**
      * 一级代理商列表
@@ -193,7 +211,7 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
 
-            secondLevelDealerAdd2Request.setOemId(super.getDealer().get().getId());
+            secondLevelDealerAdd2Request.setOemId(super.getDealer().get().getOemId());
             final long dealerId = this.dealerService.createSecondDealer2(secondLevelDealerAdd2Request,super.getDealerId());
 
             //创建登录用户

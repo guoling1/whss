@@ -445,6 +445,13 @@ public interface DealerService {
      */
     PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
     /**
+     * 【分公司后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondOem(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
      * 【代理商后台】一级代理商列表
      *
      * @param firstDealerSearchRequest

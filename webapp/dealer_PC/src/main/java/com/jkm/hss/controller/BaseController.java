@@ -8,6 +8,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ResponseWriter;
 import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -37,6 +38,8 @@ import java.util.Locale;
 public class BaseController {
     @Autowired
     private DealerService dealerService;
+    @Autowired
+    private AdminUserService adminUserService;
 
     /**
      * 经销商 登录缓存
@@ -87,7 +90,7 @@ public class BaseController {
      * @return
      */
     protected Optional<AdminUser> getAdminUser() {
-        return Optional.fromNullable(Admin_USER_INFO_DATA_BIND.get());
+        return adminUserService.getAdminUserById(142);
     }
 
     /**
@@ -109,7 +112,7 @@ public class BaseController {
      * @return
      */
     protected Optional<Dealer> getDealer() {
-      return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
+      return dealerService.getById(143);
     }
 
     /**
