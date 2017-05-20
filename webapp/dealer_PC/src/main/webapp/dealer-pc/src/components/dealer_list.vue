@@ -6,10 +6,10 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">代理商列表</h3>
+              <h3 class="box-title">二级代理商列表</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body screen-top">
+            <div v-if="canAdd" class="box-body screen-top">
               <el-button type="primary" icon="plus" size="small" @click="_$power(addDealer,'dealer_add')">新增代理商
               </el-button>
               <!--<el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>-->
@@ -137,10 +137,12 @@
   </div>
 </template>
 <script lang="babel">
+  import store from '../store'
   export default {
     name: 'app',
     data() {
       return {
+        canAdd: false,
         name: '',
         markCode: '',
         sysType: '',
@@ -168,6 +170,15 @@
         districtCode: '',
         ext: []
       }
+    },
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            vm.canAdd = (data.dealerLeavel == 1);
+          }
+        });
+      });
     },
     created() {
       this.getData();
