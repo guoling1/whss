@@ -784,6 +784,14 @@
         FROM
         tb_dealer
         WHERE
+        id = c.first_level_dealer_id
+        ) as firstDealerName,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
         id = c.second_level_dealer_id
         ) as secondDealerName,
         i.merchant_name,
@@ -909,6 +917,14 @@
         c.code,
         c.distribute_time,
         c.activate_time,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.first_level_dealer_id
+        ) as firstDealerName,
         (
         SELECT
         proxy_name
@@ -1105,6 +1121,14 @@
         c.code,
         c.distribute_time,
         c.activate_time,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.first_level_dealer_id
+        ) as firstDealerName,
         (
         SELECT
         proxy_name
