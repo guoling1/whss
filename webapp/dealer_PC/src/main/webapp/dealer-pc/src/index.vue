@@ -317,7 +317,7 @@
         position: '',
         dealerLeavel: '',
         list: {},
-        classList: ['fa fa-money', 'fa fa-users', 'fa fa-bank', 'fa fa-calculator', 'fa fa-user-plus']
+        classList: ['fa fa-money', 'fa fa-users', 'fa fa-bank', 'fa fa-calculator', 'fa fa-user-plus', 'fa fa-user']
       }
     },
     beforeRouteEnter (to, from, next){

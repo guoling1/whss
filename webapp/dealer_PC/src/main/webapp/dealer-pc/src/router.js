@@ -17,6 +17,7 @@ import dealer_add from './components/dealer_add.vue'
 import dealer_modify from './components/dealer_modify.vue'
 import product_add from './components/product_add.vue'
 import distribution_qrcode from './components/distribution_qrcode.vue'
+import production_qrcode from './components/production_qrcode.vue'
 import qrcode_distribution from './components/qrcode_distribution.vue'
 import balance_withdrawal from './components/balance_withdrawal.vue'
 import withdrawal from './components/withdrawal.vue'
@@ -33,6 +34,7 @@ import roles from './components/roles.vue'
 import roles_add from './components/roles_add.vue'
 import information from './components/information.vue'
 import policy from './components/policy.vue'
+import change_password from './components/change_password.vue'
 
 import store from './store/index'
 
@@ -72,6 +74,7 @@ const routes = [
       {path: 'dealer_modify', name: "dealer_modify", component: dealer_modify},
       {path: 'product_add', name: "product_add", component: product_add},
       {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},
+      {path: 'production_qrcode', name: "production_qrcode", component: production_qrcode},
       {path: 'qrcode_distribution', name: "qrcode_distribution", component: qrcode_distribution},
       {path: 'balance_withdrawal', name: "balance_withdrawal", component: balance_withdrawal},
       {path: 'withdrawal', name: "withdrawal", component: withdrawal},
@@ -88,6 +91,7 @@ const routes = [
       {path: 'roles_add', name: "roles_add", component: roles_add},
       {path: 'information', name: "information", component: information},
       {path: 'policy', name: "policy", component: policy},
+      {path: 'change_password', name: "change_password", component: change_password},
     ]
   }
 ];

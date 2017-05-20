@@ -184,7 +184,7 @@
       },
       getData: function () {
         this.tableLoading = true;
-        this.$http.post('/daili/dealer/listSecondDealer', {
+        this.$http.post('/daili/dealer/listFirstDealer', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           name: this.name,
