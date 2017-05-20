@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.enums;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -27,4 +29,21 @@ public enum EnumHsyOrderStatus {
         this.id = id;
         this.value = value;
     }
+
+
+    private static final ImmutableMap<Integer, EnumHsyOrderStatus> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<Integer, EnumHsyOrderStatus> builder = new ImmutableMap.Builder<>();
+        for (EnumHsyOrderStatus status : EnumHsyOrderStatus.values()) {
+            builder.put(status.getId(), status);
+        }
+        INIT_MAP = builder.build();
+    }
+
+    public static EnumHsyOrderStatus of (final int status) {
+        Preconditions.checkState(INIT_MAP.containsKey(status), "unknown status[{}]", status);
+        return INIT_MAP.get(status);
+    }
+
 }

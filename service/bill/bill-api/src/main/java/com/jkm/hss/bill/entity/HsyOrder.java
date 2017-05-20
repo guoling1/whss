@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -33,6 +34,10 @@ public class HsyOrder extends BaseEntity {
      */
     private String orderno;
     /**
+     * 交易订单ID
+     */
+    private long orderid;
+    /**
      * 确认码
      */
     private String validationcode;
@@ -46,6 +51,7 @@ public class HsyOrder extends BaseEntity {
      */
     private String paysn;
     private String paytype;
+    private int paychannelsign;
     private Date paysuccesstime;
     private BigDecimal refundamount;
     private int refundstatus;
@@ -57,5 +63,36 @@ public class HsyOrder extends BaseEntity {
      * 支付类型  1二维码付款/2充值
      */
     private int sourcetype;
+
+    /**
+     * 是否是 已经退款成功
+     *
+     * @return
+     */
+    public boolean isRefundSuccess() {
+        return EnumHsyOrderStatus.REFUND_SUCCESS.getId()==this.orderstatus;
+    }
+
+    /**
+     * 是否是 部分退款
+     *
+     * @return
+     */
+    public boolean isRefundPart() {
+        return EnumHsyOrderStatus.REFUND_PART.getId()==this.orderstatus;
+    }
+
+    /**
+     * 是否可退款
+     * @return
+     */
+    public boolean isRefund(){
+        return EnumHsyOrderStatus.DUE_PAY.getId()!=this.orderstatus
+                &&EnumHsyOrderStatus.PAY_FAIL.getId()!=this.orderstatus
+                &&!isRefundSuccess()
+                &&!isRefundPart();
+    }
+
+
 
 }

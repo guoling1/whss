@@ -1,6 +1,8 @@
 package com.jkm.hss.bill.service;
 
 
+import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.HsyRefundOrder;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.RefundOrder;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
@@ -90,9 +92,11 @@ public interface HSYTradeService {
      *
      * @param refundOrder 退款单
      * @param payOrder 交易单
+     * @param hsyRefundOrder 好收银退款单
+     * @param hsyOrder 好收银订单
      * @return
      */
-    Pair<Integer, String> refundImpl(RefundOrder refundOrder, Order payOrder);
+    Pair<Integer, String> refundImpl(RefundOrder refundOrder, Order payOrder, HsyRefundOrder hsyRefundOrder,HsyOrder hsyOrder);
 
     /**
      * 退款到手续费
