@@ -16,6 +16,7 @@ public class HsyTradeListResponse {
      * 交易订单ID
      */
     private long orderId;
+    private int canRefund;
     //private int canRefund;
     /**
      * 笔数
