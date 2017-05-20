@@ -10,6 +10,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
+import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
 import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.*;
 
 /**
@@ -83,8 +85,13 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     }
 
     @Override
+    public Optional<HsyOrder> selectByOrderId(long orderId) {
+        return Optional.fromNullable(null);
+    }
+
+    @Override
     public String orderListst(final String dataParam, final AppParam appParam) {
-        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        Gson gson=new GsonBuilder().setDateFormat(DateFormat.LONG).create();//.setDateFormat(AppConstant.DATE_FORMAT)
         /**参数转化*/
         TradeListRequestParam requestParam=null;
         requestParam=gson.fromJson(dataParam, TradeListRequestParam.class);
@@ -153,8 +160,11 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             
             HsyTradeListResponse hsyTradeListResponse=null;
             for(HsyOrder hsyOrder:hsyOrders){
-                final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
-                final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+                Date payDate = null;
+                if(hsyOrder.getPaysuccesstime()!=null){
+                    payDate=DateFormatUtil.parse(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+                }
+                Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
                 String curD=DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
                 hsyTradeListResponse=new HsyTradeListResponse();
                 if(hsyOrder.isRefund()&&payDate.compareTo(refundDate) == 0){
@@ -178,6 +188,8 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 hsyTradeListResponse.setId(hsyOrder.getId());
                 hsyTradeListResponse.setShopName(hsyOrder.getShopname());
                 hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
+                hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
+                hsyTradeListResponse.setSourceTypeName(EnumHsySourceType.of(hsyOrder.getSourcetype()).getValue());
                 hsyTradeListResponseList.add(hsyTradeListResponse);
             }
         }
@@ -192,12 +204,13 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         resultMap.put("amount",hsyOrderSTResponse.getTotalAmount());
         resultMap.put("number",hsyOrderSTResponse.getNumber());
         resultMap.put("pageModel",pageModel);
-        return gson.toJson(resultMap);
+        //return gson.toJson(resultMap);
+        return JSON.toJSONString(resultMap);
     }
 
     @Override
     public String appOrderDetail(String dataParam, AppParam appParam) {
-        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        Gson gson=new GsonBuilder().setDateFormat(DateFormat.LONG).create();
         final JSONObject paramJo = JSONObject.parseObject(dataParam);
         final long payOrderId = paramJo.getLongValue("payOrderId");
         final HsyOrder hsyOrder=hsyOrderDao.selectById(payOrderId);
@@ -224,6 +237,9 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         hsyTradeListResponse.setId(hsyOrder.getId());
         hsyTradeListResponse.setShopName(hsyOrder.getShopname());
         hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
-        return gson.toJson(hsyTradeListResponse);
+        hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
+        hsyTradeListResponse.setSourceTypeName(EnumHsySourceType.of(hsyOrder.getSourcetype()).getValue());
+        //return gson.toJson(hsyTradeListResponse);
+        return JSON.toJSONString(hsyTradeListResponse);
     }
 }

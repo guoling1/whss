@@ -31,6 +31,13 @@ public interface HSYOrderService {
     Optional<HsyOrder> selectByOrderNo(String orderNo);
 
     /**
+     * 根据交易订单ID查询hsy订单
+     * @param orderId
+     * @return
+     */
+    Optional<HsyOrder> selectByOrderId(long orderId);
+
+    /**
      * 订单列表及统计
      * @param dataParam
      * @param appParam

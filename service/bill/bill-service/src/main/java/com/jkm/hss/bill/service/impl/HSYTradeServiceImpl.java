@@ -112,6 +112,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private SendMsgService sendMsgService;
     @Autowired
     private HSYOrderService hsyOrderService;
+    @Autowired
+    private HSYRefundOrderService hsyRefundOrderService;
 
     /**
      * {@inheritDoc}
@@ -435,7 +437,29 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         refundOrder.setUpperChannel(EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getUpperChannel().getId());
         refundOrder.setStatus(EnumRefundOrderStatus.REFUNDING.getId());
         this.refundOrderService.add(refundOrder);
-        final Pair<Integer, String> resultPair = this.refundImpl(refundOrder, payOrder);
+        //add by wayne 2017/05/20 好收银退款单
+        HsyRefundOrder hsyRefundOrder=null;
+        HsyOrder newhsyorder=null;
+        final Optional<HsyOrder> orderOptional =this.hsyOrderService.selectByOrderNo(payOrder.getOrderNo());
+        if(orderOptional.isPresent()) {
+            HsyOrder hsyOrder = orderOptional.get();
+            hsyRefundOrder = new HsyRefundOrder();
+            hsyRefundOrder.setHsyorderid(hsyOrder.getId());
+            hsyRefundOrder.setRefundno("");
+            hsyRefundOrder.setRefundamount(payOrder.getRealPayAmount());
+            hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUNDING.getId());
+            hsyRefundOrder.setUpperchannel(EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getUpperChannel().getId());
+            this.hsyRefundOrderService.insert(hsyRefundOrder);
+
+            newhsyorder=new HsyOrder();
+            if(hsyOrder.getRefundamount()==null){hsyOrder.setRefundamount(new BigDecimal(0));}
+            newhsyorder.setId(hsyOrder.getId());
+            newhsyorder.setRefundamount(hsyOrder.getRefundamount().add(payOrder.getRealPayAmount()));
+            newhsyorder.setOrderstatus(EnumHsyOrderStatus.REFUNDING.getId());
+            this.hsyOrderService.update(newhsyorder);
+        }
+
+        final Pair<Integer, String> resultPair = this.refundImpl(refundOrder, payOrder,hsyRefundOrder,newhsyorder);
         if (0 == resultPair.getLeft()) {
             result.put("code", 0);
             result.put("msg", "退款成功");
@@ -452,11 +476,13 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      *
      * @param refundOrder 退款单
      * @param payOrder 交易单
+     * @param hsyRefundOrder 好收银退款单
+     * @param hsyOrder 好收银订单
      * @return
      */
     @Override
     @Transactional
-    public Pair<Integer, String> refundImpl(final RefundOrder refundOrder, final Order payOrder) {
+    public Pair<Integer, String> refundImpl(final RefundOrder refundOrder, final Order payOrder,final HsyRefundOrder hsyRefundOrder,final HsyOrder hsyOrder) {
         //退款到手续费账户
         this.refund2Poundage(refundOrder, payOrder);
         //退商户款
@@ -481,6 +507,18 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 refundOrder1.setRemark("退款失败");
                 refundOrder1.setMessage(paymentSdkRefundResponse.getMessage());
                 this.refundOrderService.update(refundOrder1);
+                //add by wayne 2017/05/20
+                if(hsyRefundOrder!=null&&hsyRefundOrder.getId()>0) {
+                    hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+                    hsyRefundOrder.setRemark("退款失败");
+                    this.hsyRefundOrderService.update(hsyRefundOrder);
+                }
+                if(hsyOrder!=null&&hsyOrder.getId()>0){
+                    hsyOrder.setOrderstatus(EnumHsyOrderStatus.REFUND_FAIL.getId());
+                    this.hsyOrderService.update(hsyOrder);
+                }
+
+
                 return Pair.of(-1, paymentSdkRefundResponse.getMessage());
             case SUCCESS:
                 this.orderService.updateRefundInfo(payOrder.getId(), refundOrder.getRefundAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
@@ -492,6 +530,19 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 refundOrder2.setMessage(paymentSdkRefundResponse.getMessage());
                 refundOrder2.setFinishTime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyyMMddHHmmss));
                 this.refundOrderService.update(refundOrder2);
+                //add by wayne 2017/05/20
+                if(hsyRefundOrder!=null&&hsyRefundOrder.getId()>0) {
+                    hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    hsyRefundOrder.setRemark("退款成功");
+                    hsyRefundOrder.setRefundtime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyyMMddHHmmss));
+                    this.hsyRefundOrderService.update(hsyRefundOrder);
+                }
+                if(hsyOrder!=null&&hsyOrder.getId()>0){
+                    hsyOrder.setOrderstatus(EnumHsyOrderStatus.REFUND_SUCCESS.getId());
+                    hsyOrder.setRefundtime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyyMMddHHmmss));
+                    this.hsyOrderService.update(hsyOrder);
+                }
+
                 if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
                     try {
                         this.sendMsgService.refundSendMessage(payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
