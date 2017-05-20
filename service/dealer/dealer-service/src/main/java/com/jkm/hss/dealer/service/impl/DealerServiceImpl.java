@@ -2421,6 +2421,23 @@ public class DealerServiceImpl implements DealerService {
         return pageModel;
     }
     /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    @Override
+    public PageModel<SecondDealerResponse> listSecondOem(SecondDealerSearchRequest secondDealerSearchRequest) {
+        final PageModel<SecondDealerResponse> pageModel = new PageModel<>(secondDealerSearchRequest.getPageNo(), secondDealerSearchRequest.getPageSize());
+        secondDealerSearchRequest.setOffset(pageModel.getFirstIndex());
+        secondDealerSearchRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectSecondOemCountByPage(secondDealerSearchRequest);
+        final List<SecondDealerResponse> dealers = this.dealerDao.selectSecondOemByPage(secondDealerSearchRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
+    }
+    /**
      * 【代理商后台】一级代理商列表
      *
      * @param firstDealerSearchRequest

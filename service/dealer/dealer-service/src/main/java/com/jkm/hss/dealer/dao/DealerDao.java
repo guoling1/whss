@@ -264,6 +264,20 @@ public interface DealerDao {
      * @return
      */
     List<SecondDealerResponse> selectSecondDealersByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【分公司后台】查询二级代理个数
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    int selectSecondOemCountByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【分公司后台】分页查询二级代理
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    List<SecondDealerResponse> selectSecondOemByPage(SecondDealerSearchRequest secondDealerSearchRequest);
 
 
     /**
