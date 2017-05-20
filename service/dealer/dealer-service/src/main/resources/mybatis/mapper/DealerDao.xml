@@ -495,7 +495,7 @@
         </where>
     </select>
 
-    <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
+    <select id="selectSecondOemCountByPage" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
             d.level = 2 and d.oem_id=#{dealerId}
@@ -539,7 +539,7 @@
         </where>
     </select>
 
-    <select id="selectSecondDealersByPage" resultType="com.jkm.hss.dealer.helper.response.SecondDealerResponse">
+    <select id="selectSecondOemByPage" resultType="com.jkm.hss.dealer.helper.response.SecondDealerResponse">
         SELECT
         d.id,
         d.proxy_name,
