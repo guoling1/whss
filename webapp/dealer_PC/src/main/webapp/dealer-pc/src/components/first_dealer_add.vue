@@ -6,7 +6,7 @@
         <div class="col-xs-13">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">添加二级代理商</h3>
+              <h3 class="box-title">添加一级代理商</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -187,8 +187,8 @@
       onSubmit: function () {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$http.post('/daili/dealer/addSecondDealer', this.form).then(res => {
-              this.$router.push('/daili/app/dealer_list');
+            this.$http.post('/daili/dealer/addFirstDealer', this.form).then(res => {
+              this.$router.push('/daili/app/first_dealer_list');
               this.$message({
                 showClose: true,
                 message: '创建代理商成功',

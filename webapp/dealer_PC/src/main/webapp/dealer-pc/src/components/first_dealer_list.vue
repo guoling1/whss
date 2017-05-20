@@ -180,7 +180,7 @@
     },
     methods: {
       addDealer: function () {
-        this.$router.push('/daili/app/dealer_add');
+        this.$router.push('/daili/app/first_dealer_add');
       },
       getData: function () {
         this.tableLoading = true;
