@@ -66,33 +66,33 @@
               </ul>
               <!--表格-->
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHss" border>
-                <el-table-column type="index" width="62" label="序号"></el-table-column>
-                <el-table-column prop="orderNo" label="订单号">
+                <el-table-column type="index" width="62" label="序号" fixed="left" type="index"></el-table-column>
+                <el-table-column prop="orderNo" label="订单号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="createTimes" label="订单创建时间"></el-table-column>
-                <el-table-column prop="merchantName" label="收款商户"></el-table-column>
+                <el-table-column prop="createTimes" label="订单创建时间" width="162"></el-table-column>
+                <el-table-column prop="merchantName" label="收款商户" min-width="112"></el-table-column>
                 <!--<el-table-column prop="proxyName1" label="分公司"></el-table-column>-->
                 <el-table-column prop="proxyName" label="所属一级"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级"></el-table-column>
-                <el-table-column prop="tradeOrderNo" label="交易订单号">
+                <el-table-column prop="tradeOrderNo" label="交易订单号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="scope.row.tradeOrderNo" style="cursor: pointer" title="点击复制">{{scope.row.tradeOrderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="sn" label="支付流水号">
+                <el-table-column prop="sn" label="支付流水号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="scope.row.sn" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="tradeAmount" label="订单金额" align="right"></el-table-column>
-                <el-table-column prop="payRate" label="费率" align="right"></el-table-column>
-                <el-table-column prop="poundage" label="手续费" align="right"></el-table-column>
-                <el-table-column prop="statusValue" label="订单状态"></el-table-column>
-                <el-table-column prop="paymentMethod" label="支付方式"></el-table-column>
-                <el-table-column prop="paySuccessTimes" label="交易时间"></el-table-column>
+                <el-table-column prop="tradeAmount" label="订单金额" align="right" min-width="90"></el-table-column>
+                <el-table-column prop="payRate" label="费率" align="right" min-width="90"></el-table-column>
+                <el-table-column prop="poundage" label="手续费" align="right" min-width="90"></el-table-column>
+                <el-table-column prop="statusValue" label="订单状态"  min-width="90"></el-table-column>
+                <el-table-column prop="paymentMethod" label="支付方式"  min-width="90"></el-table-column>
+                <el-table-column prop="paySuccessTimes" label="交易时间" width="162"></el-table-column>
               </el-table>
               <ul style="float: left;margin-top: 5px">
                 <li>
