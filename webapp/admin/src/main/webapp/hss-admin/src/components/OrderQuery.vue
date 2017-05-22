@@ -67,14 +67,26 @@
               <!--表格-->
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHss" border>
                 <el-table-column type="index" width="62" label="序号"></el-table-column>
-                <el-table-column prop="orderNo" label="订单号"></el-table-column>
+                <el-table-column prop="orderNo" label="订单号">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="createTimes" label="订单创建时间"></el-table-column>
                 <el-table-column prop="merchantName" label="收款商户"></el-table-column>
                 <!--<el-table-column prop="proxyName1" label="分公司"></el-table-column>-->
                 <el-table-column prop="proxyName" label="所属一级"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级"></el-table-column>
-                <el-table-column prop="tradeOrderNo" label="交易订单号"></el-table-column>
-                <el-table-column prop="sn" label="支付流水号"></el-table-column>
+                <el-table-column prop="tradeOrderNo" label="交易订单号">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.tradeOrderNo" style="cursor: pointer" title="点击复制">{{scope.row.tradeOrderNo|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="sn" label="支付流水号">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.sn" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="tradeAmount" label="订单金额" align="right"></el-table-column>
                 <el-table-column prop="payRate" label="费率" align="right"></el-table-column>
                 <el-table-column prop="poundage" label="手续费" align="right"></el-table-column>
@@ -225,6 +237,7 @@
 </template>
 
 <script lang="babel">
+  import Clipboard from "clipboard"
   export default{
     name: 'storeList',
     data(){
@@ -282,6 +295,15 @@
 //      })
 //    },
     created: function () {
+      var clipboard = new Clipboard('.td');
+      // 复制成功执行的回调，可选
+      clipboard.on('success', (e) => {
+        this.$message({
+          showClose: true,
+          message: "复制成功  内容为：" + e.text,
+          type: 'success'
+        });
+      });
       let time = new Date();
       this.dateHss = [time,time];
       for (var j = 0; j < this.dateHss.length; j++) {
