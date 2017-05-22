@@ -91,7 +91,7 @@
                 <li>
                   <label style="margin-right: 10px;">手续费</label>
                   <span>当页总额：{{pageTotalHss1}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <span>统计总额：{{addTotal1Hss1}}&nbsp;元</span>
+                  <span>统计总额：{{addTotalHss1}}&nbsp;元</span>
                 </li>
               </ul>
               <div class="block" style="text-align: right">
