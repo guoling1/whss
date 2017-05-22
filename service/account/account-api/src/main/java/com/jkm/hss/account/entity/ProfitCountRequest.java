@@ -9,6 +9,11 @@ import lombok.Data;
 public class ProfitCountRequest {
 
     /**
+     * 代理商账户id
+     */
+    private long accountId;
+
+    /**
      * 页数
      */
     private Integer pageNo;

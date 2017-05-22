@@ -2,6 +2,8 @@ package com.jkm.hss.account.sevice;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.ProfitCountRequest;
+import com.jkm.hss.account.entity.ProfitCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -98,4 +100,18 @@ public interface SplitAccountRecordService {
      * @return
      */
     List<SplitAccountRecord> getByOrderNo(String orderNo);
+
+    /**
+     * dealer_pc分润统计
+     * @param request
+     * @return
+     */
+    List<ProfitCountRespons> getProfit(ProfitCountRequest request);
+
+    /**
+     * 分润统计总数
+     * @param request
+     * @return
+     */
+    int getProfitCount(ProfitCountRequest request);
 }
