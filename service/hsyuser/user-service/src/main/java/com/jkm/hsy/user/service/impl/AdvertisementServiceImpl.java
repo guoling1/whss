@@ -36,7 +36,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         Advertisement advertisement=null;
         if (list != null && list.size() != 0) {
             advertisement=list.get(0);
-            return gson.toJson(list);
+            return gson.toJson(advertisement);
         }
         else
         {
