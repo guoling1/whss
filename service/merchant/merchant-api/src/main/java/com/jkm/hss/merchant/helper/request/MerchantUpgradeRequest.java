@@ -22,7 +22,7 @@ public class MerchantUpgradeRequest {
     /**
      * 支付方式
      */
-    private String thirdCompany;
+    private Integer channelTypeSign;
 
     /**
      * 升级后费率
