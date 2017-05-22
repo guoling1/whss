@@ -14,10 +14,12 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.enums.EnumInviteBtn;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
@@ -117,6 +119,8 @@ public class WxPubController extends BaseController {
     private PartnerRuleSettingService partnerRuleSettingService;
     @Autowired
     private UpgradeRulesService upgradeRulesService;
+    @Autowired
+    private OemInfoService oemInfoService;
 
 
 
@@ -183,23 +187,27 @@ public class WxPubController extends BaseController {
             }
         }
         String tempUrl = URLDecoder.decode(state, "UTF-8");
-        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
-        String[] wxArr  = redirectUrl.split("|");
-        String appId="";
-        String appSecret="";
-        String omeNo="";
-        for(int i =0;i<arr.length;i++){
-            if("appId".equals(arr[i].split("=")[0])){
-                appId = arr[i].split("=")[1];
-            }
-            if("appSecret".equals(arr[i].split("=")[0])){
-                appSecret = arr[i].split("=")[1];
-            }
-            if("omeNo".equals(arr[i].split("=")[0])){
-                omeNo = arr[i].split("=")[1];
+        String[] temArr = tempUrl.split("[?]");
+        String oemNo = "";
+        if(temArr.length>1){
+            String[] temArr1 = temArr[1].split("&");
+            for(int i =0;i<temArr1.length;i++){
+                if("oemNo".equals(arr[i].split("=")[0])){
+                    oemNo = arr[i].split("=")[1];
+                }
             }
         }
-        Map<String,String> ret = WxPubUtil.getOpenid(code,appId,appSecret);
+        Map<String,String> ret = null;
+       if(!"".equals(oemNo)){
+           Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+           if(oemInfoOptional.isPresent()){
+               ret = WxPubUtil.getOpenid(code,oemInfoOptional.get().getAppId(),oemInfoOptional.get().getAppSecret());
+           }else{
+               ret = WxPubUtil.getOpenid(code);
+           }
+       }else{
+           ret = WxPubUtil.getOpenid(code);
+       }
         CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
                 ApplicationConsts.getApplicationConfig().domain());
         return "redirect:"+tempUrl;

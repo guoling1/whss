@@ -69,7 +69,7 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
 
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final List<ProductChannelGateway> list = this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductIdAndDealerId(EnumProductType.HSS.getId(),
-                EnumGatewayType.PRODUCT.getId(), product.getId(), dealerId);
+                EnumGatewayType.PRODUCT.getId(), product.getId(), 0);
         for (ProductChannelGateway gateway : list){
             gateway.setDealerId(dealerId);
             this.productChannelGatewayDao.addNew(gateway);
