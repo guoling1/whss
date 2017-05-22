@@ -16,12 +16,12 @@
                 </li>
                 <li class="same">
                   <label>订单创建时间:</label>
-                  <el-date-picker style="width: 188px" v-model="dateHss" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" @change="datetimeSelect">
+                  <el-date-picker :clearable="false" style="width: 188px" v-model="dateHss" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" @change="datetimeSelect">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>交易时间:</label>
-                  <el-date-picker style="width: 188px" v-model="dateHss1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker :clearable="false" style="width: 188px" v-model="dateHss1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -42,7 +42,7 @@
                 </li>
                 <li class="same">
                   <label>支付方式：</label>
-                  <el-select style="width: 188px" clearable v-model="queryHss.paymentMethod" size="small">
+                  <el-select style="width: 188px" v-model="queryHss.paymentMethod" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="微信支付" value="1"></el-option>
                     <el-option label="支付宝支付" value="2"></el-option>
@@ -75,9 +75,9 @@
                 <el-table-column prop="proxyName1" label="所属二级"></el-table-column>
                 <el-table-column prop="tradeOrderNo" label="交易订单号"></el-table-column>
                 <el-table-column prop="sn" label="支付流水号"></el-table-column>
-                <el-table-column prop="tradeAmount" label="订单金额"></el-table-column>
-                <el-table-column prop="payRate" label="费率"></el-table-column>
-                <el-table-column prop="poundage" label="手续费"></el-table-column>
+                <el-table-column prop="tradeAmount" label="订单金额" align="right"></el-table-column>
+                <el-table-column prop="payRate" label="费率" align="right"></el-table-column>
+                <el-table-column prop="poundage" label="手续费" align="right"></el-table-column>
                 <el-table-column prop="statusValue" label="订单状态"></el-table-column>
                 <el-table-column prop="paymentMethod" label="支付方式"></el-table-column>
                 <el-table-column prop="paySuccessTimes" label="交易时间"></el-table-column>
@@ -363,11 +363,19 @@
               };
               var total=0,total1=0;
               for (let i = 0; i < res.data.records.length; i++) {
-                total = toFix(parseFloat(total)+parseFloat(res.data.records[i].tradeAmount));
-                total = toFix(parseFloat(total)+parseFloat(res.data.records[i].poundage))
+                if(res.data.records[i].payRate!=null){
+                  res.data.records[i].payRate = toFix(res.data.records[i].payRate*100)+"%";
+                }
+                if(res.data.records[i].tradeAmount!=null){
+                  total = toFix(parseFloat(total)+parseFloat(res.data.records[i].tradeAmount));
+                }
+                if(res.data.records[i].poundage!=null){
+                  total1 = toFix(parseFloat(total1)+parseFloat(res.data.records[i].poundage))
+
+                }
               }
               this.pageTotalHss = total;
-              this.pageTotalHss = total1;
+              this.pageTotalHss1 = total1;
             },1000)
             this.countHss = res.data.count;
           }, function (err) {
@@ -382,17 +390,18 @@
           })
       },
       getAddTotalHss(){
-//        this.$http.post('/admin/allProfit/companyAmount',this.queryCom)
-//          .then(res=>{
-//            this.addTotalCom = res.data;
-//          })
-//          .catch(err=>{
-//            this.$message({
-//              showClose: true,
-//              message: err.statusMessage,
-//              type: 'error'
-//            });
-//          })
+        this.$http.post('/admin/queryOrder/getOrderCount',this.queryHss)
+          .then(res=>{
+            this.addTotalHss = res.data.totalPayment;
+            this.addTotalHss1 = res.data.totalPoundage;
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       },
       getDataHsy: function () {
 //        this.loading = true;
