@@ -106,7 +106,6 @@ public class DealerServiceImpl implements DealerService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
-    @Autowired
     private DealerProfitService dealerProfitService;
     @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
@@ -2331,7 +2330,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer dealer = dealerOptional.get();
         dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
         dealer.setInviteBtn(EnumRecommendBtn.OFF.getId());
-        this.updateRecommendBtnAndTotalProfitSpace(dealer);
+        this.updateRecommendBtn(dealer);
         final HssOemAddOrUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
         final List<HssOemAddOrUpdateRequest.Channel> channels = product.getChannels();
@@ -2942,16 +2941,6 @@ public class DealerServiceImpl implements DealerService {
 
 
 
-    //判断所属通道是否属于升级网关通道
-    private boolean isBelongPartnerRulesSetting(int channelSign){
-
-        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
-        Optional<PartnerRuleSetting> partnerRuleSettingOptional =
-        this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign);
-
-        return partnerRuleSettingOptional.isPresent();
-    }
-
     @Override
     public List<BranchAccountResponse> getBranch(BranchAccountRequest req) {
         List<BranchAccountResponse> list = this.dealerDao.getBranch(req);
@@ -2983,5 +2972,12 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
         return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+    }
+    //判断所属通道是否属于升级网关通道
+    private boolean isBelongPartnerRulesSetting(int channelSign){
+        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
+        Optional<PartnerRuleSetting> partnerRuleSettingOptional =
+        this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign);
+        return partnerRuleSettingOptional.isPresent();
     }
 }
