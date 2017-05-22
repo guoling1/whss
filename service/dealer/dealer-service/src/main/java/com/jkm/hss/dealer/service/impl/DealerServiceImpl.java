@@ -51,10 +51,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
-import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hss.product.servcie.PartnerRuleSettingService;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import lombok.extern.slf4j.Slf4j;
@@ -111,6 +108,8 @@ public class DealerServiceImpl implements DealerService {
     private PartnerRuleSettingService partnerRuleSettingService;
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private ProductChannelGatewayService productChannelGatewayService;
     /**
      * {@inheritDoc}
      * 有问题
@@ -2000,6 +1999,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setOemId(firstLevelDealerAdd2Request.getOemId());
         this.add2(dealer);
         if(firstLevelDealerAdd2Request.getOemType()==EnumOemType.OEM.getId()){
+            productChannelGatewayService.initOemGateway(dealer.getId());
             this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.OEM, EnumGlobalIDPro.MIN,dealer.getId()+""),
                     GlobalID.GetInviteID(EnumGlobalDealerLevel.OEM,dealer.getId()+""),dealer.getId());
         }else{

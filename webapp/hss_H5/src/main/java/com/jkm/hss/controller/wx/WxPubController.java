@@ -156,7 +156,7 @@ public class WxPubController extends BaseController {
     }
 
     /**
-     * 好收收注册微信跳转页面
+     * 分公司微信跳转
      * @param request
      * @param response
      * @param model

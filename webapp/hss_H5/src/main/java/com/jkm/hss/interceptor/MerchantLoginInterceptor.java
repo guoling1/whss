@@ -36,7 +36,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 String url = "";
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    String tempUrl = "appId="+oemInfoOptional.get().getAppId()+"|appSecret="+oemInfoOptional.get().getAppSecret()+"|omeNo="+omeNo;
+                    String tempUrl = "omeNo="+omeNo;
                     String encoderUrl = URLEncoder.encode(tempUrl, "UTF-8");
                     url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
