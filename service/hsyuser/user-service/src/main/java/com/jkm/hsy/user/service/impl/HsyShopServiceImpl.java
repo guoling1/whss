@@ -263,6 +263,31 @@ public class HsyShopServiceImpl implements HsyShopService {
         return "{\"auStep\":\"3\"}";
     }
 
+    /**
+     * 设置商户邮箱
+     */
+    public String updateHsyShopEmail(String dataParam, AppParam appParam) throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+
+        /**参数转化*/
+        AppBizShop appBizShop=null;
+        try{
+            appBizShop=gson.fromJson(dataParam, AppBizShop.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+        /**参数验证*/
+        if(!(appBizShop.getId()!=null&&!appBizShop.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
+        if(!(appBizShop.getEmail()!=null&&!appBizShop.getEmail().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"邮箱");
+        /**商铺 用户修改*/
+        Date date=new Date();
+        appBizShop.setUpdateTime(date);
+        hsyShopDao.update(appBizShop);
+        return "";
+    }
+
     /**HSY001007 保存结算账户*/
     public String insertHsyCard(String dataParam,AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
