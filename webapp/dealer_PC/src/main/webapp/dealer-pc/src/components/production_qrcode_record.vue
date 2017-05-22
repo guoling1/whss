@@ -46,8 +46,16 @@
                 <el-table-column prop="startCode" label="起始号码"></el-table-column>
                 <el-table-column prop="endCode" label="终止号码"></el-table-column>
                 <el-table-column prop="count" label="产生个数"></el-table-column>
-                <el-table-column prop="qrType" label="二维码类型"></el-table-column>
-                <el-table-column prop="sysType" label="产品名称"></el-table-column>
+                <el-table-column label="二维码类型">
+                  <template scope="scope">
+                    {{ scope.row.qrType | f_qrcodeType }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="产品名称">
+                  <template scope="scope">
+                    {{ scope.row.sysType | f_sysType }}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="subCompanyName" label="生产公司"></el-table-column>
                 <el-table-column prop="operatorName" label="操作人"></el-table-column>
               </el-table>
@@ -148,7 +156,16 @@
     filters: {
       f_sysType: function (v) {
         if (v == 'hss') {
-
+          return '好收收'
+        } else if (v == 'hsy') {
+          return '好收银'
+        }
+      },
+      f_qrcodeType: function (v) {
+        if (v == '1') {
+          return '实体码'
+        } else if (v == '2') {
+          return '电子码'
         }
       }
     }
