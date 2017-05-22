@@ -51,7 +51,8 @@
                         "userID"                       :   $("#userID").val(),
                         "source"                       :   $("#source").val(),
                         "cid"                          :   $("#cid").val(),
-                        "mcid"                         :   $(":radio:checked").val()
+                        "mcid"                         :   $(":radio:checked").val(),
+                        "isDeposited"                  :  $(":radio:checked").attr("isDeposited")
 
                     },
                     error: function () {
@@ -59,7 +60,12 @@
                     },
                     success: function (data) {
                         if(data.flag=="success")
-                            location.href="<%=basePath%>membership/createMemberSuccess?mid="+data.mid;
+                        {
+                            if(data.status==1)
+                                location.href="<%=basePath%>membership/createMemberSuccess?mid="+data.mid;
+                            else
+                                location.href="<%=basePath%>membership/needRecharge?mid="+data.mid+"&cellphone="+$("#consumerCellphone").val();
+                        }
                         else
                             alert(data.result);
                     }

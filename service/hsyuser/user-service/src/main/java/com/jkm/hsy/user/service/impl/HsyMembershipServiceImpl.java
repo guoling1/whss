@@ -60,9 +60,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             throw new ApiHandleException(ResultCode.DISCOUNT_NOT_RIGHT);
         if(!(appPolicyMembershipCard.getIsDeposited()!=null&&!appPolicyMembershipCard.getIsDeposited().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"储值功能");
-        if(appPolicyMembershipCard.getIsDeposited()==1)
-            if(!(appPolicyMembershipCard.getDepositAmount()!=null&&!appPolicyMembershipCard.getDepositAmount().equals("")))
-                throw new ApiHandleException(ResultCode.PARAM_LACK,"开卡储值金额");
+        if(appPolicyMembershipCard.getIsDeposited()==1) {
+            if (!(appPolicyMembershipCard.getDepositAmount() != null && !appPolicyMembershipCard.getDepositAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "开卡储值金额");
+            if(appPolicyMembershipCard.getDepositAmount().compareTo(BigDecimal.ZERO)!=1)
+                throw new ApiHandleException(ResultCode.DEPOSIT_AMOUNT_MUST_BE_ABOVE_ZERO);
+        }
         if(!(appPolicyMembershipCard.getIsPresentedViaActivate()!=null&&!appPolicyMembershipCard.getIsPresentedViaActivate().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"开卡送功能");
         if(appPolicyMembershipCard.getIsPresentedViaActivate()==1)
@@ -225,14 +228,16 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return appPolicyConsumer;
     }
 
-    public AppPolicyMember saveMember(Long cid,Long mcid){
+    public AppPolicyMember saveMember(Long cid,Long mcid,Integer status,Long accountID,Long receiptAccountID){
         Date date=new Date();
         AppPolicyMember appPolicyMember=new AppPolicyMember();
         appPolicyMember.setCid(cid);
         appPolicyMember.setMcid(mcid);
-        appPolicyMember.setStatus(1);
+        appPolicyMember.setStatus(status);
         appPolicyMember.setCreateTime(date);
         appPolicyMember.setUpdateTime(date);
+        appPolicyMember.setAccountID(accountID);
+        appPolicyMember.setReceiptAccountID(receiptAccountID);
         hsyMembershipDao.insertMember(appPolicyMember);
         DecimalFormat a=new DecimalFormat("00000000");
         String memberCardNO= AppDateUtil.formatDate(date,"yy")+a.format(appPolicyMember.getId());

@@ -23,7 +23,7 @@ public interface HsyMembershipService {
     public AppPolicyMember findMemberByCIDAndMCID(Long cid, Long mcid);
     public List findMemberCardByUID(Long uid);
     public AppPolicyConsumer insertOrUpdateConsumer(AppPolicyConsumer appPolicyConsumer);
-    public AppPolicyMember saveMember(Long cid,Long mcid);
+    public AppPolicyMember saveMember(Long cid,Long mcid,Integer status,Long accountID,Long receiptAccountID);
     public AppPolicyConsumer findConsumerByCellphone(String consumerCellphone);
     public void insertVcode(String sn, String code, String cellphone, Integer type);
     public AppAuVerification findRightVcode(String cellphone);

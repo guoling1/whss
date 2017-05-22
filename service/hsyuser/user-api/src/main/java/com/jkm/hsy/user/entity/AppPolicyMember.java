@@ -12,6 +12,7 @@ public class AppPolicyMember {
     private Long cid;//消费者ID
     private Long mcid;//卡ID
     private Long accountID;//账户ID
+    private Long receiptAccountID;//统计账户ID
     private String memberCardNO;//会员卡号
     private Integer status;//状态1正常
     private Date createTime;
@@ -24,6 +25,7 @@ public class AppPolicyMember {
     private String membershipName;//会员卡名称
     private String membershipShopName;//会员卡上显示的店铺名称
     private BigDecimal discount;//会员卡折扣(折)
+    private BigDecimal depositAmount;//开卡储值金额
 
     public Long getId() {
         return id;
@@ -144,5 +146,21 @@ public class AppPolicyMember {
     public void setOpenID(String openID) {
         this.openID = openID;
 
+    }
+
+    public Long getReceiptAccountID() {
+        return receiptAccountID;
+    }
+
+    public void setReceiptAccountID(Long receiptAccountID) {
+        this.receiptAccountID = receiptAccountID;
+    }
+
+    public BigDecimal getDepositAmount() {
+        return depositAmount;
+    }
+
+    public void setDepositAmount(BigDecimal depositAmount) {
+        this.depositAmount = depositAmount;
     }
 }

@@ -32,7 +32,7 @@
     </select>
 
     <select id="findMemberByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
-        select ID,CID,MCID,ACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME
+        select ID,CID,MCID,ACCOUNTID,RECEIPTACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME
         from app_policy_member
         where 1=1
         <if test="cid!=null and cid!=''">and CID=#{cid}</if>
@@ -40,7 +40,7 @@
     </select>
 
     <select id="findMemberCascadeByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
-        select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME
+        select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME
         from app_policy_member member left join app_policy_membership_card card on member.MCID=card.ID
         where 1=1
         <if test="cid!=null and cid!=''">and member.CID=#{cid}</if>
@@ -72,8 +72,8 @@
     </update>
 
     <insert id="insertMember" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyMember">
-        insert into app_policy_member(ID,CID,MCID,ACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME)
-        values(#{id},#{cid},#{mcid},#{accountID},#{memberCardNO},#{status},#{createTime},#{updateTime})
+        insert into app_policy_member(ID,CID,MCID,ACCOUNTID,RECEIPTACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME)
+        values(#{id},#{cid},#{mcid},#{accountID},#{receiptAccountID},#{memberCardNO},#{status},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateMember" parameterType="com.jkm.hsy.user.entity.AppPolicyMember">
@@ -82,6 +82,7 @@
             <if test="cid!=null">CID=#{cid},</if>
             <if test="mcid!=null">MCID=#{mcid},</if>
             <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
+            <if test="receiptAccountID!=null">RECEIPTACCOUNTID=#{receiptAccountID},</if>
             <if test="memberCardNO!=null and memberCardNO!=''">MEMBERCARDNO=#{memberCardNO},</if>
             <if test="status!=null">STATUS=#{status},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
@@ -90,7 +91,7 @@
     </update>
 
     <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
-        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
@@ -110,4 +111,5 @@
         select count(*) from app_policy_member member left join app_policy_membership_card card on card.ID=member.MCID
         where card.UID=#{uid}
     </select>
+
 </mapper>

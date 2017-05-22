@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.account.sevice.MemberAccountService;
+import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
 import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.entity.AuthParam;
 import com.jkm.hss.merchant.helper.WxConstants;
@@ -15,6 +17,7 @@ import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.constant.AppPolicyConstant;
+import com.jkm.hsy.user.constant.MemberStatus;
 import com.jkm.hsy.user.constant.VerificationCodeType;
 import com.jkm.hsy.user.entity.AppAuVerification;
 import com.jkm.hsy.user.entity.AppPolicyConsumer;
@@ -59,6 +62,10 @@ public class MembershipController {
     private AlipayOauthService alipayOauthService;
     @Autowired
     private HsyMembershipService hsyMembershipService;
+    @Autowired
+    private MemberAccountService memberAccountService;
+    @Autowired
+    private ReceiptMemberMoneyAccountService receiptMemberMoneyAccountService;
 
     @RequestMapping("getAuth/{uidEncode}")
     public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode){
@@ -196,12 +203,19 @@ public class MembershipController {
             return "/createMember";
         }
 
+        if(appPolicyMember.getStatus()==2)
+        {
+            model.addAttribute("mid",appPolicyMember.getId());
+            model.addAttribute("cellphone",appPolicyConsumer.getConsumerCellphone());
+            return "/needRecharge";
+        }
+
         model.addAttribute("mid", appPolicyMember.getId());
         return "redirect:/membership/createMemberSuccess";
     }
 
     @RequestMapping("createMember")
-    public void createMember(HttpServletRequest request, HttpServletResponse response,PrintWriter pw, AppPolicyConsumer appPolicyConsumer,String source,String vcode,Long mcid,Long cid){
+    public void createMember(HttpServletRequest request, HttpServletResponse response,PrintWriter pw, AppPolicyConsumer appPolicyConsumer,String source,String vcode,Long mcid,Long cid,Integer isDeposited){
         Map<String,String> map=new HashMap<String,String>();
         if(!(appPolicyConsumer.getConsumerCellphone()!=null&&!appPolicyConsumer.getConsumerCellphone().equals("")))
         {
@@ -240,6 +254,11 @@ public class MembershipController {
             return;
         }
 
+        Integer status;
+        if(isDeposited==0)
+            status=MemberStatus.ACTIVE.key;
+        else
+            status=MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key;
         AppPolicyMember appPolicyMember=null;
         if(cid!=null)//判断是否注册过消费者
             appPolicyConsumer.setId(cid);
@@ -250,7 +269,11 @@ public class MembershipController {
                 hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
                 appPolicyMember=hsyMembershipService.findMemberByCIDAndMCID(appPolicyConsumer.getId(),mcid);
                 if(appPolicyMember==null)//判断是否有该店会员卡
-                    appPolicyMember=hsyMembershipService.saveMember(appPolicyConsumer.getId(),mcid);
+                {
+                    Long accountID= memberAccountService.init();
+                    Long receiptAccountID=receiptMemberMoneyAccountService.init();
+                    appPolicyMember = hsyMembershipService.saveMember(appPolicyConsumer.getId(), mcid, status,accountID,receiptAccountID);
+                }
                 map.put("flag","success");
                 map.put("mid",appPolicyMember.getId()+"");
                 writeJsonToRrsponse(map,response,pw);
@@ -258,9 +281,12 @@ public class MembershipController {
             }
         }
         hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
-        appPolicyMember=hsyMembershipService.saveMember(appPolicyConsumer.getId(),mcid);
+        Long accountID= memberAccountService.init();
+        Long receiptAccountID=receiptMemberMoneyAccountService.init();
+        appPolicyMember=hsyMembershipService.saveMember(appPolicyConsumer.getId(),mcid,status,accountID,receiptAccountID);
         map.put("flag","success");
         map.put("mid",appPolicyMember.getId()+"");
+        map.put("status",status+"");
         writeJsonToRrsponse(map,response,pw);
         return;
     }
@@ -276,6 +302,20 @@ public class MembershipController {
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         model.addAttribute("appPolicyMember",appPolicyMember);
         return "/memberInfo";
+    }
+
+    @RequestMapping("needRecharge")
+    public String needRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String cellphone){
+        model.addAttribute("mid",mid);
+        model.addAttribute("cellphone",cellphone);
+        return "/needRecharge";
+    }
+
+    @RequestMapping("toRecharge")
+    public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        model.addAttribute("appPolicyMember",appPolicyMember);
+        return "/toRecharge";
     }
 
     @RequestMapping("sendVcode")
