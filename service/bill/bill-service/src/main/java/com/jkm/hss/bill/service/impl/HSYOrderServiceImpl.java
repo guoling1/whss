@@ -187,7 +187,6 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
                 hsyTradeListResponse.setId(hsyOrder.getId());
                 hsyTradeListResponse.setOrderNo(hsyOrder.getOrderno());
-                hsyTradeListResponse.setOrderId(hsyOrder.getId());
                 hsyTradeListResponse.setShopName(hsyOrder.getShopname());
                 hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
                 hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
@@ -239,7 +238,6 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
         hsyTradeListResponse.setId(hsyOrder.getId());
         hsyTradeListResponse.setOrderNo(hsyOrder.getOrderno());
-        hsyTradeListResponse.setOrderId(hsyOrder.getId());
         hsyTradeListResponse.setShopName(hsyOrder.getShopname());
         hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
         hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
