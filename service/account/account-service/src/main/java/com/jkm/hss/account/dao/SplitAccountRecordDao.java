@@ -1,5 +1,7 @@
 package com.jkm.hss.account.dao;
 
+import com.jkm.hss.account.entity.ProfitCountRequest;
+import com.jkm.hss.account.entity.ProfitCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -57,4 +59,18 @@ public interface SplitAccountRecordDao {
      * @return
      */
     List<SplitAccountRecord> selectByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * dealer_pc 分润统计
+     * @param request
+     * @return
+     */
+    List<ProfitCountRespons> getProfit(ProfitCountRequest request);
+
+    /**
+     * dealer_pc 分润统计
+     * @param request
+     * @return
+     */
+    int getProfitCount(ProfitCountRequest request);
 }
