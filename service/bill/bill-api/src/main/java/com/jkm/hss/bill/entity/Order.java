@@ -77,6 +77,11 @@ public class Order extends BaseEntity {
     private BigDecimal realPayAmount;
 
     /**
+     * 营销金额
+     */
+    private BigDecimal marketingAmount;
+
+    /**
      * 退款金额
      */
     private BigDecimal refundAmount;

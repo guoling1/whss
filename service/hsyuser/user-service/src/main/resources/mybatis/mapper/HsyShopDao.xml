@@ -18,6 +18,7 @@
             <if test="industryCode!=null and industryCode!=''">INDUSTRYCODE=#{industryCode},</if>
             <if test="districtCode!=null and districtCode!=''">DISTRICTCODE=#{districtCode},</if>
             <if test="address!=null and address!=''">ADDRESS=#{address},</if>
+            <if test="email!=null and email!=''">EMAIL=#{email},</if>
             <if test="licenceID!=null and licenceID!=''">LICENCEID=#{licenceID},</if>
             <if test="storefrontID!=null and storefrontID!=''">STOREFRONTID=#{storefrontID},</if>
             <if test="counterID!=null and counterID!=''">COUNTERID=#{counterID},</if>

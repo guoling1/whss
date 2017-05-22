@@ -10,6 +10,7 @@ public class TradeListRequestParam extends PageQueryParams {
     private String endTime;
     private String channel;
     private String[] paymentChannels;
+    // /1当日  2按传参时间统计
     private int stType;
 
     public int getShopId() {
@@ -52,4 +53,11 @@ public class TradeListRequestParam extends PageQueryParams {
         this.paymentChannels = paymentChannels;
     }
 
+    public int getStType() {
+        return stType;
+    }
+
+    public void setStType(int stType) {
+        this.stType = stType;
+    }
 }

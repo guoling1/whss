@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
-import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
@@ -18,7 +17,6 @@ import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.service.CalculateService;
-import com.jkm.hss.bill.service.MergeTableSettlementDateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.merchant.entity.AccountBank;
@@ -28,7 +26,6 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -36,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/5/3.
@@ -135,6 +131,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         Preconditions.checkState(orderOptional.get().isDuePay());
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
         final PayResponse payResponse = new PayResponse();
+        payResponse.setTradeOrderId(order.getId());
         payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         payResponse.setTradeOrderNo(order.getOrderNo());
         switch (enumBasicStatus) {
@@ -545,8 +542,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         //会员账户额度增加
         final MemberAccount updateMemberAccount = new MemberAccount();
         updateMemberAccount.setId(memberAccount.getId());
-        updateMemberAccount.setRechargeTotalAmount(memberAccount.getRechargeTotalAmount().add(order.getTradeAmount()));
-        updateMemberAccount.setAvailable(memberAccount.getAvailable().add(order.getTradeAmount()));
+        updateMemberAccount.setRechargeTotalAmount(memberAccount.getRechargeTotalAmount().add(order.getTradeAmount()).add(order.getMarketingAmount()));
+        updateMemberAccount.setAvailable(memberAccount.getAvailable().add(order.getTradeAmount()).add(order.getMarketingAmount()));
         this.memberAccountService.update(updateMemberAccount);
         //会员账户额度增加-添加流水
         final MemberAccountFlow memberAccountFlow = new MemberAccountFlow();
@@ -554,15 +551,15 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         memberAccountFlow.setFlowNo(this.memberAccountFlowService.getFlowNo());
         memberAccountFlow.setOrderNo(order.getOrderNo());
         memberAccountFlow.setBeforeAmount(memberAccount.getAvailable());
-        memberAccountFlow.setAfterAmount(memberAccount.getAvailable().add(order.getTradeAmount()));
+        memberAccountFlow.setAfterAmount(memberAccount.getAvailable().add(order.getTradeAmount()).add(order.getMarketingAmount()));
         memberAccountFlow.setOutAmount(new BigDecimal("0.00"));
-        memberAccountFlow.setIncomeAmount(order.getTradeAmount());
+        memberAccountFlow.setIncomeAmount(order.getTradeAmount().add(order.getMarketingAmount()));
         memberAccountFlow.setChangeTime(new Date());
         memberAccountFlow.setType(EnumAccountFlowType.INCREASE.getId());
         memberAccountFlow.setRemark("充值增加");
         this.memberAccountFlowService.add(memberAccountFlow);
         //商户收会员款账户充值总额增加
-        this.receiptMemberMoneyAccountService.increaseRechargeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount().subtract(order.getPoundage()));
+        this.receiptMemberMoneyAccountService.increaseRechargeAmount(receiptMemberMoneyAccount.getId(), order.getTradeAmount().add(order.getMarketingAmount()));
     }
 
     /**
@@ -606,12 +603,15 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                     response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
                 } catch (final Throwable e) {
                     log.error("结算单[" + settlementRecord.getSettleNo() + "], 请求网关支付异常", e);
+                    response = new PaymentSdkDaiFuResponse();
+                    response.setStatus(EnumBasicStatus.FAIL.getId());
+                    response.setMessage("请求网关异常");
                 }
                 this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAWING.getId());
                 final SettleAccountFlow settleAccountFlow = this.settleAccountFlowService.getBySettlementRecordId(settlementRecordId).get(0);
                 final Order payOrder = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo()).get();
                 this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLE_ING.getId());
-
+                this.handleWithdrawBySettlementResult(settlementRecordId, response);
             }
         }
     }
@@ -704,7 +704,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             switch (status) {
                 case SUCCESS:
                     log.info("提现单[{}]，提现成功", order.getOrderNo());
-                    this.markWithdrawByAcccountSuccess(order, response);
+                    this.markWithdrawByAccountSuccess(order, response);
                     return Pair.of(0, response.getMessage());
                 case FAIL:
                     log.error("提现单[{}]，提现失败", order.getOrderNo());
@@ -774,7 +774,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
      * @param order
      * @param response
      */
-    private void markWithdrawByAcccountSuccess(final Order order, final PaymentSdkDaiFuResponse response) {
+    private void markWithdrawByAccountSuccess(final Order order, final PaymentSdkDaiFuResponse response) {
         if (order.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(order.getPayer()).get();
             final Order updateOrder = new Order();
