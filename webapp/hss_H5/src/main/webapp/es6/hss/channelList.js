@@ -57,35 +57,31 @@ http.post('/channel/list', {}, function (list) {
     group.className = 'channel-group';
     group.onclick = function () {
       let amount = getQueryString('amount');
+      let orderId = getQueryString('id');
       if (amount > 0) {
         checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
             message.load_show('正在支付');
-            // 支付前下单
-            http.post('/trade/generateOrder', {
-              amount: amount
-            }, function (order) {
-              switch (list[i].payMethod) {
-                case '快捷':
-                  http.post('/trade/unionPayRoute', {  // /wx/receipt
-                    orderId: order.orderId,
-                    payChannel: list[i].channelSign
-                  }, function (data) {
-                    message.load_hide();
-                    window.location.replace(data.url);
-                  });
-                  break;
-                default:
-                  http.post('/trade/dcReceipt', {  // /wx/receipt
-                    orderId: order.orderId,
-                    payChannel: list[i].channelSign
-                  }, function (data) {
-                    message.load_hide();
-                    window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
-                  });
-                  break;
-              }
-            });
+            switch (list[i].payMethod) {
+              case '快捷':
+                http.post('/trade/unionPayRoute', {  // /wx/receipt
+                  orderId: orderId,
+                  payChannel: list[i].channelSign
+                }, function (data) {
+                  message.load_hide();
+                  window.location.replace(data.url);
+                });
+                break;
+              default:
+                http.post('/trade/dcReceipt', {  // /wx/receipt
+                  orderId: orderId,
+                  payChannel: list[i].channelSign
+                }, function (data) {
+                  message.load_hide();
+                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
+                });
+                break;
+            }
           } else {
             message.load_hide();
           }
