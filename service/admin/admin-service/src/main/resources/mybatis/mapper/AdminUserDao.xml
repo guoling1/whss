@@ -75,18 +75,18 @@
     </select>
 
     <select id="selectByUsernameAndType" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and type=#{type} and status=1
+        SELECT * FROM tb_admin_user WHERE username = #{username}  and status=1
     </select>
 
     <select id="selectDealerLoginNameByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and type in (2,3,4) and status=1
+        SELECT * FROM tb_admin_user WHERE username = #{username} and status=1
     </select>
 
     <select id="getAdminUserByNameAndTypeUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and type=#{type} and status=1 and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
+        SELECT * FROM tb_admin_user WHERE username = #{username}  and status=1 and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
     </select>
     <select id="getAdminDealerUserByNameUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and type in (2,3,4) and status=1 and id not in (select id from tb_admin_user where type in (2,3) and is_master=1 and dealer_id=#{dealerId})
+        SELECT * FROM tb_admin_user WHERE username = #{username} and status=1 and id not in (select id from tb_admin_user where  is_master=1 and dealer_id=#{dealerId})
     </select>
     <update id="updatePwd">
         UPDATE tb_admin_user
@@ -237,7 +237,7 @@
     </select>
 
     <select id="selectByUsernameAndTypeUnIncludeNow" resultType="java.lang.Long">
-        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type=#{type} and status=1
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and status=1
     </select>
 
     <update id="updateLastLoginDate">

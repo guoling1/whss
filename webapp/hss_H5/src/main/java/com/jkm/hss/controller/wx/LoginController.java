@@ -19,6 +19,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.response.CurrentRulesResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -28,15 +29,11 @@ import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.service.*;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.UpgradePayRecord;
-import com.jkm.hss.product.entity.UpgradeRules;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.*;
+import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import com.jkm.hss.product.helper.response.UpgradeResult;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.UpgradePayRecordService;
-import com.jkm.hss.product.servcie.UpgradeRulesService;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -114,6 +111,12 @@ public class LoginController extends BaseController {
 
     @Autowired
     private AccountBankService accountBankService;
+
+    @Autowired
+    private PartnerRuleSettingService partnerRuleSettingService;
+
+    @Autowired
+    private ProductService productService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -1155,7 +1158,7 @@ public class LoginController extends BaseController {
     private String getNameByLevel(int level){
         String name = "";
         if(level==0){
-            name="普通会员";
+            name="普通";
         }
         if(level==1){
             name="店员";
@@ -1215,72 +1218,9 @@ public class LoginController extends BaseController {
                         model.addAttribute("mobile",phone);
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
-
-                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
-                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
-                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
-                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
-                        List<MerchantChannelRate> weixinMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
-                        model.addAttribute("weixinRate",weixinMerchantChannelRateList.get(0).getMerchantPayRate());
-                        MerchantGetRateRequest zhifubaoMerchantGetRateRequest = new MerchantGetRateRequest();
-                        zhifubaoMerchantGetRateRequest.setProductId(result.get().getProductId());
-                        zhifubaoMerchantGetRateRequest.setMerchantId(result.get().getId());
-                        zhifubaoMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
-                        List<MerchantChannelRate> zhifubaoMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(zhifubaoMerchantGetRateRequest);
-                        model.addAttribute("alipayRate",zhifubaoMerchantChannelRateList.get(0).getMerchantPayRate());
-                        MerchantGetRateRequest fastPayMerchantGetRateRequest = new MerchantGetRateRequest();
-                        fastPayMerchantGetRateRequest.setProductId(result.get().getProductId());
-                        fastPayMerchantGetRateRequest.setMerchantId(result.get().getId());
-                        fastPayMerchantGetRateRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
-                        List<MerchantChannelRate> fastPayMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(fastPayMerchantGetRateRequest);
-                        model.addAttribute("fastRate",fastPayMerchantChannelRateList.get(0).getMerchantPayRate());
-
-//                        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
-//                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
-//                        if(productChannelDetails.size()==0){
-//                            model.addAttribute("message","该产品商户基础费率不存在");
-//                            return "/500";
-//                        }
-                        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
-                        if(!weixinProductChannelDetail.isPresent()){
-                            model.addAttribute("message","微信基础费率不存在");
-                            return "/500";
-                        }
-                        Optional<ProductChannelDetail> zhifubaoProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.ALIPAY.getId());
-                        if(!zhifubaoProductChannelDetail.isPresent()){
-                            model.addAttribute("message","支付宝基础费率不存在");
-                            return "/500";
-                        }
-                        Optional<ProductChannelDetail> fastPayProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.UNIONPAY.getId());
-                        if(!fastPayProductChannelDetail.isPresent()){
-                            model.addAttribute("message","快捷基础费率不存在");
-                            return "/500";
-                        }
-                        //商户升级规则设置
-                        List<UpgradeResult> list = new ArrayList<UpgradeResult>();
-                        UpgradeResult upgradeResult = new UpgradeResult();
-                        upgradeResult.setId(0);
-                        upgradeResult.setName("普通");
-                        upgradeResult.setType(0);
-                        upgradeResult.setIsUpgrade(1);
-                        upgradeResult.setWeixinRate(weixinProductChannelDetail.get().getProductMerchantPayRate());
-                        upgradeResult.setAlipayRate(zhifubaoProductChannelDetail.get().getProductMerchantPayRate());
-                        upgradeResult.setFastRate(fastPayProductChannelDetail.get().getProductMerchantPayRate());
-//                        for(int i=0;i<productChannelDetails.size();i++){
-//                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-//                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
-//                            }
-//                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-//                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
-//                            }
-//                            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-//                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
-//                            }
-//                        }
-                        list.add(upgradeResult);
-                        List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
-                        list.addAll(list1);
-                        model.addAttribute("upgradeArray",list);
+                        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+                        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(productOptional.get().getId());
+                        model.addAttribute("upgradeArray",partnerRuleSettingResponses);
                         url = "/upgradeMax";
                     }
                 }else {
@@ -1345,71 +1285,9 @@ public class LoginController extends BaseController {
                         model.addAttribute("mobile",phone);
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
-
-                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
-                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
-                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
-                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
-                        List<MerchantChannelRate> weixinMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
-                        model.addAttribute("weixinRate",weixinMerchantChannelRateList.get(0).getMerchantPayRate());
-                        MerchantGetRateRequest zhifubaoMerchantGetRateRequest = new MerchantGetRateRequest();
-                        zhifubaoMerchantGetRateRequest.setProductId(result.get().getProductId());
-                        zhifubaoMerchantGetRateRequest.setMerchantId(result.get().getId());
-                        zhifubaoMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
-                        List<MerchantChannelRate> zhifubaoMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(zhifubaoMerchantGetRateRequest);
-                        model.addAttribute("alipayRate",zhifubaoMerchantChannelRateList.get(0).getMerchantPayRate());
-                        MerchantGetRateRequest fastPayMerchantGetRateRequest = new MerchantGetRateRequest();
-                        fastPayMerchantGetRateRequest.setProductId(result.get().getProductId());
-                        fastPayMerchantGetRateRequest.setMerchantId(result.get().getId());
-                        fastPayMerchantGetRateRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
-                        List<MerchantChannelRate> fastPayMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(fastPayMerchantGetRateRequest);
-                        model.addAttribute("fastRate",fastPayMerchantChannelRateList.get(0).getMerchantPayRate());
-
-//                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
-//                        if(productChannelDetails.size()==0){
-//                            model.addAttribute("message","该产品商户基础费率不存在");
-//                            return "/500";
-//                        }
-                        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
-                        if(!weixinProductChannelDetail.isPresent()){
-                            model.addAttribute("message","微信基础费率不存在");
-                            return "/500";
-                        }
-                        Optional<ProductChannelDetail> zhifubaoProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.ALIPAY.getId());
-                        if(!zhifubaoProductChannelDetail.isPresent()){
-                            model.addAttribute("message","支付宝基础费率不存在");
-                            return "/500";
-                        }
-                        Optional<ProductChannelDetail> fastPayProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.UNIONPAY.getId());
-                        if(!fastPayProductChannelDetail.isPresent()){
-                            model.addAttribute("message","快捷基础费率不存在");
-                            return "/500";
-                        }
-                        //商户升级规则设置
-                        List<UpgradeResult> list = new ArrayList<UpgradeResult>();
-                        UpgradeResult upgradeResult = new UpgradeResult();
-                        upgradeResult.setId(0);
-                        upgradeResult.setName("普通");
-                        upgradeResult.setType(0);
-                        upgradeResult.setIsUpgrade(1);
-                        upgradeResult.setWeixinRate(weixinProductChannelDetail.get().getProductMerchantPayRate());
-                        upgradeResult.setAlipayRate(zhifubaoProductChannelDetail.get().getProductMerchantPayRate());
-                        upgradeResult.setFastRate(fastPayProductChannelDetail.get().getProductMerchantPayRate());
-//                        for(int i=0;i<productChannelDetails.size();i++){
-//                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-//                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
-//                            }
-//                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-//                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
-//                            }
-//                            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-//                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
-//                            }
-//                        }
-                        list.add(upgradeResult);
-                        List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
-                        list.addAll(list1);
-                        model.addAttribute("upgradeArray",list);
+                        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+                        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(productOptional.get().getId());
+                        model.addAttribute("upgradeArray",partnerRuleSettingResponses);
                         url = "/upgradeMin";
                     }
                 }else {
@@ -1449,8 +1327,8 @@ public class LoginController extends BaseController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/toUpgrade/{id}", method = RequestMethod.GET)
-    public String toUpgrade(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
+    @RequestMapping(value = "/toUpgrade", method = RequestMethod.GET)
+    public String toUpgrade(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         String ul = request.getRequestURI();
         if(!super.isLogin(request)){
@@ -1477,40 +1355,32 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-                        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
-                        if(upgradeRulesOptional.isPresent()){
-                            if(result.get().getLevel()>=upgradeRulesOptional.get().getType()){
-                                model.addAttribute("message","暂无此级别信息");
-                                return "/message";
-                            }else{
-                                if(upgradeRulesOptional.get().getWeixinRate()==null){
-                                    model.addAttribute("message","合伙人微信配置有误");
-                                    return "/message";
-                                }
-                                if(upgradeRulesOptional.get().getAlipayRate()==null){
-                                    model.addAttribute("message","合伙人支付宝配置有误");
-                                    return "/message";
-                                }
-                                if(upgradeRulesOptional.get().getFastRate()==null){
-                                    model.addAttribute("message","合伙人快捷配置有误");
-                                    return "/message";
-                                }
-                                upgradeRulesOptional.get().setWeixinRate(upgradeRulesOptional.get().getWeixinRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
-                                upgradeRulesOptional.get().setAlipayRate(upgradeRulesOptional.get().getAlipayRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
-                                upgradeRulesOptional.get().setFastRate(upgradeRulesOptional.get().getFastRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
-                                BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
-                                model.addAttribute("needMoney",needMoney);
-                                model.addAttribute("upgradeRules",upgradeRulesOptional.get());
-                                int hasCount = recommendService.selectFriendCount(result.get().getId());
-                                model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
-                                model.addAttribute("merchantId",result.get().getId());
-                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
-                                url = "/toUpgerde";
+
+                        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+                        List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(productOptional.get().getId());
+                        List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
+                        int hasCount = recommendService.selectFriendCount(result.get().getId());
+                        if(upgradeRules.size()>0){
+                            for(int i=0;i<upgradeRules.size();i++){
+                                CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
+                                BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRules.get(i).getType());
+                                currentRulesResponse.setId(upgradeRules.get(i).getId());
+                                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                                currentRulesResponse.setType(upgradeRules.get(i).getType());
+                                currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
+                                currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
+                                currentRulesResponse.setNeedMoney(needMoney);
+                                list.add(currentRulesResponse);
                             }
                         }else{
-                            model.addAttribute("message","暂无此级别信息");
+                            model.addAttribute("message","信息配置有误");
                             return "/500";
                         }
+                        model.addAttribute("currentLevel",result.get().getLevel());
+                        model.addAttribute("upgradeRules",list);
+                        model.addAttribute("merchantId",result.get().getId());
+                        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+                        url = "/toUpgerde";
                     }
                 }else {
                     isRedirect= true;
@@ -1669,7 +1539,7 @@ public class LoginController extends BaseController {
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
                         if(!upgradeRulesOptional.isPresent()){//不存在
-                            model.addAttribute("message","没有次级别合伙人");
+                            model.addAttribute("message","没有此级别合伙人");
                             url = "/message";
                         }else{
                             BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
@@ -1691,7 +1561,10 @@ public class LoginController extends BaseController {
                             log.info("返回right:{}",pair.getRight());
                             if(pair.getLeft()==0){
                                 isRedirect= true;
-                                url = URLDecoder.decode(pair.getRight(), "UTF-8");
+                                String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
+                                url = "/toBuy";
+                                model.addAttribute("payUrl",payUrl);
+                                model.addAttribute("amount",needMoney);
                             }else{
                                 model.addAttribute("message",pair.getRight());
                                 url = "/message";
@@ -1710,7 +1583,7 @@ public class LoginController extends BaseController {
             }
             if(isRedirect){
                 log.info("直接跳转{}",url);
-                return "redirect:"+url;
+                return url;
             }else{
                 return url;
             }

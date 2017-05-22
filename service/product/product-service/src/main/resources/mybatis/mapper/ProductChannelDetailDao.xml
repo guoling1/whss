@@ -57,4 +57,22 @@
     <select id="selectRateByProductIdAndChannelTypeSign" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
         SELECT * FROM tb_product_channel_detail WHERE product_id = #{productId} and channel_type_sign = #{channelTypeSign} AND status = 2
     </select>
+
+    <select id="getProductChannelList" resultType="com.jkm.hss.product.helper.response.ProductAndBasicResponse">
+        SELECT
+            p.id,
+            p.channel_type_sign,
+            b.channel_short_name,
+         (case when b.support_way=1 then '扫码支付'
+                 when b.support_way=2 then '公众号支付'
+                 when b.support_way=3 then '扫码，公众号支付'
+                 when b.support_way=4 then '快捷支付' else '' end) support_way
+        FROM
+            tb_product_channel_detail AS p
+        LEFT JOIN tb_basic_channel AS b ON p.basic_channel_id = b.id
+        WHERE
+            p.product_id = #{productId}
+        AND p.`status` = 2
+        AND b.`status` = 2 ORDER BY p.channel_type_sign
+    </select>
 </mapper>

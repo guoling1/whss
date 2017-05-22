@@ -1,6 +1,7 @@
 package com.jkm.hss.product.dao;
 
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.helper.response.ProductAndBasicResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -60,4 +61,11 @@ public interface ProductChannelDetailDao {
      * @return
      */
     ProductChannelDetail selectRateByProductIdAndChannelTypeSign(@Param("productId") long productId, @Param("channelTypeSign") int channelTypeSign);
+
+    /**
+     * 查询
+     * @param productId
+     * @return
+     */
+    List<ProductAndBasicResponse> getProductChannelList(@Param("productId") long productId);
 }
