@@ -107,12 +107,10 @@
       }
     },
     created: function () {
-      console.log(this.$route.query.name)
       if(this.$route.query.name!=''||this.$route.query.name!=undefined){
         this.name = this.$route.query.proxyName;
       }
-      console.log(this.name)
-      this.dealerId = this.$route.query.id
+      this.dealerId = this.$route.query.id;
       this.$http.post('/admin/product/list')
         .then(function (res) {
           this.products = res.data;
@@ -127,7 +125,7 @@
             message: err.statusMessage,
             type: 'error'
           });
-        })
+        });
       this.$http.post('/admin/channel/list')
         .then(function (res) {
           this.channels = res.data;
@@ -137,7 +135,7 @@
             message: err.statusMessage,
             type: 'error'
           });
-        })
+        });
       //若为查看详情
       if (this.$route.query.index != undefined) {
         this.isShow = false;
