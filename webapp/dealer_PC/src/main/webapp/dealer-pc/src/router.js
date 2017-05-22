@@ -18,6 +18,7 @@ import first_dealer_add from './components/first_dealer_add.vue'
 import dealer_modify from './components/dealer_modify.vue'
 import product_add from './components/product_add.vue'
 import distribution_qrcode from './components/distribution_qrcode.vue'
+import distribution_qrcode_success from './components/distribution_qrcode_success.vue'
 import production_qrcode from './components/production_qrcode.vue'
 import qrcode_distribution from './components/qrcode_distribution.vue'
 import balance_withdrawal from './components/balance_withdrawal.vue'
@@ -76,6 +77,7 @@ const routes = [
       {path: 'dealer_modify', name: "dealer_modify", component: dealer_modify},
       {path: 'product_add', name: "product_add", component: product_add},
       {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},
+      {path: 'distribution_qrcode_success', name: "distribution_qrcode_success", component: distribution_qrcode_success},
       {path: 'production_qrcode', name: "production_qrcode", component: production_qrcode},
       {path: 'qrcode_distribution', name: "qrcode_distribution", component: qrcode_distribution},
       {path: 'balance_withdrawal', name: "balance_withdrawal", component: balance_withdrawal},
