@@ -29,7 +29,7 @@ public class ProfitCountController {
         final PageModel<ProfitCountRespons> pageModel = new PageModel<ProfitCountRespons>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
 //        List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
-//
+//        int count = this.splitAccountRecordService.getProfitCount(request);
 //        pageModel.setCount(count);
 //        pageModel.setRecords(list);
         return null;
