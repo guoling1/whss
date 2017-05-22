@@ -17,6 +17,10 @@ public class PayResponse {
      */
     private String tradeOrderNo;
     /**
+     * 交易订单id
+     */
+    private long tradeOrderId;
+    /**
      * 支付url
      */
     private String url;
