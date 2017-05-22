@@ -1510,7 +1510,7 @@
     <!-- 统计订单 -->
     <select id="getOrderCount1" resultType="java.lang.String">
         SELECT
-        SUM(a.trade_amount) as totalPoundage
+        SUM(a.poundage) as totalPoundage
         FROM
         tb_business_order a
         LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
