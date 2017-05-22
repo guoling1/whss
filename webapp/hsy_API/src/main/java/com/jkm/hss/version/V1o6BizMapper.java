@@ -75,9 +75,9 @@ public class V1o6BizMapper {
         /**刷新登录*/
         bizMapper.put("HSY001048", new String[]{"hsyUserService","refreshlogin","刷新登录"});
         /**好收银店铺对账邮件保存*/
-        bizMapper.put("HSY001049", new String[]{"HsyShopService","","好收银店铺对账邮件保存"});
+        bizMapper.put("HSY001049", new String[]{"hsyShopService","updateHsyShopEmail"});
         /**首页广告*/
-        bizMapper.put("HSY001050", new String[]{"HsyShopService","","首页广告"});
+        bizMapper.put("HSY001050", new String[]{"AdvertisementService","getvalidList","首页广告"});
         /**首页广告*/
         bizMapper.put("HSY001051", new String[]{"hsyMembershipService","findMemshipCards"});
     }
