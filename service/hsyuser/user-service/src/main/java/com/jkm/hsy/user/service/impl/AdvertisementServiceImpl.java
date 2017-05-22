@@ -33,11 +33,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         Date nowd=new Date();
         /**数据验证*/
         List<Advertisement> list = advertisementDao.getByTime(nowd);
+        Advertisement advertisement=null;
         if (list != null && list.size() != 0) {
-            for (Advertisement advertisement : list) {
-                advertisement.setPicUrl(advertisement.getPicUrl());
-            }
+            advertisement=list.get(0);
+            return gson.toJson(list);
         }
-        return gson.toJson(list);
+        else
+        {
+            return "";
+        }
     }
 }
