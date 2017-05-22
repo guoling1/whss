@@ -1107,6 +1107,9 @@ public class OrderServiceImpl implements OrderService {
                     String dates = sdf.format(list.get(i).getPaySuccessTime());
                     list.get(i).setPaySuccessTimes(dates);
                 }
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
+                }
 
                 list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
 
@@ -1149,6 +1152,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPaySuccessTime()!=null){
                     String dates = sdf.format(list.get(i).getPaySuccessTime());
                     list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
                 }
                 list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
 
