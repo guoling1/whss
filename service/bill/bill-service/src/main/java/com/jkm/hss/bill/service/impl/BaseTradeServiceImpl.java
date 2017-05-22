@@ -131,6 +131,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         Preconditions.checkState(orderOptional.get().isDuePay());
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
         final PayResponse payResponse = new PayResponse();
+        payResponse.setTradeOrderId(order.getId());
         payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         payResponse.setTradeOrderNo(order.getOrderNo());
         switch (enumBasicStatus) {
