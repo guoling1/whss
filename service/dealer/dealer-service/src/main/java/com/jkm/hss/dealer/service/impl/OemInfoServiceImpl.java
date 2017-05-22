@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.dealer.dao.OemInfoDao;
 import com.jkm.hss.dealer.dao.TemplateInfoDao;
 import com.jkm.hss.dealer.entity.OemInfo;
@@ -158,5 +159,16 @@ public class OemInfoServiceImpl implements OemInfoService {
             }
 
         }
+    }
+
+    /**
+     * 根据自生成号查询分公司信息
+     *
+     * @param omeNo
+     * @return
+     */
+    @Override
+    public Optional<OemInfo> selectByOemNo(String omeNo) {
+        return Optional.fromNullable(oemInfoDao.selectByOemNo(omeNo));
     }
 }

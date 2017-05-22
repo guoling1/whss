@@ -25,4 +25,11 @@ public interface OemInfoDao {
      * @return
      */
     OemInfo selectByDealerId(@Param("dealerId") long dealerId);
+
+    /**
+     * 根据自生成号查询分公司信息
+     * @param oemNo
+     * @return
+     */
+    OemInfo selectByOemNo(@Param("oemNo") String oemNo);
 }

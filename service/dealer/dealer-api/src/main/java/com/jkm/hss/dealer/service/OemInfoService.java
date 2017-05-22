@@ -32,4 +32,11 @@ public interface OemInfoService {
      */
     void addOrUpdate(AddOrUpdateOemRequest addOrUpdateOemRequest);
 
+    /**
+     * 根据自生成号查询分公司信息
+     * @param omeNo
+     * @return
+     */
+    Optional<OemInfo> selectByOemNo(String omeNo);
+
 }

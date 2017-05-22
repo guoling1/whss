@@ -156,6 +156,56 @@ public class WxPubController extends BaseController {
     }
 
     /**
+     * 好收收注册微信跳转页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "toOemSkip", method = RequestMethod.GET)
+    public String  toOemSkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        String getQueryString = "";
+        if(request.getQueryString() == null){
+            getQueryString="";
+        }else{
+            getQueryString = request.getQueryString();
+        }
+        String[] arr = getQueryString.split("&");
+        String code="";
+        String state="";
+        for(int i =0;i<arr.length;i++){
+            if("code".equals(arr[i].split("=")[0])){
+                code = arr[i].split("=")[1];
+            }
+            if("state".equals(arr[i].split("=")[0])){
+                state = arr[i].split("=")[1];
+            }
+        }
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
+        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        String[] wxArr  = redirectUrl.split("|");
+        String appId="";
+        String appSecret="";
+        String omeNo="";
+        for(int i =0;i<arr.length;i++){
+            if("appId".equals(arr[i].split("=")[0])){
+                appId = arr[i].split("=")[1];
+            }
+            if("appSecret".equals(arr[i].split("=")[0])){
+                appSecret = arr[i].split("=")[1];
+            }
+            if("omeNo".equals(arr[i].split("=")[0])){
+                omeNo = arr[i].split("=")[1];
+            }
+        }
+        Map<String,String> ret = WxPubUtil.getOpenid(code,appId,appSecret);
+        CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
+                ApplicationConsts.getApplicationConfig().domain());
+        return "redirect:"+tempUrl;
+    }
+
+    /**
      * 火车票微信跳转页面
      * @param request
      * @param response
