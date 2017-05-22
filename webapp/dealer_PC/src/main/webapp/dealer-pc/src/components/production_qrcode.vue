@@ -7,6 +7,7 @@
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">生产二维码</h3>
+              <el-button class="right" type="text" @click="toRecord">产码记录</el-button>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -58,7 +59,7 @@
           count: [
             {required: true, message: '请输入生产数量', trigger: 'blur'},
             {pattern: /^[0-9]*[1-9][0-9]*$/, message: '必须输入正整数', trigger: 'blur'}
-          ],
+          ]
         }
       }
     },
@@ -72,7 +73,10 @@
                 message: '二维码生成成功',
                 type: 'success'
               });
-              this.$router.push({path: '/daili/app/distribution_qrcode_success', query: res.data.productionQrCodeRecord})
+              this.$router.push({
+                path: '/daili/app/production_qrcode_success',
+                query: res.data.productionQrCodeRecord
+              })
             }, err => {
               this.$message({
                 showClose: true,
@@ -85,11 +89,18 @@
             return false;
           }
         });
+      },
+      toRecord: function () {
+        this.$router.push('/daili/app/production_qrcode_record');
       }
     }
   }
 </script>
 <style scoped lang="less">
+  .right {
+    float: right;
+  }
+
   .form-label {
     margin-bottom: 15px;
   }
