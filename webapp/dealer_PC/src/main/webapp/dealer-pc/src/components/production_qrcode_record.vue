@@ -37,18 +37,19 @@
               <el-table :data="tableData" border
                         v-loading="tableLoading"
                         element-loading-text="数据加载中">
-                <el-table-column prop="firstProxyName" label="上级代理"></el-table-column>
-                <el-table-column label="省市">
-                  <template scope="scope">
-                    {{scope.row.belongProvinceName}}{{scope.row.belongCityName}}
-                  </template>
-                </el-table-column>
-                <el-table-column label="注册时间" width="180">
+                <el-table-column type="index" label="序号"></el-table-column>
+                <el-table-column label="产生时间" width="180">
                   <template scope="scope">
                     {{ scope.row.createTime | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="mobile" label="联系手机号"></el-table-column>
+                <el-table-column prop="startCode" label="起始号码"></el-table-column>
+                <el-table-column prop="endCode" label="终止号码"></el-table-column>
+                <el-table-column prop="count" label="产生个数"></el-table-column>
+                <el-table-column prop="qrType" label="二维码类型"></el-table-column>
+                <el-table-column prop="sysType" label="产品名称"></el-table-column>
+                <el-table-column prop="subCompanyName" label="生产公司"></el-table-column>
+                <el-table-column prop="operatorName" label="操作人"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
@@ -97,7 +98,7 @@
           },
           {
             value: '2',
-            label: '电子嘛'
+            label: '电子码'
           }
         ],
         total: 0,
@@ -107,15 +108,6 @@
         tableLoading: false,
         districtCode: ''
       }
-    },
-    beforeRouteEnter (to, from, next){
-      store.dispatch('actions_users_getInfo').then(function (data) {
-        next((vm) => {
-          if (data.status === 1) {
-            vm.canAdd = (data.dealerLeavel == 1);
-          }
-        });
-      });
     },
     created() {
       this.getData();
@@ -151,6 +143,13 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getData();
+      }
+    },
+    filters: {
+      f_sysType: function (v) {
+        if (v == 'hss') {
+
+        }
       }
     }
   }
