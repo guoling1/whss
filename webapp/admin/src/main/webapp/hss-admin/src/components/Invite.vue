@@ -71,7 +71,7 @@
                         </el-select>
                       </el-form-item>
                       <el-form-item label="默认分润空间：" width="120" style="margin-bottom: 0">
-                        <el-input style="width: 70%" size="small" v-model="defaultProfitSpace"></el-input>
+                        <el-input style="width: 70%" size="small" v-model="defaultProfitSpace"></el-input>%
                       </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer" style="text-align: center">
