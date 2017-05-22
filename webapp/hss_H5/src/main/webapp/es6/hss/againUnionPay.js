@@ -4,7 +4,7 @@
 
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('choose-box-body');
 // 引入动画模版 处理验证码
 const AnimationCountdown = _require('art-countdown');
 let countdown = new AnimationCountdown('sendCode', '重新获取');
