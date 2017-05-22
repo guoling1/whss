@@ -899,6 +899,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setSettleTime(this.getHsySettleDate(order, enumPayChannelSign));
         this.orderService.update(order);
         //好收银订单处理  add by wayne 2017/05/18
+        long pushShopId=shop.getId();
         final Optional<HsyOrder> hsyOrderOptional=hsyOrderService.selectByOrderNo(order.getOrderNo());
         if(hsyOrderOptional.isPresent()){
             HsyOrder hsyOrder=hsyOrderOptional.get();
@@ -907,6 +908,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             hsyOrder.setPaysn(paymentSdkPayCallbackResponse.getSn());
             hsyOrder.setPaysuccesstime(order.getPaySuccessTime());
             hsyOrderService.update(hsyOrder);
+            pushShopId=hsyOrder.getShopid();
         }
         //=============================================================================
         //入账
@@ -915,7 +917,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
         //推送
         try {
-            this.pushService.pushCashMsg(shop.getId(), enumPayChannelSign.getPaymentChannel().getValue(), order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(), order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
         } catch (final Throwable e) {
             log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
         }
