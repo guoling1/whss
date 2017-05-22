@@ -1145,7 +1145,7 @@ public class PayServiceImpl implements PayService {
                         updateBusinessOrder.setId(businessOrder.getId());
                         updateBusinessOrder.setRemark(paymentSdkConfirmUnionPayResponse.getMessage());
                         updateBusinessOrder.setStatus(EnumBusinessOrderStatus.PAY_FAIL.getId());
-                        this.businessOrderService.update(businessOrder);
+                        this.businessOrderService.update(updateBusinessOrder);
                         return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
                 }
             } catch (final Throwable e) {
