@@ -6,8 +6,8 @@
           <h3 class="box-title">网关模板</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary" style="margin-left: 15px">关闭</a>
           <router-link :to='"/admin/details/gatewayAdd?id="+dealerId+"&productId="+productId+"&proxyName="+name' class="btn btn-primary" style="float: right;margin-right: 15px">新增网关通道</router-link>
-          <a href="javascript:window.close();" class="pull-right btn btn-primary" style="margin-left: 15px">关闭</a>
-          <router-link to="/admin/details/gatewayAdd" class="pull-right btn btn-primary">新增网关通道</router-link>
+          <!--<a href="javascript:window.close();" class="pull-right btn btn-primary" style="margin-left: 15px">关闭</a>-->
+          <!--<router-link to="/admin/details/gatewayAdd" class="pull-right btn btn-primary">新增网关通道</router-link>-->
         </div>
         <div class="box-body">
           <ul>
@@ -28,8 +28,8 @@
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
                     <el-button type="text" @click="detail(dealerId,scope.row.productId,name,scope.$index)">修改</el-button>
-                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend==0">推荐</el-button>
-                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend!=0">取消推荐</el-button>
+                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend==0&&(name==undefined||name=='')">推荐</el-button>
+                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend!=0&&(name==undefined||name=='')">取消推荐</el-button>
                     <el-button type="text" @click="delt(scope.row.id)">删除</el-button>
                   </template>
                 </el-table-column>
@@ -73,6 +73,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 <script lang="babel">
   export default{
@@ -101,17 +102,7 @@
         this.code = this.$route.query.markCode;
         this.productId = this.$route.query.productId;
       }
-      this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
-        .then(res => {
-          this.records = res.data;
-        })
-        .catch(err => {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
+      this.getData();
     },
     methods: {
       delt(id) {
@@ -126,17 +117,7 @@
                 type: 'success',
                 message: '删除成功!'
               });
-              this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
-                .then(res => {
-                  this.records = res.data;
-                })
-                .catch(err => {
-                  this.$message({
-                    showClose: true,
-                    message: err.statusMessage,
-                    type: 'error'
-                  });
-                })
+              this.getData()
             })
         }).catch(() => {
           this.$message({
@@ -144,12 +125,9 @@
             message: '已取消删除'
           });
         });
-      }
-//      this.getData()
-    },
-    methods: {
+      },
       getData:function () {
-        this.$http.post('/admin/product/listGateway',{"productType":"hss"})
+        this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
           .then(res => {
             this.records = res.data;
           })
@@ -160,41 +138,6 @@
               type: 'error'
             });
           })
-      },
-      submit:function () {
-        var list = JSON.parse(JSON.stringify(this.tableData));
-        for (var i = 0; i < list.length; i++) {
-          for (var j = 0; j < list[i].children.length; j++) {
-            for (var k = 0; k < list[i].children[j].opts.length; k++) {
-              list[i].children[j].opts[k].isSelected = Number(list[i].children[j].opts[k].isSelected);
-            }
-            list[i].children[j].isSelected = Number(list[i].children[j].isSelected);
-          }
-          list[i].isSelected = Number(list[i].isSelected);
-        }
-        let id=0;
-        if(this.$route.query.id!=undefined){
-          id = this.$route.query.id;
-          this.isAdd = false;
-        }
-        this.$http.post('/admin/user/saveRole',{
-          roleId:id,
-          roleName:this.roleName,
-          list:list
-        }).then(res => {
-          this.$message({
-            showClose: true,
-            message: '添加成功',
-            type: 'success'
-          });
-          this.$router.push('/admin/record/role')
-        }).catch(err =>{
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
       },
       detail: function ( id, productId,name, index) {
         if(this.name!=''){

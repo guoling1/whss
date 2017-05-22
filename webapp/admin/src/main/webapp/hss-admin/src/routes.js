@@ -98,8 +98,6 @@ const FilialePro = r => require.ensure([], () => r(require('components/filiale/F
 const FilialeRole = r => require.ensure([], () => r(require('components/filiale/FilialeRole')), 'group-record');
 const FilialeRoleAdd = r => require.ensure([], () => r(require('components/filiale/FilialeRoleAdd')), 'group-record');
 const ConfigureOem = r => require.ensure([], () => r(require('components/filiale/ConfigureOem')), 'group-record');
-const ConfigureGateway = r => require.ensure([], () => r(require('components/filiale/ConfigureGateway')), 'group-record');
-const ConfigureGatewayAdd = r => require.ensure([], () => r(require('components/filiale/ConfigureGatewayAdd')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
   {path: '/admin/login', component: Login},
@@ -116,8 +114,6 @@ let routes = [
       {path: 'filialeRole', name: 'FilialeRole', component: FilialeRole},
       {path: 'filialeRoleAdd', name: 'FilialeRoleAdd', component: FilialeRoleAdd},
       {path: 'configureOem', name: 'ConfigureOem', component: ConfigureOem},
-      {path: 'configureGateway', name: 'ConfigureGateway', component: ConfigureGateway},
-      {path: 'configureGatewayAdd', name: 'ConfigureGatewayAdd', component: ConfigureGatewayAdd},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
