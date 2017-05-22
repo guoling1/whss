@@ -485,7 +485,14 @@ public interface OrderService {
      * @param req
      * @return
      */
-    QueryOrderResponse getOrderCount(QueryOrderRequest req);
+    String getOrderCount(QueryOrderRequest req);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount1(QueryOrderRequest req);
 
     /**
      * 查询交易详情

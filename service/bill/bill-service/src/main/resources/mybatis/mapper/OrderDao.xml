@@ -1460,10 +1460,59 @@
     <!-- 统计订单 -->
     <select id="getOrderCount" resultType="java.lang.String">
         SELECT
-            SUM(a.trade_amount) as totalPayment,
-            SUM(a.poundage) as totalPoundage
+            SUM(a.trade_amount) as totalPayment
         FROM
             tb_business_order a
+        LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
+        WHERE 1=1
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="tradeOrderNo != null and tradeOrderNo!=''">
+            AND a.trade_order_no LIKE CONCAT('%',#{tradeOrderNo})
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn LIKE CONCAT('%',#{sn})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <if test="proxyName1 != null and proxyName1!=''">
+            AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="paySuccessTime!=null and paySuccessTime!=''">
+            AND a.pay_success_time <![CDATA[ >= ]]> #{paySuccessTime}
+        </if>
+        <if test="paySuccessTime1!=null and paySuccessTime1!=''">
+            AND a.pay_success_time <![CDATA[ <= ]]> #{paySuccessTime1}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status = #{status}
+        </if>
+        <if test="payChannelSign != null">
+            AND a.pay_channel_sign in
+            <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <!-- 统计订单 -->
+    <select id="getOrderCount1" resultType="java.lang.String">
+        SELECT
+        SUM(a.trade_amount) as totalPoundage
+        FROM
+        tb_business_order a
         LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
         WHERE 1=1
         <if test="orderNo != null and orderNo!=''">

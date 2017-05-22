@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.orderRecord;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.QueryOrderRequest;
@@ -83,7 +84,11 @@ public class QueryOrderController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             req.setPaySuccessTime(sdf.format(rightNow.getTime()));
         }
-        QueryOrderResponse result = this.orderService.getOrderCount(req);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+        String totalPayment = this.orderService.getOrderCount(req);
+        String totalPoundage = this.orderService.getOrderCount1(req);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("totalPayment",totalPayment);
+        jsonObject.put("totalPoundage",totalPoundage);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
     }
 }
