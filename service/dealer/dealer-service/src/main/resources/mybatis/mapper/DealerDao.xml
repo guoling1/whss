@@ -800,7 +800,7 @@
           a.*,
           (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
           (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
-          (SELECT proxy_name FROM tb_dealer WHERE id=b.oem_id) as branchCompany,
+          (SELECT proxy_name FROM tb_dealer WHERE id=a.oem_id) as branchCompany,
           a.oem_id
         FROM
           tb_merchant_info a
@@ -840,7 +840,7 @@
             a.*,
             (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
-            (SELECT proxy_name FROM tb_dealer WHERE id=b.oem_id) as branchCompany,
+            (SELECT proxy_name FROM tb_dealer WHERE id=a.oem_id) as branchCompany,
             a.oem_id
         FROM
             tb_merchant_info a

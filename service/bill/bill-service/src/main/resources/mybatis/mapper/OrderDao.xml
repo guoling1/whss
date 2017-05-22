@@ -510,7 +510,9 @@
         a.sn,
         a.app_id,
         (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+        (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
+        b.oem_id
         FROM
         tb_order a
         LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
@@ -639,7 +641,9 @@
         a.sn,
         a.app_id,
         (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+        (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
+        b.oem_id
         FROM
         tb_order a
         LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
