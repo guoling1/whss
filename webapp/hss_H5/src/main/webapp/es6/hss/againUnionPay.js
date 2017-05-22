@@ -202,7 +202,7 @@ http.post('/bankcard/list', {
     let info = document.createElement('div');
     if (data[i].status == 0) {
       info.className = 'info NO';
-      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡 (本通道不支持)</span>';
+      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡 (选择其他银行)</span>';
     } else {
       info.className = 'info';
       info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';
