@@ -23,6 +23,10 @@ public class OemProductionRequest extends PageQueryParams {
      */
     private long adminId;
     /**
+     * 分公司名称
+     */
+    private String subCompanyName;
+    /**
      *
      */
     private int offset;
