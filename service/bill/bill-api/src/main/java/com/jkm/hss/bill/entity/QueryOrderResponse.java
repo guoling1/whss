@@ -3,7 +3,6 @@ package com.jkm.hss.bill.entity;
 import com.jkm.hss.bill.enums.EnumBusinessOrderStatus;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -63,7 +62,7 @@ public class QueryOrderResponse {
     /**
      * 金额
      */
-    private BigDecimal tradeAmount;
+    private String tradeAmount;
 
     /**
      * 商户id
@@ -96,12 +95,12 @@ public class QueryOrderResponse {
     /**
      * 手续费
      */
-    private BigDecimal poundage;
+    private String poundage;
 
     /**
      * 支付费率（只有支付时，有费率，提现没有）
      */
-    private BigDecimal payRate;
+    private String payRate;
 
     /**
      * 商品名字（好收收店铺名）
