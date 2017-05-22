@@ -485,7 +485,7 @@ public interface OrderService {
      * @param req
      * @return
      */
-    List<QueryOrderResponse> getOrderCount(QueryOrderRequest req);
+    QueryOrderResponse getOrderCount(QueryOrderRequest req);
 
     /**
      * 查询交易详情

@@ -463,5 +463,5 @@ public interface OrderDao {
      * @param req
      * @return
      */
-    List<QueryOrderResponse> getOrderCount(QueryOrderRequest req);
+    QueryOrderResponse getOrderCount(QueryOrderRequest req);
 }

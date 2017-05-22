@@ -1398,8 +1398,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<QueryOrderResponse> getOrderCount(QueryOrderRequest req) {
-        List<QueryOrderResponse> list = this.orderDao.getOrderCount(req);
+    public QueryOrderResponse getOrderCount(QueryOrderRequest req) {
+        QueryOrderResponse list = this.orderDao.getOrderCount(req);
         return list;
     }
 

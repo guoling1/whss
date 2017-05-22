@@ -83,7 +83,7 @@ public class QueryOrderController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             req.setPaySuccessTime(sdf.format(rightNow.getTime()));
         }
-        List<QueryOrderResponse> result = this.orderService.getOrderCount(req);
+        QueryOrderResponse result = this.orderService.getOrderCount(req);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
     }
 }
