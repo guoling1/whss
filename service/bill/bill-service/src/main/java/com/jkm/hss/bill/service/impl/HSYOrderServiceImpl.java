@@ -173,8 +173,11 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 else{
                     hsyTradeListResponse.setCanRefund(0);
                 }
-                hsyTradeListResponse.setTotalAmount(statisticsOrderHashMap.get(curD).getAmount());
-                hsyTradeListResponse.setNumber(statisticsOrderHashMap.get(curD).getNumber());
+                AppStatisticsOrder curstorder=statisticsOrderHashMap.get(curD);
+                if(curstorder==null){curstorder=new AppStatisticsOrder();}
+
+                hsyTradeListResponse.setTotalAmount(curstorder.getAmount());
+                hsyTradeListResponse.setNumber(curstorder.getNumber());
                 hsyTradeListResponse.setAmount(hsyOrder.getAmount());
                 hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
                 hsyTradeListResponse.setOrderstatus(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getId());
