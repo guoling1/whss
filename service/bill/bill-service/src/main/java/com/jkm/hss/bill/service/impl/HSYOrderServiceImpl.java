@@ -157,6 +157,15 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             if(appStatisticsOrder!=null) {
                 statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
             }
+            if(!readingTime.equals("")){
+                Date dayStartTime=DateFormatUtil.parse(readingTime+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                Date dayEndTime=DateFormatUtil.parse(readingTime+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                HsyOrderSTResponse hsyDayOrderSTResponse=hsyOrderDao.selectDayOrderStByParm(requestParam.getShopId(),payChannelSigns,dayStartTime,dayEndTime);
+                appStatisticsOrder = new AppStatisticsOrder();
+                appStatisticsOrder.setNumber(hsyDayOrderSTResponse.getNumber());
+                appStatisticsOrder.setAmount(hsyDayOrderSTResponse.getTotalAmount());
+                statisticsOrderHashMap.put(readingTime,appStatisticsOrder);
+            }
             
             HsyTradeListResponse hsyTradeListResponse=null;
             for(HsyOrder hsyOrder:hsyOrders){
