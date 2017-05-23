@@ -123,6 +123,7 @@ public class OemInfoServiceImpl implements OemInfoService {
                 templateInfo.setSignCode(addOrUpdateOemRequest.getTemplateInfos().get(i).getSignCode());
                 templateInfo.setTemplateId(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateId());
                 templateInfo.setTemplateName(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateName());
+                templateInfo.setStatus(EnumDealerStatus.NORMAL.getId());
                 templateInfoDao.insert(templateInfo);
             }
         }else{//修改
