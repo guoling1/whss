@@ -28,9 +28,8 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
     private OemInfoService oemInfoService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
         if ("".equals(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY))) {//get请求走获取openId
-            final String queryString = request.getQueryString();
-            final StringBuffer requestURL = request.getRequestURL();
             String oemNo = request.getParameter("oemNo");
             if(oemNo!=null&&!"".equals(oemNo)){
                 log.info("omeNo:"+oemNo);
@@ -38,22 +37,15 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 String url = "";
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    String tempUrl = StringUtils.isNotBlank(queryString) ?
-                            requestURL.toString() +"?" + queryString +"&oemNo="+oemNo:requestURL.toString()+"?oemNo="+oemNo;
-                    String encoderUrl = URLEncoder.encode(tempUrl, "UTF-8");
                     url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     log.info("无分公司");
-                    String tempUrl = StringUtils.isNotBlank(queryString) ?
-                            requestURL.toString() +"?"+ queryString : requestURL.toString()+"?oemNo="+oemNo;
-                    url = WxConstants.WEIXIN_USERINFO+tempUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                    url = WxConstants.WEIXIN_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
                 response.sendRedirect(url);
                 return false;
             }else{
-                String tempUrl = StringUtils.isNotBlank(queryString) ?
-                        requestURL.toString() +"?"+ queryString : requestURL.toString();
-                String url = WxConstants.WEIXIN_USERINFO+tempUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                String url = WxConstants.WEIXIN_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 response.sendRedirect(url);
                 return false;
             }
