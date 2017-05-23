@@ -668,4 +668,15 @@ public class AdminUserServiceImpl implements AdminUserService {
     public int hasDescr(int type, String descr) {
         return adminRoleDao.hasDescr(type,descr);
     }
+
+    /**
+     * 查询用户密码
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public String getPwd(long id) {
+        return adminUserDao.getPwd(id);
+    }
 }

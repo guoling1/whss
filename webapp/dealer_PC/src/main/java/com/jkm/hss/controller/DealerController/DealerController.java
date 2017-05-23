@@ -627,8 +627,8 @@ public class DealerController extends BaseController {
             if(request.getNewPwd().equals(request.getPwd())){
                 return CommonResponse.simpleResponse(-1, "新密码不能和原密码一致");
             }
-            Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(super.getAdminUserId());
-            if(!(adminUserOptional.get().getPassword()).equals(DealerSupport.passwordDigest(request.getPwd(),"JKM"))){
+            String password = this.adminUserService.getPwd(super.getAdminUserId());
+            if(!password.equals(DealerSupport.passwordDigest(request.getPwd(),"JKM"))){
                 return CommonResponse.simpleResponse(-1, "原密码错误");
             }
             request.setNewPwd(DealerSupport.passwordDigest(request.getNewPwd(),"JKM"));

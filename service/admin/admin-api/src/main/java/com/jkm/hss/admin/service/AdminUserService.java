@@ -286,4 +286,11 @@ public interface AdminUserService {
      * @return
      */
     int hasDescr(int type,String descr);
+
+    /**
+     * 查询用户密码
+     * @param id
+     * @return
+     */
+    String getPwd(long id);
 }
