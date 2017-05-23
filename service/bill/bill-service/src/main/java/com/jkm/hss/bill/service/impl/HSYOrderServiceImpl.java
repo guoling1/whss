@@ -137,21 +137,21 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             String readedTime="";
             String readingTime="";
             for(HsyOrder hsyOrder:hsyOrders){
-                readingTime=DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
-                if(readedTime.equals(readingTime)){
-                    appStatisticsOrder.setAmount(appStatisticsOrder.getAmount().add(hsyOrder.getAmount()));
-                    appStatisticsOrder.setNumber(appStatisticsOrder.getNumber()+1);
-                }
-                else
-                {
-                    if(appStatisticsOrder!=null) {
-                        statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
-                    }
-                    readedTime=readingTime;
-                    appStatisticsOrder=new AppStatisticsOrder();
-                    appStatisticsOrder.setNumber(1);
-                    appStatisticsOrder.setAmount(hsyOrder.getAmount());
+                if(hsyOrder.getOrderstatus()==EnumHsyOrderStatus.PAY_SUCCESS.getId()) {
+                    readingTime = DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
+                    if (readedTime.equals(readingTime)) {
+                        appStatisticsOrder.setAmount(appStatisticsOrder.getAmount().add(hsyOrder.getAmount()));
+                        appStatisticsOrder.setNumber(appStatisticsOrder.getNumber() + 1);
+                    } else {
+                        if (appStatisticsOrder != null) {
+                            statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
+                        }
+                        readedTime = readingTime;
+                        appStatisticsOrder = new AppStatisticsOrder();
+                        appStatisticsOrder.setNumber(1);
+                        appStatisticsOrder.setAmount(hsyOrder.getAmount());
 
+                    }
                 }
             }
             if(appStatisticsOrder!=null) {

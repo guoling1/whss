@@ -464,6 +464,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("code", 0);
             result.put("orderstatus",EnumHsyOrderStatus.REFUND_SUCCESS.getId());
             result.put("orderstatusName",EnumHsyOrderStatus.REFUND_SUCCESS.getValue());
+            result.put("refundAmount",refundOrder.getRefundAmount());
             result.put("msg", "退款成功");
             result.put("refundTime", this.refundOrderService.getById(refundOrder.getId()).get().getFinishTime());
         } else {

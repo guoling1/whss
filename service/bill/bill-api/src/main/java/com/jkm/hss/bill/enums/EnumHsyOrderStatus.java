@@ -12,7 +12,7 @@ public enum EnumHsyOrderStatus {
      * 待支付
      */
     DUE_PAY(1, "待支付"),
-    PAY_SUCCESS(2, "支付成功"),
+    PAY_SUCCESS(2, "收款成功"),
     PAY_FAIL(3, "支付失败"),
     REFUNDING(4,"退款中"),
     REFUND_PART(5,"部分退款"),
