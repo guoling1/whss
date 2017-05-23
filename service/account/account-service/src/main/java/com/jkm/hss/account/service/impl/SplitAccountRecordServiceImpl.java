@@ -7,6 +7,7 @@ import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.SplitAccountRecordDao;
 import com.jkm.hss.account.entity.ProfitCountRequest;
 import com.jkm.hss.account.entity.ProfitCountRespons;
+import com.jkm.hss.account.entity.ProfitDetailCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.account.helper.AccountConstants;
@@ -250,6 +251,18 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Override
     public int getProfitCount(ProfitCountRequest request) {
         return this.splitAccountRecordDao.getProfitCount(request);
+    }
+
+    @Override
+    public List<ProfitDetailCountRespons> getCountDetails(ProfitCountRequest req) {
+        ProfitCountRequest request1=selectTime(req);
+        List<ProfitDetailCountRespons> list = this.splitAccountRecordDao.getCountDetails(request1);
+        return list;
+    }
+
+    @Override
+    public int getCountDetailsNo(ProfitCountRequest req) {
+        return this.splitAccountRecordDao.getCountDetailsNo(req);
     }
 
 

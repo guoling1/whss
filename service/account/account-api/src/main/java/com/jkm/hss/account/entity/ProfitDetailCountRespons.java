@@ -44,6 +44,16 @@ public class ProfitDetailCountRespons {
     private String settleType;
 
     /**
+     * 收款用户名
+     */
+    private String receiptMoneyUserName;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 代理名称
      */
     private String proxyName;

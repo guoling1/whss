@@ -123,6 +123,7 @@
     <if test="businessType!=null and businessType!=''">
         AND a.business_type = #{businessType}
     </if>
+        ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
     </select>
 
     <!-- 分润统计总数 -->
@@ -150,4 +151,59 @@
         AND a.business_type = #{businessType}
     </if>
     </select>
+
+    <!-- 分润明细 -->
+    <select id="getCountDetails" resultType="com.jkm.hss.account.entity.ProfitDetailCountRespons">
+        SELECT
+        a.*,c.settle_type
+        FROM
+        tb_split_account_record a
+        LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
+        LEFT JOIN tb_order c ON c.order_no = a.order_no
+        WHERE
+        a.receipt_money_account_id = #{accountId}
+        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        <if test="firstLevelDealerId>0">
+            AND b.id = #{firstLevelDealerId}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.split_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+
+        <if test="endTime!=null and endTime!=''">
+            AND a.split_date <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="businessType!=null and businessType!=''">
+            AND a.business_type = #{businessType}
+        </if>
+        ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 分润统计总数 -->
+    <select id="getCountDetailsNo" resultType="java.lang.Integer">
+        SELECT
+        COUNT(a.id)
+        FROM
+        tb_split_account_record a
+        LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
+        WHERE
+        a.receipt_money_account_id = #{accountId}
+        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        <if test="firstLevelDealerId>0">
+            AND b.id = #{firstLevelDealerId}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.split_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+
+        <if test="endTime!=null and endTime!=''">
+            AND a.split_date <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="businessType!=null and businessType!=''">
+            AND a.business_type = #{businessType}
+        </if>
+    </select>
+
 </mapper>

@@ -98,13 +98,27 @@ public class ProfitCountController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/getCountDetails", method = RequestMethod.POST)
-    public CommonResponse getCountDetails(@RequestBody ProfitCountRequest request){
+    public CommonResponse getCountDetails(@RequestBody ProfitCountRequest request) throws ParseException {
         final PageModel<ProfitDetailCountRespons> pageModel = new PageModel<ProfitDetailCountRespons>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
-
-
+        ProfitCountRequest req = getTime(request);
+        List<ProfitDetailCountRespons> list = this.splitAccountRecordService.getCountDetails(req);
+        int count = this.splitAccountRecordService.getCountDetailsNo(req);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
 
 
+    public ProfitCountRequest getTime(ProfitCountRequest request) throws ParseException {
+        if(request.getEndTime()!=null&&!"".equals(request.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(request.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            request.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        return request;
+    }
 }

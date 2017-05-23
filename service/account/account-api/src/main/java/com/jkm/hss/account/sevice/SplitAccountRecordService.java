@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.entity.ProfitCountRequest;
 import com.jkm.hss.account.entity.ProfitCountRespons;
+import com.jkm.hss.account.entity.ProfitDetailCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -114,4 +115,18 @@ public interface SplitAccountRecordService {
      * @return
      */
     int getProfitCount(ProfitCountRequest request);
+
+    /**
+     * dealer_pc 分润明细
+     * @param req
+     * @return
+     */
+    List<ProfitDetailCountRespons> getCountDetails(ProfitCountRequest req);
+
+    /**
+     * dealer_pc 分润明细总数
+     * @param req
+     * @return
+     */
+    int getCountDetailsNo(ProfitCountRequest req);
 }
