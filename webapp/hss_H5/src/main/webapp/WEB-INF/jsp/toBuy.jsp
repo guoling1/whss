@@ -29,10 +29,11 @@
     <div class="bottom">
       <div class="qr" id="qr"></div>
 
-
+      <div class="red_mpt">请勿在微信内长按二维码识别</div>
       <div class="bar">
         <img src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
-        <span>长按识别二维码付款</span>
+        <%--<img src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>--%>
+        <span>截图保存后识别二维码付款</span>
       </div>
     </div>
   </div>
@@ -51,6 +52,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.2.25/charge.min.js"></script>
 </html>

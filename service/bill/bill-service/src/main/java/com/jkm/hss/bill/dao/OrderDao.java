@@ -435,4 +435,40 @@ public interface OrderDao {
      * @return
      */
     List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
+
+    /**
+     * 查询hss订单（订单查询）
+     * @param req
+     * @return
+     */
+    List<QueryOrderResponse> queryOrderList(QueryOrderRequest req);
+
+    /**
+     * 查询hss订单总数（订单查询）
+     * @param req
+     * @return
+     */
+    int queryOrderListCount(QueryOrderRequest req);
+
+    /**
+     * 按业务订单号查询个数
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    int selectCountByBusinessOrder(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount(QueryOrderRequest req);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount1(QueryOrderRequest req);
 }
