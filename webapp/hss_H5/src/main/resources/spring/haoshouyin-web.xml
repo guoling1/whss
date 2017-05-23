@@ -77,7 +77,9 @@
         </mvc:interceptor>
 
         <mvc:interceptor>
-            <mvc:mapping path="/sqb/**"/>
+            <mvc:mapping path="/sqb/addInfo"/>
+            <mvc:mapping path="/sqb/addNext"/>
+            <mvc:mapping path="/sqb/prompt"/>
             <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
                 <property name="oemInfoService" ref="oemInfoServiceImpl"/>
             </bean>

@@ -125,7 +125,7 @@ public class WxPubController extends BaseController {
 
 
     /**
-     * 好收收注册微信跳转页面
+     * 好收收注册微信跳转
      * @param request
      * @param response
      * @param model
@@ -160,7 +160,7 @@ public class WxPubController extends BaseController {
     }
 
     /**
-     * 分公司微信跳转
+     * 分公司注册微信跳转
      * @param request
      * @param response
      * @param model
@@ -192,8 +192,8 @@ public class WxPubController extends BaseController {
         if(temArr.length>1){
             String[] temArr1 = temArr[1].split("&");
             for(int i =0;i<temArr1.length;i++){
-                if("oemNo".equals(arr[i].split("=")[0])){
-                    oemNo = arr[i].split("=")[1];
+                if("oemNo".equals(temArr1[i].split("=")[0])){
+                    oemNo = temArr1[i].split("=")[1];
                 }
             }
         }

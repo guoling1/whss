@@ -2,17 +2,12 @@ package com.jkm.hss.controller.wx;
 
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.jkm.base.common.entity.CommonResponse;
-import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
-import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
@@ -20,23 +15,26 @@ import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.response.CurrentRulesResponse;
-import com.jkm.hss.merchant.entity.*;
+import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.entity.AccountInfo;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
-import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.service.*;
-import com.jkm.hss.product.entity.*;
-import com.jkm.hss.product.enums.*;
+import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.entity.UpgradePayRecord;
+import com.jkm.hss.product.entity.UpgradeRules;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.enums.EnumUpgrade;
+import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
-import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -233,9 +231,9 @@ public class LoginController extends BaseController {
     public String addInfo(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
         boolean isRedirect = false;
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
+//        if(!super.isLogin(request)){
+//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+//        }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
@@ -283,7 +281,7 @@ public class LoginController extends BaseController {
             }else{
                 return url;
             }
-        }
+//        }
     }
     /**
      * 填写用户基本信息
@@ -297,9 +295,9 @@ public class LoginController extends BaseController {
     public String addNext(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
         boolean isRedirect = false;
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
+//        if(!super.isLogin(request)){
+//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+//        }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
@@ -346,7 +344,7 @@ public class LoginController extends BaseController {
             }else{
                 return url;
             }
-        }
+//        }
     }
 
     /**
@@ -373,9 +371,9 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/prompt",method = RequestMethod.GET)
     public String prompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
+//        if(!super.isLogin(request)){
+//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+//        }else {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
             String res = merchantInfoCheckRecordService.selectById(userInfoOptional.get().getMerchantId());
@@ -387,7 +385,7 @@ public class LoginController extends BaseController {
                 model.addAttribute("res","您的资料已经提交，我们将在一个工作日内处理");
                 return "/prompt1";
             }
-        }
+//        }
         return null;
     }
 
