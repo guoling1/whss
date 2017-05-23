@@ -51,6 +51,11 @@ public interface HsyOrderDao {
                                 @Param("startTime") Date startTime,
                                 @Param("endTime") Date endTime);
 
+    HsyOrderSTResponse selectDayOrderStByParm(@Param("shopId") long shopId,
+                                           @Param("payChannelSigns") List<Integer> payChannelSigns,
+                                           @Param("startTime") Date startTime,
+                                           @Param("endTime") Date endTime);
+
    HsyOrderSTResponse selectOrderStByParm(@Param("shopId") long shopId,
                                           @Param("payChannelSigns") List<Integer> payChannelSigns,
                                           @Param("startTime") Date startTime,

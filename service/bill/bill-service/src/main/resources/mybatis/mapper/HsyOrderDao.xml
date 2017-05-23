@@ -207,6 +207,7 @@ WHERE  shopid=#{shopId}
         <if test="startTime != null and endTime != null">
             AND create_time BETWEEN #{startTime} AND #{endTime}
         </if>
+        AND orderstatus in (2,6,7)
         AND pay_channel_sign IN
         <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
             #{item}
@@ -222,11 +223,25 @@ WHERE  shopid=#{shopId}
         <if test="startTime != null and endTime != null">
             AND create_time BETWEEN #{startTime} AND #{endTime}
         </if>
+        AND orderstatus in (2,6,7)
         AND pay_channel_sign IN
         <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>
+    <select id="selectDayOrderStByParm"  resultType="com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse">
+        select sum(amount) as totalAmount,count(1) as number  from tb_hsy_order
+        WHERE  shopid=#{shopId}
+        <if test="startTime != null and endTime != null">
+            AND create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND orderstatus in (2,6,7)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
     <select id="selectOrderStByParm" resultType="com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse">
         select sum(amount) as totalAmount,count(1) as number  from tb_hsy_order
         WHERE  shopid=#{shopId}

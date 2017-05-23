@@ -137,25 +137,34 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             String readedTime="";
             String readingTime="";
             for(HsyOrder hsyOrder:hsyOrders){
-                readingTime=DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
-                if(readedTime.equals(readingTime)){
-                    appStatisticsOrder.setAmount(appStatisticsOrder.getAmount().add(hsyOrder.getAmount()));
-                    appStatisticsOrder.setNumber(appStatisticsOrder.getNumber()+1);
-                }
-                else
-                {
-                    if(appStatisticsOrder!=null) {
-                        statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
-                    }
-                    readedTime=readingTime;
-                    appStatisticsOrder=new AppStatisticsOrder();
-                    appStatisticsOrder.setNumber(1);
-                    appStatisticsOrder.setAmount(hsyOrder.getAmount());
+                if(hsyOrder.getOrderstatus()==EnumHsyOrderStatus.PAY_SUCCESS.getId()) {
+                    readingTime = DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
+                    if (readedTime.equals(readingTime)) {
+                        appStatisticsOrder.setAmount(appStatisticsOrder.getAmount().add(hsyOrder.getAmount()));
+                        appStatisticsOrder.setNumber(appStatisticsOrder.getNumber() + 1);
+                    } else {
+                        if (appStatisticsOrder != null) {
+                            statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
+                        }
+                        readedTime = readingTime;
+                        appStatisticsOrder = new AppStatisticsOrder();
+                        appStatisticsOrder.setNumber(1);
+                        appStatisticsOrder.setAmount(hsyOrder.getAmount());
 
+                    }
                 }
             }
             if(appStatisticsOrder!=null) {
                 statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
+            }
+            if(!readingTime.equals("")){
+                Date dayStartTime=DateFormatUtil.parse(readingTime+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                Date dayEndTime=DateFormatUtil.parse(readingTime+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                HsyOrderSTResponse hsyDayOrderSTResponse=hsyOrderDao.selectDayOrderStByParm(requestParam.getShopId(),payChannelSigns,dayStartTime,dayEndTime);
+                appStatisticsOrder = new AppStatisticsOrder();
+                appStatisticsOrder.setNumber(hsyDayOrderSTResponse.getNumber());
+                appStatisticsOrder.setAmount(hsyDayOrderSTResponse.getTotalAmount());
+                statisticsOrderHashMap.put(readingTime,appStatisticsOrder);
             }
             
             HsyTradeListResponse hsyTradeListResponse=null;
@@ -173,19 +182,23 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 else{
                     hsyTradeListResponse.setCanRefund(0);
                 }
-                hsyTradeListResponse.setTotalAmount(statisticsOrderHashMap.get(curD).getAmount());
-                hsyTradeListResponse.setNumber(statisticsOrderHashMap.get(curD).getNumber());
+                AppStatisticsOrder curstorder=statisticsOrderHashMap.get(curD);
+                if(curstorder==null){curstorder=new AppStatisticsOrder();}
+
+                hsyTradeListResponse.setTotalAmount(curstorder.getAmount());
+                hsyTradeListResponse.setNumber(curstorder.getNumber());
                 hsyTradeListResponse.setAmount(hsyOrder.getAmount());
                 hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
                 hsyTradeListResponse.setOrderstatus(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getId());
                 hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
                 hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
-                hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getId());
+                hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getId());
                 hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
                 hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
                 hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
                 hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
                 hsyTradeListResponse.setId(hsyOrder.getId());
+                hsyTradeListResponse.setOrderNo(hsyOrder.getOrderno());
                 hsyTradeListResponse.setShopName(hsyOrder.getShopname());
                 hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
                 hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
@@ -225,16 +238,18 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             hsyTradeListResponse.setCanRefund(0);
         }
         hsyTradeListResponse.setAmount(hsyOrder.getAmount());
+        hsyTradeListResponse.setAmount(hsyOrder.getAmount());
         hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
         hsyTradeListResponse.setOrderstatus(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getId());
         hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
         hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
-        hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getId());
+        hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getId());
         hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
         hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
         hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
         hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
         hsyTradeListResponse.setId(hsyOrder.getId());
+        hsyTradeListResponse.setOrderNo(hsyOrder.getOrderno());
         hsyTradeListResponse.setShopName(hsyOrder.getShopname());
         hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
         hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
