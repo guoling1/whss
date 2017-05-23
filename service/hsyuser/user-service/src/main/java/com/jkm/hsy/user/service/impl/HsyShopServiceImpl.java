@@ -212,9 +212,9 @@ public class HsyShopServiceImpl implements HsyShopService {
         MultipartFile fileC=files.get("fileC");
         if(fileC==null||(fileC!=null&&fileC.getSize()==0))
             throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileC");
-        MultipartFile fileD=files.get("fileD");
-        if(fileD==null||(fileD!=null&&fileD.getSize()==0))
-            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileD");
+//        MultipartFile fileD=files.get("fileD");
+//        if(fileD==null||(fileD!=null&&fileD.getSize()==0))
+//            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileD");
 
 
         AppAuUser appAuUser=new AppAuUser();
@@ -231,8 +231,8 @@ public class HsyShopServiceImpl implements HsyShopService {
                 type=appBizShop.getFileB();
             else if(fileKey.equals("fileC")&&FileType.contains(appBizShop.getFileC()))
                 type=appBizShop.getFileC();
-            else if(fileKey.equals("fileD")&&FileType.contains(appBizShop.getFileD()))
-                type=appBizShop.getFileD();
+//            else if(fileKey.equals("fileD")&&FileType.contains(appBizShop.getFileD()))
+//                type=appBizShop.getFileD();
             else
                 throw new ApiHandleException(ResultCode.FILE_TYPE_NOT_EXSIT);
             String uuid="";
@@ -248,8 +248,8 @@ public class HsyShopServiceImpl implements HsyShopService {
                 appAuUser.setIdcardb(uuid);
             else if(type.equals(FileType.IDCARDC.fileIndex))
                 appAuUser.setIdcardc(uuid);
-            else if(type.equals(FileType.CONTRACT.fileIndex))
-                appAuUser.setContractID(uuid);
+//            else if(type.equals(FileType.CONTRACT.fileIndex))
+//                appAuUser.setContractID(uuid);
         }
 
         /**商铺 用户修改*/
