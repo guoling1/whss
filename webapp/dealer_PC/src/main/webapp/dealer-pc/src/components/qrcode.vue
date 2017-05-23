@@ -27,6 +27,10 @@
                 <el-input v-model="merchantName" placeholder="商户名称" size="small" style="width:240px"></el-input>
               </div>
               <div class="screen-item">
+                <span class="screen-title">一级代理名称</span>
+                <el-input v-model="firstDealerName" placeholder="一级代理名称" size="small" style="width:240px"></el-input>
+              </div>
+              <div class="screen-item">
                 <span class="screen-title">二级代理名称</span>
                 <el-input v-model="secondDealerName" placeholder="二级代理名称" size="small" style="width:240px"></el-input>
               </div>
@@ -130,6 +134,7 @@
         tableLoading: false,
         code: '',
         merchantName: '',
+        firstDealerName: '',
         secondDealerName: '',
         businessType: 'hss',
         item_businessType: [
@@ -199,6 +204,7 @@
           pageNo: this.pageNo,
           code: this.code,
           merchantName: this.merchantName,
+          firstDealerName: this.firstDealerName,
           secondDealerName: this.secondDealerName,
           sysType: this.businessType,
           activateStatus: this.activeType,
