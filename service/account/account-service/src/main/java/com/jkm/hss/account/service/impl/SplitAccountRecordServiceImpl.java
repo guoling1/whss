@@ -8,6 +8,7 @@ import com.jkm.hss.account.dao.SplitAccountRecordDao;
 import com.jkm.hss.account.entity.ProfitCountRequest;
 import com.jkm.hss.account.entity.ProfitCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
+import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.SplitAccountRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -223,7 +226,24 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
 
     @Override
     public List<ProfitCountRespons> getProfit(ProfitCountRequest request) {
-        List<ProfitCountRespons> list = this.splitAccountRecordDao.getProfit(request);
+        ProfitCountRequest request1=selectTime(request);
+        List<ProfitCountRespons> list = this.splitAccountRecordDao.getProfit(request1);
+        if (list!=null){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getBusinessType().equals("hssPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssWithdraw")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssUpgrade")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hsyPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+            }
+        }
         return list;
     }
 
@@ -232,6 +252,21 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         return this.splitAccountRecordDao.getProfitCount(request);
     }
 
+
+    private ProfitCountRequest selectTime(ProfitCountRequest req) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dt= new Date();
+
+        try {
+            String d = sdf.format(dt);
+            dt = sdf.parse(d);
+            req.setSplitDate(dt);
+        } catch (ParseException e) {
+            log.debug("时间转换异常");
+            e.printStackTrace();
+        }
+        return req;
+    }
 
     /**
      * 获取分账单流水号

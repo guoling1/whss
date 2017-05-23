@@ -98,6 +98,9 @@
     <!-- 分润统计 -->
     <select id="getProfit" resultType="com.jkm.hss.account.entity.ProfitCountRespons">
         SELECT
+            a.business_type,
+            sum(a.split_amount) AS splitAmount,
+            DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
             a.*, b.proxy_name,
             b.mark_code
         FROM
@@ -105,9 +108,20 @@
         LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
         WHERE
             a.receipt_money_account_id = #{accountId}
-        AND split_amount &gt; 0.00
+        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
     <if test="firstLevelDealerId>0">
         AND b.id = #{firstLevelDealerId}
+    </if>
+    <if test="startTime!=null and startTime!=''">
+        AND a.split_date <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.split_date <![CDATA[ <= ]]> #{endTime}
+    </if>
+
+    <if test="businessType!=null and businessType!=''">
+        AND a.business_type = #{businessType}
     </if>
     </select>
 
@@ -120,9 +134,20 @@
         LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
         WHERE
             a.receipt_money_account_id = #{accountId}
-        AND split_amount &gt; 0.00
+        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
     <if test="firstLevelDealerId>0">
         AND b.id = #{firstLevelDealerId}
+    </if>
+    <if test="startTime!=null and startTime!=''">
+        AND a.split_date <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.split_date <![CDATA[ <= ]]> #{endTime}
+    </if>
+
+    <if test="businessType!=null and businessType!=''">
+        AND a.business_type = #{businessType}
     </if>
     </select>
 </mapper>

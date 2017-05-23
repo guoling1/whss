@@ -38,4 +38,9 @@ public class ProfitCountRespons {
      */
     private Date splitDate;
 
+    /**
+     * 分账日期
+     */
+    private String splitDates;
+
 }
