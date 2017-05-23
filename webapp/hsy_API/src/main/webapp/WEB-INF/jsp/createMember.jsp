@@ -64,7 +64,7 @@
                             if(data.status==1)
                                 location.href="<%=basePath%>membership/createMemberSuccess?mid="+data.mid;
                             else
-                                location.href="<%=basePath%>membership/needRecharge?mid="+data.mid+"&cellphone="+$("#consumerCellphone").val();
+                                location.href="<%=basePath%>membership/needRecharge?mid="+data.mid+"&cellphone="+$("#consumerCellphone").val()+"&source="+$("#source").val();
                         }
                         else
                             alert(data.result);

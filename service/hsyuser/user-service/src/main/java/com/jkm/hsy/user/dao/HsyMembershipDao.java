@@ -1,9 +1,6 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.entity.AppPolicyConsumer;
-import com.jkm.hsy.user.entity.AppPolicyMember;
-import com.jkm.hsy.user.entity.AppPolicyMembershipCard;
-import com.jkm.hsy.user.entity.AppPolicyMembershipCardShop;
+import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -29,4 +26,7 @@ public interface HsyMembershipDao {
     public Integer findMembershipCardCountOfUserByUID(@Param("uid")Long uid);
     public List<AppPolicyMembershipCard> findMemberCardList(AppPolicyMembershipCard appPolicyMembershipCard);
     public Integer findMemberCountOfUserByUID(@Param("uid")Long uid);
+    public List<AppAuUser> findShopNameAndGlobalID(@Param("uid")Long uid);
+    public void insertRechargeOrder(AppPolicyRechargeOrder appPolicyRechargeOrder);
+    public void updateRechargeOrder(AppPolicyRechargeOrder appPolicyRechargeOrder);
 }

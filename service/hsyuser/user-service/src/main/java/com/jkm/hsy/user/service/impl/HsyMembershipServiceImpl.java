@@ -1,10 +1,7 @@
 package com.jkm.hsy.user.service.impl;
 
 import com.google.gson.*;
-import com.jkm.base.common.util.DateUtil;
-import com.jkm.hsy.user.constant.AppConstant;
-import com.jkm.hsy.user.constant.AppPolicyConstant;
-import com.jkm.hsy.user.constant.VerificationCodeType;
+import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyVerificationDao;
 import com.jkm.hsy.user.entity.*;
@@ -14,7 +11,6 @@ import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.util.AppDateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -279,6 +275,55 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             return list.get(0);
         else
             return null;
+    }
+
+    public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember,String type,String source){
+        AppPolicyRechargeOrder appPolicyRechargeOrder = new AppPolicyRechargeOrder();
+        Date date=new Date();
+        if(type.equals(RechargeValidType.ACTIVATE.key)) {
+            String describe=RechargeValidType.ACTIVATE.value + "-充值金额为:" + appPolicyMember.getDepositAmount();
+            int orderType= OrderType.ACTIVATE.key;
+            BigDecimal marketingAmount=BigDecimal.ZERO;
+            appPolicyRechargeOrder.setRealPayAmount(appPolicyMember.getDepositAmount());
+            if (appPolicyMember.getIsPresentedViaActivate() == 1) {
+                appPolicyRechargeOrder.setTradeAmount(appPolicyMember.getDepositAmount().add(appPolicyMember.getPresentAmount()));
+                describe+="-赠送金额为:"+appPolicyMember.getPresentAmount();
+                orderType= OrderType.ACTIVATE_PRESENT.key;
+                marketingAmount=appPolicyMember.getPresentAmount();
+            } else
+                appPolicyRechargeOrder.setTradeAmount(appPolicyMember.getDepositAmount());
+            appPolicyRechargeOrder.setGoodsName(RechargeValidType.ACTIVATE.value);
+            appPolicyRechargeOrder.setGoodsDescribe(describe);
+            appPolicyRechargeOrder.setType(orderType);
+            appPolicyRechargeOrder.setMarketingAmount(marketingAmount);
+        }else if(type.equals(RechargeValidType.ACTIVATE.value)){
+
+        }
+        //通道需要做一下
+        System.out.println(source);
+        appPolicyRechargeOrder.setPayeeAccountID(748L);
+        appPolicyRechargeOrder.setPayChannelSign(801);
+        if(source.equals("ZFB"))
+            appPolicyRechargeOrder.setOuid(appPolicyMember.getUserID());
+        else
+            appPolicyRechargeOrder.setOuid(appPolicyMember.getOpenID());
+        appPolicyRechargeOrder.setMemberID(appPolicyMember.getId());
+        appPolicyRechargeOrder.setMemberAccountID(appPolicyMember.getAccountID());
+        appPolicyRechargeOrder.setMerchantReceiveAccountID(appPolicyMember.getReceiptAccountID());
+        List<AppAuUser> userList=hsyMembershipDao.findShopNameAndGlobalID(appPolicyMember.getUid());
+        appPolicyRechargeOrder.setMerchantName(userList.get(0).getShopName());
+        appPolicyRechargeOrder.setMerchantNO(userList.get(0).getGlobalID());
+        appPolicyRechargeOrder.setStatus(OrderStatus.NEED_RECHARGE.key);
+        appPolicyRechargeOrder.setCreateTime(date);
+        appPolicyRechargeOrder.setUpdateTime(date);
+        hsyMembershipDao.insertRechargeOrder(appPolicyRechargeOrder);
+        DecimalFormat a=new DecimalFormat("0000000000");
+        AppPolicyRechargeOrder appPolicyRechargeOrderUp=new AppPolicyRechargeOrder();
+        appPolicyRechargeOrderUp.setId(appPolicyRechargeOrder.getId());
+        appPolicyRechargeOrderUp.setOrderNO("RC"+ AppDateUtil.formatDate(date,AppDateUtil.TIME_FORMAT_SHORT+a.format(appPolicyRechargeOrder.getId())));
+        appPolicyRechargeOrder.setOrderNO(appPolicyRechargeOrderUp.getOrderNO());
+        hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUp);
+        return appPolicyRechargeOrder;
     }
 
 }
