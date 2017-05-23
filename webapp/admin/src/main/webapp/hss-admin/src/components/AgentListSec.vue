@@ -6,8 +6,56 @@
           <h3 class="box-title">二级代理商列表</h3>
         </div>
         <div class="box-body">
+          <ul class="search">
+            <li class="same">
+              <label>手机号:</label>
+              <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>代理商名称:</label>
+              <el-input v-model="query.name" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>代理商编号:</label>
+              <el-input v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>所属分公司:</label>
+              <el-input v-model="query.oemName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>省市：</label>
+              <div class="select el-input el-input--small" id="select" @click="open"><span style="color: #1f2d3d;width: 188px">{{selectCon}}</span>
+                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
+              </div>
+              <ul class="isShow" v-if="isOpen">
+                <li @click="selectAll()">全部</li>
+                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.name)" @click="select(province.code,province.name)">{{province.name}}
+                </li>
+              </ul>
+              <ul class="isShow1" v-if="isOpen1">
+                <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
+              </ul>
+            </li>
+            <li class="same">
+              <label>上级代理名称:</label>
+              <el-input v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>代理产品:</label>
+              <el-select clearable v-model="query.sysType" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收银" value="hsy">好收银</el-option>
+                <el-option label="好收收" value="hss">好收收</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
+            </li>
+          </ul>
           <!--筛选-->
-          <el-row :gutter="21" style="">
+          <!--<el-row :gutter="21" style="">
             <el-col :span="3">
               <label>手机号：</label>
               <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
@@ -50,9 +98,9 @@
               <div class="btn btn-primary" @click="search">筛选</div>
               <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>
-          </el-row>
+          </el-row>-->
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0;min-height: 200px" :data="records" border>
             <el-table-column label="代理商名称">
               <template scope="scope">
                 <router-link target="_blank" :to="'/admin/details/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
@@ -296,7 +344,7 @@
     font-size: 12px;
   }
   .select{
-    width: 100%;
+    width: 150px;
     height: 30px;
     background-color: #fff;
     border-radius: 4px;
@@ -307,7 +355,7 @@
     line-height: 30px;
     padding: 0px 10px;
     transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    overflow: hidden;
+    /*overflow: hidden;*/
     position: relative;
   }
   .select:hover{
@@ -345,8 +393,8 @@
     box-sizing: border-box;
     margin: 5px 0;
     position: absolute;
-    left: 52%;
-    top: 0100%;
+    left: 67%;
+    /*top: 0100%;*/
     width: 16%;
     padding: 5px;
     z-index: 1000;
@@ -360,5 +408,21 @@
      background: #1c8de0;
    }
   }
+  }
+  ul {
+    padding: 0;
+    margin:0;
+  }
+  .search{
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
+  }
+  .same {
+    width: 150px;
+    list-style: none;
+    display: inline-block;
+    margin: 0 15px 10px 0;
   }
 </style>

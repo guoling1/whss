@@ -97,13 +97,32 @@
 
     <!-- 分润统计 -->
     <select id="getProfit" resultType="com.jkm.hss.account.entity.ProfitCountRespons">
-        SELECT * FROM tb_split_account_record  WHERE receipt_money_account_id = #{accountId}
+        SELECT
+            a.*, b.proxy_name,
+            b.mark_code
+        FROM
+            tb_split_account_record a
+        LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
+        WHERE
+            a.receipt_money_account_id = #{accountId}
         AND split_amount &gt; 0.00
+    <if test="firstLevelDealerId>0">
+        AND b.id = #{firstLevelDealerId}
+    </if>
     </select>
 
     <!-- 分润统计总数 -->
     <select id="getProfitCount" resultType="java.lang.Integer">
-        SELECT COUNT(0) FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId}
+        SELECT
+            COUNT(a.id)
+        FROM
+            tb_split_account_record a
+        LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
+        WHERE
+            a.receipt_money_account_id = #{accountId}
         AND split_amount &gt; 0.00
+    <if test="firstLevelDealerId>0">
+        AND b.id = #{firstLevelDealerId}
+    </if>
     </select>
 </mapper>

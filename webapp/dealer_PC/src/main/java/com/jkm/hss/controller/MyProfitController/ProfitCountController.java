@@ -27,20 +27,63 @@ public class ProfitCountController extends BaseController {
     @Autowired
     private SplitAccountRecordService splitAccountRecordService;
 
+    /**
+     * 分润统计
+     * @param request
+     * @return
+     */
     @ResponseBody
-    @RequestMapping(value = "/count", method = RequestMethod.POST)
+    @RequestMapping(value = "/getCount", method = RequestMethod.POST)
     public CommonResponse getCount(@RequestBody ProfitCountRequest request){
         final PageModel<ProfitCountRespons> pageModel = new PageModel<ProfitCountRespons>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
         final Dealer dealer = super.getDealer().get();
         final long accountId = dealer.getAccountId();
-        request.setAccountId(accountId);
-        List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
-        int count = this.splitAccountRecordService.getProfitCount(request);
-        pageModel.setCount(count);
-        pageModel.setRecords(list);
-        return CommonResponse.objectResponse(1, "success", pageModel);
+        int level = dealer.getLevel();
+        int oemType = dealer.getOemType();
+        long firstLevelDealerId = dealer.getFirstLevelDealerId();
+        if (level==2) {
+            request.setAccountId(accountId);
+            request.setFirstLevelDealerId(firstLevelDealerId);
+            List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
+            int count = this.splitAccountRecordService.getProfitCount(request);
+            pageModel.setCount(count);
+            pageModel.setRecords(list);
+            return CommonResponse.objectResponse(1, "success", pageModel);
+        }
+        if (level==1){
+            request.setAccountId(accountId);
+            List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
+            int count = this.splitAccountRecordService.getProfitCount(request);
+            pageModel.setCount(count);
+            pageModel.setRecords(list);
+            return CommonResponse.objectResponse(1, "success", pageModel);
+        }
+        if (oemType==1){
+            request.setAccountId(accountId);
+            List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
+            int count = this.splitAccountRecordService.getProfitCount(request);
+            pageModel.setCount(count);
+            pageModel.setRecords(list);
+            return CommonResponse.objectResponse(1, "success", pageModel);
+        }
 
+        return null;
     }
+
+    /**
+     * 分润详情
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getCountDetails", method = RequestMethod.POST)
+    public CommonResponse getCountDetails(@RequestBody ProfitCountRequest request){
+        final PageModel<ProfitCountRespons> pageModel = new PageModel<ProfitCountRespons>(request.getPageNo(), request.getPageSize());
+        request.setOffset(pageModel.getFirstIndex());
+
+        return CommonResponse.objectResponse(1, "success", pageModel);
+    }
+
 
 }
