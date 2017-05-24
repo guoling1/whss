@@ -40,11 +40,11 @@
             </li>
             <li class="same">
               <label>所属一级代理:</label>
-              <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="proxyName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属二级代理:</label>
-              <el-input style="width: 188px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="proxyName1" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>交易日期:</label>
@@ -218,8 +218,6 @@
           status: '',
           settleStatus:'',
           payType:'',
-          proxyName:'',
-          proxyName1:'',
           loadUrl: '',
           loadUrl1: '',
           payChannelSign:'',
@@ -228,6 +226,8 @@
         appId:'',
         merchantName: '',
         markCode:"",
+        proxyName:'',
+        proxyName1:'',
         channelList:[],
         date: '',
         records: [],
@@ -292,6 +292,8 @@
         this.appId='';
         this.merchantName='';
         this.markCode='';
+        this.proxyName = "";
+        this.proxyName1 = "";
         this.query = {
           page:1,
             size:10,
@@ -320,13 +322,21 @@
         if(this.appId == '好收收'){
           this.query.markCode = this.markCode;
           this.query.merchantName = this.merchantName;
+          this.query.proxyName = this.proxyName;
+          this.query.proxyName1 = this.proxyName1;
           delete this.query.globalId;
           delete this.query.shortName;
+          delete this.query.proxyNameHsy;
+          delete this.query.proxyNameHsy1;
         }else if(this.appId == '好收银'){
           this.query.globalId = this.markCode;
           this.query.shortName = this.merchantName;
+          this.query.proxyNameHsy = this.proxyName;
+          this.query.proxyNameHsy1 = this.proxyName1;
           delete this.query.markCode;
           delete this.query.merchantName;
+          delete this.query.proxyName;
+          delete this.query.proxyName1;
         }else {
           this.query.markCode = '';
           this.query.merchantName = '';
@@ -435,7 +445,9 @@
       appId: function (val) {
         if(val == ''){
           this.markCode='';
-          this.merchantName=''
+          this.merchantName='';
+          this.proxyName='';
+          this.proxyName1='';
         }
       }
     },
