@@ -182,7 +182,6 @@
           })
       },
       open:function () {
-        console.log(this.isOpen)
         this.isOpen = !this.isOpen;
         this.isOpen1 = false;
         document.getElementById('select').style.borderColor = '#20a0ff';
@@ -205,6 +204,7 @@
           .then(function (res) {
             this.loading = false;
             this.records = res.data.records;
+            this.count = res.data.count;
             for (var i = 0; i < this.records.length; i++) {
               if (this.records[i].belongProvinceName != null && this.records[i].belongCityName != null) {
                 this.records[i].belong = this.records[i].belongProvinceName + "-" + this.records[i].belongCityName;
