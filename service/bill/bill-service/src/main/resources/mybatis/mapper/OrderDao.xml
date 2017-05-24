@@ -409,6 +409,8 @@
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            (select proxy_name from tb_dealer where id=z.`DEALERID` AND `level` =1) as proxyNameHsy,
+            (select proxy_name from tb_dealer where id=b.second_dealer_id AND `level` =2) as proxyNameHsy1,
             x.SHORTNAME AS merchantName,
             x.GLOBALID AS markCode
         FROM
@@ -439,6 +441,12 @@
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="proxyNameHsy != null and proxyNameHsy!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyNameHsy},'%')
+        </if>
+        <if test="proxyNameHsy1 != null and proxyNameHsy1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyNameHsy1},'%')
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
