@@ -1036,7 +1036,7 @@ public class DealerController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/dealerPolicy", method = RequestMethod.GET)
+    @RequestMapping(value = "/dealerPolicy", method = RequestMethod.POST)
     public CommonResponse dealerPolicy(@RequestBody DealerPolicyRequest request) {
         DealerPolicyResponse dealerPolicyResponse = new DealerPolicyResponse();
         if((request.getSysType()).equals(EnumProductType.HSS.getId())){

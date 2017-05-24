@@ -6,14 +6,10 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">分润详情</h3>
+              <h3 class="box-title">分润统计</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
-              <div class="screen-item">
-                <span class="screen-title">交易订单号</span>
-                <el-input v-model="orderNo" placeholder="交易订单号" size="small" style="width:240px"></el-input>
-              </div>
               <div class="screen-item">
                 <span class="screen-title">业务类型</span>
                 <el-select v-model="businessType" size="small" clearable placeholder="请选择">
@@ -98,7 +94,6 @@
         pageNo: 1,
         tableData: [],
         tableLoading: false,
-        orderNo: '',
         businessType: '',
         item_businessType: [
           {
@@ -119,8 +114,8 @@
           }
         ],
         datetime: '',
-        beginDate: '',
-        endDate: '',
+        startTime: '',
+        endTime: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -156,21 +151,20 @@
     methods: {
       datetimeSelect: function (val) {
         let format = val.split(' - ');
-        this.beginDate = format[0];
-        this.endDate = format[1];
+        this.startTime = format[0];
+        this.endTime = format[1];
       },
       screen: function () {
         this.getData();
       },
       getData: function () {
         this.tableLoading = true;
-        this.$http.post('/daili/profit/details', {
+        this.$http.post('/daili/profitCount/getCount', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
-          orderNo: this.orderNo,
           businessType: this.businessType,
-          beginDate: this.beginDate,
-          endDate: this.endDate
+          startTime: this.startTime,
+          endTime: this.endTime
         }).then(res => {
           this.tableLoading = false;
           this.total = res.data.count;

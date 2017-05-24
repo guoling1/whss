@@ -16,22 +16,50 @@
                     <h3 class="box-title">收款及提现结算价</h3>
                   </div>
                   <div class="box-body">
-                    <el-table :data="tableData" border
-                              v-loading="tableLoading"
+                    <el-table :data="hss_tableData" border
+                              v-loading="hss_tableLoading"
                               element-loading-text="数据加载中">
-                      <el-table-column label="注册时间" width="180">
+                      <el-table-column prop="channelName" label="通道名称"></el-table-column>
+                      <el-table-column label="支付结算手续费">
                         <template scope="scope">
-                          {{ scope.row.createTime | datetime }}
+                          {{scope.row.paymentSettleRate}}%
                         </template>
                       </el-table-column>
-                      <el-table-column prop="mobile" label="联系手机号"></el-table-column>
+                      <el-table-column prop="settleType" label="结算时间"></el-table-column>
+                      <el-table-column label="提现手续费">
+                        <template scope="scope">
+                          {{scope.row.withdrawSettleFee}}元/每笔
+                        </template>
+                      </el-table-column>
                     </el-table>
                   </div>
                   <div class="box-header with-border">
                     <h3 class="box-title">合伙人推荐分润设置</h3>
                   </div>
                 </el-tab-pane>
-                <el-tab-pane label="好收银" name="second">好收银</el-tab-pane>
+                <el-tab-pane label="好收银" name="second">
+                  <div class="box-header with-border">
+                    <h3 class="box-title">收款及提现结算价</h3>
+                  </div>
+                  <div class="box-body">
+                    <el-table :data="hsy_tableData" border
+                              v-loading="hsy_tableLoading"
+                              element-loading-text="数据加载中">
+                      <el-table-column prop="channelName" label="通道名称"></el-table-column>
+                      <el-table-column label="支付结算手续费">
+                        <template scope="scope">
+                          {{scope.row.paymentSettleRate}}%
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="settleType" label="结算时间"></el-table-column>
+                      <el-table-column label="提现手续费">
+                        <template scope="scope">
+                          {{scope.row.withdrawSettleFee}}元/每笔
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                </el-tab-pane>
               </el-tabs>
             </div>
             <!-- /.box-body -->
@@ -48,20 +76,46 @@
   export default {
     name: 'app',
     data() {
-      return {}
+      return {
+        hss_tableLoading: false,
+        hss_tableData: [],
+        hsy_tableLoading: false,
+        hsy_tableData: []
+      }
     },
     created() {
-      this.getData();
+      this.getHssData();
+      this.getHsyData();
     },
     methods: {
-      getData: function () {
-        this.tableLoading = true;
+      handleClick(tab, event) {
+        console.log(tab, event);
+      },
+      getHssData: function () {
+        this.hss_tableLoading = true;
         this.$http.post('/daili/dealer/dealerPolicy', {
           sysType: 'hss'
         }).then(res => {
-          console.log(res);
+          this.hss_tableLoading = false;
+          this.hss_tableData = res.data.product.channels;
         }, err => {
-          this.tableLoading = false;
+          this.hss_tableLoading = false;
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
+        });
+      },
+      getHsyData: function () {
+        this.hsy_tableLoading = true;
+        this.$http.post('/daili/dealer/dealerPolicy', {
+          sysType: 'hsy'
+        }).then(res => {
+          this.hsy_tableLoading = false;
+          this.hsy_tableData = res.data.product.channels;
+        }, err => {
+          this.hsy_tableLoading = false;
           this.$message({
             showClose: true,
             message: err.data.msg,
