@@ -56,9 +56,9 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="create" style="width: 100%;float: right;margin: 20px 0 100px;">
+              <el-button type="primary" @click="create" style="width: 100%;float: right;margin: 20px 0 100px;" :disabled="createClick" v-loading.fullscreen.lock="fullscreenLoading" element-loading-text="拼命生产中">
                 立即生产
-              </div>
+              </el-button>
             </div>
           </el-col>
           <el-col :span="8">
@@ -110,6 +110,7 @@
     name: 'codeProduct',
     data () {
       return {
+        createClick:false,
         query: {
           sysType: "hss",//hss或hsy
           type:'1',//1实体码 2电子码
@@ -119,20 +120,27 @@
         url:'',
         startCode:'',
         endCode: '',
-        productionTime:''
+        productionTime:'',
+        fullscreenLoading: false
       }
     },
     methods: {
       //创建
       create: function () {
+        this.createClick = true;
+        this.fullscreenLoading = true;
         this.$http.post('/admin/code/productionQrCode', this.query)
           .then(function (res) {
+            this.fullscreenLoading = false;
+            this.createClick = false;
             this.isShow = true;
             this.url= res.data.url;
             this.startCode= res.data.productionQrCodeRecord.startCode;
             this.endCode= res.data.productionQrCodeRecord.endCode;
             this.productionTime= res.data.productionQrCodeRecord.productionTime;
           }, function (err) {
+            this.fullscreenLoading = false;
+            this.createClick = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
