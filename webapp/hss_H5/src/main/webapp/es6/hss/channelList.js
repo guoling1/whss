@@ -57,6 +57,7 @@ http.post('/channel/list', {}, function (list) {
     group.className = 'channel-group';
     group.onclick = function () {
       let amount = getQueryString('amount');
+      let orderId = getQueryString('id');
       if (amount > 0) {
         checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
@@ -64,7 +65,7 @@ http.post('/channel/list', {}, function (list) {
             switch (list[i].payMethod) {
               case '快捷':
                 http.post('/trade/unionPayRoute', {  // /wx/receipt
-                  totalFee: amount,
+                  orderId: orderId,
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
@@ -73,7 +74,7 @@ http.post('/channel/list', {}, function (list) {
                 break;
               default:
                 http.post('/trade/dcReceipt', {  // /wx/receipt
-                  totalFee: amount,
+                  orderId: orderId,
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();

@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -123,5 +124,5 @@ public class DealerPolicyResponse {
          */
         private String bossDealerShareRate;
     }
-
+    private List<DealerProfitSettingResponse> dealerProfits;
 }

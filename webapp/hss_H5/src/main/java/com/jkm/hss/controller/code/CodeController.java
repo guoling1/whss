@@ -2,9 +2,17 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumQRCodeSysType;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -12,6 +20,7 @@ import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +50,15 @@ public class CodeController extends BaseController {
     @Autowired
     private UserInfoService userInfoService;
 
+    @Autowired
+    private AdminUserService adminUserService;
+
+    @Autowired
+    private DealerService dealerService;
+
+    @Autowired
+    private OemInfoService oemInfoService;
+
     /**
      * 扫码
      *
@@ -55,6 +73,18 @@ public class CodeController extends BaseController {
         log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "二维码不存在");
+        Preconditions.checkState((qrCodeOptional.get().getSysType()).equals(EnumQRCodeSysType.HSS.getId()), "二维码不属于该系统");
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(qrCodeOptional.get().getAdminId());
+        Preconditions.checkState(adminUserOptional.isPresent(), "产码者不存在");
+        String oemNo = "";
+        String appId = WxConstants.APP_ID;
+        if(adminUserOptional.get().getType()== EnumAdminType.OEM.getCode()){
+            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(adminUserOptional.get().getDealerId());
+            Preconditions.checkState(oemInfoOptional.isPresent(), "分公司配置不完全");
+            oemNo = oemInfoOptional.get().getOemNo();
+            appId = oemInfoOptional.get().getAppId();
+            model.addAttribute("oemNo", oemNo);
+        }
         final QRCode qrCode = qrCodeOptional.get();
         Preconditions.checkState(qrCode.isCorrectSign(sign), "非法参数");
         final long merchantId = qrCode.getMerchantId();
@@ -85,7 +115,7 @@ public class CodeController extends BaseController {
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -117,7 +147,8 @@ public class CodeController extends BaseController {
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+//                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -150,7 +181,8 @@ public class CodeController extends BaseController {
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+//                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -182,7 +214,8 @@ public class CodeController extends BaseController {
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+//                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -214,7 +247,8 @@ public class CodeController extends BaseController {
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+//                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }

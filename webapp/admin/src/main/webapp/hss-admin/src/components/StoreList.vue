@@ -168,12 +168,19 @@
                   <label>审核状态:</label>
                   <el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
                     <el-option label="全部" value="">全部</el-option>
+                    <el-option label="已注册" value="4">已注册</el-option>
+                    <el-option label="待审核" value="2">待审核</el-option>
+                    <el-option label="审核通过" value="1">审核通过</el-option>
+                    <el-option label="审核未通过" value="3">审核未通过</el-option>
+                  </el-select>
+                  <!--<el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value="">全部</el-option>
                     <el-option label="已注册" value="0">已注册</el-option>
                     <el-option label="已提交基本资料" value="1">已提交基本资料</el-option>
                     <el-option label="待审核" value="2">待审核</el-option>
                     <el-option label="审核通过" value="3">审核通过</el-option>
                     <el-option label="审核未通过" value="4">审核未通过</el-option>
-                  </el-select>
+                  </el-select>-->
                 </li>
                 <li class="same">
                   <div class="btn btn-primary" @click="search('hsy')">筛选</div>

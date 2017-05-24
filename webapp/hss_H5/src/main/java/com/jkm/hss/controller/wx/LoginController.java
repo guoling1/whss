@@ -11,6 +11,8 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -49,6 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +118,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private OemInfoService oemInfoService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -231,15 +237,56 @@ public class LoginController extends BaseController {
     public String addInfo(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
         boolean isRedirect = false;
-//        if(!super.isLogin(request)){
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-//        }else {
+        String oemNo = request.getParameter("oemNo");
+        if(!super.isLogin(request)){
+            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
+
+            if(oemNo!=null&&!"".equals(oemNo)){//分公司
+                log.info("omeNo:"+oemNo);
+                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                if(oemInfoOptional.isPresent()){
+                    log.info("有分公司");
+                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                }else{
+                    model.addAttribute("message","分公司不存在");
+                    return "/message";
+                }
+            }else{//总公司
+                return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+            }
+        }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
                     Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+
+                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                        if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
+                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+                            if(oemInfoOptional.isPresent()){
+                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
+                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                                }
+                            }else{
+                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
+                                model.addAttribute("message","分公司尚未配置");
+                                return "redirect:/sqb/message";
+                            }
+                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }
+                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
+                        if(result.get().getOemId()>0){//分公司商户
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }
+                    }
+
+
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
                         url = "/sqb/reg";
                         isRedirect= true;
@@ -281,7 +328,7 @@ public class LoginController extends BaseController {
             }else{
                 return url;
             }
-//        }
+        }
     }
     /**
      * 填写用户基本信息
@@ -295,9 +342,9 @@ public class LoginController extends BaseController {
     public String addNext(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
         boolean isRedirect = false;
-//        if(!super.isLogin(request)){
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-//        }else {
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
@@ -344,7 +391,7 @@ public class LoginController extends BaseController {
             }else{
                 return url;
             }
-//        }
+        }
     }
 
     /**
@@ -371,9 +418,9 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/prompt",method = RequestMethod.GET)
     public String prompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
-//        if(!super.isLogin(request)){
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-//        }else {
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
             String res = merchantInfoCheckRecordService.selectById(userInfoOptional.get().getMerchantId());
@@ -385,7 +432,7 @@ public class LoginController extends BaseController {
                 model.addAttribute("res","您的资料已经提交，我们将在一个工作日内处理");
                 return "/prompt1";
             }
-//        }
+        }
         return null;
     }
 
@@ -1612,5 +1659,6 @@ public class LoginController extends BaseController {
         model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
         return "/buySuccess";
     }
+
 
 }

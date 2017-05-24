@@ -23,12 +23,10 @@ import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
-import com.jkm.hss.dealer.service.DealerChannelRateService;
-import com.jkm.hss.dealer.service.DealerRateService;
-import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
+import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.helper.response.*;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.helper.ValidationUtil;
@@ -42,6 +40,7 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.enums.Enum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -76,6 +75,8 @@ public class DealerController extends BaseController {
     private DealerUpgerdeRateService dealerUpgerdeRateService;
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private DealerProfitService dealerProfitService;
     /**
      * 二级代理商列表
      *
@@ -1071,8 +1072,9 @@ public class DealerController extends BaseController {
                 }
             }
             dealerPolicyResponse.setProduct(productResponse);
-            final List<DealerPolicyResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
-            if(dealerOptional.get().getLevel()==EnumDealerLevel.FIRST.getId()){
+
+            if(dealerOptional.get().getLevel()==EnumDealerLevel.FIRST.getId()&&dealerOptional.get().getOemType()== EnumOemType.DEALER.getId()){
+                final List<DealerPolicyResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
                 List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productOptional.get().getId());
                 for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
                     final DealerPolicyResponse.DealerUpgerdeRate du = dealerPolicyResponse.new DealerUpgerdeRate();
@@ -1083,8 +1085,10 @@ public class DealerController extends BaseController {
                     du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
+                dealerPolicyResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
+                List<DealerProfitSettingResponse> dealerProfitSettingResponses = dealerProfitService.selectDealerByDealerIdAndProductId(super.getDealerId(),productOptional.get().getId());
+                dealerPolicyResponse.setDealerProfits(dealerProfitSettingResponses);
             }
-            dealerPolicyResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
         }
         if((request.getSysType()).equals(EnumProductType.HSY.getId())){
             Optional<Product> productOptional = this.productService.selectByType(request.getSysType());

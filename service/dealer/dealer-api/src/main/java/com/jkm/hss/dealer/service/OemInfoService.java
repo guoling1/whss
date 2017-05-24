@@ -39,4 +39,11 @@ public interface OemInfoService {
      */
     Optional<OemInfo> selectByOemNo(String omeNo);
 
+    /**
+     * 根据分公司编码查询分公司O单配置
+     * @param dealerId
+     * @return
+     */
+    Optional<OemInfo> selectOemInfoByDealerId(long dealerId);
+
 }

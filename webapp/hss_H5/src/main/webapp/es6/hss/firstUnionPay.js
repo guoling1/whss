@@ -123,6 +123,7 @@ let test = function (cardNo) {
 
 let amount = getQueryString('amount');
 let channel = getQueryString('channel');
+let uorderId = getQueryString('orderId');
 let bankName = '';
 let bankCode = '';
 let bankCodeBtn = document.getElementById('bankCode');
@@ -227,9 +228,13 @@ submit.addEventListener('click', function () {
       http.post('/trade/confirmUnionPay', {
         orderId: orderId,
         code: code.value,
-      }, function () {
+      }, function (data) {
         message.load_hide();
-        window.location.replace('/trade/unionPaySuccess/' + orderId);
+        if (data.errorCode == 1) {
+          window.location.replace('/trade/unionPaySuccess/' + data.orderId);
+        } else {
+          window.location.replace('/trade/unionPay2Error/' + data.orderId);
+        }
       })
     } else {
       message.prompt_show('请输入正确的CVV2');
@@ -248,7 +253,7 @@ sendCode.addEventListener('click', function () {
         message.load_show('正在发送');
         let expire = expireDate.innerHTML.split('/');
         http.post('/trade/firstUnionPay', {
-          amount: amount,
+          orderId: uorderId,
           channel: channel,
           bankCode: bankCode,
           bankCardNo: bankCodeBtn.value,

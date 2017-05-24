@@ -197,17 +197,8 @@ public class WxPubController extends BaseController {
                 }
             }
         }
-        Map<String,String> ret = null;
-       if(!"".equals(oemNo)){
-           Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-           if(oemInfoOptional.isPresent()){
-               ret = WxPubUtil.getOpenid(code,oemInfoOptional.get().getAppId(),oemInfoOptional.get().getAppSecret());
-           }else{
-               ret = WxPubUtil.getOpenid(code);
-           }
-       }else{
-           ret = WxPubUtil.getOpenid(code);
-       }
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+        Map<String,String>  ret = WxPubUtil.getOpenid(code,oemInfoOptional.get().getAppId(),oemInfoOptional.get().getAppSecret());
         CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
                 ApplicationConsts.getApplicationConfig().domain());
         return "redirect:"+tempUrl;

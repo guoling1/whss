@@ -101,7 +101,7 @@
             a.business_type,
             sum(a.split_amount) AS splitAmount,
             DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
-            a.*, b.proxy_name,
+            b.proxy_name,
             b.mark_code
         FROM
             tb_split_account_record a
