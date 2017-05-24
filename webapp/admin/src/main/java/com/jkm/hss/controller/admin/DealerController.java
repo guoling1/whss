@@ -148,6 +148,7 @@ public class DealerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/listFirstDealer", method = RequestMethod.POST)
     public CommonResponse listFirstDealer(@RequestBody final ListFirstDealerRequest listFirstDealerRequest) {
+        listFirstDealerRequest.setOemType(EnumOemType.DEALER.getId());
         final PageModel<FirstDealerResponse> pageModel = this.dealerService.listFirstDealer(listFirstDealerRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
