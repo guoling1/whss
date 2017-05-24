@@ -162,7 +162,8 @@
         LEFT JOIN tb_order c ON c.order_no = a.order_no
         WHERE
         a.receipt_money_account_id = #{accountId}
-        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        AND a.business_type=#{businessType}
+        AND split_amount &gt; 0.00 AND a.split_date between #{splitDate} and #{splitDate1}
         <if test="firstLevelDealerId>0">
             AND b.id = #{firstLevelDealerId}
         </if>

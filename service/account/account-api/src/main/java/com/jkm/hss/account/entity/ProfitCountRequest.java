@@ -16,6 +16,11 @@ public class ProfitCountRequest {
     private Date splitDate;
 
     /**
+     * 分账日期
+     */
+    private Date splitDate1;
+
+    /**
      * yu
      * 业务类型
      * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
