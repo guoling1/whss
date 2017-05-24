@@ -565,7 +565,6 @@ public class DealerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "addOrUpdateHssDealer", method = RequestMethod.POST)
     public CommonResponse addOrUpdateHssDealer(@RequestBody HssDealerAddOrUpdateRequest request) {
-        try{
             final Optional<Dealer> dealerOptional = this.dealerService.getById(request.getDealerId());
             if(!dealerOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "代理商不存在");
@@ -625,10 +624,6 @@ public class DealerController extends BaseController {
             this.dealerService.addOrUpdateHssDealer(request);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("dealerId", request.getDealerId()).build();
-        }catch (Exception e){
-            log.error("错误信息时",e.getStackTrace());
-            return CommonResponse.simpleResponse(-1, e.getMessage());
-        }
     }
     /**
      * 新增或添加分公司配置

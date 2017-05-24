@@ -9,7 +9,6 @@ import com.jkm.hss.dealer.enums.EnumDealerStatus;
 import com.jkm.hss.dealer.helper.requestparam.AddOrUpdateOemRequest;
 import com.jkm.hss.dealer.helper.response.OemDetailResponse;
 import com.jkm.hss.dealer.service.OemInfoService;
-import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -171,5 +170,16 @@ public class OemInfoServiceImpl implements OemInfoService {
     @Override
     public Optional<OemInfo> selectByOemNo(String omeNo) {
         return Optional.fromNullable(oemInfoDao.selectByOemNo(omeNo));
+    }
+
+    /**
+     * 根据分公司编码查询分公司O单配置
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public Optional<OemInfo> selectOemInfoByDealerId(long dealerId) {
+        return Optional.fromNullable(oemInfoDao.selectByDealerId(dealerId));
     }
 }

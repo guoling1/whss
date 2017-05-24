@@ -76,13 +76,14 @@
             </bean>
         </mvc:interceptor>
 
-        <mvc:interceptor>
-            <mvc:mapping path="/sqb/addInfo"/>
-            <mvc:mapping path="/sqb/addNext"/>
-            <mvc:mapping path="/sqb/prompt"/>
-            <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
-                <property name="oemInfoService" ref="oemInfoServiceImpl"/>
-            </bean>
-        </mvc:interceptor>
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/sqb/addInfo"/>-->
+            <!--<mvc:mapping path="/sqb/addNext"/>-->
+            <!--<mvc:mapping path="/sqb/prompt"/>-->
+            <!--<mvc:mapping path="/sqb/collection"/>-->
+            <!--<bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">-->
+                <!--<property name="oemInfoService" ref="oemInfoServiceImpl"/>-->
+            <!--</bean>-->
+        <!--</mvc:interceptor>-->
     </mvc:interceptors>
 </beans>
