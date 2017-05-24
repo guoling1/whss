@@ -408,7 +408,7 @@
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
             x.SHORTNAME AS merchantName,
-            x.GLOBALID AS markCode
+            x.GLOBALID AS markCode,
             (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
             b.oem_id
         FROM

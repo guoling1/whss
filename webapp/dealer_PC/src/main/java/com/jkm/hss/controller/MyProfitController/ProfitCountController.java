@@ -54,7 +54,7 @@ public class ProfitCountController extends BaseController {
         final long accountId = dealer.getAccountId();
         int level = dealer.getLevel();
         int oemType = dealer.getOemType();
-        Long oemId = dealer.getOemId();
+//        Long oemId = dealer.getOemId();
         long firstLevelDealerId = dealer.getFirstLevelDealerId();
         if (level==2) {
             request.setAccountId(accountId);
