@@ -27,6 +27,9 @@
             <if test="refundstatus>0">
                 refund_status=#{refundstatus},
             </if>
+            <if test="refundno!=null and refundno!='' ">
+                refund_no=#{refundno},
+            </if>
             <if test="refundtime!=null ">
                 refund_time=#{refundtime},
             </if>
