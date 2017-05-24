@@ -39,6 +39,7 @@ public class HSYRefundOrderServiceImlp implements HSYRefundOrderService {
             idStr=idStr.substring(idStr.length()-8);
         }
         hsyRefundOrder.setRefundno("T"+DateFormatUtil.format(new Date(),"yyyyMMdd")+idStr);
+        hsyRefundOrderDao.update(hsyRefundOrder);
     }
 
     @Override
