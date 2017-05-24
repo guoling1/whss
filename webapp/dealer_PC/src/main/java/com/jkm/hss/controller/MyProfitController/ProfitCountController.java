@@ -66,8 +66,8 @@ public class ProfitCountController extends BaseController {
             return CommonResponse.objectResponse(1, "success", pageModel);
         }
         if (level==1){
-            request.setAccountId(accountId);
             if (oemType==0) {
+                request.setAccountId(accountId);
                 List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
                 for (int i=0;i<list.size();i++){
                     list.get(i).setProxyName("金开门");
@@ -75,9 +75,10 @@ public class ProfitCountController extends BaseController {
                 int count = this.splitAccountRecordService.getProfitCount(request);
                 pageModel.setCount(count);
                 pageModel.setRecords(list);
+                return CommonResponse.objectResponse(1, "success", pageModel);
             }
 
-            return CommonResponse.objectResponse(1, "success", pageModel);
+
         }
         if (oemType==1){
             request.setAccountId(accountId);
