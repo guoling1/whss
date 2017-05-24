@@ -66,7 +66,7 @@
               </ul>
               <!--表格-->
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHss" border>
-                <el-table-column type="index" width="62" label="序号" fixed="left" type="index"></el-table-column>
+                <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
                 <el-table-column prop="orderNo" label="订单号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
