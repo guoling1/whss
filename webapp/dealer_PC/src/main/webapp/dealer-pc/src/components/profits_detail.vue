@@ -119,8 +119,8 @@
           }
         ],
         datetime: '',
-        beginDate: '',
-        endDate: '',
+        startTime: '',
+        endTime: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -156,21 +156,21 @@
     methods: {
       datetimeSelect: function (val) {
         let format = val.split(' - ');
-        this.beginDate = format[0];
-        this.endDate = format[1];
+        this.startTime = format[0];
+        this.endTime = format[1];
       },
       screen: function () {
         this.getData();
       },
       getData: function () {
         this.tableLoading = true;
-        this.$http.post('/daili/profit/details', {
+        this.$http.post('/daili/profitCount/getCountDetails', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           orderNo: this.orderNo,
           businessType: this.businessType,
-          beginDate: this.beginDate,
-          endDate: this.endDate
+          startTime: this.startTime,
+          endTime: this.endTime
         }).then(res => {
           this.tableLoading = false;
           this.total = res.data.count;
