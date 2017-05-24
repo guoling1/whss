@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -256,6 +257,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Override
     public List<ProfitDetailCountRespons> getCountDetails(ProfitCountRequest req) {
         ProfitCountRequest request1=selectTime(req);
+
         List<ProfitDetailCountRespons> list = this.splitAccountRecordDao.getCountDetails(request1);
         return list;
     }
@@ -270,10 +272,20 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dt= new Date();
 
+        Date dts= null;
         try {
             String d = sdf.format(dt);
             dt = sdf.parse(d);
             req.setSplitDate(dt);
+
+            String ds = sdf.format(req.getSplitDate());
+            dts = sdf.parse(ds);
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dts);
+            rightNow.add(Calendar.DATE, 1);
+            req.setSplitDate1(rightNow.getTime());
+            req.setSplitDate(dts);
+
         } catch (ParseException e) {
             log.debug("时间转换异常");
             e.printStackTrace();
