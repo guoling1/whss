@@ -2,7 +2,6 @@ package com.jkm.hss.account.entity;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -31,7 +30,7 @@ public class ProfitCountRespons {
     /**
      * 分账所得金额
      */
-    private BigDecimal splitAmount;
+    private String splitAmount;
 
     /**
      * 分账日期

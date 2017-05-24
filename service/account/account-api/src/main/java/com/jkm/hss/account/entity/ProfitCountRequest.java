@@ -23,12 +23,12 @@ public class ProfitCountRequest {
     private String businessType;
 
     /**
-     * 查询条件：注册开始时间
+     * 查询条件：开始时间
      */
     private String startTime;
 
     /**
-     * 查询条件：注册结束时间
+     * 查询条件：结束时间
      */
     private String endTime;
 

@@ -34,6 +34,11 @@ public class ProfitDetailCountRespons {
     private String splitDates;
 
     /**
+     * 交易订单号
+     */
+    private String orderNo;
+
+    /**
      * 分账单号（为了支持多次分账， 现在可以和交易单号保持一致）
      */
     private String splitOrderNo;
