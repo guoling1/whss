@@ -85,7 +85,7 @@
             <mvc:mapping path="/admin/queryOrder/**"/>
             <mvc:mapping path="/admin/merchantInfo/**"/>
             <mvc:mapping path="/admin/photoChange/**"/>
-            <mvc:mapping path="/admin/branchAccount/**"/>
+            <mvc:mapping path="/admin/queryOrder/**"/>
             <mvc:exclude-mapping path="/admin/user/login*"/>
             <mvc:exclude-mapping path="/admin/qrcode/**"/>
             <bean id="adminLoginInterceptor" class="com.jkm.hss.interceptor.AdminLoginInterceptor">

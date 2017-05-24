@@ -11,9 +11,9 @@ import lombok.Data;
 public class FirstUnionPaySendMsgRequest {
 
     /**
-     * 金额
+     * 订单id
      */
-    private String amount;
+    private long orderId;
     /**
      * 渠道
      */

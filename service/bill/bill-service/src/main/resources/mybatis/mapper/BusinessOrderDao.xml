@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.BusinessOrderDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_business_order
+        (
+        app_id,
+        order_no,
+        trade_order_no,
+        sn,
+        trade_amount,
+        merchant_id,
+        pay_account,
+        pay_account_type,
+        pay_success_time,
+        poundage,
+        pay_rate,
+        goods_name,
+        goods_describe,
+        pay_channel_sign,
+        bank_name,
+        bank_trade_no,
+        trade_card_type,
+        trade_card_no,
+        wechant_or_alipay_order_no,
+        remark,
+        status
+        )
+        values
+        (
+        #{appId},
+        #{orderNo},
+        #{tradeOrderNo},
+        #{sn},
+        #{tradeAmount},
+        #{merchantId},
+        #{payAccount},
+        #{payAccountType},
+        #{paySuccessTime},
+        #{poundage},
+        #{payRate},
+        #{goodsName},
+        #{goodsDescribe},
+        #{payChannelSign},
+        #{bankName},
+        #{bankTradeNo},
+        #{tradeCardType},
+        #{tradeCardNo},
+        #{wechatOrAlipayOrderNo},
+        #{remark},
+        #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_business_order
+        <set>
+            <if test="appId != null and appId != ''">
+                app_id = #{appId},
+            </if>
+            <if test="orderNo != null and orderNo != ''">
+                order_no = #{orderNo},
+            </if>
+            <if test="tradeOrderNo != null and tradeOrderNo != ''">
+                trade_order_no =#{tradeOrderNo},
+            </if>
+            <if test="sn != null and sn != ''">
+                sn = #{sn},
+            </if>
+            <if test="tradeAmount != null">
+                trade_amount = #{tradeAmount},
+            </if>
+            <if test="merchantId > 0">
+                merchant_id = #{merchantId},
+            </if>
+            <if test="payAccount != null and payAccount != ''">
+                pay_account = #{payAccount},
+            </if>
+            <if test="payAccountType > 0">
+                pay_account_type = #{payAccountType},
+            </if>
+            <if test="paySuccessTime != null">
+                pay_success_time = #{paySuccessTime},
+            </if>
+            <if test="poundage != null">
+                poundage = #{poundage},
+            </if>
+            <if test="payRate != null">
+                pay_rate = #{payRate},
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+                goods_name = #{goodsName},
+            </if>
+            <if test="goodsDescribe != null and goodsDescribe != ''">
+                goods_describe = #{goodsDescribe},
+            </if>
+            <if test="payChannelSign > 0">
+                pay_channel_sign = #{payChannelSign},
+            </if>
+            <if test="bankName != null and bankName != ''">
+                bank_name = #{bankName},
+            </if>
+            <if test="bankTradeNo != null and bankTradeNo != ''">
+                bank_trade_no = #{bankTradeNo},
+            </if>
+            <if test="tradeCardType > 0">
+                trade_card_type = #{tradeCardType},
+            </if>
+            <if test="tradeCardNo != null and tradeCardNo != ''">
+                trade_card_no = #{tradeCardNo},
+            </if>
+            <if test="wechatOrAlipayOrderNo != null and wechatOrAlipayOrderNo != ''">
+                wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="status > 0">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateOrderNoById">
+         UPDATE tb_business_order SET order_no = #{orderNo} WHERE id = #{id}
+    </update>
+
+    <update id="updateRemarkByOrderNo">
+        UPDATE tb_business_order SET remark = #{remark} WHERE order_no = #{orderNo}
+    </update>
+
+    <update id="updateStatusByOrderNo">
+        UPDATE tb_business_order SET status = #{status} WHERE order_no = #{orderNo}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.bill.entity.BusinessOrder">
+        SELECT * FROM tb_business_order WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.BusinessOrder">
+        SELECT * FROM tb_business_order WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.BusinessOrder">
+        SELECT * FROM tb_business_order WHERE order_no = #{orderNo}
+    </select>
+
+</mapper>

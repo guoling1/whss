@@ -10,9 +10,9 @@ import lombok.Data;
 public class DynamicCodePayRequest {
 
     /**
-     * 总金额
+     * 订单id
      */
-    private String totalFee;
+    private long orderId;
 
     /**
      * 支付通道
