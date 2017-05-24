@@ -230,7 +230,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     public List<ProfitCountRespons> getProfit(ProfitCountRequest request) {
         ProfitCountRequest request1=selectTime(request);
         List<ProfitCountRespons> list = this.splitAccountRecordDao.getProfit(request1);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (list!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getSplitDate()!=null&&!list.get(i).getSplitDate().equals("")){
