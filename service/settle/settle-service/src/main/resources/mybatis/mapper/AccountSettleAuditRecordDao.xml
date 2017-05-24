@@ -123,4 +123,10 @@
         WHERE settle_status = #{settleStatus}
         AND settle_date = #{settleDate}
     </select>
+
+    <select id="selectCountBySettleDate" resultType="java.lang.Integer">
+         SELECT COUNT(0)
+         FROM tb_account_settle_audit_record
+         WHERE settle_date = #{settleDate}
+    </select>
 </mapper>

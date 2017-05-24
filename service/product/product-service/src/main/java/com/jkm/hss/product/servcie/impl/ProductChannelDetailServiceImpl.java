@@ -3,6 +3,7 @@ package com.jkm.hss.product.servcie.impl;
 import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.ProductChannelDetailDao;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.helper.response.ProductAndBasicResponse;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,5 +98,16 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
     @Override
     public Optional<ProductChannelDetail> selectRateByProductIdAndChannelTypeSign(long productId, int channelTypeSign) {
         return Optional.fromNullable(this.productChannelDao.selectRateByProductIdAndChannelTypeSign(productId,channelTypeSign));
+    }
+
+    /**
+     * 根据产品编码查询产品和基本通道列表
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<ProductAndBasicResponse> getProductChannelList(long productId) {
+        return this.productChannelDao.getProductChannelList(productId);
     }
 }

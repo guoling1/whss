@@ -14,6 +14,15 @@ public interface SendMsgService {
     void sendMessage(String money,String orderNo,String payNo,String store,String merchantName,String touser);
 
     /**
+     * hsy退款成功
+     *
+     * @param orderNo
+     * @param refundAmount
+     * @param touser
+     */
+    void refundSendMessage(String orderNo, BigDecimal refundAmount, String touser);
+
+    /**
      * 提现成功推送
      */
     void sendPushMessage(BigDecimal totalAmount, Date withdrawTime, BigDecimal poundage, String bankNo, String toUser);

@@ -28,7 +28,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small" style="width: 190px">
+                :picker-options="pickerOptions" size="small" style="width: 190px" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -72,7 +72,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderSN" label="交易流水" ></el-table-column>
-            <el-table-column label="交易金额" align="right">
+            <el-table-column label="交易金额" align="right" min-width="90">
               <template scope="scope">
                 {{scope.row.tradeAmount|toFix}}
               </template>
@@ -136,7 +136,11 @@
     name: 'tAuditStore',
     data(){
       return{
-        pickerOptions: {},
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         records:[],
         count:0,
         date:'',
@@ -174,14 +178,34 @@
         url:"http://checking.qianbaojiajia.com/external/detailList",
         handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
         //测试
-//         url:'http://192.168.1.99:8080/balance/external/detailList',
-//         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
+         /*url:'http://192.168.1.99:8080/balance/external/detailList',
+         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'*/
       }
     },
     created: function () {
+      this.currentDate()
       this.getData()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startSettleDate = str;
+          } else {
+            this.$data.query.endSettleDate = str;
+          }
+        }
+      },
       reset: function () {
         this.query = {
           currentPage:1,
@@ -194,16 +218,22 @@
           startDateStr:'',
           endDateStr:''
         }
+        this.currentDate()
       },
       getData: function () {
         this.loading = true;
         this.$http.post(this.url, this.query,{emulateJSON: true})
           .then(function (res) {
-            this.records = res.data.list;
+
             this.count = res.data.page.totalRecord;
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.list;
+          },1000)
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

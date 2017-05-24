@@ -9,18 +9,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.util.CookieUtil;
-import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.entity.RevokeQrCodeRecord;
 import com.jkm.hss.admin.enums.EnumAdminType;
-import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumIsMaster;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.*;
 import com.jkm.hss.admin.helper.responseparam.*;
 import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.admin.service.RevokeQrCodeRecordService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -31,24 +30,24 @@ import com.jkm.hss.dealer.enums.EnumInviteBtn;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
-import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
-import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
+import com.jkm.hss.dealer.helper.response.*;
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hss.dealer.service.DealerProfitService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
+import com.jkm.hss.helper.request.RevokeQrCodeRequest;
 import com.jkm.hss.helper.response.*;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
+import com.jkm.hss.merchant.enums.EnumPlatformType;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
-import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
-import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -99,6 +98,14 @@ public class DealerController extends BaseController {
     private AdminRoleService adminRoleService;
     @Autowired
     private OSSClient ossClient;
+    @Autowired
+    private RevokeQrCodeRecordService revokeQrCodeRecordService;
+
+    @Autowired
+    private PartnerRuleSettingService partnerRuleSettingService;
+
+    @Autowired
+    private DealerProfitService dealerProfitService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -197,7 +204,6 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
         firstLevelDealerGetResponse.setProduct(productResponse);
-        firstLevelDealerGetResponse.setTotalProfitSpace(dealer.getTotalProfitSpace());
         firstLevelDealerGetResponse.setRecommendBtn(dealer.getRecommendBtn());
         productResponse.setProductId(product.getId());
         productResponse.setProductName(product.getProductName());
@@ -285,6 +291,7 @@ public class DealerController extends BaseController {
             dealerDetailResponse.setLoginName(adminUserOptional.get().getUsername());
         }
         dealerDetailResponse.setEmail(dealer.getEmail());
+        dealerDetailResponse.setDealerBelong(dealer.getDealerBelong());
         dealerDetailResponse.setMarkCode(dealer.getMarkCode());
         dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
         dealerDetailResponse.setBelongProvinceName(dealer.getBelongProvinceName());
@@ -356,7 +363,12 @@ public class DealerController extends BaseController {
             firstLevelDealerGet2Response.setRecommendBtn(dealer.getRecommendBtn());
             firstLevelDealerGet2Response.setInviteCode(dealer.getInviteCode());
             firstLevelDealerGet2Response.setInviteBtn(dealer.getInviteBtn());
-            firstLevelDealerGet2Response.setTotalProfitSpace(dealer.getTotalProfitSpace());
+
+            List<DealerProfitSettingResponse> dealerProfitSettingResponses = dealerProfitService.selectDealerByDealerIdAndProductId(dealerId,productId);
+            if(dealerProfitSettingResponses.size()<=0){
+                dealerProfitSettingResponses = dealerProfitService.selectByDealerIdAndProductId(productId);
+            }
+            firstLevelDealerGet2Response.setDealerProfits(dealerProfitSettingResponses);
 
             Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
             if(!upgradeRecommendRulesOptional.isPresent()){
@@ -459,7 +471,9 @@ public class DealerController extends BaseController {
             firstLevelDealerGet2Response.setRecommendBtn(dealer.getRecommendBtn());
             firstLevelDealerGet2Response.setInviteCode(dealer.getInviteCode());
             firstLevelDealerGet2Response.setInviteBtn(dealer.getInviteBtn());
-            firstLevelDealerGet2Response.setTotalProfitSpace(dealer.getTotalProfitSpace());
+            //设置分润空间
+            List<DealerProfitSettingResponse> dealerProfitResponses = dealerProfitService.selectByDealerIdAndProductId(productOptional.get().getId());
+            firstLevelDealerGet2Response.setDealerProfits(dealerProfitResponses);
 
             Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(product.getId());
             if(!upgradeRecommendRulesOptional.isPresent()){
@@ -560,6 +574,17 @@ public class DealerController extends BaseController {
     }
 
 
+    private BigDecimal getDvalue(List<HssDealerAddOrUpdateRequest.Channel> channels,int currentChannelTypeSign){
+        BigDecimal dvalue = null;
+        for(int i=0;i<channels.size();i++){
+            if(channels.get(i).getChannelType()==currentChannelTypeSign){
+                BigDecimal merchantSettleRate = new BigDecimal(channels.get(i).getMerchantSettleRate()).divide(new BigDecimal("100"));
+                BigDecimal paymentSettleRate = new BigDecimal(channels.get(i).getPaymentSettleRate()).divide(new BigDecimal("100"));
+                dvalue = merchantSettleRate.subtract(paymentSettleRate);
+            }
+        }
+        return dvalue;
+    }
     /**
      * 新增或添加代理商
      *
@@ -575,12 +600,19 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "代理商不存在");
             }
             if(dealerOptional.get().getLevel()==1&&request.getRecommendBtn()==EnumRecommendBtn.ON.getId()){
-                if(request.getTotalProfitSpace()==null){
-                    return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+                if(request.getDealerProfits().size()<=0){
+                    return CommonResponse.simpleResponse(-1, "请设置合伙人推荐分润");
                 }
-                if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
-                    return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+                for(int i=0;i<request.getDealerProfits().size();i++){
+                    if(request.getDealerProfits().get(i).getProfitSpace()==null){
+                        return CommonResponse.simpleResponse(-1, "请设置"+request.getDealerProfits().get(i).getChannelName()+"的推荐分润");
+                    }
+//                    BigDecimal dvalue = getDvalue(request.getProduct().getChannels(),request.getDealerProfits().get(i).getChannelTypeSign());
+//                    if ((request.getDealerProfits().get(i).getProfitSpace().divide(new BigDecimal("100"))).compareTo(dvalue) > 0) {
+//                        return CommonResponse.simpleResponse(-1,"总分润空间不得大于"+request.getDealerProfits().get(i).getChannelName()+"通道商户费率与一级代理商结算价之差");
+//                    }
                 }
+
             }
             final HssDealerAddOrUpdateRequest.Product productParam = request.getProduct();
             final long productId = productParam.getProductId();
@@ -1068,4 +1100,34 @@ public class DealerController extends BaseController {
         adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
     }
+
+
+    /**
+     * 二级代理切代理
+     * @param dealerMarkCodeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/changeDealer", method = RequestMethod.POST)
+    public CommonResponse changeDealer (@RequestBody DealerMarkCodeRequest dealerMarkCodeRequest) {
+        if(dealerMarkCodeRequest.getMarkCode()==null||"".equals(dealerMarkCodeRequest.getMarkCode())){
+            return CommonResponse.simpleResponse(-1, "请输入一代编号");
+        }
+        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(dealerMarkCodeRequest.getMarkCode());
+        if(!dealerOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "要切到的一级代理商不存在");
+        }
+        Optional<Dealer> dealerOptional2 = dealerService.getById(dealerMarkCodeRequest.getSecondDealerId());
+        if(!dealerOptional2.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该二级代理商不存在");
+        }
+        int returnCount = dealerService.updateBelong(dealerMarkCodeRequest.getSecondDealerId(),dealerOptional.get().getId());
+        if(returnCount>0){
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "切换成功");
+        }else{
+            return CommonResponse.simpleResponse(-1, "切换失败");
+        }
+    }
+
+
 }

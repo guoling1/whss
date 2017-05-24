@@ -17,7 +17,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -28,7 +28,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -107,7 +107,6 @@
               </template>
             </el-table-column>
           </el-table>
-          </el-table>
           <ul style="float: left;margin-top: 5px">
             <li>
               <label style="margin-right: 10px;">支付金额</label>
@@ -155,6 +154,11 @@
     name: 'deal',
     data(){
       return {
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         isMask:false,
         phone: '',
         password: '',
@@ -244,16 +248,18 @@
         this.loading = true;
         this.$http.post(this.queryUrl,this.$data.query)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
             this.$data.records = res.data.records;
+          },1000)
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
             var price=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
-            for (var i = 0; i < this.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(this.records[i].payAmount));
+            for (var i = 0; i < res.data.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].payAmount));
             }
             this.pageTotal = price;
             /*if(this.records.length!=0){
@@ -267,7 +273,9 @@
               this.records[this.records.length-1].payAmount = this.total;
             }*/
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -281,7 +289,6 @@
           this.addTotal = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -334,14 +341,18 @@
         this.$data.loading = true;
         this.$http.post(this.$data.syncUrl,{sn:val})
           .then(function (res) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: '操作成功',
               type: 'success'
             });
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

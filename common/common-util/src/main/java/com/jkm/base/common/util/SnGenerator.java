@@ -12,6 +12,15 @@ public final class SnGenerator {
     private SnGenerator() {
     }
 
+    /**
+     * 生成订单号
+     *
+     * @return
+     */
+    public static String generateOrderNo(final String id) {
+        Preconditions.checkState(id.length() <= 8);
+        return DateFormatUtil.format(new Date(), "yyyyMMdd") + "00000000".substring(id.length()) + id;
+    }
 
     /**
      * 生成流水号（待结算流水，可用余额流水，分账记录流水）
@@ -63,6 +72,14 @@ public final class SnGenerator {
         return tradeType + "0" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
+    /**
+     * 生成退款订单号
+     *
+     * @return
+     */
+    public static String generateRefundSn() {
+        return "40" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
+    }
 
     /**
      * 生成length位订单号

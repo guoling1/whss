@@ -35,6 +35,7 @@ function getQueryString(name) {
 }
 
 // 定义变量
+let showChooseBank = document.getElementById('showChooseBank');
 let chooseBank = document.getElementById('chooseBank');
 let sendCode = document.getElementById('sendCode');
 let submit = document.getElementById('submit');
@@ -61,6 +62,23 @@ check_validity.addEventListener('click', function () {
 
 cancel_validity.addEventListener('click', function () {
   example_validity.style.display = 'none';
+});
+
+let layer_channel = document.getElementById('layer-channel');
+let know_channel = document.getElementById('know_channel');
+let layer_x_channel = document.getElementById('layer-x-channel');
+let submit_channel = document.getElementById('submit-channel');
+
+know_channel.addEventListener('click', function () {
+  layer_channel.style.display = 'block';
+});
+
+layer_x_channel.addEventListener('click', function () {
+  layer_channel.style.display = 'none';
+});
+
+submit_channel.addEventListener('click', function () {
+  layer_channel.style.display = 'none';
 });
 
 // 定义信用卡号 正确性校验
@@ -105,6 +123,7 @@ let test = function (cardNo) {
 
 let amount = getQueryString('amount');
 let channel = getQueryString('channel');
+let uorderId = getQueryString('orderId');
 let bankName = '';
 let bankCode = '';
 let bankCodeBtn = document.getElementById('bankCode');
@@ -124,10 +143,45 @@ if (pageData.showExpireDate == 1) {
 if (pageData.showCvv == 1) {
   showCvv.style.display = 'block';
 }
+// 定义变量
+let magnifying = document.getElementById('magnifying');
+let del = document.getElementById('del');
+del.addEventListener('click', function () {
+  bankCodeBtn.value = '';
+  del.style.display = 'none';
+});
 // 定义信用卡号校验
 bankCodeBtn.addEventListener('click', function () {
   if (!bankName || bankName == '') {
     message.prompt_show('请先选择所属银行');
+  }
+});
+bankCodeBtn.addEventListener('focus', function (e) {
+  let ev = e.target;
+  // 判断是否展示 清空按钮
+  if (ev.value) {
+    del.style.display = 'block';
+  } else {
+    del.style.display = 'none';
+  }
+});
+bankCodeBtn.addEventListener('blur', function (e) {
+  magnifying.style.display = 'none';
+});
+bankCodeBtn.addEventListener('input', function (e) {
+  let ev = e.target;
+  // 判断是否展示 清空按钮
+  if (ev.value) {
+    del.style.display = 'block';
+  } else {
+    del.style.display = 'none';
+  }
+  // 判断是否需要展示放大镜
+  magnifying.innerHTML = ev.value.replace(/\s/g, '').replace(/(.{4})/g, "$1 ");
+  if (ev.value.length >= 1) {
+    magnifying.style.display = 'block';
+  } else {
+    magnifying.style.display = 'none';
   }
 });
 bankCodeBtn.addEventListener('change', function (e) {
@@ -148,7 +202,8 @@ bankCodeBtn.addEventListener('change', function (e) {
             if (supportBankCardList[i].bankName != bankName) {
               bankName = supportBankCardList[i].bankName;
               bankCode = supportBankCardList[i].bankCode;
-              chooseBank.value = supportBankCardList[i].bankName;
+              chooseBank.innerHTML = supportBankCardList[i].bankName;
+              chooseBank.className = 'adaptive text active';
             }
           }
         }
@@ -158,15 +213,13 @@ bankCodeBtn.addEventListener('change', function (e) {
         }
       }
     })
-  } else {
-    message.prompt_show('请输入正确的信用卡号');
   }
 });
 // 定义支付
 submit.addEventListener('click', function () {
   if (!support) {
     message.prompt_show('请输入正确的信用卡号');
-  } else if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+  } else if ((pageData.showExpireDate == 0 || validate.empty(expireDate.innerHTML, '信用卡有效期')) &&
     (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
     validate.phone(mobile.value) &&
     validate.empty(code.value, '验证码')) {
@@ -175,9 +228,13 @@ submit.addEventListener('click', function () {
       http.post('/trade/confirmUnionPay', {
         orderId: orderId,
         code: code.value,
-      }, function () {
+      }, function (data) {
         message.load_hide();
-        window.location.replace('/trade/unionPaySuccess/' + orderId);
+        if (data.errorCode == 1) {
+          window.location.replace('/trade/unionPaySuccess/' + data.orderId);
+        } else {
+          window.location.replace('/trade/unionPay2Error/' + data.orderId);
+        }
       })
     } else {
       message.prompt_show('请输入正确的CVV2');
@@ -189,14 +246,14 @@ sendCode.addEventListener('click', function () {
   if (countdown.check()) {
     if (!support) {
       message.prompt_show('请输入正确的信用卡号');
-    } else if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+    } else if ((pageData.showExpireDate == 0 || validate.empty(expireDate.innerHTML, '信用卡有效期')) &&
       (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
       validate.phone(mobile.value)) {
       if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
         message.load_show('正在发送');
-        let expire = expireDate.value.split('/');
+        let expire = expireDate.innerHTML.split('/');
         http.post('/trade/firstUnionPay', {
-          amount: amount,
+          orderId: uorderId,
           channel: channel,
           bankCode: bankCode,
           bankCardNo: bankCodeBtn.value,
@@ -230,11 +287,12 @@ http.post('/channel/queryChannelSupportBank', {
       bankNameList.push(bankNameObject);
     }
   }
-  chooseBank.addEventListener('click', () => {
+  showChooseBank.addEventListener('click', () => {
     weui.picker(bankNameList, {
       onConfirm: (result) => {
         let format = result[0].split('/');
-        chooseBank.value = format[0];
+        chooseBank.innerHTML = format[0];
+        chooseBank.className = 'adaptive text active';
         bankName = format[0];
         bankCode = format[1];
         bankCodeBtn.removeAttribute('readonly');

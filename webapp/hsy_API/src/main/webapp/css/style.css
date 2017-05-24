@@ -844,6 +844,13 @@ input:focus {
 #success .group .right span {
   color: #fd4f4f;
 }
+#success .ad {
+  display: block;
+  margin-top: 5px;
+}
+#success .ad img {
+  width: 100%;
+}
 #follow {
   padding: 22px 15px 0 15px;
   width: 100%;

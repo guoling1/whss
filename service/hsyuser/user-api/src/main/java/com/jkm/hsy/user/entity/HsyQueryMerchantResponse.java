@@ -10,6 +10,8 @@ import java.util.Date;
 @Data
 public class HsyQueryMerchantResponse {
 
+    private Date auditTime; //审核时间
+
     private String globalID;//商户编号
 
     private String shortName;//商户名称

@@ -46,7 +46,13 @@ public enum EnumUpperChannel {
     /**
      * 收银家
      */
-    SYJ(8, "SYJ", "收银家")
+    SYJ(8, "SYJ", "收银家"),
+
+
+    /**
+     * 合利宝
+     */
+    HE_LI_UNIONPAY(10, "HLB", "合利宝")
     ;
 
     @Getter

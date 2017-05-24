@@ -30,6 +30,9 @@ import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/11/23.
+ * {@link ShallProfitDetailService} 、、提现分润
+ *  CalculateService 、、计算
+ *
  */
 public interface DealerService {
     /**
@@ -388,7 +391,7 @@ public interface DealerService {
      * @param dealer
      * @return
      */
-    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    int updateRecommendBtn(Dealer dealer);
     /**
      * 更新
      *
@@ -546,4 +549,12 @@ public interface DealerService {
      * @return
      */
     int dealerMerchantSecondCount(QueryMerchantRequest req);
+
+    /**
+     *二代切换一代
+     */
+    int updateBelong(long secondDealerId,long firstDealerId);
+
+
+
 }

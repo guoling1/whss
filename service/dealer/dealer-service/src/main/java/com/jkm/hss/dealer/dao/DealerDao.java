@@ -225,7 +225,7 @@ public interface DealerDao {
      * @param dealer
      * @return
      */
-    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    int updateRecommendBtn(Dealer dealer);
     /**
      * 更新推广开关
      *
@@ -358,4 +358,12 @@ public interface DealerDao {
      * @return
      */
     List<Dealer> selectAllDealers();
+    /**
+     * 二代切换一代
+     *
+     * @param secondDealerId
+     * @param firstDealerId
+     */
+    int updateBelong(@Param("secondDealerId") long secondDealerId,@Param("firstDealerId") long firstDealerId);
+
 }

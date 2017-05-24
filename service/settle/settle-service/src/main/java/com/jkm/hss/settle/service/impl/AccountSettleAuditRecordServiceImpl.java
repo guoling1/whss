@@ -1,7 +1,6 @@
 package com.jkm.hss.settle.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -10,9 +9,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.base.common.util.DateTimeUtil;
-import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
@@ -31,10 +29,12 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
+import com.jkm.hss.notifier.enums.EnumNoticeType;
+import com.jkm.hss.notifier.enums.EnumUserType;
+import com.jkm.hss.notifier.helper.SendMessageParams;
+import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
@@ -45,6 +45,7 @@ import com.jkm.hss.settle.helper.responseparam.AppSettleRecordDetailResponse;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -81,6 +83,8 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     private SettlementRecordService settlementRecordService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private SendMessageService sendMessageService;
 
      /**
      * {@inheritDoc}
@@ -248,15 +252,15 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
      */
     @Override
     @Transactional
-    public void generateHsySettleAuditRecordTask() {
+    synchronized public Pair<Integer, String> generateHsySettleAuditRecordTask() {
         final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
-        final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(settleDate);
+        final int count = this.accountSettleAuditRecordDao.selectCountBySettleDate(settleDate);
         if (count > 0) {
-            log.error("###############存在已经结算的待结算流水#################");
-            return;
+            log.error("###############今日记录已经生成，不可以重复生成#################");
+            return Pair.of(-1, "今日记录已经生成，不可以重复生成");
         }
         final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
-        log.info("今日[{}]的待结算流水统计是[{}]", settleDate, settleAccountFlowStatisticses);
+        log.info("今日[{}]的待结算流水-生成结算审核记录,个数[{}]", settleDate, settleAccountFlowStatisticses.size());
         final ArrayList<Long> dealerAccountIds = new ArrayList<>();
         final ArrayList<Long> shopAccountIds = new ArrayList<>();
         if (!CollectionUtils.isEmpty(settleAccountFlowStatisticses)) {
@@ -345,6 +349,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 Preconditions.checkState(updateCount == updateCount2, "将结算单id更新到结算流水，个数异常");
             }
         }
+        return Pair.of(0, "success");
     }
 
     /**
@@ -513,24 +518,25 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                         settleAccountFlow.getAccountId(), EnumAccountFlowType.DECREASE.getId());
                 Preconditions.checkState(!optional.isPresent(), "账户[{}],结算流水[{}],已结算,结算异常", settleAccountFlow.getAccountId(), settleAccountFlow.getFlowNo());
                 final Account account = this.accountService.getByIdWithLock(settleAccountFlow.getAccountId()).get();
-                final SettleAccountFlow merchantIncreaseSettleAccountFlow =
+                final SettleAccountFlow increaseSettleAccountFlow =
                         this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(settleAccountFlow.getOrderNo(), settleAccountFlow.getAccountId(),
                                 EnumAccountFlowType.INCREASE.getId()).get();
                 //待结算金额减少
-                Preconditions.checkState(account.getDueSettleAmount().compareTo(merchantIncreaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
-                this.accountService.decreaseSettleAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-                final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                        merchantIncreaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
-                        merchantIncreaseSettleAccountFlow.getSettleDate(), merchantIncreaseSettleAccountFlow.getAccountUserType());
-                this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettlementRecordId());
-                this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettleAuditRecordId());
+                Preconditions.checkState(account.getDueSettleAmount().compareTo(increaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
+                this.accountService.decreaseSettleAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
+                final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), increaseSettleAccountFlow.getIncomeAmount(),
+                        increaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, increaseSettleAccountFlow.getAppId(), increaseSettleAccountFlow.getTradeDate(),
+                        increaseSettleAccountFlow.getSettleDate(), increaseSettleAccountFlow.getAccountUserType());
+                this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, increaseSettleAccountFlow.getSettlementRecordId());
+                this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, increaseSettleAccountFlow.getSettleAuditRecordId());
+                this.settleAccountFlowService.updateStatus(increaseSettleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
                 //可用余额流水增加
                 if (EnumAccountUserType.MERCHANT.getId() != settleAccountFlow.getAccountUserType()) {
-                    this.accountService.increaseAvailableAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-                    this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
+                    this.accountService.increaseAvailableAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
+                    this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), increaseSettleAccountFlow.getIncomeAmount(),
                             "支付结算", EnumAccountFlowType.INCREASE);
                 } else {
-                    this.accountService.decreaseTotalAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
+                    this.accountService.decreaseTotalAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
                     final Optional<Order> orderOptional = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo());
                     Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", settleAccountFlow.getOrderNo());
                     if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
@@ -541,6 +547,28 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
             final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
+            try {
+                final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
+                final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
+                final AppBizCard appBizCard = new AppBizCard();
+                appBizCard.setSid(appBizShop.getId());
+                final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+                final String cardNO = appBizCard1.getCardNO();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
+                final Map<String, String> params = ImmutableMap.of("date", dateFormat.format(settlementRecord.getSettleDate()),
+                        "amount", settlementRecord.getSettleAmount().toPlainString(),
+                        "bankCardNo", cardNO.substring(cardNO.length() - 4));
+                this.sendMessageService.sendMessage(SendMessageParams.builder()
+                        .mobile(appAuUser.getCellphone())
+                        .uid(recordId + "")
+                        .data(params)
+                        .userType(EnumUserType.FOREGROUND_USER)
+                        .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS)
+                        .build()
+                );
+            } catch (final Throwable e) {
+                log.error("hsy结算单[" + recordId + "],发送短信失败", e);
+            }
         }
     }
 

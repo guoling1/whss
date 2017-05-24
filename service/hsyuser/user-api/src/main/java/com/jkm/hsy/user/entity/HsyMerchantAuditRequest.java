@@ -14,6 +14,22 @@ public class HsyMerchantAuditRequest {
      */
     private int stat;
 
+    private String username;//报单员
+
+    private String realname;//姓名
+    /**
+     * 审核时间
+     */
+    private String auditTime;
+
+    /**
+     * 审核时间
+     */
+    private String auditTime1;
+
+    private String commitTime;//提交开始时间
+
+    private String commitTime1;//提交结束时间
 
     private Long id;
     private String globalID;//对外ID
@@ -35,6 +51,28 @@ public class HsyMerchantAuditRequest {
     private Long accountID;//账户ID
     private Date createTime;
     private Date updateTime;
+
+    private String cellphone;//注册手机号
+
+    /**
+     * 所属1代理商名称
+     */
+    private String proxyName;
+
+    /**
+     * 所属2代理商名称
+     */
+    private String proxyName1;
+
+    /**
+     * 查询条件：开始时间
+     */
+    private String startTime;
+
+    /**
+     * 查询条件：结束时间
+     */
+    private String endTime;
 
     private Long uid;//用户ID
     private Long sid;

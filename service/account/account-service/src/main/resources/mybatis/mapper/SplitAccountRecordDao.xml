@@ -17,6 +17,7 @@
         out_money_account_id,
         receipt_money_account_id,
         receipt_money_user_name,
+        settle_type,
         remark,
         status
         ) 
@@ -35,6 +36,7 @@
         #{outMoneyAccountId},
         #{receiptMoneyAccountId},
         #{receiptMoneyUserName},
+        #{settleType},
         #{remark},
         #{status}
         );
@@ -106,5 +108,9 @@
 
     <select id="selectCountBySplitSn" resultType="java.lang.Integer">
         SELECT COUNT(0) FROM tb_split_account_record WHERE split_sn = #{splitSn}
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.jkm.hss.account.entity.SplitAccountRecord">
+        SELECT * FROM tb_split_account_record WHERE order_no = #{orderNo}
     </select>
 </mapper>

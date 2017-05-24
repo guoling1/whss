@@ -1,6 +1,8 @@
 package com.jkm.hss.helper.request;
 
+import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.entity.UpgradeRules;
+import com.jkm.hss.product.helper.request.UpgradeRulesRequest;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,11 +13,6 @@ import java.util.List;
  */
 @Data
 public class UpgradeAndRecommendRequest {
-    /**
-     * 升级级别
-     */
-    private Integer type;
-
     /**
      * 产品编码
      */
@@ -33,13 +30,13 @@ public class UpgradeAndRecommendRequest {
      */
     private BigDecimal tradeRate;
     /**
-     * 收单奖励分润池
-     */
-    private BigDecimal rewardRate;
-    /**
      * 升级规则
      */
-    private List<UpgradeRules> upgradeRulesList;
+    private List<PartnerRuleSetting> partnerRuleSettingList;
+    /**
+     *
+     */
+    private List<UpgradeRulesRequest> upgradeRulesRequestList;
 
 
 }

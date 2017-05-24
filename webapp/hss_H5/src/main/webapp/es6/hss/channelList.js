@@ -57,6 +57,7 @@ http.post('/channel/list', {}, function (list) {
     group.className = 'channel-group';
     group.onclick = function () {
       let amount = getQueryString('amount');
+      let orderId = getQueryString('id');
       if (amount > 0) {
         checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
@@ -64,7 +65,7 @@ http.post('/channel/list', {}, function (list) {
             switch (list[i].payMethod) {
               case '快捷':
                 http.post('/trade/unionPayRoute', {  // /wx/receipt
-                  totalFee: amount,
+                  orderId: orderId,
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
@@ -73,7 +74,7 @@ http.post('/channel/list', {}, function (list) {
                 break;
               default:
                 http.post('/trade/dcReceipt', {  // /wx/receipt
-                  totalFee: amount,
+                  orderId: orderId,
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
@@ -96,6 +97,13 @@ http.post('/channel/list', {}, function (list) {
     time.className = 'channel-con small';
     time.innerHTML = list[i].settleType;
     let fee = document.createElement('div');
+    // 是否显示推荐
+    if (list[i].recommend == 1) {
+      // 展示  推荐
+      let recommend = document.createElement('span');
+      recommend.className = 'recommend';
+      name.appendChild(recommend);
+    }
     // 5月活动
     if (list[i].channelSign == 601) {
       let now = new Date().getTime();

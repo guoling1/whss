@@ -12,7 +12,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -34,12 +34,8 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="recordsCom" border :row-style="tableFoot">
-                <el-table-column   width="100" label="序号">
-                  <template scope="scope">
-                    <span>{{scope.$index+1}}</span>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="recordsCom" border>
+                <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column label="收益日期">
                   <template scope="scope">
                     <span>{{scope.row.splitDate|changeDate}}</span>
@@ -53,8 +49,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDate}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细
-                    </router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDate}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -81,7 +76,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -111,12 +106,8 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsFir" border :row-style="tableFoot">
-                <el-table-column   width="100" label="序号">
-                  <template scope="scope">
-                    <div>{{scope.$index+1}}</div>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsFir" border>
+                <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column prop="proxyName" label="代理商名称"></el-table-column>
                 <el-table-column prop="markCode" label="代理商编号"></el-table-column>
                 <el-table-column label="收益日期">
@@ -132,8 +123,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitFirDet',query:{type:recordsFir[scope.$index].businessType,id:recordsFir[scope.$index].receiptMoneyAccountId,time:recordsFir[scope.$index].splitDate}}" v-if="recordsFir[scope.$index].splitAmount!=0" type="text" size="small">明细
-                    </router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitFirDet',query:{type:recordsFir[scope.$index].businessType,id:recordsFir[scope.$index].receiptMoneyAccountId,time:recordsFir[scope.$index].splitDate}}" v-if="recordsFir[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -159,7 +149,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -193,12 +183,8 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsSec" border :row-style="tableFoot">
-                <el-table-column   width="100" label="序号">
-                  <template scope="scope">
-                    <div>{{scope.$index+1}}</div>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="recordsSec" border>
+                <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column prop="proxyName" label="上级代理商名称"></el-table-column>
                 <el-table-column prop="proxyName1" label="二级代理商名称"></el-table-column>
                 <el-table-column prop="markCode" label="代理编号"></el-table-column>
@@ -215,8 +201,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitSecDet',query:{type:recordsSec[scope.$index].businessType,id:recordsSec[scope.$index].receiptMoneyAccountId,time:recordsSec[scope.$index].splitDate}}" v-if="recordsSec[scope.$index].splitAmount!=0" type="text" size="small">明细
-                    </router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitSecDet',query:{type:recordsSec[scope.$index].businessType,id:recordsSec[scope.$index].receiptMoneyAccountId,time:recordsSec[scope.$index].splitDate}}" v-if="recordsSec[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -271,31 +256,9 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
         },
         date:'',
         date1:'',
@@ -438,11 +401,11 @@
       },
       onload: function () {
         if(this.activeName == 'first'){
-          this.$data.loadUrl = this.loadUrlCom;
+          this.loadUrl = this.loadUrlCom;
         }else if(this.activeName == 'second'){
-          this.$data.loadUrl = this.loadUrlFir;
+          this.loadUrl = this.loadUrlFir;
         }else if(this.activeName == 'third'){
-          this.$data.loadUrl = this.loadUrlSec;
+          this.loadUrl = this.loadUrlSec;
         }
         this.$data.isMask = true;
       },
@@ -450,21 +413,25 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/companyProfit',this.queryCom)
           .then(function (res) {
-            this.loading = false;
-            this.recordsCom = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.recordsCom = res.data.records;
+          },1000)
             this.countCom = res.data.count;
             this.loadUrlCom = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsCom.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsCom[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalCom = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -476,21 +443,25 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/firstProfit',this.queryFir)
           .then(function (res) {
-            this.loading = false;
-            this.recordsFir = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.recordsFir = res.data.records;
+          },1000)
             this.countFir = res.data.count;
             this.loadUrlFir = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsFir.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsFir[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalFir = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -502,21 +473,25 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/secondProfit',this.querySec)
           .then(function (res) {
-            this.loading = false;
-            this.recordsSec = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.recordsSec = res.data.records;
+          },1000)
             this.countSec = res.data.count;
             this.loadUrlSec = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsSec.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsSec[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalSec = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -554,21 +529,18 @@
       handleSizeChangeCom: function (val) {
         this.queryCom.pageNo = 1;
         this.queryCom.pageSize = val;
-        this.loading = true;
         this.getDataCom()
         this.getAddTotalCom();
       },
       handleSizeChangeFir: function (val) {
         this.queryFir.pageNo = 1;
         this.queryFir.pageSize = val;
-        this.loading = true;
         this.getDataFir()
         this.getAddTotalFir();
       },
       handleSizeChangeSec: function (val) {
         this.querySec.pageNo = 1;
         this.querySec.pageSize = val;
-        this.loading = true;
         this.getDataSec()
         this.getAddTotalSec();
       },
@@ -578,7 +550,6 @@
             this.addTotalCom = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -592,7 +563,6 @@
             this.addTotalFir = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -606,7 +576,6 @@
             this.addTotalSec = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,

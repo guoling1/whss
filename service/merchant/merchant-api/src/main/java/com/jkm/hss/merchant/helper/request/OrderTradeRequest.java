@@ -8,6 +8,21 @@ import lombok.Data;
 @Data
 public class OrderTradeRequest {
 
+//    /**
+//     * 退款单号
+//     */
+//    private String refundOrderNo;
+
+    /**
+     * 店铺shop编码
+     */
+    private String globalId;
+
+    /**
+     * hsy商户名
+     */
+    private String shortName;
+
     /**
      * 商户编码
      */
@@ -52,6 +67,16 @@ public class OrderTradeRequest {
      * 所属二级代理商
      */
     private String proxyName1;
+
+    /**
+     * hsy一级代理商名
+     */
+    private String proxyNameHsy;
+
+    /**
+     * hsy二级代理商名
+     */
+    private String proxyNameHsy1;
 
     /**
      * 页数

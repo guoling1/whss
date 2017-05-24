@@ -10,10 +10,12 @@
             <div class="form-group">
               <div class="col-xs-12">
                 产品选择：
-                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true" v-model="productId">
-                  <option value="">请选择产品</option>
-                  <option :value="list.productId" v-for="list in lists">{{list.productName}}</option>
-                </select>
+                <el-select v-model="productId" placeholder="请选择" size="small">
+                  <el-option v-for="product in productList" :key="product.productId"
+                    :label="product.productName"
+                    :value="product.productId">
+                  </el-option>
+                </el-select>
                 <div @click="search" class="btn btn-primary">确定</div>
               </div>
             </div>
@@ -27,43 +29,115 @@
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <div class="col-xs-12">
+              <div class="col-xs-10">
                 <div class="box box1">
                   <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                       <tbody>
                       <tr>
-                        <th>合伙人等级</th>
-                        <th>微信费率</th>
-                        <th>支付宝费率</th>
-                        <th>无卡费率</th>
-                        <th>升级费</th>
-                        <th>邀请人数</th>
-                        <th>直接升级费奖励</th>
-                        <th>间推升级费奖励</th>
+                        <th>合伙人等级<br/>参与的通道</th>
+                        <th style="line-height: 250%">默认分润空间</th>
+                        <th style="line-height: 250%">普通（基准费率）</th>
+                        <th style="line-height: 250%">店员</th>
+                        <th style="line-height: 250%">店长</th>
+                        <th style="line-height: 250%">老板</th>
                       </tr>
-                      <tr>
-                        <td>普通</td>
-                        <td>{{result.upgradeRulesList[0].weixinRate}}%</td>
-                        <td>{{result.upgradeRulesList[0].alipayRate}}%</td>
-                        <td>{{result.upgradeRulesList[0].fastRate}}%</td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>无</td>
-                      </tr>
-                      <tr v-for="(upgrade,index) in result.upgradeRulesList" v-if="index!=0">
-                        <td>{{upgrade.name}}</td>
-                        <td><input type="text" name="name" v-model="upgrade.weixinRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.alipayRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
-                        <td><input type="text" name="name" v-model="upgrade.directPromoteShall">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.inDirectPromoteShall">元</td>
+                      <tr v-for="(upgrade,index) in $$partnerRuleSettingList">
+                        <td>{{upgrade.channelName}}</td>
+                        <td><input type="number" name="name" v-model="upgrade.defaultProfitSpace">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.commonRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.clerkRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.shopownerRate">%</td>
+                        <td><input type="number" name="name" v-model="upgrade.bossRate">%</td>
                       </tr>
                       <tr >
-                        <td colspan="6">有效激活标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
+                        <td><el-button type="text" size="small" @click="clickAdd">点击添加通道</el-button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      </tbody></table>
+                  </div>
+                  <el-dialog title="添加通道" v-model="isAdd">
+                    <el-form :label-position="right" label-width="150px">
+                      <el-form-item label="选择通道：" width="120" style="margin-bottom: 0">
+                        <el-select size="small" placeholder="请选择" v-model="channel">
+                          <el-option v-for="channel in channelList"
+                                     :label="channel.channelShortName"
+                                     :value="channel">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="默认分润空间：" width="120" style="margin-bottom: 0">
+                        <el-input style="width: 70%" size="small" v-model="defaultProfitSpace"></el-input>%
+                      </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer" style="text-align: center">
+                      <el-button @click="isAdd = false" style="position: relative;top: -20px;">取 消</el-button>
+                      <el-button @click="add" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+                    </div>
+                  </el-dialog>
+                  <el-dialog title="确认添加" v-model="isSub">
+                    <el-form :label-position="right" label-width="150px">
+                      <el-form-item label="通道名称：" width="120" style="margin-bottom: 0">
+                        <span>{{channelShortName}}</span>
+                      </el-form-item>
+                      <el-form-item label="支付方式：" width="120" style="margin-bottom: 0">
+                        <span>{{supportWay}}</span>
+                      </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer" style="text-align: center">
+                      <el-button @click="isSub = false" style="position: relative;top: -20px;">取 消</el-button>
+                      <el-button @click="channelAdd" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+                    </div>
+                  </el-dialog>
+                </div>
+              </div>
+              <div class="col-xs-8">
+                <div class="box box1">
+                  <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                      <tbody>
+                      <tr>
+                        <th>合伙人等级<br/>通道名称</th>
+                        <th style="line-height: 250%">普通</th>
+                        <th style="line-height: 250%">店员</th>
+                        <th style="line-height: 250%">店长</th>
+                        <th style="line-height: 250%">老板</th>
+                      </tr>
+                      <tr>
+                        <td>升级费</td>
+                        <td>无</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].upgradeCost">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].upgradeCost">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].upgradeCost">元</td>
+                      </tr>
+                      <tr>
+                        <td>直推升级费奖励</td>
+                        <td>无</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].directPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].directPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].directPromoteShall">元</td>
+                      </tr>
+                      <tr>
+                        <td>间推升级费奖励</td>
+                        <td>无</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].inDirectPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].inDirectPromoteShall">元</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].inDirectPromoteShall">元</td>
+                      </tr>
+                      <tr>
+                        <td>邀请升级达标人数</td>
+                        <td>无</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[0].promotionNum">人</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[1].promotionNum">人</td>
+                        <td><input type="number" name="name" v-model="upgradeRulesList[2].promotionNum">人</td>
+                      </tr>
+                      <tr >
+                        <td>邀请用户有效标准</td>
+                        <td colspan="4">有效激活标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
                         </td>
                       </tr>
                       </tbody></table>
@@ -76,7 +150,7 @@
           </div>
         </form>
       </div>
-      <div class="box box-info" v-if="result.length!=0">
+      <div class="box box-info"  v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">升级推荐分润设置</h3>
         </div>
@@ -100,10 +174,6 @@
                         <td>收单分润</td>
                         <td><input type="text" name="name" v-model="result.tradeRate">%</td>
                       </tr>
-                      <!--<tr >
-                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="result.rewardRate">%
-                        </td>
-                      </tr>-->
                       </tbody>
                     </table>
                   </div>
@@ -124,86 +194,154 @@
     name:"invite",
     data(){
       return{
+        productList:[],
+        channelList:[],
+        channel:"",//要添加的通道
+        defaultProfitSpace:'',//默认分润空间
+        channelShortName:"",
+        supportWay:'',
+        partnerRuleSettingList:[],
+        upgradeRulesList:[],
+        isAdd:false,
+        isSub:false,
         result: '',
-        lists:[], //产品列表
-        productId:'',
-        query:''
+        productId:''
       }
     },
     created: function () {
       //产品列表
       this.$http.post("/admin/product/list")
         .then(function (res) {
-          this.$data.lists = res.data
+          this.productList = res.data
         },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-        })
-      //内容
-      /*this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
-        .then(function (res) {
-          console.log(res)
-          this.$data.result = res.data;
-
-          this.$data.result.upgradeRulesList.sort(function (a, b) {
-            return a.type-b.type
-          })
-          console.log(this.$data.result.upgradeRulesList)
-          this.$data.result.upgradeRulesList[0].name = '普通'
-          this.$data.result.upgradeRulesList[1].name = '店员'
-          this.$data.result.upgradeRulesList[2].name = '店长'
-          this.$data.result.upgradeRulesList[3].name = '老板'
-        }, function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-        })*/
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        });
     },
     methods: {
+      clickAdd:function () {
+        this.isAdd = true;
+        this.channel = "";
+        this.defaultProfitSpace = '';
+      },
+      add:function () {
+        if(this.channel==""){
+          this.$message({
+            showClose: true,
+            message: '请选择通道',
+            type: 'error'
+          });
+        }else if(this.defaultProfitSpace==''){
+          this.$message({
+            showClose: true,
+            message: '请填写默认分润空间',
+            type: 'error'
+          });
+        }else {
+          var flag = false;
+          for(let i=0; i<this.partnerRuleSettingList.length; i++){
+            if(this.partnerRuleSettingList[i].channelName == this.channel.channelShortName){
+              this.isAdd = false;
+              flag = true;
+              this.$message({
+                showClose: true,
+                message: '通道已存在',
+                type: 'info'
+              });
+              break;
+            }
+          }
+          if(!flag){
+            this.isAdd = false;
+            this.isSub = true;
+            this.channel.defaultProfitSpace = this.defaultProfitSpace;
+            this.channelShortName = this.channel.channelShortName;
+            this.supportWay = this.channel.supportWay;
+          }
+        }
+      },
+      channelAdd: function () {
+        this.isSub = false;
+        let partnerRuleSetting = {};
+        partnerRuleSetting.id = this.channel.id;
+        partnerRuleSetting.channelShortName = this.channel.channelShortName;
+        partnerRuleSetting.channelName = this.channel.channelShortName;
+        partnerRuleSetting.productId = this.productId;
+        partnerRuleSetting.channelTypeSign = this.channel.channelTypeSign;
+        partnerRuleSetting.defaultProfitSpace = this.defaultProfitSpace;
+        partnerRuleSetting.commonRate = '';
+        partnerRuleSetting.clerkRate = '';
+        partnerRuleSetting.shopownerRate = '';
+        partnerRuleSetting.bossRate = '';
+        this.partnerRuleSettingList.push(partnerRuleSetting)
+      },
       search: function () {
-        this.$data.result = ''
-        this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+        this.result = '';
+        //通道列表
+        this.$http.post("/admin/upgrade/getProductChannelList",{productId: this.productId})
           .then(function (res) {
-            console.log(res)
-            this.$data.result = res.data;
-            this.$data.result.upgradeRulesList.sort(function (a, b) {
-              return a.type-b.type
-            })
-            console.log(this.$data.result.upgradeRulesList)
-            this.$data.result.upgradeRulesList[0].name = '普通'
-            this.$data.result.upgradeRulesList[1].name = '店员'
-            this.$data.result.upgradeRulesList[2].name = '店长'
-            this.$data.result.upgradeRulesList[3].name = '老板'
+            this.channelList = res.data;
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+        this.$http.post('/admin/upgrade/init', {productId: this.productId})
+          .then(function (res) {
+            this.result = res.data;
+            this.partnerRuleSettingList = res.data.partnerRuleSettingList;
+            this.upgradeRulesList = res.data.upgradeRulesList;
           }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       },
       save: function () {
-        var upgradeRulesList= this.$data.result.upgradeRulesList.concat()
-        upgradeRulesList.shift()
-        var query = {
-          productId:this.$data.productId,
-          standard:this.$data.result.standard,
-          upgradeRate:this.$data.result.upgradeRate,
-          tradeRate:this.$data.result.tradeRate,
-          rewardRate:this.$data.result.rewardRate,
-          upgradeRulesList:upgradeRulesList
+        if(this.partnerRuleSettingList.length==0){
+          this.$message({
+            showClose: true,
+            message: '请添加通道',
+            type: 'error'
+          });
+        }else {
+          var query = {
+            productId:this.productId,
+            standard:this.result.standard,
+            upgradeRate:this.result.upgradeRate,
+            tradeRate:this.result.tradeRate,
+            upgradeRulesRequestList:this.upgradeRulesList,
+            partnerRuleSettingList:this.partnerRuleSettingList,
+          };
+          this.$http.post('/admin/upgrade/addOrUpdate',query)
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '操作成功',
+                type: 'success'
+              });
+            },function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              });
+            })
         }
-        this.$http.post('/admin/upgrade/addOrUpdate',query)
-          .then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: "操作成功"
-            })
-          },function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
       }
     },
+    computed:{
+      $$partnerRuleSettingList: function () {
+        return this.partnerRuleSettingList;
+      }
+    }
   }
 </script>
 <style scoped lang="less">
@@ -220,10 +358,7 @@
     padding: 0;
   }
 
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
+
   input {
     width: 77%;
     border: none;

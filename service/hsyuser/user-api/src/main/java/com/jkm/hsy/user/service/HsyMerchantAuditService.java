@@ -2,6 +2,7 @@ package com.jkm.hsy.user.service;
 
 import com.jkm.hsy.user.entity.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -108,5 +109,13 @@ public interface HsyMerchantAuditService {
      * @return
      */
     List<HsyMerchantInfoCheckRecord> getLog(Long id);
+
+    /**
+     * hsy导出
+     * @param hsyMerchantAuditRequest
+     * @param baseUrl
+     * @return
+     */
+    String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) throws ParseException;
 
 }

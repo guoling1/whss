@@ -10,7 +10,7 @@
           <ul class="search">
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px" :clearable="false" :editable="false"></el-date-picker>
             </li>
             <li class="same">
               <label>结算单号:</label>
@@ -116,31 +116,9 @@
     data(){
       return{
         pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
         },
         date:'',
         records:[],
@@ -233,10 +211,12 @@
         this.loading = true;
         this.$http.post('/admin/settlementRecord/list',this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
                 return ''
@@ -254,11 +234,13 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            for(let i = 0; i < res.data.records.length; i++){
+              res.data.records[i].tradeDate = changeTime(res.data.records[i].tradeDate)
             }
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

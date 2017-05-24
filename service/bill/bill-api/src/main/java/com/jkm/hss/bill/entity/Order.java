@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import lombok.Data;
@@ -64,6 +65,11 @@ public class Order extends BaseEntity {
      * 实付金额（未来可能有红包）
      */
     private BigDecimal realPayAmount;
+
+    /**
+     * 退款金额
+     */
+    private BigDecimal refundAmount;
 
     /**
      * 交易类型
@@ -184,6 +190,11 @@ public class Order extends BaseEntity {
     private String cvv;
 
     /**
+     * 银行名字
+     */
+    private String bankName;
+
+    /**
      * 银行流水号
      */
     private String bankTradeNo;
@@ -193,7 +204,7 @@ public class Order extends BaseEntity {
      *
      * {@link com.jkm.hss.account.enums.EnumBankType}
      */
-    private String tradeCardType;
+    private int tradeCardType;
 
     /**
      * 交易卡号
@@ -219,6 +230,13 @@ public class Order extends BaseEntity {
      * 封装的支付url签名
      */
     private String paySign;
+
+    /**
+     * 退款状态
+     *
+     * {@link com.jkm.hss.bill.enums.EnumOrderRefundStatus}
+     */
+    private int refundStatus;
 
     /**
      * 获取签名
@@ -305,4 +323,30 @@ public class Order extends BaseEntity {
         return EnumSettleStatus.SETTLED.getId() == this.settleStatus;
     }
 
+    /**
+     * 是否是未退款
+     *
+     * @return
+     */
+    public boolean isUnRefund() {
+        return EnumOrderRefundStatus.UN_REFUND.getId() == this.refundStatus;
+    }
+
+    /**
+     * 是否是 已经退款成功
+     *
+     * @return
+     */
+    public boolean isRefundSuccess() {
+        return EnumOrderRefundStatus.REFUND_SUCCESS.getId() == this.refundStatus;
+    }
+
+    /**
+     * 是否是 部分退款
+     *
+     * @return
+     */
+    public boolean isRefundPart() {
+        return EnumOrderRefundStatus.REFUND_PART.getId() == this.refundStatus;
+    }
 }

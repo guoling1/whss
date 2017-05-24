@@ -22,4 +22,6 @@ public class MerchantChannelResponse {
     private String limitAmount;
 
     private int channelSign;
+
+    private int recommend;
 }

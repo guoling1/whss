@@ -112,11 +112,15 @@
         this.loading = true;
         this.$http.post('/admin/code/selectQrCodeList', this.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

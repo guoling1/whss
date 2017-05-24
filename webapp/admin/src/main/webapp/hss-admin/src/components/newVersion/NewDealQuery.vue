@@ -23,20 +23,28 @@
               <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>业务方：</label>
+              <el-select style="width: 188px" clearable v-model="appId" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收收" value="好收收"></el-option>
+                <el-option label="好收银" value="好收银"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>收款商户编号:</label>
-              <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
-              <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
-              <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="proxyName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属二级代理:</label>
-              <el-input style="width: 188px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="proxyName1" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>交易日期:</label>
@@ -46,7 +54,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -81,14 +89,7 @@
                 <el-option label="微信支付" value="wechat"></el-option>
                 <el-option label="支付宝支付" value="alipay"></el-option>
                 <el-option label="快捷支付" value="unionpay"></el-option>
-              </el-select>
-            </li>
-            <li class="same">
-              <label>业务方：</label>
-              <el-select style="width: 188px" clearable v-model="query.appId" size="small">
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收收" value="好收收"></el-option>
-                <el-option label="好收银" value="好收银"></el-option>
+                <el-option label="QQ钱包" value="qqpay"></el-option>
               </el-select>
             </li>
             <li class="same">
@@ -131,7 +132,7 @@
             <el-table-column prop="markCode" label="收款商户编号" min-width="120"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
-            <el-table-column label="支付金额" align="right">
+            <el-table-column label="支付金额" align="right" min-width="90">
               <template scope="scope">
                 <span>{{scope.row.tradeAmount|toFix}}</span>
               </template>
@@ -199,14 +200,17 @@
     name: 'deal',
     data(){
       return {
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          }
+        },
         query:{
           page:1,
           size:10,
           orderNo:'',
           businessOrderNo:'',
           sn:'',
-          merchantName: '',
-          markCode:"",
           startTime: '',
           endTime: '',
           lessTotalFee: '',
@@ -214,13 +218,16 @@
           status: '',
           settleStatus:'',
           payType:'',
-          proxyName:'',
-          proxyName1:'',
           loadUrl: '',
           loadUrl1: '',
           payChannelSign:'',
           appId:''
         },
+        appId:'',
+        merchantName: '',
+        markCode:"",
+        proxyName:'',
+        proxyName1:'',
         channelList:[],
         date: '',
         records: [],
@@ -282,6 +289,11 @@
         }
       },
       reset: function () {
+        this.appId='';
+        this.merchantName='';
+        this.markCode='';
+        this.proxyName = "";
+        this.proxyName1 = "";
         this.query = {
           page:1,
             size:10,
@@ -306,26 +318,54 @@
       },
       getData: function () {
         this.loading = true;
+        this.query.appId = this.appId;
+        if(this.appId == '好收收'){
+          this.query.markCode = this.markCode;
+          this.query.merchantName = this.merchantName;
+          this.query.proxyName = this.proxyName;
+          this.query.proxyName1 = this.proxyName1;
+          delete this.query.globalId;
+          delete this.query.shortName;
+          delete this.query.proxyNameHsy;
+          delete this.query.proxyNameHsy1;
+        }else if(this.appId == '好收银'){
+          this.query.globalId = this.markCode;
+          this.query.shortName = this.merchantName;
+          this.query.proxyNameHsy = this.proxyName;
+          this.query.proxyNameHsy1 = this.proxyName1;
+          delete this.query.markCode;
+          delete this.query.merchantName;
+          delete this.query.proxyName;
+          delete this.query.proxyName1;
+        }else {
+          this.query.markCode = '';
+          this.query.merchantName = '';
+          this.query.globalId = '';
+          this.query.shortName = '';
+        }
         this.$http.post('/admin/queryOrder/orderList',this.query)
           .then(function (res) {
-            this.loading = false;
-            this.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+            },1000)
             this.loadUrl1 = res.data.ext;
-            this.loading = false;
             this.count = res.data.count;
             var price=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
-            for (var i = 0; i < this.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(this.records[i].tradeAmount))
-              if (this.records[i].payRate != null) {
-                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
+            for (var i = 0; i < res.data.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].tradeAmount))
+              if (res.data.records[i].payRate != null) {
+                res.data.records[i].payRate = (parseFloat(res.data.records[i].payRate) * 100).toFixed(2) + '%';
               }
             }
             this.pageTotal = price;
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -335,8 +375,8 @@
 
       },
       onload: function () {
-        this.$data.loadUrl = this.loadUrl1;
-        this.$data.isMask = true;
+        this.loadUrl = this.loadUrl1;
+        this.isMask = true;
       },
       changeSettleStatus: function (row, column) {
         var val = row.settleStatus;
@@ -365,19 +405,12 @@
         this.query.page = val;
         this.getData()
       },
-      tableFoot(row, index) {
-        if (row.proxyName1 === '当页总额'||row.proxyName1 === '筛选条件统计') {
-          return {background:'#eef1f6'}
-        }
-        return '';
-      },
       getAddTotal(){
         this.$http.post('/admin/queryOrder/amountCount',this.query)
           .then(res=>{
             this.addTotal = res.data;
           })
           .catch(err=>{
-            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -407,6 +440,14 @@
         } else {
           this.query.startTime = '';
           this.query.endTime = '';
+        }
+      },
+      appId: function (val) {
+        if(val == ''){
+          this.markCode='';
+          this.merchantName='';
+          this.proxyName='';
+          this.proxyName1='';
         }
       }
     },

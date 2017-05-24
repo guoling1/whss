@@ -67,12 +67,16 @@
               </ul>
               <!--表格-->
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHss" border>
-                <el-table-column type="index" width="70" label="序号"></el-table-column>
+                <el-table-column type="index" width="62" label="序号"></el-table-column>
                 <el-table-column prop="markCode" label="商户编号"></el-table-column>
                 <el-table-column prop="merchantName" label="商户名称"></el-table-column>
                 <el-table-column prop="proxyName" label="所属一级代理商"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
-                <el-table-column prop="createTime" :formatter="changeTime" label="注册时间"></el-table-column>
+                <el-table-column label="注册时间">
+                  <template scope="scope">
+                    <span>{{scope.row.createTime|changeTime}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="mobile" label="注册手机号"></el-table-column>
                 <el-table-column label="注册方式">
                   <template scope="scope">
@@ -94,8 +98,8 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_check')" v-if="recordsHss[scope.$index].status==2" type="text" size="small">审核</a>
-                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_detail')" v-if="recordsHss[scope.$index].status!=2" type="text" size="small">查看详情</a>
+                    <el-button @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_check')" v-if="recordsHss[scope.$index].status==2" type="text" size="small">审核</el-button>
+                    <el-button @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_detail')" v-if="recordsHss[scope.$index].status!=2" type="text" size="small">查看详情</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -122,28 +126,91 @@
                   <el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>注册手机号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.cellphone" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>注册时间:</label>
+                  <el-date-picker style="width: 188px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  </el-date-picker>
+                </li>
+                <li class="same">
+                  <label>审核时间:</label>
+                  <el-date-picker style="width: 188px" v-model="dateHsy1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  </el-date-picker>
+                </li>
+                <!--<li class="same">
+                  <label>所属分公司:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                </li>-->
+                <li class="same">
+                  <label>所属一级代理:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>所属二级代理:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>报单员:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>姓名:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>审核状态:</label>
+                  <el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value="">全部</el-option>
+                    <el-option label="已注册" value="4">已注册</el-option>
+                    <el-option label="待审核" value="2">待审核</el-option>
+                    <el-option label="审核通过" value="1">审核通过</el-option>
+                    <el-option label="审核未通过" value="3">审核未通过</el-option>
+                  </el-select>
+                </li>
+                <li class="same">
                   <div class="btn btn-primary" @click="search('hsy')">筛选</div>
                   <div class="btn btn-primary" @click="reset('hsy')">重置</div>
                 </li>
-                <!--<li class="same" style="float: right">
-                  <span @click="onload()" download="商户列表" class="btn btn-primary" style="color: #fff">导出</span>
-                </li>-->
+                <li class="same" style="float: right">
+                  <span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>
+                </li>
               </ul>
               <!--表格-->
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>
-                <el-table-column type="index" width="100" label="序号"></el-table-column>
+                <el-table-column type="index" width="62" label="序号"></el-table-column>
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
                 <el-table-column prop="shortName" label="商户名称"></el-table-column>
-                <el-table-column prop="proxyNames" label="所属代理商"></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" :formatter="changeTime"></el-table-column>
+                <!--<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>-->
+                <el-table-column prop="proxyName" label="所属一级代理"></el-table-column>
+                <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
+                <el-table-column prop="username" label="报单员"></el-table-column>
+                <el-table-column prop="realname" label="姓名"></el-table-column>
+                <!--<el-table-column prop="proxyNames" label="所属代理商"></el-table-column>-->
+                <el-table-column label="注册时间">
+                  <template scope="scope">
+                    <span>{{scope.row.createTime|changeTime}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="提交时间">
+                  <template scope="scope">
+                    <span>{{scope.row.commitTime|changeTime}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="审核时间">
+                  <template scope="scope">
+                    <span>{{scope.row.auditTime|changeTime}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="cellphone" label="注册手机号"></el-table-column>
                 <el-table-column prop="districtCode" label="省市"></el-table-column>
                 <el-table-column prop="industryCode" label="行业"></el-table-column>
                 <el-table-column prop="stat" label="状态"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" v-if="recordsHsy[scope.$index].stat=='待审核'" type="text" size="small">审核</a>
-                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_detail')" v-if="recordsHsy[scope.$index].stat!='待审核'" type="text" size="small">查看详情</a>
+                    <el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" v-if="recordsHsy[scope.$index].stat=='待审核'" type="text" size="small">审核</el-button>
+                    <el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_detail')" v-if="recordsHsy[scope.$index].stat!='待审核'" type="text" size="small">查看详情</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -221,6 +288,8 @@
         dateHss:'',
         dateHss1:'',
         dateHss2:'',
+        dateHsy:'',
+        dateHsy1:'',
         url:'/admin/query/getAll',
         loadUrl:'',
         loadUrlHss:'',
@@ -247,13 +316,23 @@
           pageSize:10,
           shortName:'',
           globalID:'',
+          proxyName:'',
+          proxyName1:'',
+          cellphone:'',
+          username:'',
+          status:'',
+          startTime:'',
+          endTime:'',
+          auditTime:'',
+          auditTime1:'',
+          realname:''
         },
         recordsHss: [],
         recordsHsy: [],
         countHss: 0,
         countHsy: 0,
         currentPage: 1,
-        loading: true,
+        loading: false,
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -272,12 +351,15 @@
       })
     },
     created: function () {
-      this.getDataHss()
-      this.getDataHsy()
+      /*this.getDataHss()
+      this.getDataHsy()*/
     },
     methods: {
       reset: function (val) {
         if(val == 'hss'){
+          this.dateHss='';
+          this.dateHss1='';
+          this.dateHss2='';
           this.queryHss = {
             pageNo:1,
             pageSize:10,
@@ -295,11 +377,23 @@
             status:''
           }
         }else if(val == 'hsy'){
+          this.dateHsy='';
+          this.dateHsy1='';
           this.queryHsy = {
             pageNo:1,
-              pageSize:10,
-              shortName:'',
-              globalID:'',
+            pageSize:10,
+            shortName:'',
+            globalID:'',
+            proxyName:'',
+            proxyName1:'',
+            cellphone:'',
+            username:'',
+            status:'',
+            startTime:'',
+            endTime:'',
+            auditTime:'',
+            auditTime1:'',
+            realname:''
           }
         }
       },
@@ -312,15 +406,20 @@
 //        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       getDataHss: function () {
+        this.loading = true;
         this.$http.post('/admin/query/getAll',this.queryHss)
           .then(function (res) {
-            this.$data.loading = false;
-            this.$data.recordsHss = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.recordsHss = res.data.records;
+            },1000)
             this.$data.countHss = res.data.count;
             this.$data.totalHss = res.data.totalPage;
             this.$data.loadUrlHss = res.data.ext;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -329,15 +428,20 @@
           })
       },
       getDataHsy: function () {
+        this.loading = true;
         this.$http.post('/admin/hsyMerchantList/getMerchantList',this.queryHsy)
           .then(function (res) {
-            this.$data.loading = false;
-            this.$data.recordsHsy = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.recordsHsy = res.data.records;
+            },1000)
             this.$data.countHsy = res.data.count;
             this.$data.totalHsy = res.data.totalPage;
             this.$data.loadUrlHsy = res.data.ext;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -350,7 +454,9 @@
         this.loading = true;
         this.$http.get('/admin/merchantIn/update')
           .then(res => {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: '同步成功',
@@ -358,7 +464,9 @@
             });
           })
           .catch(err => {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -374,55 +482,6 @@
         }
          this.$data.isMask = true;
       },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val=row.createTime;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
-      },
-      //选项卡改变时
-      /*handleClick: function (tab,event) {
-        this.$data.query={
-          pageNo:1,
-          pageSize:10,
-          shortName:'',
-          globalID:'',
-          proxyName:'',
-          proxyName1:'',
-          mobile:'',
-          startTime:'',
-          endTime:'',
-          startTime1:'',
-          endTime1:'',
-          startTime2:'',
-          endTime2:'',
-          status:''
-        };
-        if(event.target.innerHTML=="好收收"){
-          this.$data.url='/admin/query/getAll'
-        }else if(event.target.innerHTML=="好收银"){
-          this.$data.url='/admin/hsyMerchantList/getMerchantList'
-        }
-        this.$data.records='';
-        this.$data.loading = true;
-        this.getData()
-      },*/
       search(val){
         if(val == 'hss'){
           this.queryHss.pageNo = 1;
@@ -453,7 +512,7 @@
       }
     },
     watch:{
-      date:function (val,oldVal) {
+      dateHss:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -465,17 +524,17 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime = str;
+              this.$data.queryHss.startTime = str;
             }else {
-              this.$data.query.endTime = str;
+              this.$data.queryHss.endTime = str;
             }
           }
         }else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
+          this.$data.queryHss.startTime = '';
+          this.$data.queryHss.endTime = '';
         }
       },
-      date1:function (val,oldVal) {
+      dateHss1:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -487,17 +546,17 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime1 = str;
+              this.$data.queryHss.startTime1 = str;
             }else {
-              this.$data.query.endTime1 = str;
+              this.$data.queryHss.endTime1 = str;
             }
           }
         }else {
-          this.$data.query.startTime1 = '';
-          this.$data.query.endTime1 = '';
+          this.$data.queryHss.startTime1 = '';
+          this.$data.queryHss.endTime1 = '';
         }
       },
-      date2:function (val,oldVal) {
+      dateHss2:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -509,14 +568,58 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime2 = str;
+              this.$data.queryHss.startTime2 = str;
             }else {
-              this.$data.query.endTime2 = str;
+              this.$data.queryHss.endTime2 = str;
             }
           }
         }else {
-          this.$data.query.startTime2 = '';
-          this.$data.query.endTime2 = '';
+          this.$data.queryHss.startTime2 = '';
+          this.$data.queryHss.endTime2 = '';
+        }
+      },
+      dateHsy:function (val,oldVal) {
+        if(val!=undefined&&val[0]!=null){
+          for(var j=0;j<val.length;j++){
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for(var i = 0, len = ary.length; i < len; i ++) {
+              if(ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if(j==0){
+              this.queryHsy.startTime = str;
+            }else {
+              this.queryHsy.endTime = str;
+            }
+          }
+        }else {
+          this.queryHsy.startTime = '';
+          this.queryHsy.endTime = '';
+        }
+      },
+      dateHsy1:function (val,oldVal) {
+        if(val!=undefined&&val[0]!=null){
+          for(var j=0;j<val.length;j++){
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for(var i = 0, len = ary.length; i < len; i ++) {
+              if(ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if(j==0){
+              this.queryHsy.auditTime = str;
+            }else {
+              this.queryHsy.auditTime1 = str;
+            }
+          }
+        }else {
+          this.queryHsy.auditTime = '';
+          this.queryHsy.auditTime1 = '';
         }
       },
     },

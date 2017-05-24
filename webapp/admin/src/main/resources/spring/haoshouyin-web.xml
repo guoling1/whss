@@ -63,7 +63,6 @@
             <mvc:mapping path="/admin/queryJkmProfit/**"/>
             <mvc:mapping path="/admin/profit/**"/>
             <mvc:mapping path="/admin/queryProfit/**"/>
-            <mvc:mapping path="/admin/code/**"/>
             <mvc:mapping path="/admin/order/**"/>
             <mvc:mapping path="/admin/channel/**"/>
             <mvc:mapping path="/admin/product/**"/>
@@ -86,6 +85,7 @@
             <mvc:mapping path="/admin/queryOrder/**"/>
             <mvc:mapping path="/admin/merchantInfo/**"/>
             <mvc:mapping path="/admin/photoChange/**"/>
+            <mvc:mapping path="/admin/queryOrder/**"/>
             <mvc:exclude-mapping path="/admin/user/login*"/>
             <mvc:exclude-mapping path="/admin/qrcode/**"/>
             <bean id="adminLoginInterceptor" class="com.jkm.hss.interceptor.AdminLoginInterceptor">

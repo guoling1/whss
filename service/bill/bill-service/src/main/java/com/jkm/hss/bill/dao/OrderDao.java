@@ -1,12 +1,16 @@
 package com.jkm.hss.bill.dao;
 
+import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +78,16 @@ public interface OrderDao {
      * @return
      */
     int markSettleSuccess(@Param("id") long id, @Param("status") int status, @Param("successSettleTime") Date successSettleTime);
+
+    /**
+     * 更新退款信息
+     *
+     * @param id
+     * @param refundAmount
+     * @param refundStatus
+     * @return
+     */
+    int updateRefundInfo(@Param("id") long id, @Param("refundAmount") String refundAmount, @Param("refundStatus") int refundStatus);
 
     /**
      * 按id查询
@@ -225,6 +239,33 @@ public interface OrderDao {
                                             @Param("date") Date date);
 
     /**
+     * 分页查询--查询个数
+     *
+     * @param accountId
+     * @param appId
+     * @param payChannelSigns
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    long selectOrderCountByParam(@Param("accountId") long accountId, @Param("appId") String appId,
+                                          @Param("payChannelSigns") List<Integer> payChannelSigns, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    /**
+     * 分页查询--查询记录
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> selectOrdersByParam(@Param("accountId") long accountId, @Param("appId") String appId,
+                                            @Param("offset") int offset, @Param("count") int count,
+                                           @Param("payChannelSigns") List<Integer> payChannelSigns, @Param("startTime") Date startTime,
+                                           @Param("endTime") Date endTime);
+
+    /**
      * 批量查询
      * @param orderNos
      * @return
@@ -355,4 +396,79 @@ public interface OrderDao {
      * @return
      */
     List<Order> selectByAppParam(@Param("orderNos") List<String> orderNos, @Param("offset") int offset, @Param("count") int count);
+
+    /**
+     * 保存回调信息
+     * @param geTuiResponse
+     */
+    void save(GeTuiResponse geTuiResponse);
+
+    /**
+     * 统计金额
+     *
+     * @param accountId
+     * @param appId
+     * @param payChannelSigns
+     * @param sDate
+     * @param eDate
+     * @return
+     */
+    AppStatisticsOrder statisticsByParam(@Param("accountId") long accountId, @Param("appId") String appId, @Param("payChannelSigns") ArrayList<Integer> payChannelSigns, @Param("sDate") String sDate, @Param("eDate") String eDate);
+
+    /**
+     * 查询退款单号
+     * @param orderNo
+     * @return
+     */
+    String getRefundOrder(@Param("orderNo") String orderNo);
+
+    /**
+     * 根据订单号查分润列表
+     * @param orderNo
+     * @return
+     */
+    List<ProfitRefundResponse> getProfitRefundList(@Param("orderNo") String orderNo);
+
+    /**
+     * 分润退款记录
+     * @param orderNo
+     * @return
+     */
+    List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
+
+    /**
+     * 查询hss订单（订单查询）
+     * @param req
+     * @return
+     */
+    List<QueryOrderResponse> queryOrderList(QueryOrderRequest req);
+
+    /**
+     * 查询hss订单总数（订单查询）
+     * @param req
+     * @return
+     */
+    int queryOrderListCount(QueryOrderRequest req);
+
+    /**
+     * 按业务订单号查询个数
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    int selectCountByBusinessOrder(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount(QueryOrderRequest req);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount1(QueryOrderRequest req);
 }

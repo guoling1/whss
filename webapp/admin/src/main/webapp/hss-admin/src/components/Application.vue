@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">合作申请</h3>
+          <a @click="refresh" class="pull-right btn btn-primary" style="margin-left: 15px;">刷新</a>
         </div>
         <div class="box-body">
           <!--表格-->
@@ -52,16 +53,23 @@
       this.getData()
     },
     methods: {
+      refresh: function () {
+        this.getData()
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/cooperationQuery/selectCooperation', this.$data.query)
           .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.total = res.data.totalPage;
-            this.$data.count = res.data.count;
+            setTimeout(()=>{
+              this.loading = false;
+              this.records = res.data.records;
+              this.total = res.data.totalPage;
+              this.count = res.data.count;
+            },1000)
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

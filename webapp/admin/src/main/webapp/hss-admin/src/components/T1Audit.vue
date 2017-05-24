@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="col-md-12" style="height: 880px">
+    <div class="col-md-12">
       <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">T1结算审核</h3>
@@ -30,7 +30,7 @@
             </li>
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px" :clearable="false" :editable="false"></el-date-picker>
             </li>
             <li class="same">
               <label>对账结果:</label>
@@ -56,21 +56,27 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border @selection-change="handleSelectionChange">
-            <!--<el-table-column type="selection" width="55"></el-table-column>-->
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column prop="userNo" label="结算对象编号" ></el-table-column>
             <el-table-column prop="userName" label="结算对象名称" ></el-table-column>
             <el-table-column label="结算对象类型" >
               <template scope="scope">
-                <span v-if="records[scope.$index].userType==2">商户</span>
-                <span v-if="records[scope.$index].userType==1">金开门</span>
-                <span v-if="records[scope.$index].userType==3">代理商</span>
+                <span v-if="scope.row.userType==2">商户</span>
+                <span v-if="scope.row.userType==1">金开门</span>
+                <span v-if="scope.row.userType==3">代理商</span>
               </template>
             </el-table-column>
-            <el-table-column prop="tradeDate" :formatter="changeTime" label="交易日期"></el-table-column>
+            <el-table-column label="交易日期">
+              <template scope="scope">
+                {{scope.row.tradeDate|changeDate}}
+              </template>
+            </el-table-column>
             <el-table-column prop="tradeNumber" label="交易笔数" align="right" width="90"></el-table-column>
-            <el-table-column prop="settleAmount" label="结算金额" align="right" :formatter="changeNum"></el-table-column>
-            <!--<el-table-column prop="checkedStatusValue" label="对账结果" ></el-table-column>-->
+            <el-table-column prop="settleAmount" label="结算金额" align="right">
+              <template scope="scope">
+                {{scope.row.settleAmount|toFix}}
+              </template>
+            </el-table-column>
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
             <!--<el-table-column label="操作" width="70">-->
               <!--<template scope="scope">-->
@@ -95,7 +101,7 @@
             </el-pagination>
           </div>
           <!--审核-->
-          <div v-if="isShow">
+          <!--<div v-if="isShow">
             <el-dialog title="结算确认提醒" v-model="isShow">
               <div class="maskCon">
                 <span>商户名称：</span>
@@ -123,7 +129,7 @@
                 <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
               </div>
             </el-dialog>
-          </div>
+          </div>-->
           <div v-if="isgenerateRecord">
             <el-dialog title="生成结算单" v-model="isgenerateRecord">
               <div class="maskCon">
@@ -131,7 +137,7 @@
               </div>
               <div slot="footer" class="dialog-footer" style="text-align: center;">
                 <el-button @click="isgenerateRecord = false">取 消</el-button>
-                <el-button @click="generate">立即生成</el-button>
+                <el-button @click="generate" :disabled="generateClick">立即生成</el-button>
               </div>
             </el-dialog>
           </div>
@@ -142,7 +148,7 @@
               </div>
               <div slot="footer" class="dialog-footer" style="text-align: center;">
                 <el-button @click="ismarkSettled = false">取 消</el-button>
-                <el-button @click="markSettled">立即更新</el-button>
+                <el-button @click="markSettled" :disabled="markSettledClick">立即更新</el-button>
               </div>
             </el-dialog>
           </div>
@@ -157,32 +163,12 @@
       name: 't1Audit',
       data(){
             return{
+              generateClick:false,
+              markSettledClick:false,
               pickerOptions: {
-                shortcuts: [{
-                  text: '最近一周',
-                  onClick(picker) {
-                    const end = new Date();
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                    picker.$emit('pick', [start, end]);
-                  }
-                }, {
-                  text: '最近一个月',
-                  onClick(picker) {
-                    const end = new Date();
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                    picker.$emit('pick', [start, end]);
-                  }
-                }, {
-                  text: '最近三个月',
-                  onClick(picker) {
-                    const end = new Date();
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                    picker.$emit('pick', [start, end]);
-                  }
-                }]
+                disabledDate(time) {
+                  return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+                }
               },
               date:'',
               records:[],
@@ -199,8 +185,6 @@
                 checkedStatus:'',
                 settleStatus:''
               },
-              multipleSelection:[],
-              currentPage4: 1,
               loading:true,
               isShow:false,
               isgenerateRecord:false,
@@ -247,6 +231,7 @@
           this.currentDate()
         },
         generate:function () {
+          this.generateClick = true;
           this.$http.post('/admin/settle/generateRecord')
             .then(function (res) {
               this.$message({
@@ -254,7 +239,8 @@
                 message: '生成成功',
                 type: 'success'
               });
-              this.$data.isgenerateRecord = false
+              this.isgenerateRecord = false;
+              this.generateClick = false;
             })
             .catch(function (err) {
               this.$message({
@@ -262,9 +248,11 @@
                 message: err.statusMessage,
                 type: 'error'
               })
+              this.generateClick = false;
             })
         },
         markSettled:function () {
+          this.markSettledClick = true;
           this.$http.post('/admin/settle/markSettled')
             .then(function (res) {
               this.$message({
@@ -272,73 +260,32 @@
                 message: '更新成功',
                 type: 'success'
               });
-              this.$data.ismarkSettled = false
+              this.ismarkSettled = false;
+              this.markSettledClick = false;
             })
             .catch(function (err) {
               this.$message({
                 showClose: true,
                 message: err.statusMessage,
                 type: 'error'
-              })
+              });
+              this.markSettledClick = false;
             })
-        },
-        changeTime: function (row, column) {
-          var val = row.tradeDate;
-          if (val == '' || val == null) {
-            return ''
-          } else {
-            val = new Date(val)
-            var year = val.getFullYear();
-            var month = val.getMonth() + 1;
-            var date = val.getDate();
-            var hour = val.getHours();
-            var minute = val.getMinutes();
-            var second = val.getSeconds();
-
-            function tod(a) {
-              if (a < 10) {
-                a = "0" + a
-              }
-              return a;
-            }
-
-            return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-          }
-        },
-        changeNum: function (row, column) {
-          var val = row.settleAmount;
-          return parseFloat(val).toFixed(2);
         },
         getData: function () {
           this.loading = true;
           this.$http.post('/admin/settle/list',this.$data.query)
             .then(function (res) {
-              this.$data.records = res.data.records;
-              this.$data.count = res.data.count;
-              this.$data.total = res.data.totalPage;
-              this.$data.loading = false;
-              var changeTime=function (val) {
-                if(val==''||val==null){
-                  return ''
-                }else {
-                  val = new Date(val)
-                  var year=val.getFullYear();
-                  var month=val.getMonth()+1;
-                  var date=val.getDate();
-                  function tod(a) {
-                    if(a<10){
-                      a = "0"+a
-                    }
-                    return a;
-                  }
-                  return year+"-"+tod(month)+"-"+tod(date);
-                }
-              }
-              for(let i = 0; i < this.$data.records.length; i++){
-                this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-              }
+              setTimeout(()=>{
+                this.loading = false;
+                this.$data.records = res.data.records;
+              },1000)
+              this.count = res.data.count;
+              this.total = res.data.totalPage;
             },function (err) {
-              this.$data.loading = false;
+              setTimeout(()=>{
+                this.loading = false;
+              },1000)
               this.$message({
                 showClose: true,
                 message: err.statusMessage,
@@ -347,27 +294,22 @@
             })
         },
         search: function () {
-          this.$data.query.pageNo = 1;
+          this.query.pageNo = 1;
           this.getData()
         },
-        list: function (val) {
-          this.$data.index = val;
-          this.$data.isShow = true;
-        },
-        //行选中
-        handleSelectionChange(val) {
-            console.log(val)
-          this.multipleSelection = val;
-        },
+        /*list: function (val) {
+          this.index = val;
+          this.isShow = true;
+        },*/
         //每页条数改变
         handleSizeChange(val) {
-          this.$data.query.pageNo = 1;
-          this.$data.query.pageSize = val;
+          this.query.pageNo = 1;
+          this.query.pageSize = val;
           this.getData()
         },
         //当前页改变时
         handleCurrentChange(val) {
-          this.$data.query.pageNo = val;
+          this.query.pageNo = val;
           this.getData()
         },
         //结算审核
@@ -379,7 +321,7 @@
                 message: '结算成功',
                 type: 'success'
               })
-              this.$data.isShow = false
+              this.isShow = false
             })
             .catch(function (err) {
               this.$message({
@@ -403,14 +345,14 @@
               }
               str = ary[0] + '-' + ary[1] + '-' + ary[2];
               if(j==0){
-                this.$data.query.startSettleDate = str;
+                this.query.startSettleDate = str;
               }else {
-                this.$data.query.endSettleDate = str;
+                this.query.endSettleDate = str;
               }
             }
           }else {
-            this.$data.query.startSettleDate = '';
-            this.$data.query.endSettleDate = '';
+            this.query.startSettleDate = '';
+            this.query.endSettleDate = '';
           }
         }
       }

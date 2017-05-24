@@ -1,10 +1,15 @@
 package com.jkm.hss.controller.orderRecord;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
+import com.jkm.hss.bill.entity.ProfitRefundResponse;
+import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
+import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -115,9 +120,26 @@ public class OrderTradeController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
-    public CommonResponse orderListAll(@RequestBody OrderTradeRequest req) throws ParseException {
+    public JSONObject orderListAll(@RequestBody OrderTradeRequest req) throws ParseException {
+        JSONObject jsonObject = new JSONObject();
         MerchantTradeResponse orderList =  orderService.selectOrderListByPageAll(req);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
+
+        List<PaymentSdkQueryPayOrderByOrderNoResponse> payList = this.orderService.queryPayOrderByOrderNo(req.getOrderNo());
+        String refundOrder = this.orderService.getRefundOrder(req.getOrderNo());
+        List<PaymentSdkQueryRefundOrderByOrderNoResponse> refundList = this.orderService.queryRefundOrderByOrderNo(refundOrder);
+        List<ProfitRefundResponse> profitRefundList = this.orderService.getProfitRefundList(req.getOrderNo());
+        List<SplitAccountRefundRecord> splitAccountRefundList = this.orderService.splitAccountRefundList(req.getOrderNo());
+        jsonObject.put("msg","ok");
+        jsonObject.put("code",1);
+        JSONObject jo = new JSONObject();
+        jo.put("orderList",orderList);
+        jo.put("payList",payList);
+        jo.put("refundList",refundList);
+        jo.put("profitRefundList",profitRefundList);
+        jo.put("splitAccountRefundList",splitAccountRefundList);
+        jsonObject.put("result",jo);
+
+        return jsonObject;
     }
 
     /**

@@ -179,7 +179,7 @@
               showClose: true,
               message: err.statusMessage,
               type: 'error'
-            })
+            });
             this.isBtn=false;
             this.$data.isMask = false;
 //            this.$router.push('/admin/record/newWithdrawalQuery')

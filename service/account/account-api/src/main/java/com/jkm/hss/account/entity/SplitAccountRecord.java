@@ -82,6 +82,11 @@ public class SplitAccountRecord extends BaseEntity {
     private BigDecimal splitRate;
 
     /**
+     * 结算类型 T1 ...
+     */
+    private String settleType;
+
+    /**
      * 备注
      */
     private String remark;
