@@ -103,6 +103,7 @@ public class DealerServiceImpl implements DealerService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+    @Autowired
     private DealerProfitService dealerProfitService;
     @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
