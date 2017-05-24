@@ -13,22 +13,13 @@
               <div class="screen-item">
                 <span class="screen-title">业务类型</span>
                 <el-select v-model="businessType" size="small" clearable placeholder="请选择">
-                  <el-option v-for="item in item_businessType"
-                             :label="item.label"
-                             :value="item.value">
-                  </el-option>
+                  <el-option v-for="item in item_businessType" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </div>
               <div class="screen-item">
                 <span class="screen-title">分润日期</span>
-                <el-date-picker size="small"
-                                v-model="datetime"
-                                type="daterange"
-                                align="right"
-                                @change="datetimeSelect"
-                                placeholder="选择日期范围"
-                                :picker-options="pickerOptions2">
-                </el-date-picker>
+                <el-date-picker size="small" v-model="datetime" type="daterange" align="right" @change="datetimeSelect"
+                                placeholder="选择日期范围" :picker-options="pickerOptions2"></el-date-picker>
               </div>
               <div class="screen-item">
                 <span class="screen-title"></span>
@@ -36,9 +27,7 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table :data="tableData" border
-                        v-loading="tableLoading"
-                        element-loading-text="数据加载中">
+              <el-table :data="tableData" border v-loading="tableLoading" element-loading-text="数据加载中">
                 <el-table-column type="index" label="序号"></el-table-column>
                 <el-table-column prop="splitOrderNo" label="分润流水号"></el-table-column>
                 <el-table-column label="业务类型">
@@ -54,9 +43,9 @@
                 <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
                 <!--<el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>-->
                 <!--<el-table-column label="结算时间">-->
-                  <!--<template scope="scope">-->
-                    <!--{{ scope.row.settleTime | datetime }}-->
-                  <!--</template>-->
+                <!--<template scope="scope">-->
+                <!--{{ scope.row.settleTime | datetime }}-->
+                <!--</template>-->
                 <!--</el-table-column>-->
                 <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
                 <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
@@ -141,7 +130,10 @@
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
               picker.$emit('pick', [start, end]);
             }
-          }]
+          }],
+          disabledDate(time) {
+            return time.getTime() >= Date.now() - 8.64e7;
+          }
         }
       }
     },
