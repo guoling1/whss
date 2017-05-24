@@ -29,27 +29,20 @@
             <div class="box-body">
               <el-table :data="tableData" border v-loading="tableLoading" element-loading-text="数据加载中">
                 <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column prop="splitOrderNo" label="分润流水号"></el-table-column>
-                <el-table-column label="业务类型">
+                <el-table-column prop="proxyName" label="代理名称"></el-table-column>
+                <el-table-column prop="markCode" label="代理编号"></el-table-column>
+                <el-table-column label="收益日期" width="180">
                   <template scope="scope">
-                    {{ scope.row.businessType | filter_businessType }}
+                    {{ scope.row.splitDate | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column label="分润时间" width="180">
+                <el-table-column prop="splitAmount" label="收益金额"></el-table-column>
+                <el-table-column prop="businessType" label="收益类型"></el-table-column>
+                <el-table-column label="操作">
                   <template scope="scope">
-                    {{ scope.row.splitCreateTime | datetime }}
+                    <el-button type="text" size="small">查看明细</el-button>
                   </template>
                 </el-table-column>
-                <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
-                <!--<el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>-->
-                <!--<el-table-column label="结算时间">-->
-                <!--<template scope="scope">-->
-                <!--{{ scope.row.settleTime | datetime }}-->
-                <!--</template>-->
-                <!--</el-table-column>-->
-                <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
-                <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
-                <el-table-column prop="remark" label="备注信息"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
