@@ -120,9 +120,14 @@ public interface MerchantInfoService {
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
 
     /**
-     * 根据id查询
+     * 根据手机号查询
      */
     Optional<MerchantInfo> selectByMobile(String mobile);
+
+    /**
+     * 根据手机号和代理商编号查询
+     */
+    Optional<MerchantInfo> selectByMobileAndOemId(String mobile,long oemId);
 
 
     /**

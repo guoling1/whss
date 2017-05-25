@@ -198,6 +198,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     }
 
     /**
+     * 根据手机号和代理商编号查询
+     *
+     * @param mobile
+     * @param oemId
+     */
+    @Override
+    public Optional<MerchantInfo> selectByMobileAndOemId(String mobile, long oemId) {
+        return Optional.fromNullable(this.merchantInfoDao.selectByMobileAndOemId(mobile,oemId));
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @param accountId

@@ -489,4 +489,8 @@
         second_dealer_id = #{secondDealerId}
         WHERE id = #{merchantId}
     </update>
+
+    <select id="selectByMobileAndOemId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * from tb_merchant_info where mobile=#{mobile} and oem_id=#{oemId}
+    </select>
 </mapper>

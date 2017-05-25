@@ -458,6 +458,14 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public CommonResponse login(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantLoginRequest loginRequest) {
+        long oemId = 0;
+        if(loginRequest.getOemNo()!=null&&!"".equals(loginRequest.getOemNo())){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(loginRequest.getOemNo());
+            if(!oemInfoOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "分公司不存在");
+            }
+            oemId = oemInfoOptional.get().getDealerId();
+        }
         log.info("参数为{}",JSONObject.fromObject(loginRequest).toString());
         final String mobile = loginRequest.getMobile();
         final String verifyCode = loginRequest.getCode();
@@ -495,14 +503,10 @@ public class WxPubController extends BaseController {
                 }
             }else{
                 log.info("商户邀请码{}",loginRequest.getInviteCode());
-                Optional<UserInfo> uoOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-                if(!uoOptional.isPresent()){
-                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
-                }
                 if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
                     return CommonResponse.simpleResponse(-1, "不能邀请自己");
                 }
-                Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+                Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(loginRequest.getInviteCode()),oemId);
                 if(!miOptional.isPresent()){
                     return CommonResponse.simpleResponse(-1, "邀请码不存在");
                 }
@@ -533,8 +537,9 @@ public class WxPubController extends BaseController {
         Optional<UserInfo> ui = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!ui.isPresent()){//根据openId找不到商户
             //②根据mobile判断有没有用户
-            Optional<UserInfo> uoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
-            if(uoOptional.isPresent()){//有
+            Optional<MerchantInfo> merchantInfoOptional1 = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
+//            Optional<UserInfo> uoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+            if(merchantInfoOptional1.isPresent()){//有
                 return CommonResponse.simpleResponse(2, "该商户已注册，请直接登录");
             }else{//没有，走注册
                 //③判断是扫码注册还是邀请注册
