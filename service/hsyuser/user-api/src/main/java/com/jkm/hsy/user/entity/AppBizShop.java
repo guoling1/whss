@@ -47,7 +47,7 @@ public class AppBizShop {
 
     private String industryName;//行业名称
     private String districtName;//行政区名称
-    private String email;
+    private String email="";
 
     public Long getId() {
         return id;

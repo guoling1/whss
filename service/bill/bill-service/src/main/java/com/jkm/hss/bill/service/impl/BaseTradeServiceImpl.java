@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
@@ -21,11 +22,16 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.service.AccountBankService;
+import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -40,6 +46,9 @@ import java.util.Date;
 @Slf4j
 @Service
 public class BaseTradeServiceImpl implements BaseTradeService {
+
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     @Autowired
     private OrderService orderService;
@@ -71,6 +80,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     private MemberAccountFlowService memberAccountFlowService;
     @Autowired
     private BaseSettlementDateService baseSettlementDateService;
+    @Autowired
+    private UpgradeRecommendRulesService upgradeRecommendRulesService;
     @Autowired
     private ReceiptMemberMoneyAccountService receiptMemberMoneyAccountService;
     @Autowired
@@ -324,30 +335,70 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         log.info("业务方[{}]-交易订单[{}]，支付成功, 支付渠道[{}]", order.getAppId(), order.getOrderNo(), paymentSdkPayCallbackResponse.getPayType());
         final Order updateOrder = new Order();
         updateOrder.setId(order.getId());
+        updateOrder.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         updateOrder.setPayType(paymentSdkPayCallbackResponse.getPayType());
         updateOrder.setRemark(paymentSdkPayCallbackResponse.getMessage());
         updateOrder.setSn(paymentSdkPayCallbackResponse.getSn());
         updateOrder.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         updateOrder.setPayChannelSign(enumPayChannelSign.getId());
+        updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order, enumPayChannelSign.getUpperChannel()));
         //TODO  hss-hsy
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
-        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
-        updateOrder.setPoundage(merchantPayPoundage);
-        updateOrder.setPayRate(merchantPayPoundageRate);
-        updateOrder.setSettlePoundage(merchantWithdrawPoundage);
+        if (EnumServiceType.APPRECIATION_PAY.getId() != order.getServiceType()) {
+            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()),
+                    order.getPayee(), enumPayChannelSign.getId());
+            final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate,
+                    order.getPayChannelSign());
+            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.of(order.getAppId()),
+                    order.getPayee(), enumPayChannelSign.getId());
+            updateOrder.setPoundage(merchantPayPoundage);
+            updateOrder.setPayRate(merchantPayPoundageRate);
+            updateOrder.setSettlePoundage(merchantWithdrawPoundage);
+        }
         updateOrder.setBankTradeNo(paymentSdkPayCallbackResponse.getBankTradeNo());
         updateOrder.setTradeCardType(paymentSdkPayCallbackResponse.getTradeCardType());
         updateOrder.setTradeCardNo(paymentSdkPayCallbackResponse.getTradeCardNo());
         updateOrder.setWechatOrAlipayOrderNo(paymentSdkPayCallbackResponse.getWechatOrAlipayOrderNo());
-        updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order, enumPayChannelSign.getUpperChannel()));
         this.orderService.update(updateOrder);
-        this.record(order.getId());
+        if (EnumAppType.HSS.getId().equalsIgnoreCase(order.getAppId()) && EnumServiceType.APPRECIATION_PAY.getId() == order.getServiceType()) {
+            //TODO
+            //回调商户升级业务
+            try  {
+//                this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "S");
+            } catch (final Throwable e) {
+                log.error("##############商户升级支付成功，回调商户升级业务异常##############", e);
+            }
+            return;
+        }
+        final long settlementRecordId = this.record(order.getId());
+
+        //判断商户交易金额--是否升级
+        try  {
+            //TODO
+            if (EnumAppType.HSS.getId().equalsIgnoreCase(order.getAppId())) {
+                final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(order.getPayee(),
+                        EnumAppType.HSS.getId(), EnumServiceType.RECEIVE_MONEY.getId());
+                final BigDecimal merchantUpgradeMinAmount = this.upgradeRecommendRulesService.selectInviteStandard();
+
+//            if (totalTradeAmount.compareTo(merchantUpgradeMinAmount) >= 0) {
+//                this.merchantInfoService.toUpgradeByRecommend(merchant.getId());
+//            }
+            }
+        } catch (final Throwable e) {
+            log.error("##############商户交易金额达到升级标准，调用商户升级业务异常##############", e);
+        }
         //TODO
-
         //如果是好收收，发起提现
-
+        final boolean canWithdraw = EnumAppType.HSS.getId().equalsIgnoreCase(order.getAppId()) && !enumPayChannelSign.getAutoSettle()
+                && enumPayChannelSign.getSettleType().getType().equalsIgnoreCase(EnumBalanceTimeType.D0.getType());
+        if (canWithdraw) {
+            final JSONObject requestJsonObject = new JSONObject();
+            requestJsonObject.put("settlementRecordId", settlementRecordId);
+            requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
+            requestJsonObject.put("payChannelSign", enumPayChannelSign.getId());
+            MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW_D0, 20000);
+        }
+        //TODO
         //通知业务
     }
 
@@ -363,6 +414,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         log.info("业务方[{}]-交易订单[{}]，充值成功, 支付渠道[{}]", order.getAppId(), order.getOrderNo(), paymentSdkPayCallbackResponse.getPayType());
         final Order updateOrder = new Order();
         updateOrder.setId(order.getId());
+        updateOrder.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         updateOrder.setPayType(paymentSdkPayCallbackResponse.getPayType());
         updateOrder.setRemark(paymentSdkPayCallbackResponse.getMessage());
         updateOrder.setSn(paymentSdkPayCallbackResponse.getSn());
@@ -402,6 +454,15 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setStatus(EnumOrderStatus.PAY_FAIL.getId());
         updateOrder.setRemark(paymentSdkPayCallbackResponse.getMessage());
         this.orderService.update(updateOrder);
+        //TODO
+        //回调商户升级业务
+        if (EnumAppType.HSS.getId().equalsIgnoreCase(order.getAppId()) && EnumServiceType.APPRECIATION_PAY.getId() == order.getServiceType()) {
+            try  {
+                this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "F");
+            } catch (final Throwable e) {
+                log.error("##############商户升级支付成功，回调商户升级业务异常##############");
+            }
+        }
         //TODO
         //通知业务
     }
@@ -570,7 +631,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
      * @param payChannelSign
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void withdrawBySettlement(final long settlementRecordId, final String payOrderSn, final int payChannelSign) {
         final Optional<SettlementRecord> settlementRecordOptional = this.settlementRecordService.getById(settlementRecordId);
         log.info("业务方[{}]，对结算单[{}], 进行提现", settlementRecordOptional.get().getAppId(), settlementRecordId);
