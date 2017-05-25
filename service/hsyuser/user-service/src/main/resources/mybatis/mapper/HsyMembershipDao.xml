@@ -91,7 +91,8 @@
     </update>
 
     <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
-        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
@@ -111,5 +112,45 @@
         select count(*) from app_policy_member member left join app_policy_membership_card card on card.ID=member.MCID
         where card.UID=#{uid}
     </select>
+
+    <select id="findShopNameAndGlobalID" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select user.GLOBALID globalID,shop.name shopName
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        left join app_biz_shop shop on shop.ID=sur.sid
+        where sur.TYPE=1 and user.ID=#{uid}
+    </select>
+
+    <insert id="insertRechargeOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,CREATETIME,UPDATETIME)
+        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{merchantReceiveAccountID},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateRechargeOrder" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        update app_policy_recharge_order
+        <set>
+            <if test="orderNO!=null and orderNO!=''">ORDERNO=#{orderNO},</if>
+            <if test="tradeNO!=null and tradeNO!=''">TRADENO=#{tradeNO},</if>
+            <if test="tradeID!=null">TRADEID=#{tradeID},</if>
+            <if test="tradeAmount!=null">TRADEAMOUNT=#{tradeAmount},</if>
+            <if test="realPayAmount!=null">REALPAYAMOUNT=#{realPayAmount},</if>
+            <if test="marketingAmount!=null">MARKETINGAMOUNT=#{marketingAmount},</if>
+            <if test="payeeAccountID!=null">PAYEEACCOUNTID=#{payeeAccountID},</if>
+            <if test="ouid!=null">OUID=#{ouid},</if>
+            <if test="memberID!=null">MEMBERID=#{memberID},</if>
+            <if test="memberAccountID!=null">MEMBERACCOUNTID=#{memberAccountID},</if>
+            <if test="merchantReceiveAccountID!=null">MERCHANTRECEIVEACCOUNTID=#{merchantReceiveAccountID},</if>
+            <if test="goodsName!=null and goodsName!=''">GOODSNAME=#{goodsName},</if>
+            <if test="goodsDescribe!=null and goodsDescribe!=''">GOODSDESCRIBE=#{goodsDescribe},</if>
+            <if test="merchantName!=null and merchantName!=''">MERCHANTNAME=#{merchantName},</if>
+            <if test="merchantNO!=null and merchantNO!=''">MERCHANTNO=#{merchantNO},</if>
+            <if test="paySN!=null and paySN!=''">PAYSN=#{paySN},</if>
+            <if test="payChannelSign!=null">PAYCHANNELSIGN=#{payChannelSign},</if>
+            <if test="paySuccessTime!=null">PAYSUCCESSTIME=#{paySuccessTime},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="type!=null">TYPE=#{type},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
 
 </mapper>

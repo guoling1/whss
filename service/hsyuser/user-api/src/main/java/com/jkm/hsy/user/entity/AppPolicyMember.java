@@ -26,6 +26,11 @@ public class AppPolicyMember {
     private String membershipShopName;//会员卡上显示的店铺名称
     private BigDecimal discount;//会员卡折扣(折)
     private BigDecimal depositAmount;//开卡储值金额
+    private Integer isPresentedViaActivate;//是否开卡赠送0否 1是
+    private BigDecimal presentAmount;//赠送金额
+    private Integer isPresentedViaRecharge;//是否充值赠送0否 1是
+    private BigDecimal rechargeLimitAmount;//单笔充值限额
+    private BigDecimal rechargePresentAmount;//单笔充值赠送金额
 
     public Long getId() {
         return id;
@@ -162,5 +167,45 @@ public class AppPolicyMember {
 
     public void setDepositAmount(BigDecimal depositAmount) {
         this.depositAmount = depositAmount;
+    }
+
+    public Integer getIsPresentedViaActivate() {
+        return isPresentedViaActivate;
+    }
+
+    public void setIsPresentedViaActivate(Integer isPresentedViaActivate) {
+        this.isPresentedViaActivate = isPresentedViaActivate;
+    }
+
+    public BigDecimal getPresentAmount() {
+        return presentAmount;
+    }
+
+    public void setPresentAmount(BigDecimal presentAmount) {
+        this.presentAmount = presentAmount;
+    }
+
+    public Integer getIsPresentedViaRecharge() {
+        return isPresentedViaRecharge;
+    }
+
+    public void setIsPresentedViaRecharge(Integer isPresentedViaRecharge) {
+        this.isPresentedViaRecharge = isPresentedViaRecharge;
+    }
+
+    public BigDecimal getRechargeLimitAmount() {
+        return rechargeLimitAmount;
+    }
+
+    public void setRechargeLimitAmount(BigDecimal rechargeLimitAmount) {
+        this.rechargeLimitAmount = rechargeLimitAmount;
+    }
+
+    public BigDecimal getRechargePresentAmount() {
+        return rechargePresentAmount;
+    }
+
+    public void setRechargePresentAmount(BigDecimal rechargePresentAmount) {
+        this.rechargePresentAmount = rechargePresentAmount;
     }
 }

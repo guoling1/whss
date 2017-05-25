@@ -1,9 +1,6 @@
 package com.jkm.hsy.user.service;
 
-import com.jkm.hsy.user.entity.AppAuVerification;
-import com.jkm.hsy.user.entity.AppParam;
-import com.jkm.hsy.user.entity.AppPolicyConsumer;
-import com.jkm.hsy.user.entity.AppPolicyMember;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 
 import java.util.Date;
@@ -28,4 +25,5 @@ public interface HsyMembershipService {
     public void insertVcode(String sn, String code, String cellphone, Integer type);
     public AppAuVerification findRightVcode(String cellphone);
     public AppPolicyMember findMemberInfoByID(Long mid);
+    public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember, String type,String source);
 }

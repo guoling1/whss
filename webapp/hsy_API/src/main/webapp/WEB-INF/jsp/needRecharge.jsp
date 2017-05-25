@@ -10,7 +10,7 @@
         您的会员卡还差一步即可开通成功
         请您点击下方的【继续开卡】
         <br>
-        <a style="color:red;" href="<%=basePath%>membership/toRecharge?mid=${mid}">继续开卡</a>
+        <a style="color:red;" href="<%=basePath%>membership/recharge?mid=${mid}&type=activate&source=${source}">继续开卡</a>
     </h1>
 </body>
 </html>

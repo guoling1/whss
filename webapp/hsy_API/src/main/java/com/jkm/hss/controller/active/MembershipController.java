@@ -7,6 +7,9 @@ import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
+import com.jkm.hss.bill.helper.PayResponse;
+import com.jkm.hss.bill.helper.RechargeParams;
+import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.entity.AuthParam;
 import com.jkm.hss.merchant.helper.WxConstants;
@@ -15,18 +18,17 @@ import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.entity.SmsTemplate;
+import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.constant.AppPolicyConstant;
 import com.jkm.hsy.user.constant.MemberStatus;
 import com.jkm.hsy.user.constant.VerificationCodeType;
-import com.jkm.hsy.user.entity.AppAuVerification;
-import com.jkm.hsy.user.entity.AppPolicyConsumer;
-import com.jkm.hsy.user.entity.AppPolicyMember;
-import com.jkm.hsy.user.entity.AppPolicyMembershipCard;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.util.AppAesUtil;
+import com.jkm.hsy.user.util.AppDateUtil;
 import com.jkm.hsy.user.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
@@ -66,6 +69,8 @@ public class MembershipController {
     private MemberAccountService memberAccountService;
     @Autowired
     private ReceiptMemberMoneyAccountService receiptMemberMoneyAccountService;
+    @Autowired
+    private TradeService tradeService;
 
     @RequestMapping("getAuth/{uidEncode}")
     public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode){
@@ -207,6 +212,7 @@ public class MembershipController {
         {
             model.addAttribute("mid",appPolicyMember.getId());
             model.addAttribute("cellphone",appPolicyConsumer.getConsumerCellphone());
+            model.addAttribute("source",authInfo.getSource());
             return "/needRecharge";
         }
 
@@ -305,9 +311,10 @@ public class MembershipController {
     }
 
     @RequestMapping("needRecharge")
-    public String needRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String cellphone){
+    public String needRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String cellphone,String source){
         model.addAttribute("mid",mid);
         model.addAttribute("cellphone",cellphone);
+        model.addAttribute("source",source);
         return "/needRecharge";
     }
 
@@ -316,6 +323,16 @@ public class MembershipController {
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         model.addAttribute("appPolicyMember",appPolicyMember);
         return "/toRecharge";
+    }
+
+    @RequestMapping("recharge")
+    public void recharge(HttpServletRequest request, HttpServletResponse response,PrintWriter pw, Long mid, BigDecimal amount,String type,String source){
+        //验证需要做一下
+        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source);
+        RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
+        PayResponse payResponse=tradeService.recharge(rechargeParams);
+        writeJsonToRrsponse(appPolicyRechargeOrder,response,pw);
     }
 
     @RequestMapping("sendVcode")
@@ -372,6 +389,26 @@ public class MembershipController {
         map.put("flag","success");
         map.put("result","发送成功！");
         writeJsonToRrsponse(map,response,pw);
+    }
+
+    public RechargeParams createRechargeParams(AppPolicyRechargeOrder appPolicyRechargeOrder){
+        RechargeParams rechargeParams=new RechargeParams();
+        rechargeParams.setBusinessOrderNo(appPolicyRechargeOrder.getOrderNO());
+        rechargeParams.setChannel(appPolicyRechargeOrder.getPayChannelSign());
+        rechargeParams.setMerchantPayType(EnumMerchantPayType.MERCHANT_JSAPI);
+        rechargeParams.setAppId("hsy");
+        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getTradeAmount());
+        rechargeParams.setRealPayAmount(appPolicyRechargeOrder.getRealPayAmount());
+        rechargeParams.setMarketingAmount(appPolicyRechargeOrder.getMarketingAmount());
+        rechargeParams.setPayeeAccountId(appPolicyRechargeOrder.getPayeeAccountID());
+        rechargeParams.setMemberAccountId(appPolicyRechargeOrder.getMemberAccountID());
+        rechargeParams.setMerchantReceiveAccountId(appPolicyRechargeOrder.getMerchantReceiveAccountID());
+        rechargeParams.setGoodsName(appPolicyRechargeOrder.getGoodsName());
+        rechargeParams.setGoodsDescribe(appPolicyRechargeOrder.getGoodsDescribe());
+        rechargeParams.setMemberId(appPolicyRechargeOrder.getOuid());
+        rechargeParams.setMerchantName(appPolicyRechargeOrder.getMerchantName());
+        rechargeParams.setMerchantNo(appPolicyRechargeOrder.getMerchantNO());
+        return rechargeParams;
     }
 
     public void writeJsonToRrsponse(Object obj,HttpServletResponse response,PrintWriter pw){
