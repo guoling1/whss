@@ -115,7 +115,19 @@ public enum EnumPayChannelSign {
     /**
      * 合利宝快捷
      */
-    HE_LI_UNIONPAY(901, "he_li_unionpay", EnumPaymentChannel.UNIONPAY, "合利宝快捷", EnumUpperChannel.HE_LI_UNIONPAY, false, EnumBalanceTimeType.D0, false);
+    HE_LI_UNIONPAY(901, "he_li_unionpay", EnumPaymentChannel.UNIONPAY, "合利宝快捷", EnumUpperChannel.HE_LI_UNIONPAY, false, EnumBalanceTimeType.D0, false),
+    /**
+     * 合利宝快捷
+     */
+    HJ_WECHAT_CODE(1001, "hj_wechat_code", EnumPaymentChannel.WECHAT_PAY, "汇聚微信", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
+    /**
+     * 合利宝快捷
+     */
+    HJ_ALIPAY_CODE(1002, "hj_alipay_code", EnumPaymentChannel.ALIPAY, "汇聚支付宝", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
+    /**
+     * 合利宝快捷
+     */
+    HJ_UNIONPAY_CODE(1003, "hj_unionpay_code", EnumPaymentChannel.UNIONPAY_CODE, "汇聚银联", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
