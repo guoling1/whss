@@ -147,8 +147,8 @@ public class TradeServiceImpl implements TradeService {
         order.setMerchantNo(payParams.getMerchantNo());
         order.setMerchantName(payParams.getMerchantName());
         order.setTradeType(EnumTradeType.PAY.getId());
-        order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
-        order.setPayer(0);
+        order.setServiceType(payParams.getServiceType());
+        order.setPayer(payParams.getPayerAccountId());
         order.setPayee(payParams.getPayeeAccountId());
         order.setMemberAccountId(payParams.getMemberAccountId());
         order.setMerchantReceiveAccountId(payParams.getMerchantReceiveAccountId());
@@ -223,6 +223,13 @@ public class TradeServiceImpl implements TradeService {
             }
             log.info("结算单[{}]，执行分润操作, 分润类型[{}]", splitProfitParams.getOrderNo(), splitProfitParams.getSplitType());
             return this.baseSplitProfitService.exeWithdrawSplitProfit(splitProfitParams);
+        } else if (EnumSplitBusinessType.HSSPROMOTE.getId() == splitProfitParams.getSplitType()) {
+            final Optional<Order> orderOptional = this.orderService.getByOrderNo(splitProfitParams.getOrderNo());
+            if (!orderOptional.isPresent()) {
+                return Pair.of(-1, "交易单不存在");
+            }
+            log.info("交易单O，执行分润操作, 分润类型[{}]", splitProfitParams.getOrderNo(), splitProfitParams.getSplitType());
+            return this.baseSplitProfitService.exeUpgradeSplitProfit(splitProfitParams);
         } else {
             final Optional<Order> orderOptional = this.orderService.getByOrderNo(splitProfitParams.getOrderNo());
             if (!orderOptional.isPresent()) {

@@ -32,7 +32,6 @@ public class SplitProfitParams {
      * 注：不要给null
      */
     private BigDecimal cost;
-
     /**
      * 结算类型
      *
@@ -80,7 +79,7 @@ public class SplitProfitParams {
          */
         private int accountUserType;
         /**
-         * 当accountUserType=1时，level=1标识分润方是通道，level=2标识分润方是产品；
+         * 当accountUserType=1时，level=1标识分润方是通道，level=2标识分润方是产品，level=3标志分润方是公司利润账户；
          * 当accountUserType=2时，level=1标识分润方是直推商户，level=2标识分润方是间推商户；
          * 当accountUserType=3时，level=1标识分润方是一级代理商，level=2标识分润方是耳机代理商；
          */
@@ -103,6 +102,15 @@ public class SplitProfitParams {
      */
     public SplitProfitDetail getProductProfitDetail() {
         return this.getProfitDetail(EnumAccountUserType.COMPANY.getId(), 2);
+    }
+
+    /**
+     * 获取公司利润分润详情
+     *
+     * @return
+     */
+    public SplitProfitDetail getCompanyProfitDetail() {
+        return this.getProfitDetail(EnumAccountUserType.COMPANY.getId(), 3);
     }
 
     /**
