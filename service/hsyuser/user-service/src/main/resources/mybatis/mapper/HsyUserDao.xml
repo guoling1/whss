@@ -225,4 +225,10 @@
     <update id="updateHxbsStatus">
         update app_au_user set HXBSTATUS=#{status},HXBREMARKS=#{remarks} where ID=#{uid}
     </update>
+    <select id="findpwdByToken" parameterType="String" resultType="String">
+        SELECT A.PASSWORD FROM app_au_token  T
+inner join app_au_user_token as ATT ON T.ID=ATT.TID
+inner join app_au_user A ON A.ID=ATT.UID
+where T.ACCESSTOKEN=#{acccesstoken}
+    </select>
 </mapper>

@@ -43,12 +43,14 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
+import com.jkm.hsy.user.service.HsyUserService;
 import com.sun.tools.javac.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -114,6 +116,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HSYOrderService hsyOrderService;
     @Autowired
     private HSYRefundOrderService hsyRefundOrderService;
+    @Autowired
+    private HsyUserDao hsyUserDao;
 
     /**
      * {@inheritDoc}
@@ -399,6 +403,110 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("msg", "密码错误");
             return result.toJSONString();
         }
+        if (payOrder.isRefundSuccess()) {
+            result.put("code", -1);
+            result.put("msg", "已退款");
+            return result.toJSONString();
+        }
+//        final BigDecimal refundedAmount = this.refundOrderService.getRefundedAmount(payOrderId);
+//        if (payOrder.getRealPayAmount().subtract(refundedAmount).compareTo(refundAmount) < 0) {
+//            result.put("code", -1);
+//            result.put("msg", "可退金额不足");
+//            return result.toJSONString();
+//        }
+        final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(payOrder.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+        final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+        if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
+            result.put("code", -1);
+            result.put("msg", "只可以退当日订单");
+            return result.toJSONString();
+        }
+        final List<RefundOrder> refundOrders = this.refundOrderService.getByPayOrderId(payOrderId);
+        if (!CollectionUtils.isEmpty(refundOrders)) {
+            result.put("code", -1);
+            result.put("msg", "退款异常.");
+            return result.toJSONString();
+        }
+        final RefundOrder refundOrder = new RefundOrder();
+        refundOrder.setBatchNo("");
+        refundOrder.setAppId(payOrder.getAppId());
+        refundOrder.setOrderNo(SnGenerator.generateRefundSn());
+        refundOrder.setPayOrderId(payOrder.getId());
+        refundOrder.setPayOrderNo(payOrder.getOrderNo());
+        refundOrder.setSn("");
+        refundOrder.setRefundAccountId(payOrder.getPayee());
+        refundOrder.setRefundAmount(payOrder.getRealPayAmount());
+        refundOrder.setMerchantRefundAmount(payOrder.getRealPayAmount().subtract(payOrder.getPoundage()));
+        refundOrder.setPoundageRefundAmount(payOrder.getPoundage());
+        refundOrder.setUpperChannel(EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getUpperChannel().getId());
+        refundOrder.setStatus(EnumRefundOrderStatus.REFUNDING.getId());
+        this.refundOrderService.add(refundOrder);
+        //add by wayne 2017/05/20 好收银退款单
+        HsyRefundOrder hsyRefundOrder=null;
+        HsyOrder newhsyorder=null;
+        final Optional<HsyOrder> orderOptional =this.hsyOrderService.selectByOrderNo(payOrder.getOrderNo());
+        if(orderOptional.isPresent()) {
+            HsyOrder hsyOrder = orderOptional.get();
+            hsyRefundOrder = new HsyRefundOrder();
+            hsyRefundOrder.setHsyorderid(hsyOrder.getId());
+            hsyRefundOrder.setRefundno("");
+            hsyRefundOrder.setRefundamount(payOrder.getRealPayAmount());
+            hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUNDING.getId());
+            hsyRefundOrder.setUpperchannel(EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getUpperChannel().getId());
+            this.hsyRefundOrderService.insert(hsyRefundOrder);
+
+            newhsyorder=new HsyOrder();
+            if(hsyOrder.getRefundamount()==null){hsyOrder.setRefundamount(new BigDecimal(0));}
+            newhsyorder.setId(hsyOrder.getId());
+            newhsyorder.setRefundamount(hsyOrder.getRefundamount().add(payOrder.getRealPayAmount()));
+            newhsyorder.setOrderstatus(EnumHsyOrderStatus.REFUNDING.getId());
+            this.hsyOrderService.update(newhsyorder);
+        }
+
+        final Pair<Integer, String> resultPair = this.refundImpl(refundOrder, payOrder,hsyRefundOrder,newhsyorder);
+        if (0 == resultPair.getLeft()) {
+            result.put("code", 0);
+            result.put("orderstatus",EnumHsyOrderStatus.REFUND_SUCCESS.getId());
+            result.put("orderstatusName",EnumHsyOrderStatus.REFUND_SUCCESS.getValue());
+            result.put("refundAmount",refundOrder.getRefundAmount());
+            result.put("msg", "退款成功");
+            result.put("refundTime", this.refundOrderService.getById(refundOrder.getId()).get().getFinishTime());
+        } else {
+            result.put("code", -1);
+            result.put("msg", "退款失败");
+        }
+        return result.toJSONString();
+    }
+
+    @Override
+    @Transactional
+    public String appRefund1o6(String paramData, AppParam appParam) {
+        final JSONObject result = new JSONObject();
+        final JSONObject paramJo = JSONObject.parseObject(paramData);
+        final long payOrderId = paramJo.getLongValue("payOrderId");
+        final String password = paramJo.getString("password");
+
+        final String accessToken = appParam.getAccessToken();
+
+        final Order payOrder = this.orderService.getByIdWithLock(payOrderId).get();
+//        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(payOrder.getPayee()).get(0);
+//        if (StringUtils.isEmpty(password) || !password.equals(appAuUser.getPassword())) {
+//            result.put("code", -2);
+//            result.put("msg", "密码错误");
+//            return result.toJSONString();
+//        }
+        final String tokenpwd=this.hsyUserDao.findpwdByToken(accessToken);
+        if(tokenpwd==null){
+            result.put("code", -2);
+            result.put("msg", "token无效");
+            return result.toJSONString();
+        }
+        if(StringUtils.isEmpty(password)||!tokenpwd.equals(password)){
+            result.put("code", -2);
+            result.put("msg", "密码错误");
+            return result.toJSONString();
+        }
+
         if (payOrder.isRefundSuccess()) {
             result.put("code", -1);
             result.put("msg", "已退款");

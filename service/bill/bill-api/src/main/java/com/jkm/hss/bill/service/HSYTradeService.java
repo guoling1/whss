@@ -87,6 +87,8 @@ public interface HSYTradeService {
      */
     String appRefund(String paramData, AppParam appParam);
 
+    String appRefund1o6(String paramData, AppParam appParam);
+
     /**
      * 退款实现
      *
