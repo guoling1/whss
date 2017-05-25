@@ -175,6 +175,12 @@ public interface MerchantInfoQueryDao {
     void saveHsyPhotoChang5(Map map);
 
     /**
+     * 更改或上传结算卡照片
+     * @param map
+     */
+    void saveHsyPhotoChang6(Map map);
+
+    /**
      * 查询hsy历史
      * @param request
      * @return
@@ -187,4 +193,6 @@ public interface MerchantInfoQueryDao {
      * @return
      */
     int selectHsyHistoryCount(HistoryPhotoChangeRequest request);
+
+
 }
