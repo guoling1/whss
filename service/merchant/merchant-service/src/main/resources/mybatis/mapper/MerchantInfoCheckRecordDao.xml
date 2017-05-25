@@ -72,4 +72,28 @@
           DELETE FROM tb_merchant_info_check_record WHERE id=#{res}
     </delete>
 
+    <!-- 查询分公司模板id -->
+    <select id="seleTemplateId" resultType="java.lang.String">
+        SELECT
+            a.template_id
+        FROM
+            tb_template_info a
+        LEFT JOIN tb_oem_info b ON b.id=a.oem_id
+        LEFT JOIN tb_merchant_info c ON c.dealer_id = b.dealer_id
+        LEFT JOIN tb_user_info d ON d.merchant_id=c.id
+        WHERE
+            d.open_id = #{touser}
+    </select>
+
+    <!-- 查询是否是分公司 -->
+    <select id="queryOemId" resultType="java.lang.Integer">
+      SELECT
+            a.oem_id
+        FROM
+            tb_merchant_info a
+        LEFT JOIN tb_user_info b ON b.merchant_id = a.id
+        WHERE
+            b.open_id = #{touser}
+    </select>
+
 </mapper>
