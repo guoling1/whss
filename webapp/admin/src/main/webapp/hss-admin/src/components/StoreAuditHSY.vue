@@ -105,6 +105,7 @@
             <tr class="row">
               <th class="col-md-3" style="text-align: center;">身份证正面:</th>
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
+              <th class="col-md-3" style="text-align: center;">结算卡正面:</th>
               <th class="col-md-3" style="text-align: center;" v-if="msg.isPublic==1">营业执照:</th>
               <th class="col-md-3" style="text-align: center;">店面照片:</th>
               <th class="col-md-3" style="text-align: center;">收银台:</th>
@@ -146,6 +147,11 @@
                   <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                 </el-upload>-->
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardc" alt="" v-if="$msg.idcardc!=null&&$msg.idcardc!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardc!=null&&$msg.idcardc!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('7')">点击更换</el-button>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;" v-if="msg.isPublic==1">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
