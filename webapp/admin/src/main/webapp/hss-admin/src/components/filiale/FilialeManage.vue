@@ -81,7 +81,7 @@
             </el-table-column>
             <el-table-column label="好收银" min-width="85">
               <template scope="scope">
-                开通产品
+                暂不支持
                 <!--<a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
                 <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>-->
               </template>

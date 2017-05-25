@@ -116,18 +116,32 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone1">
-                  <el-upload id="upload" style="position: relative" action="/upload/picUpload" type="drag"
+                  <el-upload
+                    class="upload-demo"
+                    action="/upload/picUpload"
+                    :on-preview="handlePreview"
+                    :on-success="handleSuccess1"
+                    :on-remove="handleRemove1"
+                    :file-list="fileList1"
+                    list-type="picture" style="margin-bottom: 10px">
+                    <el-button v-if="hasButton1" style="float: left" size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                  <!--<div v-if="hasButton1" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff"></div>-->
+                  <div v-if="hasButton1" style="position: absolute;top: 0;margin-left:68px;width: 200px;height: 30px;background: #fff"></div>
+                  <div v-if="!hasButton1" style="position: absolute;top: 0;margin-left:0;width: 200px;height: 30px;background: #fff"></div>
+
+                  <!--<el-upload id="upload" style="position: relative" action="/upload/picUpload" type="drag"
                              :thumbnail-mode="true"
                              :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove1"
                              :on-success="handleSuccess1" :default-file-list="fileList1">
                     <i class="el-icon-upload"></i>
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                    &lt;!&ndash;<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;
                   </el-upload>
                   <div
                     style="position: absolute;top: 127px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div
-                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>-->
                 </div>
               </el-col>
               <el-col :span="8">
@@ -179,7 +193,8 @@
         id: 0,
         productId: '',
         fileList1: [],
-        isMask:false
+        isMask:false,
+        hasButton1:true
       }
     },
     created: function () {
@@ -187,17 +202,19 @@
         .then(function (res) {
           this.query = res.data;
           if (res.data.realQrCodeUrl != null) {
+            this.hasButton1 = false
             this.fileList1.push({
-              url: res.data.realQrCodeUrl
+              url: res.data.realQrCodeUrl,
+              name:'二维码'
             })
-            setTimeout(function () {
+            /*setTimeout(function () {
               var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
               if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
                 document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
               } else {
                 document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
               }
-            }, 300)
+            }, 300)*/
           }
         })
         .catch(err =>{
@@ -242,19 +259,22 @@
           })
       },
       handleSuccess1: function (response, file, fileList) {
-        this.query.qrCode = response.result.url
+        this.query.qrCode = response.result.url;
+        this.hasButton1=false;
         //移除继续上传按钮
-        setTimeout(function () {
+        /*setTimeout(function () {
           var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
           if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
             document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
           } else {
             document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
           }
-        }, 300)
+        }, 300)*/
       },
       handleRemove1: function () {
-        this.query.identityOppositePic = ''
+        this.query.identityOppositePic = '';
+        this.fileList=''
+        this.hasButton1=true;
       },
       handleErr:function (err) {
         this.$message({
