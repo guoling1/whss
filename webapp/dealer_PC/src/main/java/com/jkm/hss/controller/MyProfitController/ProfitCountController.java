@@ -103,6 +103,9 @@ public class ProfitCountController extends BaseController {
         final PageModel<ProfitDetailCountRespons> pageModel = new PageModel<ProfitDetailCountRespons>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
         ProfitCountRequest req = getTime(request);
+        final Dealer dealer = super.getDealer().get();
+        final long accountId = dealer.getAccountId();
+        req.setAccountId(accountId);
         List<ProfitDetailCountRespons> list = this.splitAccountRecordService.getCountDetails(req);
         int count = this.splitAccountRecordService.getCountDetailsNo(req);
         pageModel.setCount(count);
