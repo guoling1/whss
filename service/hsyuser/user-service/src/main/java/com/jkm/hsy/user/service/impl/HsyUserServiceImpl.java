@@ -128,6 +128,9 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
+            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
+            for(AppAuToken token:tokenFindList)
+                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -147,10 +150,6 @@ public class HsyUserServiceImpl implements HsyUserService {
                 appAuUserToken.setLoginTime(new Date());
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
-
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
         }
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
@@ -210,6 +209,9 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
+            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
+            for(AppAuToken token:tokenFindList)
+                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -229,10 +231,6 @@ public class HsyUserServiceImpl implements HsyUserService {
                 appAuUserToken.setLoginTime(new Date());
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
-
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
         }
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
@@ -371,7 +369,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
+            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
+            for(AppAuToken token:tokenFindList)
+                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+//            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
             appAuUserToken.setUid(appAuUserFind.getId());
