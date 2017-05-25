@@ -11,15 +11,15 @@
           <ul style="margin-bottom: 0">
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>分润方名称:</label>
-              <el-input style="width: 188px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same" v-if="isShow">
               <label>业务类型:</label>
-              <el-select style="width: 188px" clearable v-model="query.businessType" size="small" >
+              <el-select style="width: 193px" clearable v-model="query.businessType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
                 <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
@@ -30,7 +30,7 @@
             <li class="same" v-if="isShow">
               <label>分润日期:</label>
               <el-date-picker
-                style="width: 188px"
+                style="width: 193px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -104,8 +104,14 @@
     data(){
       return {
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
           }
         },
         query:{
