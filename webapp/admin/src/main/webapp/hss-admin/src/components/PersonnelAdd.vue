@@ -115,8 +115,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone">
-                  <el-upload id="upload" style="position: relative" action="/upload/picUpload"
-                             type="drag" :thumbnail-mode="true"
+                  <el-upload class="upload-demo" id="upload" style="position: relative" action="/upload/picUpload"
+                             drag :thumbnail-mode="true"
                              :on-preview="handlePreview"
                              :on-remove="handleRemove"
                              :on-success="handleSuccess"
@@ -126,10 +126,10 @@
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                     <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
                   </el-upload>
-                  <div
+                  <!--<div
                     style="position: absolute;top: 127px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div
-                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>-->
                 </div>
               </el-col>
               <el-col :span="8">
@@ -145,7 +145,7 @@
                   <el-upload id="upload" style="position: relative" action="/upload/picUpload" type="drag"
                              :thumbnail-mode="true"
                              :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove1"
-                             :on-success="handleSuccess1" :default-file-list="fileList1">
+                             :on-success="handleSuccess1" :default-file-list="fileList1" :file-list="fileList1" list-type="picture">
                     <i class="el-icon-upload"></i>
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                     <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
