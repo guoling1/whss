@@ -137,8 +137,21 @@
         order by UPDATETIME desc
     </select>
 
+    <select id="findAppAuTokenByClientid" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
+        select
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        from app_au_token
+        where 1=1
+        <if test="clientid!=null and clientid!=''">and CLIENTID=#{clientid}</if>
+        order by UPDATETIME desc
+    </select>
+
     <update id="updateAppAuUserTokenStatus" parameterType="java.lang.Long">
         update app_au_user_token set status=2 where UID=#{uid}
+    </update>
+
+    <update id="updateAppAuUserTokenStatusByTID" parameterType="String">
+        update app_au_user_token set status=2 where TID=${tid} and status=1
     </update>
 
     <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hsy.user.entity.AppAuUserToken" resultType="com.jkm.hsy.user.entity.AppAuUserToken">

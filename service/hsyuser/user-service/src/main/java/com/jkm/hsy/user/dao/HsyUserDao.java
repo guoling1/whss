@@ -18,7 +18,9 @@ public interface HsyUserDao {
     public void insertAppAuToken(AppAuToken appAuToken);
     public void updateAppAuToken(AppAuToken appAuToken);
     public List<AppAuToken> findAppAuTokenByAccessToken(@Param("accessToken")String accessToken);
+    public List<AppAuToken> findAppAuTokenByClientid(@Param("clientid")String clientid);
     public void updateAppAuUserTokenStatus(@Param("uid")Long uid);
+    public void updateAppAuUserTokenStatusByTID(@Param("tid")Long tid);
     public List<AppAuUserToken> findAppAuUserTokenByParam(AppAuUserToken appAuUserToken);
     public void insertAppAuUserToken(AppAuUserToken appAuUserToken);
     public void updateAppAuUserTokenByUidAndTid(AppAuUserToken appAuUserToken);
