@@ -19,7 +19,6 @@
         status,
         recommend_btn,
         id_card,
-        total_profit_space,
         belong_province_code,
         belong_province_name,
         belong_city_code,
@@ -28,7 +27,8 @@
         invite_btn,
         login_name,
         login_pwd,
-        email
+        email,
+        dealer_belong
         )
         VALUES
         (
@@ -47,7 +47,6 @@
         #{status},
         #{recommendBtn},
         #{idCard},
-        #{totalProfitSpace},
         #{belongProvinceCode},
         #{belongProvinceName},
         #{belongCityCode},
@@ -56,7 +55,8 @@
         #{inviteBtn},
         #{loginName},
         #{loginPwd},
-        #{email}
+        #{email},
+        #{dealerBelong}
         );
     </insert>
     <update id="update">
@@ -75,8 +75,7 @@
         last_login_date = #{lastLoginDate},
         status = #{status},
         recommend_btn = #{recommendBtn},
-        id_card = #{idCard},
-        total_profit_space = #{totalProfitSpace}
+        id_card = #{idCard}
         WHERE id = #{id}
     </update>
 
@@ -413,16 +412,16 @@
         bank_name = #{bankName},
         bank_account_name = #{bankAccountName},
         id_card = #{idCard},
-        bank_reserve_mobile = #{bankReserveMobile}
+        bank_reserve_mobile = #{bankReserveMobile},
+        dealer_belong=#{dealerBelong}
         WHERE id = #{id}
     </update>
 
-    <update id="updateRecommendBtnAndTotalProfitSpace">
+    <update id="updateRecommendBtn">
         UPDATE tb_dealer
         SET
         recommend_btn = #{recommendBtn},
-        invite_btn = #{inviteBtn},
-        total_profit_space = #{totalProfitSpace}
+        invite_btn = #{inviteBtn}
         WHERE id = #{id}
     </update>
 

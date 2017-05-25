@@ -76,9 +76,6 @@ public class UpgradeRulesServiceImpl implements UpgradeRulesService{
                 upgradeResult.setId(list.get(i).getId());
                 upgradeResult.setName(list.get(i).getName());
                 upgradeResult.setType(list.get(i).getType());
-                upgradeResult.setWeixinRate(list.get(i).getWeixinRate());
-                upgradeResult.setAlipayRate(list.get(i).getAlipayRate());
-                upgradeResult.setFastRate(list.get(i).getFastRate());
                 if(list.get(i).getType()>=level){
                     upgradeResult.setIsUpgrade(EnumIsUpGrade.UPGRADE.getId());
                 }else{

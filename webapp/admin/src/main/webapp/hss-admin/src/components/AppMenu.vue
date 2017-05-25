@@ -33,11 +33,11 @@
          Optionally, you can add icons to the links
         <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li :class="(url=='/admin/record/home')?'treeview active':'treeview'">
-          <router-link to="/admin/record/home"><span>主页</span></router-link>
+          <router-link to="/admin/record/home"><span style="font-size: 14px">主页</span></router-link>
         </li>
         <li class="treeview" v-for="(menu,index) in menus">
           <a href="#">
-            <span>{{menu.menuName}}</span>
+            <span style="font-size: 14px">{{menu.menuName}}</span>
           </a>
           <ul class="treeview-menu">
             <li v-for="item in menu.children" @click="refrash(item.menuName,item.menuUrl)">
@@ -300,7 +300,8 @@
   /*float: right;*/
   /*}*/
   .sidebar-menu .treeview-menu > li > a {
-    font-size: 12px;
+    font-size: 14px;
+    /*margin-left: 6px;*/
   }
 
   #right {

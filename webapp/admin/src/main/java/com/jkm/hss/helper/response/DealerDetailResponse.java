@@ -87,5 +87,9 @@ public class DealerDetailResponse {
      * 身份证号
      */
     private String idCard;
+    /**
+     * 代理商所属
+     */
+    private String dealerBelong;
 
 }

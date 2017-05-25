@@ -204,8 +204,9 @@
                     list-type="picture" style="margin-bottom: 10px">
                     <el-button v-if="hasButton" style="float: left" size="small" type="primary">点击上传</el-button>
                   </el-upload>
-                  <div v-if="hasButton" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fbfdff;"></div>
-                  <div  id="btn" style="position: absolute;top: 0;margin-left:68px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div v-if="hasButton" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff;"></div>
+                  <div  id="btn" style="position: absolute;top: 0;margin-left:68px;width: 200px;height: 30px;background: #fff"></div>
+                  <el-button v-if="!hasButton" style="position: absolute;top: 1px;width: 68px" size="small" type="primary" @click="handleRemove">删 除</el-button>
                 </div>
               </el-form-item>
               <el-form-item label="身份证背面照" prop="identityOppositePic">
@@ -220,8 +221,9 @@
                     list-type="picture" style="margin-bottom: 10px">
                     <el-button v-if="hasButton1" style="float: left" size="small" type="primary">点击上传</el-button>
                   </el-upload>
-                  <div v-if="hasButton1" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div id="btn1" style="position: absolute;top: 0;margin-left:68px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div v-if="hasButton1" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff"></div>
+                  <div id="btn1" style="position: absolute;top: 0;margin-left:68px;width: 200px;height: 30px;background: #fff"></div>
+                  <el-button v-if="!hasButton1" style="position: absolute;top: 1px;width: 68px" size="small" type="primary" @click="handleRemove1">删 除</el-button>
                 </div>
               </el-form-item>
               <el-form-item label="手机号" prop="mobile">
@@ -381,13 +383,15 @@
       },
       handleRemove: function () {
         this.query.identityFacePic = '';
-        this.hasButton = true;
         document.getElementById('btn').style.marginLeft='68px';
+        this.fileList =[];
+        this.hasButton = true;
       },
       handleRemove1: function () {
         this.query.identityOppositePic = '';
-        this.hasButton1 = true;
         document.getElementById('btn1').style.marginLeft='68px';
+        this.fileList1 =[]
+        this.hasButton1 = true;
       },
       handleErr:function (err) {
         this.$message({

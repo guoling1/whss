@@ -1141,7 +1141,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), channelMoneyTriple, "通道账户",
                     "收单分润", EnumSplitAccountUserType.JKM.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
@@ -1152,7 +1152,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), productMoneyTriple, "产品账户",
                     "收单分润", EnumSplitAccountUserType.JKM.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
@@ -1164,7 +1164,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(),
                     "收单分润", EnumSplitAccountUserType.FIRST_DEALER.getId(), order.getSettleType());
-            final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
@@ -1173,7 +1173,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //二级代理商利润--到结算
         if (null != secondMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
-            final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getByIdWithLock(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(),
                     "收单分润", EnumSplitAccountUserType.SECOND_DEALER.getId(), order.getSettleType());

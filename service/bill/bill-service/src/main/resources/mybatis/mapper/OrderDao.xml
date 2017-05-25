@@ -63,6 +63,7 @@
         pay_bank_card,
         bank_expire_date,
         cvv,
+        bank_name,
         bank_trade_no,
         trade_card_no,
         trade_card_type,
@@ -105,6 +106,7 @@
         #{payBankCard},
         #{bankExpireDate},
         #{cvv},
+        #{bankName},
         #{bankTradeNo},
         #{tradeCardNo},
         #{tradeCardType},
@@ -473,6 +475,8 @@
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            (select proxy_name from tb_dealer where id=z.`DEALERID` AND `level` =1) as proxyNameHsy,
+            (select proxy_name from tb_dealer where id=b.second_dealer_id AND `level` =2) as proxyNameHsy1,
             x.SHORTNAME AS merchantName,
             x.GLOBALID AS markCode
         FROM
@@ -503,6 +507,12 @@
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="proxyNameHsy != null and proxyNameHsy!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyNameHsy},'%')
+        </if>
+        <if test="proxyNameHsy1 != null and proxyNameHsy1!=''">
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyNameHsy1},'%')
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
@@ -830,6 +840,7 @@
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            (SELECT dealer_belong FROM tb_dealer WHERE id = b.first_dealer_id) AS dealerBelong,
             x.SHORTNAME AS merchantName,
             x.GLOBALID AS markCode
         FROM
@@ -1415,5 +1426,211 @@
         <if test="sDate != null and eDate != null">
             AND create_time BETWEEN #{sDate} AND #{eDate}
         </if>
+    </select>
+
+    <!-- hss订单查询 -->
+    <select id="queryOrderList" resultType="com.jkm.hss.bill.entity.QueryOrderResponse">
+      SELECT
+        a.*,
+        b.merchant_name,
+        (SELECT proxy_name FROM tb_dealer WHERE id=b.first_dealer_id) AS proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id=b.second_dealer_id) AS proxyName1
+      FROM
+        tb_business_order a
+      LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
+      WHERE 1=1
+    <if test="orderNo != null and orderNo!=''">
+        AND a.order_no LIKE CONCAT('%',#{orderNo})
+    </if>
+    <if test="tradeOrderNo != null and tradeOrderNo!=''">
+        AND a.trade_order_no LIKE CONCAT('%',#{tradeOrderNo})
+    </if>
+    <if test="sn != null and sn!=''">
+        AND a.sn LIKE CONCAT('%',#{sn})
+    </if>
+    <if test="merchantName != null and merchantName!=''">
+        AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+    </if>
+    <if test="proxyName != null and proxyName!=''">
+        AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
+    <if test="proxyName1 != null and proxyName1!=''">
+        AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+    <if test="startTime!=null and startTime!=''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime!=null and endTime!=''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="paySuccessTime!=null and paySuccessTime!=''">
+        AND a.pay_success_time <![CDATA[ >= ]]> #{paySuccessTime}
+    </if>
+    <if test="paySuccessTime1!=null and paySuccessTime1!=''">
+        AND a.pay_success_time <![CDATA[ <= ]]> #{paySuccessTime1}
+    </if>
+    <if test="status != null and status!=''">
+        AND a.status = #{status}
+    </if>
+    <if test="payChannelSign != null">
+        AND a.pay_channel_sign in
+        <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+          #{item}
+        </foreach>
+    </if>
+        ORDER BY a.create_time DESC
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- hss订单查询总数 -->
+    <select id="queryOrderListCount" resultType="java.lang.Integer">
+      SELECT
+        COUNT(a.id)
+      FROM
+        tb_business_order a
+      LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
+    WHERE 1=1
+    <if test="orderNo != null and orderNo!=''">
+        AND a.order_no LIKE CONCAT('%',#{orderNo})
+    </if>
+    <if test="tradeOrderNo != null and tradeOrderNo!=''">
+        AND a.trade_order_no LIKE CONCAT('%',#{tradeOrderNo})
+    </if>
+    <if test="sn != null and sn!=''">
+        AND a.sn LIKE CONCAT('%',#{sn})
+    </if>
+    <if test="merchantName != null and merchantName!=''">
+        AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+    </if>
+    <if test="proxyName != null and proxyName!=''">
+        AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
+    <if test="proxyName1 != null and proxyName1!=''">
+        AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+    <if test="startTime!=null and startTime!=''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime!=null and endTime!=''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="paySuccessTime!=null and paySuccessTime!=''">
+        AND a.pay_success_time <![CDATA[ >= ]]> #{paySuccessTime}
+    </if>
+    <if test="paySuccessTime1!=null and paySuccessTime1!=''">
+        AND a.pay_success_time <![CDATA[ <= ]]> #{paySuccessTime1}
+    </if>
+    <if test="status != null and status!=''">
+        AND a.status = #{status}
+    </if>
+    <if test="payChannelSign != null">
+        AND a.pay_channel_sign in
+        <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+            #{item}
+        </foreach>
+    </if>
+    </select>
+
+    <!-- 统计订单 -->
+    <select id="getOrderCount" resultType="java.lang.String">
+        SELECT
+            SUM(a.trade_amount) as totalPayment
+        FROM
+            tb_business_order a
+        LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
+        WHERE 1=1
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="tradeOrderNo != null and tradeOrderNo!=''">
+            AND a.trade_order_no LIKE CONCAT('%',#{tradeOrderNo})
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn LIKE CONCAT('%',#{sn})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <if test="proxyName1 != null and proxyName1!=''">
+            AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="paySuccessTime!=null and paySuccessTime!=''">
+            AND a.pay_success_time <![CDATA[ >= ]]> #{paySuccessTime}
+        </if>
+        <if test="paySuccessTime1!=null and paySuccessTime1!=''">
+            AND a.pay_success_time <![CDATA[ <= ]]> #{paySuccessTime1}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status = #{status}
+        </if>
+        <if test="payChannelSign != null">
+            AND a.pay_channel_sign in
+            <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <!-- 统计订单 -->
+    <select id="getOrderCount1" resultType="java.lang.String">
+        SELECT
+        SUM(a.poundage) as totalPoundage
+        FROM
+        tb_business_order a
+        LEFT JOIN tb_merchant_info b ON b.id = a.merchant_id
+        WHERE 1=1
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="tradeOrderNo != null and tradeOrderNo!=''">
+            AND a.trade_order_no LIKE CONCAT('%',#{tradeOrderNo})
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn LIKE CONCAT('%',#{sn})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <if test="proxyName1 != null and proxyName1!=''">
+            AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="paySuccessTime!=null and paySuccessTime!=''">
+            AND a.pay_success_time <![CDATA[ >= ]]> #{paySuccessTime}
+        </if>
+        <if test="paySuccessTime1!=null and paySuccessTime1!=''">
+            AND a.pay_success_time <![CDATA[ <= ]]> #{paySuccessTime1}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status = #{status}
+        </if>
+        <if test="payChannelSign != null">
+            AND a.pay_channel_sign in
+            <foreach collection="payChannelSign" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectCountByBusinessOrder" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_order WHERE business_order_no = #{businessOrderNo} AND status IN (2, 3, 4)
     </select>
 </mapper>

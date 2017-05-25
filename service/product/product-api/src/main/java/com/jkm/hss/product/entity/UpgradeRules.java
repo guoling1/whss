@@ -28,7 +28,7 @@ public class UpgradeRules extends BaseEntity{
     private Integer type;
 
     /**
-     * 须推广人数
+     * 邀请升级达标人数
      */
     private Integer promotionNum;
 
@@ -36,21 +36,6 @@ public class UpgradeRules extends BaseEntity{
      * 升级费用
      */
     private BigDecimal upgradeCost;
-
-    /**
-     * 微信费率
-     */
-    private BigDecimal weixinRate;
-
-    /**
-     * 支付宝费率
-     */
-    private BigDecimal alipayRate;
-
-    /**
-     * 快捷费率
-     */
-    private BigDecimal fastRate;
 
     /**
      *直推升级费奖励

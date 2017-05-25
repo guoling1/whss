@@ -11,34 +11,34 @@
           <ul class="search">
             <li class="same">
               <label>业务订单号:</label>
-              <el-input style="width: 188px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现单号:</label>
-              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>打款流水号:</label>
-              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>账户名称:</label>
-              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现时间:</label>
               <el-date-picker
-                style="width: 188px"
+                style="width: 193px"
                 v-model="date"
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
               <label>提现状态:</label>
-              <el-select style="width: 188px" clearable v-model="query.withdrawStatus" size="small">
+              <el-select style="width: 193px" clearable v-model="query.withdrawStatus" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="提现中" value="提现中">提现中</el-option>
                 <el-option label="提现成功" value="提现成功">提现成功</el-option>
@@ -87,7 +87,6 @@
             </el-table-column>
             <el-table-column prop="createTimes" label="提现时间" width="162"></el-table-column>
             <el-table-column prop="updateTimes" label="成功时间" width="162"></el-table-column>
-          </el-table>
           </el-table>
           <ul style="float: left;margin-top: 5px">
             <li>
@@ -141,6 +140,17 @@
     name: 'deal',
     data(){
       return {
+        pickerOptions: {
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
+          }
+        },
         query:{
           pageNo:1,
           pageSize:10,

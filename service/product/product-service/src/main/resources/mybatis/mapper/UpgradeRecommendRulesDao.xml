@@ -40,9 +40,6 @@
             <if test="tradeRate!=null">
                 #{tradeRate},
             </if>
-            <!--<if test="rewardRate!=null">-->
-                <!--#{rewardRate},-->
-            <!--</if>-->
             <if test="status!=null">
                 #{status},
             </if>

@@ -1398,6 +1398,73 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    @Override
+    public int getCountByBusinessOrder(final String businessOrderNo) {
+        return this.orderDao.selectCountByBusinessOrder(businessOrderNo);
+    }
+
+    @Override
+    public List<QueryOrderResponse> queryOrderList(QueryOrderRequest req) {
+        if (req.getPaymentMethod()>0){
+            req.setPayChannelSign(EnumPayChannelSign.getIdListByPaymentChannel(req.getPaymentMethod()));
+        }else {
+            req.setPayChannelSign(null);
+        }
+
+        List<QueryOrderResponse> list = this.orderDao.queryOrderList(req);
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null && !"".equals(list.get(i).getCreateTime())){
+                    String st = df.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(st);
+                }
+                if (list.get(i).getPaySuccessTime()!=null && !"".equals(list.get(i).getPaySuccessTime())){
+                    String st = df.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(st);
+                }
+                if (list.get(i).getPayChannelSign()>0) {
+                    list.get(i).setPaymentMethod(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                }
+                if (list.get(i).getStatus()==1) {
+                    list.get(i).setStatusValue(EnumBusinessOrderStatus.DUE_PAY.getValue());
+                }
+                if (list.get(i).getStatus()==2) {
+                    list.get(i).setStatusValue(EnumBusinessOrderStatus.PAY_FAIL.getValue());
+                }
+                if (list.get(i).getStatus()==3) {
+                    list.get(i).setStatusValue(EnumBusinessOrderStatus.PAY_SUCCESS.getValue());
+                }
+
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int queryOrderListCount(QueryOrderRequest req) {
+        return this.orderDao.queryOrderListCount(req);
+    }
+
+    @Override
+    public String getOrderCount(QueryOrderRequest req) {
+        String list = this.orderDao.getOrderCount(req);
+        return list;
+    }
+
+    @Override
+    public String getOrderCount1(QueryOrderRequest req) {
+        String list = this.orderDao.getOrderCount1(req);
+        return list;
+    }
+
     @Override
     public void save(GeTuiResponse geTuiResponse) {
         this.orderDao.save(geTuiResponse);
@@ -1459,6 +1526,7 @@ public class OrderServiceImpl implements OrderService {
         heads.add("交易日期");
         heads.add("收款商户名称");
         heads.add("商户编号");
+        heads.add("所属分公司");
         heads.add("所属一级");
         heads.add("所属二级");
         heads.add("支付金额");
@@ -1487,6 +1555,7 @@ public class OrderServiceImpl implements OrderService {
                 }
                 columns.add(list.get(i).getMerchantName());
                 columns.add(list.get(i).getMarkCode());
+                columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));

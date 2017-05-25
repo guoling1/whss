@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.helper.requestparam;
 
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -27,10 +28,6 @@ public class HssDealerAddOrUpdateRequest {
      */
     private int inviteBtn;
 
-    /**
-     * 收单总分润空间
-     */
-    private BigDecimal totalProfitSpace;
 
     /**
      * 产品列表
@@ -129,4 +126,9 @@ public class HssDealerAddOrUpdateRequest {
          */
         private String merchantWithdrawFee;
     }
+
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerProfitSettingResponse> dealerProfits;
 }

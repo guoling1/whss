@@ -12,19 +12,19 @@
           <ul class="search">
             <li class="same">
               <label>业务订单号:</label>
-              <el-input style="width: 188px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>支付流水号:</label>
-              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>业务方：</label>
-              <el-select style="width: 188px" clearable v-model="appId" size="small">
+              <el-select style="width: 193px" clearable v-model="appId" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="好收收" value="好收收"></el-option>
                 <el-option label="好收银" value="好收银"></el-option>
@@ -32,29 +32,29 @@
             </li>
             <li class="same">
               <label>收款商户编号:</label>
-              <el-input style="width: 188px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
+              <el-input style="width: 193px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
-              <el-input style="width: 188px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
+              <el-input style="width: 193px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
-              <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="proxyName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属二级代理:</label>
-              <el-input style="width: 188px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="proxyName1" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>交易日期:</label>
               <el-date-picker
-                style="width: 188px"
+                style="width: 193px"
                 v-model="date"
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -66,7 +66,7 @@
             </li>
             <li class="same">
               <label>交易状态:</label>
-              <el-select style="width: 188px" clearable v-model="query.status" size="small">
+              <el-select style="width: 193px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待支付" value="1">待支付</el-option>
                 <el-option label="支付成功" value="4">支付成功</el-option>
@@ -75,7 +75,7 @@
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select style="width: 188px" clearable v-model="query.settleStatus" size="small">
+              <el-select style="width: 193px" clearable v-model="query.settleStatus" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="结算中" value="2">结算中</el-option>
@@ -84,7 +84,7 @@
             </li>
             <li class="same">
               <label>支付方式：</label>
-              <el-select style="width: 188px" clearable v-model="query.payType" size="small">
+              <el-select style="width: 193px" clearable v-model="query.payType" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="微信支付" value="wechat"></el-option>
                 <el-option label="支付宝支付" value="alipay"></el-option>
@@ -94,7 +94,7 @@
             </li>
             <li class="same">
               <label>支付渠道：</label>
-              <el-select style="width: 188px" clearable v-model="query.payChannelSign" size="small">
+              <el-select style="width: 193px" clearable v-model="query.payChannelSign" size="small">
                 <el-option label="全部" value=""></el-option>
                 <el-option :label="channel.channelName" :value="channel.channelTypeSign" v-for="channel in channelList"></el-option>
               </el-select>
@@ -200,6 +200,19 @@
     name: 'deal',
     data(){
       return {
+        pickerOptions: {
+          onPick:function({ maxDate, minDate }){
+            console.log({maxDate,minDate})
+            if(maxDate==''||maxDate==null){
+              console.log(maxDate,minDate)
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
+          }
+        },
         query:{
           page:1,
           size:10,
@@ -213,8 +226,6 @@
           status: '',
           settleStatus:'',
           payType:'',
-          proxyName:'',
-          proxyName1:'',
           loadUrl: '',
           loadUrl1: '',
           payChannelSign:'',
@@ -223,6 +234,8 @@
         appId:'',
         merchantName: '',
         markCode:"",
+        proxyName:'',
+        proxyName1:'',
         channelList:[],
         date: '',
         records: [],
@@ -287,6 +300,8 @@
         this.appId='';
         this.merchantName='';
         this.markCode='';
+        this.proxyName = "";
+        this.proxyName1 = "";
         this.query = {
           page:1,
             size:10,
@@ -315,13 +330,21 @@
         if(this.appId == '好收收'){
           this.query.markCode = this.markCode;
           this.query.merchantName = this.merchantName;
+          this.query.proxyName = this.proxyName;
+          this.query.proxyName1 = this.proxyName1;
           delete this.query.globalId;
           delete this.query.shortName;
+          delete this.query.proxyNameHsy;
+          delete this.query.proxyNameHsy1;
         }else if(this.appId == '好收银'){
           this.query.globalId = this.markCode;
           this.query.shortName = this.merchantName;
+          this.query.proxyNameHsy = this.proxyName;
+          this.query.proxyNameHsy1 = this.proxyName1;
           delete this.query.markCode;
           delete this.query.merchantName;
+          delete this.query.proxyName;
+          delete this.query.proxyName1;
         }else {
           this.query.markCode = '';
           this.query.merchantName = '';
@@ -430,7 +453,9 @@
       appId: function (val) {
         if(val == ''){
           this.markCode='';
-          this.merchantName=''
+          this.merchantName='';
+          this.proxyName='';
+          this.proxyName1='';
         }
       }
     },
@@ -479,7 +504,7 @@
 
   .price {
     display: inline-block;
-    width: 188px;
+    width: 193px;
     height: 30px;
     border-radius: 4px;
     border-color: #bfcbd9;

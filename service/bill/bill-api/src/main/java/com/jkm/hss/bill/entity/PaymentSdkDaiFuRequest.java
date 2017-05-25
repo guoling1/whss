@@ -53,6 +53,11 @@ public class PaymentSdkDaiFuRequest {
     private String bankName;
 
     /**
+     * 银行编码
+     */
+    private String bankCode;
+
+    /**
      * 收款人名称
      */
     private String accountName;

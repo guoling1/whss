@@ -42,6 +42,7 @@ public interface AdminUserDao {
      * 根据用户名和类型获取
      *
      * @param username
+     * type是多余数据
      * @return
      */
     AdminUser selectByUsernameAndType(@Param("username") String username,@Param("type") int type);
@@ -122,6 +123,7 @@ public interface AdminUserDao {
      *
      * @param username
      * @param id
+     * type是多余数据，因为登录名全局唯一
      * @return
      */
     Long selectByUsernameAndTypeUnIncludeNow(@Param("username") String username,@Param("type") int type,@Param("id") long id);
@@ -162,5 +164,11 @@ public interface AdminUserDao {
      * @return
      */
     AdminUser getAdminUserByDealerIdAndIsMaster(@Param("dealerId") long dealerId,@Param("isMaster") int isMaster);
+    /**
+     * 获取密码
+     * @param id
+     * @return
+     */
+    String getPwd(@Param("id") long id);
 
 }

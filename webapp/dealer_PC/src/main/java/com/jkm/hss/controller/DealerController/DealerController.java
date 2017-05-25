@@ -370,6 +370,45 @@ public class DealerController extends BaseController {
     }
 
     /**
+     * 修改新密码
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateNewPwd", method = RequestMethod.POST)
+    public CommonResponse updateNewPwd(@RequestBody DealerNewPwdRequest request) {
+        try{
+            if(StringUtils.isBlank(request.getPwd())){
+                return CommonResponse.simpleResponse(-1, "原密码不能为空");
+            }
+            if(StringUtils.isBlank(request.getNewPwd())){
+                return CommonResponse.simpleResponse(-1, "新密码不能为空");
+            }
+            if(StringUtils.isBlank(request.getRepeatNewPwd())){
+                return CommonResponse.simpleResponse(-1, "重复新密码不能为空");
+            }
+            if(!request.getNewPwd().equals(request.getRepeatNewPwd())){
+                return CommonResponse.simpleResponse(-1, "新密码和重复密码不一致");
+            }
+            if(request.getNewPwd().equals(request.getPwd())){
+                return CommonResponse.simpleResponse(-1, "新密码不能和原密码一致");
+            }
+            String password = this.adminUserService.getPwd(super.getAdminUserId());
+            if(!password.equals(DealerSupport.passwordDigest(request.getPwd(),"JKM"))){
+                return CommonResponse.simpleResponse(-1, "原密码错误");
+            }
+            request.setNewPwd(DealerSupport.passwordDigest(request.getNewPwd(),"JKM"));
+            this.dealerService.updatePwd(request.getNewPwd(),super.getDealerId());
+            adminUserService.updateDealerUserPwdById(request.getNewPwd(),super.getAdminUserId());
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+        }catch (Exception e){
+            log.error("错误信息时",e.getStackTrace());
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
+    }
+
+    /**
      * 查询产品信息
      *
      * @param request

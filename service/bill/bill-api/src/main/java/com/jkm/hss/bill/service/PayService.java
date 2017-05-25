@@ -26,15 +26,23 @@ public interface PayService {
     Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, String businessOrderNo, BigDecimal amount, String businessCallbackUrl);
 
     /**
+     * 生成订单
+     *
+     * @param merchantId
+     * @param amount
+     * @param appId
+     * @return
+     */
+    long generateBusinessOrder(long merchantId, String amount, String appId);
+    /**
      * 动态码收款
      *
-     * @param totalAmount
+     * @param businessOrderId
      * @param channel  通道
-     * @param merchantId
      * @param isDynamicCode 是否是动态码付款
      * @return
      */
-    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId, boolean isDynamicCode);
+    Pair<Integer, String> codeReceipt(long businessOrderId, int channel, String appId, boolean isDynamicCode);
 
 
     /**
@@ -141,27 +149,25 @@ public interface PayService {
     /**
      * 首次支付
      *
-     * @param merchantId
-     * @param amount
+     * @param businessOrderId
      * @param channel
      * @param creditBankCardId
      * @param appId
      * @return
      */
-    Pair<Integer,String> firstUnionPay(long merchantId, String amount, int channel, long creditBankCardId, String appId);
+    Pair<Integer,String> firstUnionPay(long businessOrderId, int channel, long creditBankCardId, String appId);
 
     /**
      * 再次支付
      *
-     * @param merchantId
-     * @param amount
+     * @param businessOrderId
      * @param channel
      * @param expireDate
      * @param cvv
      * @param appId
      * @return
      */
-    Pair<Integer,String> againUnionPay(long merchantId, String amount, int channel, String expireDate, String cvv, long creditBankCardId, String appId);
+    Pair<Integer,String> againUnionPay(long businessOrderId, int channel, String expireDate, String cvv, long creditBankCardId, String appId);
 
     /**
      * 快捷支付

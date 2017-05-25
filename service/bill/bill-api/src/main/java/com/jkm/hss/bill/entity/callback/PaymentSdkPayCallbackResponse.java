@@ -57,7 +57,7 @@ public class PaymentSdkPayCallbackResponse {
      *
      * {@link com.jkm.hss.account.enums.EnumBankType}
      */
-    private String tradeCardType;
+    private int tradeCardType;
 
     /**
      * 交易卡号

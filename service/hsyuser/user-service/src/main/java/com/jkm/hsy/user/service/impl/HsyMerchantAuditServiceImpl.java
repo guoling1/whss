@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -442,13 +443,18 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                     String dates = format.format(list.get(i).getCreateTime());
                     list.get(i).setCreateTimes(dates);
                 }
+                if (list.get(i).getStatus()==0){
+                    list.get(i).setStat("审核成功");
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStat("审核失败");
+                }
             }
         }
         return list;
     }
 
-    public List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
-
+    public List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.hsyMerchant(hsyMerchantAuditRequest);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -512,7 +518,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     @Override
-    public String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) {
+    public String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) throws ParseException {
         final String tempDir = this.getTempDir();
         final File excelFile = new File(tempDir + File.separator + ".xls");
         final ExcelSheetVO excelSheet = generateCodeExcelSheet(hsyMerchantAuditRequest,baseUrl);
@@ -553,7 +559,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return dir;
     }
 
-    private ExcelSheetVO generateCodeExcelSheet(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) {
+    private ExcelSheetVO generateCodeExcelSheet(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) throws ParseException {
         List<HsyMerchantAuditResponse> list = hsyMerchant(hsyMerchantAuditRequest);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
@@ -561,8 +567,13 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         excelSheetVO.setName("hsyMerchant");
         heads.add("商户编号");
         heads.add("商户名称");
-        heads.add("所属代理商");
+        heads.add("所属分公司");
+        heads.add("所属一级代理");
+        heads.add("所属二级代理");
+        heads.add("报单员");
+        heads.add("姓名");
         heads.add("注册时间");
+        heads.add("审核时间");
         heads.add("注册手机号");
         heads.add("省市");
         heads.add("行业");
@@ -573,10 +584,22 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getGlobalID());
                 columns.add(list.get(i).getShortName());
+                columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
+                columns.add(list.get(i).getProxyName1());
+                columns.add(list.get(i).getUsername());
+                columns.add(list.get(i).getRealname());
                 if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+                if (list.get(i).getAuditTime()!= null && !"".equals(list.get(i).getAuditTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getAuditTime());
                     columns.add(st);
 
                 }else {

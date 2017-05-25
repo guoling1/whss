@@ -4,7 +4,7 @@
 
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('choose-box-body');
 // 引入动画模版 处理验证码
 const AnimationCountdown = _require('art-countdown');
 let countdown = new AnimationCountdown('sendCode', '重新获取');
@@ -66,6 +66,7 @@ cancel_validity.addEventListener('click', function () {
 
 let amount = getQueryString('amount');
 let channel = getQueryString('channel');
+let uorderId = getQueryString('orderId');
 let cvv2 = document.getElementById('cvv2');
 let code = document.getElementById('code');
 let orderId = '';
@@ -75,7 +76,7 @@ chooseBank.addEventListener('click', function () {
 });
 // 定义添加新卡
 addNew.addEventListener('click', function () {
-  window.location.replace('/trade/firstUnionPayPage?amount=' + amount + '&channel=' + channel);
+  window.location.replace('/trade/firstUnionPayPage?amount=' + amount + '&channel=' + channel + '&orderId=' + uorderId);
 });
 // 是否展示 有效期选择 cvv2填写
 let showExpireDate = document.getElementById('showExpireDate');
@@ -87,7 +88,7 @@ if (pageData.status == 1) {
 // 定义支付
 submit.addEventListener('click', function () {
   if (pageData.canPay) {
-    if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+    if ((pageData.showExpireDate == 0 || validate.empty(expireDate.innerHTML, '信用卡有效期')) &&
       (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
       validate.empty(code.value, '验证码')) {
       if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
@@ -95,9 +96,13 @@ submit.addEventListener('click', function () {
         http.post('/trade/confirmUnionPay', {
           orderId: orderId,
           code: code.value,
-        }, function () {
+        }, function (data) {
           message.load_hide();
-          window.location.replace('/trade/unionPaySuccess/' + orderId);
+          if (data.errorCode == 1) {
+            window.location.replace('/trade/unionPaySuccess/' + data.orderId);
+          } else {
+            window.location.replace('/trade/unionPay2Error/' + data.orderId);
+          }
         })
       } else {
         message.prompt_show('请输入正确的CVV2');
@@ -111,13 +116,13 @@ submit.addEventListener('click', function () {
 sendCode.addEventListener('click', function () {
   if (pageData.canPay) {
     if (countdown.check()) {
-      if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+      if ((pageData.showExpireDate == 0 || validate.empty(expireDate.innerHTML, '信用卡有效期')) &&
         (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2'))) {
         if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
           message.load_show('正在发送');
-          let expire = expireDate.value.split('/');
+          let expire = expireDate.innerHTML.split('/');
           http.post('/trade/againUnionPay', {
-            amount: amount,
+            orderId: uorderId,
             channel: channel,
             creditCardId: pageData.creditCardId,
             expireDate: expire[1] + expire[0],
@@ -197,7 +202,7 @@ http.post('/bankcard/list', {
     let info = document.createElement('div');
     if (data[i].status == 0) {
       info.className = 'info NO';
-      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡 (本通道不支持)</span>';
+      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡 (选择其他银行)</span>';
     } else {
       info.className = 'info';
       info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';

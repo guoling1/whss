@@ -9,7 +9,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>付款给商户</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.1.0.0.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -67,12 +67,11 @@
 <script>
   var pageData = {
     memberId: '${openId}',
-    merchantId: '${mid}',
-    code: '${code}'
+    merchantId: '${mid}'
   };
 </script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.1.2.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.1.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/2.0.1.1/payment.min.js"></script>
 </html>

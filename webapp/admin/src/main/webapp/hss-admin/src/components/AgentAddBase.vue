@@ -180,6 +180,23 @@
                 </div>
               </el-col>
             </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">代理商所属:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <!--<el-input size="small" v-model="query.dealerBelong"  placeholder="请输入内容"></el-input>-->
+                  <el-select v-model="query.dealerBelong" clearable placeholder="请选择" size="small" style="width: 100%">
+                    <el-option label="宿迁代理" value="宿迁代理"></el-option>
+                    <el-option label="直销团队" value="直销团队"></el-option>
+                  </el-select>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
             <!--切换代理-->
             <el-dialog title="切换代理" v-model="dealerMask">
               <el-form :label-position="right" label-width="150px">
@@ -310,6 +327,7 @@
           bankAccountName: '',
           bankReserveMobile: '',
           idCard: '',
+          dealerBelong:''
         },
         id: 0,
         isShow: true,

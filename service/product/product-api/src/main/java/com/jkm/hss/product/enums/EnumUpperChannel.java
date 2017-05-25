@@ -49,10 +49,17 @@ public enum EnumUpperChannel {
      */
     SYJ(8, "SYJ", "收银家"),
 
+
     /**
      * 会员卡
      */
-    MEMBER(9, "MEMBER", "会员卡")
+    MEMBER(9, "MEMBER", "会员卡"),
+
+
+    /**
+     * 合利宝
+     */
+    HE_LI_UNIONPAY(10, "HLB", "合利宝")
     ;
 
     @Getter

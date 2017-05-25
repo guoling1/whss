@@ -468,6 +468,42 @@ public interface OrderService {
     List<SplitAccountRefundRecord> splitAccountRefundList(String orderNo);
 
     /**
+     * 按业务订单号查询个数
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    int getCountByBusinessOrder(String businessOrderNo);
+
+    /**
+     * 查询hss订单（订单查询）
+     * @param req
+     * @return
+     */
+    List<QueryOrderResponse> queryOrderList(QueryOrderRequest req);
+
+    /**
+     * 查询hss订单总数（订单查询）
+     * @param req
+     * @return
+     */
+    int queryOrderListCount(QueryOrderRequest req);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount(QueryOrderRequest req);
+
+    /**
+     * 统计订单金额
+     * @param req
+     * @return
+     */
+    String getOrderCount1(QueryOrderRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

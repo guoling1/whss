@@ -220,6 +220,11 @@ public class Order extends BaseEntity {
     private String cvv;
 
     /**
+     * 银行名字
+     */
+    private String bankName;
+
+    /**
      * 银行流水号
      */
     private String bankTradeNo;
@@ -229,7 +234,7 @@ public class Order extends BaseEntity {
      *
      * {@link com.jkm.hss.account.enums.EnumBankType}
      */
-    private String tradeCardType;
+    private int tradeCardType;
 
     /**
      * 交易卡号

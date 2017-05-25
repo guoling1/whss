@@ -31,11 +31,7 @@ let announcement_text = document.getElementById('announcement-text');
 
 const pxPerRem = document.documentElement.clientWidth;
 upgrade.addEventListener('click', function () {
-  if (pxPerRem >= 350) {
-    window.location.href = '/sqb/upgradeMax';
-  } else {
-    window.location.href = '/sqb/upgradeMin';
-  }
+  window.location.href = '/sqb/upgradeMax';
 });
 // 是否展示升级功能
 if (pageData.showRecommend == 2) {

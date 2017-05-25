@@ -3,7 +3,7 @@
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
-      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary" style="color: #fff">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -391,9 +391,17 @@
           </div>
         </div>
       </div>
-      <div class="mask" id="mask" style="display: none" @click="isNo()">
+      <div class="mask" id="mask" style="display: none">
         <p @click="isNo">×</p>
-        <img src="" alt="">
+        <div style="cursor: move;position: absolute;" id="imgBox" @mousedown.prevent.stop="move">
+          <img src="" alt="" id="img">
+        </div>
+        <div style="width:280px;position: absolute;left: 43%;top: 2%;">
+          <el-button @click.prevent.stop="enlarge">放大</el-button>
+          <el-button @click.prevent.stop="lessen">缩小</el-button>
+          <el-button @click.prevent.stop="rotate">旋转</el-button>
+          <el-button @click.prevent.stop="reduction">还原</el-button>
+        </div>
       </div>
       <div class="box box-primary" v-if="isShow">
         <p class="lead">审核</p>
@@ -408,10 +416,10 @@
             </tr>
             <tr>
               <th style="text-align: right">
-                <div class="btn btn-danger" @click="unAudit">不 通 过</div>
+                <el-button type="danger" @click="unAudit" :disabled="auditClick">不 通 过</el-button>
               </th>
               <td>
-                <div class="btn btn-success" @click="audit($event)">通 过</div>
+                <el-button type="success" @click="audit($event)" :disabled="auditClick">通 过</el-button>
               </td>
             </tr>
             </tbody>
@@ -447,6 +455,7 @@
     name: 'storeAudit',
     data () {
       return {
+        auditClick:false,
         loading: true,
         dealerMask: false,
         id: '',
@@ -488,7 +497,11 @@
         },
         isUpload: false,
         photoType:'',
-        bankDis:false
+        bankDis:false,
+        src:'',
+        current:0,
+        height:0,
+        width:0
       }
     },
     created: function () {
@@ -498,8 +511,117 @@
         this.$data.isShow = false;
       }
       this.getData();
+      var $box=$("#imgBox");
+      $box.on("mousedown",function(e){
+        var disX= e.clientX-$(this).offset().left;
+        var disY= e.clientY-$(this).offset().top;
+        $(document).on("mousemove.move",function(e){
+          var l= e.clientX-disX;
+          var t= e.clientY-disY;
+          var maxL=$(document).width()-$box.width();
+          var maxT=$(document).height()-$box.height();
+          if(l>=maxL){
+            l=maxL;
+          }else if(l<=0){
+            l=0;
+          }
+          if(t>=maxT){
+            t=maxT;
+          }else if(t<=0){
+            t=0;
+          }
+          $box.css({
+            left:l,
+            top:t
+          });
+        });
+        $(document).on("mouseup.move",function(){
+          $(document).off(".move");
+          $box[0].releaseCapture&& $box[0].releaseCapture();
+        });
+        $box[0].setCapture&&$box[0].setCapture();
+        return false;
+      })
     },
     methods: {
+      move:function (e) {
+        var oBox=document.getElementById("imgBox");
+        e=e||window.event;
+        var disX= e.clientX-oBox.offsetLeft;
+        var disY= e.clientY-oBox.offsetTop;
+        document.onmousemove=function(e){
+          e=e||window.event;
+          var l= e.clientX-disX;
+          var t= e.clientY-disY;
+          oBox.style.left=l+"px";
+          oBox.style.top=t+"px";
+        };
+        document.onmouseup=function(){
+          document.onmousemove=null;
+          document.onmouseup=null;
+          oBox.releaseCapture && oBox.releaseCapture();
+        };
+        oBox.setCapture && oBox.setCapture();
+        return false;
+      },
+      reduction:function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        console.log(1,this.height)
+        img.onload = ()=>{
+          console.log(2,this.height)
+          img.height = this.height;//图片的高度
+          img.width = this.width;//图片的宽度
+          document.getElementById('imgBox').style.transform = 'rotate(0deg)';
+          var img1 = mask.getElementsByTagName('img')[0];
+          img1.height = this.height;
+          img1.width = this.width;
+        }
+        var oBox = document.getElementById('imgBox');
+        oBox.style.left="0px";
+        oBox.style.top="0px";
+      },
+      enlarge: function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        img.onload = function(){
+          height1 = img.height;//图片的高度
+          width1 = img.width;//图片的宽度
+          v_left=(document.body.clientWidth-width1)/2;
+          v_top=(document.body.clientHeight-height1)/2;
+          img.style.left=v_left;
+          img.style.top=v_top;
+          var img1 = mask.getElementsByTagName('img')[0];
+          height1 = img1.height;
+          width1 = img1.width;
+          img1.height = height1 * 1.1;
+          img1.width = width1 * 1.1;
+        }
+      },
+      lessen: function () {
+        let img,height1,width1,v_left,v_top;
+        img = new Image;
+        img.src = this.src;
+        img.onload = function(){
+          height1 = img.height;//图片的高度
+          width1 = img.width;//图片的宽度
+          v_left=(document.body.clientWidth-width1)/2;
+          v_top=(document.body.clientHeight-height1)/2;
+          img.style.left=v_left;
+          img.style.top=v_top;
+          var img1 = mask.getElementsByTagName('img')[0];
+          height1 = img1.height;
+          width1 = img1.width;
+          img1.height = height1 / 1.1;
+          img1.width = width1 / 1.1;
+        }
+      },
+      rotate:function () {
+        this.current = (this.current+90)%360;
+        document.getElementById('imgBox').style.transform = 'rotate('+this.current+'deg)';
+      },
       changePhoto: function (val) {
         this.photoType = val;
         this.isUpload = true
@@ -600,21 +722,25 @@
         });
       },
       audit: function (event) {
+        this.auditClick = true;
         this.$http.post('/admin/merchantInfoCheckRecord/record', {
           merchantId: this.$data.id
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'
           })
+          this.auditClick = false;
         }, function (err) {
           this.$message({
             showClose: true,
             message: err.statusMessage,
             type: 'error'
           })
+          this.auditClick = false;
         })
       },
       unAudit: function () {
+        this.auditClick = true;
         this.$http.post('/admin/merchantInfoCheckRecord/auditFailure', {
           merchantId: this.$data.id,
           descr: this.$data.reason
@@ -623,12 +749,14 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '操作成功'
             })
+            this.auditClick = false;
           }, function (err) {
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       // 修改结算卡
@@ -659,8 +787,15 @@
         var obj = e.srcElement || e.target;
         var mask = document.getElementById('mask'),
           img = mask.getElementsByTagName('img')[0];
-        img.src = obj.src;
+        this.src = img.src = obj.src;
         mask.style.display = 'block'
+        var Img = new Image;
+        Img.src = this.src;
+        Img.onload = ()=>{
+          this.height = Img.height;//图片的高度
+          this.width = Img.width;//图片的宽度
+          this.reduction()
+        }
       },
       isNo: function () {
         document.getElementById('mask').style.display = 'none'
@@ -753,7 +888,7 @@
     color: #20a0ff;
   }
   .mask {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 1100;
     width: 100%;
     height: 100%;
@@ -769,9 +904,9 @@
       height: 65px;
       line-height: 55px;
       font-size: 65px;
-      color: #d2d1d1;
+      color: #f5f2f2;
       text-align: center;
-      border: 6px solid #adaaaa;
+      border: 6px solid #f5f2f2;
       border-radius: 50%;
       box-shadow: 0 0 16px #000;
       text-shadow: 0 0 16px #000;
@@ -779,7 +914,7 @@
 
     img {
       display: inherit;
-      height: 100%;
+      /*height: 850px;*/
       margin: 0 auto;
     }
   }

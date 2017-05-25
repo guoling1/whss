@@ -120,9 +120,9 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="_$power(create,'boss_qr_code_right_distribute')" style="width: 100%;float: right;margin: 20px 0 100px;">
+              <el-button type="primary" @click="_$power(create,'boss_qr_code_right_distribute')" style="width: 100%;float: right;margin: 20px 0 100px;" :disabled="createClick" v-loading.fullscreen.lock="fullscreenLoading" element-loading-text="拼命生产中">
                 立即分配
-              </div>
+              </el-button>
             </div>
           </el-col>
           <el-col :span="8">
@@ -174,6 +174,8 @@
     name: 'issue',
     data () {
       return {
+        createClick:false,
+        fullscreenLoading: false,
         query: {
           sysType: "",//hss或hsy
           dealerId:'',//一级代理商编码
@@ -271,8 +273,12 @@
       },
       //创建
       create: function () {
+        this.createClick = true;
+        this.fullscreenLoading = true;
         this.$http.post('/admin/user/distributeQrCodeToDealer', this.$data.query)
           .then(function (res) {
+            this.fullscreenLoading = false;
+            this.createClick = false;
             this.$data.issueSuss= res.data;
             this.$data.isShow= true;
             this.$data.totalCount='';
@@ -280,6 +286,8 @@
               this.$data.totalCount = Number(this.$data.totalCount) + Number(this.$data.issueSuss[i].count)
             }
           }, function (err) {
+            this.fullscreenLoading = false;
+            this.createClick = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,

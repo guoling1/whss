@@ -133,11 +133,11 @@ public class CalculateServiceImpl implements CalculateService {
             //HSS
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
             final Product product = this.productService.selectByType(type.getId()).get();
-            if (0 == merchant.getDealerId()) {
+            /*if (0 == merchant.getDealerId()) {
 
                 final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
-            }
+            }*/
             return this.getMerchantWithdrawFee(merchant, channelSign);
 
         }else {
@@ -221,7 +221,7 @@ public class CalculateServiceImpl implements CalculateService {
                 return waitMoney;
             case MOBAO:
                 if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
-                    //手续费不足两毛 , 按2毛收
+                    //手续费不足2毛 , 按2毛收
                     waitMoney = basicChannel.getLowestFee();
                 }else{
                     //收手续费,进一位,保留两位有效数字
@@ -253,6 +253,10 @@ public class CalculateServiceImpl implements CalculateService {
             case SYJ:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
                 return  waitMoney;
+            case HE_LI_UNIONPAY:
+                //收手续费,进一位,保留两位有效数字
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;

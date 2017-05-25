@@ -42,6 +42,7 @@ import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -49,6 +50,7 @@ import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hss.product.servcie.PartnerRuleSettingService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -103,6 +105,10 @@ public class DealerServiceImpl implements DealerService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+    @Autowired
+    private DealerProfitService dealerProfitService;
+    @Autowired
+    private PartnerRuleSettingService partnerRuleSettingService;
     /**
      * {@inheritDoc}
      * 有问题
@@ -429,6 +435,11 @@ public class DealerServiceImpl implements DealerService {
 
     //间接商户分润 hss
     private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitInDirect(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
+        //判断通道是否属于升级网关通道
+        if (!this.isBelongPartnerRulesSetting(channelSign)){
+            //不属于， 如果网关中存在该通道，合伙人推荐中未设置费率，则该通道不参与合伙人推荐，此时“间接商户”不对代理商分润，也不对推荐他的商户分润，直接商户的代理商分润按费率差分润
+            return this.getShallProfitNotBelongPartner( orderNo,  tradeAmount,  channelSign,  merchantId);
+        }
         Map<String,Triple<Long,BigDecimal,BigDecimal>> map = new HashMap<>();
         log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
@@ -559,7 +570,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
                 (merchantInfo.getFirstDealerId(), EnumDealerRateType.TRADE, product.getId());
-        final BigDecimal totalProfitSpace = firstDealer.getTotalProfitSpace();
+        final BigDecimal totalProfitSpace = this.getDealerTotalProfitSpace(firstDealer, channelSign);
         //二级代理信息
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
         //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -771,6 +782,44 @@ public class DealerServiceImpl implements DealerService {
             }
         }
 
+    }
+
+    private BigDecimal getDealerTotalProfitSpace(Dealer firstDealer, int channelSign) {
+        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
+        final Optional<DealerProfit> dealerProfitOptional = this.dealerProfitService.selectByDealerIdAndProductIdAndChannelTypeSign(firstDealer.getId(), product.getId(), channelSign);
+        if (dealerProfitOptional.isPresent()){
+            return dealerProfitOptional.get().getProfitSpace();
+        }
+        final PartnerRuleSetting partnerRuleSetting = this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign).get();
+        return partnerRuleSetting.getDefaultProfitSpace();
+    }
+
+    private Map<String, Triple<Long, BigDecimal, BigDecimal>> getShallProfitNotBelongPartner(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
+
+        Map<String,Triple<Long,BigDecimal,BigDecimal>> map = new HashMap<>();
+        log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
+        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+        //商户手续费 = 交易金额 * 商户费率
+        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
+        final BigDecimal merchantRate = getMerchantRate(channelSign, merchantInfo);
+        final BigDecimal originMoney = tradeAmount.multiply(getMerchantRate(channelSign, merchantInfo)).setScale(2, BigDecimal.ROUND_UP);
+        //final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
+        //计算商户手续费
+        final BigDecimal waitOriginMoney = this.calculateMerchantFee(tradeAmount, originMoney, channelSign);
+        //通道成本
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+        final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
+        final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+
+        //通道分润
+        final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
+        final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
+                subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+        map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+        map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+        final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney);
+        map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+        return map;
     }
 
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
@@ -1034,6 +1083,10 @@ public class DealerServiceImpl implements DealerService {
             case SYJ:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return  basicMoney;
+            case HE_LI_UNIONPAY:
+                //四舍五入,保留两位有效数字
+                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                return basicMoney;
             default:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;
@@ -1105,6 +1158,10 @@ public class DealerServiceImpl implements DealerService {
                 return waitMoney;
             case SYJ:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
+                return waitMoney;
+            case HE_LI_UNIONPAY:
+                //收手续费,进一位,保留两位有效数字
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
@@ -1454,7 +1511,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAddRequest.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(firstLevelDealerAddRequest.getBankReserveMobile()));
         dealer.setIdCard(DealerSupport.encryptIdenrity(firstLevelDealerAddRequest.getIdCard()));
-        dealer.setTotalProfitSpace(firstLevelDealerAddRequest.getTotalProfitSpace());
+//        dealer.setTotalProfitSpace(firstLevelDealerAddRequest.getTotalProfitSpace());
         dealer.setRecommendBtn(firstLevelDealerAddRequest.getRecommendBtn());
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         this.add(dealer);
@@ -1647,7 +1704,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
-        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
+//        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
         this.update(dealer);
         final FirstLevelDealerUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
@@ -1741,6 +1798,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginName(firstLevelDealerAdd2Request.getLoginName());
         dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
+        dealer.setDealerBelong(firstLevelDealerAdd2Request.getDealerBelong());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
@@ -1869,6 +1927,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBankAccountName(request.getBankAccountName());
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
+        dealer.setDealerBelong(request.getDealerBelong());
         this.update2(dealer);
     }
     /**
@@ -1928,8 +1987,29 @@ public class DealerServiceImpl implements DealerService {
             dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
         }
         dealer.setInviteBtn(request.getInviteBtn());
-        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
-        this.updateRecommendBtnAndTotalProfitSpace(dealer);
+        for(int i=0;i<request.getDealerProfits().size();i++){
+            Optional<DealerProfit> dealerProfitOptional = dealerProfitService.selectByDealerIdAndProductIdAndChannelTypeSign(request.getDealerId(),
+                    request.getProduct().getProductId(),request.getDealerProfits().get(i).getChannelTypeSign());
+            if(dealerProfitOptional.isPresent()){
+                DealerProfit dealerProfit = dealerProfitOptional.get();
+                if(dealerProfit.getProfitSpace()!=null){
+                    dealerProfit.setProfitSpace((request.getDealerProfits().get(i).getProfitSpace()).divide(new BigDecimal("100")));
+                }
+                dealerProfit.setStatus(EnumDealerStatus.NORMAL.getId());
+                dealerProfitService.update(dealerProfit);
+            }else{
+                DealerProfit dealerProfit = new DealerProfit();
+                if(request.getDealerProfits().get(i).getProfitSpace()!=null){
+                    dealerProfit.setProfitSpace(request.getDealerProfits().get(i).getProfitSpace().divide(new BigDecimal("100")));
+                }
+                dealerProfit.setChannelTypeSign(request.getDealerProfits().get(i).getChannelTypeSign());
+                dealerProfit.setDealerId(request.getDealerId());
+                dealerProfit.setProductId(request.getProduct().getProductId());
+                dealerProfit.setStatus(EnumDealerStatus.NORMAL.getId());
+                dealerProfitService.insert(dealerProfit);
+            }
+        }
+        this.updateRecommendBtn(dealer);
         final HssDealerAddOrUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
         final List<HssDealerAddOrUpdateRequest.Channel> channels = product.getChannels();
@@ -2040,8 +2120,8 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     @Transactional
-    public int updateRecommendBtnAndTotalProfitSpace(final Dealer dealer) {
-        return this.dealerDao.updateRecommendBtnAndTotalProfitSpace(dealer);
+    public int updateRecommendBtn(final Dealer dealer) {
+        return this.dealerDao.updateRecommendBtn(dealer);
     }
     /**
      * {@inheritDoc}
@@ -2528,4 +2608,14 @@ public class DealerServiceImpl implements DealerService {
     }
 
 
+
+    //判断所属通道是否属于升级网关通道
+    private boolean isBelongPartnerRulesSetting(int channelSign){
+
+        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
+        Optional<PartnerRuleSetting> partnerRuleSettingOptional =
+        this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign);
+
+        return partnerRuleSettingOptional.isPresent();
+    }
 }

@@ -21,6 +21,8 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
+import com.jkm.hss.helper.response.CurrentRulesResponse;
+import com.jkm.hss.helper.response.ToUpgradeResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -35,10 +37,7 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
@@ -112,6 +111,12 @@ public class WxPubController extends BaseController {
     private AccountBankService accountBankService;
     @Autowired
     private ProductChannelGatewayService productChannelGatewayService;
+    @Autowired
+    private ChannelSupportDebitCardService channelSupportDebitCardService;
+    @Autowired
+    private PartnerRuleSettingService partnerRuleSettingService;
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
 
 
 
@@ -397,7 +402,7 @@ public class WxPubController extends BaseController {
     }
 
     /**
-     * 登录
+     * 注册
      *
      * @return
      */
@@ -536,7 +541,17 @@ public class WxPubController extends BaseController {
                                         merchantChannelRate.setProductId(productId);
                                         merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                         merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
-                                        merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                        if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                            Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,dealerChannelRateList.get(i).getChannelTypeSign());
+                                            if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                                merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                            }else{
+                                                merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                            }
+                                        }else{
+                                            merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                        }
+
                                         merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
 
                                         Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
@@ -573,7 +588,16 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
-                                merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                    Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,productChannelDetailList.get(i).getChannelTypeSign());
+                                    if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                        merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                    }else{
+                                        merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                    }
+                                }else{
+                                    merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                }
                                 merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
                                 Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 if(!basicChannelOptionalTemp.isPresent()){
@@ -653,7 +677,18 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
-                                merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+
+                                if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                    Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,dealerChannelRateList.get(i).getChannelTypeSign());
+                                    if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                        merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                    }else{
+                                        merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                    }
+                                }else{
+                                    merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
+                                }
+//                                merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
                                 merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
                                 Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                 if(!basicChannelOptionalTemp.isPresent()){
@@ -719,7 +754,16 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
-                                merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                if(mi.getIsUpgrade()==EnumIsUpgrade.CANUPGRADE.getId()){
+                                    Optional<PartnerRuleSetting> partnerRuleSettingOptional = partnerRuleSettingService.selectByProductIdAndChannelTypeSign(productId,productChannelDetailList.get(i).getChannelTypeSign());
+                                    if(partnerRuleSettingOptional.isPresent()&&partnerRuleSettingOptional.get().getCommonRate()!=null){
+                                        merchantChannelRate.setMerchantPayRate(partnerRuleSettingOptional.get().getCommonRate());
+                                    }else{
+                                        merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                    }
+                                }else{
+                                    merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                                }
                                 merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
                                 Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 if(!basicChannelOptionalTemp.isPresent()){
@@ -1288,9 +1332,11 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "只能删除信用卡");
         }
         accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
-        Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
-        if(accountBankOptional1.isPresent()){
-            accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+        if(accountBankOptional.get().getIsDefault()==EnumBankDefault.DEFAULT.getId()){
+            Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
+            if(accountBankOptional1.isPresent()){
+                accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+            }
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
     }
@@ -1333,7 +1379,15 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
-
+        //hlb通道结算卡拦截
+        if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
+            final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
+            if (!channelSupportDebitCardOptional.isPresent()){
+                //通道结算卡不可用
+                return CommonResponse.simpleResponse(-1, "该通道仅支持结算到大型银行，请联系客服更改结算卡再使用");
+            }
+        }
         //通道限额拦截，通道可用拦截，
         final BasicChannel basicChannel =
                 this.basicChannelService.selectByChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign()).get();
@@ -1378,5 +1432,69 @@ public class WxPubController extends BaseController {
             }
         }
         return null;
+    }
+
+    private BigDecimal needMoney(long productId,int currentLevel,int needLevel){
+        BigDecimal needMoney = null;
+        //所升级别需付费
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,needLevel);
+        //当前级别需付费
+        Optional<UpgradeRules> currentUpgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,currentLevel);
+        if(!currentUpgradeRulesOptional.isPresent()){
+            needMoney = upgradeRulesOptional.get().getUpgradeCost();
+        }else{
+            needMoney = upgradeRulesOptional.get().getUpgradeCost().subtract(currentUpgradeRulesOptional.get().getUpgradeCost());
+        }
+        return needMoney;
+    }
+
+    /**
+     * 升级
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "toUpgrade", method = RequestMethod.POST)
+    public CommonResponse toUpgrade(final HttpServletRequest request, final HttpServletResponse response) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+
+        ToUpgradeResponse toUpgradeResponse = new ToUpgradeResponse();
+
+        List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(merchantInfo.get().getProductId());
+        List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
+        int hasCount = recommendService.selectFriendCount(merchantInfo.get().getId());
+        if(upgradeRules.size()>0){
+            for(int i=0;i<upgradeRules.size();i++){
+                CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
+                BigDecimal needMoney = needMoney(merchantInfo.get().getProductId(),merchantInfo.get().getLevel(),upgradeRules.get(i).getType());
+                currentRulesResponse.setId(upgradeRules.get(i).getId());
+                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                currentRulesResponse.setType(upgradeRules.get(i).getType());
+                currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
+                currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
+                currentRulesResponse.setNeedMoney(needMoney);
+                currentRulesResponse.setUpgradeCost(upgradeRules.get(i).getUpgradeCost());
+                list.add(currentRulesResponse);
+            }
+        }
+        toUpgradeResponse.setMerchantId(merchantInfo.get().getId());
+        toUpgradeResponse.setCurrentLevel(merchantInfo.get().getLevel());
+        toUpgradeResponse.setUpgradeRules(list);
+        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", toUpgradeResponse);
     }
 }

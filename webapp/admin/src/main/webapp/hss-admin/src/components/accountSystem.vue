@@ -18,7 +18,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
@@ -164,7 +164,7 @@
             </div>
             <div class="foot">
               <a href="javascript:void(0)" @click="isDownload=false" class="el-button el-button--default">取消</a>
-              <a @click="download()" class="el-button el-button-default el-button--primary ">确定</a>
+              <el-button @click="download()" class="el-button el-button-default el-button--primary" :disabled="downloadClick">确定</el-button>
             </div>
           </div>
         </div>
@@ -178,7 +178,18 @@
     name: 'tAuditStore',
     data(){
       return{
-        pickerOptions: {},
+        pickerOptions: {
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
+          }
+        },
+        downloadClick:false,
         date:'',
         fileList: [],
         records:[],
@@ -218,9 +229,29 @@
       }
     },
     created: function () {
+      this.currentDate();
       this.getData()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.query.startDateStr = str;
+          } else {
+            this.query.endDateStr = str;
+          }
+        }
+      },
       reset: function () {
         this.query = {
           pageSize:10,
@@ -231,6 +262,7 @@
           endDateStr:"",
           status:""
         }
+        this.currentDate()
       },
       tableFoot(row, index) {
         console.log(row)
@@ -244,12 +276,15 @@
         this.downloadId = id;
       },
       download:function () {
+        this.downloadClick = true
         this.$http.post(this.downloadUrl,{id:this.downloadId},{emulateJSON: true})
           .then(res => {
           if(res.data.result=='操作成功'){
           this.isDownload = false;
           sessionStorage.setItem('data',JSON.stringify(res.data.jsonPayResult))
-          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+//          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+          this.$router.push('/admin/details/accountData')
+            this.downloadClick = false
           }else{
           this.isDownload = false;
           this.$message({
@@ -257,6 +292,7 @@
             message: res.data.result,
             type: 'warning'
           });
+            this.downloadClick = false
           }
 
           })
@@ -309,9 +345,9 @@
           type: 'info'
         });
         if(file.result.result=='操作成功'){
-//          this.$router.push('/admin/record/accountData');
-          sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult))
-          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+          sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult));
+          this.$router.push('/admin/details/accountData');
+//          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
         }
       },
       getData: function () {
