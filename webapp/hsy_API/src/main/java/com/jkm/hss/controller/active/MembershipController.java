@@ -7,6 +7,7 @@ import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
+import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.RechargeParams;
 import com.jkm.hss.bill.service.TradeService;
@@ -181,6 +182,12 @@ public class MembershipController {
         }
 
         List<AppPolicyMembershipCard> cardList=hsyMembershipService.findMemberCardByUID(uid);
+        if(cardList==null||cardList.size()==0)
+        {
+            model.addAttribute("tips","该店铺没有会员卡！");
+            return "/tips";
+        }
+
         model.addAttribute("cardList",cardList);
 
         AppPolicyConsumer appPolicyConsumer=null;
@@ -327,12 +334,30 @@ public class MembershipController {
 
     @RequestMapping("recharge")
     public void recharge(HttpServletRequest request, HttpServletResponse response,PrintWriter pw, Long mid, BigDecimal amount,String type,String source){
-        //验证需要做一下
+        Map map=new HashMap();
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
-        AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source);
+        if(appPolicyMember==null)
+        {
+            map.put("flag","fail");
+            map.put("result","查不到该会员");
+            writeJsonToRrsponse(map,response,pw);
+            return;
+        }
+        AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
         RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
         PayResponse payResponse=tradeService.recharge(rechargeParams);
-        writeJsonToRrsponse(appPolicyRechargeOrder,response,pw);
+        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId());
+        if(payResponse.getCode()!= EnumBasicStatus.SUCCESS.getId())
+        {
+            map.put("flag","fail");
+            map.put("result",payResponse.getMessage());
+            writeJsonToRrsponse(map,response,pw);
+            return;
+        }
+        map.put("flag","success");
+        map.put("payResponse",payResponse);
+        writeJsonToRrsponse(map,response,pw);
+        return;
     }
 
     @RequestMapping("sendVcode")

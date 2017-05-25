@@ -277,7 +277,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             return null;
     }
 
-    public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember,String type,String source){
+    public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember,String type,String source,BigDecimal amount){
         AppPolicyRechargeOrder appPolicyRechargeOrder = new AppPolicyRechargeOrder();
         Date date=new Date();
         if(type.equals(RechargeValidType.ACTIVATE.key)) {
@@ -324,6 +324,16 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyRechargeOrder.setOrderNO(appPolicyRechargeOrderUp.getOrderNO());
         hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUp);
         return appPolicyRechargeOrder;
+    }
+
+    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID){
+        AppPolicyRechargeOrder appPolicyRechargeOrderUp=new AppPolicyRechargeOrder();
+        appPolicyRechargeOrderUp.setId(appPolicyRechargeOrder.getId());
+        appPolicyRechargeOrderUp.setTradeNO(tradeNO);
+        appPolicyRechargeOrderUp.setTradeID(tradeID);
+        hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUp);
+        appPolicyRechargeOrder.setOrderNO(tradeNO);
+        appPolicyRechargeOrder.setTradeID(tradeID);
     }
 
 }
