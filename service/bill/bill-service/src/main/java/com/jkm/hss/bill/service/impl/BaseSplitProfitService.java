@@ -28,6 +28,14 @@ public interface BaseSplitProfitService {
     Pair<Integer, String> exeWithdrawSplitProfit(SplitProfitParams splitProfitParams);
 
     /**
+     * 执行升级分账
+     *
+     * @param splitProfitParams
+     * @return
+     */
+    Pair<Integer, String> exeUpgradeSplitProfit(SplitProfitParams splitProfitParams);
+
+    /**
      * 执行退分润
      *
      * @param refundProfitParams

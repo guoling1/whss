@@ -4,10 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.account.entity.*;
-import com.jkm.hss.account.enums.EnumAccountFlowType;
-import com.jkm.hss.account.enums.EnumAccountUserType;
-import com.jkm.hss.account.enums.EnumAppType;
-import com.jkm.hss.account.enums.EnumSplitAccountUserType;
+import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.entity.*;
@@ -307,6 +304,70 @@ public class BaseSplitProfitServiceImpl implements BaseSplitProfitService {
     /**
      * {@inheritDoc}
      *
+     * @param splitProfitParams
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> exeUpgradeSplitProfit(final SplitProfitParams splitProfitParams) {
+        log.info("交易单[{}], 进行分润, 分润类型[{}]", splitProfitParams.getOrderNo(), splitProfitParams.getSplitType());
+        final Order order = this.orderService.getByOrderNo(splitProfitParams.getOrderNo()).get();
+
+        final SplitProfitParams.SplitProfitDetail companyProfitDetail = splitProfitParams.getCompanyProfitDetail();
+        final SplitProfitParams.SplitProfitDetail directMerchantProfitDetail = splitProfitParams.getDirectMerchantProfitDetail();
+        final SplitProfitParams.SplitProfitDetail indirectMerchantProfitDetail = splitProfitParams.getIndirectMerchantProfitDetail();
+        final SplitProfitParams.SplitProfitDetail firstLevelDealerProfitDetail = splitProfitParams.getFirstLevelDealerProfitDetail();
+        final SplitProfitParams.SplitProfitDetail secondLevelDealerProfitDetail = splitProfitParams.getSecondLevelDealerProfitDetail();
+
+        final BigDecimal cost = null == splitProfitParams.getCost() ? new BigDecimal("0.00") : splitProfitParams.getCost();
+        final BigDecimal companyProfit = null == companyProfitDetail ? new BigDecimal("0.00") : companyProfitDetail.getProfit();
+        final BigDecimal directMerchantProfit = null == directMerchantProfitDetail ? new BigDecimal("0.00") : directMerchantProfitDetail.getProfit();
+        final BigDecimal indirectMerchantProfit = null == indirectMerchantProfitDetail ? new BigDecimal("0.00") : indirectMerchantProfitDetail.getProfit();
+        final BigDecimal firstLevelDealerProfit = null == firstLevelDealerProfitDetail ? new BigDecimal("0.00") : firstLevelDealerProfitDetail.getProfit();
+        final BigDecimal secondLevelDealerProfit = null == secondLevelDealerProfitDetail ? new BigDecimal("0.00") : secondLevelDealerProfitDetail.getProfit();
+
+        log.info("交易[{}],分润总额[{}],公司分润[{}],直推商户[{}],间推商户[{}],一级代理商[{}],二级代理商[{}]",
+                order.getOrderNo(), order.getRealPayAmount(), cost, companyProfit, directMerchantProfit,
+                indirectMerchantProfit, firstLevelDealerProfit, secondLevelDealerProfit);
+        Preconditions.checkState(order.getRealPayAmount().compareTo(cost.add(companyProfit)
+                        .add(directMerchantProfit).add(indirectMerchantProfit).add(firstLevelDealerProfit).add(secondLevelDealerProfit)) >= 0,
+                "交易总额不大于等于各方分润总和");
+
+        //产品利润--可用余额
+        if (null != companyProfitDetail) {
+            this.addSplitAccountRecord(companyProfitDetail, order, splitProfitParams, "商户升级-反润");
+            this.splitProfit4IncreaseAvailableAccount(companyProfitDetail, order.getOrderNo(), "商户升级-反润");
+        }
+        //一级代理商利润--可用余额
+        if (null != firstLevelDealerProfitDetail) {
+            this.addSplitAccountRecord(firstLevelDealerProfitDetail, order, splitProfitParams, "商户升级-反润");
+            this.splitProfit4IncreaseAvailableAccount(firstLevelDealerProfitDetail, order.getOrderNo(), "商户升级-反润");
+
+        }
+        //二级代理商利润--可用余额
+        if (null != secondLevelDealerProfitDetail) {
+            this.addSplitAccountRecord(secondLevelDealerProfitDetail, order, splitProfitParams, "商户升级-反润");
+            this.splitProfit4IncreaseAvailableAccount(secondLevelDealerProfitDetail, order.getOrderNo(), "商户升级-反润");
+
+        }
+        //直推商户利润--可用余额
+        if (null != directMerchantProfitDetail) {
+            this.addSplitAccountRecord(directMerchantProfitDetail, order, splitProfitParams, "商户升级-直推");
+            this.splitProfit4IncreaseAvailableAccount(directMerchantProfitDetail, order.getOrderNo(), "商户升级-直推");
+
+        }
+        //间推商户利润--可用余额
+        if (null != indirectMerchantProfitDetail) {
+            this.addSplitAccountRecord(indirectMerchantProfitDetail, order, splitProfitParams, "商户升级-间推");
+            this.splitProfit4IncreaseAvailableAccount(indirectMerchantProfitDetail, order.getOrderNo(), "商户升级-间推");
+
+        }
+        return Pair.of(0, "success");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param refundProfitParams
      * @param refundOrderId
      * @return
@@ -371,11 +432,15 @@ public class BaseSplitProfitServiceImpl implements BaseSplitProfitService {
         splitAccountRecord.setOrderNo(order.getOrderNo());
         splitAccountRecord.setSplitOrderNo(order.getOrderNo());
         splitAccountRecord.setTotalAmount(order.getRealPayAmount());
-        splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
+        if (!EnumSplitBusinessType.HSSPROMOTE.getId().equalsIgnoreCase(splitProfitParams.getSplitType())) {
+            splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
+            splitAccountRecord.setSplitTotalAmount(order.getPoundage());
+        } else {
+            splitAccountRecord.setSplitTotalAmount(order.getRealPayAmount());
+        }
         splitAccountRecord.setReceiptMoneyAccountId(splitProfitDetail.getAccountId());
         splitAccountRecord.setReceiptMoneyUserName(splitProfitDetail.getUserName());
         splitAccountRecord.setSplitAmount(splitProfitDetail.getProfit());
-        splitAccountRecord.setSplitTotalAmount(order.getPoundage());
         splitAccountRecord.setSplitRate(splitProfitDetail.getRate());
         splitAccountRecord.setRemark(remark);
         splitAccountRecord.setSplitDate(new Date());

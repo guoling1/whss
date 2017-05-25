@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.helper;
 
+import com.jkm.hss.account.helper.AccountConstants;
+import com.jkm.hss.bill.enums.EnumServiceType;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import lombok.Data;
 
@@ -37,9 +39,24 @@ public class PayParams {
      */
     private BigDecimal realPayAmount;
     /**
+     * 业务类型
+     *
+     * {@link com.jkm.hss.bill.enums.EnumServiceType}
+     */
+    private int serviceType;
+    /**
      * 收款人账户id（商户基础账户）
+     *
+     * 当且仅当 升级时， 收款人是，金开门利润账户
+     * 其他，是商户账户id
      */
     private long payeeAccountId;
+    /**
+     * 付款人账户id（商户基础账户）
+     *
+     * 当且仅当 升级时，付款人是商户（仅限hss升级）
+     */
+    private long payerAccountId;
     /**
      * 商品名字
      */
@@ -104,4 +121,11 @@ public class PayParams {
      * 结算成功，回调url
      */
     private String settleNotifyUrl;
+
+    public long getPayeeAccountId() {
+        if (EnumServiceType.APPRECIATION_PAY.getId() == this.serviceType) {
+            return AccountConstants.POUNDAGE_ACCOUNT_ID;
+        }
+        return payeeAccountId;
+    }
 }
