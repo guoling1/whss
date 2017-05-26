@@ -55,41 +55,44 @@ public class ProfitCountController extends BaseController {
         int level = dealer.getLevel();
         int oemType = dealer.getOemType();
 //        Long oemId = dealer.getOemId();
-        long firstLevelDealerId = dealer.getFirstLevelDealerId();
+
         if (level==2) {
             request.setAccountId(accountId);
-            request.setFirstLevelDealerId(firstLevelDealerId);
-            List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
             int count = this.splitAccountRecordService.getProfitCount(request);
-            pageModel.setCount(count);
-            pageModel.setRecords(list);
-            return CommonResponse.objectResponse(1, "success", pageModel);
-        }
-        if (level==1){
-            if (oemType==0) {
-                request.setAccountId(accountId);
+            if (count>0) {
                 List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
-                for (int i=0;i<list.size();i++){
-                    list.get(i).setProxyName("金开门");
-                }
-                int count = this.splitAccountRecordService.getProfitCount(request);
                 pageModel.setCount(count);
                 pageModel.setRecords(list);
                 return CommonResponse.objectResponse(1, "success", pageModel);
             }
 
+        }
+        if (level==1){
+            if (oemType==0) {
+                request.setAccountId(accountId);
+                int count = this.splitAccountRecordService.getProfitCount(request);
+                if (count>0) {
+                    List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
+                    pageModel.setCount(count);
+                    pageModel.setRecords(list);
+                    return CommonResponse.objectResponse(1, "success", pageModel);
+                }
 
+            }
         }
         if (oemType==1){
             request.setAccountId(accountId);
-            List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
             int count = this.splitAccountRecordService.getProfitCount(request);
-            pageModel.setCount(count);
-            pageModel.setRecords(list);
-            return CommonResponse.objectResponse(1, "success", pageModel);
+            if (count>0) {
+                List<ProfitCountRespons> list = this.splitAccountRecordService.getProfit(request);
+                pageModel.setCount(count);
+                pageModel.setRecords(list);
+                return CommonResponse.objectResponse(1, "success", pageModel);
+            }
+
         }
 
-        return null;
+        return CommonResponse.objectResponse(1, "success", pageModel);
     }
 
     /**
