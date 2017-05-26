@@ -2909,19 +2909,19 @@ input:focus {
 }
 .channel .channel-box .channel-space .channel-group .channel-con .preferential {
   display: inline-block;
-  width: 30px;
-  height: 14px;
-  background: url("../assets/preferential.png") no-repeat center;
-  background-size: 30px 14px;
+  width: 19px;
+  height: 19px;
+  background: url("../assets/preferential_0525.png") no-repeat center;
+  background-size: 19px 19px;
   margin-left: 3px;
   transform: translate3d(0, 2px, 0);
 }
 .channel .channel-box .channel-space .channel-group .channel-con .recommend {
   display: inline-block;
-  width: 30px;
-  height: 14px;
-  background: url("../assets/recommend.png") no-repeat center;
-  background-size: 30px 14px;
+  width: 19px;
+  height: 19px;
+  background: url("../assets/recommend_0525.png") no-repeat center;
+  background-size: 19px 19px;
   margin-left: 3px;
   transform: translate3d(0, 2px, 0);
 }
