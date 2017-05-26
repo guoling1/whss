@@ -201,6 +201,9 @@
         shop.id sid,shop.SHORTNAME shopShortName
         from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID left join app_biz_shop shop on shop.id=sur.SID
         where 1=1 and user.PARENTID=#{parentID} and (shop.id in(select id from app_biz_shop where parentid=#{sid})||shop.id=#{sid}||shop.id is null)
+        <if test="role!=null and role==2">
+            AND sur.ROLE=3
+        </if>
         order by UPDATETIME desc
     </select>
 
@@ -232,5 +235,8 @@ inner join app_au_user A ON A.ID=ATT.UID
 where T.ACCESSTOKEN=#{acccesstoken}
 AND ATT.STATUS=1
 limit 1
+    </select>
+    <select id="findAppAuUserRole" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="java.lang.Integer">
+        select ROLE from app_biz_shop_user_role where SID=#{sid} AND  UID=#{parentID} limit 1
     </select>
 </mapper>

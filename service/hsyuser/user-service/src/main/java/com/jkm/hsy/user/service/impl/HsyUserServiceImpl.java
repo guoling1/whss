@@ -767,7 +767,19 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"当前登录用户ID");
         if(!(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户主店ID");
+        Integer curRole=hsyUserDao.findAppAuUserRole(appAuUser);
+        if(curRole==null){
+            throw new ApiHandleException(ResultCode.ROLE_TYPE_NOT_EXSIT,"角色类型不存在");
+        }
 
+        if(curRole.intValue()==2){//如果当前为店长
+            List<AppAuUser> appAuUserList=hsyUserDao.findAppAuUserByID(appAuUser.getParentID());
+            if(appAuUserList==null||appAuUserList.size()==0){
+                throw new ApiHandleException(ResultCode.PARAM_EXCEPTION,"请求参数异常");
+            }
+            appAuUser.setRole(curRole);
+            appAuUser.setParentID(appAuUserList.get(0).getParentID());
+        }
         List<AppAuUser> list=hsyUserDao.findAppAuUserListByParentID(appAuUser);
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {

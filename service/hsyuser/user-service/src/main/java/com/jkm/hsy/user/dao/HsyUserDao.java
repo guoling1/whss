@@ -31,4 +31,5 @@ public interface HsyUserDao {
     public List<AppAuUser> findAppAuUserWithRoleByID(AppAuUser appAuUser);
     public void updateHxbsStatus(@Param("status")Integer status,@Param("remarks")String remarks,@Param("uid")Long uid);
     public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
+    public Integer findAppAuUserRole(AppAuUser appAuUser);
 }
