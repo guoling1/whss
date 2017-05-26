@@ -230,5 +230,7 @@
 inner join app_au_user_token as ATT ON T.ID=ATT.TID
 inner join app_au_user A ON A.ID=ATT.UID
 where T.ACCESSTOKEN=#{acccesstoken}
+AND ATT.STATUS=1
+limit 1
     </select>
 </mapper>
