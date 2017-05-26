@@ -161,5 +161,5 @@ public interface HsyMerchantAuditDao {
      * @param changePhone
      * @param uid
      */
-    void updatePhone(String changePhone, Long uid);
+    void updatePhone(@Param("changePhone") String changePhone,@Param("uid") Long uid);
 }
