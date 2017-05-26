@@ -36,6 +36,66 @@
                   <div class="box-header with-border">
                     <h3 class="box-title">合伙人推荐分润设置</h3>
                   </div>
+                  <div class="box-body">
+                    <div class="form-group">
+                      <div class="product">
+                        <div class="col-xs-12">
+                          <div class="box box1">
+                            <div class="box-body table-responsive no-padding">
+                              <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                  <th>通道名称</th>
+                                  <th>总分润空间</th>
+                                </tr>
+                                <tr v-for="(dealerProfit,index) in dealerProfits">
+                                  <td>{{dealerProfit.channelName}}</td>
+                                  <td>{{dealerProfit.profitSpace}}%</td>
+                                </tr>
+                                <tr>
+                                  <td colspan="2"><span>总分润空间不得大于该通道商户费率与一级代理商结算价之差</span></td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xs-12">
+                          <div class="box box1">
+                            <div class="box-body table-responsive no-padding">
+                              <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                  <th>分润类型</th>
+                                  <th>金开门分润比例</th>
+                                  <th>一级代理商分润比例</th>
+                                  <th>二级代理分润比例</th>
+                                </tr>
+                                <tr>
+                                  <td>升级费分润</td>
+                                  <td>{{dealerUpgerdeRates1.bossDealerShareRate*100}}%</td>
+                                  <td>{{dealerUpgerdeRates1.firstDealerShareProfitRate*100}}%</td>
+                                  <td>{{dealerUpgerdeRates1.secondDealerShareProfitRate*100}}%</td>
+                                </tr>
+                                <tr>
+                                  <td>收单分润</td>
+                                  <td>{{dealerUpgerdeRates2.bossDealerShareRate*100}}%</td>
+                                  <td>{{dealerUpgerdeRates2.firstDealerShareProfitRate*100}}%</td>
+                                  <td>{{dealerUpgerdeRates2.secondDealerShareProfitRate*100}}%</td>
+                                </tr>
+                                <tr>
+                                  <td colspan="4">金开门，一级代理，二级代理的比例之和必须等于100%</td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <!-- /.box-body -->
+                          </div>
+                          <!-- /.box -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </el-tab-pane>
                 <el-tab-pane label="好收银" name="second">
                   <div class="box-header with-border">
@@ -80,7 +140,10 @@
         hss_tableLoading: false,
         hss_tableData: [],
         hsy_tableLoading: false,
-        hsy_tableData: []
+        hsy_tableData: [],
+        dealerProfits: [],
+        dealerUpgerdeRates1: [],
+        dealerUpgerdeRates2: [],
       }
     },
     created() {
@@ -98,6 +161,9 @@
         }).then(res => {
           this.hss_tableLoading = false;
           this.hss_tableData = res.data.product.channels;
+          this.dealerProfits = res.data.dealerProfits;
+          this.dealerUpgerdeRates1 = res.data.dealerUpgerdeRates[0];
+          this.dealerUpgerdeRates2 = res.data.dealerUpgerdeRates[1];
         }, err => {
           this.hss_tableLoading = false;
           this.$message({
