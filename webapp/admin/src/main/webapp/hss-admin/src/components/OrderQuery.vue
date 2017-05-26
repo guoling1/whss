@@ -48,6 +48,7 @@
                     <el-option label="支付宝支付" value="2"></el-option>
                     <el-option label="快捷支付" value="3"></el-option>
                     <el-option label="QQ钱包" value="4"></el-option>
+                    <el-option label="银联扫码" value="5"></el-option>
                   </el-select>
                 </li>
                 <li class="same">
