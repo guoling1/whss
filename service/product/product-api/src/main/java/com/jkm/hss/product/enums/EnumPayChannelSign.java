@@ -23,7 +23,7 @@ public enum                EnumPayChannelSign {
     /**
      * 会员卡支付
      */
-    MEMBER(901, "member_card", EnumPaymentChannel.MEMBER_PAY, "会员卡", EnumUpperChannel.MEMBER, false, EnumBalanceTimeType.T1, false),
+    MEMBER(1101, "member_card", EnumPaymentChannel.MEMBER_PAY, "会员卡", EnumUpperChannel.MEMBER, false, EnumBalanceTimeType.T1, false),
 
     /**
      * 阳光微信
