@@ -122,7 +122,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardf" alt="" v-if="$msg.idcardf!=null&&$msg.idcardf!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardf!=null&&$msg.idcardf!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('1')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('1')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.idcardf==null&&$msg.idcardf==''&&$msg.status!=1&&$msg.status!==2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -140,7 +140,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardb" alt="" v-if="$msg.idcardb!=null&&$msg.idcardb!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardb!=null&&$msg.idcardb!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('2')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('2')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.idcardb==null&&$msg.idcardb==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -158,7 +158,7 @@
               <td class="col-md-3" style="text-align: center;border: none;" v-if="msg.isPublic==1">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.licenceID!=null&&$msg.licenceID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.licenceID==null&&$msg.licenceID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -176,7 +176,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.storefrontID" alt="" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('4')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.storefrontID==null&&$msg.storefrontID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -194,7 +194,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.counterID" alt="" v-if="$msg.counterID!=null&&$msg.counterID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.counterID!=null&&$msg.counterID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('5')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('5')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.counterID==null&&$msg.counterID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -212,7 +212,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID!=null&&$msg.indoorID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status!=1||$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
