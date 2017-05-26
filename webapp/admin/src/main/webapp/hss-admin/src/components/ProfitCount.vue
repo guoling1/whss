@@ -12,12 +12,12 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
+                  <el-date-picker style="width: 193px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>收益类型:</label>
-                  <el-select style="width: 190px" clearable v-model="queryCom.businessType" size="small" >
+                  <el-select style="width: 193px" clearable v-model="queryCom.businessType" size="small" >
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
                     <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
@@ -256,8 +256,14 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
           }
         },
         date:'',

@@ -10,6 +10,7 @@ import home from './components/home.vue'
 import development from './components/development.vue'
 
 import profits_detail from './components/profits_detail.vue'
+import change_password from './components/change_password.vue'
 import dealer_list from './components/dealer_list.vue'
 import dealer_add from './components/dealer_add.vue'
 import dealer_modify from './components/dealer_modify.vue'
@@ -63,6 +64,7 @@ const routes = [
       {path: 'development', name: "development", component: development},
       {path: 'home', name: "home", component: home},
       {path: 'profits_detail', name: "profits_detail", component: profits_detail},
+      {path: 'change_password', name: "change_password", component: change_password},
       {path: 'dealer_list', name: "dealer_list", component: dealer_list},
       {path: 'dealer_add', name: "dealer_add", component: dealer_add},
       {path: 'dealer_modify', name: "dealer_modify", component: dealer_modify},

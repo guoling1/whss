@@ -164,5 +164,11 @@ public interface AdminUserDao {
      * @return
      */
     AdminUser getAdminUserByDealerIdAndIsMaster(@Param("dealerId") long dealerId,@Param("isMaster") int isMaster);
+    /**
+     * 获取密码
+     * @param id
+     * @return
+     */
+    String getPwd(@Param("id") long id);
 
 }

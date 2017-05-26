@@ -229,4 +229,8 @@
     <select id="getAdminUserByDealerIdAndIsMaster" resultType="com.jkm.hss.admin.entity.AdminUser">
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE dealer_id = #{dealerId} and is_master = #{isMaster}
     </select>
+
+    <select id="getPwd" resultType="java.lang.String">
+        SELECT password FROM tb_admin_user WHERE id = #{id}
+    </select>
 </mapper>
