@@ -13,15 +13,15 @@
           <ul class="search">
             <li class="same">
               <label>结算对象编号:</label>
-              <el-input style="width: 188px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>名称:</label>
-              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>类型:</label>
-              <el-select clearable v-model="query.userType" size="small" style="width: 188px">
+              <el-select clearable v-model="query.userType" size="small" style="width: 193px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="商户" value="2">商户</el-option>
                 <el-option label="代理商" value="3">代理商</el-option>
@@ -30,11 +30,11 @@
             </li>
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px" :clearable="false" :editable="false"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 193px" :clearable="false" :editable="false"></el-date-picker>
             </li>
             <li class="same">
               <label>对账结果:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" style="width: 188px">
+              <el-select clearable v-model="query.checkedStatus" size="small" style="width: 193px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="未对账" value="1">未对账</el-option>
                 <el-option label="对账完成无异常" value="2">对账完成无异常</el-option>
@@ -43,7 +43,7 @@
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select clearable v-model="query.settleStatus" size="small" style="width: 188px">
+              <el-select clearable v-model="query.settleStatus" size="small" style="width: 193px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="部分结算" value="4">部分结算</el-option>
@@ -166,8 +166,14 @@
               generateClick:false,
               markSettledClick:false,
               pickerOptions: {
-                disabledDate(time) {
-                  return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+                onPick:function({ maxDate, minDate }){
+                  if(maxDate==''||maxDate==null){
+                    this.disabledDate=function(maxDate) {
+                      return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+                    }
+                  }else{
+                    this.disabledDate=function(){}
+                  }
                 }
               },
               date:'',

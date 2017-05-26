@@ -179,8 +179,14 @@
     data(){
       return{
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
           }
         },
         downloadClick:false,

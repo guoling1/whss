@@ -16,7 +16,7 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions" size="small">
               </el-date-picker>
             </li>
             <li class="same">
@@ -62,6 +62,17 @@
     name: 'deal',
     data(){
       return {
+        pickerOptions: {
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
+          }
+        },
         query:{
           pageNo:1,
           pageSize:10,

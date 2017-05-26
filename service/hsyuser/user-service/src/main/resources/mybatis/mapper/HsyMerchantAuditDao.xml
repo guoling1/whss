@@ -25,7 +25,7 @@
             AND e.username =#{username}
         </if>
         <if test="proxyName!=null and proxyName!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyName},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')
         </if>
         <if test="proxyName1!=null and proxyName1!=''">
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')
@@ -72,7 +72,7 @@
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
         a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
-        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
         (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
         app_biz_shop a
@@ -89,7 +89,7 @@
             AND e.username =#{username}
         </if>
         <if test="proxyName!=null and proxyName!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyName},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')
         </if>
         <if test="proxyName1!=null and proxyName1!=''">
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')
@@ -127,7 +127,7 @@
     <select id="hsyMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
         a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
-        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
         (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
         app_biz_shop a
@@ -144,7 +144,7 @@
             AND e.username =#{username}
         </if>
         <if test="proxyName!=null and proxyName!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyName},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')
         </if>
         <if test="proxyName1!=null and proxyName1!=''">
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')

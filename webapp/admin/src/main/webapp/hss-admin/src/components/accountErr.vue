@@ -9,15 +9,15 @@
           <ul>
             <li class="same">
               <label>交易流水:</label>
-              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
+              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 193px"></el-input>
             </li>
             <li class="same">
               <label>对账渠道:</label>
-              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
+              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 193px"></el-input>
             </li>
             <li class="same">
               <label>单边方向:</label>
-              <el-select clearable v-model="query.side" size="small" style="width: 190px">
+              <el-select clearable v-model="query.side" size="small" style="width: 193px">
                 <el-option v-for="item in item_side" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
@@ -28,12 +28,12 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions" size="small" style="width: 190px" :clearable="false" :editable="false">
+                :picker-options="pickerOptions" size="small" style="width: 193px" :clearable="false" :editable="false">
               </el-date-picker>
             </li>
             <li class="same">
               <label>交易类型:</label>
-              <el-select clearable v-model="query.tradeType" size="small" style="width: 190px">
+              <el-select clearable v-model="query.tradeType" size="small" style="width: 193px">
                 <el-option label="全部" value=""></el-option>
                 <el-option label="交易" value="1"></el-option>
                 <el-option label="提现" value="3"></el-option>
@@ -41,13 +41,13 @@
             </li>
             <li class="same">
               <label>处理结果:</label>
-              <el-select clearable v-model="query.status" size="small" style="width: 190px">
+              <el-select clearable v-model="query.status" size="small" style="width: 193px">
                 <el-option v-for="item in item_status" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
             <li class="same">
               <label>对账单号:</label>
-              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
+              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 193px"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -137,8 +137,14 @@
     data(){
       return{
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
           }
         },
         records:[],
