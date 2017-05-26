@@ -13,7 +13,7 @@ import java.util.List;
  *
  * 支付通道唯一标识
  */
-public enum                EnumPayChannelSign {
+public enum EnumPayChannelSign {
 
     /**
      * 维护通道
