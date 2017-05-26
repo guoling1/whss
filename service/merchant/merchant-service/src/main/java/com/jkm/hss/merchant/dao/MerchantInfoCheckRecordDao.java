@@ -39,7 +39,7 @@ public interface MerchantInfoCheckRecordDao {
 
     /**
      * 查询商户状态
-     * @param i
+     * @param
      * @return
      */
     int getStauts(@Param("merchantId") long merchantId);
@@ -61,4 +61,18 @@ public interface MerchantInfoCheckRecordDao {
      * @return
      */
     int getId(@Param("merchantId") long merchantId);
+
+    /**
+     * 查询分公司模板id
+     * @param touser
+     * @return
+     */
+    String seleTemplateId(@Param("touser") String touser);
+
+    /**
+     * 查询是否是分公司
+     * @param touser
+     * @return
+     */
+    int queryOemId(@Param("touser") String touser);
 }
