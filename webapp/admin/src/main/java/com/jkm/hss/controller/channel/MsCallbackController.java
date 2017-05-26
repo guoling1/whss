@@ -69,6 +69,7 @@ public class MsCallbackController{
 
     @RequestMapping(value = "/hj/pay", method = RequestMethod.POST)
     public void handleWithdrawPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+        log.info("22222222222222222");
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("r1_MerchantNo",request.getParameter("r1_MerchantNo"));
         jsonObject.put("r2_OrderNo",request.getParameter("r2_OrderNo"));
@@ -88,7 +89,7 @@ public class MsCallbackController{
         log.info("收到SYJ支付异步通知：[{}],签名结果：[{}], 支付流水号:[{}]" + jsonObject.toJSONString());
         log.info(request.getParameter("encryptData")+"............");
         log.info(request.getParameter("encryptKey")+"............");
-        ResponseWriter.writeTxtResponse(response, "000000");
+        ResponseWriter.writeTxtResponse(response, "success");
         log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
