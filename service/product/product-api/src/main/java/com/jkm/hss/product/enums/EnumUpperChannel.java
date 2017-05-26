@@ -53,7 +53,7 @@ public enum EnumUpperChannel {
     /**
      * 会员卡
      */
-    MEMBER(9, "MEMBER", "会员卡"),
+    MEMBER(12, "MEMBER", "会员卡"),
 
 
     /**
