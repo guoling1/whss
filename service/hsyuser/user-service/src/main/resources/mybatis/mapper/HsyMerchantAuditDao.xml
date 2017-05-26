@@ -517,7 +517,7 @@
           app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON b.SID=a.ID
         LEFT JOIN app_au_user c ON c.ID=b.UID
-        WHERE a.ID=#{id} AND d.TYPE=1 AND d.role=1
+        WHERE a.ID=#{id} AND b.TYPE=1 AND b.role=1
     </select>
 
     <!-- 更新上次注册手机号 -->
