@@ -509,6 +509,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public void settleImpl(final long recordId) {
         log.info("结算审核记录[{}], 开始结算", recordId);
+        final AccountSettleAuditRecord accountSettleAuditRecord = this.accountSettleAuditRecordDao.selectByIdWithLock(recordId);
+        if (!accountSettleAuditRecord.isDueSettle()) {
+            log.info("结算审核记录[{}],状态不是待结算，不可以进行结算", recordId);
+            return;
+        }
         final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
         if (!CollectionUtils.isEmpty(flows)) {
             final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(flows);
@@ -548,6 +553,9 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
             try {
+                if (EnumAccountUserType.COMPANY.getId() == settlementRecord.getAccountUserType()) {
+                    return;
+                }
                 final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
                 final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
                 final AppBizCard appBizCard = new AppBizCard();
