@@ -67,7 +67,7 @@ public class MsCallbackController{
         log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
-    @RequestMapping(value = "/hj/pay", method = RequestMethod.POST)
+    @RequestMapping(value = "/hj/pay", method = RequestMethod.GET)
     public void handleWithdrawPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         log.info("22222222222222222");
         final JSONObject jsonObject = new JSONObject();
