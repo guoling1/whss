@@ -503,4 +503,25 @@
     <select id="getLog" resultType="com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord">
         SELECT * FROM tb_merchant_info_check_record WHERE sid = #{id}
     </select>
+
+    <!-- 更新注册手机号 -->
+    <update id="changeMobile">
+        UPDATE app_au_user SET CHANGEPHONE=#{changePhone} WHERE ID=#{uid}
+    </update>
+
+    <!-- 查询详情hsy商户注册手机号更改手机号还有id -->
+    <select id="getCellphon" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT
+          c.ID AS uid,c.CELLPHONE,c.CHANGEPHONE
+        FROM
+          app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON b.SID=a.ID
+        LEFT JOIN app_au_user c ON c.ID=b.UID
+        WHERE a.ID=#{id} AND b.TYPE=1 AND b.role=1
+    </select>
+
+    <!-- 更新上次注册手机号 -->
+    <update id="updatePhone">
+        UPDATE app_au_user SET CELLPHONE=#{changePhone} WHERE ID=#{uid}
+    </update>
 </mapper>
