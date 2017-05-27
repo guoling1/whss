@@ -205,7 +205,7 @@ WHERE order_id = #{orderId}
 FROM `tb_hsy_order`
 WHERE  shopid=#{shopId}
         <if test="startTime != null and endTime != null">
-            AND create_time BETWEEN #{startTime} AND #{endTime}
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         </if>
         AND orderstatus in (2,6,7)
         AND pay_channel_sign IN
@@ -221,7 +221,7 @@ WHERE  shopid=#{shopId}
         WHERE
         shopid=#{shopId}
         <if test="startTime != null and endTime != null">
-            AND create_time BETWEEN #{startTime} AND #{endTime}
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         </if>
         AND orderstatus in (2,6,7)
         AND pay_channel_sign IN
@@ -233,7 +233,7 @@ WHERE  shopid=#{shopId}
         select sum(amount) as totalAmount,count(1) as number  from tb_hsy_order
         WHERE  shopid=#{shopId}
         <if test="startTime != null and endTime != null">
-            AND create_time BETWEEN #{startTime} AND #{endTime}
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         </if>
         AND orderstatus in (2,6,7)
         AND pay_channel_sign IN
@@ -247,7 +247,7 @@ WHERE  shopid=#{shopId}
         WHERE  shopid=#{shopId}
         AND orderstatus=2
         <if test="startTime != null and endTime != null">
-            AND create_time BETWEEN #{startTime} AND #{endTime}
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         </if>
         AND pay_channel_sign IN
         <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
