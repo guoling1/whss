@@ -23,16 +23,16 @@
 
 <div id="wallet">
   <div class="wallet">
-    <a class="operation touch_op" href="/sqb/collection">
+    <a class="operation touch_op" href="/sqb/collection?oemNo=${oemNo}">
       <div class="logo collection"></div>
       <div class="operation-title">收款</div>
     </a>
-    <a class="operation" href="/account/toHssAccount">
+    <a class="operation" href="/account/toHssAccount?oemNo=${oemNo}">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </a>
-    <a class="operation" href="/account/toWithdraw">
+    <a class="operation" href="/account/toWithdraw?oemNo=${oemNo}">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
     </a>
@@ -44,9 +44,9 @@
     </div>
   </div>
   <div class="record">
-    <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
-    <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
-    <a href="/sqb/authentication" class="group touch_gr"><span class="user"></span>用户认证</a>
+    <a href="/sqb/tradeRecord?oemNo=${oemNo}" class="group touch_gr"><span class="record"></span>收款记录</a>
+    <a href="/sqb/bank?oemNo=${oemNo}" class="group touch_gr"><span class="bank"></span>银行卡</a>
+    <a href="/sqb/authentication?oemNo=${oemNo}" class="group touch_gr"><span class="user"></span>用户认证</a>
     <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
   <div>
@@ -54,7 +54,7 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
+      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend?oemNo=${oemNo}">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>

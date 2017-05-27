@@ -609,7 +609,7 @@ public interface DealerService {
      * @return
      */
     int getBranchDetailCount(BranchAccountRequest req);
-    //    一下为分公司新增
+
     /**
      * 根据产品类型和手机号或代理商名称模糊查询
      * @param dealerOfFirstDealerRequest

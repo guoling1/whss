@@ -1035,7 +1035,7 @@
         <if test="condition!=null and condition!=''">
             AND (d.mobile LIKE "%"#{condition}"%" OR d.proxy_name LIKE "%"#{condition}"%")
         </if>
-        <if test="oem_id > 0">
+        <if test="oemId > 0">
             AND d.oem_id = #{oemId}
         </if>
     </select>

@@ -14,4 +14,8 @@ public class MerchantLoginCodeRequest {
      * 手机号
      */
     private String mobile;
+    /**
+     * 手机验证码
+     */
+    private String oemNo;
 }

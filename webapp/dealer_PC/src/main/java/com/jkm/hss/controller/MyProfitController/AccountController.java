@@ -68,9 +68,10 @@ public class AccountController extends BaseController{
     public CommonResponse getDealerInfo(){
 //        final Dealer dealer = this.getDealer().get();
         final AdminUser adminUser = this.getAdminUser().get();
-        DealerInfoResponse response = new DealerInfoResponse();
-        response.setDealerInfo(adminUser.getRealname());
         final Dealer dealer = this.getDealer().get();
+        DealerInfoResponse response = new DealerInfoResponse();
+        response.setDealerInfo(dealer.getProxyName());
+
         response.setDealerLeavel(this.getDealer().get().getLevel());
         if(dealer.getOemType()== EnumOemType.OEM.getId()){
             response.setDealerLeavel(3);

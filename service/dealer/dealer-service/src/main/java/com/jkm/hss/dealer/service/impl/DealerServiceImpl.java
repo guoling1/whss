@@ -2564,7 +2564,7 @@ public class DealerServiceImpl implements DealerService {
 
     /**
      * {@inheritDoc}
-     *
+     *分公司或一代按码段分配
      * @param dealerId  一级代理商id
      * @param toDealerId  码段要分配给代理商的id
      * @param startCode  开始二维码
@@ -2576,7 +2576,12 @@ public class DealerServiceImpl implements DealerService {
     public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType,final long dealerId, final long toDealerId,
                                                                final String startCode, final String endCode,int dtype,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
-        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+        List<QRCode> qrCodeList = null;
+        if(dtype == EnumQRCodeDistributeType2.OEM.getCode()){
+            qrCodeList = this.qrCodeService.getUnDistributeCodeByOemIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+        }else{
+            qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+        }
         if (CollectionUtils.isEmpty(qrCodeList)) {
             return records;
         }
@@ -2586,7 +2591,15 @@ public class DealerServiceImpl implements DealerService {
                 return input.getId();
             }
         });
-        this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
+        if(dtype == EnumQRCodeDistributeType2.OEM.getCode()){
+            if(toDealerId==0){//分配给自己
+                this.qrCodeService.markCodeToOemSelf(dealerId, qrCodeIds);
+            }else{//分配给一代
+                this.qrCodeService.markCodeToDealer(toDealerId, qrCodeIds);
+            }
+        }else{
+            this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
+        }
         final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
@@ -2622,7 +2635,12 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count,int dtype,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
-        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
+        List<QRCode> qrCodeList =  null;
+        if(dtype == EnumQRCodeDistributeType2.OEM.getCode()){
+            qrCodeList = this.qrCodeService.getUnDistributeCodeByOemIdAndSysType(dealerId,sysType);
+        }else{
+            qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
+        }
         if (CollectionUtils.isEmpty(qrCodeList)) {
             return records;
         }
@@ -2634,7 +2652,15 @@ public class DealerServiceImpl implements DealerService {
         });
         final List<Long> ids = qrCodeIds.subList(0, count);
         final List<QRCode> qrCodeList1 = qrCodeList.subList(0, count);
-        this.qrCodeService.markAsDistribute2(ids, toDealerId);
+        if(dtype == EnumQRCodeDistributeType2.OEM.getCode()){
+            if(toDealerId==0){//分配给自己
+                this.qrCodeService.markCodeToOemSelf(dealerId, ids);
+            }else{//分配给一代
+                this.qrCodeService.markCodeToDealer(toDealerId, ids);
+            }
+        }else{
+            this.qrCodeService.markAsDistribute2(ids, toDealerId);
+        }
         final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList1);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
@@ -2972,7 +2998,7 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     public List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
-        return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+        return this.dealerDao.selectListOfOem(dealerOfFirstDealerRequest);
     }
     //判断所属通道是否属于升级网关通道
     private boolean isBelongPartnerRulesSetting(int channelSign){

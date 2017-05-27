@@ -136,7 +136,7 @@ public interface AdminUserService {
 
 
     /**
-     * 按码段分配二维码
+     * BOSS按码段分配二维码
      * @param type
      * @param dealerId
      * @param startCode
@@ -146,7 +146,7 @@ public interface AdminUserService {
     List<DistributeQRCodeRecord> distributeQRCodeByCode(int type, String sysType, long dealerId,  String startCode, String endCode,long operatorId);
 
     /**
-     * 按个数分配
+     * BOSS按个数分配二维码
      * @param type
      * @param dealerId
      * @param count

@@ -65,6 +65,10 @@ public class MyQrCodeListRequest extends PageQueryParams {
      */
     private long adminId;
     /**
+     * 当前代理商
+     */
+    private long dealerId;
+    /**
      *
      */
     private int offset;

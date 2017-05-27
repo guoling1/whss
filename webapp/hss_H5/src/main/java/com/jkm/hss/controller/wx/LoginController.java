@@ -143,7 +143,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -283,7 +283,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -387,7 +387,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -505,7 +505,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -600,7 +600,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -674,15 +674,47 @@ public class LoginController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/wallet", method = RequestMethod.GET)
-    public String wallet(final HttpServletRequest request, final Model model) throws IOException {
+    public String wallet(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        String oemNo = request.getParameter("oemNo");
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
-            model.addAttribute("showRecommend", 1);
+            model.addAttribute("oemNo", oemNo);
+            if(oemNo!=null&&!"".equals(oemNo)){
+                model.addAttribute("showRecommend", 2);
+            }else{
+                model.addAttribute("showRecommend", 1);
+            }
         }else{
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.isPresent()){//存在
                 if(userInfoOptional.get().getMerchantId()!=0){
                     Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+
+                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                        if(merchantInfo.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
+                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+                            if(oemInfoOptional.isPresent()){
+                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
+                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                                }
+                            }else{
+                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
+                                model.addAttribute("message","分公司尚未配置");
+                                return "redirect:/sqb/message";
+                            }
+                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }
+                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
+                        if(merchantInfo.get().getOemId()>0){//分公司商户
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }
+                    }
+
+
                     if(merchantInfo.isPresent()){
 //                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
                         final Optional<Account> accountOptional = this.accountService.getById(merchantInfo.get().getAccountId());
@@ -711,6 +743,7 @@ public class LoginController extends BaseController {
                 model.addAttribute("showRecommend", 1);
                 model.addAttribute("avaliable", "0.00");
             }
+            model.addAttribute("oemNo", oemNo);
         }
         return "/wallet";
     }
@@ -727,6 +760,7 @@ public class LoginController extends BaseController {
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
@@ -734,7 +768,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -899,7 +933,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -1035,7 +1069,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -1131,7 +1165,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -1228,7 +1262,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -1361,7 +1395,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";
@@ -1889,7 +1923,7 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
-                    return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                 }else{
                     model.addAttribute("message","分公司不存在");
                     return "/message";

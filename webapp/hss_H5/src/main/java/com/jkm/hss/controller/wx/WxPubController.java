@@ -320,6 +320,15 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
+        long oemId = 0;
+        if(codeRequest.getOemNo()!=null&&!"".equals(codeRequest.getOemNo())){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(codeRequest.getOemNo());
+            if(!oemInfoOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "分公司不存在");
+            }
+            oemId = oemInfoOptional.get().getDealerId();
+        }
+
         final String mobile = codeRequest.getMobile();
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -327,7 +336,7 @@ public class WxPubController extends BaseController {
         if (!ValidateUtils.isMobile(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+        Optional<MerchantInfo> userInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
         if(userInfoOptional.isPresent()){
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
         }
