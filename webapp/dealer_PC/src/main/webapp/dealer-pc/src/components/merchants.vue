@@ -125,6 +125,7 @@
     name: 'app',
     data() {
       return {
+        activeName2: 'first',
         total: 0,
         pageSize: 20,
         pageNo: 1,
