@@ -145,6 +145,7 @@
         <if test="dealerId > 0">
             AND first_level_dealer_id = #{dealerId}
         </if>
+        AND oem_id=0
         AND level = #{level}
     </select>
 

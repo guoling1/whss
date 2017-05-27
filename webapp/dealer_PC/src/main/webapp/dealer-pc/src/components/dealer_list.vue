@@ -24,7 +24,7 @@
                 <el-input v-model="markCode" placeholder="代理商编号" size="small" style="width:180px"></el-input>
               </div>
               <div class="screen-item">
-                <span class="screen-title">代理商类型</span>
+                <span class="screen-title">产品类型</span>
                 <el-select v-model="sysType" size="small" clearable placeholder="请选择">
                   <el-option v-for="item in sysTypes"
                              :label="item.label"
@@ -242,7 +242,7 @@
         this.getData();
       },
       checkDealer: function (event, id) {
-        this.$router.push({path: '/daili/app/dealer_modify', query: {dealerId: id}});
+        this.$router.push({path: '/daili/app/dealer_modify', query: {dealerId: id, dealerType: 2}});
       },
       openHss: function (id, productId) {
         this.$router.push({
