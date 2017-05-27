@@ -58,9 +58,9 @@
                 <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
                 <!--<el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>-->
                 <!--<el-table-column label="结算时间">-->
-                  <!--<template scope="scope">-->
-                    <!--{{ scope.row.settleTime | datetime }}-->
-                  <!--</template>-->
+                <!--<template scope="scope">-->
+                <!--{{ scope.row.settleTime | datetime }}-->
+                <!--</template>-->
                 <!--</el-table-column>-->
                 <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
                 <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
@@ -151,6 +151,19 @@
       }
     },
     created() {
+      let query = this.$route.query;
+      if (query.businessType == '好收收-收款') {
+        this.businessType = 'hssPay';
+      } else if (query.businessType == '好收收-提现') {
+        this.businessType = 'hssWithdraw';
+      } else if (query.businessType == '好收收-升级费') {
+        this.businessType = 'hssPromote';
+      } else if (query.businessType == '好收银-收款') {
+        this.businessType = 'hsyPay';
+      }
+      this.datetime = query.splitDates + ' - ' + query.splitDates;
+      this.startTime = query.splitDates;
+      this.endTime = query.splitDates;
       this.getData();
     },
     methods: {

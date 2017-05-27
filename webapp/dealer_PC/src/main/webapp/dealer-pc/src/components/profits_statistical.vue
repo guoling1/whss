@@ -31,12 +31,14 @@
                 <el-table-column type="index" label="序号"></el-table-column>
                 <el-table-column prop="proxyName" label="代理名称"></el-table-column>
                 <el-table-column prop="markCode" label="代理编号"></el-table-column>
-                <el-table-column prop="splitDates" label="收益日期" width="180"></el-table-column>
+                <el-table-column prop="splitDates" label="收益日期"></el-table-column>
                 <el-table-column prop="splitAmount" label="收益金额"></el-table-column>
                 <el-table-column prop="businessType" label="收益类型"></el-table-column>
                 <el-table-column label="操作">
                   <template scope="scope">
-                    <el-button type="text" size="small">查看明细</el-button>
+                    <el-button type="text" size="small"
+                               @click="checkDetail($event,scope.row.businessType,scope.row.splitDates)">查看明细
+                    </el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -166,6 +168,12 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getData();
+      },
+      checkDetail(event, businessType, splitDates){
+        this.$router.push({
+          path: '/daili/app/profits_detail',
+          query: {businessType: businessType, splitDates: splitDates}
+        })
       }
     }
   }
