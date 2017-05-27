@@ -35,7 +35,8 @@ sendCode.addEventListener('click', function () {
   if (validate.phone(mobile.value)) {
     if (countdown.check()) {
       http.post('/wx/getCode', {
-        mobile: mobile.value
+        mobile: mobile.value,
+        oemNo: pageData.oemNo
       }, function (data) {
         if (data === false) {
           layer.style.display = 'block';
@@ -61,7 +62,8 @@ submit.addEventListener('click', ()=> {
   if (!pageData.qrCode || pageData.qrCode == '') {
     if (validate.joint({
         phone: mobile.value,
-        code: code.value
+        code: code.value,
+        oemNo: pageData.oemNo
       })) {
       http.post('/wx/login', {
         mobile: mobile.value,
@@ -74,7 +76,8 @@ submit.addEventListener('click', ()=> {
   } else {
     if (validate.joint({
         phone: mobile.value,
-        code: code.value
+        code: code.value,
+        oemNo: pageData.oemNo
       })) {
       http.post('/wx/login', {
         mobile: mobile.value,
