@@ -87,6 +87,7 @@
             setTimeout(()=>{
               this.loading = false;
               this.records = res.data.records;
+              this.count = res.data.count;
             },1000)
           },function (err) {
             setTimeout(()=>{

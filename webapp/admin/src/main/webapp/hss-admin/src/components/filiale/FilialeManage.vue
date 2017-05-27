@@ -13,18 +13,18 @@
               <el-input style="width: 188px" v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>代理商编号:</label>
+              <label>分公司编号:</label>
               <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>代理商名称:</label>
+              <label>分公司名称:</label>
               <el-input style="width: 188px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
             </li>
-            <li class="same">
-              <label>所属分公司:</label>
-              <el-input style="width: 188px" v-model="query.oemName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
+            <!--<li class="same">-->
+              <!--<label>所属分公司:</label>-->
+              <!--<el-input style="width: 188px" v-model="query.oemName" placeholder="请输入内容" size="small"></el-input>-->
+            <!--</li>-->
+            <li class="same" style="position: relative">
               <label>省市:</label>
               <div style="width: 188px" class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
@@ -158,10 +158,11 @@
           name:"",
           markCode:"",
           districtCode:"",
-          sysType:'hss',
+          sysType:'',
           oemName:'',
           oemType:'1'
         }
+        this.selectCon = '全部';
       },
       addFiliale:function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/filialeAdd');
@@ -193,7 +194,7 @@
         this.isOpen1 = !this.isOpen1;
       },
       selectAll: function () {
-        this.selectCon = val;
+        this.selectCon = '全部';
         this.query.districtCode = '';
         this.isOpen = !this.isOpen;
         this.isOpen1 = false;
@@ -293,7 +294,7 @@
   }
   .isShow{
     position: absolute;
-    width: 19%;
+    width: 100%;
     border-radius: 2px;
     z-index: 1000;
     max-height: 250px;
@@ -325,7 +326,7 @@
     position: absolute;
     left: 67%;
     /*top: 30%;*/
-    width: 16%;
+    width: 100%;
     padding: 5px;
     z-index: 1000;
     max-height: 285px;

@@ -25,7 +25,7 @@
               <label>所属分公司:</label>
               <el-input v-model="query.oemName" placeholder="请输入内容" size="small"></el-input>
             </li>
-            <li class="same">
+            <li class="same" style="position: relative">
               <label>省市：</label>
               <div class="select el-input el-input--small" id="select" @click="open"><span style="color: #1f2d3d;width: 188px">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
@@ -374,7 +374,7 @@
   }
   .isShow{
     position: absolute;
-    width: 19%;
+    width: 100%;
     border-radius: 2px;
     z-index: 1000;
     max-height: 250px;
@@ -406,7 +406,7 @@
     position: absolute;
     left: 70%;
     /*top: 0100%;*/
-    width: 16%;
+    width: 100%;
     padding: 5px;
     z-index: 1000;
     max-height: 285px;
