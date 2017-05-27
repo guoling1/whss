@@ -1,8 +1,6 @@
 package com.jkm.hss.dealer.dao;
 
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.QueryMerchantRequest;
-import com.jkm.hss.dealer.entity.QueryMerchantResponse;
+import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
@@ -73,13 +71,14 @@ public interface DealerDao {
      */
     List<Dealer> selectByIds(@Param("ids") List<Long> ids);
 
+
     /**
-     * 按mobile查询
+     * 按mobile和oemType查询
      *
      * @param mobile
      * @return
      */
-    Dealer selectByMobile(@Param("mobile") String mobile);
+    Dealer getByMobile(@Param("mobile") String mobile);
 
     /**
      * 按mobile查询
@@ -120,7 +119,7 @@ public interface DealerDao {
      * @param name
      * @return
      */
-    long selectByProxyName(@Param("name") String name);
+    long selectByProxyNameAndOemType(@Param("name") String name,@Param("oemType") int oemType);
 
     /**
      * 按代理名称查询
@@ -128,7 +127,7 @@ public interface DealerDao {
      * @param dealerId
      * @return
      */
-    long selectByProxyNameUnIncludeNow(@Param("proxyMame") String proxyMame, @Param("dealerId") long dealerId);
+    long selectByProxyNameUnIncludeNow(@Param("proxyMame") String proxyMame,@Param("oemType") int oemType, @Param("dealerId") long dealerId);
 
     /**
      * 按手机号和名称模糊匹配
@@ -180,7 +179,7 @@ public interface DealerDao {
      * @param listFirstDealerRequest
      * @return
      */
-    int selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+    Long selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
     /**
      * 分页查询一级代理
      *
@@ -254,10 +253,10 @@ public interface DealerDao {
     /**
      * 【代理商后台】查询二级代理个数
      *
-     * @param listFirstDealerRequest
+     * @param secondDealerSearchRequest
      * @return
      */
-    int selectSecondDealerCountByPage(SecondDealerSearchRequest listFirstDealerRequest);
+    int selectSecondDealerCountByPage(SecondDealerSearchRequest secondDealerSearchRequest);
     /**
      * 【代理商后台】分页查询二级代理
      *
@@ -265,6 +264,40 @@ public interface DealerDao {
      * @return
      */
     List<SecondDealerResponse> selectSecondDealersByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【分公司后台】查询二级代理个数
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    int selectSecondOemCountByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【分公司后台】分页查询二级代理
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    List<SecondDealerResponse> selectSecondOemByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+
+
+    /**
+     * 【代理商后台】查询一级代理个数
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    int selectFirstDealerCountByPage(FirstDealerSearchRequest firstDealerSearchRequest);
+
+    /**
+     * 【代理商后台】分页查询一级代理
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    List<FirstDealerResponse> selectFirstDealersByPage(FirstDealerSearchRequest firstDealerSearchRequest);
+
+
+
 
     /**
      * 按登陆名称查询
@@ -299,10 +332,10 @@ public interface DealerDao {
 
     /**
      * 查询代理商名称和编码
-     * @param firstLevelDealerId
+     * @param firstDealerId
      * @return
      */
-    MerchantInfoResponse getProxyName(int firstLevelDealerId);
+    MerchantInfoResponse getProxyName(@Param("firstDealerId") long firstDealerId);
 
     /**
      * 查询一级代理商的编码和名称
@@ -366,4 +399,39 @@ public interface DealerDao {
      */
     int updateBelong(@Param("secondDealerId") long secondDealerId,@Param("firstDealerId") long firstDealerId);
 
+
+    /**
+     * 分公司账户列表查询
+     * @param req
+     * @return
+     */
+    List<BranchAccountResponse> getBranch(BranchAccountRequest req);
+
+    /**
+     * 分公司账户列表总数查询
+     * @param req
+     * @return
+     */
+    int getBranchCount(BranchAccountRequest req);
+
+    /**
+     * 分公司账户明细
+     * @param req
+     * @return
+     */
+    List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req);
+
+    /**
+     * 分公司账户明细总数
+     * @param req
+     * @return
+     */
+    int getBranchDetailCount(BranchAccountRequest req);
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 }

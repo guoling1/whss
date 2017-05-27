@@ -24,6 +24,11 @@ public class OrderTradeRequest {
     private String shortName;
 
     /**
+     * 分公司
+     */
+    private String branchCompany;
+
+    /**
      * 商户编码
      */
     private String markCode;

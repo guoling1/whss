@@ -75,5 +75,12 @@
                 <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>
             </bean>
         </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/sqb/**"/>
+            <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
+                <property name="oemInfoService" ref="oemInfoServiceImpl"/>
+            </bean>
+        </mvc:interceptor>
     </mvc:interceptors>
 </beans>

@@ -86,7 +86,7 @@
         SELECT * FROM tb_admin_user WHERE username = #{username}  and status=1 and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
     </select>
     <select id="getAdminDealerUserByNameUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and status=1 and id not in (select id from tb_admin_user where type in (2,3) and is_master=1 and dealer_id=#{dealerId})
+        SELECT * FROM tb_admin_user WHERE username = #{username} and status=1 and id not in (select id from tb_admin_user where  is_master=1 and dealer_id=#{dealerId})
     </select>
     <update id="updatePwd">
         UPDATE tb_admin_user
@@ -188,6 +188,52 @@
             </if>
             ORDER BY create_time DESC LIMIT #{offset},#{count}
         </where>
+    </select>
+
+
+    <select id="selectAdminUserOemCountByPageParams" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user
+        <where>
+            type=4
+            <if test="realname != null and realname!=''">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null and mobile!=''">
+                AND mobile = #{mobile}
+            </if>
+            <if test="dealerName != null and dealerName!=''">
+                AND dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{dealerName}"%")
+            </if>
+        </where>
+    </select>
+    <select id="selectAdminUserOemListByPageParams" resultType="com.jkm.hss.admin.helper.responseparam.AdminDealerUser">
+        SELECT
+        id,mark_code,username,realname,email,mobile,status,(select d.proxy_name from tb_dealer as d where d.id=dealer_id) as belongDealer,
+        role_id,create_time,update_time,is_master
+        FROM tb_admin_user
+        <where>
+            type =4
+            <if test="realname != null and realname!=''">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null and mobile!=''">
+                AND mobile = #{mobile}
+            </if>
+            <if test="dealerName != null and dealerName!=''">
+                AND dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{dealerName}"%")
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectDealerByUsernameUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type in (2,3,4) and status=1
     </select>
 
     <select id="selectByUsernameAndTypeUnIncludeNow" resultType="java.lang.Long">

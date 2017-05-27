@@ -222,8 +222,17 @@ public class MerchantInfo extends BaseEntity{
      */
     private String isAuthen;
 
+    private long oemId;
+
     public String getPlainBankMobile(String phone){
         return phone.substring(0,3) + "****" + phone.substring(7,11);
+    }
+
+
+    //判断商户是否属于分公司商户
+    public boolean isBelongToOem(){
+
+        return this.getOemId() > 0L;
     }
 
 }

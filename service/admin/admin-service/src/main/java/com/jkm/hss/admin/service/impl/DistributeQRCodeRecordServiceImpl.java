@@ -83,8 +83,8 @@ public class DistributeQRCodeRecordServiceImpl implements DistributeQRCodeRecord
      * @return
      */
     @Override
-    public int selectDistributeCountByContions(long firstLevelDealerId, String markCode, String name) {
-        return this.distributeQRCodeRecordDao.selectDistributeCountByContions(firstLevelDealerId,markCode,name);
+    public int selectDistributeCountByContions(long firstLevelDealerId, String markCode, String name,int dtype) {
+        return this.distributeQRCodeRecordDao.selectDistributeCountByContions(firstLevelDealerId,markCode,name,dtype);
     }
 
     /**
@@ -97,8 +97,8 @@ public class DistributeQRCodeRecordServiceImpl implements DistributeQRCodeRecord
      * @param count              @return
      */
     @Override
-    public List<DistributeQRCodeRecord> selectDistributeRecordsByContions(long firstLevelDealerId, String markCode, String name, int offset, int count) {
-        return this.distributeQRCodeRecordDao.selectDistributeRecordsByContions(firstLevelDealerId,markCode,name,offset,count);
+    public List<DistributeQRCodeRecord> selectDistributeRecordsByContions(long firstLevelDealerId, String markCode, String name, int offset, int count,int dtype) {
+        return this.distributeQRCodeRecordDao.selectDistributeRecordsByContions(firstLevelDealerId,markCode,name,offset,count,dtype);
     }
 
     /**

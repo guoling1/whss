@@ -12,6 +12,7 @@ import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserPassportService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerService;
@@ -71,13 +72,21 @@ public class DealerLoginController extends BaseController{
                     ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
             this.adminUserService.updateLastLoginDate(adminUserToken.getAuid());
             Optional<Dealer> dealerOptional= dealerService.getById(adminUserOptional.get().getDealerId());
-            int level = dealerOptional.get().getLevel();
-            int type = EnumAdminType.FIRSTDEALER.getCode();
-            if(level==1){
-                type=EnumAdminType.FIRSTDEALER.getCode();
+            if(!dealerOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "登录用户不存在");
             }
-            if(level==2){
-                type=EnumAdminType.SECONDDEALER.getCode();
+            int type = EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type = EnumAdminType.OEM.getCode();
+            }else{
+                int level = dealerOptional.get().getLevel();
+
+                if(level==1){
+                    type=EnumAdminType.FIRSTDEALER.getCode();
+                }
+                if(level==2){
+                    type=EnumAdminType.SECONDDEALER.getCode();
+                }
             }
             List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(adminUserOptional.get().getRoleId(),type,adminUserOptional.get().getIsMaster());
             return CommonResponse.objectResponse(1, adminUserOptional.get().getRealname(),loginMenu);

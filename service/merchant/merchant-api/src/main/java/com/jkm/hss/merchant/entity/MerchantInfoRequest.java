@@ -9,6 +9,11 @@ import java.util.Date;
 public class MerchantInfoRequest {
 
     /**
+     * 分公司
+     */
+    private String branchCompany;
+
+    /**
      * 注册手机号
      */
     private String mobile;

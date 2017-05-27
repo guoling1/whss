@@ -437,6 +437,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("appId",req.getAppId());
         map.put("globalId",req.getGlobalId());
         map.put("shortName",req.getShortName());
+        map.put("branchCompany",req.getBranchCompany());
         List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -488,6 +489,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("appId",req.getAppId());
         map.put("globalId",req.getGlobalId());
         map.put("shortName",req.getShortName());
+        map.put("branchCompany",req.getBranchCompany());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -608,7 +610,9 @@ public class OrderServiceImpl implements OrderService {
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
-
+                if (list.getOemId()==0){
+                    list.setBranchCompany("金开门");
+                }
                 if (list.getAppId().equals("hss")){
                     String hss="好收收";
                     list.setAppId(hss);
@@ -1103,6 +1107,9 @@ public class OrderServiceImpl implements OrderService {
                     String dates = sdf.format(list.get(i).getPaySuccessTime());
                     list.get(i).setPaySuccessTimes(dates);
                 }
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
+                }
 
                 list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
 
@@ -1145,6 +1152,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPaySuccessTime()!=null){
                     String dates = sdf.format(list.get(i).getPaySuccessTime());
                     list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
                 }
                 list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
 
@@ -1550,6 +1560,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("appId",req.getAppId());
         map.put("globalId",req.getGlobalId());
         map.put("shortName",req.getShortName());
+        map.put("branchCompany",req.getBranchCompany());
         return orderDao.selectOrderListCount(map);
     }
 

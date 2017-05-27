@@ -1,6 +1,7 @@
 package com.jkm.hss.admin.helper.requestparam;
 
 import com.jkm.base.common.entity.PageQueryParams;
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import lombok.Data;
 
 /**
@@ -25,7 +26,8 @@ public class DistributeQrCodeRequest  extends PageQueryParams {
      */
     private String firstName;
     /**
-     * 操作人（0全部 1boss 2代理商）
+     * 操作人（0全部 1boss 2代理商 3分公司）
+     * {@link EnumQRCodeDistributeType2}
      */
     private int type;
     /**

@@ -20,7 +20,7 @@ public class FirstDealerResponse {
 
 
     /**
-     * 代理手机号
+     * 代理编码
      */
     private String markCode;
 
@@ -67,4 +67,8 @@ public class FirstDealerResponse {
      * 好收银产品编码
      */
     private long hsyProductId;
+    /**
+     * 所属公司
+     */
+    private String oemName;
 }

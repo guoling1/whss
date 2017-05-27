@@ -10,6 +10,7 @@
         channel_sign,
         view_channel_name,
         channel_short_name,
+        dealer_id,
         status
         )VALUES(
          #{gatewayType},
@@ -19,6 +20,7 @@
          #{channelSign},
          #{viewChannelName},
          #{channelShortName},
+         #{dealerId},
          #{status}
         )
     </insert>
@@ -32,13 +34,19 @@
         channel_sign = #{channelSign},
         view_channel_name = #{viewChannelName},
         channel_short_name = #{channelShortName},
+        dealer_id = #{dealerId},
         status = #{status}
         WHERE id = #{id}
     </update>
-    <select id="selectByProductTypeAndGatewayAndProductId"
+    <update id="deleteGateway">
+        UPDATE tb_product_channel_gateway
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+    <select id="selectByProductTypeAndGatewayAndProductIdAndDealerId"
             resultType="com.jkm.hss.product.entity.ProductChannelGateway">
         SELECT * FROM tb_product_channel_gateway
-        WHERE product_type = #{type} AND gateway_type = #{gatewayType} AND product_id = #{productId} AND status = 2 AND gateway_type = 'product'
+        WHERE product_type = #{type} AND gateway_type = #{gatewayType} AND product_id = #{productId} AND status = 2 AND gateway_type = 'product' AND dealer_id = #{dealerId}
     </select>
 
     <update id="recommend">

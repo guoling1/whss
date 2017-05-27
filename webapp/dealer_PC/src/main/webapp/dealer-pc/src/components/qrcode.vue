@@ -83,7 +83,8 @@
                     {{ scope.row.activateTime | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="secondDealerName" label="代理名称"></el-table-column>
+                <el-table-column prop="firstDealerName" label="一级代理名称"></el-table-column>
+                <el-table-column prop="secondDealerName" label="二级代理名称"></el-table-column>
                 <el-table-column prop="merchantName" label="商户名称"></el-table-column>
                 <el-table-column prop="merchantMarkCode" label="商户编码"></el-table-column>
                 <el-table-column prop="merchantStatus" label="商户状态"></el-table-column>

@@ -118,4 +118,5 @@ public interface HsyMerchantAuditService {
      */
     String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) throws ParseException;
 
+
 }

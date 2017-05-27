@@ -8,10 +8,7 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.entity.QueryMerchantRequest;
-import com.jkm.hss.dealer.entity.QueryMerchantResponse;
+import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
@@ -108,6 +105,7 @@ public interface DealerService {
      */
     List<Dealer> getByAccountIds(List<Long> accountIds);
 
+
     /**
      * 按mobile查询
      *
@@ -153,7 +151,7 @@ public interface DealerService {
      * @param proxyMame
      * @return
      */
-    long getByProxyName(String proxyMame);
+    long selectByProxyNameAndOemType(String proxyMame,int oemType);
 
     /**
      * 查询代理商名称是否重复
@@ -161,7 +159,7 @@ public interface DealerService {
      * @param proxyMame
      * @return
      */
-    long getByProxyNameUnIncludeNow(String proxyMame, long dealerId);
+    long getByProxyNameUnIncludeNow(String proxyMame, int oemType, long dealerId);
 
     /**
      * 按手机号和名称模糊匹配
@@ -379,6 +377,18 @@ public interface DealerService {
      */
     void addOrUpdateHssDealer(HssDealerAddOrUpdateRequest request);
     /**
+     * 更新或新增分公司Hss配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssOem(OemAddOrUpdateRequest request);
+    /**
+     * 更新或新增好收收分公司配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssOem(HssOemAddOrUpdateRequest request);
+    /**
      * 更新或新增好收银代理商配置信息
      *
      * @param request
@@ -438,6 +448,20 @@ public interface DealerService {
      */
     PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
     /**
+     * 【分公司后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondOem(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【代理商后台】一级代理商列表
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    PageModel<FirstDealerResponse> listFirstDealer(FirstDealerSearchRequest firstDealerSearchRequest);
+    /**
      * 【代理商后台】新增或修改代理商产品
      *
      * @param request
@@ -452,7 +476,7 @@ public interface DealerService {
      * @param endCode
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type,String sysType, long dealerId, long toDealerId, String startCode, String endCode);
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type,String sysType, long dealerId, long toDealerId, String startCode, String endCode,int dtype,long operatorId);
 
     /**
      * 按个数分配
@@ -462,7 +486,7 @@ public interface DealerService {
      * @param count
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count);
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count,int dtype,long operatorId);
     /**
      * 根据产品类型和手机号或代理商名称模糊查询
      * @param dealerOfFirstDealerRequest
@@ -481,7 +505,7 @@ public interface DealerService {
      * @param distributeRecordRequest
      * @return
      */
-    PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId);
+    PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId,int dtype);
     /**
      * 【boss后台】二维码分配记录
      * @param distributeRecordRequest
@@ -498,9 +522,9 @@ public interface DealerService {
 
     /**
      * 根据一级代理商id查询名称
-     * @param firstLevelDealerId
+     * @param firstDealerId
      */
-    MerchantInfoResponse getProxyName(int firstLevelDealerId);
+    MerchantInfoResponse getProxyName(long firstDealerId);
 
     /**
      * 查询一级代理商的编码和名称
@@ -557,4 +581,39 @@ public interface DealerService {
 
 
 
+
+    /**
+     * 分公司账户列表查询
+     * @param req
+     * @return
+     */
+    List<BranchAccountResponse> getBranch(BranchAccountRequest req);
+
+    /**
+     * 分公司账户列表总数查询
+     * @param req
+     * @return
+     */
+    int getBranchCount(BranchAccountRequest req);
+
+    /**
+     * 分公司账户明细
+     * @param req
+     * @return
+     */
+    List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req);
+
+    /**
+     * 分公司账户明细总数
+     * @param req
+     * @return
+     */
+    int getBranchDetailCount(BranchAccountRequest req);
+    //    一下为分公司新增
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 }

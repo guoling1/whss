@@ -10,12 +10,16 @@ import home from './components/home.vue'
 import development from './components/development.vue'
 
 import profits_detail from './components/profits_detail.vue'
-import change_password from './components/change_password.vue'
+import profits_statistical from './components/profits_statistical.vue'
 import dealer_list from './components/dealer_list.vue'
+import first_dealer_list from './components/first_dealer_list.vue'
 import dealer_add from './components/dealer_add.vue'
+import first_dealer_add from './components/first_dealer_add.vue'
 import dealer_modify from './components/dealer_modify.vue'
 import product_add from './components/product_add.vue'
 import distribution_qrcode from './components/distribution_qrcode.vue'
+import distribution_qrcode_success from './components/distribution_qrcode_success.vue'
+import production_qrcode from './components/production_qrcode.vue'
 import qrcode_distribution from './components/qrcode_distribution.vue'
 import balance_withdrawal from './components/balance_withdrawal.vue'
 import withdrawal from './components/withdrawal.vue'
@@ -32,6 +36,7 @@ import roles from './components/roles.vue'
 import roles_add from './components/roles_add.vue'
 import information from './components/information.vue'
 import policy from './components/policy.vue'
+import change_password from './components/change_password.vue'
 
 import store from './store/index'
 
@@ -64,12 +69,16 @@ const routes = [
       {path: 'development', name: "development", component: development},
       {path: 'home', name: "home", component: home},
       {path: 'profits_detail', name: "profits_detail", component: profits_detail},
-      {path: 'change_password', name: "change_password", component: change_password},
+      {path: 'profits_statistical', name: "profits_statistical", component: profits_statistical},
       {path: 'dealer_list', name: "dealer_list", component: dealer_list},
+      {path: 'first_dealer_list', name: "first_dealer_list", component: first_dealer_list},
       {path: 'dealer_add', name: "dealer_add", component: dealer_add},
+      {path: 'first_dealer_add', name: "first_dealer_add", component: first_dealer_add},
       {path: 'dealer_modify', name: "dealer_modify", component: dealer_modify},
       {path: 'product_add', name: "product_add", component: product_add},
       {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},
+      {path: 'distribution_qrcode_success', name: "distribution_qrcode_success", component: distribution_qrcode_success},
+      {path: 'production_qrcode', name: "production_qrcode", component: production_qrcode},
       {path: 'qrcode_distribution', name: "qrcode_distribution", component: qrcode_distribution},
       {path: 'balance_withdrawal', name: "balance_withdrawal", component: balance_withdrawal},
       {path: 'withdrawal', name: "withdrawal", component: withdrawal},
@@ -86,6 +95,7 @@ const routes = [
       {path: 'roles_add', name: "roles_add", component: roles_add},
       {path: 'information', name: "information", component: information},
       {path: 'policy', name: "policy", component: policy},
+      {path: 'change_password', name: "change_password", component: change_password},
     ]
   }
 ];

@@ -143,7 +143,7 @@ public interface AdminUserService {
      * @param endCode
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type, String sysType, long dealerId,  String startCode, String endCode);
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type, String sysType, long dealerId,  String startCode, String endCode,long operatorId);
 
     /**
      * 按个数分配
@@ -152,7 +152,7 @@ public interface AdminUserService {
      * @param count
      * @return
      */
-    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count);
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count,long operatorId);
 
     /**
      * 剩余二维码个数
@@ -176,11 +176,25 @@ public interface AdminUserService {
      */
     PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest);
     /**
-     * 员工列表
+     * 代理商员工列表
      * @param adminDealerUserListRequest
      * @return
      */
     PageModel<AdminUserDealerListResponse> userDealerList(AdminDealerUserListRequest adminDealerUserListRequest);
+    /**
+     * 分公司员工列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    PageModel<AdminUserDealerListResponse> userOemList(AdminDealerUserListRequest adminDealerUserListRequest);
+
+    /**
+     *查询代理商或分公司的除当前用户名
+     * @param username
+     * @param id
+     * @return
+     */
+    Long selectDealerByUsernameUnIncludeNow(String username,long id);
 
     /**
      *
@@ -202,7 +216,8 @@ public interface AdminUserService {
      * @param adminUser
      * @return
      */
-    long createFirstDealerUser(AdminUser adminUser);
+    long createFirstDealerUser(AdminUser adminUser,int oemType);
+
     /**
      * 创建二级代理商管理账户
      * @param adminUser

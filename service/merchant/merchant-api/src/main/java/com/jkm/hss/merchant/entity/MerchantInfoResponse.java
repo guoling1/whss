@@ -10,6 +10,16 @@ import java.util.Date;
 public class MerchantInfoResponse {
 
     /**
+     * 分公司id
+     */
+    private long oemId;
+
+    /**
+     * 分公司名称
+     */
+    private String branchCompany;
+
+    /**
      * 资料审核状态
      */
     private String stat;

@@ -6,11 +6,12 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">代理商列表</h3>
+              <h3 class="box-title">二级代理商列表</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body screen-top">
-              <el-button type="primary" icon="plus" size="small" @click="_$power(addDealer,'dealer_add')">新增代理商</el-button>
+            <div v-if="canAdd" class="box-body screen-top">
+              <el-button type="primary" icon="plus" size="small" @click="_$power(addDealer,'dealer_add')">新增代理商
+              </el-button>
               <!--<el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>-->
             </div>
             <div class="box-body screen-top">
@@ -68,6 +69,7 @@
                     <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.markCode}}</el-button>
                   </template>
                 </el-table-column>
+                <el-table-column prop="firstProxyName" label="上级代理"></el-table-column>
                 <el-table-column label="省市">
                   <template scope="scope">
                     {{scope.row.belongProvinceName}}{{scope.row.belongCityName}}
@@ -103,7 +105,8 @@
                                      @click="_$power(scope.row.id,scope.row.hsyProductId,openHsy,'dealer_product_add')">开通</el-button>
                         </span>
                         <span v-else>
-                          <el-button type="text" @click="_$power(scope.row.id,scope.row.hsyProductId,checkHsy,'dealer_detail')">查看产品详情</el-button>
+                          <el-button type="text"
+                                     @click="_$power(scope.row.id,scope.row.hsyProductId,checkHsy,'dealer_detail')">查看产品详情</el-button>
                         </span>
                       </span>
                       <span v-else>未开通</span>
@@ -134,10 +137,12 @@
   </div>
 </template>
 <script lang="babel">
+  import store from '../store'
   export default {
     name: 'app',
     data() {
       return {
+        canAdd: false,
         name: '',
         markCode: '',
         sysType: '',
@@ -165,6 +170,15 @@
         districtCode: '',
         ext: []
       }
+    },
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            vm.canAdd = (data.dealerLeavel == 1);
+          }
+        });
+      });
     },
     created() {
       this.getData();
@@ -231,16 +245,28 @@
         this.$router.push({path: '/daili/app/dealer_modify', query: {dealerId: id}});
       },
       openHss: function (id, productId) {
-        this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
+        this.$router.push({
+          path: '/daili/app/product_add',
+          query: {product: 'hss', dealerId: id, productId: productId}
+        });
       },
       openHsy: function (id, productId) {
-        this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
+        this.$router.push({
+          path: '/daili/app/product_add',
+          query: {product: 'hsy', dealerId: id, productId: productId}
+        });
       },
       checkHss: function (id, productId) {
-        this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
+        this.$router.push({
+          path: '/daili/app/product_add',
+          query: {product: 'hss', dealerId: id, productId: productId}
+        });
       },
       checkHsy: function (id, productId) {
-        this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
+        this.$router.push({
+          path: '/daili/app/product_add',
+          query: {product: 'hsy', dealerId: id, productId: productId}
+        });
       },
       handleSizeChange(val) {
         this.pageSize = val;

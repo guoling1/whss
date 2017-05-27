@@ -12,6 +12,7 @@ import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
@@ -19,6 +20,7 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
@@ -49,17 +51,13 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
-import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hss.product.servcie.PartnerRuleSettingService;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,10 +103,13 @@ public class DealerServiceImpl implements DealerService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
-    @Autowired
     private DealerProfitService dealerProfitService;
     @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
+    @Autowired
+    private AdminUserService adminUserService;
+    @Autowired
+    private ProductChannelGatewayService productChannelGatewayService;
     /**
      * {@inheritDoc}
      * 有问题
@@ -195,6 +196,10 @@ public class DealerServiceImpl implements DealerService {
                     return map;
                 }
                 log.info("-----------------------" + isActTime +"" +(EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign));
+               //判断商户是否属于分公司
+                if (merchantInfo.isBelongToOem()){
+                    return this.getShallProfitDirectToOem(orderNo, tradeAmount, channelSign, merchantId);
+                }
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
                     //直属商户
@@ -1036,6 +1041,196 @@ public class DealerServiceImpl implements DealerService {
         return map;
     }
 
+    //分公司商户分润 hss
+    private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitDirectToOem(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
+        log.info("分公司交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
+        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderIdToHss(orderNo);
+        if (detail != null){
+            log.error("此订单分润业务已经处理过[" + orderNo +"]");
+            return null;
+        }
+        //根据代理商id查询代理商信息
+        final Optional<MerchantInfo> optional = this.merchantInfoService.selectById(merchantId);
+        Preconditions.checkArgument(optional.isPresent(), "商户信息不存在");
+        final MerchantInfo merchantInfo = optional.get();
+        //待分润金额
+        final BigDecimal totalFee = tradeAmount;
+        final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
+        //获取产品的信息, 产品通道的费率
+        final Optional<Product> productOptional = this.productService.selectById(merchantInfo.getProductId());
+        final  Product product = productOptional.get();
+        //查询分公司信息
+        final Dealer oemInfo = this.dealerDao.selectById(merchantInfo.getOemId());
+        //计算分公司结算费率
+        final DealerChannelRate oemDealerChannelRate =
+                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(merchantInfo.getOemId(), product.getId(), channelSign).get();
+        //判断该商户属于哪个代理, 若不属于代理, 则分润进入分公司资金帐户
+        if (merchantInfo.getDealerId() == 0){
+            final ProductChannelDetail productChannelDetail =
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(),channelSign).get();
+            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+            final BasicChannel basicChannel = channelOptional.get();
+            //商户手续费
+            final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
+            final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
+            //计算商户手续费，按照通道来
+            final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
+            //通道成本， 不同通道成本计算不同
+            final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+            //通道分润
+            final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
+                    subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //分公司分润
+            final BigDecimal oemMoney = totalFee.multiply(merchantRate.subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //产品分润
+            final BigDecimal productMoney = waitMoney.subtract(channelMoney).subtract(basicMoney).subtract(oemMoney);
+            //记录通道, 产品分润明细
+            final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+            companyProfitDetail.setProductType(EnumProductType.HSS.getId());
+            companyProfitDetail.setMerchantId(merchantId);
+            companyProfitDetail.setPaymentSn(orderNo);
+            companyProfitDetail.setChannelType(channelSign);
+            companyProfitDetail.setTotalFee(totalFee);
+            companyProfitDetail.setWaitShallAmount(waitMoney);
+            companyProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
+            companyProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
+            companyProfitDetail.setProductShallAmount(productMoney);
+            companyProfitDetail.setChannelCost(basicMoney);
+            companyProfitDetail.setChannelShallAmount(channelMoney);
+            companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+            this.companyProfitDetailService.add(companyProfitDetail);
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+            map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
+            return map;
+        }
+
+        final Dealer dealer = this.dealerDao.selectById(merchantInfo.getDealerId());
+        //查询该代理商的收单利率
+        final DealerChannelRate dealerChannelRate =
+                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),channelSign).get();
+        //获取产品的信息, 产品通道的费率
+        final Optional<ProductChannelDetail> productChannelDetailOptional =
+                this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign);
+        final ProductChannelDetail productChannelDetail = productChannelDetailOptional.get();
+        final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+        final BasicChannel basicChannel = channelOptional.get();
+        //商户手续费
+        final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
+        //待分润金额
+        final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
+        //计算商户手续费，按照通道来
+        final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
+        //判断代理商等级
+        if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
+            //一级
+            //一级分润
+            BigDecimal firstMoney = totalFee.multiply(merchantRate.
+                    subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //分公司分润
+            final BigDecimal oemMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate()));
+            //通道成本
+            final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+            //通道分润
+            final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
+                    subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //产品分润
+            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(channelMoney).subtract(basicMoney);
+            //记录分润明细
+            final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+            shallProfitDetail.setProductType(EnumProductType.HSS.getId());
+            shallProfitDetail.setMerchantId(merchantInfo.getId());
+            shallProfitDetail.setTotalFee(totalFee);
+            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setPaymentSn(orderNo);
+            shallProfitDetail.setWaitShallAmount(waitMoney);
+            shallProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
+            shallProfitDetail.setIsDirect(1);
+            shallProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
+            shallProfitDetail.setChannelCost(basicMoney);
+            shallProfitDetail.setChannelShallAmount(channelMoney);
+            shallProfitDetail.setProductShallAmount(productMoney);
+            shallProfitDetail.setFirstDealerId(dealer.getId());
+            shallProfitDetail.setFirstShallAmount(firstMoney);
+            shallProfitDetail.setSecondDealerId(0);
+            shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
+            shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+            this.shallProfitDetailService.init(shallProfitDetail);
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+            if (firstMoney.compareTo(new BigDecimal("0")) == -1){
+                //一代分润金额小于0
+                firstMoney = new BigDecimal("0");
+            }
+            map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerChannelRate.getDealerTradeRate()));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+            map.put("oemMoney", Triple.of(oemInfo.getAccountId(), oemMoney, oemDealerChannelRate.getDealerTradeRate()));
+        }else{
+
+            //二级
+            //获取二级的一级dealer信息
+            final Dealer firstDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
+            //查询二级的一级dealer 收单费率
+            final DealerChannelRate firstDealerChannelRate =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
+            //一级分润
+            BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
+                    subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //分公司分润
+            final BigDecimal oemMoney = totalFee.multiply(firstDealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate()));
+            //二级分润
+            BigDecimal secondMoney = totalFee.multiply(merchantRate.
+                    subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //通道分润
+            final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
+                    subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            //通道成本
+            final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+            //产品分润
+            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(secondMoney).subtract(channelMoney).subtract(basicMoney);
+            //记录分润明细
+            final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+            shallProfitDetail.setProductType(EnumProductType.HSS.getId());
+            shallProfitDetail.setMerchantId(merchantInfo.getId());
+            shallProfitDetail.setTotalFee(totalFee);
+            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setPaymentSn(orderNo);
+            shallProfitDetail.setWaitShallAmount(waitMoney);
+            shallProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
+            shallProfitDetail.setIsDirect(0);
+            shallProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
+            shallProfitDetail.setChannelCost(basicMoney);
+            shallProfitDetail.setChannelShallAmount(channelMoney);
+            shallProfitDetail.setProductShallAmount(productMoney);
+            shallProfitDetail.setFirstDealerId(firstDealer.getId());
+            shallProfitDetail.setFirstShallAmount(firstMoney);
+            shallProfitDetail.setSecondDealerId(dealer.getId());
+            shallProfitDetail.setSecondShallAmount(secondMoney);
+            shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+            this.shallProfitDetailService.init(shallProfitDetail);
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+            if (firstMoney.compareTo(new BigDecimal("0")) == -1){
+                //一代分润金额小于0
+                firstMoney = new BigDecimal("0");
+            }
+            map.put("oemMoney", Triple.of(oemInfo.getAccountId(), oemMoney, oemDealerChannelRate.getDealerTradeRate()));
+            map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, firstDealerChannelRate.getDealerTradeRate()));
+            if (secondMoney.compareTo(new BigDecimal("0")) == -1){
+                //二代分润金额小于0
+                secondMoney = new BigDecimal("0");
+            }
+            map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerChannelRate.getDealerTradeRate()));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+        }
+        log.info("订单" + orderNo + "分润处理成功,返回map成功");
+        return map;
+    }
+
     //按照通道计算通道成本
     private BigDecimal calculateChannelFee(BigDecimal basicTrade, int channelSign) {
 
@@ -1307,6 +1502,7 @@ public class DealerServiceImpl implements DealerService {
         return this.dealerDao.selectByAccountIds(accountIds);
     }
 
+
     /**
      * {@inheritDoc}
      *
@@ -1315,7 +1511,7 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     public Optional<Dealer> getByMobile(final String mobile) {
-        return Optional.fromNullable(this.dealerDao.selectByMobile(mobile));
+        return Optional.fromNullable(this.dealerDao.getByMobile(mobile));
     }
 
     /**
@@ -1369,8 +1565,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public long getByProxyName(final String proxyMame) {
-        return this.dealerDao.selectByProxyName(proxyMame);
+    public long selectByProxyNameAndOemType(String proxyMame,int oemType) {
+        return this.dealerDao.selectByProxyNameAndOemType(proxyMame,oemType);
     }
 
     /**
@@ -1381,8 +1577,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public long getByProxyNameUnIncludeNow(final String proxyMame, final long dealerId) {
-        return this.dealerDao.selectByProxyNameUnIncludeNow(proxyMame, dealerId);
+    public long getByProxyNameUnIncludeNow(String proxyMame, int oemType, long dealerId) {
+        return this.dealerDao.selectByProxyNameUnIncludeNow(proxyMame, oemType,dealerId);
     }
 
     /**
@@ -1803,9 +1999,17 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
         dealer.setDealerBelong(firstLevelDealerAdd2Request.getDealerBelong());
+        dealer.setOemType(firstLevelDealerAdd2Request.getOemType());
+        dealer.setOemId(firstLevelDealerAdd2Request.getOemId());
         this.add2(dealer);
-        this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
-                GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
+        if(firstLevelDealerAdd2Request.getOemType()==EnumOemType.OEM.getId()){
+            productChannelGatewayService.initOemGateway(dealer.getId());
+            this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.OEM, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                    GlobalID.GetInviteID(EnumGlobalDealerLevel.OEM,dealer.getId()+""),dealer.getId());
+        }else{
+            this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                    GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
+        }
         return dealer.getId();
     }
     /**
@@ -1841,6 +2045,8 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginName(secondLevelDealerAdd2Request.getLoginName());
         dealer.setLoginPwd(DealerSupport.passwordDigest(secondLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(secondLevelDealerAdd2Request.getEmail());
+        dealer.setOemId(secondLevelDealerAdd2Request.getOemId());
+        dealer.setOemType(secondLevelDealerAdd2Request.getOemType());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.SECORDDEALER,dealer.getId()+""),dealer.getId());
@@ -1869,7 +2075,7 @@ public class DealerServiceImpl implements DealerService {
         final PageModel<FirstDealerResponse> pageModel = new PageModel<>(listFirstDealerRequest.getPageNo(), listFirstDealerRequest.getPageSize());
         listFirstDealerRequest.setOffset(pageModel.getFirstIndex());
         listFirstDealerRequest.setCount(pageModel.getPageSize());
-        final int count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
+        final Long count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
         final List<FirstDealerResponse> dealers = this.dealerDao.selectFirstDealersByPageParams(listFirstDealerRequest);
         pageModel.setCount(count);
         pageModel.setRecords(dealers);
@@ -2081,6 +2287,90 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     @Transactional
+    public void addOrUpdateHssOem(final OemAddOrUpdateRequest request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        final OemAddOrUpdateRequest.Product product = request.getProduct();
+        final long productId = product.getProductId();
+        final List<OemAddOrUpdateRequest.Channel> channels = product.getChannels();
+        for (OemAddOrUpdateRequest.Channel channel : channels) {
+            final Optional<DealerChannelRate> dealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), productId, channel.getChannelType());
+            if(dealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.update(dealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(productId);
+                dealerChannelRate.setChannelTypeSign(channel.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(channel.getSettleType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void addOrUpdateHssOem(final HssOemAddOrUpdateRequest request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
+        dealer.setInviteBtn(EnumRecommendBtn.OFF.getId());
+        this.updateRecommendBtn(dealer);
+        final HssOemAddOrUpdateRequest.Product product = request.getProduct();
+        final long productId = product.getProductId();
+        final List<HssOemAddOrUpdateRequest.Channel> channels = product.getChannels();
+        for (HssOemAddOrUpdateRequest.Channel channel : channels) {
+            final Optional<DealerChannelRate> dealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), productId, channel.getChannelType());
+            if(dealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.update(dealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(productId);
+                dealerChannelRate.setChannelTypeSign(channel.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(channel.getSettleType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+        }
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
     public void addOrUpdateHsyDealer(final HsyDealerAddOrUpdateRequest request) {
         final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
         final Dealer dealer = dealerOptional.get();
@@ -2203,7 +2493,40 @@ public class DealerServiceImpl implements DealerService {
         pageModel.setRecords(dealers);
         return pageModel;
     }
-
+    /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    @Override
+    public PageModel<SecondDealerResponse> listSecondOem(SecondDealerSearchRequest secondDealerSearchRequest) {
+        final PageModel<SecondDealerResponse> pageModel = new PageModel<>(secondDealerSearchRequest.getPageNo(), secondDealerSearchRequest.getPageSize());
+        secondDealerSearchRequest.setOffset(pageModel.getFirstIndex());
+        secondDealerSearchRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectSecondOemCountByPage(secondDealerSearchRequest);
+        final List<SecondDealerResponse> dealers = this.dealerDao.selectSecondOemByPage(secondDealerSearchRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
+    }
+    /**
+     * 【代理商后台】一级代理商列表
+     *
+     * @param firstDealerSearchRequest
+     * @return
+     */
+    @Override
+    public PageModel<FirstDealerResponse> listFirstDealer(FirstDealerSearchRequest firstDealerSearchRequest) {
+        final PageModel<FirstDealerResponse> pageModel = new PageModel<>(firstDealerSearchRequest.getPageNo(), firstDealerSearchRequest.getPageSize());
+        firstDealerSearchRequest.setOffset(pageModel.getFirstIndex());
+        firstDealerSearchRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectFirstDealerCountByPage(firstDealerSearchRequest);
+        final List<FirstDealerResponse> dealers = this.dealerDao.selectFirstDealersByPage(firstDealerSearchRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
+    }
     /**
      * {@inheritDoc}
      *
@@ -2254,7 +2577,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType,final long dealerId, final long toDealerId,
-                                                               final String startCode, final String endCode) {
+                                                               final String startCode, final String endCode,int dtype,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -2282,8 +2605,8 @@ public class DealerServiceImpl implements DealerService {
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
-            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
-            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            distributeQRCodeRecord.setDistributeType(dtype);
+            distributeQRCodeRecord.setOperatorId(operatorId);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
@@ -2300,7 +2623,7 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count) {
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count,int dtype,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -2326,7 +2649,8 @@ public class DealerServiceImpl implements DealerService {
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
-            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            distributeQRCodeRecord.setDistributeType(dtype);
+            distributeQRCodeRecord.setOperatorId(operatorId);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
@@ -2362,10 +2686,10 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId) {
+    public PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId,int dtype) {
         final PageModel<DistributeRecordResponse> pageModel = new PageModel<>(distributeRecordRequest.getPageNo(), distributeRecordRequest.getPageSize());
-        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName());
-        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),pageModel.getFirstIndex(),pageModel.getPageSize());
+        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),dtype);
+        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),pageModel.getFirstIndex(),pageModel.getPageSize(),dtype);
         List<DistributeRecordResponse> distributeRecordResponses = new ArrayList<DistributeRecordResponse>();
         if(distributeQRCodeRecords.size()>0){
             for(int i=0;i<distributeQRCodeRecords.size();i++){
@@ -2386,7 +2710,10 @@ public class DealerServiceImpl implements DealerService {
                 distributeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 distributeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
                 distributeRecordResponse.setType(distributeQRCodeRecord.getType());
-                distributeRecordResponse.setOperateUser("admin");
+                Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(distributeQRCodeRecord.getOperatorId());
+                if(adminUserOptional.isPresent()){
+                    distributeRecordResponse.setOperateUser(adminUserOptional.get().getUsername());
+                }
                 distributeRecordResponses.add(distributeRecordResponse);
             }
         }
@@ -2454,7 +2781,12 @@ public class DealerServiceImpl implements DealerService {
                 bossDistributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 bossDistributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
                 bossDistributeQRCodeRecordResponse.setType(distributeQRCodeRecord.getType());
-                bossDistributeQRCodeRecordResponse.setOperateUser("admin");
+                Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(distributeQRCodeRecord.getOperatorId());
+                if(adminUserOptional.isPresent()){
+                    bossDistributeQRCodeRecordResponse.setOperateUser(adminUserOptional.get().getUsername());
+                }else{
+                    bossDistributeQRCodeRecordResponse.setOperateUser("");
+                }
                 bossDistributeQRCodeRecordResponses.add(bossDistributeQRCodeRecordResponse);
             }
         }
@@ -2470,8 +2802,8 @@ public class DealerServiceImpl implements DealerService {
     }
 
     @Override
-    public MerchantInfoResponse getProxyName(int firstLevelDealerId) {
-        MerchantInfoResponse response = dealerDao.getProxyName(firstLevelDealerId);
+    public MerchantInfoResponse getProxyName(long firstDealerId) {
+        MerchantInfoResponse response = dealerDao.getProxyName(firstDealerId);
         return response;
     }
 
@@ -2613,13 +2945,43 @@ public class DealerServiceImpl implements DealerService {
 
 
 
+    @Override
+    public List<BranchAccountResponse> getBranch(BranchAccountRequest req) {
+        List<BranchAccountResponse> list = this.dealerDao.getBranch(req);
+        return list;
+    }
+
+    @Override
+    public int getBranchCount(BranchAccountRequest req) {
+        return this.dealerDao.getBranchCount(req);
+    }
+
+    @Override
+    public List<BranchAccountDetailResponse> getBranchDetail(BranchAccountRequest req) {
+        List<BranchAccountDetailResponse> list = this.dealerDao.getBranchDetail(req);
+        return list;
+    }
+
+    @Override
+    public int getBranchDetailCount(BranchAccountRequest req) {
+        return this.dealerDao.getBranchDetailCount(req);
+    }
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     *
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    @Override
+    public List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
+        return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+    }
     //判断所属通道是否属于升级网关通道
     private boolean isBelongPartnerRulesSetting(int channelSign){
-
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         Optional<PartnerRuleSetting> partnerRuleSettingOptional =
         this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign);
-
         return partnerRuleSettingOptional.isPresent();
     }
 }

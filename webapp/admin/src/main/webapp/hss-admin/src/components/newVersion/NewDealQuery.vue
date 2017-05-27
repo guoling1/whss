@@ -39,6 +39,10 @@
               <el-input style="width: 193px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
+              <label>所属分公司:</label>
+              <el-input style="width: 188px" v-model="query.branchCompany" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
               <label>所属一级代理:</label>
               <el-input style="width: 193px" v-model="proxyName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
@@ -131,6 +135,7 @@
             </el-table-column>
             <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
             <el-table-column prop="markCode" label="收款商户编号" min-width="120"></el-table-column>
+            <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
             <el-table-column label="支付金额" align="right" min-width="90">
@@ -230,7 +235,8 @@
           loadUrl: '',
           loadUrl1: '',
           payChannelSign:'',
-          appId:''
+          appId:'',
+          branchCompany:''
         },
         appId:'',
         merchantName: '',

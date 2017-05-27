@@ -19,4 +19,8 @@ public class DealerOfFirstDealerRequest {
      * 所属产品
      */
     private String sysType;
+    /**
+     * 分公司编码
+     */
+    private long oemId;
 }

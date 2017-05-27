@@ -51,6 +51,9 @@
         <if test="status!=null and status!=''">
         AND a.`STATUS` = #{status}
         </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
     </select>
 
 
@@ -170,9 +173,13 @@
         <if test="auditTime1!=null and auditTime1!=''">
             AND a.AUDITTIME <![CDATA[ <= ]]> #{auditTime1}
         </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
         ORDER BY
         a.CREATETIME DESC
     </select>
+
 
     <!-- 查询商户待审核列表 -->
     <select id="getCheckPending" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">

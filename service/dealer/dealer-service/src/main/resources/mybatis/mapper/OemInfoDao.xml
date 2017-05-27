@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.dealer.dao.OemInfoDao">
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,	dealer_id,brand_name,	wechat_name,wechat_code,app_id,app_secret,logo,qr_code,status,create_time,update_time,oem_no
+    </sql>
+
+    <!-- 添加 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.dealer.entity.OemInfo">
+        INSERT INTO tb_oem_info (
+        dealer_id,
+        brand_name,
+        wechat_name,
+        wechat_code,
+        app_id,
+        app_secret,
+        logo,
+        qr_code,
+        status,
+        oem_no
+        )VALUES (
+        #{dealerId},
+        #{brandName},
+        #{wechatName},
+        #{wechatCode},
+        #{appId},
+        #{appSecret},
+        #{logo},
+        #{qrCode},
+        #{status},
+         upper(replace(uuid(), '-', ''))
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_oem_info
+        SET
+        dealer_id = #{dealerId},
+        brand_name = #{brandName},
+        wechat_name = #{wechatName},
+        wechat_code = #{wechatCode},
+        app_id = #{appId},
+        app_secret = #{appSecret},
+        logo = #{logo},
+        qr_code = #{qrCode},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByDealerId" resultType="com.jkm.hss.dealer.entity.OemInfo">
+        SELECT <include refid="Base_Column_List" /> FROM tb_oem_info where dealer_id=#{dealerId} and status=1 limit 0,1
+    </select>
+
+    <select id="selectByOemNo" resultType="com.jkm.hss.dealer.entity.OemInfo">
+        SELECT <include refid="Base_Column_List" /> FROM tb_oem_info where oem_no=#{oemNo} and status=1
+    </select>
+</mapper>

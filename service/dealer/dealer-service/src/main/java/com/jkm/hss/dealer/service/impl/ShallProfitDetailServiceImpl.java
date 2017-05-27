@@ -104,6 +104,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 return this.withdrawProfitCountToHssForAct(orderNo,tradeAmount,channelSign, merchantId);
             }else{
                 //HSS
+                final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+                if (merchantInfo.isBelongToOem()){
+                    return this.withdrawProfitCountToHssToOem(orderNo,tradeAmount,channelSign, merchantId);
+                }
                 return this.withdrawProfitCountToHss(orderNo,tradeAmount,channelSign, merchantId);
             }
 
@@ -396,6 +400,172 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, "M1"));
                 map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, "M1"));
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
+                map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
+            }
+            log.info("订单" + orderNo + "分润处理成功,返回map成功");
+            return map;
+        }catch (final Throwable throwable){
+
+            log.error("商户[" + merchantId + "]请求进行提现分润异常，交易订单号:" + orderNo + "异常信息：" + throwable.getMessage());
+            throw throwable;
+        }
+
+    }
+
+    //hss  分公司提现分润
+    private Map<String,Triple<Long,BigDecimal,String>> withdrawProfitCountToHssToOem(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
+        log.info("分公司商户[" + merchantId + "]请求进行提现分润，交易订单号:" + orderNo);
+        //提现只有直接商户参与分润，分润计算方式不变
+        final Optional<MerchantInfo> merchantInfoOptional =
+                this.merchantInfoService.selectById(merchantId);
+        Preconditions.checkNotNull(merchantInfoOptional.isPresent(), "商户信息不存在");
+        final MerchantInfo merchantInfo = merchantInfoOptional.get();
+        if (merchantInfo.getFirstMerchantId() != 0){
+            log.info("商户[" + merchantId + "]请求进行提现分润，由于该商户是间接商户，不参与分润，直接进入公司账户，交易订单号:" + orderNo);
+
+            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
+            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+            final BasicChannel basicChannel = channelOptional.get();
+            final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
+            //获取产品的信息, 产品通道的费率
+            final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
+            final  Product product = productOptional.get();
+            final BigDecimal merchantWithdrawFee = this.getMerchantWithdrawFee(merchantInfo, channelSign);
+            final BigDecimal productMoney = merchantWithdrawFee.subtract(productChannelDetail.getProductWithdrawFee());
+            Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
+            map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
+            final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+            companyProfitDetail.setProductType(EnumProductType.HSS.getId());
+            companyProfitDetail.setMerchantId(merchantId);
+            companyProfitDetail.setPaymentSn(orderNo);
+            companyProfitDetail.setTotalFee(tradeAmount);
+            companyProfitDetail.setWaitShallAmount(merchantWithdrawFee);
+            companyProfitDetail.setWaitShallOriginAmount(merchantWithdrawFee);
+            companyProfitDetail.setProfitType(EnumProfitType.INDIRECTWITHDRAW.getId());
+            companyProfitDetail.setProductShallAmount(productMoney);
+            companyProfitDetail.setChannelShallAmount(channelMoney);
+            companyProfitDetail.setChannelCost(basicChannel.getBasicWithdrawFee());
+            companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+            this.companyProfitDetailService.add(companyProfitDetail);
+
+            return map;
+        }
+        final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
+        final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+        final BasicChannel basicChannel = channelOptional.get();
+        //获取产品的信息, 产品通道的费率
+        final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
+        final  Product product = productOptional.get();
+        //oem info
+        final Dealer oemInfo = this.dealerService.getById(merchantInfo.getOemId()).get();
+        try{
+            //提现分润
+            final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
+            final DealerChannelRate oemDealerChannelRate =
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(merchantInfo.getOemId(), product.getId(), channelSign).get();
+            if (merchantInfo.getDealerId() == 0){
+                final BigDecimal merchantWithdrawFee = this.getMerchantWithdrawFee(merchantInfo, channelSign);
+                final BigDecimal oemMoney = merchantWithdrawFee.subtract(oemDealerChannelRate.getDealerWithdrawFee());
+                final BigDecimal productMoney = oemDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
+                final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
+                final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+                companyProfitDetail.setProductType(EnumProductType.HSS.getId());
+                companyProfitDetail.setMerchantId(merchantId);
+                companyProfitDetail.setPaymentSn(orderNo);
+                companyProfitDetail.setTotalFee(tradeAmount);
+                companyProfitDetail.setWaitShallAmount(merchantWithdrawFee);
+                companyProfitDetail.setWaitShallOriginAmount(merchantWithdrawFee);
+                companyProfitDetail.setProfitType(EnumProfitType.WITHDRAW.getId());
+                companyProfitDetail.setProductShallAmount(productMoney);
+                companyProfitDetail.setChannelShallAmount(channelMoney);
+                companyProfitDetail.setChannelCost(basicChannel.getBasicWithdrawFee());
+                companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                this.companyProfitDetailService.add(companyProfitDetail);
+                map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
+                map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+                map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,"M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
+                return map;
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(merchantInfo.getDealerId());
+            Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
+            final Dealer dealer = dealerOptional.get();
+            //获取代理商通道费率
+            final DealerChannelRate dealerChannelRate =
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), product.getId(),channelSign).get();
+            //判断是几级代理
+            if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
+                //商户体现手续费
+                final BigDecimal withdrawMoney = this.getMerchantWithdrawFee(merchantInfo, channelSign);
+                final BigDecimal firstMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
+                final BigDecimal oemMoney = dealerChannelRate.getDealerWithdrawFee().subtract(oemDealerChannelRate.getDealerWithdrawFee());
+                final BigDecimal productMoney = oemDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
+                final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
+                final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+                shallProfitDetail.setProductType(EnumProductType.HSS.getId());
+                shallProfitDetail.setMerchantId(merchantId);
+                shallProfitDetail.setPaymentSn(orderNo);
+                shallProfitDetail.setTotalFee(tradeAmount);
+                shallProfitDetail.setChannelType(channelSign);
+                shallProfitDetail.setWaitShallAmount(withdrawMoney);
+                shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
+                shallProfitDetail.setIsDirect(1);
+                shallProfitDetail.setProfitType(EnumProfitType.WITHDRAW.getId());
+                shallProfitDetail.setChannelShallAmount(channelMoney);
+                shallProfitDetail.setProductShallAmount(productMoney);
+                shallProfitDetail.setFirstDealerId(dealer.getId());
+                shallProfitDetail.setFirstShallAmount(firstMoney);
+                shallProfitDetail.setSecondDealerId(0);
+                shallProfitDetail.setChannelCost(basicChannel.getBasicWithdrawFee());
+                shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
+                shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                this.shallProfitDetailDao.init(shallProfitDetail);
+                map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, "M1"));
+                map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, "M1"));
+                map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,"M1"));
+                map.put("productMoney",Triple.of(product.getAccountId(), productMoney, "M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
+            }else if(dealer.getLevel() == EnumDealerLevel.SECOND.getId()){
+                //查找一级代理的代理通道费率
+                final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealer.getFirstLevelDealerId());
+                Preconditions.checkNotNull(firstDealerOptional.isPresent(), "一级代理信息不存在");
+                final Dealer firstDealer = firstDealerOptional.get();
+                //获取一级代理商通道费率
+                final DealerChannelRate firstDealerChannelRate =
+                        this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(firstDealer.getId(), product.getId(),channelSign).get();
+                //商户体现手续费
+                final BigDecimal withdrawMoney = this.getMerchantWithdrawFee(merchantInfo, channelSign);
+                final BigDecimal secondMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
+                final BigDecimal firstMoney = dealerChannelRate.getDealerWithdrawFee().subtract(firstDealerChannelRate.getDealerWithdrawFee());
+                final BigDecimal oemMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(oemDealerChannelRate.getDealerWithdrawFee());
+                final BigDecimal productMoney = oemDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
+                final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
+                final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+                shallProfitDetail.setProductType(EnumProductType.HSS.getId());
+                shallProfitDetail.setMerchantId(merchantId);
+                shallProfitDetail.setPaymentSn(orderNo);
+                shallProfitDetail.setChannelType(channelSign);
+                shallProfitDetail.setTotalFee(tradeAmount);
+                shallProfitDetail.setWaitShallAmount(withdrawMoney);
+                shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
+                shallProfitDetail.setIsDirect(0);
+                shallProfitDetail.setProfitType(EnumProfitType.WITHDRAW.getId());
+                shallProfitDetail.setChannelShallAmount(channelMoney);
+                shallProfitDetail.setProductShallAmount(productMoney);
+                shallProfitDetail.setFirstDealerId(firstDealer.getId());
+                shallProfitDetail.setFirstShallAmount(firstMoney);
+                shallProfitDetail.setSecondDealerId(dealer.getId());
+                shallProfitDetail.setChannelCost(basicChannel.getBasicWithdrawFee());
+                shallProfitDetail.setSecondShallAmount(secondMoney);
+                shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                this.shallProfitDetailDao.init(shallProfitDetail);
+                map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, "M1"));
+                map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, "M1"));
+                map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
+                map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,"M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
                 map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
             }

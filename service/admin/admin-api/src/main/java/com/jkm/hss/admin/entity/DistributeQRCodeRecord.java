@@ -48,5 +48,9 @@ public class DistributeQRCodeRecord extends BaseEntity {
      * {@link com.jkm.hss.admin.enums.EnumQRCodeDistributeType2}
      */
     private int distributeType;
+    /**
+     *
+     */
+    private long operatorId;
 
 }

@@ -28,7 +28,9 @@
         login_name,
         login_pwd,
         email,
-        dealer_belong
+        dealer_belong,
+        oem_type,
+        oem_id
         )
         VALUES
         (
@@ -56,7 +58,9 @@
         #{loginName},
         #{loginPwd},
         #{email},
-        #{dealerBelong}
+        #{dealerBelong},
+        #{oemType},
+        #{oemId}
         );
     </insert>
     <update id="update">
@@ -107,10 +111,10 @@
         </foreach>
     </select>
 
-    <select id="selectByMobile" resultType="com.jkm.hss.dealer.entity.Dealer">
+
+    <select id="getByMobile" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer WHERE mobile = #{mobile}
     </select>
-
     <select id="selectByMobileUnIncludeNow" resultType="com.jkm.hss.dealer.entity.Dealer">
          SELECT * FROM tb_dealer WHERE mobile = #{mobile} AND id != #{dealerId}
     </select>
@@ -127,12 +131,12 @@
         SELECT * FROM tb_dealer WHERE second_level_dealer_id = #{secondLevelDealerId} AND level = 3
     </select>
 
-    <select id="selectByProxyName" resultType="java.lang.Long">
-         SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{name}
+    <select id="selectByProxyNameAndOemType" resultType="java.lang.Long">
+         SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{name} and oem_type=#{oemType}
     </select>
 
     <select id="selectByProxyNameUnIncludeNow" resultType="java.lang.Long">
-        SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{proxyMame} AND id != #{dealerId}
+        SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{proxyMame} and oem_type=#{oemType} and id != #{dealerId}
     </select>
 
     <select id="selectByCondition" resultType="com.jkm.hss.dealer.entity.Dealer">
@@ -204,10 +208,10 @@
 
 
 
-    <select id="selectFirstDealerCountByPageParams" resultType="java.lang.Integer">
+    <select id="selectFirstDealerCountByPageParams" resultType="java.lang.Long">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            d.level = 1
+            d.level = 1 and d.oem_type=#{oemType}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -219,6 +223,9 @@
             </if>
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
@@ -270,10 +277,11 @@
         type = 'hsy'
         )
         ) AS hsy_product_id,
-        d.mobile
+        d.mobile,
+        (select proxy_name from tb_dealer where id=d.oem_id) as oemName
         FROM tb_dealer as d
         <where>
-            d.level = 1
+            d.level = 1 and d.oem_type=#{oemType}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -285,6 +293,9 @@
             </if>
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
@@ -297,7 +308,7 @@
     <select id="selectSecondDealerCountByPageParams" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            d.level = 2
+            d.level = 2 and d.oem_type=0
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -312,6 +323,9 @@
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -364,10 +378,11 @@
         )
         ) AS hsy_product_id,
         (select proxy_name from tb_dealer WHERE id =d.first_level_dealer_id) as first_proxy_name,
-        d.mobile
+        d.mobile,
+        (select proxy_name from tb_dealer where id=d.oem_id) as oemName
         FROM tb_dealer as d
         <where>
-            d.level = 2
+            d.level = 2 and d.oem_type=0
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -382,6 +397,9 @@
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -448,7 +466,7 @@
     </select>
 
     <select id="getProxyName" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstLevelDealerId}
+        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstDealerId}
     </select>
 
     <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
@@ -473,7 +491,186 @@
         </where>
     </select>
 
+    <select id="selectSecondOemCountByPage" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_dealer as d
+        <where>
+            d.level = 2 and d.oem_id=#{dealerId}
+            <if test="mobile!=null and mobile!=''">
+                AND d.mobile =#{mobile}
+            </if>
+            <if test="name != null and name!=''">
+                AND d.`proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND d.mark_code = #{markCode}
+            </if>
+            <if test="districtCode != null and districtCode!=''">
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="sysType != null and sysType!=''">
+                AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectFirstDealerCountByPage" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_dealer as d
+        <where>
+            d.level = 1 and d.oem_id=#{oemId}
+            <if test="mobile!=null and mobile!=''">
+                AND d.mobile =#{mobile}
+            </if>
+            <if test="name != null and name!=''">
+                AND d.`proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND d.mark_code = #{markCode}
+            </if>
+            <if test="districtCode != null and districtCode!=''">
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="sysType != null and sysType!=''">
+                AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+        </where>
+    </select>
     <select id="selectSecondDealersByPage" resultType="com.jkm.hss.dealer.helper.response.SecondDealerResponse">
+        SELECT
+        d.id,
+        (select proxy_name from tb_dealer where id=d.first_level_dealer_id) as firstProxyName,
+        d.proxy_name,
+        d.mark_code,
+        d.level,
+        d.create_time,
+        d.bank_account_name,
+        d.belong_province_code,
+        d.belong_province_name,
+        d.belong_city_code,
+        d.belong_city_name,
+        (
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = 'hss'
+        )
+        ) AS hss_product_id,
+        (
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = 'hsy'
+        )
+        ) AS hsy_product_id,
+        d.mobile
+        FROM tb_dealer as d
+        <where>
+            d.level = 2 and d.first_level_dealer_id=#{dealerId}
+            <if test="mobile!=null and mobile!=''">
+                AND d.mobile =#{mobile}
+            </if>
+            <if test="name != null and name!=''">
+                AND d.`proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND d.mark_code = #{markCode}
+            </if>
+            <if test="districtCode != null and districtCode!=''">
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="sysType != null and sysType!=''">
+                AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            ORDER BY d.create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectSecondOemByPage" resultType="com.jkm.hss.dealer.helper.response.SecondDealerResponse">
+        SELECT
+        d.id,
+        (select proxy_name from tb_dealer where id=d.first_level_dealer_id) as firstProxyName,
+        d.proxy_name,
+        d.mark_code,
+        d.level,
+        d.create_time,
+        d.bank_account_name,
+        d.belong_province_code,
+        d.belong_province_name,
+        d.belong_city_code,
+        d.belong_city_name,
+        (
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = 'hss'
+        )
+        ) AS hss_product_id,
+        (
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = 'hsy'
+        )
+        ) AS hsy_product_id,
+        d.mobile
+        FROM tb_dealer as d
+        <where>
+            d.level = 2 and d.oem_id=#{dealerId}
+            <if test="mobile!=null and mobile!=''">
+                AND d.mobile =#{mobile}
+            </if>
+            <if test="name != null and name!=''">
+                AND d.`proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND d.mark_code = #{markCode}
+            </if>
+            <if test="districtCode != null and districtCode!=''">
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="sysType != null and sysType!=''">
+                AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            ORDER BY d.create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectFirstDealersByPage" resultType="com.jkm.hss.dealer.helper.response.SecondDealerResponse">
         SELECT
         d.id,
         d.proxy_name,
@@ -520,7 +717,7 @@
         d.mobile
         FROM tb_dealer as d
         <where>
-            d.level = 2 and d.first_level_dealer_id=#{dealerId}
+            d.level = 1 and d.oem_id=#{oemId}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -598,7 +795,9 @@
         SELECT
           a.*,
           (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
-          (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+          (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
+          (SELECT proxy_name FROM tb_dealer WHERE id=a.oem_id) as branchCompany,
+          a.oem_id
         FROM
           tb_merchant_info a
         WHERE
@@ -619,6 +818,10 @@
           AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
     </if>
 
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
+    </if>
+
     <if test="mobile!=null and mobile!=''">
           AND a.mobile = #{mobile}
     </if>
@@ -632,7 +835,9 @@
         SELECT
             a.*,
             (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
-            (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+            (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
+            (SELECT proxy_name FROM tb_dealer WHERE id=a.oem_id) as branchCompany,
+            a.oem_id
         FROM
             tb_merchant_info a
         WHERE
@@ -651,6 +856,10 @@
 
     <if test="proxyName1 != null and proxyName1!=''">
         AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
     </if>
 
     <if test="mobile!=null and mobile!=''">
@@ -679,6 +888,10 @@
         AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
     </if>
 
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
+    </if>
+
     <if test="mobile!=null and mobile!=''">
         AND a.mobile = #{mobile}
     </if>
@@ -703,6 +916,10 @@
         AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
     </if>
 
+    <if test="branchCompany != null and branchCompany!=''">
+        AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
+    </if>
+
     <if test="mobile!=null and mobile!=''">
         AND a.mobile = #{mobile}
     </if>
@@ -718,4 +935,108 @@
         first_level_dealer_id = #{firstDealerId}
         WHERE id = #{secondDealerId}
     </update>
+
+    <!-- 查询分公司账户 -->
+    <select id="getBranch" resultType="com.jkm.hss.dealer.entity.BranchAccountResponse">
+        SELECT
+            a.mark_code,
+            a.proxy_name,
+            b.total_amount,
+            b.due_settle_amount,
+            b.available,
+            b.id
+        FROM
+            tb_dealer a
+        LEFT JOIN tb_account b ON b.id=a.account_id
+        WHERE a.oem_type=1
+    <if test="markCode != null and markCode != ''">
+        AND a.mark_code = #{markCode}
+    </if>
+
+    <if test="proxyName != null and proxyName != ''">
+        AND a.proxy_name = #{proxyName}
+    </if>
+        ORDER BY
+            a.`create_time` DESC LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询分公司账户 -->
+    <select id="getBranchCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            tb_dealer a
+        LEFT JOIN tb_account b ON b.id=a.account_id
+        WHERE a.oem_type=1
+    <if test="markCode != null and markCode != ''">
+        AND a.mark_code = #{markCode}
+    </if>
+
+    <if test="proxyName != null and proxyName != ''">
+        AND a.proxy_name = #{proxyName}
+    </if>
+    </select>
+
+    <!-- 查询分公司账户明细 -->
+    <select id="getBranchDetail" resultType="com.jkm.hss.dealer.entity.BranchAccountDetailResponse">
+        SELECT
+            *
+        FROM
+            tb_account_flow
+        WHERE account_id=#{id}
+    <if test="startTime!=null and startTime!=''">
+        AND create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime!=null and endTime!=''">
+        AND create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+        ORDER BY
+        `create_time` DESC LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询分公司账户明细总数 -->
+    <select id="getBranchDetailCount" resultType="java.lang.Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          tb_account_flow
+        WHERE account_id=#{id}
+        <if test="startTime!=null and startTime!=''">
+            AND create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <select id="selectListOfOem" resultType="com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse">
+        SELECT
+        d.id,
+        d.mobile,
+        d.proxy_name,
+        (SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = #{sysType})) as isDistribute
+        FROM tb_dealer as d
+        WHERE
+        d.level = 1
+        <if test="condition!=null and condition!=''">
+            AND (d.mobile LIKE "%"#{condition}"%" OR d.proxy_name LIKE "%"#{condition}"%")
+        </if>
+        <if test="oem_id > 0">
+            AND d.oem_id = #{oemId}
+        </if>
+    </select>
 </mapper>

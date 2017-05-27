@@ -92,7 +92,8 @@ public class ChannelGatewayController extends BaseController {
         //获取该商户对应的产品通道网关
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final List<ProductChannelGateway> productChannelGatewayList =
-                this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductId(EnumProductType.HSS, EnumGatewayType.PRODUCT, product.getId());
+                this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductIdAndDealerId(
+                        EnumProductType.HSS, EnumGatewayType.PRODUCT, product.getId(), merchantInfo.getOemId());
 
         final List<MerchantChannelRate> merchantChannelRateList = this.merchantChannelRateService.selectByMerchantId(merchantInfo.getId());
         Map<Integer, MerchantChannelRate> merchantChannelRateMap = Maps.uniqueIndex(merchantChannelRateList, new Function<MerchantChannelRate, Integer>() {

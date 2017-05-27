@@ -5,6 +5,8 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.SplitAccountRecordDao;
+import com.jkm.hss.account.entity.ProfitCountRequest;
+import com.jkm.hss.account.entity.ProfitCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.SplitAccountRecordService;
@@ -217,6 +219,17 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Override
     public List<SplitAccountRecord> getByOrderNo(final String orderNo) {
         return this.splitAccountRecordDao.selectByOrderNo(orderNo);
+    }
+
+    @Override
+    public List<ProfitCountRespons> getProfit(ProfitCountRequest request) {
+        List<ProfitCountRespons> list = this.splitAccountRecordDao.getProfit(request);
+        return list;
+    }
+
+    @Override
+    public int getProfitCount(ProfitCountRequest request) {
+        return this.splitAccountRecordDao.getProfitCount(request);
     }
 
 

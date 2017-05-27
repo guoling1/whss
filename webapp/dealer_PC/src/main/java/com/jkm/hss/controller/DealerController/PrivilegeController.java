@@ -18,6 +18,7 @@ import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerPassportService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -104,7 +105,7 @@ public class PrivilegeController extends BaseController {
         adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
         long backId = 0;
         if(level==1){
-            backId = this.adminUserService.createFirstDealerUser(adminUser);
+            backId = this.adminUserService.createFirstDealerUser(adminUser, EnumOemType.DEALER.getId());
         }
         if(level==2){
             backId = this.adminUserService.createSecondDealerUser(adminUser);

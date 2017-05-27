@@ -9,6 +9,12 @@ import java.util.Date;
  */
 @Data
 public class HsyMerchantAuditRequest {
+
+    /**
+     * 注册手机号
+     */
+    private String cellphone;
+
     /**
      * 状态
      */
@@ -52,7 +58,6 @@ public class HsyMerchantAuditRequest {
     private Date createTime;
     private Date updateTime;
 
-    private String cellphone;//注册手机号
 
     /**
      * 所属1代理商名称

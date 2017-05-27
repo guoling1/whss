@@ -10,6 +10,7 @@ Vue.filter('datetime', function (date) {
   if (!date || date == '') {
     return '--';
   }
+  date = date / 1;
   date = new Date(date);
   // 匹配年份
   if (/(Y+)/i.test(format)) {
@@ -64,9 +65,9 @@ Vue.filter('filter_amount', function (value) {
 });
 
 Vue.filter('filter_toFix', function (value) {
-    if(value!=null){
-      return parseFloat(value).toFixed(2);
-    }else {
-      return value
-    }
+  if (value != null) {
+    return parseFloat(value).toFixed(2);
+  } else {
+    return value
+  }
 });

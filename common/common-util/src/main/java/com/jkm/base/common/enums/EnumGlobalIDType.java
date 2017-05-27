@@ -6,7 +6,8 @@ package com.jkm.base.common.enums;
 public enum EnumGlobalIDType {
     MERCHANT(1),
     USER(2),
-    DEALER(3);
+    DEALER(3),
+    OEM(4);
 
     private final int value;
     EnumGlobalIDType(int value) {

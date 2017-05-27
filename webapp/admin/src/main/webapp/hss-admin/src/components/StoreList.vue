@@ -13,42 +13,46 @@
               <ul class="search">
                 <li class="same">
                   <label>商户编号:</label>
-                  <el-input style="width: 193px" v-model="queryHss.markCode" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHss.markCode" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>商户名称:</label>
-                  <el-input style="width: 193px" v-model="queryHss.merchantName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHss.merchantName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>所属分公司:</label>
+                  <el-input style="width: 188px" v-model="queryHss.branchCompany" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>所属一级代理:</label>
-                  <el-input style="width: 193px" v-model="queryHss.proxyName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHss.proxyName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>所属二级代理:</label>
-                  <el-input style="width: 193px" v-model="queryHss.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHss.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册手机号:</label>
-                  <el-input style="width: 193px" v-model="queryHss.mobile" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHss.mobile" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册时间:</label>
-                  <el-date-picker style="width: 193px" v-model="dateHss" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="dateHss" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>认证时间:</label>
-                  <el-date-picker style="width: 193px" v-model="dateHss1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="dateHss1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>审核时间:</label>
-                  <el-date-picker style="width: 193px" v-model="dateHss2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="dateHss2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>审核状态:</label>
-                  <el-select style="width: 193px" v-model="queryHss.status" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 188px" v-model="queryHss.status" clearable placeholder="请选择" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="已注册" value="0">已注册</el-option>
                     <el-option label="已提交基本资料" value="1">已提交基本资料</el-option>
@@ -70,6 +74,7 @@
                 <el-table-column type="index" width="62" label="序号"></el-table-column>
                 <el-table-column prop="markCode" label="商户编号"></el-table-column>
                 <el-table-column prop="merchantName" label="商户名称"></el-table-column>
+                <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
                 <el-table-column prop="proxyName" label="所属一级代理商"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
                 <el-table-column label="注册时间">
@@ -119,24 +124,24 @@
               <ul class="search">
                 <li class="same">
                   <label>商户编号:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.globalID" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.globalID" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>商户名称:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册手机号:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.cellphone" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.cellphone" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册时间:</label>
-                  <el-date-picker style="width: 193px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>审核时间:</label>
-                  <el-date-picker style="width: 193px" v-model="dateHsy1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="dateHsy1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <!--<li class="same">
@@ -145,29 +150,37 @@
                 </li>-->
                 <li class="same">
                   <label>所属一级代理:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>所属二级代理:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>报单员:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>姓名:</label>
-                  <el-input style="width: 193px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>审核状态:</label>
-                  <el-select style="width: 193px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="已注册" value="4">已注册</el-option>
                     <el-option label="待审核" value="2">待审核</el-option>
                     <el-option label="审核通过" value="1">审核通过</el-option>
                     <el-option label="审核未通过" value="3">审核未通过</el-option>
                   </el-select>
+                  <!--<el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value="">全部</el-option>
+                    <el-option label="已注册" value="0">已注册</el-option>
+                    <el-option label="已提交基本资料" value="1">已提交基本资料</el-option>
+                    <el-option label="待审核" value="2">待审核</el-option>
+                    <el-option label="审核通过" value="3">审核通过</el-option>
+                    <el-option label="审核未通过" value="4">审核未通过</el-option>
+                  </el-select>-->
                 </li>
                 <li class="same">
                   <div class="btn btn-primary" @click="search('hsy')">筛选</div>
@@ -259,15 +272,31 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          onPick:function({ maxDate, minDate }){
-            if(maxDate==''||maxDate==null){
-              this.disabledDate=function(maxDate) {
-                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
-              }
-            }else{
-              this.disabledDate=function(){}
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
             }
-          }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
         },
         dateHss:'',
         dateHss1:'',

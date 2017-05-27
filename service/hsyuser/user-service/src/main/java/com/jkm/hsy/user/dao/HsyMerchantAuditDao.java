@@ -143,4 +143,5 @@ public interface HsyMerchantAuditDao {
      */
     List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
+
 }

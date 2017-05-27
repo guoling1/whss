@@ -41,7 +41,13 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
         </div>
@@ -95,6 +101,7 @@
         currentPage: 1,
         loading: false,
         index: '',
+        url:''
       }
     },
     created: function () {
@@ -116,42 +123,13 @@
         }
       }
       this.$data.query.id = this.$route.query.id;
-      this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.loading = false;
-          /*var changeTime = function (val) {
-            if (val == '' || val == null) {
-              return ''
-            } else {
-              val = new Date(val)
-              var year = val.getFullYear();
-              var month = val.getMonth() + 1;
-              var date = val.getDate();
-
-              function tod(a) {
-                if (a < 10) {
-                  a = "0" + a
-                }
-                return a;
-              }
-
-              return year + "-" + tod(month) + "-" + tod(date);
-            }
-          }
-          for (let i = 0; i < this.$data.records.length; i++) {
-            this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-          }*/
-        }, function (err) {
-          this.$data.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      console.log(this.$route.query.type)
+      if(this.$route.query.type=='filiale'){
+        this.url = '/admin/branchAccount/branchDetail'
+      }else {
+        this.url = '/admin/queryJkmProfit/accountDetails'
+      }
+      this.getData();
     },
     methods: {
       //格式化时间
@@ -176,88 +154,36 @@
           return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
-      search(){
-          this.currentPage = 1;
-        this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
+      getData: function () {
+        this.loading = true;
+        this.$http.post(this.url, this.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var changeTime = function (val) {
-              if (val == '' || val == null) {
-                return ''
-              } else {
-                val = new Date(val)
-                var year = val.getFullYear();
-                var month = val.getMonth() + 1;
-                var date = val.getDate();
-
-                function tod(a) {
-                  if (a < 10) {
-                    a = "0" + a
-                  }
-                  return a;
-                }
-
-                return year + "-" + tod(month) + "-" + tod(date);
-              }
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
+            this.records = res.data.records;
+            this.count = res.data.count;
+            this.loading = false;
           }, function (err) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             })
           })
+      },
+      search(){
+        this.query.pageNo = 1;
+        this.getData()
+      },
+      handleSizeChange(val) {
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
+        this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
-        this.$data.loading = true;
-        this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var changeTime = function (val) {
-              if (val == '' || val == null) {
-                return ''
-              } else {
-                val = new Date(val)
-                var year = val.getFullYear();
-                var month = val.getMonth() + 1;
-                var date = val.getDate();
-
-                function tod(a) {
-                  if (a < 10) {
-                    a = "0" + a
-                  }
-                  return a;
-                }
-
-                return year + "-" + tod(month) + "-" + tod(date);
-              }
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },
+        this.query.pageNo = val;
+        this.getData()
+      }
     },
     watch:{
       date:function (val,oldVal) {

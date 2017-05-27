@@ -30,7 +30,7 @@ public class AdminUserDealerListResponse {
      */
     private String realname;
     /**
-     * 所属代理商
+     * 所属代理商/分公司
      */
     private String belongDealer;
 

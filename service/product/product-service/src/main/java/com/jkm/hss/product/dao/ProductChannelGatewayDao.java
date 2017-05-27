@@ -15,7 +15,8 @@ public interface ProductChannelGatewayDao {
 
     void addNew(ProductChannelGateway productChannelGateway);
 
-    List<ProductChannelGateway> selectByProductTypeAndGatewayAndProductId(@Param("type") String type, @Param("gatewayType") String gatewayType , @Param("productId") long productId);
+    List<ProductChannelGateway> selectByProductTypeAndGatewayAndProductIdAndDealerId(@Param("type") String type, @Param("gatewayType") String gatewayType ,
+                                                                                     @Param("productId") long productId, @Param("dealerId") long dealerId);
 
     void update(ProductChannelGateway productChannelGateway);
 
@@ -24,4 +25,5 @@ public interface ProductChannelGatewayDao {
      * @param request
      */
     void recommend(ProductChannelGateway request);
+    void deleteGateway(@Param("id") long id, @Param("status") int status);
 }

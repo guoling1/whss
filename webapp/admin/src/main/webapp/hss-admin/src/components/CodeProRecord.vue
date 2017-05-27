@@ -27,6 +27,10 @@
               </el-select>
             </li>
             <li class="same">
+              <label>生产公司:</label>
+              <el-input style="width: 188px" v-model="query.subCompanyName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
               <div class="btn btn-primary" @click="reset">重置</div>
             </li>
@@ -54,6 +58,7 @@
                 <span v-if="records[scope.$index].sysType=='hsy'">好收银</span>
               </template>
             </el-table-column>
+            <el-table-column prop="subCompanyName" label="生产公司"></el-table-column>
             <el-table-column prop="operatorName" label="操作人"></el-table-column>
           </el-table>
           <!--分页-->
@@ -81,7 +86,8 @@
           pageNo:1,
           pageSize:10,
           sysType:'',
-          qrType:''
+          qrType:'',
+          subCompanyName:''
         },
         records: [],
         count: 0,
@@ -126,28 +132,6 @@
             })
           })
       },
-      //格式化创建时间
-      changeTime: function (row, column) {
-        var val=row.createTime;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
-      },
       search(){
         this.$data.query.pageNo = 1;
         this.getData();
@@ -163,22 +147,6 @@
         this.$data.query.pageNo = val;
         this.getData()
       },
-    },
-    filters: {
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-        }
-      }
     }
   }
 </script>

@@ -120,6 +120,29 @@ public interface AdminUserDao {
     List<AdminDealerUser> selectAdminUserDealerListByPageParams(AdminDealerUserListRequest adminDealerUserListRequest);
 
     /**
+     * 分公司员工数量
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    long selectAdminUserOemCountByPageParams(AdminDealerUserListRequest adminDealerUserListRequest);
+
+    /**
+     * 分公司分页查询员工列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    List<AdminDealerUser> selectAdminUserOemListByPageParams(AdminDealerUserListRequest adminDealerUserListRequest);
+
+
+    /**
+     *
+     * @param username
+     * @param id
+     * @return
+     */
+    Long selectDealerByUsernameUnIncludeNow(@Param("username") String username,@Param("id") long id);
+
+    /**
      *
      * @param username
      * @param id

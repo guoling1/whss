@@ -106,6 +106,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      * {@inheritDoc}
      *
      * @param username
+     * 由于业务需要，不再根据类型查登录名，直接改sql
      * @return
      */
     @Override
@@ -266,7 +267,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType, final long dealerId,
-                                                               final String startCode, final String endCode) {
+                                                               final String startCode, final String endCode,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByCodeAndSysType(startCode, endCode,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -291,6 +292,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setCreateTime(new Date());
             distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
+            distributeQRCodeRecord.setOperatorId(operatorId);
             distributeQRCodeRecord.setType(type);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
@@ -307,7 +309,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @return
      */
     @Override
-    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count) {
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count,long operatorId) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeBySysType(sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -335,6 +337,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
             distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
+            distributeQRCodeRecord.setOperatorId(operatorId);
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
@@ -464,6 +467,64 @@ public class AdminUserServiceImpl implements AdminUserService {
         pageModel.setRecords(list);
         return pageModel;
     }
+
+    /**
+     * 分公司员工列表
+     *
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    @Override
+    public PageModel<AdminUserDealerListResponse> userOemList(AdminDealerUserListRequest adminDealerUserListRequest) {
+        final PageModel<AdminUserDealerListResponse> pageModel = new PageModel<>(adminDealerUserListRequest.getPageNo(), adminDealerUserListRequest.getPageSize());
+        adminDealerUserListRequest.setOffset(pageModel.getFirstIndex());
+        adminDealerUserListRequest.setCount(pageModel.getPageSize());
+        if(!StringUtil.isNullOrEmpty(adminDealerUserListRequest.getMobile())){
+            adminDealerUserListRequest.setMobile(AdminUserSupporter.encryptMobile(adminDealerUserListRequest.getMobile()));
+        }
+        final long count = this.adminUserDao.selectAdminUserOemCountByPageParams(adminDealerUserListRequest);
+        final List<AdminDealerUser> adminUsers = this.adminUserDao.selectAdminUserOemListByPageParams(adminDealerUserListRequest);
+        List<AdminUserDealerListResponse> list = new ArrayList<AdminUserDealerListResponse>();
+        if(adminUsers.size()>0){
+            for(int i=0;i<adminUsers.size();i++){
+                AdminUserDealerListResponse adminUserListResponse = new AdminUserDealerListResponse();
+                adminUserListResponse.setId(adminUsers.get(i).getId());
+                adminUserListResponse.setMarkCode(adminUsers.get(i).getMarkCode());
+                adminUserListResponse.setUsername(adminUsers.get(i).getUsername());
+                adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
+                adminUserListResponse.setBelongDealer(adminUsers.get(i).getBelongDealer());
+                adminUserListResponse.setRoleId(adminUsers.get(i).getRoleId());
+                if(adminUsers.get(i).getMobile()!=null&&!"".equals(adminUsers.get(i).getMobile())){
+                    adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
+                }
+                adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
+                if(adminUsers.get(i).getIsMaster()== EnumIsMaster.MASTER.getCode()){
+                    adminUserListResponse.setRoleName("超级管理员");
+                }else{
+                    AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
+                    if(adminRole!=null){
+                        adminUserListResponse.setRoleName(adminRole.getRoleName());
+                    }
+                }
+                adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
+                adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
+                adminUserListResponse.setIsMaster(adminUsers.get(i).getIsMaster());
+                list.add(adminUserListResponse);
+            }
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return pageModel;
+    }
+    /**
+     * @param username
+     * @param id
+     * @return
+     */
+    @Override
+    public Long selectDealerByUsernameUnIncludeNow(String username,long id) {
+        return adminUserDao.selectDealerByUsernameUnIncludeNow(username,id);
+    }
     /**
      * @param username
      * @param id
@@ -490,11 +551,16 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param adminUser
      */
     @Override
-    public long createFirstDealerUser(AdminUser adminUser) {
+    public long createFirstDealerUser(AdminUser adminUser,int oemType) {
         this.adminUserDao.insert(adminUser);
-        this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+        if(oemType==EnumAdminOemType.OEM.getId()){
+            this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.OEM,adminUser.getId()+""),adminUser.getId());
+        }else{
+            this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+        }
         return adminUser.getId();
     }
+
     /**
      * 创建二级代理登录用户
      * @param adminUser

@@ -5,10 +5,20 @@
         <div class="box-header">
           <h3 class="box-title">网关模板</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary" style="margin-left: 15px">关闭</a>
-          <router-link to="/admin/details/gatewayAdd" class="pull-right btn btn-primary">新增网关通道</router-link>
+          <router-link :to='"/admin/details/gatewayAdd?id="+dealerId+"&productId="+productId+"&proxyName="+name' class="btn btn-primary" style="float: right;margin-right: 15px">新增网关通道</router-link>
+          <!--<a href="javascript:window.close();" class="pull-right btn btn-primary" style="margin-left: 15px">关闭</a>-->
+          <!--<router-link to="/admin/details/gatewayAdd" class="pull-right btn btn-primary">新增网关通道</router-link>-->
         </div>
         <div class="box-body">
           <ul>
+            <li class="same" v-if="name!=undefined&&name!=''">
+              <label class="title">分公司名称:</label>
+              <span>{{name}}</span>
+            </li>
+            <li class="same" v-if="name!=undefined&&name!=''">
+              <label class="title">分公司编码:</label>
+              <span>{{code}}</span>
+            </li>
             <li class="same">
               <label class="title">网关模板:</label>
               <el-table max-height="637" style="font-size:12px;width:80%;display: inline-table;vertical-align: top" :data="$$records" border>
@@ -17,9 +27,10 @@
                 <el-table-column prop="channelShortName" label="通道名称"></el-table-column>
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
-                    <el-button type="text" @click="detail(scope.row.productId,scope.$index)">修改</el-button>
-                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend==0">推荐</el-button>
-                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend!=0">取消推荐</el-button>
+                    <el-button type="text" @click="detail(dealerId,scope.row.productId,name,scope.$index)">修改</el-button>
+                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend==0&&(name==undefined||name=='')">推荐</el-button>
+                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend!=0&&(name==undefined||name=='')">取消推荐</el-button>
+                    <el-button type="text" @click="delt(scope.row.id)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -72,15 +83,51 @@
         records: [],
         isRecommend:false,
         isNoRecommend:false,
-        id:''
+        id:'',
+        dealerId:0,
+        name:'',
+        code:'',
+        productId:0
       }
     },
     created: function () {
-      this.getData()
+      if(this.$route.query.id==undefined){
+        this.dealerId = 0;
+        this.name = '';
+        this.code = '';
+        this.productId = this.$route.query.productId;
+      }else {
+        this.dealerId = this.$route.query.id;
+        this.name = this.$route.query.proxyName;
+        this.code = this.$route.query.markCode;
+        this.productId = this.$route.query.productId;
+      }
+      this.getData();
     },
     methods: {
+      delt(id) {
+        this.$confirm('此网关将被删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('/admin/product/delGateway',{id:id})
+            .then(()=>{
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.getData()
+            })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
       getData:function () {
-        this.$http.post('/admin/product/listGateway',{"productType":"hss"})
+        this.$http.post('/admin/product/listGateway',{"productType":"hss","dealerId":this.dealerId})
           .then(res => {
             this.records = res.data;
           })
@@ -92,78 +139,16 @@
             });
           })
       },
-      submit:function () {
-        var list = JSON.parse(JSON.stringify(this.tableData));
-        for (var i = 0; i < list.length; i++) {
-          for (var j = 0; j < list[i].children.length; j++) {
-            for (var k = 0; k < list[i].children[j].opts.length; k++) {
-              list[i].children[j].opts[k].isSelected = Number(list[i].children[j].opts[k].isSelected);
-            }
-            list[i].children[j].isSelected = Number(list[i].children[j].isSelected);
-          }
-          list[i].isSelected = Number(list[i].isSelected);
+      detail: function ( id, productId,name, index) {
+        if(this.name!=''){
+          this.$router.push({path:'/admin/details/gatewayAdd',query:{id:this.dealerId,productId:this.productId,proxyName:this.name,index:index}})
+        }else {
+          this.$router.push({path:'/admin/details/gatewayAdd',query:{productId:productId,index:index}})
         }
-        let id=0;
-        if(this.$route.query.id!=undefined){
-          id = this.$route.query.id;
-          this.isAdd = false;
-        }
-        this.$http.post('/admin/user/saveRole',{
-          roleId:id,
-          roleName:this.roleName,
-          list:list
-        }).then(res => {
-          this.$message({
-            showClose: true,
-            message: '添加成功',
-            type: 'success'
-          });
-          this.$router.push('/admin/record/role')
-        }).catch(err =>{
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
-      },
-      detail: function (productId, index) {
-//        window.open('http://admin.qianbaojiajia.com/admin/details/gatewayAdd?productId='+productId+'&index='+index);
-        this.$router.push({path:'/admin/details/gatewayAdd',query:{productId:productId,index:index}})
-      },
-      open: function (id) {
-        this.isRecommend = true;
-        this.id = id;
-      },
-      close: function (id) {
-        this.isNoRecommend = true;
-        this.id = id;
-      },
-      confirm: function (val) {
-        this.$http.post('/admin/product/recommend',{recommend:val,id:this.id})
-          .then(res =>{
-            this.isNoRecommend = false;
-            this.isRecommend = false;
-            this.$message({
-              showClose: true,
-              message: '操作成功',
-              type: 'success'
-            });
-            this.getData();
-          })
-          .catch(err =>{
-            this.isNoRecommend = false;
-            this.isRecommend = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
       }
     },
     computed:{
-      $$records: function () {
+      $$records:function () {
         return this.records;
       }
     }

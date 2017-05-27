@@ -24,18 +24,20 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
-import com.jkm.hss.dealer.enums.EnumDealerLevel;
-import com.jkm.hss.dealer.enums.EnumDealerRateType;
-import com.jkm.hss.dealer.enums.EnumInviteBtn;
-import com.jkm.hss.dealer.enums.EnumRecommendBtn;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.enums.*;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.*;
 import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.OemDetailResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerProfitService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.request.RevokeQrCodeRequest;
@@ -94,8 +96,10 @@ public class DealerController extends BaseController {
 
     @Autowired
     private AdminUserService adminUserService;
+
     @Autowired
     private AdminRoleService adminRoleService;
+
     @Autowired
     private OSSClient ossClient;
     @Autowired
@@ -106,6 +110,9 @@ public class DealerController extends BaseController {
 
     @Autowired
     private DealerProfitService dealerProfitService;
+
+    @Autowired
+    private OemInfoService oemInfoService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -139,119 +146,6 @@ public class DealerController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/listDealer", method = RequestMethod.POST)
-    public CommonResponse listDealer(@RequestBody final ListDealerRequest listDealerRequest) {
-//        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
-//                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
-//            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
-//        }
-        final String mobile = listDealerRequest.getMobile();
-        if (StringUtils.isEmpty(StringUtils.trim(mobile))) {
-            listDealerRequest.setMobile(null);
-        }
-        final String name = listDealerRequest.getName();
-        if(StringUtils.isEmpty(StringUtils.trim(name))) {
-            listDealerRequest.setName(null);
-        }
-        final String belongArea = listDealerRequest.getBelongArea();
-        if(StringUtils.isEmpty(StringUtils.trim(belongArea))) {
-            listDealerRequest.setBelongArea(null);
-        }
-
-        final PageModel<Dealer> pageModel = this.dealerService.listDealer(listDealerRequest);
-        final List<Dealer> records = pageModel.getRecords();
-        if (!CollectionUtils.isEmpty(records)) {
-            for (Dealer dealer : records) {
-                dealer.setSettleBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
-                dealer.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
-            }
-        }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", pageModel);
-    }
-
-    /**
-     * 查询代理商信息
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "{dealerId}", method = RequestMethod.GET)
-    public CommonResponse getDealer(@PathVariable final long dealerId) {
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
-        if (!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
-        }
-        final Dealer dealer = dealerOptional.get();
-        final List<DealerChannelRate> channelRates = this.dealerChannelRateService.selectByDealerId(dealerId);
-        if (CollectionUtils.isEmpty(channelRates)) {
-            return CommonResponse.simpleResponse(-1, "代理商对应产品通道不存在");
-        }
-        final Optional<Product> productOptional = this.productService.selectById(channelRates.get(0).getProductId());
-        if (!productOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商对应产品不存在");
-        }
-        final Product product = productOptional.get();
-        final FirstLevelDealerGetResponse firstLevelDealerGetResponse = new FirstLevelDealerGetResponse();
-        firstLevelDealerGetResponse.setMobile(dealer.getMobile());
-        firstLevelDealerGetResponse.setName(dealer.getProxyName());
-        firstLevelDealerGetResponse.setBelongArea(dealer.getBelongArea());
-        firstLevelDealerGetResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
-        firstLevelDealerGetResponse.setBankName(dealer.getBankName());
-        if (dealer.getIdCard()!=null){
-            firstLevelDealerGetResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
-        }
-        firstLevelDealerGetResponse.setBankAccountName(dealer.getBankAccountName());
-        firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
-        final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
-        firstLevelDealerGetResponse.setProduct(productResponse);
-        firstLevelDealerGetResponse.setRecommendBtn(dealer.getRecommendBtn());
-        productResponse.setProductId(product.getId());
-        productResponse.setProductName(product.getProductName());
-        productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-        productResponse.setLimitWithdrawFeeRate(product.getLimitWithdrawFeeRate().toPlainString());
-        final List<FirstLevelDealerGetResponse.Channel> channels = new ArrayList<>();
-        productResponse.setChannels(channels);
-        for (DealerChannelRate dealerChannelRate : channelRates) {
-            final FirstLevelDealerGetResponse.Channel channel = new FirstLevelDealerGetResponse.Channel();
-            channel.setChannelType(dealerChannelRate.getChannelTypeSign());
-            channel.setPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-            channel.setSettleType(dealerChannelRate.getDealerBalanceType());
-            channel.setWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
-            channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-            channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
-            channels.add(channel);
-        }
-
-        final List<FirstLevelDealerGetResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
-        firstLevelDealerGetResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
-
-        List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
-        if (upgerdeRates==null){
-            return CommonResponse.simpleResponse(-1,"未查到相关数据");
-        }
-        for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
-            final FirstLevelDealerGetResponse.DealerUpgerdeRate du = new FirstLevelDealerGetResponse.DealerUpgerdeRate();
-            du.setId(dealerUpgerdeRate.getId());
-            du.setProductId(dealerUpgerdeRate.getProductId());
-            du.setType(dealerUpgerdeRate.getType());
-            du.setDealerId(dealerUpgerdeRate.getDealerId());
-            du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
-            du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
-            du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
-            dealerUpgerdeRates.add(du);
-        }
-
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", firstLevelDealerGetResponse);
-    }
-
-
-//==============================此处为对代理商进行重构=============================
-    /**
-     * 一级代理商列表
-     *
-     * @return
-     */
-    @ResponseBody
     @RequestMapping(value = "/listFirstDealer", method = RequestMethod.POST)
     public CommonResponse listFirstDealer(@RequestBody final ListFirstDealerRequest listFirstDealerRequest) {
         final PageModel<FirstDealerResponse> pageModel = this.dealerService.listFirstDealer(listFirstDealerRequest);
@@ -279,7 +173,7 @@ public class DealerController extends BaseController {
     public CommonResponse findBydealerId(@PathVariable final long dealerId) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
         if (!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
+            return CommonResponse.simpleResponse(-1, "代理商或分公司不存在");
         }
         final Dealer dealer = dealerOptional.get();
         final DealerDetailResponse dealerDetailResponse = new DealerDetailResponse();
@@ -322,10 +216,13 @@ public class DealerController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/hss/{dealerId}/{productId}", method = RequestMethod.GET)
-    public CommonResponse hasUpgrade(@PathVariable final long dealerId,@PathVariable final long productId) {
+    public CommonResponse dealerDetail(@PathVariable final long dealerId,@PathVariable final long productId) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
         if (!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        if (dealerOptional.get().getOemType()!= EnumOemType.DEALER.getId()) {
+            return CommonResponse.simpleResponse(-1, "不属于代理商，属于分公司");
         }
         final Dealer dealer = dealerOptional.get();
         final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
@@ -497,6 +394,80 @@ public class DealerController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", firstLevelDealerGet2Response);
     }
 
+
+    /**
+     * hss查询分公司信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/oem/{dealerId}/{productId}", method = RequestMethod.GET)
+    public CommonResponse oemDetail(@PathVariable final long dealerId,@PathVariable final long productId) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
+        if (!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "分公司不存在");
+        }
+        if (dealerOptional.get().getOemType()!= EnumOemType.OEM.getId()) {
+            return CommonResponse.simpleResponse(-1, "不属于分公司，属于代理商");
+        }
+        final OemHssResponse oemHssResponse = new OemHssResponse();
+        if(productId>0){//修改
+            Optional<Product> productOptional = this.productService.selectById(productId);
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "好收收产品配置有误");
+            }
+            if(!(EnumProductType.HSS.getId()).equals(productOptional.get().getType())){
+                return CommonResponse.simpleResponse(-1, "该产品不属于好收收");
+            }
+            final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productId);
+            final OemHssResponse.Product productResponse = oemHssResponse.new Product();
+            productResponse.setProductId(productId);
+            productResponse.setProductName(productOptional.get().getProductName());
+            final List<OemHssResponse.Channel> channels = new ArrayList<>();
+            productResponse.setChannels(channels);
+            for (ProductChannelDetail productChannelDetail:detailList) {
+                final OemHssResponse.Channel channel = new OemHssResponse.Channel();
+                Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerId,productId,productChannelDetail.getChannelTypeSign());
+                if(dealerChannelRateOptional.isPresent()){
+                    channel.setPaymentSettleRate(dealerChannelRateOptional.get().getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                    channel.setWithdrawSettleFee(dealerChannelRateOptional.get().getDealerWithdrawFee().toPlainString());
+                    channel.setMerchantSettleRate(dealerChannelRateOptional.get().getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                    channel.setMerchantWithdrawFee(dealerChannelRateOptional.get().getDealerMerchantWithdrawFee().toPlainString());
+                }
+                channel.setChannelType(productChannelDetail.getChannelTypeSign());
+                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
+                channel.setChannelName(basicChannelOptional.get().getChannelName());
+                channel.setSettleType(productChannelDetail.getProductBalanceType());
+                channels.add(channel);
+            }
+            oemHssResponse.setProduct(productResponse);
+            oemHssResponse.setProductName("好收收");
+        }else{//新增
+            Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "好收收产品不存在");
+            }
+            final Product product = productOptional.get();
+            //根据产品查找产品详情
+            final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productOptional.get().getId());
+            final OemHssResponse.Product productResponse = oemHssResponse.new Product();
+            productResponse.setProductId(product.getId());
+            productResponse.setProductName(product.getProductName());
+            final List<OemHssResponse.Channel> channels = new ArrayList<>();
+            productResponse.setChannels(channels);
+            for (ProductChannelDetail productChannelDetail : detailList) {
+                final OemHssResponse.Channel channel = new OemHssResponse.Channel();
+                channel.setChannelType(productChannelDetail.getChannelTypeSign());
+                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
+                channel.setChannelName(basicChannelOptional.get().getChannelName());
+                channel.setSettleType(productChannelDetail.getProductBalanceType());
+                channels.add(channel);
+            }
+            oemHssResponse.setProduct(productResponse);
+            oemHssResponse.setProductName("好收收");
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", oemHssResponse);
+    }
     /**
      * hsy查询代理商信息
      *
@@ -586,7 +557,7 @@ public class DealerController extends BaseController {
         return dvalue;
     }
     /**
-     * 新增或添加代理商
+     * 新增或添加好收收配置
      *
      * @param request
      * @return
@@ -659,7 +630,51 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
     }
+    /**
+     * 新增或添加分公司配置
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "addOrUpdateHssOem", method = RequestMethod.POST)
+    public CommonResponse addOrUpdateHssOem(@RequestBody HssOemAddOrUpdateRequest request) {
+        try{
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(request.getDealerId());
+            if(!dealerOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
 
+            final HssOemAddOrUpdateRequest.Product productParam = request.getProduct();
+            final long productId = productParam.getProductId();
+            final Optional<Product> productOptional = this.productService.selectById(productId);
+            if (!productOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "产品不存在");
+            }
+            final Product product = productOptional.get();
+            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
+                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+                        @Override
+                        public Integer apply(ProductChannelDetail input) {
+                            return input.getChannelTypeSign();
+                        }
+                    });
+            final List<HssOemAddOrUpdateRequest.Channel> channelParams = productParam.getChannels();
+            for (HssOemAddOrUpdateRequest.Channel channelParam : channelParams) {
+                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+            this.dealerService.addOrUpdateHssOem(request);
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("dealerId", request.getDealerId()).build();
+        }catch (Exception e){
+            log.error("错误信息是",e.getStackTrace());
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
+    }
     /**
      * 新增或添加好收银代理商
      *
@@ -747,6 +762,48 @@ public class DealerController extends BaseController {
         return CommonResponse.simpleResponse(1, "");
     }
 
+    private CommonResponse checkChannel(final HssOemAddOrUpdateRequest.Channel paramChannel,
+                                        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
+                                        final Product product) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+        }
+        final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(paramChannel.getChannelType());
+        final BigDecimal merchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+        Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(paramChannel.getChannelType());
+        if(!basicChannelOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "没有"+paramChannel.getChannelType()+"通道基础配置");
+        }
+        if (merchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的商户支付结算费率：分公司的必须小于等于【产品的与支付手续费加价限额的和】");
+        }
+        final BigDecimal merchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+        if (merchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的商户提现结算费用：分公司的必须小于等于【产品的与提现手续费加价限额的和】");
+        }
+        final BigDecimal paymentSettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+        if (paymentSettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+                || paymentSettleRate.compareTo(merchantSettleRate) > 0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的支付结算费率：分公司的必须大于等于产品的, 小于等于商户的");
+        }
+        final BigDecimal withdrawSettleFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+        if (withdrawSettleFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+                || withdrawSettleFee.compareTo(merchantWithdrawFee) > 0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的提现结算费用：分公司的的必须大于等于产品的, 小于等于商户的");
+        }
+        return CommonResponse.simpleResponse(1, "");
+    }
     private CommonResponse checkChannel(final HsyDealerAddOrUpdateRequest.Channel paramChannel,
                                         final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
                                         final Product product) {
@@ -824,13 +881,12 @@ public class DealerController extends BaseController {
         try{
             final Optional<Dealer> dealerOptional = this.dealerService.getById(request.getDealerId());
             if(!dealerOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "代理商不存在");
+                return CommonResponse.simpleResponse(-1, "登录用户不存在");
             }
             if(org.apache.commons.lang3.StringUtils.isBlank(request.getLoginPwd())) {
                 return CommonResponse.simpleResponse(-1, "登录密码不能为空");
             }
             request.setLoginPwd(DealerSupport.passwordDigest(request.getLoginPwd(),"JKM"));
-//            this.dealerService.updatePwd(request.getLoginPwd(),request.getDealerId());
             adminUserService.updateDealerUserPwd(request.getLoginPwd(),request.getDealerId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
@@ -865,7 +921,7 @@ public class DealerController extends BaseController {
 
     //用户和权限管理
     /**
-     * 用户列表
+     * 代理商用户列表
      * @param adminDealerUserListRequest
      * @return
      */
@@ -875,7 +931,17 @@ public class DealerController extends BaseController {
         PageModel<AdminUserDealerListResponse> adminUserPageModel = adminUserService.userDealerList(adminDealerUserListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }
-
+    /**
+     * 分公司用户列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/oemList", method = RequestMethod.POST)
+    public CommonResponse oemList (@RequestBody AdminDealerUserListRequest adminDealerUserListRequest) {
+        PageModel<AdminUserDealerListResponse> adminUserPageModel = adminUserService.userOemList(adminDealerUserListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
     /**
      * 禁用用户
      * @param adminUserRequest
@@ -921,15 +987,7 @@ public class DealerController extends BaseController {
         if(!dealerOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
-
-        int type = EnumAdminType.FIRSTDEALER.getCode();
-        if(dealerOptional.get().getLevel()==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
-        }
-        if(dealerOptional.get().getLevel()==2){
-            type=EnumAdminType.SECONDDEALER.getCode();
-        }
-        final long proxyNameCount = this.adminUserService.selectByUsernameAndTypeUnIncludeNow(adminUser.getUsername(),type, adminUser.getId());
+        final long proxyNameCount = this.adminUserService.selectDealerByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
         if (proxyNameCount > 0) {
             return CommonResponse.simpleResponse(-1, "登录名已经存在");
         }
@@ -1032,7 +1090,6 @@ public class DealerController extends BaseController {
         adminRoleService.save(roleDetailRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
-
     /**
      * 分页查询角色列表
      * @param adminRoleListRequest
@@ -1042,6 +1099,18 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
     public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
         PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleDealerListByPage(adminRoleListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 分公司查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/roleOemListByPage", method = RequestMethod.POST)
+    public CommonResponse roleOemListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+        PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleOemListByPage(adminRoleListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }
 
@@ -1130,4 +1199,65 @@ public class DealerController extends BaseController {
     }
 
 
+
+
+    /**
+     * hss查询分公司信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/oemDetail/{dealerId}", method = RequestMethod.GET)
+    public CommonResponse oemDetail(@PathVariable final long dealerId) {
+        OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(dealerId);
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        if(oemDetailResponse.getQrCode()!=null&&!"".equals(oemDetailResponse.getQrCode())){
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), oemDetailResponse.getQrCode(),expiration);
+            oemDetailResponse.setRealQrCodeUrl(url.toString());
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", oemDetailResponse);
+    }
+    /**
+     * 配置O单
+     * @param addOrUpdateOemRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addOrUpdateOem", method = RequestMethod.POST)
+    public CommonResponse addOrUpdateOem (@RequestBody AddOrUpdateOemRequest addOrUpdateOemRequest) {
+        if(addOrUpdateOemRequest.getDealerId()<=0){
+            return CommonResponse.simpleResponse(-1, "分公司不存在");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getBrandName())){
+            return CommonResponse.simpleResponse(-1, "品牌名称不能为空");
+        }
+        if(addOrUpdateOemRequest.getBrandName().length()>4){
+            return CommonResponse.simpleResponse(-1, "品牌名称不能大于4个字");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getWechatName())){
+            return CommonResponse.simpleResponse(-1, "微信公众号名称不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getWechatCode())){
+            return CommonResponse.simpleResponse(-1, "微信号不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getAppId())){
+            return CommonResponse.simpleResponse(-1, "微信AppID不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getAppSecret())){
+            return CommonResponse.simpleResponse(-1, "微信AppSecret不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getQrCode())){
+            return CommonResponse.simpleResponse(-1, "公众号二维码不能为空");
+        }
+        if(addOrUpdateOemRequest.getTemplateInfos().size()<=0){
+            return CommonResponse.simpleResponse(-1, "消息模板不能为空");
+        }
+        for(int i=0;i<addOrUpdateOemRequest.getTemplateInfos().size();i++){
+            if(StringUtils.isEmpty(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateId())){
+                return CommonResponse.simpleResponse(-1, "模板ID不能为空");
+            }
+        }
+        oemInfoService.addOrUpdate(addOrUpdateOemRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "配置成功");
+    }
 }

@@ -508,4 +508,37 @@ public interface QRCodeService {
      */
     long getRevokeTotalCount(String sysType,String startCode,String endCode);
 
+    /**
+     * 所有二维码[分公司]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    PageModel<MyQrCodeListResponse> selectOemQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * 未分配个数[分公司]
+     * @param adminId
+     * @return
+     */
+    int getResidueCount(long adminId,String sysType);
+
+    /**
+     * 已分配个数[分公司]
+     * @param adminId
+     * @return
+     */
+    int getDistributeCount(long adminId,String sysType);
+
+    /**
+     * 未激活个数[分公司]
+     * @param adminId
+     * @return
+     */
+    int getUnActivateCount(long adminId,String sysType);
+
+    /**
+     * 已激活个数[分公司]
+     * @param adminId
+     * @return
+     */
+    int getActivateCount(long adminId,String sysType);
 }
