@@ -50,6 +50,7 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("请求地址{}",request.getRequestURI());
         final String token = CookieUtil.getCookie(request, ApplicationConsts.ADMIN_COOKIE_KEY);
 
         final Triple<Integer, String, AdminUser> checkResult = this.checkToken(token,request);
