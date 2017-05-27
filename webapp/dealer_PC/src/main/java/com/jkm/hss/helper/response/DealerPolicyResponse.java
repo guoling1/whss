@@ -12,6 +12,10 @@ import java.util.List;
 @Data
 public class DealerPolicyResponse {
     /**
+     * 是否展示合伙人推荐分润设置 1展示 2不展示
+     */
+    private String isShow;
+    /**
      * 推广码
      */
     private String inviteCode;

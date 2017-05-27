@@ -321,6 +321,9 @@ public class AdminUserServiceImpl implements AdminUserService {
                 return input.getId();
             }
         });
+        if(qrCodeIds.size()<count){
+            count = qrCodeIds.size();
+        }
         final List<Long> ids = qrCodeIds.subList(0, count);
         final List<QRCode> qrCodeList1 = qrCodeList.subList(0, count);
         this.qrCodeService.markCodeToDealer(dealerId, ids);

@@ -601,7 +601,7 @@
         </if>
         <if test="subCompanyName != null and subCompanyName!=''">
             AND c.admin_id in (select id from tb_admin_user where status=1 and dealer_id in
-            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and oem_type=1 )
+            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and type=4 )
         </if>
         ORDER BY
             c.code DESC
@@ -657,8 +657,8 @@
             </foreach>
         </if>
         <if test="subCompanyName != null and subCompanyName!=''">
-            AND c.admin_id in (select id from tb_admin_user where status=1 and dealer_id in
-            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and oem_type=1 )
+            AND c.admin_id in (select id from tb_admin_user where status=1 and type=4 and dealer_id in
+            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") )
         </if>
     </select>
 
@@ -749,7 +749,7 @@
         </if>
         <if test="subCompanyName != null and subCompanyName!=''">
             AND c.admin_id in (select id from tb_admin_user where status=1 and dealer_id in
-            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and oem_type=1 )
+            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and type=4 )
         </if>
         ORDER BY
         c.code DESC
@@ -805,7 +805,7 @@
         </if>
         <if test="subCompanyName != null and subCompanyName!=''">
             AND c.admin_id in (select id from tb_admin_user where status=1 and dealer_id in
-            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and oem_type=1 )
+            (select id from tb_dealer where proxy_name like "%"#{subCompanyName}"%") and type=4 )
         </if>
     </select>
 

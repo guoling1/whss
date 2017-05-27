@@ -1040,6 +1040,7 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/dealerPolicy", method = RequestMethod.POST)
     public CommonResponse dealerPolicy(@RequestBody DealerPolicyRequest request) {
         DealerPolicyResponse dealerPolicyResponse = new DealerPolicyResponse();
+        dealerPolicyResponse.setIsShow("2");
         if((request.getSysType()).equals(EnumProductType.HSS.getId())){
             Optional<Product> productOptional = this.productService.selectByType(request.getSysType());
             if(!productOptional.isPresent()){
@@ -1088,6 +1089,9 @@ public class DealerController extends BaseController {
                 dealerPolicyResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
                 List<DealerProfitSettingResponse> dealerProfitSettingResponses = dealerProfitService.selectDealerByDealerIdAndProductId(super.getDealerId(),productOptional.get().getId());
                 dealerPolicyResponse.setDealerProfits(dealerProfitSettingResponses);
+                if(dealerUpgerdeRates!=null&&dealerChannelRates.size()>0){
+                    dealerPolicyResponse.setIsShow("1");
+                }
             }
         }
         if((request.getSysType()).equals(EnumProductType.HSY.getId())){
