@@ -158,7 +158,7 @@ public class HsyMerchantListController extends BaseController {
             if (photoName7!=null&&!"".equals(res.getContractId())) {
                 URL url7 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName7,expiration);
                 String urls7 =url7.toString();
-                res.setIdcardc(urls7);
+                res.setContractId(urls7);
             }
 
         }
