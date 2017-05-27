@@ -7,6 +7,7 @@
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">分配二维码</h3>
+              <el-button class="right" type="text" @click="toRecord">分配记录</el-button>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -190,11 +191,18 @@
             type: 'error'
           });
         })
+      },
+      toRecord: function () {
+        this.$router.push('/daili/app/qrcode_distribution');
       }
     }
   }
 </script>
 <style scoped lang="less">
+  .right {
+    float: right;
+  }
+
   .form-label {
     margin-bottom: 15px;
   }

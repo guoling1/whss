@@ -31,11 +31,7 @@
                 <el-table-column type="index" label="序号"></el-table-column>
                 <el-table-column prop="proxyName" label="代理名称"></el-table-column>
                 <el-table-column prop="markCode" label="代理编号"></el-table-column>
-                <el-table-column label="收益日期" width="180">
-                  <template scope="scope">
-                    {{ scope.row.splitDate | datetime }}
-                  </template>
-                </el-table-column>
+                <el-table-column prop="splitDates" label="收益日期" width="180"></el-table-column>
                 <el-table-column prop="splitAmount" label="收益金额"></el-table-column>
                 <el-table-column prop="businessType" label="收益类型"></el-table-column>
                 <el-table-column label="操作">
