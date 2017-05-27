@@ -126,7 +126,7 @@
     <!-- 分润统计总数 -->
     <select id="getProfitCount" resultType="java.lang.Integer">
         SELECT
-            COUNT(a.id)
+            COUNT(0)
         FROM
             tb_split_account_record a
         LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id

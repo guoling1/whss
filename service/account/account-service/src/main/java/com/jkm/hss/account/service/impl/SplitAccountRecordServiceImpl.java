@@ -256,7 +256,8 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
 
     @Override
     public int getProfitCount(ProfitCountRequest request) {
-        return this.splitAccountRecordDao.getProfitCount(request);
+        ProfitCountRequest request1=selectTime(request);
+        return this.splitAccountRecordDao.getProfitCount(request1);
     }
 
     @Override
