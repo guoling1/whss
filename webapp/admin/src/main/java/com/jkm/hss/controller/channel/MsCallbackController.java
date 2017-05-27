@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 @Slf4j
 @Controller
-@RequestMapping(value = "/xmms/callback")
+@RequestMapping(value = "/callback")
 public class MsCallbackController{
 
 
@@ -67,29 +67,31 @@ public class MsCallbackController{
         log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
-    @RequestMapping(value = "withdraw", method = RequestMethod.POST)
+    @RequestMapping(value = "/hj/pay", method = RequestMethod.GET)
     public void handleWithdrawPayCallbackMsg(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+        log.info("22222222222222222");
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("r1_MerchantNo",request.getParameter("r1_MerchantNo"));
+        jsonObject.put("r2_OrderNo",request.getParameter("r2_OrderNo"));
+        jsonObject.put("r3_Amount",request.getParameter("r3_Amount"));
+        jsonObject.put("r4_Cur",request.getParameter("r4_Cur"));
+        jsonObject.put("r5_Mp",request.getParameter("r5_Mp"));
+        jsonObject.put("r6_Status",request.getParameter("r6_Status"));
+        jsonObject.put("r7_TrxNo",request.getParameter("r7_TrxNo"));
+        jsonObject.put("r8_BankOrderNo",request.getParameter("r8_BankOrderNo"));
+        jsonObject.put("r9_BankTrxNo",request.getParameter("r9_BankTrxNo"));
+        jsonObject.put("ra_PayTime ",request.getParameter("ra_PayTime"));
+        jsonObject.put("rb_DealTime ",request.getParameter("rb_DealTime"));
+        jsonObject.put("rc_BankCode ",request.getParameter("rc_BankCode"));
+        jsonObject.put("hmac", request.getParameter("hmac"));
 
+
+        log.info("收到SYJ支付异步通知：[{}],签名结果：[{}], 支付流水号:[{}]" + jsonObject.toJSONString());
         log.info(request.getParameter("encryptData")+"............");
         log.info(request.getParameter("encryptKey")+"............");
-        ResponseWriter.writeTxtResponse(response, "000000");
+        ResponseWriter.writeTxtResponse(response, "success");
         log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
