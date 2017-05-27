@@ -162,6 +162,7 @@ public class TradeController extends BaseController {
         }else{
             final Order order = orderOptional.get();
             model.addAttribute("sn", order.getOrderNo());
+            model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
             return "/success";
         }
