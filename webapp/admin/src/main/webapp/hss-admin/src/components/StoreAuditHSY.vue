@@ -116,6 +116,7 @@
               <th class="col-md-3" style="text-align: center;">身份证正面:</th>
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
               <th class="col-md-3" style="text-align: center;">结算卡正面:</th>
+              <th class="col-md-3" style="text-align: center;">签约合同照:</th>
               <th class="col-md-3" style="text-align: center;" v-if="msg.isPublic==1">营业执照:</th>
               <th class="col-md-3" style="text-align: center;">店面照片:</th>
               <th class="col-md-3" style="text-align: center;">收银台:</th>
@@ -163,23 +164,13 @@
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardc" alt="" v-if="$msg.idcardc!=null&&$msg.idcardc!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardc!=null&&$msg.idcardc!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('7')">点击更换</el-button>
               </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.contractId" alt="" v-if="$msg.contractId!=null&&$msg.contractId!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.contractId!=null&&$msg.contractId!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('8')">点击更换</el-button>
+              </td>
               <td class="col-md-3" style="text-align: center;border: none;" v-if="msg.isPublic==1">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.licenceID==null&&$msg.licenceID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:3}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
