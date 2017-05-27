@@ -6,14 +6,12 @@ export default{
     //查询权限
     /*
      倒数第二参：按钮的方法
-     最后一个参：按钮事件的参数
-     参3：查询权限的query
+     最后一个参：按钮事件的参数,即权限query
      */
     const power = function () {
-      console.log(arguments[arguments.length-1]);
       this.$http.post('/admin/user/havePermission', {descr: arguments[arguments.length-1]})
         .then(res => {
-          arguments[arguments.length-2](arguments[0],arguments[1],arguments[2],arguments[3])
+          arguments[arguments.length-2](arguments[0],arguments[1],arguments[2],arguments[3],arguments[3])
         })
         .catch(err => {
           this.$message({
