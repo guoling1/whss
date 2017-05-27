@@ -25,6 +25,7 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xmlbeans.impl.xb.xmlconfig.JavaNameList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +63,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -105,7 +110,11 @@ public class PrivilegeController extends BaseController {
         adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
         long backId = 0;
         if(level==1){
-            backId = this.adminUserService.createFirstDealerUser(adminUser, EnumOemType.DEALER.getId());
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                backId = this.adminUserService.createFirstDealerUser(adminUser, EnumOemType.OEM.getId());
+            }else{
+                backId = this.adminUserService.createFirstDealerUser(adminUser, EnumOemType.DEALER.getId());
+            }
         }
         if(level==2){
             backId = this.adminUserService.createSecondDealerUser(adminUser);
@@ -188,7 +197,11 @@ public class PrivilegeController extends BaseController {
 
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(dealerOptional.get().getLevel()==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(dealerOptional.get().getLevel()==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -212,7 +225,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -276,7 +293,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -297,7 +318,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -327,7 +352,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -366,7 +395,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
@@ -413,7 +446,11 @@ public class PrivilegeController extends BaseController {
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();
         if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
+            if(dealerOptional.get().getOemType()== EnumOemType.OEM.getId()){
+                type=EnumAdminType.OEM.getCode();
+            }else{
+                type=EnumAdminType.FIRSTDEALER.getCode();
+            }
         }
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();

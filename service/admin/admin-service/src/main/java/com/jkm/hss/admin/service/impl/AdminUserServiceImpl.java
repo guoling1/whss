@@ -258,7 +258,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     /**
      * {@inheritDoc}
-     *
+     * BOSS按码段分配
      * @param dealerId  一级代理商id
      * @param startCode  开始二维码
      * @param endCode  结束二维码
@@ -301,7 +301,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * 按个数分配
+     * BOSS按个数分配
      *
      * @param type
      * @param dealerId

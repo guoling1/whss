@@ -52,6 +52,14 @@ public interface QRCodeService {
      * @return
      */
     int markCodeToDealer(long firstLevelDealerId, List<Long> codeIds);
+    /**
+     * 分公司分配给自己
+     *
+     * @param firstLevelDealerId
+     * @param codeIds
+     * @return
+     */
+    int markCodeToOemSelf(long firstLevelDealerId, List<Long> codeIds);
 
     /**
      * 将指定范围的二维码标记在代理商名下
@@ -385,6 +393,15 @@ public interface QRCodeService {
      * @return
      */
     List<QRCode> getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(long dealerId, String startCode, String endCode,String sysType);
+    /**
+     * 按码段、和产品类型查询某个分公司下的所有二维码
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByOemIdAndRangeCodeAndSysType(long dealerId, String startCode, String endCode,String sysType);
 
     /**
      * 按产品类型查询某个代理商下的所有二维码
@@ -393,10 +410,17 @@ public interface QRCodeService {
      * @return
      */
     List<QRCode> getUnDistributeCodeByDealerIdAndSysType(long dealerId,String sysType);
+    /**
+     * 按产品类型查询某个代理商下的所有二维码
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByOemIdAndSysType(long dealerId,String sysType);
 
 
     /**
-     * admin查询所有未分配的二维码个数
+     * BOSS分配二维码时查询未分配二维码集合
      *
      * @return
      */
@@ -409,7 +433,7 @@ public interface QRCodeService {
     int getUnDistributeCountBySysType(String sysType);
 
     /**
-     * 根据码段和产品类型
+     * boss后台分配二维码时根据码段和产品类型查询未分配二维码集合
      *
      * @param startCode
      * @param endCode
@@ -516,29 +540,29 @@ public interface QRCodeService {
     PageModel<MyQrCodeListResponse> selectOemQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
     /**
      * 未分配个数[分公司]
-     * @param adminId
+     * @param dealerId
      * @return
      */
-    int getResidueCount(long adminId,String sysType);
+    int getResidueCount(long dealerId,String sysType);
 
     /**
      * 已分配个数[分公司]
-     * @param adminId
+     * @param dealerId
      * @return
      */
-    int getDistributeCount(long adminId,String sysType);
+    int getDistributeCount(long dealerId,String sysType);
 
     /**
      * 未激活个数[分公司]
-     * @param adminId
+     * @param dealerId
      * @return
      */
-    int getUnActivateCount(long adminId,String sysType);
+    int getUnActivateCount(long dealerId,String sysType);
 
     /**
      * 已激活个数[分公司]
-     * @param adminId
+     * @param dealerId
      * @return
      */
-    int getActivateCount(long adminId,String sysType);
+    int getActivateCount(long dealerId,String sysType);
 }

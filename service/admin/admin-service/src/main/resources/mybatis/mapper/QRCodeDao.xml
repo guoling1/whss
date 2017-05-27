@@ -83,6 +83,22 @@
             #{item}
         </foreach>
     </update>
+    <!--分公司分配给自己-->
+    <update id="markCodeToOemSelf">
+        UPDATE tb_qr_code
+        SET
+        first_level_dealer_id = #{firstLevelDealerId},
+        distribute_time=now(),
+        distribute_status = 2
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND  id IN
+        <foreach collection="codeIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
     <update id="markCodeToDealerByRange">
         UPDATE tb_qr_code
@@ -96,7 +112,7 @@
 
     <update id="markAsDistribute">
         UPDATE tb_qr_code
-        SET distribute_status = 2
+        SET distribute_status = 2,distribute_time=now()
         WHERE id IN
         <foreach collection="codeIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
@@ -433,6 +449,18 @@
         ORDER BY code ASC
     </select>
 
+    <select id="getUnDistributeCodeByOemIdAndRangeCodeAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE first_level_dealer_id = 0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode} AND sys_type=#{sysType} and
+        admin_id in (select id from tb_admin_user where type=4 and dealer_id=#{dealerId})
+        ORDER BY code ASC
+    </select>
+
+
     <select id="getUnDistributeCodeByDealerIdAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code
         WHERE first_level_dealer_id = #{dealerId}
@@ -442,13 +470,24 @@
         ORDER BY code ASC
     </select>
 
+    <select id="getUnDistributeCodeByOemIdAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND  sys_type=#{sysType}
+        AND admin_id in (select id from tb_admin_user where type=4 and dealer_id=#{dealerId})
+        ORDER BY code ASC
+    </select>
+
     <select id="getUnDistributeCodeBySysType" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code
         WHERE first_level_dealer_id =0
         AND second_level_dealer_id = 0
         AND distribute_status = 1
         AND activate_status = 1
-        And sys_type=#{sysType}
+        And sys_type=#{sysType} and admin_id in (select id from tb_admin_user where type=1)
         ORDER BY id ASC
     </select>
 
@@ -467,7 +506,7 @@
         AND second_level_dealer_id = 0
         AND distribute_status = 1
         AND activate_status = 1
-        AND code BETWEEN #{startCode} AND #{endCode} AND sys_type=#{sysType}
+        AND code BETWEEN #{startCode} AND #{endCode} AND sys_type=#{sysType} and admin_id in (select id from tb_admin_user where type=1)
         ORDER BY code ASC
     </select>
 
@@ -1069,7 +1108,7 @@
         FROM
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
-        WHERE  c.sys_type='hss' and c.admin_id=#{adminId}
+        WHERE   c.admin_id in (select id from tb_admin_user where dealer_id=#{dealerId})
         <if test="merchantStatusList!=null and merchantStatusList.size()>0">
             AND i.`status` IN
             <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
@@ -1078,6 +1117,9 @@
         </if>
         <if test="code != null and code!=''">
             and c.code = #{code}
+        </if>
+        <if test="sysType != null and sysType!=''">
+            and c.sys_type=#{sysType}
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND c.merchant_id IN (
@@ -1161,7 +1203,7 @@
         FROM
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
-        WHERE  c.sys_type='hss' and c.admin_id=#{adminId}
+        WHERE   c.admin_id in (select id from tb_admin_user where dealer_id=#{dealerId})
         <if test="merchantStatusList!=null and merchantStatusList.size()>0">
             AND i.`status` IN
             <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
@@ -1170,6 +1212,9 @@
         </if>
         <if test="code != null and code!=''">
             and c.code = #{code}
+        </if>
+        <if test="sysType != null and sysType!=''">
+            and c.sys_type=#{sysType}
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND c.merchant_id IN (
@@ -1211,20 +1256,20 @@
 
     <select id="getResidueCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code
-        WHERE distribute_status = 1 AND sys_type=#{sysType} and admin_id=#{adminId}
+        WHERE first_level_dealer_id=0 AND sys_type=#{sysType} and admin_id in (select id from tb_admin_user where dealer_id=#{dealerId})
     </select>
     <select id="getDistributeCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code
-        WHERE distribute_status = 2 AND sys_type=#{sysType} and admin_id=#{adminId}
+        WHERE first_level_dealer_id>0 AND sys_type=#{sysType} and admin_id in (select id from tb_admin_user where dealer_id=#{dealerId})
     </select>
     <select id="getUnActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code
-        WHERE distribute_status = 2
-        AND activate_status = 1 AND sys_type=#{sysType} AND admin_id=#{adminId}
+        WHERE first_level_dealer_id>0
+        AND activate_status = 1 AND sys_type=#{sysType} AND admin_id in (select id from tb_admin_user where dealer_id=#{dealerId})
     </select>
     <select id="getActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code
-        WHERE distribute_status = 2
-        AND activate_status = 2 AND sys_type=#{sysType} AND admin_id=#{adminId}
+        WHERE first_level_dealer_id>0
+        AND activate_status = 2 AND sys_type=#{sysType} AND admin_id in (select id from tb_admin_user where dealer_id=#{dealerId})
     </select>
 </mapper>
