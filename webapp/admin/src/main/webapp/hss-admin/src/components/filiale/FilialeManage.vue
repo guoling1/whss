@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden;min-height: 400px">
         <div class="box-header">
           <h3 class="box-title">分公司管理</h3>
-          <el-button type="text" @click="addFiliale" class="pull-right" style="padding-top: 0">新增分公司</el-button>
+          <el-button type="text" @click="_$power(addFiliale,'boss_oem_add')" class="pull-right" style="padding-top: 0">新增分公司</el-button>
         </div>
         <div class="box-body">
           <ul class="search">
@@ -73,10 +73,10 @@
             <el-table-column prop="mobile" label="联系人手机号" min-width="85"></el-table-column>
             <el-table-column prop="appId" label="好收收" min-width="210">
               <template scope="scope">
-                <a @click="openProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId==0" style="color: #20a0ff;margin-right: 10px;">开通产品</a>
-                <a @click="auditProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">修改产品设置</a>
-                <a @click="configureGateway(scope.row.id,scope.row.hssProductId,scope.row.proxyName,scope.row.markCode,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置网关</a>
-                <a @click="configureOem(scope.row.id)" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置O单</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_oem_product_add')" v-if="records[scope.$index].hssProductId==0" style="color: #20a0ff;margin-right: 10px;">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_oem_product_update')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">修改产品设置</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,scope.row.proxyName,scope.row.markCode,'hss',configureGateway,'boss_oem_gateway')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置网关</a>
+                <a @click="_$power(scope.row.id,configureOem,'boss_oem_setting')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置O单</a>
               </template>
             </el-table-column>
             <el-table-column label="好收银" min-width="85">

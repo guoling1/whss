@@ -53,9 +53,9 @@
             </el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <a @click="_$power(scope.row.id,issue1,'boss_staff_update')" type="text" size="small" v-if="scope.row.isMaster!=1">编辑</a>
-                <a @click="_$power(scope.row.id,open,'boss_staff_disable')" v-if="records[scope.$index].status==2&&scope.row.isMaster!=1" type="text" size="small">开启</a>
-                <a @click="_$power(scope.row.id,close,'boss_staff_disable')" v-if="records[scope.$index].status==1&&scope.row.isMaster!=1" type="text" size="small">禁用</a>
+                <a @click="_$power(scope.row.id,issue1,'boss_oem_staff_update')" type="text" size="small" v-if="scope.row.isMaster!=1">编辑</a>
+                <a @click="_$power(scope.row.id,open,'boss_oem_staff_enable')" v-if="records[scope.$index].status==2&&scope.row.isMaster!=1" type="text" size="small">开启</a>
+                <a @click="_$power(scope.row.id,close,'boss_oem_staff_disable')" v-if="records[scope.$index].status==1&&scope.row.isMaster!=1" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>

@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分公司员工权限管理</h3>
-          <a @click="_$power(issue,'boss_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
+          <a @click="_$power(issue,'boss_oem_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
         </div>
         <div class="box-body">
           <!--筛选-->

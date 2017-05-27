@@ -11,7 +11,7 @@ export default{
     const power = function () {
       this.$http.post('/admin/user/havePermission', {descr: arguments[arguments.length-1]})
         .then(res => {
-          arguments[arguments.length-2](arguments[0],arguments[1],arguments[2],arguments[3],arguments[3])
+          arguments[arguments.length-2](arguments[0],arguments[1],arguments[2],arguments[3],arguments[4])
         })
         .catch(err => {
           this.$message({
