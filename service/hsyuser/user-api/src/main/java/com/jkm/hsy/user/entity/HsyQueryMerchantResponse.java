@@ -10,6 +10,9 @@ import java.util.Date;
 @Data
 public class HsyQueryMerchantResponse {
 
+    private String realname;//报单员
+    private String username;//报单员真实姓名
+
     private Date auditTime; //审核时间
 
     private String globalID;//商户编号

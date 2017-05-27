@@ -78,6 +78,21 @@
         </if>
         ORDER BY id DESC LIMIT #{firstIndex},#{pageSize}
     </select>
+    <!--分润统计-->
+    <select id="selectStatisticsByParam" resultType="java.math.BigDecimal">
+        SELECT sum(split_amount) as splitamount FROM tb_split_account_record
+        WHERE receipt_money_account_id = #{accountId}
+        AND split_amount &gt; 0.00
+        <if test="orderNo != null and orderNo != ''">
+            AND order_no = #{orderNo}
+        </if>
+        <if test="businessType != null and businessType != ''">
+            AND business_type = #{businessType}
+        </if>
+        <if test="beginDate != null">
+            AND create_time BETWEEN #{beginDate} AND #{endDate}
+        </if>
+    </select>
     <select id="selectCountByParam" resultType="java.lang.Long">
         SELECT count(*) FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId} AND split_amount &gt; 0.00
         <if test="orderNo != null and orderNo != ''">

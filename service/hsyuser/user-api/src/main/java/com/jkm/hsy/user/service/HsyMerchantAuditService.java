@@ -118,4 +118,23 @@ public interface HsyMerchantAuditService {
      */
     String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) throws ParseException;
 
+    /**
+     * 更改注册手机号
+     * @param uid
+     */
+    void changeMobile(Long uid,String changePhone);
+
+    /**
+     * 查询原有手机号及用户id
+     * @param id
+     * @return
+     */
+    HsyMerchantAuditResponse getCellphon(Long id);
+
+    /**
+     * 更新上次使用的手机号
+     * @param changePhone
+     * @param uid
+     */
+    void updatePhone(String changePhone, Long uid);
 }
