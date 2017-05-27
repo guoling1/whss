@@ -18,7 +18,9 @@ public enum EnumHsyPhotoType {
 
     INDOORID(6, "室内照片"),
 
-    IDCARDC(7, "结算卡正面");
+    IDCARDC(7, "结算卡正面"),
+
+    CONTRACTID(8, "签约合同照");
 
     @Getter
     private int id;

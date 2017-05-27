@@ -180,6 +180,12 @@ public class PhotoChangeController extends BaseController {
                 merchantInfoQueryService.saveHsyHistory(sid,photo,hsyType,reasonDescription,cardName,operator);
                 merchantInfoQueryService.saveHsyPhotoChang6(photoName,sid);
             }
+            if (hsyType==8) {
+                String photo = response.getIdcardc();
+                String cardName = EnumHsyPhotoType.CONTRACTID.getValue();
+                merchantInfoQueryService.saveHsyHistory(sid,photo,hsyType,reasonDescription,cardName,operator);
+                merchantInfoQueryService.saveHsyPhotoChang7(photoName,sid);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("操作异常");

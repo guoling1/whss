@@ -176,6 +176,13 @@ public interface MerchantInfoQueryService {
     void saveHsyPhotoChang6(String photoName, long sid);
 
     /**
+     * 更改签约合同照
+     * @param photoName
+     * @param sid
+     */
+    void saveHsyPhotoChang7(String photoName, long sid);
+
+    /**
      * 查好hsy的历史
      * @param request
      * @return
@@ -188,6 +195,7 @@ public interface MerchantInfoQueryService {
      * @return
      */
     int selectHsyHistoryCount(HistoryPhotoChangeRequest request);
+
 
 
 }

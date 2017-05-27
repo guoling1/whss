@@ -700,4 +700,16 @@
         AND b.TYPE = 1;
     </update>
 
+    <update id="saveHsyPhotoChang7">
+        UPDATE app_au_user a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.UID
+        LEFT JOIN app_biz_shop c ON c.ID = b.SID
+        LEFT JOIN app_cm_file d ON d.UUID = a.CONTRACTID
+        SET d.PATH = #{photoName}
+        WHERE
+        c.ID = #{sid}
+        AND b.ROLE = 1
+        AND b.TYPE = 1;
+    </update>
+
 </mapper>

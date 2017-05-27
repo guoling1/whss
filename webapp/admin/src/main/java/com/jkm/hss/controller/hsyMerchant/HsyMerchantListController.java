@@ -119,6 +119,7 @@ public class HsyMerchantListController extends BaseController {
             final String photoName4 = res.getIdcardf();
             final String photoName5 = res.getIdcardb();
             final String photoName6 = res.getIdcardc();
+            final String photoName7 = res.getContractId();
             if (photoName!=null&&!"".equals(res.getLicenceID())) {
                 URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, expiration);
                 String urls =url.toString();
@@ -153,6 +154,11 @@ public class HsyMerchantListController extends BaseController {
                 URL url6 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName6,expiration);
                 String urls6 =url6.toString();
                 res.setIdcardc(urls6);
+            }
+            if (photoName7!=null&&!"".equals(res.getContractId())) {
+                URL url7 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName7,expiration);
+                String urls7 =url7.toString();
+                res.setIdcardc(urls7);
             }
 
         }

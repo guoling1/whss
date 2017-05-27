@@ -181,6 +181,12 @@ public interface MerchantInfoQueryDao {
     void saveHsyPhotoChang6(Map map);
 
     /**
+     * 更改签约合同照
+     * @param map
+     */
+    void saveHsyPhotoChang7(Map map);
+
+    /**
      * 查询hsy历史
      * @param request
      * @return
@@ -193,6 +199,7 @@ public interface MerchantInfoQueryDao {
      * @return
      */
     int selectHsyHistoryCount(HistoryPhotoChangeRequest request);
+
 
 
 }

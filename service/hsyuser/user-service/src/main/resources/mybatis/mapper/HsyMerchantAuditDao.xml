@@ -238,7 +238,7 @@
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDC) AS IDCARDC,
-            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.CONTRACTID) AS CONTRACTID
         FROM
             app_biz_shop c
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
