@@ -13,6 +13,8 @@ import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -201,6 +203,7 @@ public class PushServiceImpl implements PushService {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Map pushCashMsg(Long sid, String payChannel, Double amount, String code) {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();

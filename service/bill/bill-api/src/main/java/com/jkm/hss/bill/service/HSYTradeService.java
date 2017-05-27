@@ -193,10 +193,10 @@ public interface HSYTradeService {
     /**
      * 分账
      *
-     * @param order
-     * @param shop
+     * @param orderId
+     * @param accountId
      */
-    void paySplitAccount(Order order, AppBizShop shop);
+    void paySplitAccount(long orderId, long accountId);
 
 
     /**

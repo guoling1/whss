@@ -43,6 +43,11 @@ public class MqConfig {
      */
     public static final String NORMAL_SETTLE = "normal_settle";
 
+    /**
+     * 好收银分润消息
+     */
+    public static final String SPLIT_PROFIT = "split_profit";
+
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();
