@@ -32,7 +32,7 @@
             </li>
             <li class="same">
               <label>产品类型:</label>
-              <el-select style="width: 188px" v-model="query.sysType" clearable placeholder="请选择" size="small">
+              <el-select style="width: 188px" v-model="query.sysType" placeholder="请选择" size="small">
                 <el-option label="好收收" value="hss">好收收</el-option>
                 <el-option label="好收银" value="hsy">好收银</el-option>
               </el-select>
