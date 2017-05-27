@@ -167,6 +167,28 @@ public class HsyMerchantListController extends BaseController {
     }
 
 
+    /**
+     * 更改注册手机号
+     * @param hsyMerchantAuditRequest
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/changeMobile",method = RequestMethod.POST)
+    public CommonResponse changeMobile(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
+        HsyMerchantAuditResponse req = this.hsyMerchantAuditService.getCellphon(hsyMerchantAuditRequest.getId());
+        if (req.getChangePhone()==null) {
+            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+        }else {
+            this.hsyMerchantAuditService.updatePhone(req.getChangePhone(),req.getUid());
+            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+        }
+        return CommonResponse.simpleResponse(1, "更改成功");
+
+    }
+
+
+
 
     @ResponseBody
     @RequestMapping(value = "/getCheckPending",method = RequestMethod.POST)

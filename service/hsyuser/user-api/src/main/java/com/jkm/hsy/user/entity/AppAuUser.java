@@ -1,13 +1,17 @@
 package com.jkm.hsy.user.entity;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 /** app_au_user*/
+@Data
 public class AppAuUser {
     private Long id;
     private String globalID;//对外ID
     private String cellphone;//手机号
+    private String changePhone;//更改后的手机号
     private String password;//密码
     private String nickname;//昵称
     private String realname;//真实姓名
