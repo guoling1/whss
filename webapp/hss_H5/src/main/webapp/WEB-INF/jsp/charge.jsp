@@ -31,15 +31,16 @@
 
       <div class="red_mpt">请勿在微信内长按二维码识别</div>
       <div class="bar">
-        <img src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
-        <img src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>
-        <span>截图保存后识别二维码付款</span>
+        <img id="wxLogo" style="display: none" src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
+        <span id="wxText" style="display: none">请使用微信扫码</span>
+        <img id="zfbLogo" style="display: none" src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>
+        <span id="zfbText" style="display: none">请使用支付宝扫码</span>
       </div>
     </div>
   </div>
   <div class="explain">
-    <p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh">
-      <img src="http://static.jinkaimen.cn/hss/assets/reload.png"/>点击刷新</span></p>
+    <%--<p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh">--%>
+    <%--<img src="http://static.jinkaimen.cn/hss/assets/reload.png"/>点击刷新</span></p>--%>
 
     <p class="server">由好收收提供服务</p>
   </div>
@@ -53,5 +54,5 @@
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.27/charge.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.28/charge.min.js"></script>
 </html>
