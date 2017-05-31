@@ -58,33 +58,33 @@ login.addEventListener('click', function () {
 });
 
 // 注册
-submit.addEventListener('click', ()=> {
+submit.addEventListener('click', () => {
   if (!pageData.qrCode || pageData.qrCode == '') {
     if (validate.joint({
         phone: mobile.value,
-        code: code.value,
-        oemNo: pageData.oemNo
+        code: code.value
       })) {
       http.post('/wx/login', {
         mobile: mobile.value,
         code: code.value,
+        oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
-      }, ()=> {
+      }, () => {
         window.location.replace("/sqb/addInfo");
       })
     }
   } else {
     if (validate.joint({
         phone: mobile.value,
-        code: code.value,
-        oemNo: pageData.oemNo
+        code: code.value
       })) {
       http.post('/wx/login', {
         mobile: mobile.value,
         code: code.value,
         qrCode: pageData.qrCode,
+        oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
-      }, ()=> {
+      }, () => {
         window.location.replace("/sqb/addInfo");
       })
     }
