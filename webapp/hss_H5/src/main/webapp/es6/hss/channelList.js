@@ -4,7 +4,7 @@
 
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('channel');
 // 引入http message
 const http = _require('http');
 const message = _require('message');
@@ -78,7 +78,7 @@ http.post('/channel/list', {}, function (list) {
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
-                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
+                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payType=" + data.payType + "&payChannel=" + list[i].channelSign);
                 });
                 break;
             }

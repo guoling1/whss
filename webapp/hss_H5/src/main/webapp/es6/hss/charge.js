@@ -28,25 +28,20 @@ function getQueryString(name) {
   return null;
 }
 
-// 区别通道
-let channel = {
-  101: 'wx',
-  102: 'zfb',
-  201: 'wx',
-  202: 'zfb',
-  1001: 'wx',
-  1002: 'zfb'
-};
-
 let wxLogo = document.getElementById('wxLogo');
 let wxText = document.getElementById('wxText');
 let zfbLogo = document.getElementById('zfbLogo');
 let zfbText = document.getElementById('zfbText');
 
-if (channel[getQueryString('payChannel')] == 'wx') {
+if (getQueryString('payType') == 1) {
   wxLogo.style.display = 'inline-block';
   wxText.style.display = 'inline-block';
-} else if (channel[getQueryString('payChannel')] == 'zfb') {
+} else if (getQueryString('payType') == 2) {
+  zfbLogo.style.display = 'inline-block';
+  zfbText.style.display = 'inline-block';
+} else {
+  wxLogo.style.display = 'inline-block';
+  wxText.style.display = 'inline-block';
   zfbLogo.style.display = 'inline-block';
   zfbText.style.display = 'inline-block';
 }
