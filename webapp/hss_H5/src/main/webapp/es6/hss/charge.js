@@ -44,11 +44,11 @@ let zfbLogo = document.getElementById('zfbLogo');
 let zfbText = document.getElementById('zfbText');
 
 if (channel[getQueryString('payChannel')] == 'wx') {
-  wxLogo.style.display = 'block';
-  wxText.style.display = 'block';
+  wxLogo.style.display = 'inline-block';
+  wxText.style.display = 'inline-block';
 } else if (channel[getQueryString('payChannel')] == 'zfb') {
-  zfbLogo.style.display = 'block';
-  zfbText.style.display = 'block';
+  zfbLogo.style.display = 'inline-block';
+  zfbText.style.display = 'inline-block';
 }
 
 // refresh.addEventListener('click', function () {
