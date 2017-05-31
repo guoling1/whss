@@ -7,7 +7,7 @@ const message = _require('message');
 const http = _require('http');
 // 定义变量
 const qr = document.getElementById('qr');
-const refresh = document.getElementById('refresh');
+// const refresh = document.getElementById('refresh');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
@@ -28,12 +28,35 @@ function getQueryString(name) {
   return null;
 }
 
-refresh.addEventListener('click', function () {
-  http.post('/trade/dcReceipt', {
-    totalFee: pageData.amount,
-    payChannel: getQueryString('payChannel')
-  }, function (data) {
-    qrImg.makeCode(data.payUrl);
-    message.prompt_show('刷新成功');
-  })
-});
+// 区别通道
+let channel = {
+  101: 'wx',
+  102: 'zfb',
+  201: 'wx',
+  202: 'zfb',
+  1001: 'wx',
+  1002: 'zfb'
+};
+
+let wxLogo = document.getElementById('wxLogo');
+let wxText = document.getElementById('wxText');
+let zfbLogo = document.getElementById('zfbLogo');
+let zfbText = document.getElementById('zfbText');
+
+if (channel[getQueryString('payChannel')] == 'wx') {
+  wxLogo.style.display = 'inline-block';
+  wxText.style.display = 'inline-block';
+} else if (channel[getQueryString('payChannel')] == 'zfb') {
+  zfbLogo.style.display = 'inline-block';
+  zfbText.style.display = 'inline-block';
+}
+
+// refresh.addEventListener('click', function () {
+//   http.post('/trade/dcReceipt', {
+//     totalFee: pageData.amount,
+//     payChannel: getQueryString('payChannel')
+//   }, function (data) {
+//     qrImg.makeCode(data.payUrl);
+//     message.prompt_show('刷新成功');
+//   })
+// });
