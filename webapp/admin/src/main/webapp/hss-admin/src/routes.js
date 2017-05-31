@@ -69,6 +69,7 @@ const TemplateAdd = r => require.ensure([], () => r(require('components/Template
 const PassAdd = r => require.ensure([], () => r(require('components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('components/PassList')), 'group-record');
 const LimitList = r => require.ensure([], () => r(require('components/LimitList')), 'group-record');
+const UnionLine = r => require.ensure([], () => r(require('components/UnionLine')), 'group-record');
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('components/PersonnelAdd')), 'group-record');
@@ -97,6 +98,7 @@ let routes = [
     component: Crumbs,
     children: [
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
