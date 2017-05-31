@@ -36,7 +36,7 @@ public enum EnumPaymentChannel {
     /**
      * 银联扫码
      */
-    UNIONPAY_CODE(5,"银联扫码");
+    UNIONPAY_CODE(6,"银联扫码");
 
     @Getter
     private int id;
