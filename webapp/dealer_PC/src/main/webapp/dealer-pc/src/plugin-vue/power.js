@@ -10,7 +10,6 @@ export default{
      参3：查询权限的query
      */
     const power = function () {
-      console.log(arguments[arguments.length-1]);
       this.$http.post('/daili/privilege/havePermission', {descr: arguments[arguments.length-1]})
         .then(res => {
           arguments[arguments.length-2](arguments[0],arguments[1],arguments[2],arguments[3])
@@ -26,6 +25,4 @@ export default{
     Vue.__power = power;
     Vue.prototype._$power = power;
     }
-
-
 }
