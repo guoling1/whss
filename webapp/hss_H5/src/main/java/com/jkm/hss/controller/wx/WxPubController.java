@@ -572,6 +572,7 @@ public class WxPubController extends BaseController {
                     mi.setLevel(EnumUpGradeType.COMMON.getId());
                     mi.setHierarchy(0);
                     mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+                    mi.setOemId(oemId);
                     //判断是否能升级
                     if(mi.getFirstDealerId()>0){
                         Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
@@ -728,6 +729,7 @@ public class WxPubController extends BaseController {
                         mi.setLevel(EnumUpGradeType.COMMON.getId());
                         mi.setHierarchy(0);
                         mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+                        mi.setOemId(oemId);
                         merchantInfoService.regByWx(mi);
                         //初始化费率
                         List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productId);
@@ -791,8 +793,7 @@ public class WxPubController extends BaseController {
                         mi.setSource(EnumSource.RECOMMEND.getId());
                         log.info("手机号推荐注册");
                         //初始化代理商和商户
-                        Optional<UserInfo> inviteUserOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-                        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(inviteUserOptional.get().getMerchantId());
+                        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(loginRequest.getInviteCode()),oemId);
                         if(!merchantInfoOptional.isPresent()){
                             log.info("该用户没有关联的商户");
                             return CommonResponse.simpleResponse(-1, "邀请码不存在");
@@ -806,6 +807,7 @@ public class WxPubController extends BaseController {
                         mi.setLevel(EnumUpGradeType.COMMON.getId());
                         mi.setHierarchy(merchantInfoOptional.get().getHierarchy()+1);//邀请人级别加1
                         mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+                        mi.setOemId(oemId);
                         merchantInfoService.regByWx(mi);
                         List<ProductChannelDetail> productChannelDetailList = productChannelDetailService.selectByProductId(productId);
                         if(productChannelDetailList.size()>0){
@@ -919,6 +921,14 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "directLogin", method = RequestMethod.POST)
     public CommonResponse directLogin(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final DirectLoginRequest directLoginRequest) {
+        long oemId = 0;
+        if(directLoginRequest.getOemNo()!=null&&!"".equals(directLoginRequest.getOemNo())){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(directLoginRequest.getOemNo());
+            if(!oemInfoOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "分公司不存在");
+            }
+            oemId = oemInfoOptional.get().getDealerId();
+        }
         log.info("手机号登录");
         if (StringUtils.isBlank(directLoginRequest.getMobile())) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -937,7 +947,9 @@ public class WxPubController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(directLoginRequest.getMobile()),oemId);
+
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantInfoOptional.get().getId());
         if(userInfoOptional.isPresent()){
             if(userInfoOptional.get().getOpenId()!=null&&!"".equals(userInfoOptional.get().getOpenId())){
                 if((userInfoOptional.get().getOpenId()).equals(super.getOpenId(request))){//相等，直接登录

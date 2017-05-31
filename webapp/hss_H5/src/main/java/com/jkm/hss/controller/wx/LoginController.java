@@ -325,6 +325,7 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -352,11 +353,13 @@ public class LoginController extends BaseController {
                     }
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                     isRedirect= true;
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                model.addAttribute("oemNo",oemNo);
                 isRedirect= true;
                 url = "/sqb/reg";
             }
@@ -431,6 +434,7 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -457,11 +461,13 @@ public class LoginController extends BaseController {
                     }
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    model.addAttribute("oemNo",oemNo);
                     isRedirect= true;
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                model.addAttribute("oemNo",oemNo);
                 isRedirect= true;
                 url = "/sqb/reg";
             }
@@ -704,8 +710,10 @@ public class LoginController extends BaseController {
                                 return "redirect:/sqb/message";
                             }
                         }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
+                            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                             CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
+                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                         }
                     }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                         if(merchantInfo.get().getOemId()>0){//分公司商户
@@ -714,9 +722,7 @@ public class LoginController extends BaseController {
                         }
                     }
 
-
                     if(merchantInfo.isPresent()){
-//                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
                         final Optional<Account> accountOptional = this.accountService.getById(merchantInfo.get().getAccountId());
                         if(!accountOptional.isPresent()){
                             model.addAttribute("avaliable", "0.00");
@@ -732,15 +738,28 @@ public class LoginController extends BaseController {
                             model.addAttribute("showRecommend", 2);//不显示升级
                         }
                     }else{
-                        model.addAttribute("showRecommend", 1);
+                        if(oemNo!=null&&!"".equals(oemNo)){
+                            model.addAttribute("showRecommend", 2);
+                        }else{
+                            model.addAttribute("showRecommend", 1);
+                        }
                         model.addAttribute("avaliable", "0.00");
                     }
                 }else{
-                    model.addAttribute("showRecommend", 1);
+                    if(oemNo!=null&&!"".equals(oemNo)){
+                        model.addAttribute("showRecommend", 2);
+                    }else{
+                        model.addAttribute("showRecommend", 1);
+                    }
                     model.addAttribute("avaliable", "0.00");
                 }
             }else{
-                model.addAttribute("showRecommend", 1);
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                if(oemNo!=null&&!"".equals(oemNo)){
+                    model.addAttribute("showRecommend", 2);
+                }else{
+                    model.addAttribute("showRecommend", 1);
+                }
                 model.addAttribute("avaliable", "0.00");
             }
             model.addAttribute("oemNo", oemNo);
@@ -976,6 +995,7 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1022,12 +1042,14 @@ public class LoginController extends BaseController {
                         url = "/withdrawal";
                     }
                 }else{
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                     isRedirect= true;
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
+                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1112,6 +1134,7 @@ public class LoginController extends BaseController {
                     }
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1131,11 +1154,13 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
+                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1209,6 +1234,7 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1228,11 +1254,13 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
+                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1305,6 +1333,7 @@ public class LoginController extends BaseController {
                     }
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1361,11 +1390,13 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
+                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1438,6 +1469,7 @@ public class LoginController extends BaseController {
                     }
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1457,11 +1489,13 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
+                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1967,6 +2001,7 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -2019,12 +2054,14 @@ public class LoginController extends BaseController {
                     }
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                     isRedirect= true;
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
+                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){

@@ -179,6 +179,9 @@
             <if test="isUpgrade!=null">
                 is_upgrade,
             </if>
+            <if test="oemId!=null">
+                oem_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="mobile != null">
@@ -285,6 +288,9 @@
             </if>
             <if test="isUpgrade!=null">
                 #{isUpgrade},
+            </if>
+            <if test="oemId!=null">
+                #{oemId},
             </if>
         </trim>
     </insert>

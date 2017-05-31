@@ -222,7 +222,7 @@ public class MerchantInfo extends BaseEntity{
      */
     private String isAuthen;
 
-    private long oemId;
+    private Long oemId;
 
     public String getPlainBankMobile(String phone){
         return phone.substring(0,3) + "****" + phone.substring(7,11);
