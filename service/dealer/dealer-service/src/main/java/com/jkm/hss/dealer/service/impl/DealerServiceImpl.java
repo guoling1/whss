@@ -1087,6 +1087,10 @@ public class DealerServiceImpl implements DealerService {
                 //四舍五入,保留两位有效数字
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;
+            case HJ_PAY:
+                //最低一分 ，mo ling
+                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_DOWN);
+                return basicMoney;
             default:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;

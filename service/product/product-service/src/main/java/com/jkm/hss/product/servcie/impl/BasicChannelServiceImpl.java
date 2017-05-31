@@ -5,6 +5,8 @@ import com.jkm.hss.product.dao.BasicChannelDao;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,8 +97,8 @@ public class BasicChannelServiceImpl implements BasicChannelService {
     public String selectCodeByChannelSign(int channelSign, EnumMerchantPayType type) {
 
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channelSign);
-        if (channelSign == EnumPayChannelSign.KM_QQPAY.getId()){
-            return EnumPayChannelSign.KM_QQPAY.getCode() + "_code";
+        if (enumPayChannelSign.getPaymentChannel().getId() == EnumPaymentChannel.QQPAY.getId()){
+            return enumPayChannelSign.getCode() + "_code";
         }
         switch (type){
 
