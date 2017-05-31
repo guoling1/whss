@@ -33,10 +33,10 @@
                       </el-table-column>
                     </el-table>
                   </div>
-                  <div class="box-header with-border">
+                  <div class="box-header with-border" v-if="isShow==1">
                     <h3 class="box-title">合伙人推荐分润设置</h3>
                   </div>
-                  <div class="box-body">
+                  <div class="box-body" v-if="isShow==1">
                     <div class="form-group">
                       <div class="product">
                         <div class="col-xs-12">
@@ -144,6 +144,7 @@
         dealerProfits: [],
         dealerUpgerdeRates1: [],
         dealerUpgerdeRates2: [],
+        isShow: 2
       }
     },
     created() {
@@ -162,8 +163,11 @@
           this.hss_tableLoading = false;
           this.hss_tableData = res.data.product.channels;
           this.dealerProfits = res.data.dealerProfits;
-          this.dealerUpgerdeRates1 = res.data.dealerUpgerdeRates[0];
-          this.dealerUpgerdeRates2 = res.data.dealerUpgerdeRates[1];
+          if (this.isShow == 1) {
+            this.isShow = 1;
+            this.dealerUpgerdeRates1 = res.data.dealerUpgerdeRates[0];
+            this.dealerUpgerdeRates2 = res.data.dealerUpgerdeRates[1];
+          }
         }, err => {
           this.hss_tableLoading = false;
           this.$message({

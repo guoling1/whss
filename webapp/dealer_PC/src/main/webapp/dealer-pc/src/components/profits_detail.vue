@@ -27,6 +27,7 @@
                 <span class="screen-title">分润日期</span>
                 <el-date-picker size="small"
                                 v-model="datetime"
+                                default-value="datetime"
                                 type="daterange"
                                 align="right"
                                 @change="datetimeSelect"
