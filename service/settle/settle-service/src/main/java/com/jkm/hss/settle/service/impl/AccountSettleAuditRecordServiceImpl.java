@@ -50,8 +50,8 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -542,6 +542,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public void settleImpl(final long recordId) {
         log.info("结算审核记录[{}], 开始结算", recordId);
+        final StopWatch stopWatch = new StopWatch();
         final AccountSettleAuditRecord accountSettleAuditRecord = this.accountSettleAuditRecordDao.selectByIdWithLock(recordId);
         if (!accountSettleAuditRecord.isDueSettle()) {
             log.info("结算审核记录[{}],状态不是待结算，不可以进行结算", recordId);
@@ -586,6 +587,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
         }
+        log.info("结算审核记录[{}],结算结束，用时[{}]", recordId, stopWatch.getTime());
     }
 
     /**

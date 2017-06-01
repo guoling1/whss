@@ -50,14 +50,11 @@ import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
-import com.jkm.hsy.user.exception.ApiHandleException;
-import com.jkm.hsy.user.exception.ResultCode;
-import com.jkm.hsy.user.service.HsyUserService;
-import com.sun.tools.javac.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -1115,6 +1112,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public void paySplitAccount(final long orderId) {
+        log.info("交易[{}],开始分润", orderId);
+        final StopWatch stopWatch = new StopWatch();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         if (order.isPaySuccess()) {
             final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
@@ -1189,6 +1188,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                         "收单分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
             }
         }
+        log.info("交易[{}],分润结束，用时[{}]", orderId, stopWatch.getTime());
     }
 
     //判断分账的业务类型
