@@ -54,7 +54,7 @@ cancel.addEventListener('click', function () {
 });
 
 login.addEventListener('click', function () {
-  window.location.href = '/sqb/login?phone=' + mobile.value;
+  window.location.href = '/sqb/login?phone=' + mobile.value + "?oemNo=" + pageData.oemNo;
 });
 
 // 注册
@@ -70,7 +70,7 @@ submit.addEventListener('click', () => {
         oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
       }, () => {
-        window.location.replace("/sqb/addInfo");
+        window.location.replace("/sqb/addInfo?oemNo=" + pageData.oemNo);
       })
     }
   } else {
@@ -85,7 +85,7 @@ submit.addEventListener('click', () => {
         oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
       }, () => {
-        window.location.replace("/sqb/addInfo");
+        window.location.replace("/sqb/addInfo?oemNo=" + pageData.oemNo);
       })
     }
   }
