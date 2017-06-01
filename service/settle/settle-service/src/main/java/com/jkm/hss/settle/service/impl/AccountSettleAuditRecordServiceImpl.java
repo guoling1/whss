@@ -263,6 +263,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         log.info("今日[{}]的待结算流水-生成结算审核记录,个数[{}]", settleDate, settleAccountFlowStatisticses.size());
         final ArrayList<Long> dealerAccountIds = new ArrayList<>();
         final ArrayList<Long> shopAccountIds = new ArrayList<>();
+        final ArrayList<SettlementRecord> settlementRecords = new ArrayList<>();
         if (!CollectionUtils.isEmpty(settleAccountFlowStatisticses)) {
             for (SettleAccountFlowStatistics statistics : settleAccountFlowStatisticses) {
                 if (EnumAccountUserType.DEALER.getId() == statistics.getAccountUserType()) {
@@ -345,11 +346,43 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
                 final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
+                settlementRecords.add(settlementRecord);
                 final int updateCount2 = this.settleAccountFlowService.updateSettlementRecordIdBySettleAuditRecordId(accountSettleAuditRecord.getId(), settlementRecordId);
                 Preconditions.checkState(updateCount == updateCount2, "将结算单id更新到结算流水，个数异常");
             }
+            this.generateSettlementAuditRecordSendMsg(settlementRecords);
         }
         return Pair.of(0, "success");
+    }
+
+    private void generateSettlementAuditRecordSendMsg(final ArrayList<SettlementRecord> settlementRecords) {
+        for (SettlementRecord settlementRecord : settlementRecords) {
+            try {
+                if (EnumAccountUserType.COMPANY.getId() == settlementRecord.getAccountUserType()) {
+                    return;
+                }
+                final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
+                final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
+                final AppBizCard appBizCard = new AppBizCard();
+                appBizCard.setSid(appBizShop.getId());
+                final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+                final String cardNO = appBizCard1.getCardNO();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
+                final Map<String, String> params = ImmutableMap.of("date", dateFormat.format(settlementRecord.getSettleDate()),
+                        "amount", settlementRecord.getSettleAmount().toPlainString(),
+                        "bankCardNo", cardNO.substring(cardNO.length() - 4));
+                this.sendMessageService.sendMessage(SendMessageParams.builder()
+                        .mobile(appAuUser.getCellphone())
+                        .uid(settlementRecord.getId() + "")
+                        .data(params)
+                        .userType(EnumUserType.FOREGROUND_USER)
+                        .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS)
+                        .build()
+                );
+            } catch (final Throwable e) {
+                log.error("hsy结算单[" + settlementRecord.getId() + "],发送短信失败", e);
+            }
+        }
     }
 
     /**
@@ -552,31 +585,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
             final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
-            try {
-                if (EnumAccountUserType.COMPANY.getId() == settlementRecord.getAccountUserType()) {
-                    return;
-                }
-                final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
-                final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
-                final AppBizCard appBizCard = new AppBizCard();
-                appBizCard.setSid(appBizShop.getId());
-                final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
-                final String cardNO = appBizCard1.getCardNO();
-                final SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
-                final Map<String, String> params = ImmutableMap.of("date", dateFormat.format(settlementRecord.getSettleDate()),
-                        "amount", settlementRecord.getSettleAmount().toPlainString(),
-                        "bankCardNo", cardNO.substring(cardNO.length() - 4));
-                this.sendMessageService.sendMessage(SendMessageParams.builder()
-                        .mobile(appAuUser.getCellphone())
-                        .uid(recordId + "")
-                        .data(params)
-                        .userType(EnumUserType.FOREGROUND_USER)
-                        .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS)
-                        .build()
-                );
-            } catch (final Throwable e) {
-                log.error("hsy结算单[" + recordId + "],发送短信失败", e);
-            }
         }
     }
 
