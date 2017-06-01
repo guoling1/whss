@@ -1035,7 +1035,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //发消息分润
         final JSONObject requestJsonObject = new JSONObject();
         requestJsonObject.put("orderId", order.getId());
-        requestJsonObject.put("accountId", shop.getAccountID());
         MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 20000);
     }
 
@@ -1112,11 +1111,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * {@inheritDoc}
      *
      * @param orderId
-     * @param accountId
      */
     @Override
     @Transactional
-    public void paySplitAccount(final long orderId, final long accountId) {
+    public void paySplitAccount(final long orderId) {
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         if (order.isPaySuccess()) {
             final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);

@@ -194,9 +194,8 @@ public interface HSYTradeService {
      * 分账
      *
      * @param orderId
-     * @param accountId
      */
-    void paySplitAccount(long orderId, long accountId);
+    void paySplitAccount(long orderId);
 
 
     /**

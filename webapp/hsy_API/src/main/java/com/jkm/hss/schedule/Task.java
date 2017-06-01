@@ -1,12 +1,21 @@
 package com.jkm.hss.schedule;
 
+import com.alibaba.fastjson.JSONObject;
+import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.mq.producer.MqProducer;
+import com.jkm.hss.notifier.entity.ConsumeMsgFailRecord;
+import com.jkm.hss.notifier.enums.EnumConsumeMsgFailRecordStatus;
+import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/1/12.
@@ -20,6 +29,10 @@ public class Task {
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
+
+    @Autowired
+    private SendMqMsgService sendMqMsgService;
+
 
     /**
      * 处理 T1 结算审核, 生成记录
@@ -41,5 +54,23 @@ public class Task {
         log.info("结算审核记录自动结算定时任务--start");
 //        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
         log.info("结算审核记录自动结算定时任务--end");
+    }
+
+    /**
+     * 处理重发分润-每一小时一次
+     *
+     * 间隔5秒一个消息
+     */
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    public void handleRetrySendSplitProfitTask() {
+        final List<ConsumeMsgFailRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
+        log.info("定时任务--处理重发分润，消息个数[{}]", records.size());
+        if (!CollectionUtils.isEmpty(records)) {
+            for (int i = 0; i < records.size(); i++) {
+                final ConsumeMsgFailRecord record = records.get(i);
+                MqProducer.produce(JSONObject.parseObject(record.getRequestParam()), MqConfig.SPLIT_PROFIT, i * 5000);
+                this.sendMqMsgService.updateStatus(record.getId(), EnumConsumeMsgFailRecordStatus.SUCCESS_SEND.getId());
+            }
+        }
     }
 }
