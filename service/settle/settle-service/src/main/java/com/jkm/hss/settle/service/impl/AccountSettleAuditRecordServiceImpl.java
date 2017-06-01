@@ -400,7 +400,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             log.info("结算审核记录[{}],发消息进行结算", settleAuditRecordId);
             final JSONObject requestParam = new JSONObject();
             requestParam.put("recordId", settleAuditRecordId);
-            MqProducer.produce(requestParam, MqConfig.NORMAL_SETTLE, 1000 * i);
+            MqProducer.produce(requestParam, MqConfig.NORMAL_SETTLE, 5000 * i);
         }
     }
 
