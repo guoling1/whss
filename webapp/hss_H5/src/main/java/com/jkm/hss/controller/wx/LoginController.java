@@ -135,6 +135,14 @@ public class LoginController extends BaseController {
     public String reg(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
+        }else{
+            model.addAttribute("oemName","好收收");
+            model.addAttribute("wechatCode","HAOSHOUSHOU");
+        }
         model.addAttribute("oemNo",oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
@@ -282,7 +290,12 @@ public class LoginController extends BaseController {
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
         }
+        model.addAttribute("oemNo",oemNo);
+
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
@@ -332,7 +345,6 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -345,32 +357,26 @@ public class LoginController extends BaseController {
                         Map<String, String> res = WxPubUtil.sign(requestUrl,appId,appSecret);
                         model.addAttribute("config",res);
                         model.addAttribute("markCode",result.get().getMarkCode());
-                        model.addAttribute("oemNo",oemNo);
                         url = "/material";
                     }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/addNext";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
                             result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                     isRedirect= true;
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                model.addAttribute("oemNo",oemNo);
                 isRedirect= true;
                 url = "/sqb/reg";
             }
@@ -394,10 +400,21 @@ public class LoginController extends BaseController {
             throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            appId=oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo",oemNo);
+
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -409,7 +426,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -445,7 +461,6 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -458,7 +473,7 @@ public class LoginController extends BaseController {
                         }else{
                             requestUrl = request.getRequestURL()+"?"+request.getQueryString();
                         }
-                        Map<String, String> res = WxPubUtil.sign(requestUrl);
+                        Map<String, String> res = WxPubUtil.sign(requestUrl,appId,appSecret);
                         model.addAttribute("config",res);
                         url = "/upload";
                     }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
@@ -472,13 +487,11 @@ public class LoginController extends BaseController {
                     }
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    model.addAttribute("oemNo",oemNo);
                     isRedirect= true;
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                model.addAttribute("oemNo",oemNo);
                 isRedirect= true;
                 url = "/sqb/reg";
             }
@@ -500,6 +513,14 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/unFinishedPrompt",method = RequestMethod.GET)
     public String notLoggedPrompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)throws IOException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo",oemNo);
         return "/unFinishedPrompt";
     }
 
@@ -515,6 +536,13 @@ public class LoginController extends BaseController {
     public String prompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo",oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
@@ -583,20 +611,24 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/repeatAddInfo/{id}", method = RequestMethod.GET)
     public String repeatAddInfo(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
-//        if(!super.isLogin(request)){
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-//        }else {
-            merchantInfoService.updateStauts(EnumMerchantStatus.INIT.getId(),id);
-            String requestUrl = "";
-            if(request.getQueryString() == null){
-                requestUrl = request.getRequestURL().toString();
-            }else{
-                requestUrl = request.getRequestURL()+"?"+request.getQueryString();
-            }
-            Map<String, String> res = WxPubUtil.sign(requestUrl);
-            model.addAttribute("config",res);
-            return "/material";
-//        }
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo",oemNo);
+        merchantInfoService.updateStauts(EnumMerchantStatus.INIT.getId(),id);
+        String requestUrl = "";
+        if(request.getQueryString() == null){
+            requestUrl = request.getRequestURL().toString();
+        }else{
+            requestUrl = request.getRequestURL()+"?"+request.getQueryString();
+        }
+        Map<String, String> res = WxPubUtil.sign(requestUrl);
+        model.addAttribute("config",res);
+        return "/material";
     }
 
     /**
@@ -610,10 +642,16 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public String follow(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo",oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -625,7 +663,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
@@ -678,6 +715,15 @@ public class LoginController extends BaseController {
     public String charge(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "qrCode", required = true) String qrCode,
                          @RequestParam(value = "name", required = true) String name,
                          @RequestParam(value = "money", required = true) String money) throws IOException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo",oemNo);
+
         model.addAttribute("payUrl",URLDecoder.decode(qrCode, "UTF-8"));
         model.addAttribute("subMerName",name);
         model.addAttribute("amount",money);
@@ -693,6 +739,12 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/wallet", method = RequestMethod.GET)
     public String wallet(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
             model.addAttribute("oemNo", oemNo);
@@ -790,6 +842,12 @@ public class LoginController extends BaseController {
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
         model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
@@ -903,6 +961,14 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/success/{amount}/{orderId}", method = RequestMethod.GET)
     public String success(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") long orderId) throws IOException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         model.addAttribute("money", amount);
         final Order order = this.orderService.getById(orderId).get();
         model.addAttribute("firstSn", order.getOrderNo().substring(0, order.getOrderNo().length() - 6));
@@ -922,6 +988,14 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
     public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "isSelf") int isSelf) throws IOException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         model.addAttribute("isSelf", isSelf);
@@ -940,6 +1014,14 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
     public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         return "/payment-zfb";
@@ -956,6 +1038,13 @@ public class LoginController extends BaseController {
     public String drawCash(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
@@ -971,7 +1060,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -979,7 +1067,6 @@ public class LoginController extends BaseController {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
                     Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-
                     if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
                         if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
                             Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
@@ -1006,7 +1093,6 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1060,7 +1146,6 @@ public class LoginController extends BaseController {
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
-                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1095,10 +1180,16 @@ public class LoginController extends BaseController {
     public String tradRecord(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -1110,7 +1201,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -1145,7 +1235,6 @@ public class LoginController extends BaseController {
                     }
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1165,13 +1254,11 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
-                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
-                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1194,6 +1281,13 @@ public class LoginController extends BaseController {
     public String bank(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
@@ -1209,7 +1303,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -1245,7 +1338,6 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1265,13 +1357,11 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
-                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
-                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1294,10 +1384,16 @@ public class LoginController extends BaseController {
     public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -1309,7 +1405,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -1344,7 +1439,6 @@ public class LoginController extends BaseController {
                     }
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1401,13 +1495,11 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
-                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
-                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1430,10 +1522,16 @@ public class LoginController extends BaseController {
     public String creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -1445,7 +1543,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -1480,7 +1577,6 @@ public class LoginController extends BaseController {
                     }
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -1500,13 +1596,11 @@ public class LoginController extends BaseController {
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
-                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
-                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){
@@ -1574,15 +1668,18 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "mobile", required = false) String mobile) throws IOException {
-//        String ul = request.getRequestURI();
-//        if(!super.isLogin(request)){
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-//        }else {
-            String oemNo = request.getParameter("oemNo");
-            model.addAttribute("mobile",mobile);
-            model.addAttribute("oemNo",oemNo);
-            return "/login";
-//        }
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
+        }else{
+            model.addAttribute("oemName","好收收");
+            model.addAttribute("wechatCode","HAOSHOUSHOU");
+        }
+        model.addAttribute("oemNo", oemNo);
+        model.addAttribute("mobile",mobile);
+        return "/login";
     }
     /**
      * 邀请注册
@@ -1961,10 +2058,16 @@ public class LoginController extends BaseController {
     public String authentication(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
+        }
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -1976,7 +2079,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -2012,7 +2114,6 @@ public class LoginController extends BaseController {
 
 
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/reg";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
@@ -2065,14 +2166,12 @@ public class LoginController extends BaseController {
                     }
                 }else{
                     CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    model.addAttribute("oemNo",oemNo);
                     url = "/sqb/reg";
                     isRedirect= true;
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 isRedirect= true;
-                model.addAttribute("oemNo",oemNo);
                 url = "/sqb/reg";
             }
             if(isRedirect){

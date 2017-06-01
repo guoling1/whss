@@ -7,16 +7,16 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收收-注册</title>
+  <title>${oemName}-注册</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.17.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
 <div id='reg'>
-  <h1>好收收-商户</h1>
+  <h1>${oemName}-商户</h1>
 
-  <h2>HAOSHOUSHOU</h2>
+  <h2>${wechatCode}</h2>
   <ul>
     <li class="top fly_wing_item">
       <div class="main">
