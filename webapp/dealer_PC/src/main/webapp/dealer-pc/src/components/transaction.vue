@@ -30,7 +30,7 @@
               </div>
               <div class="screen-item">
                 <span class="screen-title">业务方</span>
-                <el-select v-model="query.appId" size="small" clearable placeholder="请选择" style="width: 220px">
+                <el-select v-model="query.appId" size="small" placeholder="请选择" style="width: 220px">
                   <el-option v-for="item in item_appId"
                              :label="item.label"
                              :value="item.value">
@@ -255,7 +255,6 @@
         }
       },
       screen: function () {
-        this.total = '';
         this.query.page = 1;
         this.getData();
       },
