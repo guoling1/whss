@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收-注册</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.18.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.20.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -70,6 +70,6 @@
     inviteCode: '${inviteCode}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.29/reg.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.30/reg.min.js"></script>
 </html>

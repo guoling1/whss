@@ -53,6 +53,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.29/charge.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.30/charge.min.js"></script>
 </html>
