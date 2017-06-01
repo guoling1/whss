@@ -1147,7 +1147,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> getTrade(OrderTradeRequest req) {
-        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTrade(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTrade(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1187,7 +1194,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req) {
-        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTradeFirst(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTradeFirst(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1228,12 +1242,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int listCount(OrderTradeRequest req) {
-        return this.orderDao.listCount(req);
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.listCount(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            return this.orderDao.listHsyCount(req);
+        }
+        return 0;
     }
 
     @Override
     public int listFirstCount(OrderTradeRequest req) {
-        return this.orderDao.listFirstCount(req);
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.listFirstCount(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            return this.orderDao.listHsyFirstCount(req);
+        }
+        return 0;
     }
 
     @Override

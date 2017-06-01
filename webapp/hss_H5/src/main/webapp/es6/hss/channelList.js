@@ -4,7 +4,7 @@
 
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('channel');
 // 引入http message
 const http = _require('http');
 const message = _require('message');
@@ -39,7 +39,7 @@ let channelBox = document.getElementById('channelBox');
 let channel = document.getElementById('channel');
 const checkBusinessRegistration = (code, amount) => {
   return new Promise(function (resolve, reject) {
-    message.load_show('正在支付');
+    message.load_show('收款准备中');
     http.post('/wx/checkMerchantInfo1', {
       amount: amount,
       channelTypeSign: code
@@ -61,7 +61,7 @@ http.post('/channel/list', {}, function (list) {
       if (amount > 0) {
         checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
-            message.load_show('正在支付');
+            message.load_show('收款准备中');
             switch (list[i].payMethod) {
               case '快捷':
                 http.post('/trade/unionPayRoute', {  // /wx/receipt
@@ -78,7 +78,7 @@ http.post('/channel/list', {}, function (list) {
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
-                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
+                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payType=" + data.payType + "&payChannel=" + list[i].channelSign);
                 });
                 break;
             }

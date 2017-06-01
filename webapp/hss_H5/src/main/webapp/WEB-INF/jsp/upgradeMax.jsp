@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>升级降费率</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.4.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -110,6 +110,6 @@
 </body>
 
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.2.25/upgrade.min.js"></script>
 </html>

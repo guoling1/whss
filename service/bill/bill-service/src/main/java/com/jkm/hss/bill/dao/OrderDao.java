@@ -350,6 +350,12 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getTrade(OrderTradeRequest req);
+    /**
+     * 代理商pc交易查询二级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getHsyTrade(OrderTradeRequest req);
 
     /**
      * 代理商pc交易查询一级
@@ -357,6 +363,12 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req);
+    /**
+     * 代理商pc交易查询一级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getHsyTradeFirst(OrderTradeRequest req);
 
     /**
      *  代理商pc交易查询二级总数
@@ -364,6 +376,12 @@ public interface OrderDao {
      * @return
      */
     int listCount(OrderTradeRequest req);
+    /**
+     *  代理商pc交易查询二级总数
+     * @param req
+     * @return
+     */
+    int listHsyCount(OrderTradeRequest req);
 
     /**
      * 代理商pc交易查询一级总数
@@ -371,6 +389,12 @@ public interface OrderDao {
      * @return
      */
     int listFirstCount(OrderTradeRequest req);
+    /**
+     * 代理商pc交易查询一级总数
+     * @param req
+     * @return
+     */
+    int listHsyFirstCount(OrderTradeRequest req);
 
     /**
      * 提现下载
