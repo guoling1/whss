@@ -2,12 +2,14 @@ package com.jkm.hss.notifier.dao;
 
 import com.jkm.hss.notifier.entity.ConsumeMsgFailRecord;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/6/1.
  */
+@Repository
 public interface ConsumeMsgFailRecordDao {
 
     /**
