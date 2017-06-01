@@ -45,5 +45,11 @@ public interface OemInfoService {
      * @return
      */
     Optional<OemInfo> selectOemInfoByDealerId(long dealerId);
+    /**
+     * 根据编码查询
+     * @param id
+     * @return
+     */
+    Optional<OemInfo> selectById(long id);
 
 }

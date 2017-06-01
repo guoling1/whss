@@ -56,4 +56,8 @@
     <select id="selectByOemNo" resultType="com.jkm.hss.dealer.entity.OemInfo">
         SELECT <include refid="Base_Column_List" /> FROM tb_oem_info where oem_no=#{oemNo} and status=1
     </select>
+
+    <select id="selectById" resultType="com.jkm.hss.dealer.entity.OemInfo">
+        SELECT <include refid="Base_Column_List" /> FROM tb_oem_info where id=#{id} and status=1
+    </select>
 </mapper>

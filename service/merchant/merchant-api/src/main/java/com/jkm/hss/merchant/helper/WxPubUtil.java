@@ -199,7 +199,65 @@ public class WxPubUtil {
             return ret;
         }
     }
-
+    /**
+     * 获取用户基本信息
+     * @param openId
+     * @return
+     */
+    public static Map<String, String> getUserInfo(String openId,String appId,String appSecret)
+    {
+        Map<String, String> token= getTokenAndJsapiTicket(appId,appSecret);
+        Map<String, String> ret = new HashMap<String, String>();
+        String turl = String.format("%s?access_token=%s&openid=%s&lang=zh_CN", WxConstants.GET_USER_INFO,token.get("accessToken"),openId);
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(turl);
+        JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
+        try
+        {
+            HttpResponse res = client.execute(get);
+            String responseContent = null; // 响应内容
+            HttpEntity entity = res.getEntity();
+            responseContent = EntityUtils.toString(entity, "UTF-8");
+            JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
+            System.out.print("返回数据为:"+json.toString());
+            // 将json字符串转换为json对象
+            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+            {
+                if (json.get("errcode")!=null)
+                {// 错误时微信会返回错误码等信息，{"errcode":40013,"errmsg":"invalid appid"}
+                    System.out.print("获取微信用户信息错误，错误信息是:"+json.get("errmsg").getAsString());
+                    ret.put("nickname", "");
+                    ret.put("headimgurl","");
+                    ret.put("subscribe","");
+                }
+                else
+                {// 正常情况下{"access_token":"ACCESS_TOKEN","expires_in":7200}
+                    if(json.get("subscribe").getAsInt()==1){//
+                        ret.put("nickname", json.get("nickname").getAsString());
+                        ret.put("headimgurl",json.get("headimgurl").getAsString());
+                        ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    }else{
+                        ret.put("nickname", "");
+                        ret.put("headimgurl","");
+                        ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.print("获取微信用户信息异常:"+e);
+            ret.put("nickname", "");
+            ret.put("headimgurl","");
+            ret.put("subscribe","");
+        }
+        finally
+        {
+            // 关闭连接 ,释放资源
+            client.getConnectionManager().shutdown();
+            return ret;
+        }
+    }
     /**
      * 方法名称: getToken<br>
      * 描述：获取Token
@@ -400,11 +458,12 @@ public class WxPubUtil {
         Map<String, String> ret = new HashMap<String, String>();
         String accessToken = "";
         String jsapi_ticket = "";
-        WxConfig wxConfig = wxPubUtil.wxConfigService.selectTop1();
+        WxConfig wxConfig = wxPubUtil.wxConfigService.selectTop1ByAppId(WxConstants.APP_ID);
         if(wxConfig==null){
             accessToken = getToken();// 获取token
             jsapi_ticket = getJsapiTicket(accessToken);
             WxConfig wx = new WxConfig();
+            wx.setAppId(WxConstants.APP_ID);
             wx.setStatus(EnumCommonStatus.NORMAL.getId());
             wx.setAccessToken(accessToken);
             wx.setJsapiTicket(jsapi_ticket);
@@ -419,6 +478,7 @@ public class WxPubUtil {
                     accessToken = getToken();// 获取token
                     jsapi_ticket = getJsapiTicket(accessToken);
                     WxConfig wx = new WxConfig();
+                    wx.setAppId(WxConstants.APP_ID);
                     wx.setStatus(EnumCommonStatus.NORMAL.getId());
                     wx.setAccessToken(accessToken);
                     wx.setJsapiTicket(jsapi_ticket);
@@ -429,6 +489,55 @@ public class WxPubUtil {
                 accessToken = getToken();// 获取token
                 jsapi_ticket = getJsapiTicket(accessToken);
                 WxConfig wx = new WxConfig();
+                wx.setAppId(WxConstants.APP_ID);
+                wx.setStatus(EnumCommonStatus.NORMAL.getId());
+                wx.setAccessToken(accessToken);
+                wx.setJsapiTicket(jsapi_ticket);
+                wx.setExpireTime(System.currentTimeMillis()+60*60*1000);
+                wxPubUtil.wxConfigService.insertSelective(wx);
+            }
+        }
+        ret.put("accessToken", accessToken);
+        ret.put("jsapi_ticket", jsapi_ticket);
+        return ret;
+    }
+
+    public static Map<String, String> getTokenAndJsapiTicket(String appId,String appSecret) {
+        Map<String, String> ret = new HashMap<String, String>();
+        String accessToken = "";
+        String jsapi_ticket = "";
+        WxConfig wxConfig = wxPubUtil.wxConfigService.selectTop1ByAppId(appId);
+        if(wxConfig==null){
+            accessToken = getToken(appId,appSecret);// 获取token
+            jsapi_ticket = getJsapiTicket(accessToken);
+            WxConfig wx = new WxConfig();
+            wx.setAppId(appId);
+            wx.setStatus(EnumCommonStatus.NORMAL.getId());
+            wx.setAccessToken(accessToken);
+            wx.setJsapiTicket(jsapi_ticket);
+            wx.setExpireTime(System.currentTimeMillis()+60*60*1000);
+            wxPubUtil.wxConfigService.insertSelective(wx);
+        }else{
+            if(wxConfig.getExpireTime()>System.currentTimeMillis()){
+                accessToken = wxConfig.getAccessToken();// 获取token
+                jsapi_ticket = wxConfig.getJsapiTicket();
+                String ipList = wxPubUtil.getcallbackip(accessToken);
+                if(ipList==null){//token过期
+                    accessToken = getToken(appId,appSecret);// 获取token
+                    jsapi_ticket = getJsapiTicket(accessToken);
+                    WxConfig wx = new WxConfig();
+                    wx.setAppId(appId);
+                    wx.setStatus(EnumCommonStatus.NORMAL.getId());
+                    wx.setAccessToken(accessToken);
+                    wx.setJsapiTicket(jsapi_ticket);
+                    wx.setExpireTime(System.currentTimeMillis()+60*60*1000);
+                    wxPubUtil.wxConfigService.insertSelective(wx);
+                }
+            }else{
+                accessToken = getToken(appId,appSecret);// 获取token
+                jsapi_ticket = getJsapiTicket(accessToken);
+                WxConfig wx = new WxConfig();
+                wx.setAppId(appId);
                 wx.setStatus(EnumCommonStatus.NORMAL.getId());
                 wx.setAccessToken(accessToken);
                 wx.setJsapiTicket(jsapi_ticket);
@@ -481,13 +590,51 @@ public class WxPubUtil {
         return ret;
     }
 
+    public static Map<String, String> sign(String url,String appId,String appSecret) {
+        Map<String, String> ret = new HashMap<String, String>();
+        String nonce_str = create_nonce_str();
+        String timestamp = create_timestamp();
+        String string1;
+        String signature = "";
+
+        Map<String, String> tokenAndTicket = getTokenAndJsapiTicket(appId,appSecret);
+        //注意这里参数名必须全部小写，且必须有序
+        string1 = "jsapi_ticket=" + tokenAndTicket.get("jsapi_ticket").toString() +
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
+        try
+        {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string1.getBytes("UTF-8"));
+            signature = byteToHex(crypt.digest());
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        ret.put("accessToken", tokenAndTicket.get("accessToken").toString());
+        ret.put("url", url);
+        ret.put("jsapi_ticket", tokenAndTicket.get("jsapi_ticket").toString());
+        ret.put("appid",appId);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp);
+        ret.put("signature", signature);
+        return ret;
+    }
+
     /**
      *
      * @param mediaId
      * @return
      */
-    public  static  InputStream getInputStream(String mediaId) {
-        Map<String, String> tokenAndTicket = getTokenAndJsapiTicket();
+    public  static  InputStream getInputStream(String mediaId,String appId,String appSecret) {
+        Map<String, String> tokenAndTicket = getTokenAndJsapiTicket(appId,appSecret);
         InputStream is = null;
         String url = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token="
                 + tokenAndTicket.get("accessToken").toString() + "&media_id=" + mediaId;

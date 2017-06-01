@@ -24,6 +24,11 @@ public class WxConfigServiceImpl implements WxConfigService{
     }
 
     @Override
+    public WxConfig selectTop1ByAppId(String appId) {
+        return wxConfigDao.selectTop1ByAppId(appId);
+    }
+
+    @Override
     public WxConfig selectByPrimaryKey(Long id) {
         return wxConfigDao.selectByPrimaryKey(id);
     }

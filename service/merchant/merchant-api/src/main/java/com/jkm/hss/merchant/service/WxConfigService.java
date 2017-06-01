@@ -10,6 +10,7 @@ import com.jkm.hss.merchant.entity.WxConfig;
  */
 public interface WxConfigService {
     WxConfig selectTop1();
+    WxConfig selectTop1ByAppId(String appId);
     /**
      *
      * 查询（根据主键ID查询）

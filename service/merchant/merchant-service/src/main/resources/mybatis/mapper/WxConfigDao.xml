@@ -5,7 +5,7 @@
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
-		 id,	access_token,	jsapi_ticket,	expire_time,	status,	create_time,	update_time
+		 id,	access_token,	app_id,jsapi_ticket,	expire_time,	status,	create_time,	update_time
 	</sql>
 
 	<select id="selectTop1" resultType="com.jkm.hss.merchant.entity.WxConfig">
@@ -30,6 +30,9 @@
 			<if test="id != null">
 				 id,
 			</if>
+			 <if test="appId != null">
+				 app_id,
+			 </if>
 			<if test="accessToken != null">
 				 access_token,
 			</if>
@@ -54,6 +57,9 @@
 			<if test="id!=null">
 				 #{id},
 			</if>
+			 <if test="appId!=null">
+				 #{appId},
+			 </if>
 			<if test="accessToken!=null">
 				 #{accessToken},
 			</if>
@@ -82,6 +88,9 @@
 			<if test="accessToken != null">
 				 access_token = #{accessToken},
 			</if>
+			 <if test="appId != null">
+				 app_id = #{appId},
+			 </if>
 			<if test="jsapiTicket != null">
 				 jsapi_ticket = #{jsapiTicket},
 			</if>
@@ -101,5 +110,12 @@
  		 </set>
 		 WHERE id = #{id}
 	</update>
+
+	<select id="selectTop1ByAppId" resultType="com.jkm.hss.merchant.entity.WxConfig">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_wx_config
+		WHERE status=0 and app_id=#{appId} order by create_time desc limit 0,1;
+	</select>
 
 </mapper>

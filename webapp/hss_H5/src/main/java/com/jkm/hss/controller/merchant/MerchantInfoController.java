@@ -12,6 +12,8 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
+import com.jkm.hss.dealer.helper.response.OemDetailResponse;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.PartnerShallRequest;
@@ -21,6 +23,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.GetBankNameRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
@@ -83,6 +86,8 @@ public class MerchantInfoController extends BaseController {
     private VerifyIdService verifyIdService;
     @Autowired
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
+    @Autowired
+    private OemInfoService oemInfoService;
 
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -134,7 +139,17 @@ public class MerchantInfoController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        InputStream inputStream = WxPubUtil.getInputStream(merchantInfo.getBankPic());
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
+        if(merchantInfoOptional.get().getOemId()>0){
+            OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfoOptional.get().getOemId());
+            if(oemDetailResponse!=null){
+                appId = oemDetailResponse.getAppId();
+                appSecret = oemDetailResponse.getAppSecret();
+            }
+        }
+        InputStream inputStream = WxPubUtil.getInputStream(merchantInfo.getBankPic(),appId,appSecret);
         if (inputStream ==null){
 
             return CommonResponse.simpleResponse(-1, "获取图片失败");
@@ -177,10 +192,22 @@ public class MerchantInfoController extends BaseController {
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         merchantInfo.setId(userInfoOptional.get().getMerchantId());
         merchantInfo.setStatus(EnumMerchantStatus.REVIEW.getId());
-        InputStream inputStream = WxPubUtil.getInputStream(merchantInfo.getIdentityFacePic());
-        InputStream inputStream1 = WxPubUtil.getInputStream(merchantInfo.getIdentityOppositePic());
-        InputStream inputStream2 = WxPubUtil.getInputStream(merchantInfo.getIdentityHandPic());
-        InputStream inputStream3 = WxPubUtil.getInputStream(merchantInfo.getBankHandPic());
+
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
+        if(merchantInfoOptional.get().getOemId()>0){
+            OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfoOptional.get().getOemId());
+            if(oemDetailResponse!=null){
+                appId = oemDetailResponse.getAppId();
+                appSecret = oemDetailResponse.getAppSecret();
+            }
+        }
+
+        InputStream inputStream = WxPubUtil.getInputStream(merchantInfo.getIdentityFacePic(),appId,appSecret);
+        InputStream inputStream1 = WxPubUtil.getInputStream(merchantInfo.getIdentityOppositePic(),appId,appSecret);
+        InputStream inputStream2 = WxPubUtil.getInputStream(merchantInfo.getIdentityHandPic(),appId,appSecret);
+        InputStream inputStream3 = WxPubUtil.getInputStream(merchantInfo.getBankHandPic(),appId,appSecret);
         if (inputStream==null || inputStream1==null || inputStream2==null ||inputStream3==null){
             return CommonResponse.simpleResponse(-1, "获取图片失败");
         }

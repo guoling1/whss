@@ -77,11 +77,13 @@ public class CodeController extends BaseController {
         Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(qrCodeOptional.get().getAdminId());
         Preconditions.checkState(adminUserOptional.isPresent(), "产码者不存在");
         String oemNo = "";
+        long oemId = 0;
         String appId = WxConstants.APP_ID;
         if(adminUserOptional.get().getType()== EnumAdminType.OEM.getCode()){
             Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(adminUserOptional.get().getDealerId());
             Preconditions.checkState(oemInfoOptional.isPresent(), "分公司配置不完全");
             oemNo = oemInfoOptional.get().getOemNo();
+            oemId = oemInfoOptional.get().getId();
             appId = oemInfoOptional.get().getAppId();
             model.addAttribute("oemNo", oemNo);
         }
@@ -108,14 +110,14 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "";
+                            requestUrl = "oemNo="+oemId;
                         }else{
-                            requestUrl = request.getQueryString();
+                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -140,14 +142,14 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "";
+                            requestUrl = "oemNo="+oemId;
                         }else{
-                            requestUrl = request.getQueryString();
+                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
 //                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -174,14 +176,14 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "";
+                            requestUrl = "oemNo="+oemId;
                         }else{
-                            requestUrl = request.getQueryString();
+                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
 //                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -207,14 +209,14 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "";
+                            requestUrl = "oemNo="+oemId;
                         }else{
-                            requestUrl = request.getQueryString();
+                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
 //                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -240,14 +242,14 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "";
+                            requestUrl = "oemNo="+oemId;
                         }else{
-                            requestUrl = request.getQueryString();
+                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
 //                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();

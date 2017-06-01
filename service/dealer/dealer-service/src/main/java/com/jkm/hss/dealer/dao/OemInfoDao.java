@@ -32,4 +32,9 @@ public interface OemInfoDao {
      * @return
      */
     OemInfo selectByOemNo(@Param("oemNo") String oemNo);
+    /**
+     *根据编码查询
+     * @return
+     */
+    OemInfo selectById(@Param("id") long id);
 }

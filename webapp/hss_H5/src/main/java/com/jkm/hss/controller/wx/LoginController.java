@@ -276,6 +276,13 @@ public class LoginController extends BaseController {
             throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            appId=oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
+        }
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
@@ -335,19 +342,23 @@ public class LoginController extends BaseController {
                         }else{
                             requestUrl = request.getRequestURL()+"?"+request.getQueryString();
                         }
-                        Map<String, String> res = WxPubUtil.sign(requestUrl);
+                        Map<String, String> res = WxPubUtil.sign(requestUrl,appId,appSecret);
                         model.addAttribute("config",res);
                         model.addAttribute("markCode",result.get().getMarkCode());
+                        model.addAttribute("oemNo",oemNo);
                         url = "/material";
                     }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/addNext";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
                             result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
+                        model.addAttribute("oemNo",oemNo);
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }

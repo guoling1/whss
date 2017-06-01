@@ -182,4 +182,15 @@ public class OemInfoServiceImpl implements OemInfoService {
     public Optional<OemInfo> selectOemInfoByDealerId(long dealerId) {
         return Optional.fromNullable(oemInfoDao.selectByDealerId(dealerId));
     }
+
+    /**
+     * 根据编码查询
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<OemInfo> selectById(long id) {
+        return Optional.fromNullable(oemInfoDao.selectById(id));
+    }
 }

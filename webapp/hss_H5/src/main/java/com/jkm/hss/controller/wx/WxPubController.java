@@ -28,6 +28,7 @@ import com.jkm.hss.helper.response.ToUpgradeResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.helper.response.BankListResponse;
@@ -261,10 +262,26 @@ public class WxPubController extends BaseController {
                 state = arr[i].split("=")[1];
             }
         }
-        Map<String,String> ret = WxPubUtil.getOpenid(code);
+
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
+        String[] temArr = tempUrl.split("&");
+        String oemNo = "0";
+        if(temArr.length>0){
+            for(int i =0;i<temArr.length;i++){
+                if("oemNo".equals(temArr[i].split("=")[0])){
+                    oemNo = temArr[i].split("=")[1];
+                }
+            }
+        }
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(Long.parseLong(oemNo));
+        Map<String,String> ret = null;
+        if(!oemInfoOptional.isPresent()){
+            ret = WxPubUtil.getOpenid(code);
+        }else{
+            ret = WxPubUtil.getOpenid(code,oemInfoOptional.get().getAppId(),oemInfoOptional.get().getAppSecret());
+        }
         model.addAttribute("openId", ret.get("openid"));
         log.info("openid是：{}",ret.get("openid"));
-        String tempUrl = URLDecoder.decode(state, "UTF-8");
         log.info("tempUrl是：{}",tempUrl);
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
         log.info("redirectUrl是：{}",redirectUrl);
@@ -468,12 +485,16 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public CommonResponse login(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantLoginRequest loginRequest) {
         long oemId = 0;
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
         if(loginRequest.getOemNo()!=null&&!"".equals(loginRequest.getOemNo())){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(loginRequest.getOemNo());
             if(!oemInfoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
+            appId = oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
         }
         log.info("参数为{}",JSONObject.fromObject(loginRequest).toString());
         final String mobile = loginRequest.getMobile();
@@ -687,7 +708,7 @@ public class WxPubController extends BaseController {
                     uo.setMobile(MerchantSupport.encryptMobile(mobile));
                     uo.setPwd("");
                     uo.setOpenId(super.getOpenId(request));
-                    Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request));
+                    Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request),appId,appSecret);
                     uo.setNickName(userMap.get("nickname"));
                     uo.setHeadImgUrl(userMap.get("headimgurl"));
                     uo.setType(EnumUserInfoType.HSS.getId());
@@ -778,7 +799,7 @@ public class WxPubController extends BaseController {
                         uo.setMobile(MerchantSupport.encryptMobile(mobile));
                         uo.setPwd("");
                         uo.setOpenId(super.getOpenId(request));
-                        Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request));
+                        Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request),appId,appSecret);
                         uo.setNickName(userMap.get("nickname"));
                         uo.setHeadImgUrl(userMap.get("headimgurl"));
                         uo.setType(EnumUserInfoType.HSS.getId());
@@ -853,7 +874,7 @@ public class WxPubController extends BaseController {
                         uo.setMobile(MerchantSupport.encryptMobile(mobile));
                         uo.setPwd("");
                         uo.setOpenId(super.getOpenId(request));
-                        Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request));
+                        Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request),appId,appSecret);
                         uo.setNickName(userMap.get("nickname"));
                         uo.setHeadImgUrl(userMap.get("headimgurl"));
                         uo.setType(EnumUserInfoType.HSS.getId());
