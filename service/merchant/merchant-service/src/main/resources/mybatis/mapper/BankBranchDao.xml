@@ -90,7 +90,7 @@
             AND BRANCHNAME=#{branchName}
         </if>
         <if test="branchCode!=null and branchCode!=''">
-            AND BRANCHCODE=#{BRANCHCODE}
+            AND BRANCHCODE=#{branchCode}
         </if>
         ORDER BY BANKINDEX,BRANCHCODE
     </select>
