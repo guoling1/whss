@@ -43,4 +43,11 @@ public interface BankBranchDao {
      * @return
      */
     List<AppBizBankBranchResponse> getUnionInfo(Map map);
+
+    /**
+     * 联行号管理总数
+     * @param map
+     * @return
+     */
+    int getUnionInfoCount(Map map);
 }

@@ -47,4 +47,9 @@ public class BankBranchServiceImpl implements BankBranchService{
         List<AppBizBankBranchResponse> list = this.bankBranchDao.getUnionInfo(map);
         return list;
     }
+
+    @Override
+    public int getUnionInfoCount(Map map) {
+        return this.bankBranchDao.getUnionInfoCount(map);
+    }
 }

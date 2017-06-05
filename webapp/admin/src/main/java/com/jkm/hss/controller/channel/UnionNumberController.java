@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.channel;
 
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.admin.service.AppBizDistrictService;
 import com.jkm.hss.controller.BaseController;
@@ -112,12 +113,17 @@ public class UnionNumberController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/unionInfo", method = RequestMethod.POST)
     public CommonResponse unionInfo(@RequestBody final DistrictRequest districtRequest) {
+        final PageModel<AppBizBankBranchResponse> pageModel = new PageModel<AppBizBankBranchResponse>(districtRequest.getPageNo(), districtRequest.getPageSize());
+        districtRequest.setOffset(pageModel.getFirstIndex());
         Map map = new HashMap();
         map.put("province",districtRequest.getProvince());
         map.put("city",districtRequest.getCity());
         map.put("branchName",districtRequest.getBranchName());
         map.put("branchCode",districtRequest.getBranchCode());
         List<AppBizBankBranchResponse> list = this.bankBranchService.getUnionInfo(map);
-        return CommonResponse.objectResponse(1, "SUCCESS",list);
+        int count = this.bankBranchService.getUnionInfoCount(map);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1, "SUCCESS",pageModel);
     }
 }
