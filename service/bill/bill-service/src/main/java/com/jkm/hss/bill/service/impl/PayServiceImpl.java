@@ -495,6 +495,7 @@ public class PayServiceImpl implements PayService {
         final Triple<Long, BigDecimal, BigDecimal> basicMoneyTriple = shallProfitMap.get("basicMoney");
         final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
+        final Triple<Long, BigDecimal, BigDecimal> oemMoneyTriple = shallProfitMap.get("oemMoney");
         final Triple<Long, BigDecimal, BigDecimal> firstMoneyTriple = shallProfitMap.get("firstMoney");
         final Triple<Long, BigDecimal, BigDecimal> secondMoneyTriple = shallProfitMap.get("secondMoney");
         final Triple<Long, BigDecimal, BigDecimal> firstMerchantMoneyTriple = shallProfitMap.get("firstMerchantMoney");
@@ -503,12 +504,13 @@ public class PayServiceImpl implements PayService {
         final BigDecimal basicMoney = null == basicMoneyTriple ? new BigDecimal("0.00") : basicMoneyTriple.getMiddle();
         final BigDecimal channelMoney = null == channelMoneyTriple ? new BigDecimal("0.00") : channelMoneyTriple.getMiddle();
         final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0.00") : productMoneyTriple.getMiddle();
+        final BigDecimal oemMoney = null == oemMoneyTriple ? new BigDecimal("0.00") : oemMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
         final BigDecimal firstMerchantMoney = null == firstMerchantMoneyTriple ? new BigDecimal("0.00") : firstMerchantMoneyTriple.getMiddle();
         final BigDecimal secondMerchantMoney = null == secondMerchantMoneyTriple ? new BigDecimal("0.00") : secondMerchantMoneyTriple.getMiddle();
-        log.info("订单[{}], 收单分润[{}]，成本[{}], 通道[{}], 产品[{}], 一级代理[{}], 二级代理[{}], 直推[{}], 间推[{}]", order.getId(), order.getPoundage(), basicMoney, channelMoney, productMoney, firstMoney, secondMoney, firstMerchantMoney, secondMerchantMoney);
-        Preconditions.checkState(order.getPoundage().compareTo(basicMoney.add(channelMoney).add(productMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收单-手续费总额不可以小于分润总和");
+        log.info("订单[{}], 收单分润[{}]，成本[{}], 通道[{}], 产品[{}],o单分公司[{}] 一级代理[{}], 二级代理[{}], 直推[{}], 间推[{}]", order.getId(), order.getPoundage(), basicMoney, channelMoney, productMoney, oemMoney, firstMoney, secondMoney, firstMerchantMoney, secondMerchantMoney);
+        Preconditions.checkState(order.getPoundage().compareTo(basicMoney.add(channelMoney).add(productMoney).add(oemMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收单-手续费总额不可以小于分润总和");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
@@ -544,6 +546,18 @@ public class PayServiceImpl implements PayService {
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
                     "收单反润", EnumAccountFlowType.INCREASE);
         }
+        //产品利润--可用余额
+        if (null != oemMoneyTriple) {
+            this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
+                    order.getTradeAmount(), order.getPoundage(), oemMoneyTriple, "分公司账户",
+                    EnumTradeType.PAY.getValue(), EnumSplitAccountUserType.BRANCH_COMPANY.getId(), order.getSettleType());
+            final Account account = this.accountService.getByIdWithLock(oemMoneyTriple.getLeft()).get();
+            this.accountService.increaseTotalAmount(account.getId(), oemMoneyTriple.getMiddle());
+            this.accountService.increaseAvailableAmount(account.getId(), oemMoneyTriple.getMiddle());
+            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), oemMoneyTriple.getMiddle(),
+                    "收单反润", EnumAccountFlowType.INCREASE);
+        }
+
         //一级代理商利润--到结算--可用余额
         if (null != firstMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();

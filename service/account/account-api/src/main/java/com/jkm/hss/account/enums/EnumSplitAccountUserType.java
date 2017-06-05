@@ -24,7 +24,11 @@ public enum EnumSplitAccountUserType {
     /**
      * 二级代理商
      */
-    SECOND_DEALER(4, EnumAccountUserType.DEALER, "二级代理商")
+    SECOND_DEALER(4, EnumAccountUserType.DEALER, "二级代理商"),
+    /**
+     * 分公司
+     */
+    BRANCH_COMPANY(5, EnumAccountUserType.BRANCH_COMPANY, "分公司"),
     ;
 
     @Getter

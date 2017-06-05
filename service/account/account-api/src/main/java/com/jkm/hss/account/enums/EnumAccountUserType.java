@@ -16,7 +16,9 @@ public enum EnumAccountUserType {
 
     MERCHANT(2, "商户"),
 
-    DEALER(3, "代理商");
+    DEALER(3, "代理商"),
+
+    BRANCH_COMPANY(4, "金开门");
 
     @Getter
     private int id;
