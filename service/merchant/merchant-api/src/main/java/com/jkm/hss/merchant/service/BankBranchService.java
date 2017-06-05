@@ -4,6 +4,7 @@ import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/23.
@@ -23,5 +24,20 @@ public interface BankBranchService {
      */
     List<AppBizBankBranchResponse> getBankName(String bankName);
 
+    /**
+     * 新增联行号
+     * @param bankName
+     * @param province
+     * @param city
+     * @param branchName
+     * @param branchCode
+     */
+    void addBankCode(String bankName, String province, String city, String branchName, String branchCode);
 
+    /**
+     * 联行号管理
+     * @param map
+     * @return
+     */
+    List<AppBizBankBranchResponse> getUnionInfo(Map map);
 }

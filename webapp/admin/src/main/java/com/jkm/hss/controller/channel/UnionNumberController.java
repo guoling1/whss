@@ -8,6 +8,7 @@ import com.jkm.hss.helper.request.DistrictRequest;
 import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.service.BankBranchService;
 import com.jkm.hsy.user.entity.AppBizBankBranch;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangbin on 2017/5/26.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/unionNumber")
 public class UnionNumberController extends BaseController {
@@ -90,9 +94,30 @@ public class UnionNumberController extends BaseController {
         if ("".equals(districtRequest.getBranchCode())){
             return CommonResponse.simpleResponse(1, "联行号不能为空");
         }
-//        this.bankBranchService.addBankCode(districtRequest.getBankName(),districtRequest.getProvince()
-//                ,districtRequest.getCity(),districtRequest.getBranchName(),districtRequest.getBranchCode());
-        return CommonResponse.simpleResponse(1, "添加成功");
+        try {
+            this.bankBranchService.addBankCode(districtRequest.getBankName(), districtRequest.getProvince()
+                    , districtRequest.getCity(), districtRequest.getBranchName(), districtRequest.getBranchCode());
+            return CommonResponse.simpleResponse(1, "添加成功");
+        }catch (final Throwable throwable){
+            log.error("添加通道失败,异常信息:" + throwable.getMessage());
+        }
+        return  CommonResponse.simpleResponse(-1, "fail");
     }
 
+    /**
+     * 联行号管理
+     * @param districtRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/unionInfo", method = RequestMethod.POST)
+    public CommonResponse unionInfo(@RequestBody final DistrictRequest districtRequest) {
+        Map map = new HashMap();
+        map.put("province",districtRequest.getProvince());
+        map.put("city",districtRequest.getCity());
+        map.put("branchName",districtRequest.getBranchName());
+        map.put("branchCode",districtRequest.getBranchCode());
+        List<AppBizBankBranchResponse> list = this.bankBranchService.getUnionInfo(map);
+        return CommonResponse.objectResponse(1, "SUCCESS",list);
+    }
 }

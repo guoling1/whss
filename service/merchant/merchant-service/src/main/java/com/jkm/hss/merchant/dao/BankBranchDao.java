@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/23.
@@ -25,4 +26,21 @@ public interface BankBranchDao {
      * @return
      */
     List<AppBizBankBranchResponse> getBankName(@Param("bankName") String bankName);
+
+    /**
+     * 新增联行号
+     * @param bankName
+     * @param province
+     * @param city
+     * @param branchName
+     * @param branchCode
+     */
+    void addBankCode(String bankName, String province, String city, String branchName, String branchCode);
+
+    /**
+     * 联行号管理
+     * @param map
+     * @return
+     */
+    List<AppBizBankBranchResponse> getUnionInfo(Map map);
 }

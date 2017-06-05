@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/23.
@@ -34,5 +35,16 @@ public class BankBranchServiceImpl implements BankBranchService{
     public List<AppBizBankBranchResponse> getBankName(String bankName) {
         List<AppBizBankBranchResponse> list = this.bankBranchDao.getBankName(bankName);
         return list;
+    }
+
+    @Override
+    public void addBankCode(String bankName, String province, String city, String branchName, String branchCode) {
+        this.bankBranchDao.addBankCode(bankName,province,city,branchName,branchCode);
+    }
+
+    @Override
+    public List<AppBizBankBranchResponse> getUnionInfo(Map map) {
+        List<AppBizBankBranchResponse> list = this.bankBranchDao.getUnionInfo(map);
+        return null;
     }
 }

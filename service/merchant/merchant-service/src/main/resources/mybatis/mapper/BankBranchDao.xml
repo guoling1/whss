@@ -33,4 +33,43 @@
             BRANCHCODE
     </select>
 
+    <insert id="addBankCode" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_account_info
+        (
+        BRANCHCODE,
+        BRANCHNAME,
+        BANKNAME,
+        PROVINCE,
+        CITY
+        )
+        VALUES
+        (
+        #{branchCode},
+        #{branchName},
+        #{bankName},
+        #{province},
+        #{city}
+        )
+
+    </insert>
+
+    <select id="getBankName" resultType="com.jkm.hss.merchant.entity.getUnionInfo">
+        SELECT * FROM app_biz_bank_branch
+        WHERE
+        1=1
+    <if test="province!=null and province!=''">
+        AND PROVINCE=#{province}
+    </if>
+    <if test="city!=null and city!=''">
+        AND CITY=#{city}
+    </if>
+    <if test="branchName!=null and branchName!=''">
+        AND BRANCHNAME=#{branchName}
+    </if>
+    <if test="branchCode!=null and branchCode!=''">
+        AND BRANCHCODE=#{BRANCHCODE}
+    </if>
+            GROUP BY BANKNAME
+            ORDER BY BANKINDEX,BRANCHCODE
+    </select>
 </mapper>
