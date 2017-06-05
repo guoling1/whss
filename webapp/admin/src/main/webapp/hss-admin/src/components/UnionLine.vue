@@ -10,23 +10,37 @@
           <ul class="search">
             <li class="same">
               <label>省:</label>
-              <el-select style="width: 193px" clearable v-model="query.withdrawStatus" size="small">
-                <el-option label="全部" value="">全部</el-option>
+              <el-select v-model="query.province" size="small" style="width:100%" placeholder="请选择" clearable
+                         @change="province_select">
+                <el-option v-for="item in list_province"
+                           :label="item.aname"
+                           :value="item.code">
+                </el-option>
               </el-select>
+              <!--<el-select style="width: 193px" clearable v-model="query.province" size="small">-->
+                <!--<el-option label="全部" value="">全部</el-option>-->
+              <!--</el-select>-->
             </li>
             <li class="same">
               <label>市:</label>
-              <el-select style="width: 193px" clearable v-model="query.withdrawStatus" size="small">
-                <el-option label="全部" value="">全部</el-option>
+              <el-select v-model="query.city" size="small" style="width:100%" placeholder="请选择" clearable
+                         @change="city_select1">
+                <el-option v-for="item in list_city"
+                           :label="item.aname"
+                           :value="item.code">
+                </el-option>
               </el-select>
+              <!--<el-select style="width: 193px" clearable v-model="query.city" size="small">
+                <el-option label="全部" value="">全部</el-option>
+              </el-select>-->
             </li>
             <li class="same">
               <label>支行:</label>
-              <el-input style="width: 193px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.branchName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>联行号:</label>
-              <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.branchCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -36,18 +50,14 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column label="联行号" min-width="112px">
-              <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="userType" label="省"></el-table-column>
-            <el-table-column prop="userType" label="市"></el-table-column>
-            <el-table-column prop="userType" label="区/县"></el-table-column>
-            <el-table-column prop="userType" label="银行名称"></el-table-column>
-            <el-table-column prop="userType" label="支行名称"></el-table-column>
-            <el-table-column prop="userType" label="银行简称"></el-table-column>
-            <el-table-column prop="userType" label="银行编码"></el-table-column>
+            <el-table-column prop="branchCode" label="联行号"></el-table-column>
+            <el-table-column prop="province" label="省"></el-table-column>
+            <el-table-column prop="city" label="市"></el-table-column>
+            <!--<el-table-column prop="userType" label="区/县"></el-table-column>-->
+            <el-table-column prop="bankName" label="银行名称"></el-table-column>
+            <el-table-column prop="branchName" label="支行名称"></el-table-column>
+            <!--<el-table-column prop="userType" label="银行简称"></el-table-column>-->
+            <!--<el-table-column prop="userType" label="银行编码"></el-table-column>-->
           </el-table>
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -64,8 +74,8 @@
       <div class="box" style="padding: 15px 15px 20px 10%" v-if="isAdd">
         <i class="el-icon-circle-cross pull-right" style="color: #8f9092;font-size: 18px;cursor: pointer" @click="isAdd=false"></i>
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm" style="margin-right: 30%">
-          <el-form-item label="银行名称:" prop="mobile">
-            <el-input v-model="form.mobile" size="small"></el-input>
+          <el-form-item label="银行名称:" prop="name">
+            <el-autocomplete v-model="bankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配"></el-autocomplete>
           </el-form-item>
           <el-form-item label="所在省市" prop="belongCityCode">
             <el-col :span="10">
@@ -99,6 +109,7 @@
             <el-button type="primary" size="small" @click="dialogFormVisible=true">新增</el-button>
           </el-form-item>
         </el-form>
+        <!--确认新增页面-->
         <el-dialog title="新增联行号" :visible.sync="dialogFormVisible">
           <el-form :model="form" style="margin-left: 10%">
             <el-form-item label="银行名称：" :label-width="formLabelWidth" style="margin-bottom: 0">
@@ -136,25 +147,20 @@
         query:{
           pageNo:1,
           pageSize:10,
-          orderNo:'',
-          businessOrderNo:'',
-          sn:'',
-          userName: '',
-          startTime: '',
-          endTime: '',
-          withdrawStatus: '',
+          province:'',
+          provinceName:'',
+          city:'',
+          branchName:'',
+          branchCode: '',
+          cityName:''
         },
-        pageTotal:0,
-        addTotal:0,
-        pageTotal1:0,
-        addTotal1:0,
-        date: '',
         records: [],
         count: 0,
         total: '',
         loading: true,
         isAdd:false,
         dialogFormVisible:false,
+        bankName:"",
         form: {
           mobile: '',
           name: '',
@@ -192,11 +198,27 @@
             {required: true, message: '请选择代理商详细地址', trigger: 'blur'}
           ]
         },
+        list_province:[],
+        list_city:[],
         item_province: [],
-        item_city: []
+        item_city: [],
+        restaurants: [],
       }
     },
     created: function () {
+//      获取省份
+      this.$http.post('/admin/unionNumber/findAllProvinces').then(res => {
+        this.list_province = res.data;
+        this.item_province = res.data;
+        this.form.belongProvinceCode = res.data[0].code;
+        this.form.belongProvinceName = res.data[0].aname;
+      }, err => {
+        this.$message({
+          showClose: true,
+          message: err.data.msg,
+          type: 'error'
+        });
+      });
       this.getData();
     },
     methods: {
@@ -215,26 +237,13 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/order/withdrawList',this.query)
+        this.$http.post('/admin/unionNumber/unionInfo',this.query)
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
               this.records = res.data.records;
             },1000)
             this.count = res.data.count;
-            var price=0,total=0;
-            var toFix = function (val) {
-              return parseFloat(val).toFixed(2)
-            };
-            for (var i = 0; i < res.data.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].tradeAmount));
-              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].poundage));
-              if (res.data.records[i].payRate != null) {
-                res.data.records[i].payRate = (parseFloat(res.data.records[i].payRate) * 100).toFixed(2) + '%';
-              }
-            }
-            this.pageTotal = price;
-            this.pageTotal1 = total;
           },function (err) {
             setTimeout(()=>{
               this.loading = false;
@@ -245,7 +254,6 @@
               type: 'error'
             });
           })
-
       },
       province_select: function (provinceCode) {
         for (let m = 0; m < this.item_province.length; m++) {
@@ -253,7 +261,7 @@
             this.form.belongProvinceName = this.item_province[m].aname;
           }
         }
-        this.$http.post('/daili/district/findAllCities', {
+        this.$http.post('/admin/unionNumber/findAllCities', {
           code: provinceCode
         }).then(res => {
           this.item_city = res.data;
@@ -267,10 +275,36 @@
           });
         })
       },
+      province_select1: function (provinceCode) {
+        for (let m = 0; m < this.list_province.length; m++) {
+          if (this.list_province[m].code == provinceCode) {
+            this.query.provinceName = this.list_province[m].aname;
+          }
+        }
+        this.$http.post('/admin/unionNumber/findAllCities', {
+          code: provinceCode
+        }).then(res => {
+          this.list_city = res.data;
+          this.query.city = '';
+        }, err => {
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
+        })
+      },
       city_select: function (cityCode) {
         for (let n = 0; n < this.item_city.length; n++) {
           if (this.item_city[n].code == cityCode) {
             this.form.belongCityName = this.item_city[n].aname;
+          }
+        }
+      },
+      city_select1: function (cityCode) {
+        for (let n = 0; n < this.list_city.length; n++) {
+          if (this.list_city[n].code == cityCode) {
+            this.query.cityName = this.list_city[n].aname;
           }
         }
       },
@@ -296,6 +330,32 @@
             return false;
           }
         });
+      },
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results=[];
+        this.$http.post('/admin/unionNumber/bankName',{bankName:this.bankName})
+          .then(res=>{
+            for(let i=0; i<res.data.length; i++){
+              res.data[i].value = res.data[i].bankName;
+            }
+            results = res.data;
+          })
+          .catch(err=>{
+
+          });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
+      createStateFilter(queryString) {
+        return (state) => {
+          return (state.value.indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelect(item) {
+        console.log(item);
       },
       search(){
         this.query.pageNo = 1;

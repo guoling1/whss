@@ -69,15 +69,17 @@
     <if test="branchCode!=null and branchCode!=''">
         AND BRANCHCODE=#{BRANCHCODE}
     </if>
-            GROUP BY BANKNAME
             ORDER BY BANKINDEX,BRANCHCODE
           LIMIT #{offset},#{pageSize}
     </select>
 
     <select id="getUnionInfoCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM app_biz_bank_branch
+        SELECT
+        COUNT(*)
+        FROM
+        app_biz_bank_branch
         WHERE
-        1=1
+        1 = 1
         <if test="province!=null and province!=''">
             AND PROVINCE=#{province}
         </if>
@@ -90,7 +92,6 @@
         <if test="branchCode!=null and branchCode!=''">
             AND BRANCHCODE=#{BRANCHCODE}
         </if>
-        GROUP BY BANKNAME
         ORDER BY BANKINDEX,BRANCHCODE
     </select>
 </mapper>

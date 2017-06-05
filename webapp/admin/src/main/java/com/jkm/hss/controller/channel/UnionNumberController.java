@@ -120,6 +120,9 @@ public class UnionNumberController extends BaseController {
         map.put("city",districtRequest.getCity());
         map.put("branchName",districtRequest.getBranchName());
         map.put("branchCode",districtRequest.getBranchCode());
+        map.put("pageNo",districtRequest.getPageNo);
+        map.put("pageSize",districtRequest.getPageSize);
+        map.put("offset",districtRequest.getOffset);
         List<AppBizBankBranchResponse> list = this.bankBranchService.getUnionInfo(map);
         int count = this.bankBranchService.getUnionInfoCount(map);
         pageModel.setCount(count);
