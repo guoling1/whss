@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.service;
 
+import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
 
 import java.util.List;
@@ -15,4 +16,12 @@ public interface BankBranchService {
      * @return
      */
     List<BankBranch> findByBankName(String bankName,String contions,String provinceName,String cityName);
+
+    /**
+     * 查询银行名称
+     * @return
+     */
+    List<AppBizBankBranchResponse> getBankName(String bankName);
+
+
 }

@@ -19,4 +19,18 @@
         </if>
     </select>
 
+    <select id="getBankName" resultType="com.jkm.hss.merchant.entity.AppBizBankBranchResponse">
+        SELECT
+            BANKNAME
+        FROM
+            app_biz_bank_branch
+        WHERE
+            BANKNAME LIKE CONCAT('%',#{bankName},'%')
+        GROUP BY
+            BANKNAME
+        ORDER BY
+            BANKINDEX,
+            BRANCHCODE
+    </select>
+
 </mapper>

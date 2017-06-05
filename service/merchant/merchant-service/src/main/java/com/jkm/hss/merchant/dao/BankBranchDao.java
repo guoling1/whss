@@ -1,6 +1,8 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
+import com.jkm.hsy.user.entity.AppBizDistrict;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,12 @@ public interface BankBranchDao {
      * @return
      */
     List<BankBranch> findByBankName(@Param("bankName") String bankName,@Param("contions") String contions,@Param("provinceName") String provinceName,@Param("cityName") String cityName);
+
+    /**
+     * 查询银行名称
+     * @return
+     */
+    List<AppBizBankBranchResponse> getBankName(@Param("bankName") String bankName);
+
+    public List<AppBizDistrict> findDistrictByParentCode(AppBizDistrict appBizDistrict);
 }

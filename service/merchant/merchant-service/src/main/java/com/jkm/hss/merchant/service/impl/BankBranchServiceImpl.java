@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.BankBranchDao;
+import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
 import com.jkm.hss.merchant.service.BankBranchService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,5 +28,11 @@ public class BankBranchServiceImpl implements BankBranchService{
     @Override
     public List<BankBranch> findByBankName(String bankName, String contions,String provinceName,String cityName) {
         return bankBranchDao.findByBankName(bankName,contions,provinceName,cityName);
+    }
+
+    @Override
+    public List<AppBizBankBranchResponse> getBankName(String bankName) {
+        List<AppBizBankBranchResponse> list = this.bankBranchDao.getBankName(bankName);
+        return list;
     }
 }
