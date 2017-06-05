@@ -75,7 +75,23 @@ public class UnionNumberController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/addBankCode", method = RequestMethod.POST)
     public CommonResponse addBankCode(@RequestBody final DistrictRequest districtRequest) {
-//        this.bankBranchService.addBankCode();
+        if ("".equals(districtRequest.getBankName())){
+            return CommonResponse.simpleResponse(1, "银行名称不能为空");
+        }
+        if ("".equals(districtRequest.getProvince())){
+            return CommonResponse.simpleResponse(1, "所在省不能为空");
+        }
+        if ("".equals(districtRequest.getCity())){
+            return CommonResponse.simpleResponse(1, "所在市不能为空");
+        }
+        if ("".equals(districtRequest.getBranchName())){
+            return CommonResponse.simpleResponse(1, "支行名称不能为空");
+        }
+        if ("".equals(districtRequest.getBranchCode())){
+            return CommonResponse.simpleResponse(1, "联行号不能为空");
+        }
+//        this.bankBranchService.addBankCode(districtRequest.getBankName(),districtRequest.getProvince()
+//                ,districtRequest.getCity(),districtRequest.getBranchName(),districtRequest.getBranchCode());
         return CommonResponse.simpleResponse(1, "添加成功");
     }
 

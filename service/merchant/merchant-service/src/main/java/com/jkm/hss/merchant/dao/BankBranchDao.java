@@ -2,7 +2,6 @@ package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
-import com.jkm.hsy.user.entity.AppBizDistrict;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +25,4 @@ public interface BankBranchDao {
      * @return
      */
     List<AppBizBankBranchResponse> getBankName(@Param("bankName") String bankName);
-
-    public List<AppBizDistrict> findDistrictByParentCode(AppBizDistrict appBizDistrict);
 }
