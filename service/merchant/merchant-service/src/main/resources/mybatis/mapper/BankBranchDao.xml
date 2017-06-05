@@ -53,7 +53,7 @@
 
     </insert>
 
-    <select id="getBankName" resultType="com.jkm.hss.merchant.entity.getUnionInfo">
+    <select id="getUnionInfo" resultType="com.jkm.hss.merchant.entity.AppBizBankBranchResponse">
         SELECT * FROM app_biz_bank_branch
         WHERE
         1=1
