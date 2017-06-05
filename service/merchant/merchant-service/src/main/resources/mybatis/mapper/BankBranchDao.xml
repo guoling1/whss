@@ -74,7 +74,7 @@
           LIMIT #{offset},#{pageSize}
     </select>
 
-    <select id="getUnionInfo" resultType="java.lang.Integer">
+    <select id="getUnionInfoCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM app_biz_bank_branch
         WHERE
         1=1
@@ -92,6 +92,5 @@
         </if>
         GROUP BY BANKNAME
         ORDER BY BANKINDEX,BRANCHCODE
-        LIMIT #{offset},#{pageSize}
     </select>
 </mapper>
