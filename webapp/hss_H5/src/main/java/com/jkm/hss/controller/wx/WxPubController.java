@@ -950,7 +950,6 @@ public class WxPubController extends BaseController {
             }
             oemId = oemInfoOptional.get().getDealerId();
         }
-        log.info("手机号登录");
         if (StringUtils.isBlank(directLoginRequest.getMobile())) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
         }
@@ -969,7 +968,9 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(directLoginRequest.getMobile()),oemId);
-
+        if(!merchantInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该账户不存在，请确定手机号是否正确");
+        }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantInfoOptional.get().getId());
         if(userInfoOptional.isPresent()){
             if(userInfoOptional.get().getOpenId()!=null&&!"".equals(userInfoOptional.get().getOpenId())){
