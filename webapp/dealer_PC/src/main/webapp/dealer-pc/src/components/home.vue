@@ -20,7 +20,7 @@
         </tr>
         <tr>
           <td colspan="2">可提现金额 {{availableAmount | fix}}元
-            <el-button type="text" @click="withdrawal">立即体现</el-button>
+            <el-button type="text" @click="withdrawal">立即提现</el-button>
             <el-button type="text" @click="balance">查看明细</el-button>
           </td>
         </tr>
