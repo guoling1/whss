@@ -78,7 +78,7 @@ public class V1o6BizMapper {
         bizMapper.put("HSY001049", new String[]{"hsyShopService","updateHsyShopEmail"});
         /**首页广告*/
         bizMapper.put("HSY001050", new String[]{"AdvertisementService","getvalidList","首页广告"});
-        /**首页广告*/
+        /**查询会员卡*/
         bizMapper.put("HSY001051", new String[]{"hsyMembershipService","findMemshipCards"});
     }
 }

@@ -81,7 +81,12 @@ public class ActiveController {
                 return;
             }
 
-            if(!(appParam.getServiceCode().equals("HSY001001")||appParam.getServiceCode().equals("HSY001002")||appParam.getServiceCode().equals("HSY001048"))) {
+            if(!(appParam.getServiceCode().equals("HSY001001")
+                    ||appParam.getServiceCode().equals("HSY001002")
+                    ||appParam.getServiceCode().equals("HSY001048")
+                    ||appParam.getServiceCode().equals("HSY001040")
+                    ||appParam.getServiceCode().equals("HSY001043")
+                    ||appParam.getServiceCode().equals("HSY001050"))) {
                 AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
