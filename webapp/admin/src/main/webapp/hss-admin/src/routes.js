@@ -176,6 +176,7 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'template', name: 'Template', component: Template},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},

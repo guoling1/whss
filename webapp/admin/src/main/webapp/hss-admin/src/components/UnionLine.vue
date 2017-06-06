@@ -11,7 +11,7 @@
             <li class="same">
               <label>省:</label>
               <el-select v-model="query.province" size="small" style="width:100%" placeholder="请选择" clearable
-                         @change="province_select">
+                         @change="province_select1">
                 <el-option v-for="item in list_province"
                            :label="item.aname"
                            :value="item.code">
@@ -72,14 +72,14 @@
         </div>
       </div>
       <div class="box" style="padding: 15px 15px 20px 10%" v-if="isAdd">
-        <i class="el-icon-circle-cross pull-right" style="color: #8f9092;font-size: 18px;cursor: pointer" @click="isAdd=false"></i>
+        <i class="el-icon-circle-cross pull-right" style="color: #8f9092;font-size: 18px;cursor: pointer" @click="closeAdd"></i>
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm" style="margin-right: 30%">
-          <el-form-item label="银行名称:" prop="name">
-            <el-autocomplete v-model="bankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配"></el-autocomplete>
+          <el-form-item label="银行名称:" prop="bankName">
+            <el-autocomplete v-model="form.bankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配"></el-autocomplete>
           </el-form-item>
-          <el-form-item label="所在省市" prop="belongCityCode">
+          <el-form-item label="所在省市" prop="city">
             <el-col :span="10">
-              <el-select v-model="form.belongProvinceCode" size="small" style="width:100%" placeholder="请选择"
+              <el-select v-model="form.province" size="small" style="width:100%" placeholder="请选择"
                          @change="province_select">
                 <el-option v-for="item in item_province"
                            :label="item.aname"
@@ -89,7 +89,7 @@
             </el-col>
             <el-col class="line-center" :span="2">省</el-col>
             <el-col :span="10">
-              <el-select v-model="form.belongCityCode" size="small" style="width:100%" placeholder="请选择"
+              <el-select v-model="form.city" size="small" style="width:100%" placeholder="请选择"
                          @change="city_select">
                 <el-option v-for="item in item_city"
                            :label="item.aname"
@@ -99,14 +99,14 @@
             </el-col>
             <el-col class="line-center" :span="2">市</el-col>
           </el-form-item>
-          <el-form-item label="支行名称" prop="name">
-            <el-input v-model="form.name" size="small"></el-input>
+          <el-form-item label="支行名称" prop="branchName">
+            <el-input v-model="form.branchName" size="small"></el-input>
           </el-form-item>
-          <el-form-item label="联行号" prop="loginName">
-            <el-input v-model="form.loginName" size="small"></el-input>
+          <el-form-item label="联行号" prop="branchCode">
+            <el-input v-model="form.branchCode" size="small"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="dialogFormVisible=true">新增</el-button>
+            <el-button type="primary" size="small" @click="onSubmit">新增</el-button>
           </el-form-item>
         </el-form>
         <!--确认新增页面-->
@@ -162,40 +162,26 @@
         dialogFormVisible:false,
         bankName:"",
         form: {
-          mobile: '',
-          name: '',
-          loginName: '',
-          loginPwd: '',
-          email: '',
-          belongProvinceCode: '',
+          bankName: '',
+          province:'',
+          city:'',
+          branchName:'',
+          branchCode:'',
           belongProvinceName: '',
-          belongCityCode: '',
           belongCityName: '',
-          belongArea: '',
-          bankCard: '',
-          bankAccountName: '',
-          bankReserveMobile: '',
-          idCard: ''
         },
         rules: {
-          mobile: [
-            {required: true, message: '请输入手机号', trigger: 'blur'},
-            {pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号', trigger: 'blur'}
+          bankName: [
+            {required: true, message: '请输入银行名称', trigger: 'blur'}
           ],
-          name: [
-            {required: true, message: '请输入代理商名称', trigger: 'blur'}
+          branchName: [
+            {required: true, message: '请输入支行名称', trigger: 'blur'}
           ],
-          loginName: [
-            {required: true, message: '请输入代理商登录名', trigger: 'blur'}
+          branchCode: [
+            {required: true, message: '请输入联行号', trigger: 'blur'}
           ],
-          loginPwd: [
-            {required: true, message: '请输入代理商登录密码', trigger: 'blur'}
-          ],
-          belongCityCode: [
+          city: [
             {required: true, message: '请选择代理商所在省市', trigger: 'blur'}
-          ],
-          belongArea: [
-            {required: true, message: '请选择代理商详细地址', trigger: 'blur'}
           ]
         },
         list_province:[],
@@ -210,8 +196,8 @@
       this.$http.post('/admin/unionNumber/findAllProvinces').then(res => {
         this.list_province = res.data;
         this.item_province = res.data;
-        this.form.belongProvinceCode = res.data[0].code;
-        this.form.belongProvinceName = res.data[0].aname;
+//        this.form.province = res.data[0].code;
+//        this.form.belongProvinceName = res.data[0].aname;
       }, err => {
         this.$message({
           showClose: true,
@@ -226,14 +212,25 @@
         this.query = {
           pageNo:1,
           pageSize:10,
-          orderNo:'',
-          businessOrderNo:'',
-          sn:'',
-          userName: '',
-          startTime: '',
-          endTime: '',
-          withdrawStatus: ''
+          province:'',
+          provinceName:'',
+          city:'',
+          branchName:'',
+          branchCode: '',
+          cityName:''
         };
+      },
+      closeAdd: function () {
+        this.isAdd = false
+        this.form={
+          bankName: '',
+          province:'',
+          city:'',
+          branchName:'',
+          branchCode:'',
+          belongProvinceName: '',
+          belongCityName: '',
+        }
       },
       getData: function () {
         this.loading = true;
@@ -265,7 +262,7 @@
           code: provinceCode
         }).then(res => {
           this.item_city = res.data;
-          this.form.belongCityCode = res.data[0].code;
+          this.form.city = res.data[0].code;
           this.form.belongCityName = res.data[0].aname;
         }, err => {
           this.$message({
@@ -311,13 +308,22 @@
       onSubmit: function () {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$http.post('/daili/dealer/addSecondDealer', this.form).then(res => {
-              this.$router.push('/daili/app/dealer_list');
+            this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
               this.$message({
                 showClose: true,
                 message: '创建代理商成功',
                 type: 'success'
               });
+              this.form={
+                bankName: '',
+                province:'',
+                city:'',
+                branchName:'',
+                branchCode:'',
+                belongProvinceName: '',
+                belongCityName: '',
+              }
+              this.dialogFormVisible = true;
             }, err => {
               this.$message({
                 showClose: true,
@@ -334,7 +340,7 @@
       querySearchAsync(queryString, cb) {
         var restaurants = this.restaurants;
         var results=[];
-        this.$http.post('/admin/unionNumber/bankName',{bankName:this.bankName})
+        this.$http.post('/admin/unionNumber/bankName',{bankName:queryString})
           .then(res=>{
             for(let i=0; i<res.data.length; i++){
               res.data[i].value = res.data[i].bankName;
@@ -360,7 +366,6 @@
       search(){
         this.query.pageNo = 1;
         this.getData()
-        this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
