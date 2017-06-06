@@ -591,9 +591,8 @@
           for(let i=0; i<res.data.length; i++){
             res.data[i].value = res.data[i].bankName;
           }
-        }
-          results = res.data;
-          })
+            results = res.data;
+        })
 //        this.$http.post('/admin/unionNumber/bankName',{bankName:queryString})
 //          .then(res=>{
 //          for(let i=0; i<res.data.length; i++){
