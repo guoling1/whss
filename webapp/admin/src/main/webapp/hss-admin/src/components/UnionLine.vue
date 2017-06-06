@@ -23,7 +23,7 @@
             </li>
             <li class="same">
               <label>市:</label>
-              <el-select v-model="query.city" size="small" style="width:100%" placeholder="请选择" clearable
+              <el-select v-model="query.city" size="small" style="width:100%" placeholder="请选择" clearable :disabled="isSelect"
                          @change="city_select1">
                 <el-option v-for="item in list_city"
                            :label="item.aname"
@@ -144,6 +144,7 @@
     name: 'unionLine',
     data(){
       return {
+        isSelect:false,
         query:{
           pageNo:1,
           pageSize:10,
@@ -258,19 +259,28 @@
             this.form.belongProvinceName = this.item_province[m].aname;
           }
         }
-        this.$http.post('/admin/unionNumber/findAllCities', {
-          code: provinceCode
-        }).then(res => {
-          this.item_city = res.data;
-          this.form.city = res.data[0].code;
-          this.form.belongCityName = res.data[0].aname;
-        }, err => {
-          this.$message({
-            showClose: true,
-            message: err.data.msg,
-            type: 'error'
-          });
-        })
+        if(this.form.belongProvinceName=="北京市"||this.form.belongProvinceName=="天津市"||this.form.belongProvinceName=="上海市"||this.form.belongProvinceName=="重庆市"){
+          this.item_city = [{
+            code:this.form.province,
+            aname:this.form.belongProvinceName
+          }]
+          this.form.city = this.item_city[0].code;
+          this.form.belongCityName = this.item_city[0].aname;
+        }else{
+          this.$http.post('/admin/unionNumber/findAllCities', {
+            code: provinceCode
+          }).then(res => {
+            this.item_city = res.data;
+            this.form.city = res.data[0].code;
+            this.form.belongCityName = res.data[0].aname;
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
       },
       province_select1: function (provinceCode) {
         for (let m = 0; m < this.list_province.length; m++) {
@@ -278,18 +288,25 @@
             this.query.provinceName = this.list_province[m].aname;
           }
         }
-        this.$http.post('/admin/unionNumber/findAllCities', {
-          code: provinceCode
-        }).then(res => {
-          this.list_city = res.data;
+        if(this.query.provinceName=="北京市"||this.query.provinceName=="天津市"||this.query.provinceName=="上海市"||this.query.provinceName=="重庆市"){
+          this.isSelect = true;
           this.query.city = '';
-        }, err => {
-          this.$message({
-            showClose: true,
-            message: err.data.msg,
-            type: 'error'
-          });
-        })
+          this.query.cityName = '';
+        }else {
+          this.isSelect = false;
+          this.$http.post('/admin/unionNumber/findAllCities', {
+            code: provinceCode
+          }).then(res => {
+            this.list_city = res.data;
+            this.query.city = '';
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
       },
       city_select: function (cityCode) {
         for (let n = 0; n < this.item_city.length; n++) {
@@ -359,9 +376,6 @@
         return (state) => {
           return (state.value.indexOf(queryString.toLowerCase()) === 0);
         };
-      },
-      handleSelect(item) {
-        console.log(item);
       },
       search(){
         this.query.pageNo = 1;
