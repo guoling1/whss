@@ -28,6 +28,11 @@ public class MqConfig {
     public static final String MERCHANT_WITHDRAW = "hss_merchant_withdraw";
 
     /**
+     * 提现
+     */
+    public static final String MERCHANT_WITHDRAW_D0 = "hss_merchant_withdraw_do";
+
+    /**
      * t1定时发起提现
      */
     public static final String MERCHANT_WITHDRAW_T1 = "hss_merchant_withdraw_t1";
@@ -37,6 +42,11 @@ public class MqConfig {
      * 批量结算
      */
     public static final String NORMAL_SETTLE = "normal_settle";
+
+    /**
+     * 好收银分润消息
+     */
+    public static final String SPLIT_PROFIT = "split_profit";
 
     static {
         final MqConfigs mqConfigs = getMqConfigs();

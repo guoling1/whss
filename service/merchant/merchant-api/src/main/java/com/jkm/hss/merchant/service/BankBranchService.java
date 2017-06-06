@@ -47,4 +47,13 @@ public interface BankBranchService {
      * @return
      */
     int getUnionInfoCount(Map map);
+
+    /**
+     * 支行信息
+     * @param districtCode
+     * @param bankName
+     * @param branchName
+     * @return
+     */
+    List<AppBizBankBranchResponse> getBranch(String districtCode, String bankName, String branchName);
 }

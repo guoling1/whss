@@ -8,6 +8,7 @@ import lombok.Getter;
  * 打款渠道
  */
 public enum EnumUpperChannel {
+
     /**
      * 扫米
      */
@@ -50,10 +51,21 @@ public enum EnumUpperChannel {
 
 
     /**
+     * 会员卡
+     */
+    MEMBER(12, "MEMBER", "会员卡"),
+
+
+    /**
      * 合利宝
      */
-    HE_LI_UNIONPAY(10, "HLB", "合利宝")
-    ;
+    HE_LI_UNIONPAY(10, "HLB", "合利宝"),
+
+
+    /**
+     * 汇聚支付
+     */
+    HJ_PAY(11,"HJ_PAY","汇聚");
 
     @Getter
     private int id;

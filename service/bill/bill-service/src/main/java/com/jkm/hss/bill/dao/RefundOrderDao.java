@@ -78,6 +78,14 @@ public interface RefundOrderDao {
     List<RefundOrder> selectByPayOrderId(@Param("payOrderId") long payOrderId);
 
     /**
+     * 按支付交易单id查询未退款失败的个数
+     *
+     * @param payOrderId
+     * @return
+     */
+    int selectUnRefundErrorCountByPayOrderId(@Param("payOrderId") long payOrderId);
+
+    /**
      * 按支付交易单号查询
      *
      * @param payOrderNo

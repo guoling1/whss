@@ -20,6 +20,7 @@ public class MessageListenerImpl implements MessageListener {
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
+
     /**
      * 消费消息
      *

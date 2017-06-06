@@ -545,6 +545,22 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return "";
     }
 
+    @Override
+    public void changeMobile(Long uid,String changePhone) {
+        this.hsyMerchantAuditDao.changeMobile(uid,changePhone);
+    }
+
+    @Override
+    public HsyMerchantAuditResponse getCellphon(Long id) {
+        HsyMerchantAuditResponse req = this.hsyMerchantAuditDao.getCellphon(id);
+        return req;
+    }
+
+    @Override
+    public void updatePhone(String changePhone, Long uid) {
+        this.hsyMerchantAuditDao.updatePhone(changePhone,uid);
+    }
+
     /**
      * 获取临时路径
      *

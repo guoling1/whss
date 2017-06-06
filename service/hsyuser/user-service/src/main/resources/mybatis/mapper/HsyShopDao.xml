@@ -18,6 +18,7 @@
             <if test="industryCode!=null and industryCode!=''">INDUSTRYCODE=#{industryCode},</if>
             <if test="districtCode!=null and districtCode!=''">DISTRICTCODE=#{districtCode},</if>
             <if test="address!=null and address!=''">ADDRESS=#{address},</if>
+            <if test="email!=null and email!=''">EMAIL=#{email},</if>
             <if test="licenceID!=null and licenceID!=''">LICENCEID=#{licenceID},</if>
             <if test="storefrontID!=null and storefrontID!=''">STOREFRONTID=#{storefrontID},</if>
             <if test="counterID!=null and counterID!=''">COUNTERID=#{counterID},</if>
@@ -70,7 +71,7 @@
 
     <select id="findPrimaryAppBizShopByUserID" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
-          shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+          shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.EMAIL,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
         shop.licenceNO,shop.licenceStartDate,shop.licenceEndDate,shop.checkErrorInfo,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,

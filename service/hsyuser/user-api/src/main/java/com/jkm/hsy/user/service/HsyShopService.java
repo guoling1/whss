@@ -12,6 +12,8 @@ import java.util.Map;
 public interface HsyShopService {
     public String updateHsyShop(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException;
     public String updateHsyShopContact(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException;
+    public String updateHsyShopContact1o6(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException;
+    public String updateHsyShopEmail(String dataParam,AppParam appParam)throws ApiHandleException;
     public String insertHsyCard(String dataParam,AppParam appParam)throws ApiHandleException;
     public String findHsyCardBankByBankNO(String dataParam,AppParam appParam)throws ApiHandleException;
     public String findDistrictByParentCode(String dataParam,AppParam appParam)throws ApiHandleException;

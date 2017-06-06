@@ -10,6 +10,7 @@ import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.SplitAccountRecordService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
@@ -22,10 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 /**
  * Created by yuxiang on 2017-02-13.
  */
@@ -40,6 +42,8 @@ public class ProfitController extends BaseController{
     private OrderService orderService;
     @Autowired
     private DealerService dealerService;
+    @Autowired
+    private ProfitService profitService;
 
     @ResponseBody
     @RequestMapping(value = "/details", method = RequestMethod.POST)
@@ -101,6 +105,32 @@ public class ProfitController extends BaseController{
         }
 
         return CommonResponse.simpleResponse(-1 , "fail");
+    }
+
+    /**
+     * 分润统计
+     * @param request
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/profitAmount",method = RequestMethod.POST)
+    public CommonResponse profitAmount(@RequestBody final ProfitDetailsSelectRequest request) {
+        try {
+            final Dealer dealer = this.getDealer().get();
+            final long accountId = dealer.getAccountId();
+            BigDecimal splitAmount = this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
+                    request.getBusinessType(), request.getBeginDate(), request.getEndDate());
+            if(splitAmount==null){
+                splitAmount=new BigDecimal(0);
+            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", splitAmount);
+
+        } catch (final Throwable throwable) {
+            log.error("获取分润统计异常：" + throwable.getMessage());
+        }
+
+        return CommonResponse.simpleResponse(-1, "fail");
     }
 
 

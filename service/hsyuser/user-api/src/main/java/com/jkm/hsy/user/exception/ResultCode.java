@@ -39,6 +39,9 @@ public enum ResultCode {
 	SORT_TYPE_NOT_EXSIT(2033,"排序类型不存在"),
 	CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO(2034,"当前页数必须大于零"),
 	SORT_COLUMN_NOT_EXSIT(2035,"排序列不存在"),
+	DISCOUNT_NOT_RIGHT(2036,"请填写正确的折扣"),
+	MEMBERSHIP_CARD_ABOVE_LIMIT(2037,"会员开卡超过上线"),
+	DEPOSIT_AMOUNT_MUST_BE_ABOVE_ZERO(2038,"储值金额必须大于零"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

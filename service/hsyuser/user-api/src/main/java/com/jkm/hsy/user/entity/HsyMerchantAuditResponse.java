@@ -13,6 +13,7 @@ public class HsyMerchantAuditResponse {
 
 //    private long firstLevelDealerId;//一级代理商id
 //    private int level; //代理商级别
+    private String changePhone;//更改后的手机号
     private String markCode;    //一级代理商编码
     private String markCode1;   //二级级代理商编码
     private String proxyNames; //所属代理商
@@ -20,6 +21,7 @@ public class HsyMerchantAuditResponse {
     private String realname;//报单员
     private String username;//报单员真实姓名
     private String createTimes;
+    private String branchCode;//联行号
     /**
      * 所属分公司
      */
@@ -38,7 +40,8 @@ public class HsyMerchantAuditResponse {
     private String idcard;//身份证号码
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
-    private String idcardh;//身份证手持照
+    private String idcardc;//银行卡照片
+    private String contractId;//签约合同照
     private String idcardNO;//身份证号
     private Long id;
     private String globalID;//对外ID

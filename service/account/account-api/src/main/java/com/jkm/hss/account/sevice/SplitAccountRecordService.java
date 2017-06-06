@@ -82,6 +82,7 @@ public interface SplitAccountRecordService {
                                   String receiptMoneyUserName, String remark, int accountUserType);
 
     PageModel<SplitAccountRecord> selectByParam(int pageNo, int pageSize, long accountId, String orderNo, String businessType, String beginDate, String endDate);
+    BigDecimal selectStatisticsByParam(long accountId, String orderNo, String businessType, String beginDate, String endDate);
 
     /**
      * 校验分账单流水号

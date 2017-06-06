@@ -13,8 +13,8 @@ import java.util.List;
  */
 @Repository
 public interface HsyChannelDao {
-    public AppCmChannelProduct findAllProductHsyChannel();
-    public AppCmChannelProduct findProductHsyChannelByType(AppCmChannelProduct appCmChannelProduct);
+    public List<AppCmChannelProduct> findAllProductHsyChannel();
+    public List<AppCmChannelProduct> findProductHsyChannelByType(AppCmChannelProduct appCmChannelProduct);
     public void insertAppCmCurrentChannel(AppCmCurrentChannel appCmCurrentChannel);
     public void updateAppCmCurrentChannel(AppCmCurrentChannel appCmCurrentChannel);
     public void insertAppCmChannelRelate(AppCmChannelRelate appCmChannelRelate);

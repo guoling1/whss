@@ -118,15 +118,19 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         Triple<BigDecimal, BigDecimal, BigDecimal> decimalTriple = dealerChannelRateService.getMerchantRateByDealerId(currentDealerId,qrCodeOptional.get().getProductId());
         if(decimalTriple==null)
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"费率计算错误");
-        //保存费率
-        AppAuUser saveAppAuUser = new AppAuUser();
-        saveAppAuUser.setId(list.get(0).getId());
-        saveAppAuUser.setDealerID(currentDealerId);
-        saveAppAuUser.setProductID(productId);
-        saveAppAuUser.setWeixinRate(decimalTriple.getLeft());
-        saveAppAuUser.setAlipayRate(decimalTriple.getMiddle());
-        saveAppAuUser.setFastRate(decimalTriple.getRight());
-        hsyUserDao.updateByID(saveAppAuUser);
+
+        if(list.get(0).getWeixinRate()==null||list.get(0).getAlipayRate()==null){
+            //保存费率
+            AppAuUser saveAppAuUser = new AppAuUser();
+            saveAppAuUser.setId(list.get(0).getId());
+            saveAppAuUser.setDealerID(currentDealerId);
+            saveAppAuUser.setProductID(productId);
+            saveAppAuUser.setWeixinRate(decimalTriple.getLeft());
+            saveAppAuUser.setAlipayRate(decimalTriple.getMiddle());
+            saveAppAuUser.setFastRate(decimalTriple.getRight());
+            hsyUserDao.updateByID(saveAppAuUser);
+        }
+
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
         if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
 

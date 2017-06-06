@@ -18,7 +18,9 @@ public interface HsyUserDao {
     public void insertAppAuToken(AppAuToken appAuToken);
     public void updateAppAuToken(AppAuToken appAuToken);
     public List<AppAuToken> findAppAuTokenByAccessToken(@Param("accessToken")String accessToken);
+    public List<AppAuToken> findAppAuTokenByClientid(@Param("clientid")String clientid);
     public void updateAppAuUserTokenStatus(@Param("uid")Long uid);
+    public void updateAppAuUserTokenStatusByTID(@Param("tid")Long tid);
     public List<AppAuUserToken> findAppAuUserTokenByParam(AppAuUserToken appAuUserToken);
     public void insertAppAuUserToken(AppAuUserToken appAuUserToken);
     public void updateAppAuUserTokenByUidAndTid(AppAuUserToken appAuUserToken);
@@ -28,4 +30,6 @@ public interface HsyUserDao {
     public void deleteAppBizShopUserRole(@Param("uid")Long uid);
     public List<AppAuUser> findAppAuUserWithRoleByID(AppAuUser appAuUser);
     public void updateHxbsStatus(@Param("status")Integer status,@Param("remarks")String remarks,@Param("uid")Long uid);
+    public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
+    public Integer findAppAuUserRole(AppAuUser appAuUser);
 }

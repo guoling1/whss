@@ -175,7 +175,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
                   totalFee: oldValue,
                   payChannel: '801',
                   memberId: pageData.memberId,
-                  merchantId: pageData.merchantId
+                  merchantId: pageData.merchantId,
+                  code: pageData.code
                 }, function (data) {
                   http.post(data.payUrl, {}, function (data) {
                     message.load_hide();
@@ -193,7 +194,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
                   totalFee: oldValue,
                   payChannel: '802',
                   memberId: pageData.memberId,
-                  merchantId: pageData.merchantId
+                  merchantId: pageData.merchantId,
+                  code: pageData.code
                 }, function (data) {
                   http.post(data.payUrl, {}, function (data) {
                     message.load_hide();

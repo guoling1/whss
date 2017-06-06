@@ -92,6 +92,10 @@
         SELECT * FROM tb_refund_order WHERE pay_order_id = #{payOrderId}
     </select>
 
+    <select id="selectUnRefundErrorCountByPayOrderId" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_refund_order WHERE pay_order_id = #{payOrderId} AND status != 3;
+    </select>
+
     <select id="selectByPayOrderNo" resultType="com.jkm.hss.bill.entity.RefundOrder">
         SELECT * FROM tb_refund_order WHERE pay_order_no = #{payOrderNo}
     </select>

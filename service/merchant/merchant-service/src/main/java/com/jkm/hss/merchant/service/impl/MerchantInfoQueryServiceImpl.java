@@ -261,6 +261,22 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     }
 
     @Override
+    public void saveHsyPhotoChang6(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang6(map);
+    }
+
+    @Override
+    public void saveHsyPhotoChang7(String photoName, long sid) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("sid",sid);
+        this.merchantInfoQueryDao.saveHsyPhotoChang7(map);
+    }
+
+    @Override
     public List<HsyHistoryPhotoChangeResponse> selectHsyHistory(HistoryPhotoChangeRequest request) {
         List<HsyHistoryPhotoChangeResponse> list = this.merchantInfoQueryDao.selectHsyHistory(request);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

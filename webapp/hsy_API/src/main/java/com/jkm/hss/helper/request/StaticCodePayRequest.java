@@ -27,4 +27,8 @@ public class StaticCodePayRequest {
      * 会员id
      */
     private String memberId;
+    /**
+     * 二维码
+     */
+    private String code;
 }
