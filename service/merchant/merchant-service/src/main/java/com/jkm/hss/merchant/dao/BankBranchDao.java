@@ -1,10 +1,12 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/23.
@@ -18,4 +20,31 @@ public interface BankBranchDao {
      * @return
      */
     List<BankBranch> findByBankName(@Param("bankName") String bankName,@Param("contions") String contions,@Param("provinceName") String provinceName,@Param("cityName") String cityName);
+
+    /**
+     * 查询银行名称
+     * @return
+     */
+    List<AppBizBankBranchResponse> getBankName(@Param("bankName") String bankName);
+
+    /**
+     * 新增联行号
+     */
+    void addBankCode(Map map);
+
+    /**
+     * 联行号管理
+     * @param map
+     * @return
+     */
+    List<AppBizBankBranchResponse> getUnionInfo(Map map);
+
+    /**
+     * 联行号管理总数
+     * @param map
+     * @return
+     */
+    int getUnionInfoCount(Map map);
+
+
 }
