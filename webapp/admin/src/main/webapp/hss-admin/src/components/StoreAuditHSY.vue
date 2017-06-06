@@ -268,7 +268,7 @@
               <th style="text-align: right">联行号:</th>
               <td>
                 <input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.branchCode" readonly>
-                <el-button type="text" @click="isWad = true" v-if="$msg.status==2&&$msg.branchCode==''">补填联行号</el-button>
+                <el-button type="text" @click="isWad = true" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)">补填联行号</el-button>
               </td>
               <th style="text-align: right"></th>
               <td></td>
@@ -504,13 +504,10 @@
         current:0,
         height:0,
         width:0,
-<<<<<<< HEAD
         item_province:[],
         item_city:[],
-=======
         isPhone:false,
         newPhone:''
->>>>>>> a2091ce9a2f163eb7bdfd1302f58a9a298d26b1c
       }
     },
     created: function () {
@@ -604,7 +601,7 @@
         var restaurants = this.restaurants;
         var results=[];
           //查支行
-          this.$http.post('/admin/wad/branch',{branchName:queryString,backName:this.msg.backName,districtCode:this.form.city})
+          this.$http.post('/admin/wad/branch',{branchName:queryString,backName:this.msg.cardBank,districtCode:this.form.city})
         .then(res=>{
           for(let i=0; i<res.data.length; i++){
             res.data[i].value = res.data[i].bankName;
