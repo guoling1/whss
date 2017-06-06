@@ -23,7 +23,7 @@ let layer = document.getElementById('layer');
 let cancel = document.getElementById('cancel');
 
 cancel.addEventListener('click', function () {
-  window.location.href = '/sqb/wallet';
+  window.location.href = '/sqb/wallet?oemNo=' + getQueryString('oemNo');
 });
 
 // 定义信用卡号 正确性校验
@@ -78,7 +78,7 @@ submit.addEventListener('click', function () {
           if (getQueryString('card')) {
             layer.style.display = 'block';
           } else {
-            window.location.href = '/sqb/authentication';
+            window.location.href = '/sqb/authentication?oemNo=' + getQueryString('oemNo');
           }
         })
       }
