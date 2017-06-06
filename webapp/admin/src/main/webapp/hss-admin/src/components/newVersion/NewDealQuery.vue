@@ -131,8 +131,18 @@
             </el-table-column>
             <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
             <el-table-column prop="markCode" label="收款商户编号" min-width="120"></el-table-column>
-            <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
+            <el-table-column prop="proxyName" label="所属一级" min-width="90">
+              <template scope="scope">
+                <span v-if="scope.row.appId=='好收收'">{{scope.row.proxyName}}</span>
+                <span v-if="scope.row.appId=='好收银'">{{scope.row.proxyNameHsy}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="proxyName1" label="所属二级" min-width="110">
+              <template scope="scope">
+                <span v-if="scope.row.appId=='好收收'">{{scope.row.proxyName1}}</span>
+                <span v-if="scope.row.appId=='好收银'">{{scope.row.proxyNameHsy1}}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="支付金额" align="right" min-width="90">
               <template scope="scope">
                 <span>{{scope.row.tradeAmount|toFix}}</span>
