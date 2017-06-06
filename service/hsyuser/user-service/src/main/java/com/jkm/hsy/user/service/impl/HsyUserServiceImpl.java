@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
@@ -137,17 +138,20 @@ public class HsyUserServiceImpl implements HsyUserService {
             appAuUserToken.setUid(appAuUser.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -218,17 +222,20 @@ public class HsyUserServiceImpl implements HsyUserService {
             appAuUserToken.setUid(appAuUserFind.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -378,17 +385,20 @@ public class HsyUserServiceImpl implements HsyUserService {
             appAuUserToken.setUid(appAuUserFind.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }

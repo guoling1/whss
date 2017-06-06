@@ -307,6 +307,8 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"开户行");
         if(!(appBizCard.getBranchCode()!=null&&!appBizCard.getBranchCode().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"联行号");
+        if(appBizCard.getBranchCode().equals("-1"))
+            appBizCard.setBranchCode(null);
         if(!(appBizCard.getBankAddress()!=null&&!appBizCard.getBankAddress().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"所在支行");
         if(!(appBizCard.getCardAccountName()!=null&&!appBizCard.getCardAccountName().equals("")))

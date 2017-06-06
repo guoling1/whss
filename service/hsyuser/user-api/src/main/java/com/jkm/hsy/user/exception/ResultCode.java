@@ -42,6 +42,9 @@ public enum ResultCode {
 	DISCOUNT_NOT_RIGHT(2036,"请填写正确的折扣"),
 	MEMBERSHIP_CARD_ABOVE_LIMIT(2037,"会员开卡超过上线"),
 	DEPOSIT_AMOUNT_MUST_BE_ABOVE_ZERO(2038,"储值金额必须大于零"),
+	TOKEN_CAN_NOT_BE_NULL(2039,"token为空"),
+	USER_NOT_LOGIN(2040,"用户未登录"),
+	USER_LOGIN_OUTTIME(2041,"用户登录超时请重新登录"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

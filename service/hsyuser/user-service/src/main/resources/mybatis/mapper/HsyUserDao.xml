@@ -163,11 +163,11 @@
     </select>
 
     <insert id="insertAppAuUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
-        insert into app_au_user_token(UID,TID,STATUS,LOGINTIME) values(#{uid},#{tid},#{status},#{loginTime})
+        insert into app_au_user_token(UID,TID,STATUS,LOGINTIME,OUTTIME) values(#{uid},#{tid},#{status},#{loginTime},#{outTime})
     </insert>
 
     <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
-        update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime} where UID=#{uid} and TID=#{tid}
+        update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime},OUTTIME=#{outTime} where UID=#{uid} and TID=#{tid}
     </update>
 
     <update id="updateAppAuUserTokenStatusByTid" parameterType="java.lang.Long">

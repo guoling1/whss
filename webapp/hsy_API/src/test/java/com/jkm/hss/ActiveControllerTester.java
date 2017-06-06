@@ -49,8 +49,8 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-//        String param="{\"cellphone\": \"13521691431\",\"password\":\"123456\"}";
-        String param="{\"cellphone\": \"15010607970\",\"password\":\"54730132\"}";
+//        String param="{\"cellphone\": \"13521691431\",\"password\":\"888888\"}";
+        String param="{\"cellphone\": \"13521691432\",\"password\":\"123456\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -451,7 +451,7 @@ public class ActiveControllerTester {
     public void testFindBankList()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001042");
-        p.setAccessToken("");
+        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
