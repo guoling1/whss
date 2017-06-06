@@ -40,7 +40,7 @@ function getQueryString(name) {
 }
 
 function getLocationString() {
-  let path = window.location.href;
+  let path = window.location.pathname;
   let index = path.lastIndexOf("\/");
   return path.substring(index + 1, path.length);
 }
