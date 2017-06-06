@@ -69,13 +69,13 @@
         AND DISTRICTCODE=#{city}
     </if>
     <if test="branchName!=null and branchName!=''">
-        AND BRANCHNAME=#{branchName}
+        AND BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
     </if>
     <if test="branchCode!=null and branchCode!=''">
         AND BRANCHCODE=#{branchCode}
     </if>
-            ORDER BY BANKINDEX,BRANCHCODE
-          LIMIT #{offset},#{pageSize}
+        ORDER BY ID DESC
+        LIMIT #{offset},#{pageSize}
     </select>
 
     <select id="getUnionInfoCount" resultType="java.lang.Integer">
