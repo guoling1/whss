@@ -162,6 +162,7 @@
         (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
         (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
         (select proxy_name from tb_dealer where id=a.oem_id) as branchCompany,
+        (SELECT mark_code FROM tb_dealer WHERE id = a.oem_id ) as companyCode,
         a.oem_id
         FROM
         tb_merchant_info a
@@ -236,7 +237,10 @@
         a.authentication_time,
         a.checked_time,
         (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
-        (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+        (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1,
+        (select proxy_name from tb_dealer where id=a.oem_id) as branchCompany,
+        (SELECT mark_code FROM tb_dealer WHERE id = a.oem_id ) as companyCode,
+        a.oem_id
         FROM
         tb_merchant_info a
         LEFT JOIN tb_dealer b ON a.dealer_id = b.id
@@ -251,14 +255,21 @@
         </if>
 
         <if test="status != null">
-            AND a.status = #{status}
+            AND a.status in (#{status},6)
         </if>
+
+        <!--<if test="status != null">-->
+        <!--AND a.status = #{status}-->
+        <!--</if>-->
 
         <if test="proxyName != null and proxyName!=''">
             AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
         </if>
         <if test="proxyName1 != null and proxyName1!=''">
             AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="branchCompany != null and branchCompany!=''">
+            AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
         </if>
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
