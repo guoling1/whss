@@ -359,7 +359,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         for (SettlementRecord settlementRecord : settlementRecords) {
             try {
                 if (EnumAccountUserType.COMPANY.getId() == settlementRecord.getAccountUserType()) {
-                    return;
+                    continue;
                 }
                 final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
                 final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
