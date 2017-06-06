@@ -266,8 +266,11 @@
                   <el-radio :label="4">T1结算到账户余额</el-radio>
                 </el-radio-group>
               </td>
-              <th style="text-align: right"></th>
-              <td></td>
+              <th style="text-align: right">联行号:</th>
+              <td>
+                <input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.branchCode" readonly>
+                <el-button type="text" @click="isWad = true" v-if="$msg.status==2&&$msg.branchCode==''">补填联行号</el-button>
+              </td>
               <th style="text-align: right"></th>
               <td></td>
             </tr>
@@ -305,6 +308,41 @@
           </template>
         </div>
       </div>
+      <el-dialog title="选择支行" :visible.sync="isWad">
+        <el-form :model="form">
+          <el-form-item label="银行名称" label-width="120px">
+            {{$msg.cardBank}}
+          </el-form-item>
+          <el-form-item label="省" label-width="120px">
+            <el-select v-model="form.province" size="small" style="width:100%" placeholder="请选择"
+                       @change="province_select">
+              <el-option v-for="item in item_province"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="市" label-width="120px">
+            <el-select v-model="form.city" size="small" style="width:100%" placeholder="请选择"
+                       @change="city_select">
+              <el-option v-for="item in item_city"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete v-model="form.bankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="联行号" label-width="120px">
+            <el-input v-model="form.branchCode" size="small"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="isWad = false">取 消</el-button>
+          <el-button type="primary" @click="isWad = false">确 定</el-button>
+        </div>
+      </el-dialog>
       <el-dialog title="重新入网" v-model="isReenter" size="tiny">
           <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
           <span slot="footer" class="dialog-footer">
@@ -413,6 +451,7 @@
         auditClick:false,
         isReenter:false,
         isReject:false,
+        isWad: false,
         reason:'',
         isShow:true,
         reenterClick:false,
@@ -437,13 +476,23 @@
           msg:'--',
           proMsg:''
         }],
+        form:{
+          province:'',
+          provinceName:'',
+          city:'',
+          cityName:'',
+          bankName:'',
+          branchCode:''
+        },
         isUpload: false,
         photoType:'',
         fileList:[],
         src:'',
         current:0,
         height:0,
-        width:0
+        width:0,
+        item_province:[],
+        item_city:[],
       }
     },
     created: function () {
@@ -484,8 +533,82 @@
         $box[0].setCapture&&$box[0].setCapture();
         return false;
       })
+      //      获取省份
+      this.$http.post('/admin/unionNumber/findAllProvinces').then(res => {
+      this.item_province = res.data;
+    })
+      .catch(err => {
+        this.$message({
+        showClose: true,
+        message: err.data.msg,
+        type: 'error'
+      });
+    });
     },
     methods: {
+      province_select: function (provinceCode) {
+        for (let m = 0; m < this.item_province.length; m++) {
+          if (this.item_province[m].code == provinceCode) {
+            this.form.belongProvinceName = this.item_province[m].aname;
+          }
+        }
+        if(this.form.belongProvinceName=="北京市"||this.form.belongProvinceName=="天津市"||this.form.belongProvinceName=="上海市"||this.form.belongProvinceName=="重庆市"){
+          this.item_city = [{
+            code:this.form.province,
+            aname:this.form.belongProvinceName
+          }]
+          this.form.city = this.item_city[0].code;
+          this.form.belongCityName = this.item_city[0].aname;
+        }else{
+          this.$http.post('/admin/unionNumber/findAllCities', {
+            code: provinceCode
+          }).then(res => {
+            this.item_city = res.data;
+            this.form.city = res.data[0].code;
+            this.form.belongCityName = res.data[0].aname;
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
+      },
+      city_select: function (cityCode) {
+        for (let n = 0; n < this.item_city.length; n++) {
+          if (this.item_city[n].code == cityCode) {
+            this.form.belongCityName = this.item_city[n].aname;
+          }
+        }
+      },
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results=[];
+          //查支行
+          this.$http.post('/admin/wad/branch',{branchName:queryString,backName:this.msg.backName,districtCode:this.form.city})
+        .then(res=>{
+          for(let i=0; i<res.data.length; i++){
+            res.data[i].value = res.data[i].bankName;
+          }
+        }
+          results = res.data;
+          })
+//        this.$http.post('/admin/unionNumber/bankName',{bankName:queryString})
+//          .then(res=>{
+//          for(let i=0; i<res.data.length; i++){
+//            res.data[i].value = res.data[i].bankName;
+//          }
+//          results = res.data;
+//        })
+      .catch(err=>{
+
+        });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
       move:function (e) {
         var oBox=document.getElementById("imgBox");
         e=e||window.event;

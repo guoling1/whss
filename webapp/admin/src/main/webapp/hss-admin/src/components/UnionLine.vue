@@ -106,26 +106,26 @@
             <el-input v-model="form.branchCode" size="small"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="onSubmit">新增</el-button>
+            <el-button type="primary" size="small" @click="add">新增</el-button>
           </el-form-item>
         </el-form>
         <!--确认新增页面-->
         <el-dialog title="新增联行号" :visible.sync="dialogFormVisible">
           <el-form :model="form" style="margin-left: 10%">
             <el-form-item label="银行名称：" :label-width="formLabelWidth" style="margin-bottom: 0">
-              中国农业银行
+              {{form.bankName}}
             </el-form-item>
             <el-form-item label="所在省：" :label-width="formLabelWidth" style="margin-bottom: 0">
-              北京
+              {{form.belongProvinceName}}
             </el-form-item>
             <el-form-item label="所在市：" :label-width="formLabelWidth" style="margin-bottom: 0">
-              北京
+              {{form.belongCityName}}
             </el-form-item>
             <el-form-item label="支行名称：" :label-width="formLabelWidth" style="margin-bottom: 0">
-              中国农业银行东城区支行
+              {{form.branchName}}
             </el-form-item>
             <el-form-item label="联行号：" :label-width="formLabelWidth" style="margin-bottom: 0">
-              001200889814
+              {{form.branchCode}}
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -197,8 +197,6 @@
       this.$http.post('/admin/unionNumber/findAllProvinces').then(res => {
         this.list_province = res.data;
         this.item_province = res.data;
-//        this.form.province = res.data[0].code;
-//        this.form.belongProvinceName = res.data[0].aname;
       }, err => {
         this.$message({
           showClose: true,
@@ -322,37 +320,42 @@
           }
         }
       },
-      onSubmit: function () {
+      add: function () {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
-              this.$message({
-                showClose: true,
-                message: '创建代理商成功',
-                type: 'success'
-              });
-              this.form={
-                bankName: '',
-                province:'',
-                city:'',
-                branchName:'',
-                branchCode:'',
-                belongProvinceName: '',
-                belongCityName: '',
-              }
-              this.dialogFormVisible = true;
-            }, err => {
-              this.$message({
-                showClose: true,
-                message: err.data.msg,
-                type: 'error'
-              });
-            })
+            this.dialogFormVisible = true;
           } else {
             console.log('error submit!!');
             return false;
           }
         });
+      },
+      onSubmit: function () {
+        this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
+          this.$message({
+            showClose: true,
+            message: '创建联行号成功',
+            type: 'success'
+          });
+          this.form={
+            bankName: '',
+            province:'',
+            city:'',
+            branchName:'',
+            branchCode:'',
+            belongProvinceName: '',
+            belongCityName: '',
+          }
+          this.dialogFormVisible = false;
+          this.isAdd = false;
+          this.getData()
+        }, err => {
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
+        })
       },
       querySearchAsync(queryString, cb) {
         var restaurants = this.restaurants;
