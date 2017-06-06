@@ -2,6 +2,7 @@ package com.jkm.hss.push.dao;
 
 
 import com.jkm.hss.push.entity.Push;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,7 +40,10 @@ public interface PushDao {
      */
     List<Map>selectUserAppByUid(String uid);
 
-
-
-
+    /**
+     * 查询交易单号
+     * @param transactionNumber
+     * @return
+     */
+    String getTransactionNumber(@Param("transactionNumber") String transactionNumber);
 }

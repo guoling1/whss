@@ -204,7 +204,13 @@ public class PushServiceImpl implements PushService {
      */
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code) {
+    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code, String transactionNumber) {
+        String transactionNo = this.pushDao.getTransactionNumber(transactionNumber);
+        if (transactionNumber.equals(transactionNo)){
+            Map map = new HashMap();
+            map.put("result","已经推送过，不可重复推送");
+            return map;
+        }
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
@@ -227,7 +233,7 @@ public class PushServiceImpl implements PushService {
 
 
 //        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
-        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients);
+        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
         return ret;
     }
 
@@ -325,7 +331,7 @@ public class PushServiceImpl implements PushService {
     }
 
 
-    public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets) {
+    public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets,String transactionNumber) {
 
 
         String target="";
@@ -355,6 +361,7 @@ public class PushServiceImpl implements PushService {
         push.setTaskId((String) ret.get("taskId"));
         push.setClientId((String) ret.get("clientId"));
         push.setTargets(target);
+        push.setTransactionNumber(transactionNumber);
         pushDao.insert(push);
         return ret;
     }
