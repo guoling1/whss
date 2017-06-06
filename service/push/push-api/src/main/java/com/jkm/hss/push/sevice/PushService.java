@@ -97,7 +97,7 @@ public interface PushService {
      *  code: 收款码
      *  transactionNumber 交易单号
      */
-    public Map pushCashMsg(Long sid,  String payChannel,Double amount, String code, String transactionNumber );
+    public Map pushCashMsg(Long sid,  String payChannel,Double amount, String code, String transactionNumber);
 
     public String pushCashMsg1(Long sid,  String payChannel,Double amount, String code );
 
