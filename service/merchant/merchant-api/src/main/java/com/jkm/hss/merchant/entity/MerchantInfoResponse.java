@@ -9,6 +9,8 @@ import java.util.Date;
 @Data
 public class MerchantInfoResponse {
 
+    private String companyCode;//分公司编码
+
     /**
      * 分公司id
      */
