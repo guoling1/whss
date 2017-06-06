@@ -58,6 +58,7 @@ http.post('/channel/list', {}, function (list) {
     group.onclick = function () {
       let amount = getQueryString('amount');
       let orderId = getQueryString('id');
+      let oemNo = getQueryString('oemNo');
       if (amount > 0) {
         checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
@@ -69,7 +70,7 @@ http.post('/channel/list', {}, function (list) {
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
-                  window.location.replace(data.url);
+                  window.location.replace(data.url + '&oemNo=' + oemNo);
                 });
                 break;
               default:

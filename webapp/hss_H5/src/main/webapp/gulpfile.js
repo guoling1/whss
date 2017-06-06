@@ -83,15 +83,15 @@ gulp.task('js-hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/2.2.27'));
+    .pipe(gulp.dest('js/hss/2.2.28'));
 });
 
 gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('vendor.1.0.9.10.min.js', 'vendor.1.0.9.11.min.js'))
+    .pipe(replace('vendor.1.0.9.11.min.js', 'vendor.1.0.9.13.min.js'))
     .pipe(replace('style.2.2.16.css', 'style.2.2.17.css'))
     .pipe(replace('style.2.0.2.css', 'style.2.0.3.css'))
-    .pipe(replace('/hss/2.2.26/', '/hss/2.2.27/'))
+    .pipe(replace('/hss/2.2.27/', '/hss/2.2.28/'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 

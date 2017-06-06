@@ -27,5 +27,5 @@ come.innerHTML = query.toCome + '元';
 
 let complete = document.getElementById('complete');
 complete.addEventListener('click', function () {
-  window.location.href = '/sqb/wallet';
+  window.location.href = '/sqb/wallet?oemNo=' + query.oemNo;
 });

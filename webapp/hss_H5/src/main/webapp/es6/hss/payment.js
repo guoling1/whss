@@ -31,7 +31,7 @@ if (pageData.isSelf == 1) {
     layerSelf.style.display = 'none';
   });
   submitSelf.addEventListener('click', function () {
-    window.location.href = '/sqb/collection';
+    window.location.href = '/sqb/collection?oemNo=' + pageData.oemNo;
   })
 }
 let layerNotSelf = document.getElementById('layerNotSelf');

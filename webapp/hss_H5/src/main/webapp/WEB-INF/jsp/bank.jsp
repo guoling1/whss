@@ -48,6 +48,6 @@
     oemNo: '${oemNo}'
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
-<script src="/js/hss/2.2.27/bank.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<script src="/js/hss/2.2.28/bank.min.js"></script>
 </html>

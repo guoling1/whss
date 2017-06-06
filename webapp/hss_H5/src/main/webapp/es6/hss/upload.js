@@ -19,7 +19,7 @@ let identityOppositePic_src = document.getElementById('identityOppositePic_src')
 let identityHandPic_src = document.getElementById('identityHandPic_src');
 let bankHandPic_src = document.getElementById('bankHandPic_src');
 
-wx.error(function(res){
+wx.error(function (res) {
   console.log(res);
 });
 
@@ -81,7 +81,7 @@ submit.addEventListener('click', function () {
       identityHandPic: identityHandPic,
       bankHandPic: bankHandPic
     }, function () {
-      window.location.href = "/sqb/follow";
+      window.location.href = "/sqb/follow?oemNo=" + pageData.oemNo;
     })
   }
 });
