@@ -57,8 +57,8 @@
        SELECT a.CLIENTID,a.APPTYPE FROM app_au_token a LEFT JOIN app_au_user_token b ON a.ID=b.TID WHERE b.UID=#{uid} AND b.`STATUS`=1
     </select>
 
-    <select id="getTransactionNumber" resultType="java.lang.String">
-        SELECT transaction_number FROM tb_push_message_record WHERE transaction_number=#{transactionNumber}
+    <select id="getTransactionNumber" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_push_message_record WHERE transaction_number=#{transactionNumber}
     </select>
 
 

@@ -205,8 +205,8 @@ public class PushServiceImpl implements PushService {
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Map pushCashMsg(Long sid, String payChannel, Double amount, String code, String transactionNumber) {
-        String transactionNo = this.pushDao.getTransactionNumber(transactionNumber);
-        if (transactionNumber.equals(transactionNo)){
+        final int count = this.pushDao.getTransactionNumber(transactionNumber);
+        if (count > 0){
             Map map = new HashMap();
             map.put("result","已经推送过，不可重复推送");
             return map;

@@ -1023,7 +1023,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //=============================================================================
         //推送
         try {
-            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(), order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(),
+                    order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4), order.getOrderNo());
         } catch (final Throwable e) {
             log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
         }

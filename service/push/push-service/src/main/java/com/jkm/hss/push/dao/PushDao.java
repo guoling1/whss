@@ -45,5 +45,5 @@ public interface PushDao {
      * @param transactionNumber
      * @return
      */
-    String getTransactionNumber(@Param("transactionNumber") String transactionNumber);
+    int getTransactionNumber(@Param("transactionNumber") String transactionNumber);
 }
