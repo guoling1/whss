@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +39,16 @@ public class BankBranchServiceImpl implements BankBranchService{
     }
 
     @Override
-    public void addBankCode(String bankName, String province, String city, String branchName, String branchCode) {
-        this.bankBranchDao.addBankCode(bankName,province,city,branchName,branchCode);
+    public void addBankCode(String bankName, String province, String city, String branchName, String branchCode, String belongCityName, String belongProvinceName) {
+        Map map = new HashMap();
+        map.put("bankName",bankName);
+        map.put("province",province);
+        map.put("city",city);
+        map.put("branchName",branchName);
+        map.put("branchCode",branchCode);
+        map.put("belongCityName",belongCityName);
+        map.put("belongProvinceName",belongProvinceName);
+        this.bankBranchDao.addBankCode(map);
     }
 
     @Override

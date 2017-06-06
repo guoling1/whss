@@ -32,7 +32,7 @@ public interface BankBranchService {
      * @param branchName
      * @param branchCode
      */
-    void addBankCode(String bankName, String province, String city, String branchName, String branchCode);
+    void addBankCode(String bankName, String province, String city, String branchName, String branchCode, String belongCityName, String belongProvinceName);
 
     /**
      * 联行号管理

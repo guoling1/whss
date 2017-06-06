@@ -29,13 +29,8 @@ public interface BankBranchDao {
 
     /**
      * 新增联行号
-     * @param bankName
-     * @param province
-     * @param city
-     * @param branchName
-     * @param branchCode
      */
-    void addBankCode(String bankName, String province, String city, String branchName, String branchCode);
+    void addBankCode(Map map);
 
     /**
      * 联行号管理
@@ -50,4 +45,6 @@ public interface BankBranchDao {
      * @return
      */
     int getUnionInfoCount(Map map);
+
+
 }

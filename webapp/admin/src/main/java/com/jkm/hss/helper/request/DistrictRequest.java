@@ -7,6 +7,8 @@ import lombok.Data;
  */
 @Data
 public class DistrictRequest {
+    private String belongCityName;
+    private String belongProvinceName;
     private String branchCode;//联行号
     private String branchName;//联行名称
     private String bankName;//所属银行

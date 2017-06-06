@@ -97,10 +97,11 @@ public class UnionNumberController extends BaseController {
         }
         try {
             this.bankBranchService.addBankCode(districtRequest.getBankName(), districtRequest.getProvince()
-                    , districtRequest.getCity(), districtRequest.getBranchName(), districtRequest.getBranchCode());
+                    , districtRequest.getCity(), districtRequest.getBranchName(), districtRequest.getBranchCode()
+                    ,districtRequest.getBelongCityName(),districtRequest.getBelongProvinceName());
             return CommonResponse.simpleResponse(1, "添加成功");
         }catch (final Throwable throwable){
-            log.error("添加通道失败,异常信息:" + throwable.getMessage());
+            log.error("新增联行号失败,异常信息:" + throwable.getMessage());
         }
         return  CommonResponse.simpleResponse(-1, "fail");
     }
@@ -116,7 +117,11 @@ public class UnionNumberController extends BaseController {
         final PageModel<AppBizBankBranchResponse> pageModel = new PageModel<AppBizBankBranchResponse>(districtRequest.getPageNo(), districtRequest.getPageSize());
         districtRequest.setOffset(pageModel.getFirstIndex());
         Map map = new HashMap();
-        map.put("province",districtRequest.getProvince());
+        String province = districtRequest.getProvince();
+        if (!province.equals("")&& province!=null) {
+            String substring = province.substring(0, 2);
+            map.put("province",substring);
+        }
         map.put("city",districtRequest.getCity());
         map.put("branchName",districtRequest.getBranchName());
         map.put("branchCode",districtRequest.getBranchCode());
