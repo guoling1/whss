@@ -268,7 +268,7 @@
               <th style="text-align: right">联行号:</th>
               <td>
                 <input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.branchCode" readonly>
-                <el-button type="text" @click="isWad = true" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)">补填联行号</el-button>
+                <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)">补填联行号</el-button>
               </td>
               <th style="text-align: right"></th>
               <td></td>
@@ -331,15 +331,15 @@
             </el-select>
           </el-form-item>
           <el-form-item label="支行" label-width="120px">
-            <el-autocomplete v-model="form.bankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配"></el-autocomplete>
+            <el-autocomplete v-model="form.bankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
           </el-form-item>
           <el-form-item label="联行号" label-width="120px">
-            <el-input v-model="form.branchCode" size="small"></el-input>
+            <el-input v-model="form.branchCode" size="small" style="width: 100%" disabled></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="isWad = false">取 消</el-button>
-          <el-button type="primary" @click="isWad = false">确 定</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="重新入网" v-model="isReenter" size="tiny">
@@ -561,6 +561,40 @@
     });
     },
     methods: {
+      wad:function () {
+        this.form = {
+          province:'',
+          provinceName:'',
+          city:'',
+          cityName:'',
+          bankName:'',
+          branchCode:''
+        }
+        this.isWad = true;
+      },
+      submit: function () {
+        this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,districtCode:this.form.city})
+          .then(res=>{
+            this.$message({
+              showClose: true,
+              message: '补填成功',
+              type: 'success'
+            });
+            this.isWad = false;
+            this.getData()
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      handleSelect(item) {
+        console.log(item);
+        this.form.branchCode = item.branchCode;
+      },
       province_select: function (provinceCode) {
         for (let m = 0; m < this.item_province.length; m++) {
           if (this.item_province[m].code == provinceCode) {
@@ -601,10 +635,10 @@
         var restaurants = this.restaurants;
         var results=[];
           //查支行
-          this.$http.post('/admin/wad/branch',{branchName:queryString,backName:this.msg.cardBank,districtCode:this.form.city})
+          this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:this.form.city})
         .then(res=>{
           for(let i=0; i<res.data.length; i++){
-            res.data[i].value = res.data[i].bankName;
+            res.data[i].value = res.data[i].branchName;
           }
             results = res.data;
         })
@@ -623,6 +657,7 @@
           cb(results);
         }, 1000 * Math.random());
       },
+
       move:function (e) {
         var oBox=document.getElementById("imgBox");
         e=e||window.event;
@@ -894,6 +929,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+  .el-autocomplete{
+    width: 100%;
+  }
   .mask{
     background: rgba(0,0,0,0.3);
     z-index: 1100;
