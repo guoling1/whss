@@ -30,4 +30,11 @@ public class WadController {
                 hsyMerchantAuditRequest.getBankName(),hsyMerchantAuditRequest.getBranchName());
         return CommonResponse.objectResponse(1,"SUCCESS",list);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateBranch",method = RequestMethod.POST)
+    public CommonResponse updateBranch(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        this.bankBranchService.updateBranch(hsyMerchantAuditRequest.getSid(),hsyMerchantAuditRequest.getBranchCode(),hsyMerchantAuditRequest.getDistrictCode());
+        return CommonResponse.simpleResponse(1,"保存成功");
+    }
 }

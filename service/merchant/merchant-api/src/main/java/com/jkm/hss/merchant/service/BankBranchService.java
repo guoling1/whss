@@ -56,4 +56,10 @@ public interface BankBranchService {
      * @return
      */
     List<AppBizBankBranchResponse> getBranch(String districtCode, String bankName, String branchName);
+
+    /**
+     * 补填联行号
+     * @param sid
+     */
+    void updateBranch(Long sid, String branchCode, String districtCode);
 }

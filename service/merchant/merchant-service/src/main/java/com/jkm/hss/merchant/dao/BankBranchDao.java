@@ -51,6 +51,11 @@ public interface BankBranchDao {
      * @param districtCode
      * @return
      */
-    List<AppBizBankBranchResponse> getBranch(@Param("districtCode") String districtCode,
-                                             @Param("bankName") String bankName,@Param("branchName") String branchName);
+    List<AppBizBankBranchResponse> getBranch(@Param("districtCode") String districtCode,@Param("bankName") String bankName,@Param("branchName") String branchName);
+
+    /**
+     * 补填联行号
+     * @param sid
+     */
+    void updateBranch(@Param("sid") Long sid,@Param("branchCode") String branchCode,@Param("districtCode") String districtCode);
 }

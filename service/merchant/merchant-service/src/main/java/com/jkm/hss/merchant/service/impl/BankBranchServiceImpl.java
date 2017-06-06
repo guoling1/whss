@@ -67,4 +67,9 @@ public class BankBranchServiceImpl implements BankBranchService{
         List<AppBizBankBranchResponse> list = this.bankBranchDao.getBranch(districtCode,bankName,branchName);
         return list;
     }
+
+    @Override
+    public void updateBranch(Long sid, String branchCode, String districtCode) {
+        this.bankBranchDao.updateBranch(sid,branchCode,districtCode);
+    }
 }

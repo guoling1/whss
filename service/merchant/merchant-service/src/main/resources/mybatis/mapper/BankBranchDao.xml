@@ -110,4 +110,9 @@
         AND BANKNAME = #{bankName}
         AND BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
     </select>
+
+
+    <update id="updateBranch">
+        UPDATE app_biz_card SET BRANCHCODE=#{branchCode} ,BRANCHDISTRICTCODE=#{districtCode} WHERE SID=#{sid}
+    </update>
 </mapper>
