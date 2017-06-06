@@ -20,6 +20,8 @@ import com.jkm.hss.bill.service.BusinessOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
 import com.jkm.hss.helper.response.QueryMerchantPayOrdersResponse;
@@ -61,6 +63,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -92,7 +95,8 @@ public class TradeController extends BaseController {
     private BasicChannelService basicChannelService;
     @Autowired
     private BusinessOrderService businessOrderService;
-
+    @Autowired
+    private OemInfoService oemInfoService;
 
     /**
      * 生成订单
@@ -409,10 +413,25 @@ public class TradeController extends BaseController {
      */
     @RequestMapping(value = "firstUnionPayPage")
     public String firstUnionPayPage(final HttpServletRequest httpServletRequest,final HttpServletResponse httpServletResponse,
-                                    final Model model) {
+                                    final Model model) throws UnsupportedEncodingException {
         boolean isRedirect = false;
+        String oemNo = httpServletRequest.getParameter("oemNo");
+        model.addAttribute("oemNo", oemNo);
         if(!super.isLogin(httpServletRequest)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+httpServletRequest.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+            String encoderUrl = URLEncoder.encode(httpServletRequest.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
+            if(oemNo!=null&&!"".equals(oemNo)){//分公司
+                log.info("omeNo:"+oemNo);
+                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                if(oemInfoOptional.isPresent()){
+                    log.info("有分公司");
+                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                }else{
+                    model.addAttribute("message","分公司不存在");
+                    return "/message";
+                }
+            }else{//总公司
+                return "redirect:"+ WxConstants.WEIXIN_USERINFO+httpServletRequest.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+            }
         }else{
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
@@ -420,6 +439,32 @@ public class TradeController extends BaseController {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
                     Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+
+                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                        if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
+                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+                            if(oemInfoOptional.isPresent()){
+                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
+                                    CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                                    return "redirect:"+httpServletRequest.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                                }
+                            }else{
+                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
+                                model.addAttribute("message","分公司尚未配置");
+                                return "redirect:/sqb/message";
+                            }
+                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
+                            CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+httpServletRequest.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }
+                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
+                        if(result.get().getOemId()>0){//分公司商户
+                            CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+httpServletRequest.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }
+                    }
+
+
                     if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
                         url = "/sqb/reg";
                         isRedirect= true;

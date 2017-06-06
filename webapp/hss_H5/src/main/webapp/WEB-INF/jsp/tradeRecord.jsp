@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收收</title>
+  <title>${oemName}</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.17.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
@@ -64,5 +64,5 @@
 <%--<script src="http://static.jinkaimen.cn/weui/weui.min.js"></script>--%>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.11.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.27/tradeRecord.min.js"></script>
+<script src="/js/hss/2.2.27/tradeRecord.min.js"></script>
 </html>

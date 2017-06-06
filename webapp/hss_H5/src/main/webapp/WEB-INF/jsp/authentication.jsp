@@ -165,7 +165,7 @@
           <div class="right">${creditCardName} 尾号${creditCardShort}</div>
         </c:when>
         <c:otherwise>
-          <a href="/sqb/creditCardAuthen" class="btn">立即认证</a>
+          <a href="/sqb/creditCardAuthen?oemNo=${oemNo}" class="btn">立即认证</a>
         </c:otherwise>
       </c:choose>
     </div>

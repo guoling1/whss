@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.wx;
 
 
+import com.aliyun.oss.OSSClient;
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -50,10 +51,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -121,6 +124,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private OemInfoService oemInfoService;
+
+    @Autowired
+    private OSSClient ossClient;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -642,11 +648,22 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public String follow(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
         if(oemNo!=null&&!"".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            appId=oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
+            Date expiration = new Date(new Date().getTime() + 30*60*1000);
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), oemInfoOptional.get().getQrCode(),expiration);
+            String urls =url.toString();
+            model.addAttribute("qrCode",urls);
         }else{
             model.addAttribute("oemName","好收收");
+            model.addAttribute("wechatCode","HAOSHOUSHOU");
+            model.addAttribute("qrCode","http://static.jinkaimen.cn/hss/assets/cord.jpg");
         }
         model.addAttribute("oemNo",oemNo);
         if(!super.isLogin(request)){
@@ -691,7 +708,7 @@ public class LoginController extends BaseController {
                 }
             }
 
-            Map<String, String> map = WxPubUtil.getUserInfo(super.getOpenId(request));
+            Map<String, String> map = WxPubUtil.getUserInfo(super.getOpenId(request),appId,appSecret);
             if("".equals(map.get("subscribe"))){
                 return "/follow";
             }
@@ -961,14 +978,6 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/success/{amount}/{orderId}", method = RequestMethod.GET)
     public String success(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") long orderId) throws IOException {
-        String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
-        model.addAttribute("oemNo", oemNo);
         model.addAttribute("money", amount);
         final Order order = this.orderService.getById(orderId).get();
         model.addAttribute("firstSn", order.getOrderNo().substring(0, order.getOrderNo().length() - 6));
@@ -1169,7 +1178,7 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 交易记录页面
+     * 收款记录页面
      * @param request
      * @param response
      * @param model
@@ -1270,7 +1279,7 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 我的银行卡
+     * 银行卡页面
      * @param request
      * @param response
      * @param model
@@ -1382,132 +1391,52 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/bankBranch/{bankId}", method = RequestMethod.GET)
     public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId) throws IOException {
-        boolean isRedirect = false;
-        String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
-        model.addAttribute("oemNo", oemNo);
-        if(!super.isLogin(request)){
-            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-            if(oemNo!=null&&!"".equals(oemNo)){//分公司
+            Optional<AccountBank> accountBankOptional = accountBankService.selectById(bankId);
+            if(!accountBankOptional.isPresent()){
+                model.addAttribute("message","查询不到默认银行卡信息");
+                return "/message";
+            }
+            if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
+                String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
+                model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+            }else{
+                model.addAttribute("bankNo","");
+            }
+            if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
+                String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
+                model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+            }else{
+                model.addAttribute("mobile","");
+            }
+            String oemNo = request.getParameter("oemNo");
+            if(oemNo!=null&&!"".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-                if(oemInfoOptional.isPresent()){
-                    log.info("有分公司");
-                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
-                }else{
-                    model.addAttribute("message","分公司不存在");
-                    return "/message";
-                }
-            }else{//总公司
-                return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-            }
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-
-
-                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
-                        if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
-                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
-                            if(oemInfoOptional.isPresent()){
-                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
-                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                                }
-                            }else{
-                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
-                                model.addAttribute("message","分公司尚未配置");
-                                return "redirect:/sqb/message";
-                            }
-                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
-                        if(result.get().getOemId()>0){//分公司商户
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }
-
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        Optional<AccountBank> accountBankOptional = accountBankService.selectById(bankId);
-                        if(!accountBankOptional.isPresent()){
-                            model.addAttribute("message","查询不到默认银行卡信息");
-                            url = "/message";
-                        }
-                        if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
-                            String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
-                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
-                        }else{
-                            model.addAttribute("bankNo","");
-                        }
-                        if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
-                            String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
-                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
-                        }else{
-                            model.addAttribute("mobile","");
-                        }
-                        model.addAttribute("bankName", accountBankOptional.get().getBankName());
-                        model.addAttribute("bankBin",accountBankOptional.get().getBankBin());
-                        model.addAttribute("provinceCode",accountBankOptional.get().getBranchProvinceCode());
-                        model.addAttribute("provinceName",accountBankOptional.get().getBranchProvinceName());
-                        model.addAttribute("cityCode",accountBankOptional.get().getBranchCityCode());
-                        model.addAttribute("cityName",accountBankOptional.get().getBranchCityName());
-                        model.addAttribute("countyCode",accountBankOptional.get().getBranchCountyCode());
-                        model.addAttribute("countyName",accountBankOptional.get().getBranchCountyName());
-                        model.addAttribute("branchCode",accountBankOptional.get().getBranchCode());
-                        if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
-                            String tempBranchName = accountBankOptional.get().getBranchName();
-                            if(tempBranchName.length()>12){
-                                tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
-                            }
-                            model.addAttribute("branchShortName",tempBranchName);
-                            model.addAttribute("branchName",accountBankOptional.get().getBranchName());
-                        }else{
-                            model.addAttribute("branchShortName","");
-                            model.addAttribute("branchName","");
-                        }
-                        url = "/bankBranch";
-                    }
-                }else{
-                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    isRedirect= true;
-                    url = "/sqb/reg";
-                }
+                model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
+                model.addAttribute("oemName","好收收");
             }
-            if(isRedirect){
-                return "redirect:"+url;
+            model.addAttribute("oemNo", oemNo);
+            model.addAttribute("bankName", accountBankOptional.get().getBankName());
+            model.addAttribute("bankBin",accountBankOptional.get().getBankBin());
+            model.addAttribute("provinceCode",accountBankOptional.get().getBranchProvinceCode());
+            model.addAttribute("provinceName",accountBankOptional.get().getBranchProvinceName());
+            model.addAttribute("cityCode",accountBankOptional.get().getBranchCityCode());
+            model.addAttribute("cityName",accountBankOptional.get().getBranchCityName());
+            model.addAttribute("countyCode",accountBankOptional.get().getBranchCountyCode());
+            model.addAttribute("countyName",accountBankOptional.get().getBranchCountyName());
+            model.addAttribute("branchCode",accountBankOptional.get().getBranchCode());
+            if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
+                String tempBranchName = accountBankOptional.get().getBranchName();
+                if(tempBranchName.length()>12){
+                    tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
+                }
+                model.addAttribute("branchShortName",tempBranchName);
+                model.addAttribute("branchName",accountBankOptional.get().getBranchName());
             }else{
-                return url;
+                model.addAttribute("branchShortName","");
+                model.addAttribute("branchName","");
             }
-        }
+            return "/bankBranch";
     }
 
     /**
@@ -2047,7 +1976,7 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 我的认证
+     * 用户认证
      * @param request
      * @param response
      * @param model

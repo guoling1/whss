@@ -54,7 +54,7 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend?oemNo=${oemNo}">
+      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>

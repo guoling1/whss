@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收收</title>
+  <title>${oemName}</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.17.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
@@ -24,12 +24,12 @@
   <p>2.“收银”提示，我们将通过微信逐笔通知您收银情况</p>
 
   <div class="content">
-    <img src="http://static.jinkaimen.cn/hss/assets/cord.jpg" alt="">
+    <img src="${qrCode}" alt="">
 
     <div class="green">
       <p>长按关注公众号</p>
 
-      <p>公众号ID：haoshoushoush</p>
+      <p>公众号ID：${wechatCode}</p>
     </div>
   </div>
 </div>
