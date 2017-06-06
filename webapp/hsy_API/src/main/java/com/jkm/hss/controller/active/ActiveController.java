@@ -2,6 +2,7 @@ package com.jkm.hss.controller.active;
 
 import com.google.gson.Gson;
 import com.jkm.base.common.spring.core.SpringContextHolder;
+import com.jkm.hss.version.ExcludeServiceCode;
 import com.jkm.hss.version.VersionMapper;
 import com.jkm.hsy.user.entity.AppAuUserToken;
 import com.jkm.hsy.user.entity.AppParam;
@@ -81,12 +82,7 @@ public class ActiveController {
                 return;
             }
 
-            if(!(appParam.getServiceCode().equals("HSY001001")
-                    ||appParam.getServiceCode().equals("HSY001002")
-                    ||appParam.getServiceCode().equals("HSY001048")
-                    ||appParam.getServiceCode().equals("HSY001040")
-                    ||appParam.getServiceCode().equals("HSY001043")
-                    ||appParam.getServiceCode().equals("HSY001050"))) {
+            if(!isExcludeServiceCode(appParam.getServiceCode())) {
                 AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
@@ -103,6 +99,9 @@ public class ActiveController {
                 }
             }
         }
+
+        log.info("业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
+        log.info("请求参数是："+appParam.getRequestData());
 
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
 //        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
@@ -189,7 +188,7 @@ public class ActiveController {
                 return;
             }
 
-            if(!(appParam.getServiceCode().equals("HSY001001")||appParam.getServiceCode().equals("HSY001002")||appParam.getServiceCode().equals("HSY001048"))) {
+            if(!isExcludeServiceCode(appParam.getServiceCode())) {
                 AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
@@ -261,6 +260,15 @@ public class ActiveController {
             return true;
         if(!(appParam.getAppType().equals("ios")||appParam.getAppType().equals("android")))
             return true;
+        return false;
+    }
+
+    public boolean isExcludeServiceCode(String serviceCode){
+        for(int i=0; i<ExcludeServiceCode.excludeCode.length;i++)
+        {
+            if(serviceCode.equals(ExcludeServiceCode.excludeCode[i]))
+                return true;
+        }
         return false;
     }
 
