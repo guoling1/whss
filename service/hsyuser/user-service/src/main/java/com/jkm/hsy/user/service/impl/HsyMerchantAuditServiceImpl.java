@@ -130,10 +130,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
                 if (!("0").equals(ret.getParentCode())){
                     HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                    res.setDistrictCode(reu.getAName()+ret.getAName());
                     if (reu1!=null) {
                         res.setDistrictCode(reu1.getAName() + reu.getAName() + ret.getAName());
                     }
-                    res.setDistrictCode(reu.getAName()+ret.getAName());
                 }else {
                     res.setDistrictCode(reu.getAName()+ret.getAName());
                 }
