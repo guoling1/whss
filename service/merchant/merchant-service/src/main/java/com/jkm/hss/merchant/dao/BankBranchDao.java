@@ -46,5 +46,11 @@ public interface BankBranchDao {
      */
     int getUnionInfoCount(Map map);
 
-
+    /**
+     * 查询支行信息
+     * @param districtCode
+     * @return
+     */
+    List<AppBizBankBranchResponse> getBranch(@Param("districtCode") String districtCode,
+                                             @Param("bankName") String bankName,@Param("branchName") String branchName);
 }

@@ -235,6 +235,7 @@
 			e.CREATETIME,
 			g.realname,
 			g.username,
+			h.BRANCHCODE,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDC) AS IDCARDC,
@@ -246,6 +247,7 @@
         LEFT JOIN app_biz_card e ON e.SID=c.ID
         LEFT JOIN app_au_user_admin f ON f.SID=c.ID
 		LEFT JOIN tb_admin_user g ON g.id = f.AUID
+		LEFT JOIN app_biz_card h ON h.SID=c.ID
         WHERE c.ID=#{id} AND d.TYPE=1 AND d.role=1
     </select>
 

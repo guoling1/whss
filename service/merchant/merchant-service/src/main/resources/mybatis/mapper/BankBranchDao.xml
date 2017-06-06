@@ -99,4 +99,15 @@
         </if>
         ORDER BY BANKINDEX,BRANCHCODE
     </select>
+
+    <select id="getBranch" resultType="com.jkm.hss.merchant.entity.AppBizBankBranchResponse">
+        SELECT
+          BRANCHNAME,BRANCHCODE
+        FROM
+            app_biz_bank_branch
+        WHERE
+            DISTRICTCODE LIKE CONCAT('%',#{districtCode},'%')
+        AND BANKNAME = #{bankName}
+        AND BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
+    </select>
 </mapper>

@@ -21,6 +21,7 @@ public class HsyMerchantAuditResponse {
     private String realname;//报单员
     private String username;//报单员真实姓名
     private String createTimes;
+    private String branchCode;//联行号
     /**
      * 所属分公司
      */
