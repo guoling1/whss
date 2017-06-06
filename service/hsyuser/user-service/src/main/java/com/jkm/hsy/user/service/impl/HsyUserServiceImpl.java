@@ -131,7 +131,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
+            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
+            for(AppAuToken token:tokenFindList)
+                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+//            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
             appAuUserToken.setUid(appAuUser.getId());
@@ -214,7 +217,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
+            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
+            for(AppAuToken token:tokenFindList)
+                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+//            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
             appAuUserToken.setUid(appAuUserFind.getId());
@@ -339,6 +345,65 @@ public class HsyUserServiceImpl implements HsyUserService {
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
         return gson.toJson(map);
+    }
+    /**HSY001048 刷新用户登录*/
+    public String refreshlogin(String dataParam,AppParam appParam)throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getCellphone()!=null&&!appAuUser.getCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"手机号");
+        if(!(appAuUser.getPassword()!=null&&!appAuUser.getPassword().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"密码");
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+        /**查询用户*/
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
+        if (!(list != null && list.size() != 0))
+            throw new ApiHandleException(ResultCode.CEELLPHONE_HAS_NOT_BEEN_REGISTERED);
+        AppAuUser appAuUserFind=list.get(0);
+        if(!appAuUserFind.getPassword().equals(appAuUser.getPassword()))
+            throw new ApiHandleException(ResultCode.PASSWORD_NOT_CORRECT);
+        if(appAuUserFind.getStatus().equals(AppConstant.USER_STATUS_FORBID))
+            throw new ApiHandleException(ResultCode.USER_FORBID);
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
+            for(AppAuToken token:tokenFindList)
+                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+//            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
+
+            AppAuUserToken appAuUserToken=new AppAuUserToken();
+            appAuUserToken.setUid(appAuUserFind.getId());
+            appAuUserToken.setTid(tokenList.get(0).getId());
+            List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
+            {
+                AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
+                appAuUserTokenUpdate.setStatus(1);
+                appAuUserTokenUpdate.setLoginTime(new Date());
+                hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
+            }
+            else
+            {
+                appAuUserToken.setStatus(1);
+                appAuUserToken.setLoginTime(new Date());
+                hsyUserDao.insertAppAuUserToken(appAuUserToken);
+            }
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+
+        return "";
     }
 
     /**HSY001003 发送验证码*/
@@ -710,7 +775,19 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"当前登录用户ID");
         if(!(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户主店ID");
+        Integer curRole=hsyUserDao.findAppAuUserRole(appAuUser);
+        if(curRole==null){
+            throw new ApiHandleException(ResultCode.ROLE_TYPE_NOT_EXSIT,"角色类型不存在");
+        }
 
+        if(curRole.intValue()==2){//如果当前为店长
+            List<AppAuUser> appAuUserList=hsyUserDao.findAppAuUserByID(appAuUser.getParentID());
+            if(appAuUserList==null||appAuUserList.size()==0){
+                throw new ApiHandleException(ResultCode.PARAM_EXCEPTION,"请求参数异常");
+            }
+            appAuUser.setRole(curRole);
+            appAuUser.setParentID(appAuUserList.get(0).getParentID());
+        }
         List<AppAuUser> list=hsyUserDao.findAppAuUserListByParentID(appAuUser);
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {

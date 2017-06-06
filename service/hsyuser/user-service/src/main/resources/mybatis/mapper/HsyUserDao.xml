@@ -91,6 +91,7 @@
             <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
             <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
             <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="idcardc!=null and idcardc!=''">IDCARDC=#{idcardc},</if>
             <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
             <if test="dealerID!=null">DEALERID=#{dealerID},</if>
             <if test="productID!=null">PRODUCTID=#{productID},</if>
@@ -136,8 +137,21 @@
         order by UPDATETIME desc
     </select>
 
+    <select id="findAppAuTokenByClientid" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
+        select
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        from app_au_token
+        where 1=1
+        <if test="clientid!=null and clientid!=''">and CLIENTID=#{clientid}</if>
+        order by UPDATETIME desc
+    </select>
+
     <update id="updateAppAuUserTokenStatus" parameterType="java.lang.Long">
         update app_au_user_token set status=2 where UID=#{uid}
+    </update>
+
+    <update id="updateAppAuUserTokenStatusByTID" parameterType="String">
+        update app_au_user_token set status=2 where TID=${tid} and status=1
     </update>
 
     <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hsy.user.entity.AppAuUserToken" resultType="com.jkm.hsy.user.entity.AppAuUserToken">
@@ -187,6 +201,9 @@
         shop.id sid,shop.SHORTNAME shopShortName
         from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID left join app_biz_shop shop on shop.id=sur.SID
         where 1=1 and user.PARENTID=#{parentID} and (shop.id in(select id from app_biz_shop where parentid=#{sid})||shop.id=#{sid}||shop.id is null)
+        <if test="role!=null and role==2">
+            AND sur.ROLE=3
+        </if>
         order by UPDATETIME desc
     </select>
 
@@ -211,4 +228,15 @@
     <update id="updateHxbsStatus">
         update app_au_user set HXBSTATUS=#{status},HXBREMARKS=#{remarks} where ID=#{uid}
     </update>
+    <select id="findpwdByToken" parameterType="String" resultType="String">
+        SELECT A.PASSWORD FROM app_au_token  T
+inner join app_au_user_token as ATT ON T.ID=ATT.TID
+inner join app_au_user A ON A.ID=ATT.UID
+where T.ACCESSTOKEN=#{acccesstoken}
+AND ATT.STATUS=1
+limit 1
+    </select>
+    <select id="findAppAuUserRole" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="java.lang.Integer">
+        select ROLE from app_biz_shop_user_role where SID=#{sid} AND  UID=#{parentID} limit 1
+    </select>
 </mapper>

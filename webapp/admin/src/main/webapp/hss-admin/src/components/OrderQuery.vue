@@ -21,7 +21,7 @@
                 </li>
                 <li class="same">
                   <label>交易时间:</label>
-                  <el-date-picker :clearable="true" style="width: 193px" v-model="dateHss1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker :clearable="true" style="width: 193px" v-model="dateHss1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" @change="datetimeSelect1">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -48,6 +48,7 @@
                     <el-option label="支付宝支付" value="2"></el-option>
                     <el-option label="快捷支付" value="3"></el-option>
                     <el-option label="QQ钱包" value="4"></el-option>
+                    <el-option label="银联扫码" value="5"></el-option>
                   </el-select>
                 </li>
                 <li class="same">
@@ -328,6 +329,11 @@
         this.queryHss.startTime = format[0];
         this.queryHss.endTime = format[1];
       },
+      datetimeSelect1: function (val) {
+        let format = val.split(' - ');
+        this.queryHss.paySuccessTime = format[0];
+        this.queryHss.paySuccessTime1 = format[1];
+      },
       reset: function (val) {
         if(val == 'hss'){
           let time = new Date();
@@ -347,6 +353,7 @@
               this.queryHss.endTime = str;
             }
           }
+          this.dateHss1 = '';
           this.queryHss = {
             page:1,
             size:10,
@@ -356,7 +363,9 @@
             proxyName:'',
             proxyName1:'',
             paymentMethod:'',
-            status:''
+            status:'',
+            paySuccessTime: '',
+            paySuccessTime1: ''
           }
         }else if(val == 'hsy'){
           this.dateHsy='';

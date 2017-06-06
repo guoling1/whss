@@ -2914,7 +2914,7 @@ input:focus {
   background: url("../assets/preferential_0525.png") no-repeat center;
   background-size: 19px 19px;
   margin-left: 3px;
-  transform: translate3d(0, 2px, 0);
+  transform: translate3d(0, 4px, 0);
 }
 .channel .channel-box .channel-space .channel-group .channel-con .recommend {
   display: inline-block;
@@ -2923,7 +2923,7 @@ input:focus {
   background: url("../assets/recommend_0525.png") no-repeat center;
   background-size: 19px 19px;
   margin-left: 3px;
-  transform: translate3d(0, 2px, 0);
+  transform: translate3d(0, 4px, 0);
 }
 .channel .channel-box .channel-space .channel-group .channel-con.small {
   width: 20%;

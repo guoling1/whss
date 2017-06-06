@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyMembershipDao">
+    <insert id="insertMembershipCard" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        insert into app_policy_membership_card(UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME)
+        values(#{uid},#{membershipName},#{membershipShopName},#{discount},#{isDeposited},#{depositAmount},#{isPresentedViaActivate},#{presentAmount},#{isPresentedViaRecharge},#{rechargeLimitAmount},#{rechargePresentAmount},#{weight},#{status},#{createTime},#{updateTime})
+    </insert>
+
+    <insert id="insertMembershipCardShop" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
+        insert into app_policy_membership_card(MCID,SID)
+        values(#{mcid},#{sid})
+    </insert>
+
+    <insert id ="insertMembershipCardShopBatch" parameterType="java.util.List" >
+        insert into app_policy_membership_card_shop
+        (MCID,SID)
+        values
+        <foreach collection ="list" item="data" index= "index" separator =",">
+            (
+              #{data.mcid},#{data.sid}
+            )
+        </foreach >
+    </insert>
+
+    <select id="findConsumerByParam" resultType="com.jkm.hsy.user.entity.AppPolicyConsumer">
+        select ID,CONSUMERCELLPHONE,USERID,OPENID,PAYPASSWORD,CREATETIME,UPDATETIME
+        from app_policy_consumer
+        where 1=1
+        <if test="userID!=null and userID!=''">and USERID=#{userID}</if>
+        <if test="openID!=null and openID!=''">and OPENID=#{openID}</if>
+        <if test="consumerCellphone!=null and consumerCellphone!=''">and CONSUMERCELLPHONE=#{consumerCellphone}</if>
+    </select>
+
+    <select id="findMemberByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select ID,CID,MCID,ACCOUNTID,RECEIPTACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME
+        from app_policy_member
+        where 1=1
+        <if test="cid!=null and cid!=''">and CID=#{cid}</if>
+        <if test="mcid!=null and mcid!=''">and MCID=#{mcid}</if>
+    </select>
+
+    <select id="findMemberCascadeByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME
+        from app_policy_member member left join app_policy_membership_card card on member.MCID=card.ID
+        where 1=1
+        <if test="cid!=null and cid!=''">and member.CID=#{cid}</if>
+        <if test="uid!=null and uid!=''">and card.UID=#{uid}</if>
+    </select>
+
+    <select id="findMemberCardByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
+        from app_policy_membership_card
+        where 1=1
+        <if test="uid!=null and uid!=''">and UID=#{uid}</if>
+    </select>
+
+    <insert id="insertConsumer" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyConsumer">
+        insert into app_policy_consumer(ID,CONSUMERCELLPHONE,USERID,OPENID,PAYPASSWORD,CREATETIME,UPDATETIME)
+        values(#{id},#{consumerCellphone},#{userID},#{openID},#{payPassword},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateConsumer" parameterType="com.jkm.hsy.user.entity.AppPolicyConsumer">
+        update app_policy_consumer
+        <set>
+            <if test="consumerCellphone!=null and consumerCellphone!=''">CONSUMERCELLPHONE=#{consumerCellphone},</if>
+            <if test="userID!=null and userID!=''">USERID=#{userID},</if>
+            <if test="openID!=null and openID!=''">OPENID=#{openID},</if>
+            <if test="payPassword!=null and payPassword!=''">PAYPASSWORD=#{payPassword},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <insert id="insertMember" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyMember">
+        insert into app_policy_member(ID,CID,MCID,ACCOUNTID,RECEIPTACCOUNTID,MEMBERCARDNO,STATUS,CREATETIME,UPDATETIME)
+        values(#{id},#{cid},#{mcid},#{accountID},#{receiptAccountID},#{memberCardNO},#{status},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateMember" parameterType="com.jkm.hsy.user.entity.AppPolicyMember">
+        update app_policy_member
+        <set>
+            <if test="cid!=null">CID=#{cid},</if>
+            <if test="mcid!=null">MCID=#{mcid},</if>
+            <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
+            <if test="receiptAccountID!=null">RECEIPTACCOUNTID=#{receiptAccountID},</if>
+            <if test="memberCardNO!=null and memberCardNO!=''">MEMBERCARDNO=#{memberCardNO},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        from app_policy_member member
+        left join app_policy_consumer consumer on member.CID=consumer.ID
+        left join app_policy_membership_card card on member.MCID=card.ID
+        where member.ID=${id}
+    </select>
+
+    <select id="findMembershipCardCountOfUserByUID" resultType="java.lang.Integer">
+        select count(*) from app_policy_membership_card where UID=#{uid}
+    </select>
+
+    <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
+        from app_policy_membership_card where UID=#{uid}
+    </select>
+
+    <select id="findMemberCountOfUserByUID" resultType="java.lang.Integer">
+        select count(*) from app_policy_member member left join app_policy_membership_card card on card.ID=member.MCID
+        where card.UID=#{uid}
+    </select>
+
+    <select id="findShopNameAndGlobalID" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select user.GLOBALID globalID,shop.name shopName
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        left join app_biz_shop shop on shop.ID=sur.sid
+        where sur.TYPE=1 and user.ID=#{uid}
+    </select>
+
+    <insert id="insertRechargeOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,CREATETIME,UPDATETIME)
+        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{merchantReceiveAccountID},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateRechargeOrder" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        update app_policy_recharge_order
+        <set>
+            <if test="orderNO!=null and orderNO!=''">ORDERNO=#{orderNO},</if>
+            <if test="tradeNO!=null and tradeNO!=''">TRADENO=#{tradeNO},</if>
+            <if test="tradeID!=null">TRADEID=#{tradeID},</if>
+            <if test="tradeAmount!=null">TRADEAMOUNT=#{tradeAmount},</if>
+            <if test="realPayAmount!=null">REALPAYAMOUNT=#{realPayAmount},</if>
+            <if test="marketingAmount!=null">MARKETINGAMOUNT=#{marketingAmount},</if>
+            <if test="payeeAccountID!=null">PAYEEACCOUNTID=#{payeeAccountID},</if>
+            <if test="ouid!=null">OUID=#{ouid},</if>
+            <if test="memberID!=null">MEMBERID=#{memberID},</if>
+            <if test="memberAccountID!=null">MEMBERACCOUNTID=#{memberAccountID},</if>
+            <if test="merchantReceiveAccountID!=null">MERCHANTRECEIVEACCOUNTID=#{merchantReceiveAccountID},</if>
+            <if test="goodsName!=null and goodsName!=''">GOODSNAME=#{goodsName},</if>
+            <if test="goodsDescribe!=null and goodsDescribe!=''">GOODSDESCRIBE=#{goodsDescribe},</if>
+            <if test="merchantName!=null and merchantName!=''">MERCHANTNAME=#{merchantName},</if>
+            <if test="merchantNO!=null and merchantNO!=''">MERCHANTNO=#{merchantNO},</if>
+            <if test="paySN!=null and paySN!=''">PAYSN=#{paySN},</if>
+            <if test="payChannelSign!=null">PAYCHANNELSIGN=#{payChannelSign},</if>
+            <if test="paySuccessTime!=null">PAYSUCCESSTIME=#{paySuccessTime},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="type!=null">TYPE=#{type},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+</mapper>

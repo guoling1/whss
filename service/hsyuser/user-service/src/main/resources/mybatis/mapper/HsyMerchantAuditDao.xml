@@ -237,7 +237,8 @@
 			g.username,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
-            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDC) AS IDCARDC,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.CONTRACTID) AS CONTRACTID
         FROM
             app_biz_shop c
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
@@ -300,14 +301,25 @@
     <!-- 查询代理商下商户列表 -->
     <select id="hsyMerchantList" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
         SELECT
-            a.*, c.CELLPHONE,c.DEALERID,
+            a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
             (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID) as proxyName
         FROM
-          app_biz_shop a
+            app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
-          b.ROLE = 1 AND c.DEALERID in (SELECT id FROM tb_dealer WHERE first_level_dealer_id=#{dealerId} OR id=#{dealerId})
+            b.ROLE = 1 AND b.TYPE=1 AND c.DEALERID in (SELECT id FROM tb_dealer WHERE first_level_dealer_id=#{dealerId} OR id=#{dealerId})
+
+    <if test="realname!=null and realname!=''">
+        AND e.realname =#{realname}
+    </if>
+    <if test="username!=null and username!=''">
+        AND e.username =#{username}
+    </if>
+
     <if test="globalID!=null and globalID!=''">
         AND a.GLOBALID=#{globalID}
     </if>
@@ -350,14 +362,24 @@
     <!-- 查询二级代理商下商户列表 -->
     <select id="hsyMerchantSecondList" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,
-        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID) as proxyName
+            a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
+            (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID) as proxyName
         FROM
-        app_biz_shop a
+            app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
-        b.ROLE = 1 AND c.DEALERID=#{dealerId}
+            b.ROLE = 1 AND b.TYPE=1 AND c.DEALERID=#{dealerId}
+
+        <if test="realname!=null and realname!=''">
+            AND e.realname =#{realname}
+        </if>
+        <if test="username!=null and username!=''">
+            AND e.username =#{username}
+        </if>
+
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -383,8 +405,18 @@
         app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
-        b.ROLE = 1 AND c.DEALERID in (SELECT id FROM tb_dealer WHERE first_level_dealer_id=#{dealerId} OR id=#{dealerId})
+        b.ROLE = 1 AND b.TYPE=1 AND c.DEALERID in (SELECT id FROM tb_dealer WHERE first_level_dealer_id=#{dealerId} OR id=#{dealerId})
+
+        <if test="realname!=null and realname!=''">
+            AND e.realname =#{realname}
+        </if>
+        <if test="username!=null and username!=''">
+            AND e.username =#{username}
+        </if>
+
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -421,11 +453,21 @@
         SELECT
         COUNT(*)
         FROM
-        app_biz_shop a
+            app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
+        LEFT JOIN app_au_user_admin d ON d.SID=a.ID
+        LEFT JOIN tb_admin_user e ON e.id=d.AUID
         WHERE
-        b.ROLE = 1 AND c.DEALERID=#{dealerId}
+            b.ROLE = 1 AND b.TYPE=1 AND c.DEALERID=#{dealerId}
+
+        <if test="realname!=null and realname!=''">
+            AND e.realname =#{realname}
+        </if>
+        <if test="username!=null and username!=''">
+            AND e.username =#{username}
+        </if>
+
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -462,4 +504,25 @@
     <select id="getLog" resultType="com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord">
         SELECT * FROM tb_merchant_info_check_record WHERE sid = #{id}
     </select>
+
+    <!-- 更新注册手机号 -->
+    <update id="changeMobile">
+        UPDATE app_au_user SET CHANGEPHONE=#{changePhone} WHERE ID=#{uid}
+    </update>
+
+    <!-- 查询详情hsy商户注册手机号更改手机号还有id -->
+    <select id="getCellphon" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT
+          c.ID AS uid,c.CELLPHONE,c.CHANGEPHONE
+        FROM
+          app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON b.SID=a.ID
+        LEFT JOIN app_au_user c ON c.ID=b.UID
+        WHERE a.ID=#{id} AND b.TYPE=1 AND b.role=1
+    </select>
+
+    <!-- 更新上次注册手机号 -->
+    <update id="updatePhone">
+        UPDATE app_au_user SET CELLPHONE=#{changePhone} WHERE ID=#{uid}
+    </update>
 </mapper>

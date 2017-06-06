@@ -14,6 +14,8 @@ public class HsyHistoryPhotoChangeResponse {
 
     private String idcardb;//身份证背面照
 
+    private String idcardc;//银行卡照片
+
     private String licenceID;//营业执照id
 
     private String storefrontID;//店面照片id

@@ -11,10 +11,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
-import com.jkm.hss.account.entity.Account;
-import com.jkm.hss.account.entity.FrozenRecord;
-import com.jkm.hss.account.entity.SettleAccountFlow;
-import com.jkm.hss.account.entity.SplitAccountRefundRecord;
+import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.AccountFlowService;
@@ -27,6 +24,7 @@ import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.helper.WithdrawParams;
 import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -51,6 +49,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
@@ -288,6 +287,63 @@ public class OrderServiceImpl implements OrderService {
         //添加账户流水--减少
         this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), amount,
                 "提现", EnumAccountFlowType.DECREASE);
+        return playMoneyOrder.getId();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param withdrawParams
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public long createWithdrawOrder(final WithdrawParams withdrawParams) {
+        final Account account = this.accountService.getByIdWithLock(withdrawParams.getAccountId()).get();
+        Preconditions.checkState(account.getAvailable().compareTo(withdrawParams.getWithdrawAmount()) >= 0, "余额不足");
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(withdrawParams.getWithdrawAmount());
+        playMoneyOrder.setRealPayAmount(withdrawParams.getWithdrawAmount());
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(withdrawParams.getChannel());
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(withdrawParams.getAppId());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, withdrawParams.getAccountId(), withdrawParams.getChannel());
+        Preconditions.checkState(withdrawParams.getWithdrawAmount().compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
+        playMoneyOrder.setPoundage(merchantWithdrawPoundage);
+        playMoneyOrder.setGoodsName(withdrawParams.getNote());
+        playMoneyOrder.setGoodsDescribe(withdrawParams.getNote());
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setSettleType(withdrawParams.getSettleType());
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+        this.add(playMoneyOrder);
+        this.accountService.decreaseAvailableAmount(account.getId(), withdrawParams.getWithdrawAmount());
+        this.accountService.increaseFrozenAmount(account.getId(), withdrawParams.getWithdrawAmount());
+        final FrozenRecord frozenRecord = new FrozenRecord();
+        frozenRecord.setAccountId(account.getId());
+        frozenRecord.setFrozenAmount(withdrawParams.getWithdrawAmount());
+        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+        frozenRecord.setFrozenTime(new Date());
+        frozenRecord.setRemark("提现");
+        this.frozenRecordService.add(frozenRecord);
+        //添加账户流水--减少
+        final AccountFlow accountFlow = new AccountFlow();
+        accountFlow.setAccountId(account.getId());
+        accountFlow.setOrderNo(playMoneyOrder.getOrderNo());
+        accountFlow.setRefundOrderNo("");
+        accountFlow.setIncomeAmount(new BigDecimal("0.00"));
+        accountFlow.setOutAmount(withdrawParams.getWithdrawAmount());
+        accountFlow.setBeforeAmount(account.getAvailable());
+        accountFlow.setAfterAmount(account.getAvailable().subtract(accountFlow.getOutAmount()));
+        accountFlow.setChangeTime(new Date());
+        accountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+        accountFlow.setRemark("提现出账");
+        this.accountFlowService.add(accountFlow);
         return playMoneyOrder.getId();
     }
 
@@ -1091,7 +1147,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> getTrade(OrderTradeRequest req) {
-        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTrade(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTrade(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1131,7 +1194,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req) {
-        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTradeFirst(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTradeFirst(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1172,12 +1242,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int listCount(OrderTradeRequest req) {
-        return this.orderDao.listCount(req);
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.listCount(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            return this.orderDao.listHsyCount(req);
+        }
+        return 0;
     }
 
     @Override
     public int listFirstCount(OrderTradeRequest req) {
-        return this.orderDao.listFirstCount(req);
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.listFirstCount(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            return this.orderDao.listHsyFirstCount(req);
+        }
+        return 0;
     }
 
     @Override

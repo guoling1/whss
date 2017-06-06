@@ -13,7 +13,8 @@
             <div class="box-body screen-top">
               <div class="screen-item">
                 <span class="screen-title">业务订单号</span>
-                <el-input v-model="query.businessOrderNo" placeholder="业务订单号" size="small" style="width:220px"></el-input>
+                <el-input v-model="query.businessOrderNo" placeholder="业务订单号" size="small"
+                          style="width:220px"></el-input>
               </div>
               <div class="screen-item">
                 <span class="screen-title">交易订单号</span>
@@ -26,6 +27,15 @@
               <div class="screen-item">
                 <span class="screen-title">收款商户名称</span>
                 <el-input v-model="query.merchantName" placeholder="收款商户名称" size="small" style="width:220px"></el-input>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">业务方</span>
+                <el-select v-model="query.appId" size="small" placeholder="请选择" style="width: 220px">
+                  <el-option v-for="item in item_appId"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
               </div>
               <div class="screen-item">
                 <span class="screen-title">交易状态</span>
@@ -80,7 +90,8 @@
                 <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
                 <el-table-column label="交易订单号" min-width="112">
                   <template scope="scope">
-                    <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
+                          style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
@@ -88,7 +99,8 @@
                 <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
                 <el-table-column label="业务订单号" min-width="112">
                   <template scope="scope">
-                    <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text"
+                          size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="支付金额" min-width="90" align="right">
@@ -109,7 +121,7 @@
                 <el-table-column label="支付流水号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
+                          style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="payType" label="支付方式" min-width="115"></el-table-column>
@@ -146,37 +158,42 @@
   export default {
     data () {
       return {
-        query:{
-          page:1,
-          size:20,
-          orderNo:'',
-          businessOrderNo:'',
-          sn:'',
+        query: {
+          page: 1,
+          size: 20,
+          orderNo: '',
+          businessOrderNo: '',
+          sn: '',
           merchantName: '',
           merchantNo: '',
           startTime: '',
           endTime: '',
           lessTotalFee: '',
           moreTotalFee: '',
+          appId: 'hss',
           status: '',
-          settleStatus:'',
-          payType:'',
-          proxyName:'',
+          settleStatus: '',
+          payType: '',
+          proxyName: '',
         },
-        records:[],
-        item_status:[
+        records: [],
+        item_appId: [
+          {value: 'hss', label: '好收收'},
+          {value: 'hsy', label: '好收银'},
+        ],
+        item_status: [
           {value: '', label: '全部'},
           {value: '1', label: '待支付'},
           {value: '4', label: '支付成功'},
           {value: '3', label: '支付失败'}
         ],
-        item_settleStatus:[
+        item_settleStatus: [
           {value: '', label: '全部'},
           {value: '1', label: '待结算'},
           {value: '2', label: '结算中'},
           {value: '3', label: '已结算'}
         ],
-        item_payType:[
+        item_payType: [
           {value: '', label: '全部'},
           {value: 'sm_wechat_jsapi', label: '阳光微信公众号'},
           {value: 'sm_alipay_jsapi', label: '阳光支付宝公众号'},
@@ -194,7 +211,7 @@
           {value: 'yijia_alipay', label: '溢+支付宝'},
         ],
         date: '',
-        total:0
+        total: 0
       }
     },
     created(){
@@ -202,13 +219,13 @@
       // 复制成功执行的回调，可选
       clipboard.on('success', (e) => {
         this.$message({
-        showClose: true,
-        message: "复制成功  内容为：" + e.text,
-        type: 'success'
+          showClose: true,
+          message: "复制成功  内容为：" + e.text,
+          type: 'success'
         });
       });
       let time = new Date();
-      this.date = [time,time];
+      this.date = [time, time];
       for (var j = 0; j < this.date.length; j++) {
         var str = this.date[j];
         var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -228,17 +245,16 @@
     },
     methods: {
       datetimeSelect: function (val) {
-        if(val == undefined){
+        if (val == undefined) {
           this.query.startTime = '';
           this.query.endTime = '';
-        }else {
+        } else {
           let format = val.split(' - ');
           this.query.startTime = format[0];
           this.query.endTime = format[1];
         }
       },
       screen: function () {
-        this.total = '';
         this.query.page = 1;
         this.getData();
       },
@@ -269,8 +285,8 @@
     },
     filters: {
       changeHide: function (val) {
-        if(val!=""&&val!=null){
-          val = val.replace(val.substring(3,val.length-6),"…");
+        if (val != "" && val != null) {
+          val = val.replace(val.substring(3, val.length - 6), "…");
         }
         return val
       }

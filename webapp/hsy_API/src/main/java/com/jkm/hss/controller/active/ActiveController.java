@@ -73,6 +73,7 @@ public class ActiveController {
             method = clazz.getMethod(strs[1],String.class,AppParam.class);
             appResult = (String) method.invoke(obj, appParam.getRequestData(), appParam);
         } catch (Exception e) {
+            log.error("调用接口异常", e);
             e.printStackTrace();
             if(e.getCause() instanceof ApiHandleException)
             {
@@ -102,7 +103,7 @@ public class ActiveController {
     }
 
     @RequestMapping("file")
-    public void file(@RequestParam(value = "fileA", required = false) MultipartFile fileA,@RequestParam(value = "fileB", required = false) MultipartFile fileB,@RequestParam(value = "fileC", required = false) MultipartFile fileC, @ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
+    public void file(@RequestParam(value = "fileA", required = false) MultipartFile fileA,@RequestParam(value = "fileB", required = false) MultipartFile fileB,@RequestParam(value = "fileC", required = false) MultipartFile fileC,@RequestParam(value = "fileD", required = false) MultipartFile fileD, @ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
         AppResult result=new AppResult();
         if(appParam==null)
         {
@@ -148,6 +149,9 @@ public class ActiveController {
             fileMap.put("fileA",fileA);
             fileMap.put("fileB",fileB);
             fileMap.put("fileC",fileC);
+            if(fileD!=null&&!fileD.isEmpty()) {
+                fileMap.put("fileD", fileD);
+            }
             method = clazz.getMethod(strs[1],String.class,AppParam.class,Map.class);
             appResult = (String) method.invoke(obj, appParam.getRequestData(), appParam, fileMap);
         } catch (Exception e) {

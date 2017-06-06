@@ -118,7 +118,8 @@ public class HsyMerchantListController extends BaseController {
             final String photoName3 = res.getIndoorID();
             final String photoName4 = res.getIdcardf();
             final String photoName5 = res.getIdcardb();
-//            final String photoName6 = res.getIdcardh();
+            final String photoName6 = res.getIdcardc();
+            final String photoName7 = res.getContractId();
             if (photoName!=null&&!"".equals(res.getLicenceID())) {
                 URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, expiration);
                 String urls =url.toString();
@@ -149,11 +150,16 @@ public class HsyMerchantListController extends BaseController {
                 String urls5 =url5.toString();
                 res.setIdcardb(urls5);
             }
-//            if (photoName6!=null&&!"".equals(res.getIdcardh())) {
-//                URL url6 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName6,expiration);
-//                String urls6 =url6.toString();
-//                res.setIdcardh(urls6);
-//            }
+            if (photoName6!=null&&!"".equals(res.getIdcardc())) {
+                URL url6 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName6,expiration);
+                String urls6 =url6.toString();
+                res.setIdcardc(urls6);
+            }
+            if (photoName7!=null&&!"".equals(res.getContractId())) {
+                URL url7 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName7,expiration);
+                String urls7 =url7.toString();
+                res.setContractId(urls7);
+            }
 
         }
         List<HsyMerchantInfoCheckRecord> list = hsyMerchantAuditService.getLog(hsyMerchantAuditRequest.getId());
@@ -165,6 +171,28 @@ public class HsyMerchantListController extends BaseController {
         jsonObject.put("result",jo);
         return jsonObject;
     }
+
+
+    /**
+     * 更改注册手机号
+     * @param hsyMerchantAuditRequest
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/changeMobile",method = RequestMethod.POST)
+    public CommonResponse changeMobile(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
+        HsyMerchantAuditResponse req = this.hsyMerchantAuditService.getCellphon(hsyMerchantAuditRequest.getId());
+        if (req.getChangePhone()==null) {
+            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+        }else {
+            this.hsyMerchantAuditService.updatePhone(req.getChangePhone(),req.getUid());
+            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+        }
+        return CommonResponse.simpleResponse(1, "更改成功");
+
+    }
+
 
 
 

@@ -64,10 +64,11 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name, @RequestParam(value = "openId") String openId) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name, @RequestParam(value = "openId") String openId, @RequestParam(value = "code") String code) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         model.addAttribute("openId", openId);
+        model.addAttribute("code",code);
         return "/payment-wx";
     }
 
@@ -82,10 +83,11 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId) throws IOException {
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId, @RequestParam(value = "code") String code) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         model.addAttribute("openId", openId);
+        model.addAttribute("code",code);
         log.info("openId={}",openId);
         return "/payment-zfb";
     }

@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.code;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
@@ -12,6 +13,8 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
 import com.jkm.hss.helper.request.WithdrawRequest;
+import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -28,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 /**
  * Created by yulong.zhang on 2017/1/18.
@@ -55,10 +59,12 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
+        if(payRequest.getCode()==null){payRequest.setCode("");}//add by wayne
+
         EnumPayChannelSign.idOf(payRequest.getPayChannel());
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getMerchantId()).get(0);
         final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId());
+                payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId(),payRequest.getCode());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", shop.getName())
@@ -160,9 +166,70 @@ public class TradeController extends BaseController {
         }else{
             final Order order = orderOptional.get();
             model.addAttribute("sn", order.getOrderNo());
+            model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
             return "/success";
         }
+    }
+
+    /**
+     * test 分润重发
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "testSplitProfit")
+    public CommonResponse testSplitProfit() {
+        final ArrayList<JSONObject> list = new ArrayList<>();
+        final JSONObject jo1 = new JSONObject();
+        jo1.put("orderId", 38571);
+        jo1.put("accountId", 1473);
+        list.add(jo1);
+        final JSONObject jo2 = new JSONObject();
+        jo2.put("orderId", 38574);
+        jo2.put("accountId", 1191);
+        list.add(jo2);
+        final JSONObject jo3 = new JSONObject();
+        jo3.put("orderId", 38575);
+        jo3.put("accountId", 1342);
+        list.add(jo3);
+        final JSONObject jo4 = new JSONObject();
+        jo4.put("orderId", 38577);
+        jo4.put("accountId", 1447);
+        list.add(jo4);
+        final JSONObject jo5 = new JSONObject();
+        jo5.put("orderId", 38578);
+        jo5.put("accountId", 1557);
+        list.add(jo5);
+        final JSONObject jo6 = new JSONObject();
+        jo6.put("orderId", 38580);
+        jo6.put("accountId", 1419);
+        list.add(jo6);
+        final JSONObject jo7 = new JSONObject();
+        jo7.put("orderId", 38579);
+        jo7.put("accountId", 1473);
+        list.add(jo7);
+        final JSONObject jo8 = new JSONObject();
+        jo8.put("orderId", 38581);
+        jo8.put("accountId", 1342);
+        list.add(jo8);
+        final JSONObject jo9 = new JSONObject();
+        jo9.put("orderId", 38584);
+        jo9.put("accountId", 1473);
+        list.add(jo9);
+        final JSONObject jo10 = new JSONObject();
+        jo10.put("orderId", 38585);
+        jo10.put("accountId", 1344);
+        list.add(jo10);
+        for (int i = 0; i < list.size(); i++) {
+            //发消息分润
+            final JSONObject requestJsonObject = list.get(i);
+//            final JSONObject requestJsonObject = new JSONObject();
+//            requestJsonObject.put("orderId", order.getId());
+//            requestJsonObject.put("accountId", shop.getAccountID());
+            MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 120000 + i * 10000);
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 
     /**

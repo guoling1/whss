@@ -72,6 +72,14 @@
                       <el-input v-model="hsy.shortName" placeholder="商户名称" size="small" style="width:240px"></el-input>
                     </div>
                     <div class="screen-item">
+                      <span class="screen-title">报单员登录名</span>
+                      <el-input v-model="hsy.username" placeholder="报单员登录名" size="small" style="width:240px"></el-input>
+                    </div>
+                    <div class="screen-item">
+                      <span class="screen-title">报单员姓名</span>
+                      <el-input v-model="hsy.realname" placeholder="报单员姓名" size="small" style="width:240px"></el-input>
+                    </div>
+                    <div class="screen-item">
                       <span class="screen-title"></span>
                       <el-button type="primary" size="small" @click="screen_hsy">筛选</el-button>
                     </div>
@@ -83,6 +91,8 @@
                       <el-table-column prop="globalID" label="商户编号"></el-table-column>
                       <el-table-column prop="shortName" label="商户名称"></el-table-column>
                       <el-table-column prop="proxyName" label="所属代理商"></el-table-column>
+                      <el-table-column prop="username" label="报单员"></el-table-column>
+                      <el-table-column prop="realname" label="报单员姓名"></el-table-column>
                       <el-table-column label="注册时间">
                         <template scope="scope">
                           {{ scope.row.createTimes | datetime }}
@@ -125,6 +135,7 @@
     name: 'app',
     data() {
       return {
+        activeName2: 'first',
         total: 0,
         pageSize: 20,
         pageNo: 1,
@@ -140,6 +151,8 @@
           tableLoading: false,
           globalID: '',
           shortName: '',
+          username: '',
+          realname: '',
         },
       }
     },
@@ -183,7 +196,9 @@
           pageSize: this.hsy.pageSize,
           pageNo: this.hsy.pageNo,
           globalID: this.hsy.globalID,
-          shortName: this.hsy.shortName
+          shortName: this.hsy.shortName,
+          username: this.hsy.username,
+          realname: this.hsy.realname
         }).then(res => {
           this.hsy.tableLoading = false;
           this.hsy.total = res.data.count;
