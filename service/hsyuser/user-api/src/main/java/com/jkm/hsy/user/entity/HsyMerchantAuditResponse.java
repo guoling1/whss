@@ -13,7 +13,7 @@ public class HsyMerchantAuditResponse {
 
 //    private long firstLevelDealerId;//一级代理商id
 //    private int level; //代理商级别
-    private int shopNo; //店铺数量
+    private String shopNo; //店铺数量
     private String changePhone;//更改后的手机号
     private String markCode;    //一级代理商编码
     private String markCode1;   //二级级代理商编码
