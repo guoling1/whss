@@ -161,6 +161,9 @@
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
+        <if test="name!=null and name!=''">
+            AND a.`NAME` LIKE CONCAT('%',#{name},'%')
+        </if>
         <if test="cellphone!=null and cellphone!=''">
             AND c.CELLPHONE=#{cellphone}
         </if>
