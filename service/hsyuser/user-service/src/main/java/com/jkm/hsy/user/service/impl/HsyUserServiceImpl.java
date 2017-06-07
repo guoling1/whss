@@ -128,9 +128,12 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            String clientID=tokenList.get(0).getClientid();
+            if(clientID!=null&&!clientID.trim().equals("")) {
+                List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
+                for (AppAuToken token : tokenFindList)
+                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -209,9 +212,12 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            String clientID=tokenList.get(0).getClientid();
+            if(clientID!=null&&!clientID.trim().equals("")) {
+                List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
+                for (AppAuToken token : tokenFindList)
+                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -369,9 +375,12 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            String clientID=tokenList.get(0).getClientid();
+            if(clientID!=null&&!clientID.trim().equals("")) {
+                List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
+                for (AppAuToken token : tokenFindList)
+                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
