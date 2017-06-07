@@ -37,7 +37,7 @@
             AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
         <if test="name!=null and name!=''">
-            AND a.`NAME` LIKE CONCAT('%',#{name},'%') AND
+            AND a.`NAME` LIKE CONCAT('%',#{name},'%')
         </if>
         <if test="auditTime!=null and auditTime!=''">
             AND a.AUDITTIME <![CDATA[ >= ]]> #{auditTime}
@@ -75,6 +75,7 @@
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
         a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
+        (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE SID=a.ID) AS shopNo,
         (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
         (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
@@ -101,10 +102,10 @@
             AND a.GLOBALID=#{globalID}
         </if>
         <if test="shortName!=null and shortName!=''">
-            AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%') AND
+            AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
         <if test="name!=null and name!=''">
-            AND a.`NAME` LIKE CONCAT('%',#{name},'%') AND
+            AND a.`NAME` LIKE CONCAT('%',#{name},'%')
         </if>
         <if test="cellphone!=null and cellphone!=''">
             AND c.CELLPHONE=#{cellphone}
