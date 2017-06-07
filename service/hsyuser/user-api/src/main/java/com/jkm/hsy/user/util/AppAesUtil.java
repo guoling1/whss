@@ -106,5 +106,12 @@ public class AppAesUtil {
 		System.out.println("加密前---"+data);
 		System.out.println("加密后---"+base64E);
 		System.out.println("解密后---"+base65D);
+
+		String x="SG+pExxbqcCVS5JiDWCmY89iubEFc18NOlaP7Np8y+4X/LjmeSv1c5naKeVs38z0\n" +
+				"WEL93RD8qi7hiVrLuxjeQplenbP1Xyba9QIWFcRCoyEWuOUE1pSPENRj9B1KTeri\n" +
+				"iWj7T2KCPp6k9hyE2jgjvCLTD+WU2RDeFP0EEi4IvMaEfGr0alFO4t0HWfbuWw7c";
+		String y=AppAesUtil.decryptCBC_NoPaddingFromBase64String(x, "utf-8", "61243d4fa76d5a64", "1234567812345678");
+		System.out.println(y);
+		System.out.println(AppAesUtil.encryptCBC_NoPaddingToBase64String(y, "utf-8", "61243d4fa76d5a64", "1234567812345678"));
 	}
 }
