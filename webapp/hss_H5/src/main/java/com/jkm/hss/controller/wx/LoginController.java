@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @desc:
+ * @desc:微信页面跳转
  * @author:xlj
  * @mail:java_xlj@163.com
  * @create:2016-12-05 14:27
@@ -96,9 +96,6 @@ public class LoginController extends BaseController {
     private AccountService accountService;
 
     @Autowired
-    private ProductChannelDetailService productChannelDetailService;
-
-    @Autowired
     private ShallProfitDetailService shallProfitDetailService;
 
     @Autowired
@@ -109,9 +106,6 @@ public class LoginController extends BaseController {
 
     @Autowired
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
-
-    @Autowired
-    private MerchantChannelRateService merchantChannelRateService;
 
     @Autowired
     private AccountBankService accountBankService;
@@ -165,7 +159,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -564,7 +557,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
@@ -881,7 +873,6 @@ public class LoginController extends BaseController {
             }else{//总公司
                 return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
-//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else{
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
@@ -1034,135 +1025,6 @@ public class LoginController extends BaseController {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         return "/payment-zfb";
-    }
-
-
-    /**
-     * 提现页面
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/drawCash", method = RequestMethod.GET)
-    public String drawCash(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
-        boolean isRedirect = false;
-        String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
-        model.addAttribute("oemNo", oemNo);
-        if(!super.isLogin(request)){
-            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-            if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
-                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-                if(oemInfoOptional.isPresent()){
-                    log.info("有分公司");
-                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
-                }else{
-                    model.addAttribute("message","分公司不存在");
-                    return "/message";
-                }
-            }else{//总公司
-                return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-            }
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
-                        if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
-                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
-                            if(oemInfoOptional.isPresent()){
-                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
-                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                                }
-                            }else{
-                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
-                                model.addAttribute("message","分公司尚未配置");
-                                return "redirect:/sqb/message";
-                            }
-                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
-                        if(result.get().getOemId()>0){//分公司商户
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }
-
-
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        AccountBank accountBank = accountBankService.getDefault(result.get().getAccountId());
-                        if(accountBank==null){
-                            model.addAttribute("message","查询不到默认银行卡信息");
-                            url = "/message";
-                        }
-                        String phone = MerchantSupport.decryptMobile(accountBank.getReserveMobile());
-                        String bankNo = MerchantSupport.decryptBankCard(accountBank.getBankNo());
-                        model.addAttribute("phone_01", phone.substring(0,3));
-                        model.addAttribute("phone_02", phone.substring(phone.length()-4,phone.length()));
-                        model.addAttribute("bankNo", bankNo.substring(bankNo.length()-4,bankNo.length()));
-                        model.addAttribute("bankName",accountBank.getBankName());
-                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(result.get().getAccountId());
-                        DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                        if(accountInfo==null){//没有账户
-                            model.addAttribute("channelFee","0.00");
-                            model.addAttribute("avaMoney", "0.00");
-                            model.addAttribute("realMoney","0.00");
-                        }else{
-                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId,EnumPayChannelSign.YG_UNIONPAY.getId());
-                            model.addAttribute("avaMoney", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
-                            int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
-                            if(compareResult!=1){//提现金额小于手续费
-                                model.addAttribute("realMoney","0.00");
-                            }else{
-                                BigDecimal realMoney = accountInfo.getAvailable().subtract(pair.getLeft());
-                                model.addAttribute("realMoney",decimalFormat.format(realMoney));
-                            }
-                            model.addAttribute("channelFee", pair.getLeft());
-                        }
-                        url = "/withdrawal";
-                    }
-                }else{
-                    model.addAttribute("oemNo",oemNo);
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
-        }
     }
 
     /**
@@ -1538,53 +1400,6 @@ public class LoginController extends BaseController {
                 return url;
             }
         }
-    }
-
-    private  Pair<String,String> payOf(int payWay,String status) {
-        String result="";
-        String message = "";
-        if(payWay==0){//交易
-            if("N".equals(status)){
-                result="N";
-                message="待支付";
-            }
-            if("H".equals(status)||"A".equals(status)||"E".equals(status)){
-                result="H";
-                message="支付中";
-            }
-            if("S".equals(status)){
-                result="S";
-                message="支付成功";
-            }
-            if("F".equals(status)){
-                result="S";
-                message="支付失败";
-            }
-        }
-        if(payWay==1){//提现
-            if("N".equals(status)){
-                result="N";
-                message="待审核";
-            }
-            if("H".equals(status)||"W".equals(status)||"E".equals(status)||"A".equals(status)){
-                result="H";
-                message="审核中";
-            }
-            if("S".equals(status)){
-                result="S";
-                message="提现成功";
-            }
-            if("F".equals(status)||"D".equals(status)){
-                result="F";
-                message="提现失败";
-            }
-            if("O".equals(status)){
-                result="O";
-                message="审核未通过";
-            }
-        }
-
-        return Pair.of(result,message);
     }
 
     /**
