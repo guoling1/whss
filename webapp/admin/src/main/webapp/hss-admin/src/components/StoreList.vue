@@ -187,6 +187,7 @@
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
                 <el-table-column prop="name" label="商户全称"></el-table-column>
                 <el-table-column prop="shortName" label="商户简称"></el-table-column>
+                <el-table-column prop="shopNo" label="店铺数量"></el-table-column>
                 <!--<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>-->
                 <el-table-column prop="proxyName" label="所属一级代理"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
