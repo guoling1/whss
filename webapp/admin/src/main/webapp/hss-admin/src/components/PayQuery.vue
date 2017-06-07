@@ -12,7 +12,7 @@
             <li class="same">
               <label>支付创建日期:</label>
               <el-date-picker
-                style="width: 188px"
+                style="width: 193px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -23,7 +23,7 @@
             <li class="same">
               <label>支付完成日期:</label>
               <el-date-picker
-                style="width: 188px"
+                style="width: 193px"
                 v-model="date1"
                 type="daterange"
                 align="right"
@@ -33,15 +33,15 @@
             </li>
             <li class="same">
               <label>支付流水号:</label>
-              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>支付状态:</label>
-              <el-select style="width: 188px" clearable v-model="query.status" size="small">
+              <el-select style="width: 193px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待支付" value="1">待支付</el-option>
                 <el-option label="支付中" value="2">支付中</el-option>
@@ -51,7 +51,7 @@
             </li>
             <li class="same">
               <label>渠道方:</label>
-              <el-select style="width: 120px" clearable v-model="query.upperChannel" size="small">
+              <el-select style="width: 193px" clearable v-model="query.upperChannel" size="small">
                 <el-option label="全部" value=""></el-option>
                 <el-option label="扫米" value="1"></el-option>
                 <el-option label="摩宝" value="2"></el-option>
@@ -59,7 +59,10 @@
                 <el-option label="合众易宝" value="4"></el-option>
                 <el-option label="溢+" value="5"></el-option>
                 <el-option label="易联" value="6"></el-option>
+                <el-option label="民生银行" value="7"></el-option>
                 <el-option label="收银家" value="8"></el-option>
+                <el-option label="合利宝" value="10"></el-option>
+                <el-option label="汇聚" value="11"></el-option>
               </el-select>
             </li>
             <li class="same">
@@ -155,8 +158,14 @@
     data(){
       return {
         pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7*30||time.getTime() > Date.now();
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
           }
         },
         isMask:false,
@@ -184,15 +193,15 @@
         addTotal: 0,
         url:'',
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
-         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'
+         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
-        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',*/
+        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',
       }
     },
     created: function () {

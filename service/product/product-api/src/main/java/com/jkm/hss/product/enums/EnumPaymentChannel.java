@@ -27,7 +27,12 @@ public enum EnumPaymentChannel {
      */
     UNIONPAY(3, "快捷"),
 
-    QQPAY(4, "QQ钱包");
+    QQPAY(4, "QQ钱包"),
+
+    /**
+     * 银联扫码
+     */
+    UNIONPAY_CODE(5,"银联扫码");
 
     @Getter
     private int id;

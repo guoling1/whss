@@ -46,6 +46,10 @@ public class PaymentSdkDaiFuRequest {
      * 手机号
      */
     private String mobile;
+    /**
+     * 打款银行卡所在城市
+     */
+    private String bankCity;
 
     /**
      * 银行名称

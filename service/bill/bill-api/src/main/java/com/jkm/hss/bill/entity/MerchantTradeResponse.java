@@ -110,6 +110,16 @@ public class MerchantTradeResponse {
     private String proxyName1;
 
     /**
+     * hsy一级代理商名
+     */
+    private String proxyNameHsy;
+
+    /**
+     * hsy二级代理商名
+     */
+    private String proxyNameHsy1;
+
+    /**
      * 代理商id
      */
     private long dealerId;

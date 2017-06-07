@@ -74,6 +74,16 @@ public class OrderTradeRequest {
     private String proxyName1;
 
     /**
+     * hsy一级代理商名
+     */
+    private String proxyNameHsy;
+
+    /**
+     * hsy二级代理商名
+     */
+    private String proxyNameHsy1;
+
+    /**
      * 页数
      */
     private Integer page;
