@@ -194,11 +194,5 @@ public interface AdminUserDao {
      */
     String getPwd(@Param("id") long id);
 
-    /**
-     * 获取密码
-     * @param id
-     * @return
-     */
-    String getPwd(@Param("id") long id);
 
 }
