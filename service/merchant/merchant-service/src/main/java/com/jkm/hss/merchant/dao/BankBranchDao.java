@@ -57,5 +57,5 @@ public interface BankBranchDao {
      * 补填联行号
      * @param sid
      */
-    void updateBranch(@Param("sid") Long sid,@Param("branchCode") String branchCode,@Param("districtCode") String districtCode);
+    void updateBranch(@Param("branchName") String branchName,@Param("sid") Long sid,@Param("branchCode") String branchCode,@Param("districtCode") String districtCode);
 }

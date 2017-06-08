@@ -34,7 +34,7 @@ public class WadController {
     @ResponseBody
     @RequestMapping(value = "/updateBranch",method = RequestMethod.POST)
     public CommonResponse updateBranch(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
-        this.bankBranchService.updateBranch(hsyMerchantAuditRequest.getSid(),hsyMerchantAuditRequest.getBranchCode(),hsyMerchantAuditRequest.getDistrictCode());
+        this.bankBranchService.updateBranch(hsyMerchantAuditRequest.getBranchName(),hsyMerchantAuditRequest.getSid(),hsyMerchantAuditRequest.getBranchCode(),hsyMerchantAuditRequest.getDistrictCode());
         return CommonResponse.simpleResponse(1,"保存成功");
     }
 }

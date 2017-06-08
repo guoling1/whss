@@ -69,7 +69,7 @@ public class BankBranchServiceImpl implements BankBranchService{
     }
 
     @Override
-    public void updateBranch(Long sid, String branchCode, String districtCode) {
-        this.bankBranchDao.updateBranch(sid,branchCode,districtCode);
+    public void updateBranch(String branchName,Long sid, String branchCode, String districtCode) {
+        this.bankBranchDao.updateBranch(branchName,sid,branchCode,districtCode);
     }
 }

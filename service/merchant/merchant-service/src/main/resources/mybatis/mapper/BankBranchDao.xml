@@ -113,6 +113,6 @@
 
 
     <update id="updateBranch">
-        UPDATE app_biz_card SET BRANCHCODE=#{branchCode} ,BRANCHDISTRICTCODE=#{districtCode} WHERE SID=#{sid}
+        UPDATE app_biz_card SET BANKADDRESS=#{branchName},BRANCHCODE=#{branchCode} ,BRANCHDISTRICTCODE=#{districtCode} WHERE SID=#{sid}
     </update>
 </mapper>

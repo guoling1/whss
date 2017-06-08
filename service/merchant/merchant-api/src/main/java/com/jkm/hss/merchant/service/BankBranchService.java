@@ -61,5 +61,5 @@ public interface BankBranchService {
      * 补填联行号
      * @param sid
      */
-    void updateBranch(Long sid, String branchCode, String districtCode);
+    void updateBranch(String branchName,Long sid, String branchCode, String districtCode);
 }
