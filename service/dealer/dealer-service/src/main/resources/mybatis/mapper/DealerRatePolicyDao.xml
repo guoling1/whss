@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.DealerRatePolicyDao">
+
+    <sql id="Base_Column_List">
+        id,	dealer_id,policy_type,dealer_trade_rate_t1,merchant_min_rate_t1,merchant_max_rate_t1,dealer_trade_rate_d1,
+        merchant_min_rate_d1,merchant_max_rate_d1,dealer_trade_rate_d0,merchant_min_rate_d0,merchant_max_rate_d0,status,
+        create_time,update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_dealer_rate_policy
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="dealerId != null">
+                dealer_id,
+            </if>
+            <if test="policyType != null">
+                policy_type,
+            </if>
+            <if test="dealerTradeRateT1 != null">
+                dealer_trade_rate_t1,
+            </if>
+            <if test="merchantMinRateT1 != null">
+                merchant_min_rate_t1,
+            </if>
+            <if test="merchantMaxRateT1 != null">
+                merchant_max_rate_t1,
+            </if>
+            <if test="dealerTradeRateD1 != null">
+                dealer_trade_rate_d1,
+            </if>
+            <if test="merchantMinRateD1 != null">
+                merchant_min_rate_d1,
+            </if>
+            <if test="merchantMaxRateD1 != null">
+                merchant_max_rate_d1,
+            </if>
+            <if test="dealerTradeRateD0 != null">
+                dealer_trade_rate_d0,
+            </if>
+            <if test="merchantMinRateD0 != null">
+                merchant_min_rate_d0,
+            </if>
+            <if test="merchantMaxRateD0 != null">
+                merchant_max_rate_d0,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="dealerId!=null">
+                #{dealerId},
+            </if>
+            <if test="policyType!=null">
+                #{policyType},
+            </if>
+            <if test="dealerTradeRateT1!=null">
+                #{dealerTradeRateT1},
+            </if>
+            <if test="merchantMinRateT1!=null">
+                #{merchantMinRateT1},
+            </if>
+            <if test="merchantMaxRateT1!=null">
+                #{merchantMaxRateT1},
+            </if>
+            <if test="dealerTradeRateD1!=null">
+                #{dealerTradeRateD1},
+            </if>
+            <if test="merchantMinRateD1!=null">
+                #{merchantMinRateD1},
+            </if>
+            <if test="merchantMaxRateD1!=null">
+                #{merchantMaxRateD1},
+            </if>
+            <if test="dealerTradeRateD0!=null">
+                #{dealerTradeRateD0},
+            </if>
+            <if test="merchantMinRateD0!=null">
+                #{merchantMinRateD0},
+            </if>
+            <if test="merchantMaxRateD0!=null">
+                #{merchantMaxRateD0},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        UPDATE app_dealer_rate_policy
+        <set>
+            <if test="dealerId != null">
+                dealer_id=#{dealerId},
+            </if>
+            <if test="policyType != null">
+                policy_type = #{policyType},
+            </if>
+            <if test="dealerTradeRateT1 != null">
+                dealer_trade_rate_t1 = #{dealerTradeRateT1},
+            </if>
+            <if test="merchantMinRateT1 != null">
+                merchant_min_rate_t1 = #{merchantMinRateT1},
+            </if>
+            <if test="merchantMaxRateT1 != null">
+                merchant_max_rate_t1 = #{merchantMaxRateT1},
+            </if>
+            <if test="dealerTradeRateD1 != null">
+                dealer_trade_rate_d1 = #{dealerTradeRateD1},
+            </if>
+            <if test="merchantMinRateD1 != null">
+                merchant_min_rate_d1 = #{merchantMinRateD1},
+            </if>
+            <if test="merchantMaxRateD1 != null">
+                merchant_max_rate_d1 = #{merchantMaxRateD1},
+            </if>
+            <if test="dealerTradeRateD0 != null">
+                dealer_trade_rate_d0 = #{dealerTradeRateD0},
+            </if>
+            <if test="merchantMinRateD0 != null">
+                merchant_min_rate_d0 = #{merchantMinRateD0},
+            </if>
+            <if test="merchantMaxRateD0 != null">
+                merchant_max_rate_d0 = #{merchantMaxRateD0},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByDealerId" resultType="com.jkm.hss.dealer.entity.DealerRatePolicy">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_dealer_rate_policy
+        WHERE dealer_id=#{dealerId} and status = 1;
+    </select>
+
+    <select id="selectCountByDealerId" resultType="java.lang.Integer">
+        SELECT count(1) FROM app_dealer_rate_policy
+        WHERE dealer_id=#{dealerId} and status = 1;
+    </select>
+</mapper>
