@@ -255,20 +255,8 @@
         )
         ) AS hss_product_id,
         (
-        SELECT DISTINCT
-        (product_id)
-        FROM
-        tb_dealer_channel_rate
-        WHERE
-        dealer_id = d.id
-        AND product_id IN (
-        SELECT
-        id
-        FROM
-        tb_product
-        WHERE
-        type = 'hsy'
-        )
+        SELECT count(1) FROM app_dealer_rate_policy
+        WHERE dealer_id=d.id and status = 1
         ) AS hsy_product_id,
         d.mobile
         FROM tb_dealer as d
@@ -348,20 +336,8 @@
         )
         ) AS hss_product_id,
         (
-        SELECT DISTINCT
-        (product_id)
-        FROM
-        tb_dealer_channel_rate
-        WHERE
-        dealer_id = d.id
-        AND product_id IN (
-        SELECT
-        id
-        FROM
-        tb_product
-        WHERE
-        type = 'hsy'
-        )
+        SELECT count(1) FROM app_dealer_rate_policy
+        WHERE dealer_id=d.id and status = 1
         ) AS hsy_product_id,
         (select proxy_name from tb_dealer WHERE id =d.first_level_dealer_id) as first_proxy_name,
         d.mobile

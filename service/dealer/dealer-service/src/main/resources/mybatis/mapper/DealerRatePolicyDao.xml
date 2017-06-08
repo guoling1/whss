@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
         id,	dealer_id,policy_type,dealer_trade_rate_t1,merchant_min_rate_t1,merchant_max_rate_t1,dealer_trade_rate_d1,
-        merchant_min_rate_d1,merchant_max_rate_d1,dealer_trade_rate_d0,merchant_min_rate_d0,merchant_max_rate_d0,status,
+        merchant_min_rate_d1,merchant_max_rate_d1,dealer_trade_rate_d0,merchant_min_rate_d0,merchant_max_rate_d0,sn,status,
         create_time,update_time
     </sql>
 
@@ -44,6 +44,9 @@
             <if test="merchantMaxRateD0 != null">
                 merchant_max_rate_d0,
             </if>
+            <if test="sn != null">
+                sn,
+            </if>
             <if test="status != null">
                 status,
             </if>
@@ -81,6 +84,9 @@
             </if>
             <if test="merchantMaxRateD0!=null">
                 #{merchantMaxRateD0},
+            </if>
+            <if test="sn!=null">
+                #{sn},
             </if>
             <if test="status!=null">
                 #{status},
@@ -124,6 +130,9 @@
             <if test="merchantMaxRateD0 != null">
                 merchant_max_rate_d0 = #{merchantMaxRateD0},
             </if>
+            <if test="sn != null">
+                sn = #{sn},
+            </if>
             <if test="status != null">
                 status = #{status},
             </if>
@@ -135,7 +144,7 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM app_dealer_rate_policy
-        WHERE dealer_id=#{dealerId} and status = 1;
+        WHERE dealer_id=#{dealerId} and status = 1 ORDER BY sn ASC;
     </select>
 
     <select id="selectCountByDealerId" resultType="java.lang.Integer">
