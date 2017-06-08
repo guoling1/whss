@@ -77,7 +77,7 @@
             <el-table-column label="好收银" >
               <template scope="scope">
                 <span v-if="records[scope.$index].hsyProductId==0">未开通</span>
-                <router-link target="_blank" :to="'/admin/details/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy&level=2'" v-else="records[scope.$index].hsyProductId==0">查看产品设置</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddProHsy?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy&level=2'" v-else="records[scope.$index].hsyProductId==0">查看产品设置</router-link>
               </template>
             </el-table-column>
           </el-table>

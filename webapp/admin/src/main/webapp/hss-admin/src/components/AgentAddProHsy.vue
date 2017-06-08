@@ -55,7 +55,7 @@
                                   <span v-if="channel.policyType!='withdraw'">%</span>
                                   <span v-if="channel.policyType=='withdraw'"></span>
                                   &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                                  <input type="text" name="name" v-model="channel.merchantMaxRateT1" style="width: 33%">
+                                  <input type="text" name="name" v-model="channel.merchantMaxRateD1" style="width: 33%">
                                   <span v-if="channel.policyType!='withdraw'">%</span>
                                   <span v-if="channel.policyType=='withdraw'">元/笔</span>
                                 </td>
@@ -174,8 +174,8 @@
           </template>-->
         </div>
         <!--<div class="btn btn-primary" @click="goBack" style="margin: 20px 20px 100px 40px;">返回</div>-->
-        <div class="btn btn-primary" @click="_$power(change,'boss_first_product__update')" style="margin: 20px 0 100px;" v-if="level==1&&!isAdd">修改</div>
-        <div class="btn btn-primary" @click="_$power(change,'boss_merchant_check')" style="margin: 20px 0 100px;" v-if="level==1&&isAdd">开 通</div>
+        <div class="btn btn-primary" @click="_$power(submit,'boss_first_product__update')" style="margin: 20px 0 100px;" v-if="level==1&&!isAdd">修改</div>
+        <div class="btn btn-primary" @click="_$power(submit,'boss_merchant_check')" style="margin: 20px 0 100px;" v-if="level==1&&isAdd">开 通</div>
       </div>
     </div>
   </div>
@@ -188,7 +188,7 @@
     data () {
       return {
         isAdd:true,
-        records:'',
+        records:{},
         channels:[{
           id:0,
           dealerId:this.$route.query.dealerId,
@@ -264,7 +264,7 @@
         this.$router.go(-1)
       },
       //修改
-      change: function () {
+      submit: function () {
         this.records.dealerId = this.$route.query.dealerId;
         this.records.dealerRatePolicies = this.channels;
         this.$http.post('/admin/dealer/saveOrUpdateDealerRatePolicy', this.records)
@@ -286,7 +286,7 @@
             });
           })
       }
-    },
+    }
   }
 </script>
 
