@@ -2,11 +2,8 @@ package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
@@ -1023,7 +1020,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //=============================================================================
         //推送
         try {
-            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(), order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(),
+                    order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4), order.getOrderNo());
         } catch (final Throwable e) {
             log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
         }
@@ -1114,6 +1112,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     public void paySplitAccount(final long orderId) {
         log.info("交易[{}],开始分润", orderId);
         final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         if (order.isPaySuccess()) {
             final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
@@ -1188,6 +1187,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                         "收单分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
             }
         }
+        stopWatch.stop();
         log.info("交易[{}],分润结束，用时[{}]", orderId, stopWatch.getTime());
     }
 

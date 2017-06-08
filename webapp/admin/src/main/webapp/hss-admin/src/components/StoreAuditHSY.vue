@@ -13,35 +13,35 @@
             <tbody>
             <tr>
               <th style="text-align: right">注册手机:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cellphone" readonly>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cellphone" readonly>
                 <el-button type="text" @click="isPhone = true">修改</el-button>
               </td>
               <th style="text-align: right">注册时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="--" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode==0?'':msg.markCode" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.markCode==0?'':msg.markCode" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.proxyName" readonly></td>
               <th></th>
               <td></td>
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode1==0?'':msg.markCode1" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.markCode1==0?'':msg.markCode1" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.proxyName1" readonly></td>
               <th></th>
               <td></td>
             </tr>
             <tr>
               <th style="text-align: right">报单员:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.username" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.username" readonly></td>
               <th style="text-align: right">姓名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.realname" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.realname" readonly></td>
               <th></th>
               <td></td>
             </tr>
@@ -71,9 +71,9 @@
             <tbody>
             <tr>
               <th style="text-align: right">商铺名称（全称）:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.name" readonly></td>
               <th style="text-align: right">商铺简称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.shortName" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.shortName" readonly></td>
               <!--<th style="text-align: right">商户营业执照号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>-->
               <th style="text-align: right"></th>
@@ -81,27 +81,27 @@
             </tr>
             <tr>
               <th style="text-align: right">店主（法人）实名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.contactName"  readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.contactName"  readonly></td>
               <th style="text-align: right">店主身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.idcardNO" readonly></td>
               <th style="text-align: right"></th>
               <td></td>
             </tr>
             <tr>
               <th style="text-align: right">商铺上报名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.name" readonly></td>
               <th style="text-align: right">经营种类:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.industryCode" readonly></td>
               <th style="text-align: right">省市区:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.districtCode" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.districtCode" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">商铺详细地址:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.address" readonly></td>
               <th style="text-align: right">资料提交时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.updateTime|changeTime" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.updateTime|changeTime" readonly></td>
               <th style="text-align: right">资料审核状态:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.stat" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.stat" readonly></td>
             </tr>
             </tbody></table>
         </div>
@@ -117,7 +117,7 @@
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
               <th class="col-md-3" style="text-align: center;">结算卡正面:</th>
               <th class="col-md-3" style="text-align: center;">签约合同照:</th>
-              <th class="col-md-3" style="text-align: center;" v-if="msg.isPublic==1">营业执照:</th>
+              <th class="col-md-3" style="text-align: center;" v-if="$msg.isPublic==1">营业执照:</th>
               <th class="col-md-3" style="text-align: center;">店面照片:</th>
               <th class="col-md-3" style="text-align: center;">收银台:</th>
               <th class="col-md-3" style="text-align: center;">室内照片:</th>
@@ -239,23 +239,23 @@
             <tr>
               <th style="text-align: right">结算卡类型:</th>
               <td>
-                <el-radio-group v-model="msg.isPublic">
+                <el-radio-group v-model="$msg.isPublic">
                   <el-radio :label="1">对公</el-radio>
                   <el-radio :label="0">对私</el-radio>
                 </el-radio-group>
               </td>
               <th style="text-align: right">结算卡开户名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardAccountName" readonly></td>
-              <th style="text-align: right" v-show="msg.isPublic==0">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly v-show="msg.isPublic==0"></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardAccountName" readonly></td>
+              <th style="text-align: right" v-show="$msg.isPublic==0">身份证号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.idcardNO" readonly v-show="$msg.isPublic==0"></td>
             </tr>
             <tr>
               <th style="text-align: right">商户结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardNO" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardNO" readonly></td>
               <th style="text-align: right">结算卡所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardBank" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardBank" readonly></td>
               <th style="text-align: right">支行信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankAddress" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.bankAddress" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">结算方式:</th>
@@ -280,6 +280,7 @@
         <span class="lead">商户费率信息</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
+        <el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -348,7 +349,14 @@
             <el-button @click="isReenter = false">取 消</el-button>
             <el-button type="primary" @click="reenter" :disabled="reenterClick">确 定</el-button>
           </span>
-        </el-dialog>
+      </el-dialog>
+      <el-dialog title="修改信息" v-model="isModify" size="tiny">
+          <p style="text-align: center;font-weight: 700">确认修改信息吗？？</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="isModify = false">取 消</el-button>
+            <el-button type="primary" @click="modify" :disabled="modifyClick">确 定</el-button>
+          </span>
+      </el-dialog>
       <el-dialog title="驳回重填" v-model="isReject" size="tiny">
           <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
           <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
@@ -463,12 +471,14 @@
         msg:{},
         auditClick:false,
         isReenter:false,
+        isModify:false,
         isReject:false,
         isWad: false,
         reason:'',
         isShow:true,
         reenterClick:false,
         rejectClick:false,
+        modifyClick:false,
         res: [],
         tableData:[{
           name:'支付宝',
@@ -809,6 +819,31 @@
       toDet:function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id+'&type=hsy');
 //        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
+      },
+      // 修改信息
+      modify:function () {
+        this.modifyClick = true;
+        this.$http.post('/admin/hsyMerchantAudit/modify', {
+          shopId: this.id,//店铺编码
+          userId: this.msg.uid,//商户编码
+        }).then(function (res) {
+          this.isModify = false;
+          this.modifyClick = false;
+          this.getData();
+          this.$message({
+            showClose: true,
+            message: '修改成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.isModify = false;
+          this.modifyClick = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       },
       // 重新入网
       reenter:function () {

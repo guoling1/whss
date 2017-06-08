@@ -359,7 +359,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         for (SettlementRecord settlementRecord : settlementRecords) {
             try {
                 if (EnumAccountUserType.COMPANY.getId() == settlementRecord.getAccountUserType()) {
-                    return;
+                    continue;
                 }
                 final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
                 final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
@@ -543,6 +543,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     public void settleImpl(final long recordId) {
         log.info("结算审核记录[{}], 开始结算", recordId);
         final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         final AccountSettleAuditRecord accountSettleAuditRecord = this.accountSettleAuditRecordDao.selectByIdWithLock(recordId);
         if (!accountSettleAuditRecord.isDueSettle()) {
             log.info("结算审核记录[{}],状态不是待结算，不可以进行结算", recordId);
@@ -587,6 +588,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
         }
+        stopWatch.stop();
         log.info("结算审核记录[{}],结算结束，用时[{}]", recordId, stopWatch.getTime());
     }
 
