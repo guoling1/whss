@@ -590,7 +590,7 @@
             type: 'error'
           });
         }else{
-          this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,districtCode:this.form.city})
+          this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,branchName:this.form.branchName,districtCode:this.form.city})
             .then(res=>{
               this.$message({
                 showClose: true,
