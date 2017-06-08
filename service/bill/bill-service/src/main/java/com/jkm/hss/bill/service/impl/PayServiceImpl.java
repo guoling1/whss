@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
-import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.base.common.util.SnGenerator;
@@ -37,6 +36,7 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -291,6 +291,9 @@ public class PayServiceImpl implements PayService {
     @Override
     @Transactional
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
+        log.info("好收收-交易[{}]支付成功-处理回调-开始处理", order.getId());
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         order.setPayType(paymentSdkPayCallbackResponse.getPayType());
         order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
@@ -382,6 +385,8 @@ public class PayServiceImpl implements PayService {
             requestJsonObject.put("payChannelSign", enumPayChannelSign.getId());
             MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 20000);
         }
+        stopWatch.stop();
+        log.info("好收收-交易[{}]支付成功-处理回调-处理结束，用时[{}]", order.getId(), stopWatch.getTime());
     }
 
     /**
