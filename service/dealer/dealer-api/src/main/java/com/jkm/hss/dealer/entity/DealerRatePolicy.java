@@ -56,4 +56,8 @@ public class DealerRatePolicy extends BaseEntity{
      * D0最大商户费率
      */
     private BigDecimal merchantMaxRateD0;
+    /**
+     * 排序1.微信 2.支付宝 3.提现
+     */
+    private Integer sn;
 }

@@ -7,9 +7,9 @@ import lombok.Getter;
  */
 public enum EnumPolicyType {
 
-    wechat("wechat", "微信"),
-    alipay("alipay", "支付宝"),
-    withdraw("withdraw", "提现");
+    WECHAT("wechat", "微信"),
+    ALIPAY("alipay", "支付宝"),
+    WITHDRAW("withdraw", "提现");
 
     @Getter
     private String id;
