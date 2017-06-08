@@ -44,6 +44,7 @@ const AgentListSec = r => require.ensure([], () => r(require('components/AgentLi
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('components/AgentAdd')), 'group-record');
 const AgentAddPro = r => require.ensure([], () => r(require('components/AgentAddPro')), 'group-record');
+const AgentAddProHsy = r => require.ensure([], () => r(require('components/AgentAddProHsy')), 'group-record');
 const AgentAddBase = r => require.ensure([], () => r(require('components/AgentAddBase')), 'group-record');
 const AgentPersonnel = r => require.ensure([], () => r(require('components/AgentPersonnel')), 'group-record');
 const AgentPersonnelDet = r => require.ensure([], () => r(require('components/AgentPersonnelDet')), 'group-record');
@@ -134,6 +135,7 @@ let routes = [
       {path: 'agentListSec', name: 'AgentListSec', component: AgentListSec},
       {path: 'agentAdd', name: 'AgentAdd', component: AgentAdd},
       {path: 'agentAddPro', name: 'AgentAddPro', component: AgentAddPro},
+      {path: 'agentAddProHsy', name: 'AgentAddProHsy', component: AgentAddProHsy},
       {path: 'agentAddBase', name: 'AgentAddBase', component: AgentAddBase},
       {path: 'passAdd', name: 'PassAdd', component: PassAdd},
       {path: 'passList', name: 'PassList', component: PassList},
@@ -175,9 +177,9 @@ let routes = [
     component: AAHome,
     children: [
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
-      {path: 'template', name: 'Template', component: Template},
+      // {path: 'template', name: 'Template', component: Template},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
-      {path: 'template', name: 'Template', component: Template},
+      // {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},
