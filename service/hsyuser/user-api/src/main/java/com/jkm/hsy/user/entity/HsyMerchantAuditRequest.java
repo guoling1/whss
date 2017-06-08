@@ -11,6 +11,7 @@ import java.util.Date;
 public class HsyMerchantAuditRequest {
 
     private String changePhone;//更改后的手机号
+    private String mobile;//报单员手机号
 
     /**
      * 状态

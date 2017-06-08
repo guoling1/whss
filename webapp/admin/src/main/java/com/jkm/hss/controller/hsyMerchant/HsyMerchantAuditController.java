@@ -128,6 +128,13 @@ public class HsyMerchantAuditController extends BaseController {
                 .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
                 .build()
         );
+        //审核未通过给报单员发短信
+//        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
+//                .uid("")
+//                .userType(EnumUserType.BACKGROUND_USER)
+//                .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
+//                .build()
+//        );
 
         hsyMerchantAuditRequest.setStat(1);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
