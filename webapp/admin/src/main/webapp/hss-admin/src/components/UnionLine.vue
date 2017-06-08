@@ -331,8 +331,15 @@
         });
       },
       onSubmit: function () {
-        this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
+        if(this.form.branchCode==""){
           this.$message({
+            showClose: true,
+            message: '请匹配联行号',
+            type: 'error'
+          });
+        }else{
+          this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
+            this.$message({
             showClose: true,
             message: '创建联行号成功',
             type: 'success'
@@ -350,12 +357,13 @@
           this.isAdd = false;
           this.getData()
         }, err => {
-          this.$message({
-            showClose: true,
-            message: err.data.msg,
-            type: 'error'
-          });
-        })
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
       },
       querySearchAsync(queryString, cb) {
         var restaurants = this.restaurants;
