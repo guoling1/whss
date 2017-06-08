@@ -573,23 +573,31 @@
         this.isWad = true;
       },
       submit: function () {
-        this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,districtCode:this.form.city})
-          .then(res=>{
-            this.$message({
-              showClose: true,
-              message: '补填成功',
-              type: 'success'
-            });
-            this.isWad = false;
-            this.getData()
-          })
-          .catch(err=>{
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
+        if(this.form.branchCode==""){
+          this.$message({
+            showClose: true,
+            message: '请匹配联行号',
+            type: 'error'
+          });
+        }else{
+          this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,districtCode:this.form.city})
+            .then(res=>{
+              this.$message({
+                showClose: true,
+                message: '补填成功',
+                type: 'success'
+              });
+              this.isWad = false;
+              this.getData()
             })
-          })
+            .catch(err=>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
       },
       handleSelect(item) {
         console.log(item);
@@ -858,6 +866,7 @@
           name: this.msg.name,
           checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
+          branchCode: this.msg.branchCode
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'

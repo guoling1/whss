@@ -331,39 +331,31 @@
         });
       },
       onSubmit: function () {
-        if(this.form.branchCode==""){
+        this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
+          this.$message({
+          showClose: true,
+          message: '创建联行号成功',
+          type: 'success'
+        });
+        this.form={
+          bankName: '',
+          province:'',
+          city:'',
+          branchName:'',
+          branchCode:'',
+          belongProvinceName: '',
+          belongCityName: '',
+        }
+        this.dialogFormVisible = false;
+        this.isAdd = false;
+        this.getData()
+      }, err => {
           this.$message({
             showClose: true,
-            message: '请匹配联行号',
+            message: err.data.msg,
             type: 'error'
           });
-        }else{
-          this.$http.post('/admin/unionNumber/addBankCode', this.form).then(res => {
-            this.$message({
-            showClose: true,
-            message: '创建联行号成功',
-            type: 'success'
-          });
-          this.form={
-            bankName: '',
-            province:'',
-            city:'',
-            branchName:'',
-            branchCode:'',
-            belongProvinceName: '',
-            belongCityName: '',
-          }
-          this.dialogFormVisible = false;
-          this.isAdd = false;
-          this.getData()
-        }, err => {
-            this.$message({
-              showClose: true,
-              message: err.data.msg,
-              type: 'error'
-            });
-          })
-        }
+        })
       },
       querySearchAsync(queryString, cb) {
         var restaurants = this.restaurants;
