@@ -10,8 +10,10 @@ import com.jkm.hss.product.servcie.ProductRatePolicyService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.UserTradeRateDao;
 import com.jkm.hsy.user.entity.UserTradeRate;
+import com.jkm.hsy.user.entity.UserWithdrawRate;
 import com.jkm.hsy.user.help.requestparam.UserTradeRateResponse;
 import com.jkm.hsy.user.service.UserTradeRateService;
+import com.jkm.hsy.user.service.UserWithdrawRateService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
     private ProductRatePolicyService productRatePolicyService;
     @Autowired
     private DealerRatePolicyService dealerRatePolicyService;
+    @Autowired
+    private UserWithdrawRateService userWithdrawRateService;
     /**
      * 新增
      *
@@ -37,6 +41,16 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
     @Override
     public void insert(UserTradeRate userTradeRate) {
         userTradeRateDao.insert(userTradeRate);
+    }
+
+    /**
+     * 更新
+     *
+     * @param userTradeRate
+     */
+    @Override
+    public void update(UserTradeRate userTradeRate) {
+        userTradeRateDao.update(userTradeRate);
     }
 
     /**
@@ -104,26 +118,67 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
      * @param isOpenZfb
      */
     @Override
-    public  void saveUserRate(long userId,BigDecimal wxRate,BigDecimal zfbRate,int isOpenWx,int isOpenZfb) {
+    public  void saveUserRate(long userId,long dealerId,BigDecimal wxRate,BigDecimal zfbRate,int isOpenWx,int isOpenZfb) {
         UserTradeRate wx = new UserTradeRate();
-        wx.setUserId(userId);
-        wx.setPolicyType(EnumPolicyType.WECHAT.getId());
-        wx.setIsOpen(isOpenWx);
-        wx.setTradeRateT1(wxRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-        wx.setTradeRateD0(wx.getTradeRateT1().add(new BigDecimal("0.0004")));
-        wx.setStatus(EnumStatus.NORMAL.getId());
-        this.insert(wx);
+        UserTradeRate wxUserTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(userId,EnumPolicyType.WECHAT.getId());
+        if(wxUserTradeRate==null){
+            wx.setUserId(userId);
+            wx.setPolicyType(EnumPolicyType.WECHAT.getId());
+            wx.setIsOpen(isOpenWx);
+            wx.setTradeRateT1(wxRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+            wx.setTradeRateD0(wx.getTradeRateT1().add(new BigDecimal("0.0004")));
+            wx.setStatus(EnumStatus.NORMAL.getId());
+            this.insert(wx);
+        }else{
+            wx.setId(wxUserTradeRate.getId());
+            wx.setUserId(userId);
+            wx.setPolicyType(EnumPolicyType.WECHAT.getId());
+            wx.setIsOpen(isOpenWx);
+            wx.setTradeRateT1(wxRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+            wx.setTradeRateD0(wx.getTradeRateT1().add(new BigDecimal("0.0004")));
+            wx.setStatus(EnumStatus.NORMAL.getId());
+            this.insert(wx);
+        }
+
 
         UserTradeRate zfb = new UserTradeRate();
-        zfb.setUserId(userId);
-        zfb.setPolicyType(EnumPolicyType.ALIPAY.getId());
-        zfb.setIsOpen(isOpenZfb);
-        zfb.setTradeRateT1(zfbRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-        zfb.setTradeRateD0(zfb.getTradeRateT1().add(new BigDecimal("0.0004")));
-        zfb.setStatus(EnumStatus.NORMAL.getId());
-        this.insert(zfb);
+        UserTradeRate zfbUserTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(userId,EnumPolicyType.ALIPAY.getId());
+        if(zfbUserTradeRate==null){
+            zfb.setUserId(userId);
+            zfb.setPolicyType(EnumPolicyType.ALIPAY.getId());
+            zfb.setIsOpen(isOpenZfb);
+            zfb.setTradeRateT1(zfbRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+            zfb.setTradeRateD0(zfb.getTradeRateT1().add(new BigDecimal("0.0004")));
+            zfb.setStatus(EnumStatus.NORMAL.getId());
+            this.insert(zfb);
+        }else{
+            zfb.setId(zfbUserTradeRate.getId());
+            zfb.setUserId(userId);
+            zfb.setPolicyType(EnumPolicyType.ALIPAY.getId());
+            zfb.setIsOpen(isOpenZfb);
+            zfb.setTradeRateT1(zfbRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+            zfb.setTradeRateD0(zfb.getTradeRateT1().add(new BigDecimal("0.0004")));
+            zfb.setStatus(EnumStatus.NORMAL.getId());
+            this.insert(zfb);
+        }
 
 
+        UserWithdrawRate wd = new UserWithdrawRate();
+        Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
+        if(!userWithdrawRateOptional.isPresent()){
+            wd.setUserId(userId);
+            wd.setWithdrawRateT1(new BigDecimal("0"));
+            wd.setWithdrawRateD0(new BigDecimal("3"));
+            wd.setStatus(EnumStatus.NORMAL.getId());
+            userWithdrawRateService.insert(wd);
+        }else{
+            wd.setId(userWithdrawRateOptional.get().getId());
+            wd.setUserId(userId);
+            wd.setWithdrawRateT1(new BigDecimal("0"));
+            wd.setWithdrawRateD0(new BigDecimal("3"));
+            wd.setStatus(EnumStatus.NORMAL.getId());
+            userWithdrawRateService.update(wd);
+        }
 
     }
 

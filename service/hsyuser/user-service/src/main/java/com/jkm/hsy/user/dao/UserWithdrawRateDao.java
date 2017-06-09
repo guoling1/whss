@@ -14,6 +14,11 @@ public interface UserWithdrawRateDao {
      * @param userWithdrawRate
      */
     void insert(UserWithdrawRate userWithdrawRate);
+    /**
+     * 修改
+     * @param userWithdrawRate
+     */
+    void update(UserWithdrawRate userWithdrawRate);
 
     /**
      * 根据用户编码查询

@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hsy.user.dao.UserWithdrawRateDao;
 import com.jkm.hsy.user.entity.UserWithdrawRate;
 import com.jkm.hsy.user.service.UserWithdrawRateService;
@@ -24,14 +25,24 @@ public class UserWithdrawRateServiceImpl implements UserWithdrawRateService{
     }
 
     /**
+     * 修改
+     *
+     * @param userWithdrawRate
+     */
+    @Override
+    public void update(UserWithdrawRate userWithdrawRate) {
+        userWithdrawRateDao.update(userWithdrawRate);
+    }
+
+    /**
      * 根据用户编码查询
      *
      * @param userId
      * @return
      */
     @Override
-    public UserWithdrawRate selectByUserId(long userId) {
-        return userWithdrawRateDao.selectByUserId(userId);
+    public Optional<UserWithdrawRate> selectByUserId(long userId) {
+        return Optional.fromNullable(userWithdrawRateDao.selectByUserId(userId));
     }
 
 }
