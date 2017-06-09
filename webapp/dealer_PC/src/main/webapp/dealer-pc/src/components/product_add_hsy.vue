@@ -184,6 +184,12 @@
   export default {
     name: 'app',
     created(){
+      // 获取产品校验规则
+      this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+          this.form.dealerRatePolicies[i].role = res.data[i];
+        }
+      });
 //      let query = this.$route.query;
 //      this.$http.post('/daili/dealer/getDealerProduct', {
 //        dealerId: query.dealerId,
@@ -219,7 +225,8 @@
               merchantMaxRateD1: '',
               dealerTradeRateD0: '',
               merchantMinRateD0: '',
-              merchantMaxRateD0: ''
+              merchantMaxRateD0: '',
+              role: {}
             }, {
               id: 0,
               sn: 2,
@@ -232,7 +239,8 @@
               merchantMaxRateD1: '',
               dealerTradeRateD0: '',
               merchantMinRateD0: '',
-              merchantMaxRateD0: ''
+              merchantMaxRateD0: '',
+              role: {}
             }, {
               id: 0,
               sn: 3,
@@ -245,7 +253,8 @@
               merchantMaxRateD1: '',
               dealerTradeRateD0: '',
               merchantMinRateD0: '',
-              merchantMaxRateD0: ''
+              merchantMaxRateD0: '',
+              role: {}
             }
           ]
         }
