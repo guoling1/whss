@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import com.jkm.hsy.user.entity.AppBizShopUserRole;
 
 @Repository
 public interface HsyUserDao {
@@ -31,5 +32,5 @@ public interface HsyUserDao {
     public List<AppAuUser> findAppAuUserWithRoleByID(AppAuUser appAuUser);
     public void updateHxbsStatus(@Param("status")Integer status,@Param("remarks")String remarks,@Param("uid")Long uid);
     public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
-    public Integer findAppAuUserRole(AppAuUser appAuUser);
+    public AppBizShopUserRole findAppAuUserRole(AppAuUser appAuUser);
 }
