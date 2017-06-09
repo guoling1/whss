@@ -151,4 +151,11 @@
         SELECT count(1) FROM app_dealer_rate_policy
         WHERE dealer_id=#{dealerId} and status = 1;
     </select>
+
+    <select id="selectByDealerIdAndPolicyType" resultType="com.jkm.hss.dealer.entity.DealerRatePolicy">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_dealer_rate_policy
+        WHERE dealer_id=#{dealerId} and policy_type = #{policyType} and status = 1;
+    </select>
 </mapper>

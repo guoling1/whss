@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.dao;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -36,4 +37,10 @@ public interface DealerRatePolicyDao {
      * @return
      */
     Integer selectCountByDealerId(@Param("dealerId") long dealerId);
+    /**
+     * 根据代理商编码查询代理结算政策
+     * @param dealerId
+     * @return
+     */
+    Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(@Param("dealerId")long dealerId, @Param("policyType")String policyType);
 }
