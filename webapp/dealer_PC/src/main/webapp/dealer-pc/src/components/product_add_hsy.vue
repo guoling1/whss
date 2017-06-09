@@ -10,9 +10,6 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <label class="form-label">产品名称：{{productName}}</label>
-            </div>
-            <div class="box-body">
               <label class="form-label">产品分润设置</label>
               <el-table :data="form.dealerRatePolicies" border>
                 <el-table-column label="支付方式" width="100px">
