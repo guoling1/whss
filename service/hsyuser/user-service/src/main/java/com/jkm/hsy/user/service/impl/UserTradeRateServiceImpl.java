@@ -3,6 +3,7 @@ package com.jkm.hsy.user.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.service.DealerRatePolicyService;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.product.entity.ProductRatePolicy;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductRatePolicyService;
@@ -104,6 +105,24 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
      */
     @Override
     public  void saveUserRate(long userId,BigDecimal wxRate,BigDecimal zfbRate,int isOpenWx,int isOpenZfb) {
+        UserTradeRate wx = new UserTradeRate();
+        wx.setUserId(userId);
+        wx.setPolicyType(EnumPolicyType.WECHAT.getId());
+        wx.setIsOpen(isOpenWx);
+        wx.setTradeRateT1(wxRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+        wx.setTradeRateD0(wx.getTradeRateT1().add(new BigDecimal("0.0004")));
+        wx.setStatus(EnumStatus.NORMAL.getId());
+        this.insert(wx);
+
+        UserTradeRate zfb = new UserTradeRate();
+        zfb.setUserId(userId);
+        zfb.setPolicyType(EnumPolicyType.ALIPAY.getId());
+        zfb.setIsOpen(isOpenZfb);
+        zfb.setTradeRateT1(zfbRate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+        zfb.setTradeRateD0(zfb.getTradeRateT1().add(new BigDecimal("0.0004")));
+        zfb.setStatus(EnumStatus.NORMAL.getId());
+        this.insert(zfb);
+
 
 
     }
