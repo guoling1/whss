@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerRatePolicy;
 
 import java.util.List;
@@ -33,4 +34,10 @@ public interface DealerRatePolicyService {
      * @return
      */
     Integer selectCountByDealerId(long dealerId);
+    /**
+     * 根据代理商编码查询代理结算政策
+     * @param dealerId
+     * @return
+     */
+    Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(long dealerId,String policyType);
 }
