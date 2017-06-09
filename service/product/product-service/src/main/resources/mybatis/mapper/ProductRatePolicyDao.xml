@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.ProductRatePolicyDao">
+
+    <sql id="Base_Column_List">
+        id,	product_id,policy_type,product_trade_rate_t1,merchant_min_rate_t1,merchant_max_rate_t1,product_trade_rate_d1,
+        merchant_min_rate_d1,merchant_max_rate_d1,product_trade_rate_d0,merchant_min_rate_d0,merchant_max_rate_d0,sn,status,
+        create_time,update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_product_rate_policy
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="policyType != null">
+                policy_type,
+            </if>
+            <if test="productTradeRateT1 != null">
+                product_trade_rate_t1,
+            </if>
+            <if test="merchantMinRateT1 != null">
+                merchant_min_rate_t1,
+            </if>
+            <if test="merchantMaxRateT1 != null">
+                merchant_max_rate_t1,
+            </if>
+            <if test="productTradeRateD1 != null">
+                product_trade_rate_d1,
+            </if>
+            <if test="merchantMinRateD1 != null">
+                merchant_min_rate_d1,
+            </if>
+            <if test="merchantMaxRateD1 != null">
+                merchant_max_rate_d1,
+            </if>
+            <if test="productTradeRateD0 != null">
+                product_trade_rate_d0,
+            </if>
+            <if test="merchantMinRateD0 != null">
+                merchant_min_rate_d0,
+            </if>
+            <if test="merchantMaxRateD0 != null">
+                merchant_max_rate_d0,
+            </if>
+            <if test="sn != null">
+                sn,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="productId!=null">
+                #{productId},
+            </if>
+            <if test="policyType!=null">
+                #{policyType},
+            </if>
+            <if test="productTradeRateT1!=null">
+                #{productTradeRateT1},
+            </if>
+            <if test="merchantMinRateT1!=null">
+                #{merchantMinRateT1},
+            </if>
+            <if test="merchantMaxRateT1!=null">
+                #{merchantMaxRateT1},
+            </if>
+            <if test="productTradeRateD1!=null">
+                #{productTradeRateD1},
+            </if>
+            <if test="merchantMinRateD1!=null">
+                #{merchantMinRateD1},
+            </if>
+            <if test="merchantMaxRateD1!=null">
+                #{merchantMaxRateD1},
+            </if>
+            <if test="productTradeRateD0!=null">
+                #{productTradeRateD0},
+            </if>
+            <if test="merchantMinRateD0!=null">
+                #{merchantMinRateD0},
+            </if>
+            <if test="merchantMaxRateD0!=null">
+                #{merchantMaxRateD0},
+            </if>
+            <if test="sn!=null">
+                #{sn},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE app_product_rate_policy
+        <set>
+            <if test="productId != null">
+                product_id=#{productId},
+            </if>
+            <if test="policyType != null">
+                policy_type = #{policyType},
+            </if>
+            <if test="productTradeRateT1 != null">
+                product_trade_rate_t1 = #{productTradeRateT1},
+            </if>
+            <if test="merchantMinRateT1 != null">
+                merchant_min_rate_t1 = #{merchantMinRateT1},
+            </if>
+            <if test="merchantMaxRateT1 != null">
+                merchant_max_rate_t1 = #{merchantMaxRateT1},
+            </if>
+            <if test="productTradeRateD1 != null">
+                product_trade_rate_d1 = #{productTradeRateD1},
+            </if>
+            <if test="merchantMinRateD1 != null">
+                merchant_min_rate_d1 = #{merchantMinRateD1},
+            </if>
+            <if test="merchantMaxRateD1 != null">
+                merchant_max_rate_d1 = #{merchantMaxRateD1},
+            </if>
+            <if test="productTradeRateD0 != null">
+                product_trade_rate_d0 = #{productTradeRateD0},
+            </if>
+            <if test="merchantMinRateD0 != null">
+                merchant_min_rate_d0 = #{merchantMinRateD0},
+            </if>
+            <if test="merchantMaxRateD0 != null">
+                merchant_max_rate_d0 = #{merchantMaxRateD0},
+            </if>
+            <if test="sn != null">
+                sn = #{sn},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <select id="selectByProductId" resultType="com.jkm.hss.product.entity.ProductRatePolicy">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_product_rate_policy
+        WHERE product_id=#{productId} and status = 1 ORDER BY sn ASC;
+    </select>
+</mapper>
