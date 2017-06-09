@@ -205,27 +205,20 @@
       let query = this.$route.query;
       this.form.dealerId = query.dealerId;
       // 获取产品校验规则
-      this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
+      this.$http.get('/daili/dealer/dealerRatePolicyDetail/' + query.dealerId).then(res => {
         for (let i = 0; i < res.data.length; i++) {
-          this.form.dealerRatePolicies[i].role = res.data[i];
+          res.data[i].role = {};
         }
-      });
-//      this.$http.post('/daili/dealer/getDealerProduct', {
-//        dealerId: query.dealerId,
-//        sysType: query.product,
-//        productId: query.productId
-//      }).then(res => {
-//        this.dealerId = query.dealerId;
-//        this.product = query.product;
-//        this.productName = res.data.productName;
-//        this.inviteStatus = res.data.inviteBtn;
-//        this.inviteCode = res.data.inviteCode;
-//        this.inviteBoolean = (this.inviteStatus == 2);
-//        this.tableData = res.data.product.channels;
-//        this.productId = res.data.product.productId;
-//      }, err => {
-//        console.log(err);
-//      })
+        this.form.dealerRatePolicies = res.data;
+        this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
+          for (let i = 0; i < res.data.length; i++) {
+            this.form.dealerRatePolicies[i].role = res.data[i];
+          }
+          console.log(this.form);
+        });
+      }, err => {
+        console.log(err);
+      })
     },
     data() {
       return {
