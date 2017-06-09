@@ -14,7 +14,7 @@ public class AppPolicyMember {
     private Long accountID;//账户ID
     private Long receiptAccountID;//统计账户ID
     private String memberCardNO;//会员卡号
-    private Integer status;//状态1正常
+    private Integer status;//状态1正常2未充值无法使用3注销
     private Date createTime;
     private Date updateTime;
 

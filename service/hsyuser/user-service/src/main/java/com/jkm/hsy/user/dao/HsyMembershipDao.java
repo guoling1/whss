@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface HsyMembershipDao {
     public void insertMembershipCard(AppPolicyMembershipCard appPolicyMembershipCard);
+    public void updateMembershipCard(AppPolicyMembershipCard appPolicyMembershipCard);
     public void insertMembershipCardShop(AppPolicyMembershipCardShop appPolicyMembershipCardShop);
     public void insertMembershipCardShopBatch(List<AppPolicyMembershipCardShop> list);
     public List<AppPolicyConsumer> findConsumerByParam(AppPolicyConsumer appPolicyConsumer);
@@ -29,4 +30,7 @@ public interface HsyMembershipDao {
     public List<AppAuUser> findShopNameAndGlobalID(@Param("uid")Long uid);
     public void insertRechargeOrder(AppPolicyRechargeOrder appPolicyRechargeOrder);
     public void updateRechargeOrder(AppPolicyRechargeOrder appPolicyRechargeOrder);
+    public List<AppPolicyMembershipCard> findMemberCardByID(@Param("id") Long id);
+    public Integer findMemberCardCountByMCID(@Param("mcid")Long mcid);
+    public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid);
 }

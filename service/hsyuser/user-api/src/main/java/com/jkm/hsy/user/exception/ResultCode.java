@@ -45,6 +45,7 @@ public enum ResultCode {
 	TOKEN_CAN_NOT_BE_NULL(2039,"token为空"),
 	USER_NOT_LOGIN(2040,"用户未登录"),
 	USER_LOGIN_OUTTIME(2041,"用户登录超时请重新登录"),
+	ESCAPE_FAIL(2042,"转义失败"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

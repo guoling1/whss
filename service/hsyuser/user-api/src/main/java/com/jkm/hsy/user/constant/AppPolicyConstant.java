@@ -16,4 +16,6 @@ public class AppPolicyConstant {
     public static int REGISTER_VERIFICATION_NOTICE_TYPE_ID=707;
 
     public static Integer CARD_LIMIT=10;
+
+    public static String MEMBER_QR="http://hsy.qianbaojiajia.com/membership/getAuth/";
 }
