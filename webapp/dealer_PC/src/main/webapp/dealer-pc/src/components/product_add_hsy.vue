@@ -23,14 +23,15 @@
                 <el-table-column label="T1代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.paymentSettleRate" style="margin:10px 0 20px 0"
-                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'必填 必填',trigger:'blur'}">
+                      <el-form-item prop="row.dealerTradeRateT1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minPaymentSettleRate}} <br> 最大值：{{scope.row.merchantSettleRate}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateT1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
                       </el-form-item>
@@ -40,24 +41,29 @@
                 <el-table-column label="T1商户费率">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.withdrawSettleFee" style="margin:10px 0 20px 0"
-                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'必填 必填',trigger:'blur'}">
+                      <el-form-item prop="row.merchantMinRateT1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateT1*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateT1}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateT1">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
+                      </el-form-item>
+                      <el-form-item prop="row.merchantMaxRateT1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMinRateT1">
+                                    v-model="scope.row.merchantMaxRateT1">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
                       </el-form-item>
@@ -67,14 +73,15 @@
                 <el-table-column label="D1代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.paymentSettleRate" style="margin:10px 0 20px 0"
-                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'必填 必填',trigger:'blur'}">
+                      <el-form-item prop="row.dealerTradeRateD1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minPaymentSettleRate}} <br> 最大值：{{scope.row.merchantSettleRate}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
                       </el-form-item>
@@ -84,24 +91,29 @@
                 <el-table-column label="D1商户费率">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.withdrawSettleFee" style="margin:10px 0 20px 0"
-                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'必填 必填',trigger:'blur'}">
+                      <el-form-item prop="row.merchantMinRateD1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD1*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD1}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateD1">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
+                      </el-form-item>
+                      <el-form-item prop="row.merchantMaxRateD1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateD1">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
                       </el-form-item>
@@ -111,14 +123,15 @@
                 <el-table-column label="D0代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.paymentSettleRate" style="margin:10px 0 20px 0"
-                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'必填 必填',trigger:'blur'}">
+                      <el-form-item prop="row.dealerTradeRateD0" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minPaymentSettleRate}} <br> 最大值：{{scope.row.merchantSettleRate}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD0">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
                       </el-form-item>
@@ -128,24 +141,29 @@
                 <el-table-column label="D0商户费率">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.withdrawSettleFee" style="margin:10px 0 20px 0"
-                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'必填 必填',trigger:'blur'}">
+                      <el-form-item prop="row.merchantMinRateD0" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD0*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD0}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateD0">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
+                      </el-form-item>
+                      <el-form-item prop="row.merchantMaxRateD0" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0*100 | toFix}}</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0}}</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateD0">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/每笔</template>
+                            <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
                         </el-popover>
                       </el-form-item>
@@ -184,13 +202,14 @@
   export default {
     name: 'app',
     created(){
+      let query = this.$route.query;
+      this.form.dealerId = query.dealerId;
       // 获取产品校验规则
       this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
         for (let i = 0; i < res.data.length; i++) {
           this.form.dealerRatePolicies[i].role = res.data[i];
         }
       });
-//      let query = this.$route.query;
 //      this.$http.post('/daili/dealer/getDealerProduct', {
 //        dealerId: query.dealerId,
 //        sysType: query.product,
@@ -276,25 +295,140 @@
       onSubmit: function () {
         let valid = true;
         let validMsg = '';
-        for (let m = 0; m < this.tableData.length; m++) {
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].paymentSettleRate))) {
+        for (let m = 0; m < this.form.dealerRatePolicies.length; m++) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].dealerTradeRateT1))) {
             valid = false;
-            validMsg = this.tableData[m].channelName + ' 支付结算手续费 未设置';
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 T1代理商结算价 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 T1代理商结算价 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 T1代理商结算价 未设置';
+                break;
+            }
             break;
           }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].withdrawSettleFee))) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMinRateT1))) {
             valid = false;
-            validMsg = this.tableData[m].channelName + ' 提现结算费 未设置';
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 T1商户费率 最小值 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 T1商户费率 最小值 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 T1商户费率 最小值 未设置';
+                break;
+            }
             break;
           }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].merchantSettleRate))) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMaxRateT1))) {
             valid = false;
-            validMsg = this.tableData[m].channelName + ' 商户支付手续费 未设置';
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 T1商户费率 最大值 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 T1商户费率 最大值 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 T1商户费率 最大值 未设置';
+                break;
+            }
             break;
           }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].merchantWithdrawFee))) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].dealerTradeRateD1))) {
             valid = false;
-            validMsg = this.tableData[m].channelName + ' 商户提现手续费 未设置';
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 D1代理商结算价 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 D1代理商结算价 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 D1代理商结算价 未设置';
+                break;
+            }
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMinRateD1))) {
+            valid = false;
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 D1商户费率 最小值 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 D1商户费率 最小值 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 D1商户费率 最小值 未设置';
+                break;
+            }
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMaxRateD1))) {
+            valid = false;
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 D1商户费率 最大值 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 D1商户费率 最大值 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 D1商户费率 最大值 未设置';
+                break;
+            }
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].dealerTradeRateD0))) {
+            valid = false;
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 D0代理商结算价 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 D0代理商结算价 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 D0代理商结算价 未设置';
+                break;
+            }
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMinRateD0))) {
+            valid = false;
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 D0商户费率 最小值 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 D0商户费率 最小值 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 D0商户费率 最小值 未设置';
+                break;
+            }
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMaxRateD0))) {
+            valid = false;
+            switch (this.form.dealerRatePolicies[m].policyType) {
+              case 'wechat':
+                validMsg = '微信 D0商户费率 最大值 未设置';
+                break;
+              case 'alipay':
+                validMsg = '支付宝 D0商户费率 最大值 未设置';
+                break;
+              case 'withdraw':
+                validMsg = '提现手续费 D0商户费率 最大值 未设置';
+                break;
+            }
             break;
           }
         }
@@ -309,14 +443,7 @@
               if (action === 'confirm') {
                 instance.confirmButtonLoading = true;
                 instance.confirmButtonText = '执行中...';
-                this.$http.post('/daili/dealer/addOrUpdateDealerProduct', {
-                  dealerId: this.dealerId,
-                  inviteBtn: this.inviteStatus,
-                  product: {
-                    productId: this.productId,
-                    channels: this.tableData
-                  }
-                }).then(res => {
+                this.$http.post('/daili/dealer/saveOrUpdateDealerRatePolicy', this.form).then(res => {
                   done();
                   instance.confirmButtonLoading = false;
                   instance.confirmButtonText = '确定';
@@ -367,6 +494,9 @@
             return '提现手续费';
             break;
         }
+      },
+      toFix: function (v) {
+        return (v / 1).toFixed(2);
       }
     }
   }
