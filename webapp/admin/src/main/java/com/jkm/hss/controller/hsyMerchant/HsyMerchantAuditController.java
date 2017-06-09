@@ -2,6 +2,7 @@ package com.jkm.hss.controller.hsyMerchant;
 
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -134,7 +135,8 @@ public class HsyMerchantAuditController extends BaseController {
         );
         if(!"".equals(hsyMerchantAuditRequest.getMobile())&&hsyMerchantAuditRequest.getMobile()!=null){
             String mobile = hsyMerchantAuditRequest.getMobile();
-            MerchantSupport.decryptMobile(mobile);
+//            MerchantSupport.decryptMobile(mobile);
+            String s = AdminUserSupporter.decryptMobile(0, mobile);
             Map map = new HashMap();
             map.put("name",hsyMerchantAuditRequest.getName());
             //审核未通过给报单员发短信
