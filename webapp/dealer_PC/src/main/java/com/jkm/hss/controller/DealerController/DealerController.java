@@ -749,14 +749,14 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "微信D0商户最小费率必须小于等于微信D0商户最大费率");
                 }
-                if(dealerRatePolicy.getDealerTradeRateT1().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateT1())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代微信T1代理商结算价");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateT1().compareTo(dealerRatePolicy.getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代微信T1代理商结算价");
                 }
-                if(dealerRatePolicy.getDealerTradeRateD1().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateD1())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代微信D1代理商结算价");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD1().compareTo(dealerRatePolicy.getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代微信D1代理商结算价");
                 }
-                if(dealerRatePolicy.getDealerTradeRateD0().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateD0())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代微信D0代理商结算价");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD0().compareTo(dealerRatePolicy.getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代微信D0代理商结算价");
                 }
             }
             if((EnumPolicyType.ALIPAY.getId()).equals(dealerRatePolicy.getPolicyType())){
@@ -809,14 +809,14 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "支付宝D0商户最小费率必须小于等于支付宝D0商户最大费率");
                 }
-                if(dealerRatePolicy.getDealerTradeRateT1().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateT1())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代支付宝T1代理商结算价");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateT1().compareTo(dealerRatePolicy.getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代支付宝T1代理商结算价");
                 }
-                if(dealerRatePolicy.getDealerTradeRateD1().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateD1())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代支付宝D1代理商结算价");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD1().compareTo(dealerRatePolicy.getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代支付宝D1代理商结算价");
                 }
-                if(dealerRatePolicy.getDealerTradeRateD0().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateD0())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代支付宝D0代理商结算价");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD0().compareTo(dealerRatePolicy.getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代支付宝D0代理商结算价");
                 }
             }
             if((EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicy.getPolicyType())){
@@ -869,14 +869,14 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "提现手续费D0商户最小手续费必须小于等于提现手续费D0商户最大手续费");
                 }
-                if(dealerRatePolicy.getDealerTradeRateT1().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateT1())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代T1提现手续费");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateT1().compareTo(dealerRatePolicy.getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代T1提现手续费");
                 }
-                if(dealerRatePolicy.getDealerTradeRateD1().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateD1())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代D1提现手续费");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD1().compareTo(dealerRatePolicy.getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代D1提现手续费");
                 }
-                if(dealerRatePolicy.getDealerTradeRateD0().compareTo(dealerRatePolicyOptional.get().getDealerTradeRateD0())>0){
-                    return CommonResponse.simpleResponse(-1, "二代必须小于一代D0提现手续费");
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD0().compareTo(dealerRatePolicy.getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代D0提现手续费");
                 }
             }
         }
