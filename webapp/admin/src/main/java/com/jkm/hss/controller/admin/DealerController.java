@@ -38,10 +38,7 @@ import com.jkm.hss.helper.response.*;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.enums.EnumPlatformType;
 import com.jkm.hss.merchant.enums.EnumStatus;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.UpgradeRecommendRules;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +102,9 @@ public class DealerController extends BaseController {
 
     @Autowired
     private DealerRatePolicyService dealerRatePolicyService;
+
+    @Autowired
+    private ProductRatePolicyService productRatePolicyService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -1253,6 +1253,7 @@ public class DealerController extends BaseController {
         for(int i=0;i<dealerRatePolicyList.size();i++){
             DealerRatePolicy dealerRatePolicy = dealerRatePolicyList.get(i);
             if((EnumPolicyType.WECHAT.getId()).equals(dealerRatePolicy.getPolicyType())){
+                Optional<ProductRatePolicy> pr = productRatePolicyService.selectByPolicyType(EnumPolicyType.WECHAT.getId());
                 if(dealerRatePolicy.getDealerTradeRateT1()==null){
                     return CommonResponse.simpleResponse(-1, "微信T1代理商结算价不能为空");
                 }
@@ -1298,8 +1299,18 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "微信D0商户最小费率必须小于等于微信D0商户最大费率");
                 }
+                if(pr.get().getProductTradeRateT1().compareTo(dealerRatePolicy.getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "微信T1代理商结算价必须小于等于微信T1产品结算价");
+                }
+                if(pr.get().getProductTradeRateD1().compareTo(dealerRatePolicy.getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "微信D1代理商结算价必须小于等于微信D1产品结算价");
+                }
+                if(pr.get().getProductTradeRateD0().compareTo(dealerRatePolicy.getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "微信D0代理商结算价必须小于等于微信D0产品结算价");
+                }
             }
             if((EnumPolicyType.ALIPAY.getId()).equals(dealerRatePolicy.getPolicyType())){
+                Optional<ProductRatePolicy> pr = productRatePolicyService.selectByPolicyType(EnumPolicyType.ALIPAY.getId());
                 if(dealerRatePolicy.getDealerTradeRateT1()==null){
                     return CommonResponse.simpleResponse(-1, "支付宝T1代理商结算价不能为空");
                 }
@@ -1345,8 +1356,18 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "支付宝D0商户最小费率必须小于等于支付宝D0商户最大费率");
                 }
+                if(pr.get().getProductTradeRateT1().compareTo(dealerRatePolicy.getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "支付宝T1代理商结算价必须小于等于支付宝T1产品结算价");
+                }
+                if(pr.get().getProductTradeRateD1().compareTo(dealerRatePolicy.getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "支付宝D1代理商结算价必须小于等于支付宝D1产品结算价");
+                }
+                if(pr.get().getProductTradeRateD0().compareTo(dealerRatePolicy.getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "支付宝D0代理商结算价必须小于等于支付宝D0产品结算价");
+                }
             }
             if((EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicy.getPolicyType())){
+                Optional<ProductRatePolicy> pr = productRatePolicyService.selectByPolicyType(EnumPolicyType.WITHDRAW.getId());
                 if(dealerRatePolicy.getDealerTradeRateT1()==null){
                     return CommonResponse.simpleResponse(-1, "提现手续费T1代理商结算价不能为空");
                 }
@@ -1391,6 +1412,15 @@ public class DealerController extends BaseController {
                 }
                 if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "提现手续费D0商户最小手续费必须小于等于提现手续费D0商户最大手续费");
+                }
+                if(pr.get().getProductTradeRateT1().compareTo(dealerRatePolicy.getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "提现手续费T1代理商结算价必须小于等于产品提现手续费");
+                }
+                if(pr.get().getProductTradeRateD1().compareTo(dealerRatePolicy.getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D1代理商结算价必须小于等于产品提现手续费");
+                }
+                if(pr.get().getProductTradeRateD0().compareTo(dealerRatePolicy.getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D0代理商结算价必须小于等于产品提现手续费");
                 }
             }
         }
