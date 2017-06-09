@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.dealer.dao.DealerRatePolicyDao;
 import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.service.DealerRatePolicyService;
@@ -57,5 +58,17 @@ public class DealerRatePolicyServiceImpl implements DealerRatePolicyService {
     @Override
     public Integer selectCountByDealerId(long dealerId) {
         return dealerRatePolicyDao.selectCountByDealerId(dealerId);
+    }
+
+    /**
+     * 根据代理商编码查询代理结算政策
+     *
+     * @param dealerId
+     * @param policyType
+     * @return
+     */
+    @Override
+    public Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(long dealerId, String policyType) {
+        return dealerRatePolicyDao.selectByDealerIdAndPolicyType(dealerId,policyType);
     }
 }
