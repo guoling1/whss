@@ -3,6 +3,7 @@ package com.jkm.hss.controller.hsyMerchant;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zhangbin on 2017/1/20.
@@ -128,19 +132,29 @@ public class HsyMerchantAuditController extends BaseController {
                 .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
                 .build()
         );
-        //审核未通过给报单员发短信
-//        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
-//                .uid("")
-//                .userType(EnumUserType.BACKGROUND_USER)
-//                .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
-//                .build()
-//        );
+        if(!"".equals(hsyMerchantAuditRequest.getMobile())&&hsyMerchantAuditRequest.getMobile()!=null){
+            String mobile = hsyMerchantAuditRequest.getMobile();
+            MerchantSupport.decryptMobile(mobile);
+            Map map = new HashMap();
+            map.put("name",hsyMerchantAuditRequest.getName());
+            //审核未通过给报单员发短信
+            this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(MerchantSupport.decryptMobile(mobile))
+                    .uid("")
+                    .data(map)
+                    .userType(EnumUserType.BACKGROUND_USER)
+                    .noticeType(EnumNoticeType.NOT_PASS_MESSAGE_EMPLOYEE)
+                    .build()
+            );
+        }
+
 
         hsyMerchantAuditRequest.setStat(1);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(1,"审核未通过");
 
     }
+
+
 
 
     /**

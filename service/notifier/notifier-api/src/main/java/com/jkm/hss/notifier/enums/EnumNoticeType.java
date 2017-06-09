@@ -111,6 +111,11 @@ public enum EnumNoticeType {
     NOT_PASS_MESSAGE(1002,"hsy审核未通过"),
 
     /**
+     * hsy审核未通过给报单员发短信消息
+     */
+    NOT_PASS_MESSAGE_EMPLOYEE(1003,"hsy审核未通过给报单员"),
+
+    /**
      * hsy结算完成
      */
     SETTLEMENT_SUCCESS(1101, "hsy结算完成");
