@@ -136,8 +136,10 @@ public class HsyMerchantAuditController extends BaseController {
             String mobile = hsyMerchantAuditRequest.getMobile();
 //            MerchantSupport.decryptMobile(mobile);
 //            AdminUserSupporter.decryptMobile(0, mobile);
+            String name = hsyMerchantAuditRequest.getName();
+            String shopName="："+name+"，";
             Map map = new HashMap();
-            map.put("name",hsyMerchantAuditRequest.getName());
+            map.put("name",shopName);
             //审核未通过给报单员发短信
             this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(AdminUserSupporter.decryptMobile(0, mobile))
                     .uid("")
