@@ -69,6 +69,6 @@ public class DealerRatePolicyServiceImpl implements DealerRatePolicyService {
      */
     @Override
     public Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(long dealerId, String policyType) {
-        return dealerRatePolicyDao.selectByDealerIdAndPolicyType(dealerId,policyType);
+        return Optional.fromNullable(dealerRatePolicyDao.selectByDealerIdAndPolicyType(dealerId,policyType));
     }
 }

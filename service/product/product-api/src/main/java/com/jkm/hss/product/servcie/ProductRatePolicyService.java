@@ -1,5 +1,6 @@
 package com.jkm.hss.product.servcie;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.product.entity.ProductRatePolicy;
 
 import java.util.List;
@@ -29,4 +30,11 @@ public interface ProductRatePolicyService {
      * @return
      */
     List<ProductRatePolicy> selectByProductId(long productId);
+
+    /**
+     * 根据代理类型查询代理商政策
+     * @param policyType
+     * @return
+     */
+    Optional<ProductRatePolicy> selectByPolicyType(String policyType);
 }

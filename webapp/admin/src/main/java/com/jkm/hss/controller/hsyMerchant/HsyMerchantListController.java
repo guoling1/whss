@@ -10,17 +10,16 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord;
+import com.jkm.hsy.user.help.requestparam.UserTradeRateResponse;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
+import com.jkm.hsy.user.service.UserTradeRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +45,8 @@ public class HsyMerchantListController extends BaseController {
     private OSSClient ossClient;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private UserTradeRateService userTradeRateService;
 
 
     @ResponseBody
@@ -215,9 +216,9 @@ public class HsyMerchantListController extends BaseController {
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
     @ResponseBody
-    @RequestMapping(value = "/test",method = RequestMethod.GET)
-    public CommonResponse test(){
-        userChannelPolicyService.initChannel(1);
-        return CommonResponse.simpleResponse(1, "success");
+    @RequestMapping(value = "/test/{dealerId}",method = RequestMethod.GET)
+    public CommonResponse test(@PathVariable final long dealerId){
+        UserTradeRateResponse userTradeRateResponse = userTradeRateService.getRateRang(dealerId);
+        return CommonResponse.objectResponse(1, "success",userTradeRateResponse);
     }
 }
