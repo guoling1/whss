@@ -144,4 +144,11 @@
         FROM app_product_rate_policy
         WHERE product_id=#{productId} and status = 1 ORDER BY sn ASC;
     </select>
+
+    <select id="selectByPolicyType" resultType="com.jkm.hss.product.entity.ProductRatePolicy">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_product_rate_policy
+        WHERE policy_type = #{policyType} and status = 1;
+    </select>
 </mapper>

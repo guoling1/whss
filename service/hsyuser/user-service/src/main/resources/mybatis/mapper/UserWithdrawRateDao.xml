@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.UserWithdrawRateDao">
+
+    <sql id="Base_Column_List">
+        id,	user_id,withdraw_rate_t1,withdraw_rate_d1,withdraw_rate_d0,status,create_time,update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_user_trade_rate(user_id,withdraw_rate_t1,withdraw_rate_d1,withdraw_rate_d0,status)
+        VALUES(#{userId},#{withdrawRateT1},#{withdrawRateD1},#{withdrawRateD0},#{status})
+    </insert>
+
+
+</mapper>

@@ -38,9 +38,9 @@ public interface DealerRatePolicyDao {
      */
     Integer selectCountByDealerId(@Param("dealerId") long dealerId);
     /**
-     * 根据代理商编码查询代理结算政策
+     * 根据代理商编码和政策编码查询代理结算政策
      * @param dealerId
      * @return
      */
-    Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(@Param("dealerId")long dealerId, @Param("policyType")String policyType);
+    DealerRatePolicy selectByDealerIdAndPolicyType(@Param("dealerId")long dealerId, @Param("policyType")String policyType);
 }

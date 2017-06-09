@@ -1,5 +1,6 @@
 package com.jkm.hss.product.servcie.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.ProductRatePolicyDao;
 import com.jkm.hss.product.entity.ProductRatePolicy;
 import com.jkm.hss.product.enums.EnumPolicyType;
@@ -61,5 +62,16 @@ public class ProductRatePolicyServiceImpl implements ProductRatePolicyService {
         }
 
         return list;
+    }
+
+    /**
+     * 根据代理类型查询代理商政策
+     *
+     * @param policyType
+     * @return
+     */
+    @Override
+    public Optional<ProductRatePolicy> selectByPolicyType(String policyType) {
+        return Optional.fromNullable(productRatePolicyDao.selectByPolicyType(policyType));
     }
 }
