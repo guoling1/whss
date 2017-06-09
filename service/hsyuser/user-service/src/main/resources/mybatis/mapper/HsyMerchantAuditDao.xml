@@ -235,6 +235,7 @@
 			e.CREATETIME,
 			g.realname,
 			g.username,
+			g.mobile,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDC) AS IDCARDC,
