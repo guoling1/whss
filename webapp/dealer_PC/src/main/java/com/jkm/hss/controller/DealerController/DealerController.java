@@ -601,6 +601,16 @@ public class DealerController extends BaseController {
     }
 
     /**
+     * 登录代理商好收银政策
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getProductRatePolicyDetail", method = RequestMethod.POST)
+    public CommonResponse getProductRatePolicyDetail () {
+        List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(super.getDealerId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerRatePolicies);
+    }
+    /**
      * 保存或修改好收银代理商政策
      * @param dealerRatePolicySaveOrUpdateRequest
      * @return

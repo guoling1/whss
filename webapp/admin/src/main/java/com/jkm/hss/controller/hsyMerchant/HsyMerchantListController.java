@@ -11,7 +11,9 @@ import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
+import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,8 @@ public class HsyMerchantListController extends BaseController {
     private HsyMerchantAuditService hsyMerchantAuditService;
     @Autowired
     private OSSClient ossClient;
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
 
 
     @ResponseBody
@@ -209,5 +213,11 @@ public class HsyMerchantListController extends BaseController {
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
+    }
+    @ResponseBody
+    @RequestMapping(value = "/test",method = RequestMethod.GET)
+    public CommonResponse test(){
+        userChannelPolicyService.initChannel(1);
+        return CommonResponse.simpleResponse(1, "success");
     }
 }
