@@ -19,4 +19,100 @@
         </if>
     </select>
 
+    <select id="getBankName" resultType="com.jkm.hss.merchant.entity.AppBizBankBranchResponse">
+        SELECT
+            BANKNAME
+        FROM
+            app_biz_bank_branch
+        WHERE
+            BANKNAME LIKE CONCAT('%',#{bankName},'%')
+        GROUP BY
+            BANKNAME
+        ORDER BY
+            BANKINDEX,
+            BRANCHCODE
+    </select>
+
+    <insert id="addBankCode" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_biz_bank_branch
+        (
+        BRANCHCODE,
+        BRANCHNAME,
+        BANKNAME,
+        PROVINCE,
+        CITY,
+        DISTRICTCODE,
+        AVAILABLE,
+        BANKINDEX
+        )
+        VALUES
+        (
+        #{branchCode},
+        #{branchName},
+        #{bankName},
+        #{belongProvinceName},
+        #{belongCityName},
+        #{city},
+        1,16
+        )
+
+    </insert>
+
+    <select id="getUnionInfo" resultType="com.jkm.hss.merchant.entity.AppBizBankBranchResponse">
+        SELECT * FROM app_biz_bank_branch
+        WHERE
+        1=1
+    <if test="province!=null and province!=''">
+        AND DISTRICTCODE LIKE CONCAT('%',#{province},'%')
+    </if>
+    <if test="city!=null and city!=''">
+        AND DISTRICTCODE=#{city}
+    </if>
+    <if test="branchName!=null and branchName!=''">
+        AND BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
+    </if>
+    <if test="branchCode!=null and branchCode!=''">
+        AND BRANCHCODE=#{branchCode}
+    </if>
+        ORDER BY ID DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getUnionInfoCount" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        app_biz_bank_branch
+        WHERE
+        1 = 1
+        <if test="province!=null and province!=''">
+            AND DISTRICTCODE LIKE CONCAT('%',#{province},'%')
+        </if>
+        <if test="city!=null and city!=''">
+            AND DISTRICTCODE=#{city}
+        </if>
+        <if test="branchName!=null and branchName!=''">
+            AND BRANCHNAME=#{branchName}
+        </if>
+        <if test="branchCode!=null and branchCode!=''">
+            AND BRANCHCODE=#{branchCode}
+        </if>
+        ORDER BY BANKINDEX,BRANCHCODE
+    </select>
+
+    <select id="getBranch" resultType="com.jkm.hss.merchant.entity.AppBizBankBranchResponse">
+        SELECT
+          BRANCHNAME,BRANCHCODE
+        FROM
+            app_biz_bank_branch
+        WHERE
+            DISTRICTCODE LIKE CONCAT('%',#{districtCode},'%')
+        AND BANKNAME = #{bankName}
+        AND BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
+    </select>
+
+
+    <update id="updateBranch">
+        UPDATE app_biz_card SET BANKADDRESS=#{branchName},BRANCHCODE=#{branchCode} ,BRANCHDISTRICTCODE=#{districtCode} WHERE SID=#{sid}
+    </update>
 </mapper>

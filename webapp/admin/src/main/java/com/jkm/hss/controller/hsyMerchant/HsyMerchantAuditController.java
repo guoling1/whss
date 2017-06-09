@@ -72,6 +72,9 @@ public class HsyMerchantAuditController extends BaseController {
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
+        if ("".equals(hsyMerchantAuditRequest.getBranchCode())||hsyMerchantAuditRequest.getBranchCode()==null){
+            return CommonResponse.simpleResponse(-1, "联行号不能为空");
+        }
         AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
         if (acct!=null){
             accountService.delAcct(acct.getAccountID());
