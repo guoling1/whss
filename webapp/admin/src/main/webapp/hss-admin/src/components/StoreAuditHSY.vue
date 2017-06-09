@@ -723,6 +723,7 @@
           name: this.msg.name,
           checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
+          mobile: this.msg.mobile
         })
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
