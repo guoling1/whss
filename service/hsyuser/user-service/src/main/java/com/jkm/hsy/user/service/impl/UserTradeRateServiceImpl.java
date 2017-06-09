@@ -4,12 +4,14 @@ import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.service.DealerRatePolicyService;
 import com.jkm.hss.product.entity.ProductRatePolicy;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductRatePolicyService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.UserTradeRateDao;
 import com.jkm.hsy.user.entity.UserTradeRate;
 import com.jkm.hsy.user.help.requestparam.UserTradeRateResponse;
 import com.jkm.hsy.user.service.UserTradeRateService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,41 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
             }
         }
         return userTradeRateResponse;
+    }
+
+    /**
+     * 获取当前商户T1费率
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public Pair<BigDecimal, BigDecimal> getCurrentUserRate(long userId) {
+        BigDecimal wxRate = null;
+        BigDecimal zfbRate = null;
+        UserTradeRate wxTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId());
+        if(wxTradeRate!=null){
+            wxRate = wxTradeRate.getTradeRateT1();
+        }
+        UserTradeRate zfbTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId());
+        if(zfbTradeRate!=null){
+            wxRate = zfbTradeRate.getTradeRateT1();
+        }
+        return Pair.of(wxRate,zfbRate);
+    }
+
+    /**
+     * 保存商户费率
+     * @param userId
+     * @param wxRate
+     * @param zfbRate
+     * @param isOpenWx
+     * @param isOpenZfb
+     */
+    @Override
+    public  void saveUserRate(long userId,BigDecimal wxRate,BigDecimal zfbRate,int isOpenWx,int isOpenZfb) {
+
+
     }
 
 

@@ -11,5 +11,10 @@
         VALUES(#{userId},#{policyType},#{tradeRateT1},#{tradeRateD1},#{tradeRateD0},#{isOpen},#{status})
     </insert>
 
-
+    <select id="selectByUserIdAndPolicyType" resultType="com.jkm.hsy.user.entity.UserTradeRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_user_trade_rate
+        WHERE user_id=#{userId} and policy_type = #{policyType} and status = 1;
+    </select>
 </mapper>
