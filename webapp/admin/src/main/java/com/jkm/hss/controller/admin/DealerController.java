@@ -1289,6 +1289,15 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getDealerTradeRateD0().compareTo(dealerRatePolicy.getMerchantMinRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "微信D0商户最小费率必须小于等于微信D0代理商结算价");
                 }
+                if(dealerRatePolicy.getMerchantMinRateT1().compareTo(dealerRatePolicy.getMerchantMaxRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "微信T1商户最小费率必须小于等于微信T1商户最大费率");
+                }
+                if(dealerRatePolicy.getMerchantMinRateD1().compareTo(dealerRatePolicy.getMerchantMaxRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "微信D1商户最小费率必须小于等于微信D1商户最大费率");
+                }
+                if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "微信D0商户最小费率必须小于等于微信D0商户最大费率");
+                }
             }
             if((EnumPolicyType.ALIPAY.getId()).equals(dealerRatePolicy.getPolicyType())){
                 if(dealerRatePolicy.getDealerTradeRateT1()==null){
@@ -1327,6 +1336,15 @@ public class DealerController extends BaseController {
                 if(dealerRatePolicy.getDealerTradeRateD0().compareTo(dealerRatePolicy.getMerchantMinRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "支付宝D0商户最小费率必须小于等于支付宝D0代理商结算价");
                 }
+                if(dealerRatePolicy.getMerchantMinRateT1().compareTo(dealerRatePolicy.getMerchantMaxRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "支付宝T1商户最小费率必须小于等于支付宝T1商户最大费率");
+                }
+                if(dealerRatePolicy.getMerchantMinRateD1().compareTo(dealerRatePolicy.getMerchantMaxRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "支付宝D1商户最小费率必须小于等于支付宝D1商户最大费率");
+                }
+                if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "支付宝D0商户最小费率必须小于等于支付宝D0商户最大费率");
+                }
             }
             if((EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicy.getPolicyType())){
                 if(dealerRatePolicy.getDealerTradeRateT1()==null){
@@ -1364,6 +1382,15 @@ public class DealerController extends BaseController {
                 }
                 if(dealerRatePolicy.getDealerTradeRateD0().compareTo(dealerRatePolicy.getMerchantMinRateD0())>0){
                     return CommonResponse.simpleResponse(-1, "提现手续费D0商户最小费率必须小于等于提现手续费D0代理商结算价");
+                }
+                if(dealerRatePolicy.getMerchantMinRateT1().compareTo(dealerRatePolicy.getMerchantMaxRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "提现手续费T1商户最小手续费必须小于等于提现手续费T1商户最大手续费");
+                }
+                if(dealerRatePolicy.getMerchantMinRateD1().compareTo(dealerRatePolicy.getMerchantMaxRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D1商户最小手续费必须小于等于提现手续费D1商户最大手续费");
+                }
+                if(dealerRatePolicy.getMerchantMinRateD0().compareTo(dealerRatePolicy.getMerchantMaxRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D0商户最小手续费必须小于等于提现手续费D0商户最大手续费");
                 }
             }
         }

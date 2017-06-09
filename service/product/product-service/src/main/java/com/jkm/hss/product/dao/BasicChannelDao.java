@@ -64,4 +64,9 @@ public interface BasicChannelDao {
      * @return
      */
     List<BasicChannel> selectNewAll();
+    /**
+     * 查询好收银通道
+     * @return
+     */
+    List<BasicChannel> selectHsyAll();
 }
