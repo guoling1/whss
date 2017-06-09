@@ -47,6 +47,10 @@ public class UserChannelPolicy extends BaseEntity{
      */
     private String exchannelCode;
     /**
+     * 公众号
+     */
+    private String appId;
+    /**
      * 活动编号
      */
     private String exchannelEventCode;

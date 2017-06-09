@@ -11,4 +11,10 @@ public interface UserWithdrawRateService {
      * @param userWithdrawRate
      */
     void insert(UserWithdrawRate userWithdrawRate);
+    /**
+     * 根据用户编码查询
+     * @param userId
+     * @return
+     */
+    UserWithdrawRate selectByUserId(long userId);
 }

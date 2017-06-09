@@ -22,4 +22,16 @@ public class UserWithdrawRateServiceImpl implements UserWithdrawRateService{
     public void insert(UserWithdrawRate userWithdrawRate) {
         userWithdrawRateDao.insert(userWithdrawRate);
     }
+
+    /**
+     * 根据用户编码查询
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public UserWithdrawRate selectByUserId(long userId) {
+        return userWithdrawRateDao.selectByUserId(userId);
+    }
+
 }
