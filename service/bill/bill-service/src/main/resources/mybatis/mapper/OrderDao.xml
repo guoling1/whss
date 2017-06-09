@@ -509,10 +509,10 @@
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
         </if>
         <if test="proxyNameHsy != null and proxyNameHsy!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyNameHsy},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = z.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyNameHsy},'%')
         </if>
         <if test="proxyNameHsy1 != null and proxyNameHsy1!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyNameHsy1},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = z.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyNameHsy1},'%')
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
@@ -1335,10 +1335,10 @@
             AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
         </if>
         <if test="proxyNameHsy != null and proxyNameHsy!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyNameHsy},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = z.DEALERID AND `level`=1 ) LIKE CONCAT('%',#{proxyNameHsy},'%')
         </if>
         <if test="proxyNameHsy1 != null and proxyNameHsy1!=''">
-            AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyNameHsy1},'%')
+            AND (SELECT proxy_name FROM tb_dealer WHERE id = z.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyNameHsy1},'%')
         </if>
         <if test="businessOrderNo != null and businessOrderNo!=''">
             AND a.business_order_no = #{businessOrderNo}
