@@ -43,10 +43,6 @@ public class HsyMerchantListController extends BaseController {
     private HsyMerchantAuditService hsyMerchantAuditService;
     @Autowired
     private OSSClient ossClient;
-    @Autowired
-    private UserChannelPolicyService userChannelPolicyService;
-    @Autowired
-    private UserTradeRateService userTradeRateService;
 
 
     @ResponseBody
@@ -214,11 +210,5 @@ public class HsyMerchantListController extends BaseController {
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
-    }
-    @ResponseBody
-    @RequestMapping(value = "/test/{dealerId}",method = RequestMethod.GET)
-    public CommonResponse test(@PathVariable final long dealerId){
-        UserTradeRateResponse userTradeRateResponse = userTradeRateService.getRateRang(dealerId);
-        return CommonResponse.objectResponse(1, "success",userTradeRateResponse);
     }
 }
