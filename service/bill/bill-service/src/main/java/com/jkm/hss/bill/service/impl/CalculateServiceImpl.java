@@ -30,6 +30,9 @@ import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.UserWithdrawRate;
+import com.jkm.hsy.user.service.UserTradeRateService;
+import com.jkm.hsy.user.service.UserWithdrawRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -73,6 +76,10 @@ public class CalculateServiceImpl implements CalculateService {
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private BasicChannelService basicChannelService;
+    @Autowired
+    private UserTradeRateService userTradeRateService;
+    @Autowired
+    private UserWithdrawRateService userWithdrawRateService;
     /**
      * {@inheritDoc}
      *
@@ -100,12 +107,14 @@ public class CalculateServiceImpl implements CalculateService {
             //hsy
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if (EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
-                return  appAuUser.getWeixinRate();
-            }else if (EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
-                return appAuUser.getAlipayRate();
-            }else{
-                return appAuUser.getFastRate();
+            final Pair<BigDecimal, BigDecimal> currentUserRate = this.userTradeRateService.getCurrentUserRate(appAuUser.getId());
+            switch (EnumPayChannelSign.idOf(channelSign).getPaymentChannel()){
+                case WECHAT_PAY:
+                    return currentUserRate.getLeft();
+                case ALIPAY:
+                    return currentUserRate.getRight();
+                default:
+                    return currentUserRate.getLeft();
             }
 
         }
@@ -144,15 +153,9 @@ public class CalculateServiceImpl implements CalculateService {
             //HSY
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if ( appAuUser.getDealerID() == 0){
-                final Product product = this.productService.selectByType(type.getId()).get();
-                final ProductChannelDetail productChannelDetail =
-                        this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(),channelSign).get();
-                return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
-            }
-            final Dealer dealer = this.dealerService.getById(appAuUser.getDealerID()).get();
-            final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), appAuUser.getProductID(),channelSign).get();
-            return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
+            final UserWithdrawRate userWithdrawRate =
+                    this.userWithdrawRateService.selectByUserId(appAuUser.getId()).get();
+            return  userWithdrawRate.getWithdrawRateD0().setScale(2);
         }
 
     }

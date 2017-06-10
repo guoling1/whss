@@ -1,10 +1,7 @@
 package com.jkm.hss.controller.channel;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
@@ -140,8 +137,8 @@ public class ProductController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public CommonResponse update(@RequestBody final ProductListHsyResponse request) {
+    @RequestMapping(value = "updateHsy", method = RequestMethod.POST)
+    public CommonResponse updateHsy(@RequestBody final ProductListHsyResponse request) {
         try{
             final Product product = this.productService.selectById(request.getProductId()).get();
             product.setProductName(request.getProductName());
@@ -162,8 +159,8 @@ public class ProductController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "updateHsy", method = RequestMethod.POST)
-    public CommonResponse updateHsy(@RequestBody final ProductListResponse request) {
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public CommonResponse update(@RequestBody final ProductListResponse request) {
         try{
             final Product product = this.productService.selectById(request.getProductId()).get();
             product.setProductName(request.getProductName());

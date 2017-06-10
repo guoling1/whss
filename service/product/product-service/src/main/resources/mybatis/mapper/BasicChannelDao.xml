@@ -21,6 +21,8 @@
         channel_company,
         lowest_fee,
         is_use,
+        is_hsy,
+        is_special,
         remarks,
         status
         )VALUES(
@@ -42,6 +44,8 @@
         #{channelCompany},
         #{lowestFee},
         #{isUse},
+        #{isHsy},
+        #{isSpecial},
         #{remarks},
         #{status}
         )

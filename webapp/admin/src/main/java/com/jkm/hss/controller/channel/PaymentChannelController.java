@@ -47,8 +47,8 @@ public class PaymentChannelController extends BaseController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public CommonResponse add(@RequestBody PaymentChannelRequest request) {
         try {
-            final Optional<BasicChannel> basicChannelOptional1 = this.basicChannelService.selectByChannelTypeSign(EnumPayChannelSign.of(request.getChannelName()).getId());
-            Preconditions.checkNotNull(!basicChannelOptional1.isPresent(), "该通道已经存在");
+            //final Optional<BasicChannel> basicChannelOptional1 = this.basicChannelService.selectByChannelTypeSign(EnumPayChannelSign.of(request.getChannelName()).getId());
+           // Preconditions.checkNotNull(!basicChannelOptional1.isPresent(), "该通道已经存在");
             //判断该通道的渠道来源是否同属一个,若一个则使用同一个人资金帐号,若不同,则为该渠道创建新的资金帐号
             final Optional<BasicChannel> basicChannelOptional =
                     this.basicChannelService.selectByChannelSource(request.getChannelSource());

@@ -13,12 +13,13 @@
             <el-table-column prop="productName" label="产品名称"></el-table-column>
             <el-table-column label="通道配置" min-width="100">
               <template scope="scope">
-                <el-button type="text" @click="detail(scope.$index)">查看详情</el-button>
+                <el-button type="text" @click="detail(scope.$index)" v-if="scope.row.type=='hss'">查看详情</el-button>
+                <el-button type="text" @click="detailHsy(scope.$index)" v-if="scope.row.type=='hsy'">查看详情</el-button>
               </template>
             </el-table-column>
             <el-table-column label="网关配置" min-width="100">
               <template scope="scope">
-                <el-button type="text" @click="setup(scope.$index)" v-if="scope.$index==0">配置</el-button>
+                <el-button type="text" @click="setup(scope.$index)" v-if="scope.row.type=='hss'">配置</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -155,6 +156,9 @@
       detail: function (val) {
         window.open('http://admin.qianbaojiajia.com/admin/details/productAdd?id='+val);
 //        this.$router.push({path:'/admin/record/productAdd',query:{id:val}})
+      },
+      detailHsy: function (val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/productAddHsy?id='+val);
       }
     },
     computed: {
