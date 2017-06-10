@@ -84,6 +84,10 @@
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
+            <div class="box-body" style="padding-bottom: 0">
+              <span><b>支付金额：</b>统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</span>
+              <span style="margin-left: 20px"><b>手续费：</b>统计总额 {{allTotal1 | fix}}元 当页总额 {{pageTotal1 | fix}}元</span>
+            </div>
             <div class="box-body">
               <el-table v-loading.body="tableLoading" style="font-size: 12px;margin:15px 0" :data="records" border>
                 <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
@@ -211,7 +215,11 @@
           {value: 'yijia_alipay', label: '溢+支付宝'},
         ],
         date: '',
-        total: 0
+        total: 0,
+        pageTotal: 0,
+        pageTotal1: 0,
+        allTotal: 0,
+        allTotal1: 0
       }
     },
     created(){
@@ -242,6 +250,7 @@
         }
       }
       this.getData();
+      this.getTotal();
     },
     methods: {
       datetimeSelect: function (val) {
@@ -257,6 +266,15 @@
       screen: function () {
         this.query.page = 1;
         this.getData();
+        this.getTotal();
+      },
+      getTotal: function () {
+        this.$http.post('/daili/tradeQuery/amountCount', this.query).then(res => {
+          this.allTotal = res.data.totalPayment==null?0:res.data.totalPayment;
+          this.allTotal1 = res.data.totalPoundage==null?0:res.data.totalPoundage;
+        }, err => {
+          console.log(err);
+        })
       },
       getData: function () {
         this.tableLoading = true;
@@ -264,6 +282,13 @@
           this.tableLoading = false;
           this.total = res.data.count;
           this.records = res.data.records;
+          let t = 0,s = 0;
+          for (let i = 0; i < res.data.records.length; i++) {
+            t += res.data.records[i].tradeAmount / 1;
+            s += res.data.records[i].poundage / 1;
+          }
+          this.pageTotal = t;
+          this.pageTotal1 = s;
         }, err => {
           this.tableLoading = false;
           this.$message({
