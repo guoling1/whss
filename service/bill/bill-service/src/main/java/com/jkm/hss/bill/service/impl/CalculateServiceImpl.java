@@ -30,6 +30,7 @@ import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.service.UserTradeRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -73,6 +74,8 @@ public class CalculateServiceImpl implements CalculateService {
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private BasicChannelService basicChannelService;
+    @Autowired
+    private UserTradeRateService userTradeRateService;
     /**
      * {@inheritDoc}
      *
@@ -100,13 +103,8 @@ public class CalculateServiceImpl implements CalculateService {
             //hsy
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if (EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
-                return  appAuUser.getWeixinRate();
-            }else if (EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
-                return appAuUser.getAlipayRate();
-            }else{
-                return appAuUser.getFastRate();
-            }
+
+
 
         }
 

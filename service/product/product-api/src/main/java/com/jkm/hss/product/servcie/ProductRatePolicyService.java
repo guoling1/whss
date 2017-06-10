@@ -37,4 +37,5 @@ public interface ProductRatePolicyService {
      * @return
      */
     Optional<ProductRatePolicy> selectByPolicyType(String policyType);
+
 }
