@@ -49,12 +49,12 @@
                     <tbody>
                     <tr>
                       <th>支付方式</th>
-                      <th>T1代理商结算价</th>
-                      <th>T1商户费率</th>
-                      <th>D1代理商结算价</th>
-                      <th>D1商户费率</th>
-                      <th>D0代理商结算价</th>
-                      <th>D0商户费率</th>
+                      <th>T1产品结算价</th>
+                      <th>T1商户默认费率</th>
+                      <th>D1产品结算价</th>
+                      <th>D1商户默认费率</th>
+                      <th>D0产品结算价</th>
+                      <th>D0商户默认费率</th>
                     </tr>
                     <tr v-for="channel in channels">
                       <td style="width: 90px">
@@ -63,7 +63,7 @@
                         <span v-if="channel.policyType=='withdraw'">提现手续费</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.dealerTradeRateT1">
+                        <input type="text" name="name" v-model="channel.productTradeRateT1">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
@@ -77,7 +77,7 @@
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.dealerTradeRateD1">
+                        <input type="text" name="name" v-model="channel.productTradeRateD1">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
@@ -91,7 +91,7 @@
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.dealerTradeRateD0">
+                        <input type="text" name="name" v-model="channel.productTradeRateD0">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
@@ -142,19 +142,7 @@
     name: 'productAdd',
     data () {
       return {
-        tableHas:false,
-        dialogTableVisible: false, // 选择通道层
-        multipleSelection:[],
-        password:'',
-        query: {
-          type: '',
-          productName: '',
-          limitPayFeeRate:'',
-          limitWithdrawFeeRate:'',
-          merchantWithdrawType:'',
-          dealerBalanceType:'',
-          channels:[]
-        },
+        query: {},
         channels:[],
         id: 0,
         isShow: true,
@@ -165,30 +153,21 @@
       //若为查看详情
       if(this.$route.query.id!=undefined) {
         this.$data.isShow = false;
-        this.$data.tableHas = true;
         this.$http.post('/admin/product/list')
           .then(function (res) {
-            this.$data.query = res.data[this.$route.query.id];
-            this.$data.productId = res.data[this.$route.query.id].productId;
-            this.$data.accountId = res.data[this.$route.query.id].accountId;
-            for(var i=0;i<this.query.list.length;i++){
-              for (var j=0;j<this.gridData.length;j++){
-                if(this.query.list[i].basicChannelId==this.gridData[j].id){
-                  this.gridData[j].basicChannelId = this.gridData[j].id;
-                  this.gridData[j].productTradeRate = this.query.list[i].productTradeRate;
-                  this.gridData[j].productBalanceType = this.query.list[i].productBalanceType;
-                  this.gridData[j].productWithdrawFee = this.query.list[i].productWithdrawFee;
-                  this.gridData[j].productMerchantPayRate = this.query.list[i].productMerchantPayRate;
-                  this.gridData[j].productMerchantWithdrawFee = this.query.list[i].productMerchantWithdrawFee;
-                  this.gridData[j].id1 = this.query.list[i].id
-
-                  this.channels.push(this.gridData[j]);
-                  this.gridData.splice(j, 1);
-                  j--;
-                }
-              }
+            this.query = JSON.parse(JSON.stringify(res.data[this.$route.query.id]));
+            this.channels = JSON.parse(JSON.stringify(res.data[this.$route.query.id].list));
+            for(let i=0;i<this.channels.length-1;i++){
+              this.channels[i].merchantMaxRateD0 = (this.channels[i].merchantMaxRateD0*100).toFixed(2);
+              this.channels[i].merchantMaxRateD1 = (this.channels[i].merchantMaxRateD1*100).toFixed(2);
+              this.channels[i].merchantMaxRateT1 = (this.channels[i].merchantMaxRateT1*100).toFixed(2);
+              this.channels[i].merchantMinRateD0 = (this.channels[i].merchantMinRateD0*100).toFixed(2);
+              this.channels[i].merchantMinRateD1 = (this.channels[i].merchantMinRateD1*100).toFixed(2);
+              this.channels[i].merchantMinRateT1 = (this.channels[i].merchantMinRateT1*100).toFixed(2);
+              this.channels[i].productTradeRateD0 = (this.channels[i].productTradeRateD0*100).toFixed(2);
+              this.channels[i].productTradeRateD1 = (this.channels[i].productTradeRateD1*100).toFixed(2);
+              this.channels[i].productTradeRateT1 = (this.channels[i].productTradeRateT1*100).toFixed(2);
             }
-            this.$data.query.channels = this.$data.channels
           }, function (err) {
             this.$message({
               showClose: true,
@@ -244,16 +223,19 @@
       },
       //修改
       change: function () {
-        for(let i= 0;i<this.$data.channels.length;i++){
-          this.channels[i].basicChannelId = this.$data.channels[i].id;
-          this.channels[i].productBalanceType = this.$data.channels[i].basicBalanceType;
-          this.channels[i].id = this.$data.channels[i].id1;
+        this.query.list = JSON.parse(JSON.stringify(this.channels));
+        for(let i=0;i<this.query.list.length-1;i++){
+          this.query.list[i].merchantMaxRateD0 = (this.query.list[i].merchantMaxRateD0/100).toFixed(2);
+          this.query.list[i].merchantMaxRateD1 = (this.query.list[i].merchantMaxRateD1/100).toFixed(2);
+          this.query.list[i].merchantMaxRateT1 = (this.query.list[i].merchantMaxRateT1/100).toFixed(2);
+          this.query.list[i].merchantMinRateD0 = (this.query.list[i].merchantMinRateD0/100).toFixed(2);
+          this.query.list[i].merchantMinRateD1 = (this.query.list[i].merchantMinRateD1/100).toFixed(2);
+          this.query.list[i].merchantMinRateT1 = (this.query.list[i].merchantMinRateT1/100).toFixed(2);
+          this.query.list[i].productTradeRateD0 = (this.query.list[i].productTradeRateD0/100).toFixed(2);
+          this.query.list[i].productTradeRateD1 = (this.query.list[i].productTradeRateD1/100).toFixed(2);
+          this.query.list[i].productTradeRateT1 = (this.query.list[i].productTradeRateT1/100).toFixed(2);
         }
-        this.query.channels = this.channels;
-        this.query.productId=this.$data.productId;
-        this.query.accountId = this.$data.accountId;
-        this.query.list=this.query.channels
-        this.$http.post('/admin/product/update',this.query)
+        this.$http.post('/admin/product/updateHsy',this.query)
           .then(function(res){
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '修改成功'
