@@ -11,6 +11,18 @@
         VALUES(#{userId},#{policyType},#{tradeRateT1},#{tradeRateD1},#{tradeRateD0},#{isOpen},#{status})
     </insert>
 
+    <update id="update">
+        UPDATE app_user_trade_rate
+        SET
+        user_id = #{userId},
+        policy_type = #{policyType},
+        is_open = #{isOpen},
+        trade_rate_t1 = #{tradeRateT1},
+        trade_rate_d0 = #{tradeRateD0},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
     <select id="selectByUserIdAndPolicyType" resultType="com.jkm.hsy.user.entity.UserTradeRate">
         SELECT
         <include refid="Base_Column_List" />

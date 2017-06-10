@@ -7,9 +7,24 @@
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO app_user_trade_rate(user_id,withdraw_rate_t1,withdraw_rate_d1,withdraw_rate_d0,status)
+        INSERT INTO app_user_withdraw_rate(user_id,withdraw_rate_t1,withdraw_rate_d1,withdraw_rate_d0,status)
         VALUES(#{userId},#{withdrawRateT1},#{withdrawRateD1},#{withdrawRateD0},#{status})
     </insert>
 
+    <update id="update">
+        UPDATE app_user_withdraw_rate
+        SET
+        user_id = #{userId},
+        withdraw_rate_t1 = #{withdrawRateT1},
+        withdraw_rate_d0 = #{withdrawRateD0},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
 
+    <select id="selectByUserId" resultType="com.jkm.hsy.user.entity.UserWithdrawRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_user_withdraw_rate
+        WHERE user_id=#{userId} and status = 1;
+    </select>
 </mapper>

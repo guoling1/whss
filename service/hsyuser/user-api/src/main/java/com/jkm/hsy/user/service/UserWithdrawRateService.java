@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hsy.user.entity.UserWithdrawRate;
 
 /**
@@ -11,4 +12,15 @@ public interface UserWithdrawRateService {
      * @param userWithdrawRate
      */
     void insert(UserWithdrawRate userWithdrawRate);
+    /**
+     * 修改
+     * @param userWithdrawRate
+     */
+    void update(UserWithdrawRate userWithdrawRate);
+    /**
+     * 根据用户编码查询
+     * @param userId
+     * @return
+     */
+    Optional<UserWithdrawRate> selectByUserId(long userId);
 }

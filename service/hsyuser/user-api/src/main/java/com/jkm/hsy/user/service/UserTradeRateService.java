@@ -17,6 +17,12 @@ public interface UserTradeRateService {
     void insert(UserTradeRate userTradeRate);
 
     /**
+     * 更新
+     * @param userTradeRate
+     */
+    void update(UserTradeRate userTradeRate);
+
+    /**
      * 查询T1结算费率
      * @param dealerId
      * @return
@@ -38,6 +44,6 @@ public interface UserTradeRateService {
      * @param isOpenWx
      * @param isOpenZfb
      */
-    void saveUserRate(long userId,BigDecimal wxRate,BigDecimal zfbRate,int isOpenWx,int isOpenZfb);
+    void saveUserRate(long userId,long dealerId,BigDecimal wxRate,BigDecimal zfbRate,int isOpenWx,int isOpenZfb);
 
 }

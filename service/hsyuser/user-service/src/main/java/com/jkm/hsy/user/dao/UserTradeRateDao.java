@@ -14,6 +14,11 @@ public interface UserTradeRateDao {
      * @param userTradeRate
      */
     void insert(UserTradeRate userTradeRate);
+    /**
+     * 修改
+     * @param userTradeRate
+     */
+    void update(UserTradeRate userTradeRate);
 
     /**
      * 根据法人编码和政策类型查询
