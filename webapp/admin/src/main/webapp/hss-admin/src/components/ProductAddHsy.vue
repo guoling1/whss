@@ -10,7 +10,7 @@
         <div class="">
           <div class="table-responsive">
             <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
+              <el-col :span="3">
                 <div class="alignRight">项目类型:</div>
               </el-col>
               <el-col :span="6">
@@ -27,7 +27,7 @@
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
+              <el-col :span="3">
                 <div class="alignRight">产品名称:</div>
               </el-col>
               <el-col :span="6">
@@ -40,10 +40,10 @@
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="3">
+              <el-col :span="2">
                 <div class="alignRight">添加通道:</div>
               </el-col>
-              <el-col :span="14">
+              <el-col :span="15">
                 <div class="grid-content bg-purple-light tableSel">
                   <table class="table table-bordered table-hover dataTable">
                     <tbody>
@@ -63,44 +63,44 @@
                         <span v-if="channel.policyType=='withdraw'">提现手续费</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.productTradeRateT1">
+                        <input class="input" type="text" name="name" v-model="channel.productTradeRateT1">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.merchantMinRateT1" style="width: 33%">
+                        <input type="text" name="name" v-model="channel.merchantMinRateT1" style="border-bottom: 1px solid #d0d0d0 !important;width: 33%">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'"></span>
                         &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                        <input type="text" name="name" v-model="channel.merchantMaxRateT1" style="width: 33%">
+                        <input type="text" name="name" v-model="channel.merchantMaxRateT1" style="border-bottom: 1px solid #d0d0d0 !important;width: 33%">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.productTradeRateD1">
+                        <input class="input" type="text" name="name" v-model="channel.productTradeRateD1">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.merchantMinRateD1" style="width: 33%">
+                        <input type="text" name="name" v-model="channel.merchantMinRateD1" style="border-bottom: 1px solid #d0d0d0 !important;width: 33%">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'"></span>
                         &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                        <input type="text" name="name" v-model="channel.merchantMaxRateD1" style="width: 33%">
+                        <input type="text" name="name" v-model="channel.merchantMaxRateD1" style="border-bottom: 1px solid #d0d0d0 !important;width: 33%">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.productTradeRateD0">
+                        <input class="input" type="text" name="name" v-model="channel.productTradeRateD0">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
                       <td>
-                        <input type="text" name="name" v-model="channel.merchantMinRateD0" style="width: 33%">
+                        <input type="text" name="name" v-model="channel.merchantMinRateD0" style="border-bottom: 1px solid #d0d0d0 !important;width: 33%">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'"></span>
                         &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                        <input type="text" name="name" v-model="channel.merchantMaxRateD0" style="width: 33%">
+                        <input type="text" name="name" v-model="channel.merchantMaxRateD0" style="border-bottom: 1px solid #d0d0d0 !important;width: 33%">
                         <span v-if="channel.policyType!='withdraw'">%</span>
                         <span v-if="channel.policyType=='withdraw'">元/笔</span>
                       </td>
@@ -225,15 +225,15 @@
       change: function () {
         this.query.list = JSON.parse(JSON.stringify(this.channels));
         for(let i=0;i<this.query.list.length-1;i++){
-          this.query.list[i].merchantMaxRateD0 = (this.query.list[i].merchantMaxRateD0/100).toFixed(2);
-          this.query.list[i].merchantMaxRateD1 = (this.query.list[i].merchantMaxRateD1/100).toFixed(2);
-          this.query.list[i].merchantMaxRateT1 = (this.query.list[i].merchantMaxRateT1/100).toFixed(2);
-          this.query.list[i].merchantMinRateD0 = (this.query.list[i].merchantMinRateD0/100).toFixed(2);
-          this.query.list[i].merchantMinRateD1 = (this.query.list[i].merchantMinRateD1/100).toFixed(2);
-          this.query.list[i].merchantMinRateT1 = (this.query.list[i].merchantMinRateT1/100).toFixed(2);
-          this.query.list[i].productTradeRateD0 = (this.query.list[i].productTradeRateD0/100).toFixed(2);
-          this.query.list[i].productTradeRateD1 = (this.query.list[i].productTradeRateD1/100).toFixed(2);
-          this.query.list[i].productTradeRateT1 = (this.query.list[i].productTradeRateT1/100).toFixed(2);
+          this.query.list[i].merchantMaxRateD0 = (this.query.list[i].merchantMaxRateD0/100).toFixed(4);
+          this.query.list[i].merchantMaxRateD1 = (this.query.list[i].merchantMaxRateD1/100).toFixed(4);
+          this.query.list[i].merchantMaxRateT1 = (this.query.list[i].merchantMaxRateT1/100).toFixed(4);
+          this.query.list[i].merchantMinRateD0 = (this.query.list[i].merchantMinRateD0/100).toFixed(4);
+          this.query.list[i].merchantMinRateD1 = (this.query.list[i].merchantMinRateD1/100).toFixed(4);
+          this.query.list[i].merchantMinRateT1 = (this.query.list[i].merchantMinRateT1/100).toFixed(4);
+          this.query.list[i].productTradeRateD0 = (this.query.list[i].productTradeRateD0/100).toFixed(4);
+          this.query.list[i].productTradeRateD1 = (this.query.list[i].productTradeRateD1/100).toFixed(4);
+          this.query.list[i].productTradeRateT1 = (this.query.list[i].productTradeRateT1/100).toFixed(4);
         }
         this.$http.post('/admin/product/updateHsy',this.query)
           .then(function(res){
@@ -290,5 +290,10 @@
       top:7px;
       right: 0;
     }
+  }
+  .input {
+    width: 70% !important;
+    border: none;
+    border-bottom: 1px solid #d0d0d0 !important;
   }
 </style>
