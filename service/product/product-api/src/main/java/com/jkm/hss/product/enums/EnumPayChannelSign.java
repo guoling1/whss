@@ -103,19 +103,19 @@ public enum EnumPayChannelSign {
     /**
      * 民生微信
      */
-    XMMS_WECHAT_T1(701, "xmms_wechat_t1", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, true),
+    XMMS_WECHAT_T1(701, "xmms_wechat_t1", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信T1", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, true),
     /**
      * 民生支付宝
      */
-    XMMS_ALIPAY_T1(702, "xmms_alipay_t1", EnumPaymentChannel.ALIPAY, "厦门民生支付宝", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, true),
+    XMMS_ALIPAY_T1(702, "xmms_alipay_t1", EnumPaymentChannel.ALIPAY, "厦门民生支付宝T1", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, true),
     /**
      * 民生微信
      */
-    XMMS_WECHAT_D0(703, "xmms_wechat_d0", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
+    XMMS_WECHAT_D0(703, "xmms_wechat_d0", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信D0", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
     /**
      * 民生支付宝
      */
-    XMMS_ALIPAY_D0(704, "xmms_alipay_d0", EnumPaymentChannel.ALIPAY, "厦门民生支付宝", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
+    XMMS_ALIPAY_D0(704, "xmms_alipay_d0", EnumPaymentChannel.ALIPAY, "厦门民生支付宝D0", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
 
     /**
      * 收银家WX
