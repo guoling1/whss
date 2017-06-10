@@ -23,8 +23,8 @@
                       <el-form-item prop="row.dealerTradeRateT1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1*100 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateT1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -41,8 +41,8 @@
                       <el-form-item prop="row.merchantMinRateT1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateT1*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateT1}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateT1*100 | toFix}} 并且 大于等于T1代理商的费率</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateT1}} 并且 大于等于T1代理商的提现手续费</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateT1">
                             <template slot="prepend">最小值</template>
@@ -54,8 +54,8 @@
                       <el-form-item prop="row.merchantMaxRateT1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1*100 | toFix}} 并且 大于等于最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1}} 并且 大于等于最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateT1">
                             <template slot="prepend">最大值</template>
@@ -73,8 +73,8 @@
                       <el-form-item prop="row.dealerTradeRateD1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1*100 | toFix}} <br> 最大值：不超过D1商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}} <br> 最大值：不超过D1商户提现手续费的最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -91,8 +91,8 @@
                       <el-form-item prop="row.merchantMinRateD1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD1*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD1}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD1*100 | toFix}} 并且 大于等于D1代理商的费率</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD1}} 并且 大于等于D1代理商的提现手续费</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateD1">
                             <template slot="prepend">最小值</template>
@@ -104,8 +104,8 @@
                       <el-form-item prop="row.merchantMaxRateD1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1*100 | toFix}} 并且 大于等于最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1}} 并且 大于等于最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateD1">
                             <template slot="prepend">最大值</template>
@@ -123,8 +123,8 @@
                       <el-form-item prop="row.dealerTradeRateD0" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0*100 | toFix}} <br> 最大值：不超过D0商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}} <br> 最大值：不超过D0商户提现手续费的最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD0">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -141,8 +141,8 @@
                       <el-form-item prop="row.merchantMinRateD0" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD0*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD0}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD0*100 | toFix}} 并且 大于等于D0代理商的费率</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD0}} 并且 大于等于D0代理商的提现手续费</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateD0">
                             <template slot="prepend">最小值</template>
@@ -154,8 +154,8 @@
                       <el-form-item prop="row.merchantMaxRateD0" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0*100 | toFix}}</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0}}</span>
+                          <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0*100 | toFix}} 并且 大于等于最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0}} 并且 大于等于最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateD0">
                             <template slot="prepend">最大值</template>
