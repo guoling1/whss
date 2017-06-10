@@ -40,9 +40,9 @@ public enum EnumUpperChannel {
     EASY_LINK(6, "EL", "易联"),
 
     /**
-     * 厦门民生银行
+     * 民生银行
      */
-    XMMS_BANK(7, "XMMS","厦门民生银行"),
+    MS_BANK(7, "MS", "民生银行"),
 
     /**
      * 收银家
