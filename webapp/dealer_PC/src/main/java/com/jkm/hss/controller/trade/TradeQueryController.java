@@ -85,31 +85,17 @@ public class TradeQueryController extends BaseController {
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
         req.setDealerId(dealerId);
-        String totalPayment = "";
-        String totalPoundage = "";
         if (level==2){
-            String totalPayments = this.orderService.getAmountCount(req);
-            String totalPoundages = this.orderService.getAmountCount1(req);
-            if ("".equals(totalPayments)&&totalPayments==null){
-                totalPayment="0";
-            }
-            if ("".equals(totalPoundages)&&totalPoundages==null){
-                totalPoundage="0";
-            }
+            String totalPayment = this.orderService.getAmountCount(req);
+            String totalPoundage = this.orderService.getAmountCount1(req);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("totalPayment",totalPayment);
             jsonObject.put("totalPoundage",totalPoundage);
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
         }
         if (level==1){
-            String totalPayments = this.orderService.getAmountCount(req);
-            String totalPoundages = this.orderService.getAmountCount1(req);
-            if ("".equals(totalPayments)&&totalPayments==null){
-                totalPayment="0";
-            }
-            if ("".equals(totalPoundages)&&totalPoundages==null){
-                totalPoundage="0";
-            }
+            String totalPayment = this.orderService.getAmountCount(req);
+            String totalPoundage = this.orderService.getAmountCount1(req);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("totalPayment",totalPayment);
             jsonObject.put("totalPoundage",totalPoundage);

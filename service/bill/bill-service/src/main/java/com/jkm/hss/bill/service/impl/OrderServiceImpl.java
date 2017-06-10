@@ -1498,10 +1498,18 @@ public class OrderServiceImpl implements OrderService {
 
         if("hss".equals(req.getAppId())){
             String list = this.orderDao.getAmountCount(req);
+            if ("".equals(list)&&list==null) {
+                list="0";
+                return list;
+            }
             return list;
         }
         if("hsy".equals(req.getAppId())){
             String list = this.orderDao.getAmountCount1(req);
+            if ("".equals(list)&&list==null) {
+                list="0";
+                return list;
+            }
             return list;
         }
 
@@ -1513,10 +1521,18 @@ public class OrderServiceImpl implements OrderService {
 
         if("hss".equals(req.getAppId())){
             String list = this.orderDao.getPoundageCount(req);
+            if ("".equals(list)&&list==null) {
+                list="0";
+                return list;
+            }
             return list;
         }
         if("hsy".equals(req.getAppId())){
             String list = this.orderDao.getPoundageCount1(req);
+            if ("".equals(list)&&list==null) {
+                list="0";
+                return list;
+            }
             return list;
         }
 
