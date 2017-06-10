@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.trade;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
@@ -68,9 +69,28 @@ public class TradeQueryController extends BaseController {
      * @param req
      * @return
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/amountCount ",method = RequestMethod.POST)
-//    public CommonResponse amountCount(@RequestBody QueryOrderRequest req) throws ParseException {
-//
-//    }
+    @ResponseBody
+    @RequestMapping(value = "/amountCount",method = RequestMethod.POST)
+    public CommonResponse amountCount(@RequestBody OrderTradeRequest req) throws ParseException {
+        long dealerId = super.getDealerId();
+        int level = super.getDealer().get().getLevel();
+        req.setDealerId(dealerId);
+        if (level==2){
+            String totalPayment = this.orderService.getAmountCount(req);
+            String totalPoundage = this.orderService.getAmountCount1(req);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("totalPayment",totalPayment);
+            jsonObject.put("totalPoundage",totalPoundage);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
+        }
+        if (level==1){
+            String totalPayment = this.orderService.getAmountCount(req);
+            String totalPoundage = this.orderService.getAmountCount1(req);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("totalPayment",totalPayment);
+            jsonObject.put("totalPoundage",totalPoundage);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
+        }
+        return CommonResponse.simpleResponse(-1, "查询异常");
+    }
 }

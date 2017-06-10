@@ -1494,6 +1494,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public String getAmountCount(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCount(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCount1(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAmountCount1(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getPoundageCount(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getPoundageCount1(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
     public void save(GeTuiResponse geTuiResponse) {
         this.orderDao.save(geTuiResponse);
     }

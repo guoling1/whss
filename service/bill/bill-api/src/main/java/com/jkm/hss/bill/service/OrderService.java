@@ -504,6 +504,20 @@ public interface OrderService {
     String getOrderCount1(QueryOrderRequest req);
 
     /**
+     * 代理商交易统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount(OrderTradeRequest req);
+
+    /**
+     * 代理商交易统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount1(OrderTradeRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return
