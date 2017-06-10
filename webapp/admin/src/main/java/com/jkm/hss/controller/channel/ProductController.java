@@ -137,8 +137,8 @@ public class ProductController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public CommonResponse update(@RequestBody final ProductListHsyResponse request) {
+    @RequestMapping(value = "updateHsy", method = RequestMethod.POST)
+    public CommonResponse updateHsy(@RequestBody final ProductListHsyResponse request) {
         try{
             final Product product = this.productService.selectById(request.getProductId()).get();
             product.setProductName(request.getProductName());
@@ -159,8 +159,8 @@ public class ProductController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "updateHsy", method = RequestMethod.POST)
-    public CommonResponse updateHsy(@RequestBody final ProductListResponse request) {
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public CommonResponse update(@RequestBody final ProductListResponse request) {
         try{
             final Product product = this.productService.selectById(request.getProductId()).get();
             product.setProductName(request.getProductName());
