@@ -5,12 +5,12 @@ import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.service.DealerRatePolicyService;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.product.entity.ProductRatePolicy;
-import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductRatePolicyService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.UserTradeRateDao;
 import com.jkm.hsy.user.entity.UserTradeRate;
 import com.jkm.hsy.user.entity.UserWithdrawRate;
+import com.jkm.hsy.user.help.requestparam.UserTradeRateListResponse;
 import com.jkm.hsy.user.help.requestparam.UserTradeRateResponse;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import com.jkm.hsy.user.service.UserWithdrawRateService;
@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xingliujie on 2017/6/9.
@@ -51,6 +53,18 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
     @Override
     public void update(UserTradeRate userTradeRate) {
         userTradeRateDao.update(userTradeRate);
+    }
+
+    /**
+     * 根据法人编码和政策类型查询
+     *
+     * @param userId
+     * @param policyType
+     * @return
+     */
+    @Override
+    public Optional<UserTradeRate> selectByUserIdAndPolicyType(long userId, String policyType) {
+        return Optional.fromNullable(userTradeRateDao.selectByUserIdAndPolicyType(userId,policyType));
     }
 
     /**
@@ -180,6 +194,58 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
             userWithdrawRateService.update(wd);
         }
 
+    }
+
+    /**
+     * 商户费率信息
+     *
+     * @return
+     */
+    @Override
+    public List<UserTradeRateListResponse> getUserRate(long userId) {
+        List<UserTradeRateListResponse> userTradeRateListResponses = new ArrayList<UserTradeRateListResponse>();
+        List<UserTradeRate> userTradeRateList = userTradeRateDao.selectAllByUserId(userId);
+        if(userTradeRateList.size()>0){
+            for(int i=0;i<userTradeRateList.size();i++){
+                UserTradeRateListResponse rateListResponse = new UserTradeRateListResponse();
+                if((EnumPolicyType.WECHAT.getId()).equals(userTradeRateList.get(i).getPolicyType())){
+                    rateListResponse.setRateName(EnumPolicyType.WECHAT.getName());
+                }
+                if((EnumPolicyType.ALIPAY.getId()).equals(userTradeRateList.get(i).getPolicyType())){
+                    rateListResponse.setRateName(EnumPolicyType.ALIPAY.getName());
+                }
+                rateListResponse.setRateName(userTradeRateList.get(i).getPolicyType());
+                rateListResponse.setTradeRateT1(userTradeRateList.get(i).getTradeRateT1());
+                rateListResponse.setTradeRateD1(userTradeRateList.get(i).getTradeRateD1());
+                rateListResponse.setTradeRateD0(userTradeRateList.get(i).getTradeRateD0());
+                userTradeRateListResponses.add(rateListResponse);
+            }
+        }else{
+            UserTradeRateListResponse wx = new UserTradeRateListResponse();
+            wx.setRateName(EnumPolicyType.WECHAT.getName());
+            wx.setPolicyType(EnumPolicyType.WECHAT.getId());
+            userTradeRateListResponses.add(wx);
+            UserTradeRateListResponse zfb = new UserTradeRateListResponse();
+            zfb.setRateName(EnumPolicyType.ALIPAY.getName());
+            zfb.setPolicyType(EnumPolicyType.ALIPAY.getId());
+            userTradeRateListResponses.add(zfb);
+        }
+        Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
+        if(userWithdrawRateOptional.isPresent()){
+            UserTradeRateListResponse withdraw = new UserTradeRateListResponse();
+            withdraw.setRateName(EnumPolicyType.WITHDRAW.getName());
+            withdraw.setPolicyType(EnumPolicyType.WITHDRAW.getId());
+            withdraw.setTradeRateT1(userWithdrawRateOptional.get().getWithdrawRateT1());
+            withdraw.setTradeRateD1(userWithdrawRateOptional.get().getWithdrawRateD1());
+            withdraw.setTradeRateD0(userWithdrawRateOptional.get().getWithdrawRateD0());
+            userTradeRateListResponses.add(withdraw);
+        }else{
+            UserTradeRateListResponse withdraw = new UserTradeRateListResponse();
+            withdraw.setRateName(EnumPolicyType.WITHDRAW.getName());
+            withdraw.setPolicyType(EnumPolicyType.WITHDRAW.getId());
+            userTradeRateListResponses.add(withdraw);
+        }
+        return userTradeRateListResponses;
     }
 
 

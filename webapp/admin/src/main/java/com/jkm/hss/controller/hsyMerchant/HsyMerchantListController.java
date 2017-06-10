@@ -10,6 +10,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord;
+import com.jkm.hsy.user.help.requestparam.UserTradeRateListResponse;
 import com.jkm.hsy.user.help.requestparam.UserTradeRateResponse;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
@@ -43,6 +44,8 @@ public class HsyMerchantListController extends BaseController {
     private HsyMerchantAuditService hsyMerchantAuditService;
     @Autowired
     private OSSClient ossClient;
+    @Autowired
+    private UserTradeRateService userTradeRateService;
 
 
     @ResponseBody
@@ -169,6 +172,8 @@ public class HsyMerchantListController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("list",list);
         jo.put("res",res);
+        List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(hsyMerchantAuditRequest.getUid());
+        jo.put("rateList",userTradeRateListResponses);
         jsonObject.put("result",jo);
         return jsonObject;
     }

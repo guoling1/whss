@@ -99,5 +99,9 @@ public class MerchantConsts {
         @Key("merchant.update.channel")
         @DefaultValue("")
         String merchantUpdateChannel();
+
+        @Key("merchant.xmms.in")
+        @DefaultValue("")
+        String merchantXmmsIn();
     }
 }

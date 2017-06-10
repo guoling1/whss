@@ -8,8 +8,9 @@ import lombok.Getter;
 public enum EnumOpenProductStatus {
     PASS(1, "开通产品成功"),
 
-    UNPASS(2, "开通产品失败");
+    UNPASS(2, "开通产品失败"),
 
+    HANDLING(3, "已提交");
     @Getter
     private int id;
     @Getter

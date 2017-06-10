@@ -1,6 +1,7 @@
 package com.jkm.hsy.user.dao;
 
 import com.jkm.hsy.user.entity.UserChannelPolicy;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -24,5 +25,21 @@ public interface UserChannelPolicyDao {
      * @param channelTypeSign
      * @return
      */
-    UserChannelPolicy selectByChannelTypeSign(int channelTypeSign);
+    UserChannelPolicy selectByChannelTypeSign(@Param("channelTypeSign") int channelTypeSign);
+    /**
+     * 根据用户编码和通道编码修改
+     * @param userChannelPolicy
+     */
+    void updateByUserIdAndChannelTypeSign(UserChannelPolicy userChannelPolicy);
+
+    /**
+     * 修改华夏入网信息
+     * @param userChannelPolicy
+     */
+    void updateHxNetInfo(UserChannelPolicy userChannelPolicy);
+    /**
+     * 修改华夏开通产品信息
+     * @param userChannelPolicy
+     */
+    void updateHxOpenProduct(UserChannelPolicy userChannelPolicy);
 }

@@ -21,15 +21,15 @@ public enum EnumNetStatus {
     /**
      * 3 已提交
      */
-    HASENT(3, "已提交"),
+    HANDLING(3, "已提交"),
     /**
      * 4 成功
      */
-    ENTING(4, "成功"),
+    SUCCESS(4, "成功"),
     /**
      * 5 失败
      */
-    ENT_FAIL(5, "失败");
+    FAIL(5, "失败");
 
     @Getter
     private int id;

@@ -29,4 +29,11 @@
         FROM app_user_trade_rate
         WHERE user_id=#{userId} and policy_type = #{policyType} and status = 1;
     </select>
+
+    <select id="selectAllByUserId" resultType="com.jkm.hsy.user.entity.UserTradeRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM app_user_trade_rate
+        WHERE user_id=#{userId} and status = 1 order by policy_type desc;
+    </select>
 </mapper>

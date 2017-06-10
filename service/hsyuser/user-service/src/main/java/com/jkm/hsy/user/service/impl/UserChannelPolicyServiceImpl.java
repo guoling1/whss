@@ -10,6 +10,7 @@ import com.jkm.hsy.user.entity.UserChannelPolicy;
 import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,4 +93,36 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
             userCurrentChannelPolicyDao.insert(userCurrentChannelPolicy);
         }
     }
+
+    /**
+     * 根据用户编码和通道编码修改
+     * @param userChannelPolicy
+     */
+    @Override
+    public void updateByUserIdAndChannelTypeSign(UserChannelPolicy userChannelPolicy) {
+        userChannelPolicyDao.updateByUserIdAndChannelTypeSign(userChannelPolicy);
+    }
+
+    /**
+     * 修改华夏入网信息
+     *
+     * @param userChannelPolicy
+     */
+    @Override
+    public void updateHxNetInfo(UserChannelPolicy userChannelPolicy) {
+        userChannelPolicyDao.updateHxNetInfo(userChannelPolicy);
+    }
+
+    /**
+     * 修改华夏开通产品信息
+     *
+     * @param userChannelPolicy
+     */
+    @Override
+    public void updateHxOpenProduct(UserChannelPolicy userChannelPolicy) {
+        userChannelPolicyDao.updateHxOpenProduct(userChannelPolicy);
+    }
+
+
+
 }

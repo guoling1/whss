@@ -31,4 +31,33 @@
         WHERE channel_type_sign=#{channelTypeSign} and status = 1;
     </select>
 
+    <update id="updateByUserIdAndChannelTypeSign">
+        UPDATE app_user_channel_policy
+        SET
+        net_status = #{netStatus},
+        net_marks = #{netMarks},
+        open_product_status = #{openProductStatus},
+        open_product_marks = #{openProductMarks},
+        exchannel_code = #{exchannelCode},
+        exchannel_event_code = #{exchannelEventCode}
+        WHERE user_id = #{userId} and channel_type_sign = #{channelTypeSign}
+    </update>
+
+    <update id="updateHxNetInfo">
+        UPDATE app_user_channel_policy
+        SET
+        net_status = #{netStatus},
+        net_marks = #{netMarks},
+        exchannel_code = #{exchannelCode}
+        WHERE user_id = #{userId} and channel_type_sign in(801,802)
+    </update>
+
+    <update id="updateHxOpenProduct">
+        UPDATE app_user_channel_policy
+        SET
+        open_product_status = #{openProductStatus},
+        open_product_marks = #{openProductMarks},
+        exchannel_event_code = #{exchannelEventCode}
+        WHERE user_id = #{userId} and channel_type_sign in(801,802)
+    </update>
 </mapper>

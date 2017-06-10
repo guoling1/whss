@@ -9,7 +9,7 @@ public enum EnumPolicyType {
 
     WECHAT("wechat", "微信"),
     ALIPAY("alipay", "支付宝"),
-    WITHDRAW("withdraw", "提现");
+    WITHDRAW("withdraw", "提现手续费");
 
     @Getter
     private String id;

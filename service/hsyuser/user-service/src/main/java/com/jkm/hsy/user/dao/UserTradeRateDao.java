@@ -4,6 +4,8 @@ import com.jkm.hsy.user.entity.UserTradeRate;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by xingliujie on 2017/6/9.
  */
@@ -25,4 +27,11 @@ public interface UserTradeRateDao {
      * @return
      */
     UserTradeRate selectByUserIdAndPolicyType(@Param("userId") long userId,@Param("policyType") String policyType);
+
+    /**
+     * 查询法人支付信息
+     * @param userId
+     * @return
+     */
+    List<UserTradeRate> selectAllByUserId(@Param("userId") long userId);
 }
