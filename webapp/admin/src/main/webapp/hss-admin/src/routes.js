@@ -60,6 +60,7 @@ const CodeAll = r => require.ensure([], () => r(require('components/CodeAll')), 
 const CodeDet = r => require.ensure([], () => r(require('components/CodeDet')), 'group-record');
 //产品
 const ProductAdd = r => require.ensure([], () => r(require('components/ProductAdd')), 'group-record');
+const ProductAddHsy = r => require.ensure([], () => r(require('components/ProductAddHsy')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('components/ProductList')), 'group-record');
 const Invite = r => require.ensure([], () => r(require('components/Invite')), 'group-record');
 const Gateway = r => require.ensure([], () => r(require('components/Gateway')), 'group-record');
@@ -141,6 +142,7 @@ let routes = [
       {path: 'passList', name: 'PassList', component: PassList},
       {path: 'limitList', name: 'LimitList', component: LimitList},
       {path: 'productAdd', name: 'ProductAdd', component: ProductAdd},
+      {path: 'productAddHsy', name: 'ProductAddHsy', component: ProductAddHsy},
       {path: 'productList', name: 'ProductList', component: ProductList},
       {path: 'issue', name: 'Issue', component: Issue},
       {path: 'issueRecord', name: 'IssueRecord', component: IssueRecord},
