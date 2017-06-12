@@ -275,7 +275,7 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
-        <el-button type="text" v-if="status==2&&isInput == false" @click="isInput = true">修改费率</el-button>
+        <el-button type="text" v-if="isInput == false" @click="isInput = true">修改费率</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="rateData" border style="width: 100%;margin-bottom: 15px">
