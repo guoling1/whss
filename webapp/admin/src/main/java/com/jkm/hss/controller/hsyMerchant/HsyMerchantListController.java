@@ -179,8 +179,9 @@ public class HsyMerchantListController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("list",list);
         jo.put("res",res);
-        List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(hsyMerchantAuditRequest.getUid());
+        List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(hsyMerchantAuditRequest.getId());
         jo.put("rateList",userTradeRateListResponses);
+
         jsonObject.put("result",jo);
         return jsonObject;
     }
@@ -226,12 +227,13 @@ public class HsyMerchantListController extends BaseController {
 
     /**
      *修改费率
-     * @param userTradeRateListRequest
+     * @param userTradeRateList
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/updateRate",method = RequestMethod.POST)
-    public CommonResponse updateRate(@RequestBody List<UserTradeRateListRequest> userTradeRateListRequest){
+    public CommonResponse updateRate(@RequestBody UserTradeRateListRequest userTradeRateList){
+        List<UserTradeRate> userTradeRateListRequest = userTradeRateList.getRateList();
         if(userTradeRateListRequest.size()!=3){
             return CommonResponse.simpleResponse(-1, "请填写全参数");
         }
@@ -303,5 +305,15 @@ public class HsyMerchantListController extends BaseController {
         }
         return CommonResponse.simpleResponse(1, "修改成功");
     }
+    /**
+     *修改费率
+     * @param userTradeRateListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/changeUseChannel",method = RequestMethod.POST)
+    public CommonResponse changeUseChannel(@RequestBody List<UserTradeRateListRequest> userTradeRateListRequest){
 
+        return CommonResponse.simpleResponse(1, "修改成功");
+    }
 }
