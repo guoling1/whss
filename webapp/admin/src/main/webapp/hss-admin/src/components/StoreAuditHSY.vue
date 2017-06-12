@@ -282,7 +282,10 @@
               <el-table-column prop="rateName" label="支付方式" ></el-table-column>
               <el-table-column label="T1">
                 <template scope="scope">
-                  <span v-if="!isInput&&scope.row.tradeRateT1!=null">{{scope.row.tradeRateT1}}%</span>
+                  <span v-if="!isInput&&scope.row.tradeRateT1!=null">{{scope.row.tradeRateT1}}
+                    <span v-if="scope.row.policyType!='withdraw'">%</span>
+                    <span v-if="scope.row.policyType=='withdraw'">元/笔</span>
+                  </span>
                   <el-input placeholder="请输入内容" v-model="scope.row.tradeRateT1" v-if="isInput" size="small">
                     <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                     <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -291,7 +294,10 @@
               </el-table-column>
               <el-table-column prop="time" label="D1">
                 <template scope="scope">
-                  <span v-if="!isInput&&scope.row.tradeRateD1!=null">{{scope.row.tradeRateD1}}%</span>
+                  <span v-if="!isInput&&scope.row.tradeRateD1!=null">{{scope.row.tradeRateD1}}
+                    <span v-if="scope.row.policyType!='withdraw'">%</span>
+                    <span v-if="scope.row.policyType=='withdraw'">元/笔</span>
+                  </span>
                   <el-input placeholder="请输入内容" v-model="scope.row.tradeRateD1" v-if="isInput" size="small">
                     <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                     <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -300,7 +306,10 @@
               </el-table-column>
               <el-table-column prop="money" label="D0">
                 <template scope="scope">
-                  <span v-if="!isInput&&scope.row.tradeRateD0!=null">{{scope.row.tradeRateD0}}%</span>
+                  <span v-if="!isInput&&scope.row.tradeRateD0!=null">{{scope.row.tradeRateD0}}
+                    <span v-if="scope.row.policyType!='withdraw'">%</span>
+                    <span v-if="scope.row.policyType=='withdraw'">元/笔</span>
+                  </span>
                   <el-input placeholder="请输入内容" v-model="scope.row.tradeRateD0" v-if="isInput" size="small">
                     <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                     <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
