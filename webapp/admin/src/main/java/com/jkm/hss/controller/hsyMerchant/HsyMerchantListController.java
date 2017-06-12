@@ -12,11 +12,10 @@ import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hsy.user.Enum.EnumIsOpen;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
 import com.jkm.hsy.user.help.requestparam.UserTradeRateListRequest;
 import com.jkm.hsy.user.help.requestparam.UserTradeRateListResponse;
-import com.jkm.hsy.user.service.HsyMerchantAuditService;
-import com.jkm.hsy.user.service.UserTradeRateService;
-import com.jkm.hsy.user.service.UserWithdrawRateService;
+import com.jkm.hsy.user.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +52,10 @@ public class HsyMerchantListController extends BaseController {
     private UserTradeRateService userTradeRateService;
     @Autowired
     private UserWithdrawRateService userWithdrawRateService;
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
 
 
     @ResponseBody
@@ -181,7 +184,16 @@ public class HsyMerchantListController extends BaseController {
         jo.put("res",res);
         List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(hsyMerchantAuditRequest.getId());
         jo.put("rateList",userTradeRateListResponses);
-
+        Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(hsyMerchantAuditRequest.getId());
+        if(userCurrentChannelPolicyOptional.isPresent()){
+            jo.put("useWxChannel",userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
+            jo.put("userZfbChannel",userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign());
+        }else{
+            jo.put("useWxChannel",0);
+            jo.put("userZfbChannel",0);
+        }
+        List<UserChannelPolicyResponse> userChannelPolicyResponses = userChannelPolicyService.getUserChannelList(hsyMerchantAuditRequest.getId());
+        jo.put("channelList",userChannelPolicyResponses);
         jsonObject.put("result",jo);
         return jsonObject;
     }

@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
 
 /**
@@ -11,4 +12,11 @@ public interface UserCurrentChannelPolicyService {
      * @param userCurrentChannelPolicy
      */
     void insert(UserCurrentChannelPolicy userCurrentChannelPolicy);
+
+    /**
+     * 根据用户编码查询
+     * @param userId
+     * @return
+     */
+    Optional<UserCurrentChannelPolicy> selectByUserId(long userId);
 }
