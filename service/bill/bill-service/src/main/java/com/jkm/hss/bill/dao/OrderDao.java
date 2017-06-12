@@ -523,4 +523,12 @@ public interface OrderDao {
      * @return
      */
     String getPoundageCount1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getTradeFirst1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTradeFirst1(OrderTradeRequest req);
 }

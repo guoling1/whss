@@ -1612,38 +1612,20 @@ public class OrderServiceImpl implements OrderService {
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getAppId());
-                columns.add(list.get(i).getBusinessOrderNo());
                 columns.add(list.get(i).getOrderNo());
-                columns.add(list.get(i).getSn());
-                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String st = df.format(list.get(i).getCreateTime());
-                    columns.add(st);
-
-                }else {
-                    columns.add("");
-                }
                 columns.add(list.get(i).getMerchantName());
-                columns.add(list.get(i).getMarkCode());
-                columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
-                columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                columns.add(String.valueOf(list.get(i).getPayRate()));
-                columns.add(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
-                columns.add(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
-
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
-                    if (list.get(i).getPayChannelSign()!=0) {
-                        columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
-                    }
-                } else {
-                    columns.add("");
-                }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
-                columns.add(list.get(i).getRemark());
+                columns.add(list.get(i).getBusinessOrderNo());
+                columns.add(list.get(i).getTradeAmount());
+                columns.add(list.get(i).getPoundage());
+                columns.add(list.get(i).getStatusValue());
+                columns.add(list.get(i).getSn());
+                columns.add(list.get(i).getPayType());
+                columns.add(list.get(i).getSettleStat());
+                columns.add(list.get(i).getCreateTimed());
+                columns.add(list.get(i).getPaySuccessTimes());
+                columns.add(list.get(i).getSettleType());
                 datas.add(columns);
             }
         }
@@ -1677,38 +1659,20 @@ public class OrderServiceImpl implements OrderService {
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getAppId());
-                columns.add(list.get(i).getBusinessOrderNo());
                 columns.add(list.get(i).getOrderNo());
-                columns.add(list.get(i).getSn());
-                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String st = df.format(list.get(i).getCreateTime());
-                    columns.add(st);
-
-                }else {
-                    columns.add("");
-                }
                 columns.add(list.get(i).getMerchantName());
-                columns.add(list.get(i).getMarkCode());
-                columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
-                columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                columns.add(String.valueOf(list.get(i).getPayRate()));
-                columns.add(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
-                columns.add(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
-
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
-                    if (list.get(i).getPayChannelSign()!=0) {
-                        columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
-                    }
-                } else {
-                    columns.add("");
-                }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
-                columns.add(list.get(i).getRemark());
+                columns.add(list.get(i).getBusinessOrderNo());
+                columns.add(list.get(i).getTradeAmount());
+                columns.add(list.get(i).getPoundage());
+                columns.add(list.get(i).getStatusValue());
+                columns.add(list.get(i).getSn());
+                columns.add(list.get(i).getPayType());
+                columns.add(list.get(i).getSettleStat());
+                columns.add(list.get(i).getCreateTimed());
+                columns.add(list.get(i).getPaySuccessTimes());
+                columns.add(list.get(i).getSettleType());
                 datas.add(columns);
             }
         }
@@ -1725,10 +1689,10 @@ public class OrderServiceImpl implements OrderService {
 
         List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
         if("hss".equals(req.getAppId())){
-            list = this.orderDao.getTradeFirst(req);
+            list = this.orderDao.getTradeFirst1(req);
         }
         if("hsy".equals(req.getAppId())){
-            list = this.orderDao.getHsyTradeFirst(req);
+            list = this.orderDao.getHsyTradeFirst1(req);
         }
 //        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1777,10 +1741,10 @@ public class OrderServiceImpl implements OrderService {
     public List<MerchantTradeResponse> downLoadHsyMerchantTrades(OrderTradeRequest req) {
         List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
         if("hss".equals(req.getAppId())){
-            list = this.orderDao.getTrade(req);
+            list = this.orderDao.getTrade1(req);
         }
         if("hsy".equals(req.getAppId())){
-            list = this.orderDao.getHsyTrade(req);
+            list = this.orderDao.getHsyTrade1(req);
         }
 //        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

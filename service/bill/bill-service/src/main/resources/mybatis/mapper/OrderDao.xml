@@ -630,6 +630,82 @@
         limit #{offset}, #{size}
     </select>
 
+    <select id="getTrade1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        a.pay_order_id,
+        a.business_order_no,
+        a.order_no,
+        a.trade_amount,
+        a.real_pay_amount,
+        a.trade_type,
+        a.payer,
+        a.payee,
+        a.pay_account,
+        a.pay_account_type,
+        a.pay_type,
+        a.pay_success_time,
+        a.poundage,
+        a.pay_rate,
+        a.settle_status,
+        a.settle_time,
+        a.settle_type,
+        a.success_settle_time,
+        a.pay_channel_sign,
+        a.remark,
+        a. STATUS,
+        a.create_time,
+        b.merchant_name,
+        a.sn,
+        a.app_id,
+        (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
+        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+        FROM
+        tb_order a
+        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        WHERE
+        a.trade_type = 1 AND b.second_dealer_id=#{dealerId} and a.app_id='hss'
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <!--<if test="proxyName1 != null and proxyName1!=''">-->
+        <!--AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))-->
+        <!--</if>-->
+        <if test="businessOrderNo != null and businessOrderNo!=''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn = #{sn}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status=#{status}
+        </if>
+        <if test="payType != null and payType!=''">
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
+        </if>
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+        </if>
+        <if test="settleStatus != null">
+            AND a.settle_status = #{settleStatus}
+        </if>
+        ORDER BY a.create_time DESC
+    </select>
+
     <!-- 代理商pc交易查询好收银二级 -->
     <select id="getHsyTrade" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
@@ -706,6 +782,82 @@
         </if>
         ORDER BY a.create_time DESC
         limit #{offset}, #{size}
+    </select>
+
+    <select id="getHsyTrade1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        a.pay_order_id,
+        a.business_order_no,
+        a.order_no,
+        a.trade_amount,
+        a.real_pay_amount,
+        a.trade_type,
+        a.payer,
+        a.payee,
+        a.pay_account,
+        a.pay_account_type,
+        a.pay_type,
+        a.pay_success_time,
+        a.poundage,
+        a.pay_rate,
+        a.settle_status,
+        a.settle_time,
+        a.settle_type,
+        a.success_settle_time,
+        a.pay_channel_sign,
+        a.remark,
+        a. STATUS,
+        a.create_time,
+        (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) as merchantName,
+        a.sn,
+        a.app_id,
+        (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=b.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = b.DEALERID AND `level`=2)  ) as proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id = b.DEALERID AND `level`=2 ) as proxyName1
+        FROM
+        tb_order a
+        LEFT JOIN app_au_user b ON a.payee = b.ACCOUNTID
+        WHERE
+        a.trade_type = 1 AND b.DEALERID=#{dealerId} and a.app_id='hsy'
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <!--<if test="proxyName1 != null and proxyName1!=''">-->
+        <!--AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))-->
+        <!--</if>-->
+        <if test="businessOrderNo != null and businessOrderNo!=''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn = #{sn}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status=#{status}
+        </if>
+        <if test="payType != null and payType!=''">
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
+        </if>
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+        </if>
+        <if test="settleStatus != null">
+            AND a.settle_status = #{settleStatus}
+        </if>
+        ORDER BY a.create_time DESC
     </select>
 
     <!-- 代理商pc交易查询二级总数 -->
@@ -886,6 +1038,82 @@
         limit #{offset}, #{size}
     </select>
 
+    <select id="getTradeFirst1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        a.pay_order_id,
+        a.business_order_no,
+        a.order_no,
+        a.trade_amount,
+        a.real_pay_amount,
+        a.trade_type,
+        a.payer,
+        a.payee,
+        a.pay_account,
+        a.pay_account_type,
+        a.pay_type,
+        a.pay_success_time,
+        a.poundage,
+        a.pay_rate,
+        a.settle_status,
+        a.settle_time,
+        a.settle_type,
+        a.success_settle_time,
+        a.pay_channel_sign,
+        a.remark,
+        a. STATUS,
+        a.create_time,
+        b.merchant_name,
+        a.sn,
+        a.app_id,
+        (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
+        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+        FROM
+        tb_order a
+        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        WHERE
+        a.trade_type = 1 AND b.first_dealer_id=#{dealerId} and a.app_id='hss'
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <!--<if test="proxyName1 != null and proxyName1!=''">-->
+        <!--AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))-->
+        <!--</if>-->
+        <if test="businessOrderNo != null and businessOrderNo!=''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn = #{sn}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status=#{status}
+        </if>
+        <if test="payType != null and payType!=''">
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
+        </if>
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+        </if>
+        <if test="settleStatus != null">
+            AND a.settle_status = #{settleStatus}
+        </if>
+        ORDER BY a.create_time DESC
+    </select>
+
     <!-- 代理商pc交易查询一级 -->
     <select id="getHsyTradeFirst" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
@@ -962,6 +1190,82 @@
         </if>
         ORDER BY a.create_time DESC
         limit #{offset}, #{size}
+    </select>
+
+    <select id="getHsyTradeFirst1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        a.pay_order_id,
+        a.business_order_no,
+        a.order_no,
+        a.trade_amount,
+        a.real_pay_amount,
+        a.trade_type,
+        a.payer,
+        a.payee,
+        a.pay_account,
+        a.pay_account_type,
+        a.pay_type,
+        a.pay_success_time,
+        a.poundage,
+        a.pay_rate,
+        a.settle_status,
+        a.settle_time,
+        a.settle_type,
+        a.success_settle_time,
+        a.pay_channel_sign,
+        a.remark,
+        a.STATUS,
+        a.create_time,
+        (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) as merchantName,
+        a.sn,
+        a.app_id,
+        (select proxy_name from tb_dealer where id=#{dealerId}) as proxyName,
+        (select proxy_name from tb_dealer where id=b.DEALERID and level=2) as proxyName1
+        FROM
+        tb_order a
+        LEFT JOIN app_au_user b ON a.payee = b.ACCOUNTID
+        WHERE
+        a.trade_type = 1 AND b.DEALERID in (select id from tb_dealer where id=#{dealerId} and level=1 union select id from tb_dealer where first_level_dealer_id=#{dealerId} and level=2 ) and a.app_id='hsy'
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="proxyName != null and proxyName!=''">
+            AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <!--<if test="proxyName1 != null and proxyName1!=''">-->
+        <!--AND b.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))-->
+        <!--</if>-->
+        <if test="businessOrderNo != null and businessOrderNo!=''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn = #{sn}
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status=#{status}
+        </if>
+        <if test="payType != null and payType!=''">
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
+        </if>
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+        </if>
+        <if test="settleStatus != null">
+            AND a.settle_status = #{settleStatus}
+        </if>
+        ORDER BY a.create_time DESC
     </select>
 
     <!-- 代理商pc交易查询一级总数 -->
