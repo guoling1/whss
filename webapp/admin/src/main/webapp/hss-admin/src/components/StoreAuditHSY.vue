@@ -275,6 +275,46 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
+        <el-button type="text" v-if="status==2&&isInput == false" @click="isInput = true">修改费率</el-button>
+        <div style="width: 70%;margin: 0 0 15px 15px;">
+          <template>
+            <el-table :data="rateData" border style="width: 100%;margin-bottom: 15px">
+              <el-table-column prop="rateName" label="支付方式" ></el-table-column>
+              <el-table-column label="T1">
+                <template scope="scope">
+                  <span v-if="!isInput&&scope.row.tradeRateT1!=null">{{scope.row.tradeRateT1}}%</span>
+                  <el-input placeholder="请输入内容" v-model="scope.row.tradeRateT1" v-if="isInput" size="small">
+                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="time" label="D1">
+                <template scope="scope">
+                  <span v-if="!isInput&&scope.row.tradeRateD1!=null">{{scope.row.tradeRateD1}}%</span>
+                  <el-input placeholder="请输入内容" v-model="scope.row.tradeRateD1" v-if="isInput" size="small">
+                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="money" label="D0">
+                <template scope="scope">
+                  <span v-if="!isInput&&scope.row.tradeRateD0!=null">{{scope.row.tradeRateD0}}%</span>
+                  <el-input placeholder="请输入内容" v-model="scope.row.tradeRateD0" v-if="isInput" size="small">
+                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button type="primary" size="small" v-if="isInput" @click="rateChange">保存</el-button>
+            <el-button type="primary" size="small" v-if="isInput" @click="rateNoChange">取消</el-button>
+          </template>
+        </div>
+      </div>
+      <div class="box box-primary" style="overflow: hidden">
+        <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
@@ -458,7 +498,27 @@
         height:0,
         width:0,
         isPhone:false,
-        newPhone:''
+        newPhone:'',
+        rateData:[{
+          policyType: "wechat",
+          rateName: "微信",
+          tradeRateD0: 0.1,
+          tradeRateD1: 0.2,
+          tradeRateT1: 0.3
+        },{
+          policyType: "alipay",
+          rateName: "支付宝",
+          tradeRateD0: 0.1,
+          tradeRateD1: 0.2,
+          tradeRateT1: 0.3
+        },{
+          policyType: "withdraw",
+          rateName: "提现手续费",
+          tradeRateD0: 0.1,
+          tradeRateD1: 0.2,
+          tradeRateT1: 0.3
+        }],
+        isInput: false
       }
     },
     created: function () {
@@ -501,6 +561,31 @@
       })
     },
     methods: {
+      rateChange: function () {
+        for(let i=0; i<this.rateData.length; i++){
+          this.rateData[i].userId = this.id;
+        }
+        this.$http.post('/admin/hsyMerchantList/updateRate',this.rateData)
+          .then(res=>{
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            })
+            this.isInput = false;
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      rateNoChange: function () {
+        this.isInput = false;
+        this.rateData = this.rateList;
+      },
       move:function (e) {
         var oBox=document.getElementById("imgBox");
         e=e||window.event;
@@ -584,6 +669,8 @@
           .then(function (res) {
             this.msg = res.data.res;
             this.res = res.data.list;
+            this.rateData = res.data.rateList;
+            this.rateList = JSON.parse(JSON.stringify(res.data.rateList));
             if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
               this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
             }
