@@ -86,7 +86,7 @@ public class HsyMerchantAuditController extends BaseController {
                 .build()
         );
         //入网
-        merchantInfo(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId());
+        merchantIn(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId());
         hsyMerchantAuditRequest.setStat(0);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
@@ -206,7 +206,7 @@ public class HsyMerchantAuditController extends BaseController {
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"驳回充填成功");
     }
 
-    private void merchantInfo(long userId,long shopId){
+    private void merchantIn(long userId,long shopId){
         CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(userId,shopId);
         if(cmbcResponse.getCode()==1){
             UserChannelPolicy netInfo = new UserChannelPolicy();
@@ -359,11 +359,5 @@ public class HsyMerchantAuditController extends BaseController {
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/test/{userId}/{shopId}",method = RequestMethod.GET)
-    public CommonResponse getCheckPending(@PathVariable final long userId, @PathVariable final long shopId){
-        merchantInfo(userId,shopId);
-        return CommonResponse.simpleResponse(1, "success");
-    }
 
 }

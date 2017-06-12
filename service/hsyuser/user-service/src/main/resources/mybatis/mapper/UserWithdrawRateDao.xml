@@ -15,6 +15,7 @@
         UPDATE app_user_withdraw_rate
         SET
         user_id = #{userId},
+        withdraw_rate_d1 = #{withdrawRateD1},
         withdraw_rate_t1 = #{withdrawRateT1},
         withdraw_rate_d0 = #{withdrawRateD0},
         status = #{status}

@@ -214,7 +214,7 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
                 if((EnumPolicyType.ALIPAY.getId()).equals(userTradeRateList.get(i).getPolicyType())){
                     rateListResponse.setRateName(EnumPolicyType.ALIPAY.getName());
                 }
-                rateListResponse.setRateName(userTradeRateList.get(i).getPolicyType());
+                rateListResponse.setPolicyType(userTradeRateList.get(i).getPolicyType());
                 rateListResponse.setTradeRateT1(userTradeRateList.get(i).getTradeRateT1());
                 rateListResponse.setTradeRateD1(userTradeRateList.get(i).getTradeRateD1());
                 rateListResponse.setTradeRateD0(userTradeRateList.get(i).getTradeRateD0());

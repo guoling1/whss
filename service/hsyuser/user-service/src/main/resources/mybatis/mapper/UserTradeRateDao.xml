@@ -18,6 +18,7 @@
         policy_type = #{policyType},
         is_open = #{isOpen},
         trade_rate_t1 = #{tradeRateT1},
+        trade_rate_d1 = #{tradeRateD1},
         trade_rate_d0 = #{tradeRateD0},
         status = #{status}
         WHERE id = #{id}
