@@ -7,7 +7,7 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">交易查询</h3>
-              <el-button type="primary" class="pull-right" size="small" @click="isMask=true">导出</el-button>
+              <!--<el-button type="primary" class="pull-right" size="small" @click="isMask=true">导出</el-button>-->
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
