@@ -182,9 +182,9 @@ public class HsyMerchantListController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("list",list);
         jo.put("res",res);
-        List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(hsyMerchantAuditRequest.getId());
+        List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(res.getUid());
         jo.put("rateList",userTradeRateListResponses);
-        Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(hsyMerchantAuditRequest.getId());
+        Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(res.getUid());
         if(userCurrentChannelPolicyOptional.isPresent()){
             jo.put("useWxChannel",userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
             jo.put("userZfbChannel",userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign());
@@ -192,7 +192,7 @@ public class HsyMerchantListController extends BaseController {
             jo.put("useWxChannel",0);
             jo.put("userZfbChannel",0);
         }
-        List<UserChannelPolicyResponse> userChannelPolicyResponses = userChannelPolicyService.getUserChannelList(hsyMerchantAuditRequest.getId());
+        List<UserChannelPolicyResponse> userChannelPolicyResponses = userChannelPolicyService.getUserChannelList(res.getUid());
         jo.put("channelList",userChannelPolicyResponses);
         jsonObject.put("result",jo);
         return jsonObject;
@@ -239,13 +239,12 @@ public class HsyMerchantListController extends BaseController {
 
     /**
      *修改费率
-     * @param userTradeRateList
+     * @param userTradeRateListRequest
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/updateRate",method = RequestMethod.POST)
-    public CommonResponse updateRate(@RequestBody UserTradeRateListRequest userTradeRateList){
-        List<UserTradeRate> userTradeRateListRequest = userTradeRateList.getRateList();
+    public CommonResponse updateRate(@RequestBody List<UserTradeRateListRequest> userTradeRateListRequest){
         if(userTradeRateListRequest.size()!=3){
             return CommonResponse.simpleResponse(-1, "请填写全参数");
         }
