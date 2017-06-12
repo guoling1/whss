@@ -9,7 +9,9 @@ import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
 import com.jkm.hsy.user.entity.UserChannelPolicy;
 import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
+import com.jkm.hsy.user.help.requestparam.UserChannelListResponse;
 import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
+import com.jkm.hsy.user.help.requestparam.UserChannelPolicyUseResponse;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
@@ -145,7 +147,30 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
      */
     @Override
     public List<UserChannelPolicyResponse> getUserChannelList(long userId) {
-        return null;
+        return userChannelPolicyDao.getUserChannelList(userId);
+    }
+
+    /**
+     * 用户通道列表
+     *
+     * @param userId
+     * @param policyType
+     * @return
+     */
+    @Override
+    public List<UserChannelPolicyUseResponse> getUserChannelByUserIdAndPolicyType(long userId, String policyType) {
+        return userChannelPolicyDao.getUserChannelByUserIdAndPolicyType(userId,policyType);
+    }
+
+    /**
+     * 当前用户通道名称
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public UserChannelListResponse getCurrentChannelName(long userId) {
+        return userChannelPolicyDao.getCurrentChannelName(userId);
     }
 
 

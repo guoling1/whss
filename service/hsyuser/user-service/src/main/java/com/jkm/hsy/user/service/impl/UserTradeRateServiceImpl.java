@@ -215,9 +215,15 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
                     rateListResponse.setRateName(EnumPolicyType.ALIPAY.getName());
                 }
                 rateListResponse.setPolicyType(userTradeRateList.get(i).getPolicyType());
-                rateListResponse.setTradeRateT1(userTradeRateList.get(i).getTradeRateT1());
-                rateListResponse.setTradeRateD1(userTradeRateList.get(i).getTradeRateD1());
-                rateListResponse.setTradeRateD0(userTradeRateList.get(i).getTradeRateD0());
+                if(userTradeRateList.get(i).getTradeRateT1()!=null&&!"".equals(userTradeRateList.get(i).getTradeRateT1())){
+                    rateListResponse.setTradeRateT1(userTradeRateList.get(i).getTradeRateT1().multiply(new BigDecimal("100")));
+                }
+                if(userTradeRateList.get(i).getTradeRateD1()!=null&&!"".equals(userTradeRateList.get(i).getTradeRateD1())){
+                    rateListResponse.setTradeRateD1(userTradeRateList.get(i).getTradeRateD1().multiply(new BigDecimal("100")));
+                }
+                if(userTradeRateList.get(i).getTradeRateD0()!=null&&!"".equals(userTradeRateList.get(i).getTradeRateD0())){
+                    rateListResponse.setTradeRateD0(userTradeRateList.get(i).getTradeRateD0().multiply(new BigDecimal("100")));
+                }
                 userTradeRateListResponses.add(rateListResponse);
             }
         }else{

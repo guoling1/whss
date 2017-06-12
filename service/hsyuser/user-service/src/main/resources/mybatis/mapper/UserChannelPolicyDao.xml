@@ -69,4 +69,16 @@
         FROM app_user_channel_policy as c
         WHERE c.user_id = #{userId} and c.status = 1 ORDER by c.channel_type_sign;
     </select>
+
+    <select id="getUserChannelByUserIdAndPolicyType" resultType="com.jkm.hsy.user.help.requestparam.UserChannelPolicyUseResponse">
+        SELECT channel_name,channel_type_sign FROM app_user_channel_policy
+        WHERE policy_type=#{policyType} and user_id = #{userId} and status = 1 order by channel_type_sign;
+    </select>
+
+    <select id="getCurrentChannelName" resultType="com.jkm.hsy.user.help.requestparam.UserChannelListResponse">
+        SELECT (select channel_name from app_user_channel_policy where user_id=#{userId} and channel_type_sign=p.wechat_channel_type_sign) as wxChannelName,
+        (select channel_name from app_user_channel_policy where user_id=#{userId} and channel_type_sign=p.alipay_channel_type_sign) as zfbChannelName
+        FROM app_user_current_channel_policy as p
+        WHERE user_id = #{userId} and status = 1;
+    </select>
 </mapper>

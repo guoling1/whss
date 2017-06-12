@@ -15,4 +15,12 @@
         SELECT <include refid="Base_Column_List"/> FROM app_user_current_channel_policy
         WHERE user_id=#{userId} and status = 1;
     </select>
+
+    <update id="updateByUserId">
+        UPDATE app_user_current_channel_policy
+        SET
+        wechat_channel_type_sign = #{wechatChannelTypeSign},
+        alipay_channel_type_sign = #{alipayChannelTypeSign}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>

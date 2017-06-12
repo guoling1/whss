@@ -1,7 +1,9 @@
 package com.jkm.hsy.user.service;
 
 import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.help.requestparam.UserChannelListResponse;
 import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
+import com.jkm.hsy.user.help.requestparam.UserChannelPolicyUseResponse;
 
 import java.util.List;
 
@@ -47,4 +49,17 @@ public interface UserChannelPolicyService {
      * @return
      */
     List<UserChannelPolicyResponse> getUserChannelList(long userId);
+    /**
+     * 查询用户通道列表
+     * @param userId
+     * @return
+     */
+    List<UserChannelPolicyUseResponse> getUserChannelByUserIdAndPolicyType(long userId, String policyType);
+    /**
+     * 当前用户通道名称
+     * @param userId
+     * @return
+     */
+    UserChannelListResponse getCurrentChannelName(long userId);
+
 }

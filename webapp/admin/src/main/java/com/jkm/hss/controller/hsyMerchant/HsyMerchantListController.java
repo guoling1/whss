@@ -11,10 +11,9 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hsy.user.Enum.EnumIsOpen;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
+import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.entity.*;
-import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
-import com.jkm.hsy.user.help.requestparam.UserTradeRateListRequest;
-import com.jkm.hsy.user.help.requestparam.UserTradeRateListResponse;
+import com.jkm.hsy.user.help.requestparam.*;
 import com.jkm.hsy.user.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -56,6 +55,8 @@ public class HsyMerchantListController extends BaseController {
     private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private HsyCmbcDao hsyCmbcDao;
 
 
     @ResponseBody
@@ -186,11 +187,11 @@ public class HsyMerchantListController extends BaseController {
         jo.put("rateList",userTradeRateListResponses);
         Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(res.getUid());
         if(userCurrentChannelPolicyOptional.isPresent()){
-            jo.put("useWxChannel",userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
-            jo.put("userZfbChannel",userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign());
+            UserChannelListResponse userChannelListResponse = userChannelPolicyService.getCurrentChannelName(res.getUid());
+            jo.put("userChannelList",userChannelListResponse);
         }else{
-            jo.put("useWxChannel",0);
-            jo.put("userZfbChannel",0);
+            UserChannelListResponse userChannelListResponse = new UserChannelListResponse();
+            jo.put("userChannelList",userChannelListResponse);
         }
         List<UserChannelPolicyResponse> userChannelPolicyResponses = userChannelPolicyService.getUserChannelList(res.getUid());
         jo.put("channelList",userChannelPolicyResponses);
@@ -266,10 +267,10 @@ public class HsyMerchantListController extends BaseController {
                         userTradeRate.setTradeRateT1(userTradeRateListRequest.get(i).getTradeRateT1().divide(new BigDecimal("100")));
                     }
                     if(userTradeRateListRequest.get(i).getTradeRateD1()!=null&&!"".equals(userTradeRateListRequest.get(i).getTradeRateD1())){
-                        userTradeRate.setTradeRateD1(userTradeRateListRequest.get(i).getTradeRateD1());
+                        userTradeRate.setTradeRateD1(userTradeRateListRequest.get(i).getTradeRateD1().divide(new BigDecimal("100")));
                     }
                     if(userTradeRateListRequest.get(i).getTradeRateD0()!=null && !"".equals(userTradeRateListRequest.get(i).getTradeRateD0())){
-                        userTradeRate.setTradeRateD0(userTradeRateListRequest.get(i).getTradeRateD0());
+                        userTradeRate.setTradeRateD0(userTradeRateListRequest.get(i).getTradeRateD0().divide(new BigDecimal("100")));
                     }
                     userTradeRate.setIsOpen(EnumIsOpen.OPEN.getId());
                     userTradeRate.setStatus(EnumStatus.NORMAL.getId());
@@ -282,10 +283,10 @@ public class HsyMerchantListController extends BaseController {
                         userTradeRate.setTradeRateT1(userTradeRateListRequest.get(i).getTradeRateT1().divide(new BigDecimal("100")));
                     }
                     if(userTradeRateListRequest.get(i).getTradeRateD1()!=null&&!"".equals(userTradeRateListRequest.get(i).getTradeRateD1())){
-                        userTradeRate.setTradeRateD1(userTradeRateListRequest.get(i).getTradeRateD1());
+                        userTradeRate.setTradeRateD1(userTradeRateListRequest.get(i).getTradeRateD1().divide(new BigDecimal("100")));
                     }
                     if(userTradeRateListRequest.get(i).getTradeRateD0()!=null && !"".equals(userTradeRateListRequest.get(i).getTradeRateD0())){
-                        userTradeRate.setTradeRateD0(userTradeRateListRequest.get(i).getTradeRateD0());
+                        userTradeRate.setTradeRateD0(userTradeRateListRequest.get(i).getTradeRateD0().divide(new BigDecimal("100")));
                     }
                     userTradeRate.setIsOpen(EnumIsOpen.OPEN.getId());
                     userTradeRate.setStatus(EnumStatus.NORMAL.getId());
@@ -317,14 +318,29 @@ public class HsyMerchantListController extends BaseController {
         return CommonResponse.simpleResponse(1, "修改成功");
     }
     /**
-     *修改费率
-     * @param userTradeRateListRequest
+     *查询成功通道列表
+     * @param useChannelRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/useChannel",method = RequestMethod.POST)
+    public CommonResponse useChannel(@RequestBody UseChannelRequest useChannelRequest){
+        List<UserChannelPolicyUseResponse> userChannelPolicyUseResponses = userChannelPolicyService.getUserChannelByUserIdAndPolicyType(useChannelRequest.getUserId(),useChannelRequest.getPolicyType());
+        return CommonResponse.objectResponse(1, "查询成功",userChannelPolicyUseResponses);
+    }
+    /**
+     *修改当前使用通道
+     * @param userCurrentChannelPolicy
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/changeUseChannel",method = RequestMethod.POST)
-    public CommonResponse changeUseChannel(@RequestBody List<UserTradeRateListRequest> userTradeRateListRequest){
-
+    public CommonResponse changeUseChannel(@RequestBody UserCurrentChannelPolicy userCurrentChannelPolicy){
+        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userCurrentChannelPolicy.getUserId());
+        if(appAuUser==null){
+            return CommonResponse.simpleResponse(1, "商户不存在");
+        }
+        userCurrentChannelPolicyService.updateByUserId(userCurrentChannelPolicy);
         return CommonResponse.simpleResponse(1, "修改成功");
     }
 }

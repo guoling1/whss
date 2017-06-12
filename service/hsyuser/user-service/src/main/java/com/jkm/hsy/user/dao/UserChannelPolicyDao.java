@@ -1,7 +1,9 @@
 package com.jkm.hsy.user.dao;
 
 import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.help.requestparam.UserChannelListResponse;
 import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
+import com.jkm.hsy.user.help.requestparam.UserChannelPolicyUseResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -50,5 +52,17 @@ public interface UserChannelPolicyDao {
      * @param userId
      * @return
      */
-    List<UserChannelPolicyResponse> getUserChannelList(@Param("channelTypeSign") long userId);
+    List<UserChannelPolicyResponse> getUserChannelList(@Param("userId") long userId);
+    /**
+     * 用户通道列表
+     * @param userId
+     * @return
+     */
+    List<UserChannelPolicyUseResponse> getUserChannelByUserIdAndPolicyType(@Param("userId") long userId, @Param("policyType") String policyType);
+    /**
+     * 当前用户通道名称
+     * @param userId
+     * @return
+     */
+    UserChannelListResponse getCurrentChannelName(@Param("userId") long userId);
 }

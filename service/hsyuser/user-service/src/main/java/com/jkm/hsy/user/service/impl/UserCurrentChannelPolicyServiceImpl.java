@@ -36,4 +36,14 @@ public class UserCurrentChannelPolicyServiceImpl implements UserCurrentChannelPo
     public Optional<UserCurrentChannelPolicy> selectByUserId(long userId) {
         return Optional.fromNullable(userCurrentChannelPolicyDao.selectByUserId(userId));
     }
+
+    /**
+     * 修改商户当前使用通道
+     *
+     * @param userCurrentChannelPolicy
+     */
+    @Override
+    public void updateByUserId(UserCurrentChannelPolicy userCurrentChannelPolicy) {
+        userCurrentChannelPolicyDao.updateByUserId(userCurrentChannelPolicy);
+    }
 }

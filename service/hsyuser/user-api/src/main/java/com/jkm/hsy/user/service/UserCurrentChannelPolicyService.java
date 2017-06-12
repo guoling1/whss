@@ -19,4 +19,10 @@ public interface UserCurrentChannelPolicyService {
      * @return
      */
     Optional<UserCurrentChannelPolicy> selectByUserId(long userId);
+
+    /**
+     * 修改商户当前使用通道
+     * @param userCurrentChannelPolicy
+     */
+    void updateByUserId(UserCurrentChannelPolicy userCurrentChannelPolicy);
 }
