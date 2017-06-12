@@ -1,6 +1,9 @@
 package com.jkm.hsy.user.service;
 
 import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
+
+import java.util.List;
 
 /**
  * Created by xingliujie on 2017/6/8.
@@ -38,5 +41,10 @@ public interface UserChannelPolicyService {
      */
     void updateHxOpenProduct(UserChannelPolicy userChannelPolicy);
 
-
+    /**
+     * 用户通道列表
+     * @param userId
+     * @return
+     */
+    List<UserChannelPolicyResponse> getUserChannelList(long userId);
 }

@@ -4,10 +4,12 @@ import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
 import com.jkm.hsy.user.entity.UserChannelPolicy;
 import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
+import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
@@ -62,6 +64,12 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
                 if(uc==null){
                     UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
                     userChannelPolicy.setUserId(userId);
+                    if("微信".equals(basicChannels.get(i).getThirdCompany())){
+                        userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
+                    }
+                    if("支付宝".equals(basicChannels.get(i).getThirdCompany())){
+                        userChannelPolicy.setPolicyType(EnumPolicyType.ALIPAY.getId());
+                    }
                     userChannelPolicy.setChannelName(basicChannels.get(i).getChannelName());
                     userChannelPolicy.setChannelTypeSign(basicChannels.get(i).getChannelTypeSign());
                     userChannelPolicy.setSettleType(basicChannels.get(i).getBasicBalanceType());
@@ -73,6 +81,12 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
                     UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
                     userChannelPolicy.setId(uc.getId());
                     userChannelPolicy.setUserId(userId);
+                    if("微信".equals(basicChannels.get(i).getThirdCompany())){
+                        userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
+                    }
+                    if("支付宝".equals(basicChannels.get(i).getThirdCompany())){
+                        userChannelPolicy.setPolicyType(EnumPolicyType.ALIPAY.getId());
+                    }
                     userChannelPolicy.setChannelName(basicChannels.get(i).getChannelName());
                     userChannelPolicy.setChannelTypeSign(basicChannels.get(i).getChannelTypeSign());
                     userChannelPolicy.setSettleType(basicChannels.get(i).getBasicBalanceType());
@@ -123,6 +137,16 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
         userChannelPolicyDao.updateHxOpenProduct(userChannelPolicy);
     }
 
+    /**
+     * 用户通道列表
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<UserChannelPolicyResponse> getUserChannelList(long userId) {
+        return null;
+    }
 
 
 }

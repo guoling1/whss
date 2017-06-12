@@ -1,30 +1,17 @@
-package com.jkm.hsy.user.entity;
+package com.jkm.hsy.user.help.requestparam;
 
-import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hsy.user.Enum.EnumChannelIsUse;
 import lombok.Data;
 
 /**
- * Created by xingliujie on 2017/6/8.
+ * Created by xingliujie on 2017/6/12.
  */
 @Data
-public class UserChannelPolicy extends BaseEntity{
-    /**
-     *用户编码
-     */
-    private long userId;
+public class UserChannelPolicyResponse {
     /**
      * 通道名称
      */
     private String channelName;
-    /**
-     * 通道唯一标示
-     */
-    private Integer channelTypeSign;
-    /**
-     * 政策类型
-     * {@link com.jkm.hsy.user.Enum.EnumPolicyType}
-     */
-    private String policyType;
     /**
      * 结算时间
      */
@@ -59,5 +46,8 @@ public class UserChannelPolicy extends BaseEntity{
      * 活动编号
      */
     private String exchannelEventCode;
-
+    /**
+     * 使用中
+     */
+    private int isUse;
 }
