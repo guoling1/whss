@@ -563,7 +563,7 @@
     methods: {
       rateChange: function () {
         for(let i=0; i<this.rateData.length; i++){
-          this.rateData[i].userId = this.id;
+          this.rateData[i].userId = this.msg.uid;
         }
         this.$http.post('/admin/hsyMerchantList/updateRate',this.rateData)
           .then(res=>{
