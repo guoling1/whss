@@ -39,6 +39,7 @@ const StoreNotice = r => require.ensure([], () => r(require('components/StoreNot
 const StoreNoticeDet = r => require.ensure([], () => r(require('components/StoreNoticeDet')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
 const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
+const Achievement = r => require.ensure([], () => r(require('components/Achievement')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
@@ -176,6 +177,7 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'achievement', name: 'Achievement', component: Achievement},
       {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'template', name: 'Template', component: Template},
