@@ -23,11 +23,6 @@ public interface UserChannelPolicyService {
     void updateInit(UserChannelPolicy userChannelPolicy);
 
     /**
-     * 初始化商户通道
-     * @param userId
-     */
-    void initChannel(long userId);
-    /**
      * 根据用户编码和通道编码修改
      * @param userChannelPolicy
      */
