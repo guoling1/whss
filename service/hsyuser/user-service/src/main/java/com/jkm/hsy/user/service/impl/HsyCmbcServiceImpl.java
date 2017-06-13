@@ -126,12 +126,14 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     public CmbcResponse merchantBindChannel(long userId,long shopId) {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
+        Optional<UserTradeRate> wxUt = userTradeRateService.selectByUserIdAndPolicyType(userId,EnumPolicyType.WECHAT.getId());
+        Optional<UserTradeRate> zfbUt = userTradeRateService.selectByUserIdAndPolicyType(userId,EnumPolicyType.ALIPAY.getId());
         CmbcResponse cmbcResponse = new CmbcResponse();
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", appAuUser.getGlobalID());
-        paramsMap.put("wxOnlineRate", appAuUser.getWeixinRate().toString());
+        paramsMap.put("wxOnlineRate", wxUt.get().getTradeRateT1().toString());
         paramsMap.put("wxBizCategory", getWxCategory(appBizShop.getIndustryCode()));
-        paramsMap.put("zfbOnlineRate", appAuUser.getAlipayRate().toString());
+        paramsMap.put("zfbOnlineRate", zfbUt.get().getTradeRateT1().toString());
         paramsMap.put("zfbBizCategory",getAlipayCategory(appBizShop.getIndustryCode()));
         log.info("民生银行商户支付通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
         log.info("url:{}",MerchantConsts.getMerchantConfig().merchantBindChannel());
@@ -158,11 +160,13 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     @Override
     public CmbcResponse merchantUpdateBindChannel(long userId) {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
+        Optional<UserTradeRate> wxUt = userTradeRateService.selectByUserIdAndPolicyType(userId,EnumPolicyType.WECHAT.getId());
+        Optional<UserTradeRate> zfbUt = userTradeRateService.selectByUserIdAndPolicyType(userId,EnumPolicyType.ALIPAY.getId());
         CmbcResponse cmbcResponse = new CmbcResponse();
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", appAuUser.getGlobalID());
-        paramsMap.put("wxOnlineRate", appAuUser.getWeixinRate().toString());
-        paramsMap.put("zfbOnlineRate", appAuUser.getAlipayRate().toString());
+        paramsMap.put("wxOnlineRate", wxUt.get().getTradeRateT1().toString());
+        paramsMap.put("zfbOnlineRate", zfbUt.get().getTradeRateT1().toString());
         log.info("民生银行商户支付修改通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
         log.info("url:{}",MerchantConsts.getMerchantConfig().merchantUpdateChannel());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdateChannel(), paramsMap);
