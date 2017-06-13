@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hsy.user.entity.UserChannelPolicy;
 import com.jkm.hsy.user.help.requestparam.UserChannelListResponse;
 import com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse;
@@ -56,5 +57,13 @@ public interface UserChannelPolicyService {
      * @return
      */
     UserChannelListResponse getCurrentChannelName(long userId);
+
+    /**
+     * 根据用户编码和通道编码查询
+     * @param userId
+     * @param channelTypeSign
+     * @return
+     */
+    Optional<UserChannelPolicy> selectByUserIdAndChannelTypeSign(long userId,int channelTypeSign);
 
 }
