@@ -383,9 +383,9 @@ public class HsyMerchantAuditController extends BaseController {
         UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
         userChannelPolicy.setUserId(addWxChannelRequest.getUserId());
         userChannelPolicy.setChannelName("微信官方");
-        userChannelPolicy.setChannelTypeSign(000);
+        userChannelPolicy.setChannelTypeSign(EnumPayChannelSign.WECHAT_PAY.getId());
         userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
-        userChannelPolicy.setSettleType("T1");
+        userChannelPolicy.setSettleType(EnumPayChannelSign.WECHAT_PAY.getSettleType().getType());
         userChannelPolicy.setNetStatus(EnumNetStatus.UNENT.getId());
         userChannelPolicy.setOpenProductStatus(0);
         userChannelPolicy.setExchannelCode(addWxChannelRequest.getExchannelCode());

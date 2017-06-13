@@ -9,12 +9,17 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
+import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +47,12 @@ public class CodeController extends BaseController {
 
     @Autowired
     private HsyShopDao hsyShopDao;
+
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
 
     /**
      * 扫码
@@ -79,12 +90,20 @@ public class CodeController extends BaseController {
             Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()!=null, "商户未通过审核");
             Preconditions.checkState(appAuUsers.get(0).getHxbStatus()== EnumHxbsStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
             Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()== EnumHxbsOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+            Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(appAuUsers.get(0).getId());
+            Preconditions.checkState(userCurrentChannelPolicyOptional.isPresent(), "商户未设置当前使用中的通道");
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
             model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
             model.addAttribute("code",code);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
             if (agent.indexOf("micromessenger") > -1) {
+                String appId = WxConstants.APP_HSY_ID;
+                if(userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign()== EnumPayChannelSign.WECHAT_PAY.getId()){
+                    Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appAuUsers.get(0).getId(),EnumPayChannelSign.WECHAT_PAY.getId());
+                    Preconditions.checkState(userChannelPolicyOptional.isPresent(), "商户微信官方通道不存在");
+                    appId = userChannelPolicyOptional.get().getAppId();
+                }
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
                     if(request.getQueryString() == null){
@@ -93,7 +112,7 @@ public class CodeController extends BaseController {
                         requestUrl = request.getQueryString();
                     }
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                    return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                    return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO_START+appId+WxConstants.WEIXIN_HSY_MERCHANT_USERINFO_END+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
                 model.addAttribute("openId",openId);
                 url = "/sqb/paymentWx";
