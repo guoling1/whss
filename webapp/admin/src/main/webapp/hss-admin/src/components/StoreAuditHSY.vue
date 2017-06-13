@@ -326,8 +326,44 @@
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
-        <div style="width: 70%;margin: 0 0 15px 15px;">
+        <div style="width: 80%;margin: 0 0 15px 15px;">
+          <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
+            <el-button type="primary" size="small" @click="channelChange">修改</el-button>
+          </div>
           <template>
+            <el-table :data="channelList" border style="width: 100%;margin-top: 15px;">
+              <el-table-column prop="channelName" label="通道名称" ></el-table-column>
+              <el-table-column prop="settleType" label="结算时间"></el-table-column>
+              <el-table-column prop="netStatus" label="入网状态" >
+                <template scope="scope">
+                  <span v-if="scope.row.netStatus==1">未入网</span>
+                  <span v-if="scope.row.netStatus==2">不需入网</span>
+                  <span v-if="scope.row.netStatus==3">已提交</span>
+                  <span v-if="scope.row.netStatus==4">成功</span>
+                  <span v-if="scope.row.netStatus==5">失败</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="netMarks" label="入网信息" ></el-table-column>
+              <el-table-column prop="openProductStatus" label="产品开通状态">
+                <template scope="scope">
+                  <span v-if="scope.row.openProductStatus==1">开通产品成功</span>
+                  <span v-if="scope.row.openProductStatus==2">开通产品失败</span>
+                  <span v-if="scope.row.openProductStatus==3">已提交</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="openProductMarks" label="产品开通信息" ></el-table-column>
+              <el-table-column prop="exchannelCode" label="渠道商户编号"></el-table-column>
+              <el-table-column prop="appId" label="公众号" ></el-table-column>
+              <el-table-column prop="exchannelEventCode" label="活动编号" ></el-table-column>
+              <el-table-column prop="isUse" label="使用状态">
+                <template scope="scope">
+                  <span v-if="scope.row.isUse==1">使用中</span>
+                  <span v-if="scope.row.isUse==0">未使用</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+          <!--<template>
             <el-table :data="tableData" border style="width: 100%">
               <el-table-column prop="name" label="通道名称" ></el-table-column>
               <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
@@ -350,7 +386,7 @@
               </el-table-column>
               <el-table-column prop="proMsg" label="产品开通信息" ></el-table-column>
             </el-table>
-          </template>
+          </template>-->
         </div>
       </div>
       <el-dialog title="重新入网" v-model="isReenter" size="tiny">
@@ -460,6 +496,34 @@
           <el-button @click="changePhone" type="primary" style="position: relative;top: -20px;">确 定</el-button>
         </div>
       </el-dialog>
+      <el-dialog title="切换商户通道" v-model="isChannel">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="微信通道：" width="120" style="margin-bottom: 0">
+            <el-select v-model="channelForm.wechatChannelTypeSign" placeholder="请选择">
+              <el-option
+                v-for="item in wxchannel"
+                :key="item.value"
+                :label="item.channelName"
+                :value="item.channelTypeSign">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支付宝通道：" width="120" style="margin-bottom: 0">
+            <el-select v-model="channelForm.alipayChannelTypeSign" placeholder="请选择">
+              <el-option
+                v-for="item in alichannel"
+                :key="item.value"
+                :label="item.channelName"
+                :value="item.channelTypeSign">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="isChannel = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="submitChannel" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -508,26 +572,18 @@
         width:0,
         isPhone:false,
         newPhone:'',
-        rateData:[{
-          policyType: "wechat",
-          rateName: "微信",
-          tradeRateD0: 0.1,
-          tradeRateD1: 0.2,
-          tradeRateT1: 0.3
-        },{
-          policyType: "alipay",
-          rateName: "支付宝",
-          tradeRateD0: 0.1,
-          tradeRateD1: 0.2,
-          tradeRateT1: 0.3
-        },{
-          policyType: "withdraw",
-          rateName: "提现手续费",
-          tradeRateD0: 0.1,
-          tradeRateD1: 0.2,
-          tradeRateT1: 0.3
-        }],
-        isInput: false
+        rateData:[],
+        isInput: false,
+        channelList:[],
+        userChannelList:[],
+        isChannel: false,
+        wxchannel:[],
+        alichannel:[],
+        channelForm:{
+          userId:'',
+          wechatChannelTypeSign:'',
+          alipayChannelTypeSign:''
+        }
       }
     },
     created: function () {
@@ -570,6 +626,43 @@
       })
     },
     methods: {
+      channelChange: function () {
+        this.channelForm = {
+          userId:'',
+          wechatChannelTypeSign:'',
+          alipayChannelTypeSign:''
+        };
+        this.isChannel = true;
+        this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'wechat'})
+          .then(res =>{
+            this.wxchannel = res.data;
+          })
+        this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'alipay'})
+          .then(res =>{
+            this.alichannel = res.data;
+          })
+      },
+      submitChannel:function () {
+        this.channelForm.userId = this.msg.uid;
+        console.log(this.channelForm)
+        this.$http.post('/admin/hsyMerchantList/changeUseChannel',this.channelForm)
+          .then(res=>{
+            this.isChannel = false;
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
+            this.getData()
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
       rateChange: function () {
         for(let i=0; i<this.rateData.length; i++){
           this.rateData[i].userId = this.msg.uid;
@@ -679,6 +772,8 @@
             this.msg = res.data.res;
             this.res = res.data.list;
             this.rateData = res.data.rateList;
+            this.channelList = res.data.channelList;
+            this.userChannelList = res.data.userChannelList;
             this.rateList = JSON.parse(JSON.stringify(res.data.rateList));
             if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
               this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
@@ -856,6 +951,9 @@
     computed:{
       $msg:function () {
         return this.msg
+      },
+      $userChannelList: function(){
+        return this.userChannelList;
       }
     },
     filters: {
