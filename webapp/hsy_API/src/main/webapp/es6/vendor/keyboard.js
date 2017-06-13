@@ -173,10 +173,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                 message.load_show('正在支付');
                 http.post('/trade/scReceipt', {
                   totalFee: oldValue,
-                  payChannel: '801',
-                  memberId: pageData.memberId,
-                  merchantId: pageData.merchantId,
-                  code: pageData.code
+                  hsyOrderId: pageData.hsyOrderId
                 }, function (data) {
                   http.post(data.payUrl, {}, function (data) {
                     message.load_hide();
@@ -192,10 +189,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                 message.load_show('正在支付');
                 http.post('/trade/scReceipt', {
                   totalFee: oldValue,
-                  payChannel: '802',
-                  memberId: pageData.memberId,
-                  merchantId: pageData.merchantId,
-                  code: pageData.code
+                  hsyOrderId: pageData.hsyOrderId
                 }, function (data) {
                   http.post(data.payUrl, {}, function (data) {
                     message.load_hide();
