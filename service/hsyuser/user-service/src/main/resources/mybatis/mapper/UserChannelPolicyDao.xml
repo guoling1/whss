@@ -27,9 +27,9 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectByChannelTypeSign" resultType="com.jkm.hsy.user.entity.UserChannelPolicy">
+    <select id="selectByUserIdAndChannelTypeSign" resultType="com.jkm.hsy.user.entity.UserChannelPolicy">
         SELECT <include refid="Base_Column_List"/> FROM app_user_channel_policy
-        WHERE channel_type_sign=#{channelTypeSign} and status = 1;
+        WHERE channel_type_sign=#{channelTypeSign} and user_id=#{userId} and status = 1;
     </select>
 
     <update id="updateByUserIdAndChannelTypeSign">

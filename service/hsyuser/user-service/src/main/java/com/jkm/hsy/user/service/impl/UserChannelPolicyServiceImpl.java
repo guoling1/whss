@@ -62,7 +62,7 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
         List<BasicChannel> basicChannels =  basicChannelService.selectHsyAll();
         if(basicChannels.size()>0){
             for(int i=0;i<basicChannels.size();i++){
-                UserChannelPolicy uc =  userChannelPolicyDao.selectByChannelTypeSign(basicChannels.get(i).getChannelTypeSign());
+                UserChannelPolicy uc =  userChannelPolicyDao.selectByUserIdAndChannelTypeSign(userId,basicChannels.get(i).getChannelTypeSign());
                 if(uc==null){
                     UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
                     userChannelPolicy.setUserId(userId);

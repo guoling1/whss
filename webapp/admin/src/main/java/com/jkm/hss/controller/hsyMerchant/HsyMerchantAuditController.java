@@ -20,10 +20,13 @@ import com.jkm.hsy.user.help.requestparam.XmmsResponse;
 import com.jkm.hsy.user.service.HsyCmbcService;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
+import com.jkm.hsy.user.service.UserTradeRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by zhangbin on 2017/1/20.
@@ -60,12 +63,19 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
 
+    @Autowired
+    private UserTradeRateService userTradeRateService;
+
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
         final HsyMerchantAuditResponse hsyMerchantAudit = this.hsyMerchantAuditService.selectById(hsyMerchantAuditRequest.getId());
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
+        }
+        List<UserTradeRate> userTradeRateList =  userTradeRateService.selectAllByUserId(hsyMerchantAuditRequest.getUid());
+        if(userTradeRateList.size()==0){
+            return CommonResponse.simpleResponse(-1, "商户费率为空");
         }
         AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
         if (acct!=null){

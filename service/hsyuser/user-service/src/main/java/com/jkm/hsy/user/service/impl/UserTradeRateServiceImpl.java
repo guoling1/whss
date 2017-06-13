@@ -254,5 +254,16 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
         return userTradeRateListResponses;
     }
 
+    /**
+     * 商户费率
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<UserTradeRate> selectAllByUserId(long userId) {
+        return userTradeRateDao.selectAllByUserId(userId);
+    }
+
 
 }

@@ -30,7 +30,7 @@ public interface UserChannelPolicyDao {
      * @param channelTypeSign
      * @return
      */
-    UserChannelPolicy selectByChannelTypeSign(@Param("channelTypeSign") int channelTypeSign);
+    UserChannelPolicy selectByUserIdAndChannelTypeSign(@Param("userId") long userId,@Param("channelTypeSign") int channelTypeSign);
     /**
      * 根据用户编码和通道编码修改
      * @param userChannelPolicy

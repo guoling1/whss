@@ -60,4 +60,10 @@ public interface UserTradeRateService {
      */
     List<UserTradeRateListResponse> getUserRate(long userId);
 
+    /**
+     * 商户费率
+     * @return
+     */
+    List<UserTradeRate> selectAllByUserId(long userId);
+
 }
