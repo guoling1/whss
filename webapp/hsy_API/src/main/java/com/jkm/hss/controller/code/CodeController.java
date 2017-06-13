@@ -51,6 +51,9 @@ public class CodeController extends BaseController {
     @Autowired
     private HSYTransactionService hsyTransactionService;
 
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+
 
     /**
      * 扫码
@@ -89,10 +92,10 @@ public class CodeController extends BaseController {
             Preconditions.checkState(appAuUsers.get(0).getHxbStatus()== EnumHxbsStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
             Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()== EnumHxbsOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
-            model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
-            model.addAttribute("code",code);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
+            Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(appAuUsers.get(0).getId());
+            Preconditions.checkState(userCurrentChannelPolicyOptional.isPresent(), "商户使用中通道未设置");
             if (agent.indexOf("micromessenger") > -1) {
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
@@ -104,8 +107,9 @@ public class CodeController extends BaseController {
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                     return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
-                model.addAttribute("openId",openId);
-                hsyTransactionService.createOrder(EnumPayChannelSign.SYJ_WECHAT.getId(),merchantId,appAuUsers.get(0).getId()+"",code);
+
+                long orderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
+                model.addAttribute("orderId",orderId);
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
@@ -124,8 +128,8 @@ public class CodeController extends BaseController {
                     log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
                 }
-                model.addAttribute("openId",openId);
-                hsyTransactionService.createOrder(EnumPayChannelSign.SYJ_ALIPAY.getId(),merchantId,appAuUsers.get(0).getId()+"",code);
+                long orderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
+                model.addAttribute("orderId",orderId);
                 url = "/sqb/paymentZfb";
             }
         } else {

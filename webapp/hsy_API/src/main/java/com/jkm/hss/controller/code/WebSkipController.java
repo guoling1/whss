@@ -58,17 +58,14 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param merchantId
      * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name, @RequestParam(value = "openId") String openId, @RequestParam(value = "code") String code) throws IOException {
-        model.addAttribute("mid", merchantId);
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "orderId", required = true) long orderId, @RequestParam(value = "name") String name) throws IOException {
+        model.addAttribute("orderId", orderId);
         model.addAttribute("merchantName", name);
-        model.addAttribute("openId", openId);
-        model.addAttribute("code",code);
         return "/payment-wx";
     }
 
@@ -77,18 +74,14 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param merchantId
      * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId, @RequestParam(value = "code") String code) throws IOException {
-        model.addAttribute("mid", merchantId);
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "orderId", required = true) long orderId,@RequestParam(value = "name") String name) throws IOException {
+        model.addAttribute("orderId", orderId);
         model.addAttribute("merchantName", name);
-        model.addAttribute("openId", openId);
-        model.addAttribute("code",code);
-        log.info("openId={}",openId);
         return "/payment-zfb";
     }
 
