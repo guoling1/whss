@@ -286,6 +286,10 @@
             <artifactId>mybatis-spring</artifactId>
             <version>1.2.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-product-service</artifactId>
+        </dependency>
         <!-- mybatis release___________________________end -->
     </dependencies>
 </project>

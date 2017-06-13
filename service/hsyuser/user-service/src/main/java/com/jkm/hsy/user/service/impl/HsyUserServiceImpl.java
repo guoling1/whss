@@ -11,16 +11,20 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.entity.SmsTemplate;
+import com.jkm.hss.product.dao.BasicChannelDao;
+import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hsy.user.Enum.EnumNetStatus;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.constant.VerificationCodeType;
-import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.dao.HsyVerificationDao;
+import com.jkm.hsy.user.dao.*;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -52,6 +56,12 @@ public class HsyUserServiceImpl implements HsyUserService {
     private AccountService accountService;
     @Autowired
     private QRCodeService qRCodeService;
+    @Autowired
+    private BasicChannelDao basicChannelDao;
+    @Autowired
+    private UserChannelPolicyDao userChannelPolicyDao;
+    @Autowired
+    private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -153,6 +163,44 @@ public class HsyUserServiceImpl implements HsyUserService {
         }
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+
+        List<BasicChannel> channelList=basicChannelDao.selectHsyAll();
+        for(BasicChannel basicChannel:channelList)
+        {
+            UserChannelPolicy userChannelPolicyFind=userChannelPolicyDao.selectByUserIdAndChannelTypeSign(appAuUser.getId(),basicChannel.getChannelTypeSign());
+            if(userChannelPolicyFind==null) {
+                UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
+                if (basicChannel.getIsNeed() == 1)
+                    userChannelPolicy.setNetStatus(EnumNetStatus.UNSUPPORT.getId());
+                else
+                    userChannelPolicy.setNetStatus(EnumNetStatus.UNENT.getId());
+
+                if (basicChannel.getThirdCompany().equals("微信"))
+                    userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
+                else
+                    userChannelPolicy.setPolicyType(EnumPolicyType.ALIPAY.getId());
+
+                userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+                userChannelPolicy.setChannelName(basicChannel.getChannelName());
+                userChannelPolicy.setChannelTypeSign(basicChannel.getChannelTypeSign());
+                userChannelPolicy.setSettleType(basicChannel.getBasicBalanceType());
+                userChannelPolicy.setUserId(appAuUser.getId());
+                userChannelPolicy.setOpenProductStatus(0);
+
+                userChannelPolicyDao.insert(userChannelPolicy);
+            }
+        }
+        UserCurrentChannelPolicy ucc = userCurrentChannelPolicyDao.selectByUserId(appAuUser.getId());
+        if(ucc==null)
+        {
+            UserCurrentChannelPolicy userCurrentChannelPolicy = new UserCurrentChannelPolicy();
+            userCurrentChannelPolicy.setUserId(appAuUser.getId());
+            userCurrentChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+            userCurrentChannelPolicy.setWechatChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+            userCurrentChannelPolicy.setAlipayChannelTypeSign(EnumPayChannelSign.SYJ_ALIPAY.getId());
+            userCurrentChannelPolicyDao.insert(userCurrentChannelPolicy);
+        }
+
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
