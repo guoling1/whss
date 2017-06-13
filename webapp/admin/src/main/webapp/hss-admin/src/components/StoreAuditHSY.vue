@@ -326,12 +326,13 @@
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
+        <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
             <el-button type="primary" size="small" @click="channelChange">修改</el-button>
           </div>
           <template>
-            <el-table :data="channelList" border style="width: 100%;margin-top: 15px;">
+            <el-table :data="$channelList" border style="width: 100%;margin-top: 15px;">
               <el-table-column prop="channelName" label="通道名称" ></el-table-column>
               <el-table-column prop="settleType" label="结算时间"></el-table-column>
               <el-table-column prop="netStatus" label="入网状态" >
@@ -524,6 +525,20 @@
           <el-button @click="submitChannel" type="primary" style="position: relative;top: -20px;">确 定</el-button>
         </div>
       </el-dialog>
+      <el-dialog title="添加微信官方通道" v-model="isWxChannel">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="微信子商户编号：" width="120" style="margin-bottom: 0">
+            <el-input v-model="wxChannelForm.exchannelCode" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item label="子商户公众号ID：" width="120" style="margin-bottom: 0">
+            <el-input v-model="wxChannelForm.appId" placeholder="可选"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="isWxChannel = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="submitWxChannel" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -583,6 +598,12 @@
           userId:'',
           wechatChannelTypeSign:'',
           alipayChannelTypeSign:''
+        },
+        isWxChannel:false,
+        wxChannelForm:{
+          userId:'',
+          exchannelCode:"",
+          appId:""
         }
       }
     },
@@ -640,6 +661,31 @@
         this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'alipay'})
           .then(res =>{
             this.alichannel = res.data;
+          })
+      },
+      submitWxChannel: function () {
+        this.wxChannelForm.userId = this.msg.uid;
+        this.$http.post('/admin/hsyMerchantAudit/addWxChannel',this.wxChannelForm)
+          .then(res =>{
+            this.$message({
+              showClose: true,
+              message: '添加成功',
+              type: 'success'
+            });
+            this.isWxChannel=false;
+            this.getData();
+            this.wxChannelForm = {
+                userId:'',
+                exchannelCode:"",
+                appId:""
+            }
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
           })
       },
       submitChannel:function () {
@@ -954,6 +1000,9 @@
       },
       $userChannelList: function(){
         return this.userChannelList;
+      },
+      $channelList: function () {
+        return this.channelList;
       }
     },
     filters: {
