@@ -1524,6 +1524,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req) {
+        List<AchievementStatisticsResponse> list = this.orderDao.getAchievement(req);
+        return list;
+    }
+
+    @Override
+    public int getAchievementCount(QueryOrderRequest req) {
+        return this.orderDao.getAchievementCount(req);
+    }
+
+    @Override
     public void save(GeTuiResponse geTuiResponse) {
         this.orderDao.save(geTuiResponse);
     }

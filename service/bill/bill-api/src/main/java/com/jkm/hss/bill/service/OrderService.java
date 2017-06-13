@@ -518,6 +518,20 @@ public interface OrderService {
     String getAmountCount1(OrderTradeRequest req);
 
     /**
+     * 业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req);
+
+    /**
+     * 业绩统计总数
+     * @param req
+     * @return
+     */
+    int getAchievementCount(QueryOrderRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

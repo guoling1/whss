@@ -523,4 +523,18 @@ public interface OrderDao {
      * @return
      */
     String getPoundageCount1(OrderTradeRequest req);
+
+    /**
+     * 业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req);
+
+    /**
+     * 业绩统计总数
+     * @param req
+     * @return
+     */
+    int getAchievementCount(QueryOrderRequest req);
 }
