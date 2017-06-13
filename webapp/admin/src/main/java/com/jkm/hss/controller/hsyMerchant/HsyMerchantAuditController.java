@@ -3,6 +3,7 @@ package com.jkm.hss.controller.hsyMerchant;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
@@ -15,6 +16,7 @@ import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.help.requestparam.AddWxChannelRequest;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.help.requestparam.XmmsResponse;
 import com.jkm.hsy.user.service.HsyCmbcService;
@@ -370,6 +372,28 @@ public class HsyMerchantAuditController extends BaseController {
     }
 
 
+    /**
+     * 添加微信官方通道
+     * @param addWxChannelRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addWxChannel",method = RequestMethod.POST)
+    public CommonResponse addWxChannel(@RequestBody AddWxChannelRequest addWxChannelRequest){
+        UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
+        userChannelPolicy.setUserId(addWxChannelRequest.getUserId());
+        userChannelPolicy.setChannelName("微信官方");
+        userChannelPolicy.setChannelTypeSign(000);
+        userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
+        userChannelPolicy.setSettleType("T1");
+        userChannelPolicy.setNetStatus(EnumNetStatus.UNENT.getId());
+        userChannelPolicy.setOpenProductStatus(0);
+        userChannelPolicy.setExchannelCode(addWxChannelRequest.getExchannelCode());
+        userChannelPolicy.setAppId(addWxChannelRequest.getAppId());
+        userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+        userChannelPolicyService.insert(userChannelPolicy);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"添加成功");
+    }
 
 
 
