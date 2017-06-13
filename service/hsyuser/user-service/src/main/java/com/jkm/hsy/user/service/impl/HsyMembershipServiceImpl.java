@@ -160,7 +160,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return gson.toJson(map);
     }
 
-    /**HSY001052 返回开卡二维码*/
+    /**HSY001052 返回开卡和储值二维码*/
     public String findMemberQr(String dataParam, AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
@@ -193,7 +193,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             throw new ApiHandleException(ResultCode.ESCAPE_FAIL);
         }
         Map result=new HashMap();
-        result.put("memberQR",AppPolicyConstant.MEMBER_QR+uidEncode);
+        result.put("createQR",AppPolicyConstant.MEMBER_QR+OperateType.CREATE.key+"/"+uidEncode);
+        result.put("rechargeQR",AppPolicyConstant.MEMBER_QR+OperateType.RECHARGE.key+"/"+uidEncode);
         return gson.toJson(result);
     }
 
@@ -227,7 +228,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return gson.toJson(result);
     }
 
-    /**HSY001054 停止开通会员卡*/
+    /**HSY001054 停止(启用)开通会员卡*/
     public String updateMemshipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
@@ -241,7 +242,56 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         /**参数验证*/
         if(!(appPolicyMembershipCard.getId()!=null&&!appPolicyMembershipCard.getId().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"ID");
-        appPolicyMembershipCard.setStatus(CardStatus.HALT_USING.key);
+        if(!(appPolicyMembershipCard.getStatus()!=null&&!appPolicyMembershipCard.getStatus().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"开通状态");
+        if(!(appPolicyMembershipCard.getStatus()==CardStatus.USING.key||appPolicyMembershipCard.getStatus()==CardStatus.HALT_USING.key))
+            throw new ApiHandleException(ResultCode.MEMBERSHIP_CARD_STATUS_NOT_EXSIT);
+        hsyMembershipDao.updateMembershipCard(appPolicyMembershipCard);
+        return "";
+    }
+
+    /**HSY001055 修改会员卡*/
+    public String updateMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMembershipCard appPolicyMembershipCard=null;
+        try{
+            appPolicyMembershipCard=gson.fromJson(dataParam, AppPolicyMembershipCard.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMembershipCard.getId()!=null&&!appPolicyMembershipCard.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"ID");
+        if(appPolicyMembershipCard.getIsPresentedViaActivate()!=null&&appPolicyMembershipCard.getIsPresentedViaActivate()==1)
+            if(!(appPolicyMembershipCard.getPresentAmount()!=null&&!appPolicyMembershipCard.getPresentAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK,"开卡赠送金额");
+        if(appPolicyMembershipCard.getIsPresentedViaRecharge()!=null&&appPolicyMembershipCard.getIsPresentedViaRecharge()==1) {
+            if (!(appPolicyMembershipCard.getRechargeLimitAmount() != null && !appPolicyMembershipCard.getRechargeLimitAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "单笔充值限额");
+            if (!(appPolicyMembershipCard.getRechargePresentAmount() != null && !appPolicyMembershipCard.getRechargePresentAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "单笔充值赠送金额");
+        }
+        appPolicyMembershipCard.setDiscount(null);
+        appPolicyMembershipCard.setIsDeposited(null);
+        appPolicyMembershipCard.setCanRecharge(null);
+
+        if(appPolicyMembershipCard.getSids()!=null&&!appPolicyMembershipCard.getSids().equals(""))
+        {
+            hsyMembershipDao.deleteMembershipCardShop(appPolicyMembershipCard.getId());
+            List<AppPolicyMembershipCardShop> appPolicyMembershipCardShopList=new ArrayList<AppPolicyMembershipCardShop>();
+            String[] sidStrs=appPolicyMembershipCard.getSids().split(",");
+            for(String sidStr:sidStrs)
+            {
+                Long sid=Long.parseLong(sidStr);
+                AppPolicyMembershipCardShop appPolicyMembershipCardShop=new AppPolicyMembershipCardShop();
+                appPolicyMembershipCardShop.setSid(sid);
+                appPolicyMembershipCardShop.setMcid(appPolicyMembershipCard.getId());
+                appPolicyMembershipCardShopList.add(appPolicyMembershipCardShop);
+            }
+            hsyMembershipDao.insertMembershipCardShopBatch(appPolicyMembershipCardShopList);
+        }
         hsyMembershipDao.updateMembershipCard(appPolicyMembershipCard);
         return "";
     }

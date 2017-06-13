@@ -44,6 +44,10 @@
         </foreach >
     </insert>
 
+    <delete id="deleteMembershipCardShop">
+        delete from app_policy_membership_card_shop where MCID=#{mcid}
+    </delete>
+
     <select id="findConsumerByParam" resultType="com.jkm.hsy.user.entity.AppPolicyConsumer">
         select ID,CONSUMERCELLPHONE,USERID,OPENID,PAYPASSWORD,CREATETIME,UPDATETIME
         from app_policy_consumer
@@ -64,9 +68,10 @@
     <select id="findMemberCascadeByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
         select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME
         from app_policy_member member left join app_policy_membership_card card on member.MCID=card.ID
-        where member.status!=3
+        where member.status!=3 and card.status=1
         <if test="cid!=null and cid!=''">and member.CID=#{cid}</if>
         <if test="uid!=null and uid!=''">and card.UID=#{uid}</if>
+        order by CREATETIME desc
     </select>
 
     <select id="findMemberCardByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
@@ -114,7 +119,7 @@
 
     <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
         select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
-        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
@@ -176,7 +181,7 @@
     </update>
 
     <select id="findMemberCardByID" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
-        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
+        select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
         from app_policy_membership_card
         where ID=#{id}
     </select>

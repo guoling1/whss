@@ -15,6 +15,7 @@ public interface HsyMembershipDao {
     public void updateMembershipCard(AppPolicyMembershipCard appPolicyMembershipCard);
     public void insertMembershipCardShop(AppPolicyMembershipCardShop appPolicyMembershipCardShop);
     public void insertMembershipCardShopBatch(List<AppPolicyMembershipCardShop> list);
+    public void deleteMembershipCardShop(@Param("mcid")Long mcid);
     public List<AppPolicyConsumer> findConsumerByParam(AppPolicyConsumer appPolicyConsumer);
     public List<AppPolicyMember> findMemberByParam(AppPolicyMember appPolicyMember);
     public List<AppPolicyMember> findMemberCascadeByParam(AppPolicyMember appPolicyMember);

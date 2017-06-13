@@ -46,6 +46,7 @@ public enum ResultCode {
 	USER_NOT_LOGIN(2040,"用户未登录"),
 	USER_LOGIN_OUTTIME(2041,"用户登录超时请重新登录"),
 	ESCAPE_FAIL(2042,"转义失败"),
+	MEMBERSHIP_CARD_STATUS_NOT_EXSIT(2043,"会员卡状态不存在"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

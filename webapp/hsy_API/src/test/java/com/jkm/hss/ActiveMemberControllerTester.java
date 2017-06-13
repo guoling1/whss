@@ -20,8 +20,9 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.6");
-        String param="{\"membershipName\": \"会员卡名称\",\"membershipShopName\":\"卡上显示的店铺姓名\",\"uid\":215,\"sids\":\"211,234\",\"discount\":7.5,\"isDeposited\":1,\"depositAmount\":100,\"isPresentedViaActivate\":1,\"presentAmount\":13,\"isPresentedViaRecharge\":1,\"rechargeLimitAmount\":50,\"rechargePresentAmount\":12,\"canRecharge\":1}";
-//        String param="{\"membershipName\": \"会员卡名称不充值\",\"membershipShopName\":\"卡上显示的店铺姓名\",\"uid\":71,\"sids\":\"62,63\",\"discount\":7.5,\"isDeposited\":0,\"isPresentedViaActivate\":0,\"isPresentedViaRecharge\":0,"canRecharge":1}";
+//        String param="{\"membershipName\": \"会员卡名称\",\"membershipShopName\":\"卡上显示的店铺姓名\",\"uid\":215,\"sids\":\"211,234\",\"discount\":7.5,\"isDeposited\":1,\"depositAmount\":100,\"isPresentedViaActivate\":1,\"presentAmount\":13,\"isPresentedViaRecharge\":1,\"rechargeLimitAmount\":50,\"rechargePresentAmount\":12,\"canRecharge\":1}";
+//        String param="{\"membershipName\": \"会员卡名称不充值\",\"membershipShopName\":\"卡上显示的店铺姓名\",\"uid\":215,\"sids\":\"62,63\",\"discount\":7.5,\"isDeposited\":0,\"isPresentedViaActivate\":0,\"isPresentedViaRecharge\":0,\"canRecharge\":1}";
+        String param="{\"membershipName\": \"会员卡需要修改的记录\",\"membershipShopName\":\"卡上显示的店铺姓名\",\"uid\":215,\"sids\":\"211,234\",\"discount\":7.5,\"isDeposited\":1,\"depositAmount\":100,\"isPresentedViaActivate\":1,\"presentAmount\":13,\"isPresentedViaRecharge\":1,\"rechargeLimitAmount\":50,\"rechargePresentAmount\":12,\"canRecharge\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -73,7 +74,20 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.6");
-        String param="{\"id\":18}";
+        String param="{\"id\":18,\"status\":1}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void updateMemshipCard()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001055");
+        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.6");
+        String param="{\"id\":20,\"membershipName\": \"会员卡修改后的记录\",\"membershipShopName\":\"修改后卡上显示的店铺姓名\",\"sids\":\"211,234\",\"depositAmount\":0.01,\"isPresentedViaActivate\":1,\"presentAmount\":10,\"isPresentedViaRecharge\":1,\"rechargeLimitAmount\":0.01,\"rechargePresentAmount\":20}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
