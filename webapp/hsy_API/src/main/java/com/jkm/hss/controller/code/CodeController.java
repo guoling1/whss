@@ -108,8 +108,8 @@ public class CodeController extends BaseController {
                     return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
 
-                long orderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
-                model.addAttribute("orderId",orderId);
+                final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
+                model.addAttribute("hsyOrderId",hsyOrderId);
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
@@ -128,8 +128,8 @@ public class CodeController extends BaseController {
                     log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
                 }
-                long orderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
-                model.addAttribute("orderId",orderId);
+                final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
+                model.addAttribute("hsyOrderId",hsyOrderId);
                 url = "/sqb/paymentZfb";
             }
         } else {
