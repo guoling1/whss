@@ -9,8 +9,10 @@ import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.HSYTradeService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.helper.request.CreateOrderRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
 import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.mq.config.MqConfig;
@@ -22,6 +24,7 @@ import com.jkm.hsy.user.service.HsyCmbcService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,6 +53,25 @@ public class TradeController extends BaseController {
     private OrderService orderService;
     @Autowired
     private HsyCmbcService hsyCmbcService;
+    @Autowired
+    private HSYTransactionService hsyTransactionService;
+
+    /**
+     * 创建好收银订单
+     *
+     * @param createOrderRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "createOrder", method = RequestMethod.POST)
+    public CommonResponse createOrder(@RequestBody final CreateOrderRequest createOrderRequest) {
+        final long hsyOrderId = this.hsyTransactionService.createOrder(createOrderRequest.getChannel(), createOrderRequest.getShopId(),
+                createOrderRequest.getMemberId(), createOrderRequest.getCode());
+        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                .addParam("hsyOrderId", hsyOrderId)
+                .build();
+    }
+
     /**
      * 静态码支付
      *
@@ -59,15 +81,11 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
-        if(payRequest.getCode()==null){payRequest.setCode("");}//add by wayne
-
-        EnumPayChannelSign.idOf(payRequest.getPayChannel());
-        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getMerchantId()).get(0);
-        final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId(),payRequest.getCode());
+        final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", shop.getName())
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
+                    .addParam("subMerName", resultPair.getRight())
                     .addParam("amount", payRequest.getTotalFee()).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());

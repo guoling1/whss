@@ -18,6 +18,7 @@ import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.service.CalculateService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.merchant.entity.AccountBank;
@@ -68,6 +69,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     private FrozenRecordService frozenRecordService;
     @Autowired
     private MemberAccountService memberAccountService;
+    @Autowired
+    private HSYTransactionService hsyTransactionService;
     @Autowired
     private UnfrozenRecordService unfrozenRecordService;
     @Autowired
@@ -349,11 +352,11 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                     order.getPayee(), enumPayChannelSign.getId());
             final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate,
                     order.getPayChannelSign());
-            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.of(order.getAppId()),
-                    order.getPayee(), enumPayChannelSign.getId());
+//            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.of(order.getAppId()),
+//                    order.getPayee(), enumPayChannelSign.getId());
             updateOrder.setPoundage(merchantPayPoundage);
             updateOrder.setPayRate(merchantPayPoundageRate);
-            updateOrder.setSettlePoundage(merchantWithdrawPoundage);
+//            updateOrder.setSettlePoundage(merchantWithdrawPoundage);
         }
         updateOrder.setBankTradeNo(paymentSdkPayCallbackResponse.getBankTradeNo());
         updateOrder.setTradeCardType(paymentSdkPayCallbackResponse.getTradeCardType());
@@ -398,8 +401,17 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             requestJsonObject.put("payChannelSign", enumPayChannelSign.getId());
             MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW_D0, 20000);
         }
-        //TODO
-        //通知业务
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setSn(updateOrder.getSn());
+        callbackResponse.setSuccessTime(updateOrder.getPaySuccessTime());
+        callbackResponse.setTradeAmount(order.getTradeAmount());
+        callbackResponse.setPoundage(order.getPoundage());
+        callbackResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+        callbackResponse.setMessage(updateOrder.getRemark());
+        this.hsyTransactionService.handlePayCallbackMsg(callbackResponse);
     }
 
     /**
@@ -458,13 +470,19 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         //回调商户升级业务
         if (EnumAppType.HSS.getId().equalsIgnoreCase(order.getAppId()) && EnumServiceType.APPRECIATION_PAY.getId() == order.getServiceType()) {
             try  {
-                this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "F");
+//                this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "F");
             } catch (final Throwable e) {
                 log.error("##############商户升级支付成功，回调商户升级业务异常##############");
             }
         }
-        //TODO
-        //通知业务
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setSn(updateOrder.getSn());
+        callbackResponse.setCode(EnumBasicStatus.FAIL.getId());
+        callbackResponse.setMessage(updateOrder.getRemark());
+        this.hsyTransactionService.handlePayCallbackMsg(callbackResponse);
     }
 
     /**
@@ -496,6 +514,13 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Transactional
     public void markPayHandling(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         this.orderService.updateRemark(order.getId(), paymentSdkPayCallbackResponse.getMessage());
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setCode(EnumBasicStatus.HANDLING.getId());
+        callbackResponse.setMessage("处理中");
+        this.hsyTransactionService.handlePayCallbackMsg(callbackResponse);
     }
 
     /**
