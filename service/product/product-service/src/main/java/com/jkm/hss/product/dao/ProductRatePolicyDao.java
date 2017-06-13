@@ -25,7 +25,6 @@ public interface ProductRatePolicyDao {
      */
     void update(ProductRatePolicy productRatePolicy);
 
-
     /**
      * 查询
      * @param productId
@@ -39,4 +38,12 @@ public interface ProductRatePolicyDao {
      * @return
      */
     ProductRatePolicy selectByPolicyType(@Param("policyType")String policyType);
+
+    /**
+     * 查询HSY
+     * @param
+     * @return
+     */
+    List<ProductRatePolicy> selectByProductIdToHsy();
+
 }
