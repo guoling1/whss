@@ -6,176 +6,135 @@
           <h3 class="box-title">好收银/代理结算政策</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
-        <div class="">
-          <form class="form-horizontal">
-            <div class="box-body">
-              <div class="form-group">
-                <div class="product">
-                  <div class="col-xs-11" style="margin-left: 2%">
-                        <div class="box box1">
-                          <div class="box-body table-responsive no-padding">
-                            <table class="table table-bordered table-hover dataTable">
-                              <tbody>
-                              <tr>
-                                <th>支付方式</th>
-                                <th>T1代理商结算价</th>
-                                <th>T1商户费率</th>
-                                <th>D1代理商结算价</th>
-                                <th>D1商户费率</th>
-                                <th>D0代理商结算价</th>
-                                <th>D0商户费率</th>
-                              </tr>
-                              <tr v-for="channel in channels">
-                                <td style="width: 90px">
-                                  <span v-if="channel.policyType=='wechat'">微信</span>
-                                  <span v-if="channel.policyType=='alipay'">支付宝</span>
-                                  <span v-if="channel.policyType=='withdraw'">提现手续费</span>
-                                </td>
-                                <td>
-                                  <input type="text" name="name" v-model="channel.dealerTradeRateT1">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'">元/笔</span>
-                                </td>
-                                <td>
-                                  <input type="text" name="name" v-model="channel.merchantMinRateT1" style="width: 33%">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'"></span>
-                                  &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                                  <input type="text" name="name" v-model="channel.merchantMaxRateT1" style="width: 33%">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'">元/笔</span>
-                                </td>
-                                <td>
-                                  <input type="text" name="name" v-model="channel.dealerTradeRateD1">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'">元/笔</span>
-                                </td>
-                                <td>
-                                  <input type="text" name="name" v-model="channel.merchantMinRateD1" style="width: 33%">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'"></span>
-                                  &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                                  <input type="text" name="name" v-model="channel.merchantMaxRateD1" style="width: 33%">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'">元/笔</span>
-                                </td>
-                                <td>
-                                  <input type="text" name="name" v-model="channel.dealerTradeRateD0">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'">元/笔</span>
-                                </td>
-                                <td>
-                                  <input type="text" name="name" v-model="channel.merchantMinRateD0" style="width: 33%">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'"></span>
-                                  &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;
-                                  <input type="text" name="name" v-model="channel.merchantMaxRateD0" style="width: 33%">
-                                  <span v-if="channel.policyType!='withdraw'">%</span>
-                                  <span v-if="channel.policyType=='withdraw'">元/笔</span>
-                                </td>
-                              </tr>
-                              </tbody></table>
-                          </div>
-                          <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
-                      </div>
-                </div>
-              </div>
-            </div>
-          </form>
-          <!--<template>
-            <el-table :data="channels" border style="width:96%;margin: 0 auto;font-size: 12px;">
-              <el-table-column prop="name" label="支付方式" width="94">
-                <template scope="scope">
-                  <span v-if="scope.row.policyType=='wechat'">微信</span>
-                  <span v-if="scope.row.policyType=='alipay'">支付宝</span>
-                  <span v-if="scope.row.policyType=='withdraw'">提现手续费</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="T1代理商结算价" width="135">
-                <template scope="scope">
-                  <el-input v-model="scope.row.dealerTradeRateT1" size="small">
-                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
-                  </el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="T1商户费率">
-                <template scope="scope">
-                  <div style="display: inline-block;width: 45%">
-                    <el-input v-model="scope.row.merchantMinRateT1" size="small">
-                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
-                  </el-input>
-                  </div>
-                  <span>-</span>
-                  <div style="display: inline-block;width: 45%">
-                    <el-input v-model="scope.row.merchantMaxRateT1" size="small">
-                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
-                  </el-input>
-                  </div>
-
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="D1代理商结算价" width="135">
-                <template scope="scope">
-                  <el-input v-model="scope.row.dealerTradeRateD1" size="small">
-                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
-                  </el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="D1商户费率">
-                <template scope="scope">
-                  <div style="display: inline-block;width: 45%">
-                    <el-input v-model="scope.row.merchantMinRateD1" size="small">
+        <div class="box-body">
+          <el-table style="width: 90%;display: inline-block;vertical-align: top;" :data="channels" border>
+            <el-table-column label="支付方式" width="100px">
+              <template scope="scope">
+                <span v-if="scope.row.policyType=='wechat'">微信</span>
+                <span v-if="scope.row.policyType=='alipay'">支付宝</span>
+                <span v-if="scope.row.policyType=='withdraw'">提现手续费</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="T1代理商结算价" width="160px">
+              <template scope="scope">
+                <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                  <el-form-item prop="row.dealerTradeRateT1" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.dealerTradeRateT1">
                       <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                       <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                     </el-input>
-                  </div>
-                  <span>-</span>
-                  <div style="display: inline-block;width: 45%">
-                    <el-input v-model="scope.row.merchantMaxRateD1" size="small">
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="T1商户费率">
+              <template scope="scope">
+                <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                  <el-form-item prop="row.merchantMinRateT1" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.merchantMinRateT1">
+                      <template slot="prepend">最小值</template>
                       <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                       <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                     </el-input>
-                  </div>
-
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="D0代理商结算价" width="135">
-                <template scope="scope">
-                  <el-input v-model="scope.row.dealerTradeRateD0" size="small" >
-                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
-                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
-                  </el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="D0商户费率">
-                <template scope="scope">
-                  <div style="display: inline-block;width: 45%">
-                    <el-input v-model="scope.row.merchantMinRateD0" size="small">
+                  </el-form-item>
+                  <el-form-item prop="row.merchantMaxRateT1" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.merchantMaxRateT1">
+                      <template slot="prepend">最大值</template>
                       <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                       <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                     </el-input>
-                  </div>
-                  <span>-</span>
-                  <div style="display: inline-block;width: 45%">
-                    <el-input v-model="scope.row.merchantMaxRateD0" size="small">
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="D1代理商结算价" width="160px">
+              <template scope="scope">
+                <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                  <el-form-item prop="row.dealerTradeRateD1" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.dealerTradeRateD1">
                       <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                       <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                     </el-input>
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>-->
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="D1商户费率">
+              <template scope="scope">
+                <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                  <el-form-item prop="row.merchantMinRateD1" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.merchantMinRateD1">
+                      <template slot="prepend">最小值</template>
+                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item prop="row.merchantMaxRateD1" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.merchantMaxRateD1">
+                      <template slot="prepend">最大值</template>
+                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                    </el-input>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="D0代理商结算价" width="160px">
+              <template scope="scope">
+                <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                  <el-form-item prop="row.dealerTradeRateD0" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.dealerTradeRateD0">
+                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                    </el-input>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="D0商户费率">
+              <template scope="scope">
+                <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                  <el-form-item prop="row.merchantMinRateD0" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.merchantMinRateD0">
+                      <template slot="prepend">最小值</template>
+                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item prop="row.merchantMaxRateD0" style="margin:10px 0 20px 0"
+                                :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
+                    <el-input size="small" placeholder="必填"
+                              v-model="scope.row.merchantMaxRateD0">
+                      <template slot="prepend">最大值</template>
+                      <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                      <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                    </el-input>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-        <!--<div class="btn btn-primary" @click="goBack" style="margin: 20px 20px 100px 40px;">返回</div>-->
-        <div class="btn btn-primary" @click="_$power(submit,'boss_first_product__update')" style="margin: 20px 0 100px;" v-if="level==1&&!isAdd">修改</div>
-        <div class="btn btn-primary" @click="_$power(submit,'boss_merchant_check')" style="margin: 20px 0 100px;" v-if="level==1&&isAdd">开 通</div>
+        <div class="box-body">
+          <el-button type="primary" size="small" @click="_$power(submit,'boss_first_product__update')" style="margin-bottom: 20px"  v-if="level==1&&!isAdd">修改</el-button>
+          <el-button type="primary" size="small" @click="_$power(submit,'boss_merchant_check')" v-if="level==1&&isAdd" style="margin-bottom: 20px">开通</el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -271,13 +230,7 @@
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '设置成功'
-            })
-//            this.$message({
-//              showClose: true,
-//              message: '设置成功',
-//              type: 'success'
-//            });
-//            this.$router.go(-1)
+            });
           }, function (err) {
             this.$message({
               showClose: true,
@@ -292,18 +245,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-  .alignRight {
-    margin-right: 15px;
-    text-align: right;
-    height: 30px;
-    line-height: 30px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .title2{
-    margin-left: 20px;
-  }
   input {
     width: 70%;
     border: none;
