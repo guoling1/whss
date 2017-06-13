@@ -6,6 +6,7 @@ import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
@@ -54,6 +55,9 @@ public class CodeController extends BaseController {
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
 
+    @Autowired
+    private HSYTransactionService hsyTransactionService;
+
     /**
      * 扫码
      * @param request
@@ -97,12 +101,13 @@ public class CodeController extends BaseController {
             model.addAttribute("name", merchantName);
             model.addAttribute("code",code);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
+            Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional1 = userCurrentChannelPolicyService.selectByUserId(appAuUsers.get(0).getId());
+            Preconditions.checkState(userCurrentChannelPolicyOptional1.isPresent(), "商户微信官方通道不存在");
             if (agent.indexOf("micromessenger") > -1) {
                 String appId = WxConstants.APP_HSY_ID;
-                if(userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign()== EnumPayChannelSign.WECHAT_PAY.getId()){
-                    Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appAuUsers.get(0).getId(),EnumPayChannelSign.WECHAT_PAY.getId());
-                    Preconditions.checkState(userChannelPolicyOptional.isPresent(), "商户微信官方通道不存在");
-                    appId = userChannelPolicyOptional.get().getAppId();
+                if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()== EnumPayChannelSign.WECHAT_PAY.getId()){
+
+//                    appId = userChannelPolicyOptional.get().getAppId();
                 }
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
@@ -134,6 +139,7 @@ public class CodeController extends BaseController {
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
                 }
                 model.addAttribute("openId",openId);
+//                hsyTransactionService.createOrder()
                 url = "/sqb/paymentZfb";
             }
         } else {
