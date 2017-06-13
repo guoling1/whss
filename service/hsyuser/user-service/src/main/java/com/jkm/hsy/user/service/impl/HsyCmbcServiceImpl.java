@@ -224,7 +224,17 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("districtCode",district.getCode());//商户地址区
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
         paramsMap.put("city",city.getAName());//商户地址市
-        paramsMap.put("cityCode","110100");//市编码
+        if("110000".equals(city.getCode())){
+            paramsMap.put("cityCode","110100");//市编码
+        }else if("120000".equals(city.getCode())){
+            paramsMap.put("cityCode","120100");//市编码
+        }else if("310000".equals(city.getCode())){
+            paramsMap.put("cityCode","310100");//市编码
+        }else if("500000".equals(city.getCode())){
+            paramsMap.put("cityCode","500100");//市编码
+        }else{
+            paramsMap.put("cityCode",city.getCode());//市编码
+        }
         if("110000,120000,310000,500000".contains(city.getCode())){
             paramsMap.put("province",city.getAName().replace("市",""));//商户地址省
             paramsMap.put("provinceCode",city.getCode());//省份编码
