@@ -98,6 +98,7 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'achievement', name: 'Achievement', component: Achievement},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},

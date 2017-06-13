@@ -11,11 +11,11 @@
           <ul class="search">
             <li class="same">
               <label>报单员登录名:</label>
-              <el-input style="width: 193px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.username" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>报单员姓名:</label>
-              <el-input style="width: 193px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.realname" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>日期:</label>
@@ -31,21 +31,19 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column prop="userNo" label="报单员登录名"></el-table-column>
+            <el-table-column prop="realname" label="报单员登录名"></el-table-column>
             <el-table-column prop="userName" label="报单员姓名"></el-table-column>
             <el-table-column label="日期">
               <template scope="scope">
-                {{scope.row.tradeDate|changeDate}}
+                {{scope.row.creatTime|changeDate}}
               </template>
             </el-table-column>
-            <el-table-column prop="tradeNumber" label="当日有效商户数(有一笔5元以上交易)" align="right"></el-table-column>
-            <el-table-column prop="settleAmount" label="当日5元以上交易笔数" align="right">
-              <template scope="scope">
-                {{scope.row.settleAmount|toFix}}
-              </template>
+            <el-table-column prop="vaildTradeUserCount" label="当日有效商户数(有一笔5元以上交易)" align="right"></el-table-column>
+            <el-table-column prop="tradeCount" label="当日5元以上交易笔数" align="right">
+
             </el-table-column>
-            <el-table-column prop="settleStatusValue" label="当日名下商户交易总笔数" align="right"></el-table-column>
-            <el-table-column prop="settleStatusValue" label="当日名下商户交易总额（元）" align="right"></el-table-column>
+            <el-table-column prop="tradeTotalCount" label="当日名下商户交易总笔数" align="right"></el-table-column>
+            <el-table-column prop="tradeTotalAmount" label="当日名下商户交易总额（元）" align="right"></el-table-column>
 
           </el-table>
           <!--分页-->
@@ -103,13 +101,10 @@
         query: {
           pageNo: 1,
           pageSize: 10,
-          userNo: "",//商户编号
-          userName: "",  //商户名字
-          userType: '',
-          startSettleDate: "",
-          endSettleDate: "",
-          checkedStatus: '',
-          settleStatus: ''
+          realname:'',
+          username:'',
+          startTime1:'',
+          endTime:'',
         },
         loading: true,
         isMask: false,
@@ -123,11 +118,11 @@
     methods: {
       datetimeSelect: function (val) {
         if (val == undefined) {
-          this.query.startTime = '';
+          this.query.startTime1 = '';
           this.query.endTime = '';
         } else {
           let format = val.split(' - ');
-          this.query.startTime = format[0];
+          this.query.startTime1 = format[0];
           this.query.endTime = format[1];
         }
       },
@@ -166,14 +161,13 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/settle/list', this.$data.query)
+        this.$http.post('/admin/AchievementStatistics/getAchievement', this.$data.query)
           .then(function (res) {
             setTimeout(() => {
               this.loading = false;
-              this.$data.records = res.data.records;
+              this.records = res.data.records;
             }, 1000)
             this.count = res.data.count;
-            this.total = res.data.totalPage;
           }, function (err) {
             setTimeout(() => {
               this.loading = false;
@@ -201,7 +195,7 @@
         this.getData()
       }
     },
-    watch: {
+    /*watch: {
       date: function (val, oldVal) {
         if (val != undefined && val[0] != null) {
           for (var j = 0; j < val.length; j++) {
@@ -224,7 +218,7 @@
           this.query.endSettleDate = '';
         }
       }
-    }
+    }*/
   }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
