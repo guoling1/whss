@@ -105,7 +105,7 @@ public class CalculateServiceImpl implements CalculateService {
 
         }else{
             //hsy
-            final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
+            final List<AppAuUser> appAuUsers = this.hsyShopDao.findAuUserByAccountID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
             final Pair<BigDecimal, BigDecimal> currentUserRate = this.userTradeRateService.getCurrentUserRate(appAuUser.getId());
             switch (EnumPayChannelSign.idOf(channelSign).getPaymentChannel()){
