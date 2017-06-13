@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
@@ -104,6 +105,18 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
     @Override
     public UserChannelListResponse getCurrentChannelName(long userId) {
         return userChannelPolicyDao.getCurrentChannelName(userId);
+    }
+
+    /**
+     * 根据用户编码和通道编码查询
+     *
+     * @param userId
+     * @param channelTypeSign
+     * @return
+     */
+    @Override
+    public Optional<UserChannelPolicy> selectByUserIdAndChannelTypeSign(long userId, int channelTypeSign) {
+        return Optional.fromNullable(userChannelPolicyDao.selectByUserIdAndChannelTypeSign(userId,channelTypeSign));
     }
 
 

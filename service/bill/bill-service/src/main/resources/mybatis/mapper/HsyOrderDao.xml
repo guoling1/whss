@@ -8,6 +8,7 @@
         `ordernumber`,
         `shopid`,
         `shopname`,
+        `merchant_no`,
         `merchantname`,
         `order_no`,
         `orderstatus`,
@@ -21,12 +22,16 @@
         `pay_channel_sign`,
         `goods_name`,
         `goods_describe`,
+        `member_id`,
+        `payment_channel`,
+        `settle_type`,
         `remark`)
         VALUES
         (
         #{ordernumber},
         #{shopid},
         #{shopname},
+        #{merchantNo},
         #{merchantname},
         #{orderno},
         #{orderstatus},
@@ -40,8 +45,12 @@
         #{paychannelsign},
         #{goodsname},
         #{goodsdescribe},
+        #{memberId},
+        #{paymentChannel},
+        #{settleType},
         #{remark});
     </insert>
+
     <update id="update">
         UPDATE tb_hsy_order
         <set>
@@ -78,70 +87,11 @@
         </set>
         WHERE id = #{id}
     </update>
-    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT `id`,
-    `ordernumber`,
-    `shopid`,
-    `shopname`,
-    `merchantname`,
-    `order_no`,
-    `order_id`,
-    `orderstatus`,
-    `sourcetype`,
-    `validationcode`,
-    `amount`,
-    `poundage`,
-    `qrcode`,
-    `cashierid`,
-    `cashiername`,
-    `pay_sn`,
-    `pay_type`,
-    `pay_channel_sign`,
-    `pay_success_time`,
-    `refund_amount`,
-    `refund_status`,
-    `refund_time`,
-    `goods_name`,
-    `goods_describe`,
-    `remark`,
-    `create_time`,
-    `update_time`
-FROM `tb_hsy_order`
-WHERE order_no = #{orderNo}
-;
-    </select>
-    <select id="selectByOrderId"  resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT `id`,
-    `ordernumber`,
-    `shopid`,
-    `shopname`,
-    `merchantname`,
-    `order_no`,
-    `order_id`,
-    `orderstatus`,
-    `sourcetype`,
-    `validationcode`,
-    `amount`,
-    `poundage`,
-    `qrcode`,
-    `cashierid`,
-    `cashiername`,
-    `pay_sn`,
-    `pay_type`,
-    `pay_channel_sign`,
-    `pay_success_time`,
-    `refund_amount`,
-    `refund_status`,
-    `refund_time`,
-    `goods_name`,
-    `goods_describe`,
-    `remark`,
-    `create_time`,
-    `update_time`
-FROM `tb_hsy_order`
-WHERE order_id = #{orderId}
-;
-    </select>
+
+    <update id="updateAmount">
+        UPDATE tb_hsy_order SET amount = #{amount} WHERE id = #{id}
+    </update>
+
     <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">
         SELECT `id`,
         `ordernumber`,
@@ -174,36 +124,104 @@ WHERE order_id = #{orderId}
         WHERE id = #{id}
         ;
     </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT * FROM tb_hsy_order WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE order_no = #{orderNo}
+    </select>
+    <select id="selectByOrderId"  resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE order_id = #{orderId}
+    </select>
+
     <select id="selectOrdersByParam" resultType="com.jkm.hss.bill.entity.HsyOrder">
         SELECT `id`,
-    `ordernumber`,
-    `shopid`,
-    `shopname`,
-    `merchantname`,
-    `order_no`,
-    `order_id`,
-    `orderstatus`,
-    `sourcetype`,
-    `validationcode`,
-    `amount`,
-    `poundage`,
-    `qrcode`,
-    `cashierid`,
-    `cashiername`,
-    `pay_sn`,
-    `pay_type`,
-    `pay_channel_sign`,
-    `pay_success_time`,
-    `refund_amount`,
-    `refund_status`,
-    `refund_time`,
-    `goods_name`,
-    `goods_describe`,
-    `remark`,
-    `create_time`,
-    `update_time`
-FROM `tb_hsy_order`
-WHERE  shopid=#{shopId}
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE  shopid=#{shopId}
         <if test="startTime != null and endTime != null">
             AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         </if>

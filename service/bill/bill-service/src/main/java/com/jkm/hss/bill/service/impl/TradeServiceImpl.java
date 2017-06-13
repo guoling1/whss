@@ -194,7 +194,7 @@ public class TradeServiceImpl implements TradeService {
     @Override
     @Transactional
     public void handlePayOrRechargeCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
-        log.info("交易单[{}], 处理回调");
+        log.info("交易单[{}], 处理支付回调");
         final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
         Preconditions.checkState(orderOptional.isPresent(), "交易订单[{}]不存在", orderNo);

@@ -3,8 +3,8 @@ package com.jkm.hss.schedule;
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
-import com.jkm.hss.notifier.entity.ConsumeMsgFailRecord;
-import com.jkm.hss.notifier.enums.EnumConsumeMsgFailRecordStatus;
+import com.jkm.hss.notifier.entity.ConsumeMsgSplitProfitRecord;
+import com.jkm.hss.notifier.enums.EnumConsumeMsgSplitProfitRecordStatus;
 import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -63,13 +63,14 @@ public class Task {
      */
     @Scheduled(cron = "0 0 0/1 * * ?")
     public void handleRetrySendSplitProfitTask() {
-        final List<ConsumeMsgFailRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
+        final List<ConsumeMsgSplitProfitRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
         log.info("定时任务--处理重发分润，消息个数[{}]", records.size());
         if (!CollectionUtils.isEmpty(records)) {
             for (int i = 0; i < records.size(); i++) {
-                final ConsumeMsgFailRecord record = records.get(i);
-                MqProducer.produce(JSONObject.parseObject(record.getRequestParam()), MqConfig.SPLIT_PROFIT, i * 5000);
-                this.sendMqMsgService.updateStatus(record.getId(), EnumConsumeMsgFailRecordStatus.SUCCESS_SEND.getId());
+                final ConsumeMsgSplitProfitRecord record = records.get(i);
+                final JSONObject requestJsonObject = new JSONObject();
+                requestJsonObject.put("consumeMsgSplitProfitRecordId", record.getId());
+                MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, i * 5000);
             }
         }
     }

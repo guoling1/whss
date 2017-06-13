@@ -290,6 +290,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     }
 
     @Override
+    @Deprecated
     public String tradeListhsy(final String dataParam, final AppParam appParam) {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
 
@@ -314,6 +315,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         return gson.toJson(map);
     }
 
+    @Deprecated
     public String appOrderDetailhsy(String dataParam, AppParam appParam){
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         HsyTradeListResponse hsyTradeListResponse=new HsyTradeListResponse();

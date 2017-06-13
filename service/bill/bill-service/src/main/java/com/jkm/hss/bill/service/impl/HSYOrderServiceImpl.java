@@ -79,6 +79,40 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         return hsyOrderDao.update(hsyOrder);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     * @param amount
+     */
+    @Override
+    @Transactional
+    public void updateAmount(final long id, final BigDecimal amount) {
+        this.hsyOrderDao.updateAmount(id, amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param hsyOrderId
+     * @return
+     */
+    @Override
+    public Optional<HsyOrder> getById(final long hsyOrderId) {
+        return Optional.fromNullable(this.hsyOrderDao.selectById(hsyOrderId));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param hsyOrderId
+     * @return
+     */
+    @Override
+    public Optional<HsyOrder> getByIdWithLock(final long hsyOrderId) {
+        return Optional.fromNullable(this.hsyOrderDao.selectByIdWithLock(hsyOrderId));
+    }
+
     @Override
     public Optional<HsyOrder> selectByOrderNo(String orderNo) {
         return Optional.fromNullable(hsyOrderDao.selectByOrderNo(orderNo));
