@@ -2457,13 +2457,19 @@
         <if test="username != null and username!=''">
             AND x.username = #{username}
         </if>
+        <if test="startTime1!=null and startTime1!=''">
+            AND x.create_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND x.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
 
           limit #{offset}, #{pageSize}
     </select>
 
     <!-- 业绩统计总数 -->
     <select id="getAchievementCount" resultType="java.lang.Integer">
-        select COUNT(*) from (select count(1) tradeCount,`REALNAME`, "2017-06-13" date ,ID from (SELECT a.`trade_amount`,
+        select COUNT(*) from (select count(1) tradeCount,`REALNAME`,username,createTime,ID from (SELECT a.`trade_amount`,
         DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
         d.`id`,
         d.`username`,
@@ -2515,6 +2521,12 @@
         </if>
         <if test="username != null and username!=''">
             AND x.username = #{username}
+        </if>
+        <if test="startTime1!=null and startTime1!=''">
+            AND x.create_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND x.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
 
@@ -2572,6 +2584,12 @@
         </if>
         <if test="username != null and username!=''">
             AND x.username = #{username}
+        </if>
+        <if test="startTime1!=null and startTime1!=''">
+            AND x.create_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND x.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
 </mapper>
