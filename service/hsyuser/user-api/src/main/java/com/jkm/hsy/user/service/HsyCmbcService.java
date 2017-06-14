@@ -37,5 +37,5 @@ public interface HsyCmbcService {
      * @param userId //用户编码
      * @param shopId //主店编码
      */
-    XmmsResponse merchantIn(long userId, long shopId,int channelTypeSign);
+    XmmsResponse.BaseResponse merchantIn(long userId, long shopId,int channelTypeSign);
 }

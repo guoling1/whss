@@ -266,7 +266,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
      * @param shopId //主店编码
      */
     @Override
-    public XmmsResponse merchantIn(long userId, long shopId,int channelTypeSign) {
+    public XmmsResponse.BaseResponse merchantIn(long userId, long shopId,int channelTypeSign) {
         XmmsResponse xmmsResponse = new XmmsResponse();
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
@@ -324,16 +324,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
         paramsMap.put("t1drawFee","0.20");
-
-        XmmsResponse.BaseResponse baseResponse701 = getMerchantInResult(paramsMap,userId, EnumPayChannelSign.XMMS_WECHAT_T1.getId(),appBizShop.getIndustryCode());
-        xmmsResponse.setWxT1(baseResponse701);
-        XmmsResponse.BaseResponse baseResponse702 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_ALIPAY_T1.getId(),appBizShop.getIndustryCode());
-        xmmsResponse.setZfbT1(baseResponse702);
-        XmmsResponse.BaseResponse baseResponse703 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_WECHAT_D0.getId(),appBizShop.getIndustryCode());
-        xmmsResponse.setWxD0(baseResponse703);
-        XmmsResponse.BaseResponse baseResponse704 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_ALIPAY_D0.getId(),appBizShop.getIndustryCode());
-        xmmsResponse.setZfbD0(baseResponse704);
-        return xmmsResponse;
+        XmmsResponse.BaseResponse baseResponse = getMerchantInResult(paramsMap,userId, EnumPayChannelSign.XMMS_WECHAT_T1.getId(),appBizShop.getIndustryCode());
+        return baseResponse;
     }
 
     private XmmsResponse.BaseResponse getMerchantInResult(Map<String, String> paramsMap,long userId,int channelTypeSign,String industryCode){

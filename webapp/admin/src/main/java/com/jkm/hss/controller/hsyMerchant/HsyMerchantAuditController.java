@@ -217,7 +217,34 @@ public class HsyMerchantAuditController extends BaseController {
             Optional<UserChannelPolicy> ucp = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appUserAndShopRequest.getUserId(),list.get(i));
             if(ucp.isPresent()){
                 if(ucp.get().getNetStatus()!=null&&ucp.get().getNetStatus()!=EnumNetStatus.SUCCESS.getId()&&ucp.get().getNetStatus()!=EnumNetStatus.HANDLING.getId()){
-
+                    XmmsResponse.BaseResponse baseResponse= hsyCmbcService.merchantIn(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId(),list.get(i));
+                    if(baseResponse.getCode()==1){
+                        UserChannelPolicy netInfo = new UserChannelPolicy();
+                        netInfo.setUserId(appUserAndShopRequest.getUserId());
+                        if((EnumXmmsStatus.HANDLING.getId()).equals(baseResponse.getResult().getStatus())){
+                            netInfo.setNetStatus(EnumNetStatus.HANDLING.getId());
+                            netInfo.setNetMarks(baseResponse.getResult().getMsg());
+                            netInfo.setOpenProductStatus(EnumOpenProductStatus.HANDLING.getId());
+                            netInfo.setOpenProductMarks(baseResponse.getResult().getMsg());
+                        }
+                        if((EnumXmmsStatus.FAIL.getId()).equals(baseResponse.getResult().getStatus())){
+                            netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
+                            netInfo.setNetMarks(baseResponse.getResult().getMsg());
+                            netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                            netInfo.setOpenProductMarks(baseResponse.getResult().getMsg());
+                        }
+                        netInfo.setChannelTypeSign(list.get(i));
+                        userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+                    }else{
+                        UserChannelPolicy netInfo = new UserChannelPolicy();
+                        netInfo.setUserId(appUserAndShopRequest.getUserId());
+                        netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
+                        netInfo.setNetMarks(baseResponse.getMsg());
+                        netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                        netInfo.setOpenProductMarks(baseResponse.getMsg());
+                        netInfo.setChannelTypeSign(list.get(i));
+                        userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+                    }
                 }
             }
         }
