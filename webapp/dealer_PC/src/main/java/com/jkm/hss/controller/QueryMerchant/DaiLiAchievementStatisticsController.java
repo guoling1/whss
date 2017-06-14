@@ -1,4 +1,4 @@
-package com.jkm.hss.controller.merchant;
+package com.jkm.hss.controller.QueryMerchant;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -28,14 +28,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
 /**
- * Created by zhangbin on 2017/6/10.
+ * Created by zhangbin on 2017/6/14.
  */
 @Slf4j
 @Controller
-@RequestMapping(value = "/admin/AchievementStatistics")
-public class AchievementStatisticsController extends BaseController {
+@RequestMapping(value = "/daili/DaiLiAchievementStatistics")
+public class DaiLiAchievementStatisticsController extends BaseController {
     @Autowired
     private OSSClient ossClient;
 
@@ -43,10 +42,11 @@ public class AchievementStatisticsController extends BaseController {
     private OrderService orderService;
 
     @ResponseBody
-    @RequestMapping(value = "/getAchievement",method = RequestMethod.POST)
-    public CommonResponse getAchievement(@RequestBody QueryOrderRequest req) throws ParseException {
+    @RequestMapping(value = "/getDaiLiAchievement",method = RequestMethod.POST)
+    public CommonResponse getDaiLiAchievement(@RequestBody QueryOrderRequest req) throws ParseException {
         final PageModel<AchievementStatisticsResponse> pageModel = new PageModel<AchievementStatisticsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String checkedTime = sdf.format(date);
@@ -58,8 +58,10 @@ public class AchievementStatisticsController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
-        List<AchievementStatisticsResponse> list = this.orderService.getAchievement(req);
-        int count = this.orderService.getAchievementCount(req);
+        long dealerId = super.getDealerId();
+        req.setDealerId(dealerId);
+        List<AchievementStatisticsResponse> list = this.orderService.getDaiLiAchievement(req);
+        int count = this.orderService.getDaiLiAchievementCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
         String downLoadExcel = downLoad(req);
@@ -72,7 +74,7 @@ public class AchievementStatisticsController extends BaseController {
      * @return
      */
     private String downLoad(@RequestBody QueryOrderRequest req){
-        final String fileZip = this.orderService.downloadAchievement(req, ApplicationConsts.getApplicationConfig().ossBucke());
+        final String fileZip = this.orderService.downloadDaiLiAchievement(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");

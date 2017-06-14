@@ -12,6 +12,7 @@ public class QueryOrderRequest {
 
     private String realname;//报单员真实姓名
     private String username;//报单员登录
+    private long dealerId;//代理商id
 
     /**
      * 支付方式

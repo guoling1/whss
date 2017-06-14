@@ -556,6 +556,28 @@ public interface OrderService {
     String downLoadHsyMerchantTrade1(OrderTradeRequest req, String baseUrl);
 
     /**
+     * 代理商业务统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getDaiLiAchievement(QueryOrderRequest req);
+
+    /**
+     * 代理商业务统计总数
+     * @param req
+     * @return
+     */
+    int getDaiLiAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 导出代理商业务统计
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadDaiLiAchievement(QueryOrderRequest req, String baseUrl);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

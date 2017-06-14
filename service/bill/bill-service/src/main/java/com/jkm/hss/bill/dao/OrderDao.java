@@ -545,6 +545,27 @@ public interface OrderDao {
      */
     List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req);
 
+    /**
+     * 代理商业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getDaiLiAchievement(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计总数
+     * @param req
+     * @return
+     */
+    int getDaiLiAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计总数
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> downloadeDaiLi(QueryOrderRequest req);
+
     List<MerchantTradeResponse> getTrade1(OrderTradeRequest req);
 
     List<MerchantTradeResponse> getHsyTrade1(OrderTradeRequest req);
