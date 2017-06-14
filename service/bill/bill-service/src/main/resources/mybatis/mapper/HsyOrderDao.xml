@@ -233,7 +233,7 @@
         <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-        ORDER BY id DESC
+        ORDER BY pay_success_time DESC
         LIMIT #{offset}, #{count}
     </select>
     <select id="selectOrderCountByParam" resultType="java.lang.Long">

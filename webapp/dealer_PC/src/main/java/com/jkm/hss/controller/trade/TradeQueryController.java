@@ -62,4 +62,15 @@ public class TradeQueryController extends BaseController {
 
         return CommonResponse.simpleResponse(-1, "查询异常");
     }
+
+    /**
+     * 统计
+     * @param req
+     * @return
+     */
+//    @ResponseBody
+//    @RequestMapping(value = "/amountCount ",method = RequestMethod.POST)
+//    public CommonResponse amountCount(@RequestBody QueryOrderRequest req) throws ParseException {
+//
+//    }
 }

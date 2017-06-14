@@ -24,4 +24,6 @@ public interface HsyShopService {
     public String findContractInfo(String dataParam,AppParam appParam)throws ApiHandleException;
     public String findBankBranchList(String dataParam,AppParam appParam)throws ApiHandleException;
     public String findBankList(String dataParam,AppParam appParam)throws ApiHandleException;
+
+
 }

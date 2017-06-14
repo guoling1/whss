@@ -134,6 +134,7 @@
     <select id="hsyMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
         a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
+        (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE SID=a.ID) AS shopNo,
         (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
         (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
@@ -245,6 +246,7 @@
 			e.CREATETIME,
 			g.realname,
 			g.username,
+			h.BRANCHCODE,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDC) AS IDCARDC,
@@ -256,6 +258,7 @@
         LEFT JOIN app_biz_card e ON e.SID=c.ID
         LEFT JOIN app_au_user_admin f ON f.SID=c.ID
 		LEFT JOIN tb_admin_user g ON g.id = f.AUID
+		LEFT JOIN app_biz_card h ON h.SID=c.ID
         WHERE c.ID=#{id} AND d.TYPE=1 AND d.role=1
     </select>
 

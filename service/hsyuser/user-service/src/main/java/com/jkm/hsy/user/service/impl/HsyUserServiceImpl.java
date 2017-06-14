@@ -25,6 +25,10 @@ import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.constant.VerificationCodeType;
 import com.jkm.hsy.user.dao.*;
+import com.jkm.hsy.user.dao.HsyChannelDao;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
+import com.jkm.hsy.user.dao.HsyVerificationDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -62,6 +66,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private UserChannelPolicyDao userChannelPolicyDao;
     @Autowired
     private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
+    @Autowired
+    private HsyChannelDao hsyChannelDao;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -201,6 +207,11 @@ public class HsyUserServiceImpl implements HsyUserService {
             userCurrentChannelPolicyDao.insert(userCurrentChannelPolicy);
         }
 
+
+//        List<AppCmChannelProduct> channelProductList=hsyChannelDao.findAllProductHsyChannel();
+//        for(AppCmChannelProduct p:channelProductList){
+//
+//        }
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
@@ -815,17 +826,18 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"当前登录用户ID");
         if(!(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户主店ID");
-        Integer curRole=hsyUserDao.findAppAuUserRole(appAuUser);
+        AppBizShopUserRole curRole=hsyUserDao.findAppAuUserRole(appAuUser);
         if(curRole==null){
             throw new ApiHandleException(ResultCode.ROLE_TYPE_NOT_EXSIT,"角色类型不存在");
         }
 
-        if(curRole.intValue()==2){//如果当前为店长
+        if(curRole.getRole().intValue()==2){//如果当前为店长
             List<AppAuUser> appAuUserList=hsyUserDao.findAppAuUserByID(appAuUser.getParentID());
             if(appAuUserList==null||appAuUserList.size()==0){
                 throw new ApiHandleException(ResultCode.PARAM_EXCEPTION,"请求参数异常");
             }
-            appAuUser.setRole(curRole);
+            appAuUser.setRole(curRole.getRole());
+            appAuUser.setUtype(curRole.getType());
             appAuUser.setParentID(appAuUserList.get(0).getParentID());
         }
         List<AppAuUser> list=hsyUserDao.findAppAuUserListByParentID(appAuUser);
