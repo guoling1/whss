@@ -272,7 +272,7 @@ public class DealerServiceImpl implements DealerService {
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //产品分润
             final BigDecimal productMoney = waitMoney.subtract(channelMoney).subtract(basicMoney);
-
+            map.put("basicMoney",Triple.of(basicChannel.getAccountId(), basicMoney, basicChannel.getBasicTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productRatePolicy.getProductTradeRateT1()));
             return map;
@@ -305,6 +305,7 @@ public class DealerServiceImpl implements DealerService {
                 //一代分润金额小于0
                 firstMoney = new BigDecimal("0");
             }
+            map.put("basicMoney",Triple.of(basicChannel.getAccountId(), basicMoney, basicChannel.getBasicTradeRate()));
             map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerRatePolicy.getDealerTradeRateT1()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productRatePolicy.getProductTradeRateT1()));
@@ -343,6 +344,7 @@ public class DealerServiceImpl implements DealerService {
             map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerRatePolicy.getDealerTradeRateT1()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productRatePolicy.getProductTradeRateT1()));
+            map.put("basicMoney",Triple.of(basicChannel.getAccountId(), basicMoney, basicChannel.getBasicTradeRate()));
         }
         log.info("订单" + orderNo + "分润处理成功,返回map成功");
         return map;
