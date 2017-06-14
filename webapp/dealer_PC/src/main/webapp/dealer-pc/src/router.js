@@ -32,6 +32,7 @@ import roles from './components/roles.vue'
 import roles_add from './components/roles_add.vue'
 import information from './components/information.vue'
 import policy from './components/policy.vue'
+import achievement from './components/achievement.vue'
 
 import store from './store/index'
 
