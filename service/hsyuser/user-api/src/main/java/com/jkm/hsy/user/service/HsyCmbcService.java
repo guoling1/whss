@@ -32,4 +32,10 @@ public interface HsyCmbcService {
      */
     XmmsResponse merchantIn(long userId, long shopId);
 
+    /**
+     * 厦门民生入网
+     * @param userId //用户编码
+     * @param shopId //主店编码
+     */
+    XmmsResponse.BaseResponse merchantIn(long userId, long shopId,int channelTypeSign);
 }
