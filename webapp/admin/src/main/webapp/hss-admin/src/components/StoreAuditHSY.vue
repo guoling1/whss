@@ -317,7 +317,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-button type="primary" size="small" v-if="isInput" @click="rateChange">保存</el-button>
+            <el-button type="primary" size="small" v-if="isInput" @click="rateChange" :disabled="auditClick">保存</el-button>
             <el-button type="primary" size="small" v-if="isInput" @click="rateNoChange">取消</el-button>
           </template>
         </div>
@@ -494,7 +494,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="isPhone = false" style="position: relative;top: -20px;">取 消</el-button>
-          <el-button @click="changePhone" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+          <el-button @click="changePhone" type="primary" style="position: relative;top: -20px;"  :disabled="auditClick">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="切换商户通道" v-model="isChannel">
@@ -522,7 +522,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="isChannel = false" style="position: relative;top: -20px;">取 消</el-button>
-          <el-button @click="submitChannel" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+          <el-button @click="submitChannel" type="primary" style="position: relative;top: -20px;" :disabled="auditClick">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="添加微信官方通道" v-model="isWxChannel">
@@ -536,7 +536,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="isWxChannel = false" style="position: relative;top: -20px;">取 消</el-button>
-          <el-button @click="submitWxChannel" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+          <el-button @click="submitWxChannel" type="primary" style="position: relative;top: -20px;" :disabled="auditClick">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -664,6 +664,7 @@
           })
       },
       submitWxChannel: function () {
+        this.auditClick = true;
         this.wxChannelForm.userId = this.msg.uid;
         this.$http.post('/admin/hsyMerchantAudit/addWxChannel',this.wxChannelForm)
           .then(res =>{
@@ -672,6 +673,7 @@
               message: '添加成功',
               type: 'success'
             });
+            this.auditClick = false;
             this.isWxChannel=false;
             this.getData();
             this.wxChannelForm = {
@@ -686,11 +688,12 @@
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       submitChannel:function () {
         this.channelForm.userId = this.msg.uid;
-        console.log(this.channelForm)
+        this.auditClick = true;
         this.$http.post('/admin/hsyMerchantList/changeUseChannel',this.channelForm)
           .then(res=>{
             this.isChannel = false;
@@ -700,6 +703,7 @@
               type: 'success'
             });
             this.getData()
+            this.auditClick = false;
           })
           .catch(err=>{
             this.$message({
@@ -707,9 +711,11 @@
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       rateChange: function () {
+        this.auditClick = true;
         for(let i=0; i<this.rateData.length; i++){
           this.rateData[i].userId = this.msg.uid;
         }
@@ -721,6 +727,7 @@
               type: 'success'
             })
             this.isInput = false;
+            this.auditClick = false;
           })
           .catch(err =>{
             this.$message({
@@ -728,6 +735,7 @@
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       rateNoChange: function () {
@@ -862,6 +870,7 @@
         });
       },
       changePhone: function () {
+        this.auditClick = true;
         this.$http.post('/admin/hsyMerchantList/changeMobile',{id:this.id,changePhone:this.newPhone})
           .then(function (res) {
             this.$message({
@@ -869,6 +878,7 @@
               message: '修改成功',
               type: 'success'
             });
+            this.auditClick = false;
             location.reload()
           },function (err) {
             this.$message({
@@ -876,6 +886,7 @@
               message: err.statusMessage,
               type: 'error'
             })
+            this.auditClick = false;
           })
       },
       toDet:function () {

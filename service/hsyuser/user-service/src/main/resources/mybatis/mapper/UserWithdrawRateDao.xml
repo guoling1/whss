@@ -26,6 +26,6 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM app_user_withdraw_rate
-        WHERE user_id=#{userId} and status = 1;
+        WHERE user_id=#{userId} and status = 1 ORDER by update_time desc limit 0,1;
     </select>
 </mapper>
