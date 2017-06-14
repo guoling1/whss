@@ -260,7 +260,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                     this.sendMqMsgService.updateStatus(consumeMsgSplitProfitRecordId, EnumConsumeMsgSplitProfitRecordStatus.SUCCESS_SEND.getId());
                 }
                 stopWatch.stop();
-                log.info("记录[{}],开始分润,用时[{}]", consumeMsgSplitProfitRecordId, stopWatch.getTime());
+                log.info("记录[{}],分润结束,用时[{}]", consumeMsgSplitProfitRecordId, stopWatch.getTime());
             }
         }
     }

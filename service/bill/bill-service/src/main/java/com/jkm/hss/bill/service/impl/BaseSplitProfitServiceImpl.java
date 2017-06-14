@@ -105,15 +105,17 @@ public class BaseSplitProfitServiceImpl implements BaseSplitProfitService {
         poundageAccountFlow.setChangeTime(new Date());
         poundageAccountFlow.setRemark(EnumTradeType.of(order.getTradeType()).getValue());
         this.accountFlowService.add(poundageAccountFlow);
-        //通道利润--到可用余额
+        //通道利润--到结--(D0)到可用余额TODO
         if (null != basicChannelProfitDetail) {
             this.addSplitAccountRecord(basicChannelProfitDetail, order, splitProfitParams, "收单反润");
-            this.splitProfit4IncreaseAvailableAccount(basicChannelProfitDetail, order.getOrderNo(), "收单反润");
+//            this.splitProfit4IncreaseAvailableAccount(basicChannelProfitDetail, order.getOrderNo(), "收单反润");
+            this.splitProfit4IncreasePendingSettlementAccount(basicChannelProfitDetail, order, "收单反润");
         }
-        //产品利润--可用余额
+        //产品利润--到结--(D0)可用余额TODO
         if (null != productProfitDetail) {
             this.addSplitAccountRecord(productProfitDetail, order, splitProfitParams, "收单反润");
-            this.splitProfit4IncreaseAvailableAccount(productProfitDetail, order.getOrderNo(), "收单反润");
+//            this.splitProfit4IncreaseAvailableAccount(productProfitDetail, order.getOrderNo(), "收单反润");
+            this.splitProfit4IncreasePendingSettlementAccount(productProfitDetail, order, "收单反润");
         }
         //一级代理商利润--到结算--(D0)可用余额
         if (null != firstLevelDealerProfitDetail) {
