@@ -27,16 +27,17 @@ public class BaseSettlementDateServiceImpl implements BaseSettlementDateService 
     /**
      * {@inheritDoc}
      *
-     * @param order
+     * @param appId
+     * @param tradeDate
      * @param upperChannel
      * @return
      */
     @Override
-    public Date getSettlementDate(final Order order, final EnumUpperChannel upperChannel) {
-        if (EnumAppType.HSY.getId().equals(order.getAppId())) {
-            return this.getHsySettleDate(order, upperChannel);
-        } else if (EnumAppType.HSS.getId().equals(order.getAppId())) {
-            return this.getHssSettleDate(order, upperChannel);
+    public Date getSettlementDate(final String appId, final Date tradeDate, final String settleType, final EnumUpperChannel upperChannel) {
+        if (EnumAppType.HSY.getId().equals(appId)) {
+            return this.getHsySettleDate(tradeDate, upperChannel);
+        } else if (EnumAppType.HSS.getId().equals(appId)) {
+            return this.getHssSettleDate(tradeDate, settleType, upperChannel);
         }
         throw new RuntimeException("获取结算时间异常，错误的业务线");
     }
@@ -44,14 +45,14 @@ public class BaseSettlementDateServiceImpl implements BaseSettlementDateService 
     /**
      *  获取结算日期
      *
-     * @param order
+     * @param tradeDate
      * @param upperChannel
      * @return
      */
-    private Date getHsySettleDate(final Order order, final EnumUpperChannel upperChannel) {
+    private Date getHsySettleDate(final Date tradeDate, final EnumUpperChannel upperChannel) {
         switch (upperChannel) {
             case SYJ:
-                return this.getShouYinJiaPaySettleDate(order.getPaySuccessTime());
+                return this.getShouYinJiaPaySettleDate(tradeDate);
         }
         log.error("can not be here");
         return new Date();
@@ -60,19 +61,19 @@ public class BaseSettlementDateServiceImpl implements BaseSettlementDateService 
     /**
      *  获取结算日期
      *
-     * @param order
+     * @param tradeDate
      * @param upperChannel
      * @return
      */
-    private Date getHssSettleDate(final Order order, final EnumUpperChannel upperChannel) {
-        if (EnumBalanceTimeType.D0.getType().equals(order.getSettleType())) {
-            return order.getPaySuccessTime();
-        } else if (EnumBalanceTimeType.T1.getType().equals(order.getSettleType())) {
+    private Date getHssSettleDate(final Date tradeDate, final String settleType, final EnumUpperChannel upperChannel) {
+        if (EnumBalanceTimeType.D0.getType().equals(settleType)) {
+            return tradeDate;
+        } else if (EnumBalanceTimeType.T1.getType().equals(settleType)) {
             switch (upperChannel) {
                 case EASY_LINK:
-                    return this.getEasyLinkUnionPaySettleDate(order.getPaySuccessTime());
+                    return this.getEasyLinkUnionPaySettleDate(tradeDate);
                 case MOBAO:
-                    return this.getMoBaoUnionPaySettleDate(order.getPaySuccessTime());
+                    return this.getMoBaoUnionPaySettleDate(tradeDate);
             }
         }
         log.error("can not be here");

@@ -9,26 +9,12 @@ import lombok.Data;
 public class StaticCodePayRequest {
 
     /**
-     * 店铺id
+     * 好收银订单id
      */
-    private long merchantId;
+    private long hsyOrderId;
 
     /**
      * 总金额
      */
     private String totalFee;
-
-    /**
-     * 支付通道
-     */
-    private int payChannel;
-
-    /**
-     * 会员id
-     */
-    private String memberId;
-    /**
-     * 二维码
-     */
-    private String code;
 }

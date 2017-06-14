@@ -37,4 +37,10 @@
         FROM app_user_trade_rate
         WHERE user_id=#{userId} and status = 1 order by policy_type desc;
     </select>
+
+    <delete id="deleteByUserId">
+        DELETE
+        FROM app_user_trade_rate
+        WHERE user_id=#{userId};
+    </delete>
 </mapper>

@@ -1,8 +1,10 @@
 package com.jkm.hss.controller.hsyMerchant;
 
+import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
@@ -15,6 +17,7 @@ import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.help.requestparam.AddWxChannelRequest;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.help.requestparam.XmmsResponse;
 import com.jkm.hsy.user.service.HsyCmbcService;
@@ -26,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -141,79 +145,111 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/reenter",method = RequestMethod.POST)
     public CommonResponse reenter(@RequestBody final AppUserAndShopRequest appUserAndShopRequest){
-        log.info("进入重新入网");
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(appUserAndShopRequest.getShopId());
         if(appBizShop.getStatus()!=AppConstant.SHOP_STATUS_NORMAL){
             return CommonResponse.simpleResponse(-1,"该商户未通过审核，不能重新入网");
         }
-        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(appUserAndShopRequest.getUserId());
-        if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()==EnumHxbsStatus.PASS.getId()){
-            if(appAuUser.getHxbOpenProduct()==null||appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.UNPASS.getId()){
-                CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
-                if(cmbcResponse1.getCode()==1){//开通产品成功
-                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
-                    return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"该商户已经入网且开通产品成功");
-                }else{//开通产品失败
-                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
-                    return CommonResponse.simpleResponse(-1,"该商户已经入网但,开通产品失败");
+        Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appUserAndShopRequest.getUserId(),EnumPayChannelSign.SYJ_WECHAT.getId());
+        if(userChannelPolicyOptional.isPresent()){
+            if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
+                if(userChannelPolicyOptional.get().getOpenProductStatus()==null||userChannelPolicyOptional.get().getNetStatus()!=EnumOpenProductStatus.PASS.getId()){
+                    CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                    if(cmbcResponse1.getCode()==1){
+                        UserChannelPolicy openProduct = new UserChannelPolicy();
+                        openProduct.setUserId(appUserAndShopRequest.getUserId());
+                        openProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                        openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
+                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
+                        userChannelPolicyService.updateHxOpenProduct(openProduct);
+                    }else{
+                        UserChannelPolicy openProduct = new UserChannelPolicy();
+                        openProduct.setUserId(appUserAndShopRequest.getUserId());
+                        openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                        openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
+                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
+                        userChannelPolicyService.updateHxOpenProduct(openProduct);
+                    }
                 }
             }else{
-                return CommonResponse.simpleResponse(-1,"该商户已经入网，不能重复入网");
-            }
-        }else{
-            CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
-            if(cmbcResponse.getCode()!=1){
-                return CommonResponse.simpleResponse(-1,cmbcResponse.getMsg());
-            }else{
-                hsyUserDao.updateHxbsStatus(EnumHxbsStatus.PASS.getId(),cmbcResponse.getMsg(),appUserAndShopRequest.getUserId());
-                if(appAuUser.getWeixinRate()!=null&&!"".equals(appAuUser.getWeixinRate())){//添加产品
+                CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                if(cmbcResponse.getCode()==1){
+                    UserChannelPolicy netInfo = new UserChannelPolicy();
+                    netInfo.setUserId(appUserAndShopRequest.getUserId());
+                    netInfo.setNetStatus(EnumNetStatus.SUCCESS.getId());
+                    netInfo.setNetMarks(cmbcResponse.getMsg());
+                    netInfo.setExchannelCode(cmbcResponse.getResult());
+                    userChannelPolicyService.updateHxNetInfo(netInfo);
                     CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
-                    if(cmbcResponse1.getCode()==1){//开通产品成功
-                        hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
-                        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"入网成功");
-                    }else{//开通产品失败
-                        hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
-                        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"开通产品失败");
+                    if(cmbcResponse1.getCode()==1){
+                        UserChannelPolicy openProduct = new UserChannelPolicy();
+                        openProduct.setUserId(appUserAndShopRequest.getUserId());
+                        openProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                        openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
+                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
+                        userChannelPolicyService.updateHxOpenProduct(openProduct);
+                    }else{
+                        UserChannelPolicy openProduct = new UserChannelPolicy();
+                        openProduct.setUserId(appUserAndShopRequest.getUserId());
+                        openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                        openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
+                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
+                        userChannelPolicyService.updateHxOpenProduct(openProduct);
                     }
                 }else{
-                    return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"入网成功");
+                    UserChannelPolicy netInfo = new UserChannelPolicy();
+                    netInfo.setUserId(appUserAndShopRequest.getUserId());
+                    netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
+                    netInfo.setNetMarks(cmbcResponse.getMsg());
+                    netInfo.setExchannelCode(cmbcResponse.getResult());
+                    userChannelPolicyService.updateHxNetInfo(netInfo);
+                }
+            }
+        }
+        List<Integer> list=new ArrayList<Integer>(){
+            {
+                add(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
+                add(EnumPayChannelSign.XMMS_ALIPAY_T1.getId());
+                add(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
+                add(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
+            }
+        };
+        for(int i=0;i<list.size();i++){
+            Optional<UserChannelPolicy> ucp = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appUserAndShopRequest.getUserId(),list.get(i));
+            if(ucp.isPresent()){
+                if(ucp.get().getNetStatus()!=null&&ucp.get().getNetStatus()!=EnumNetStatus.SUCCESS.getId()&&ucp.get().getNetStatus()!=EnumNetStatus.HANDLING.getId()){
+                    XmmsResponse.BaseResponse baseResponse= hsyCmbcService.merchantIn(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId(),list.get(i));
+                    if(baseResponse.getCode()==1){
+                        UserChannelPolicy netInfo = new UserChannelPolicy();
+                        netInfo.setUserId(appUserAndShopRequest.getUserId());
+                        if((EnumXmmsStatus.HANDLING.getId()).equals(baseResponse.getResult().getStatus())){
+                            netInfo.setNetStatus(EnumNetStatus.HANDLING.getId());
+                            netInfo.setNetMarks(baseResponse.getResult().getMsg());
+                            netInfo.setOpenProductStatus(EnumOpenProductStatus.HANDLING.getId());
+                            netInfo.setOpenProductMarks(baseResponse.getResult().getMsg());
+                        }
+                        if((EnumXmmsStatus.FAIL.getId()).equals(baseResponse.getResult().getStatus())){
+                            netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
+                            netInfo.setNetMarks(baseResponse.getResult().getMsg());
+                            netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                            netInfo.setOpenProductMarks(baseResponse.getResult().getMsg());
+                        }
+                        netInfo.setChannelTypeSign(list.get(i));
+                        userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+                    }else{
+                        UserChannelPolicy netInfo = new UserChannelPolicy();
+                        netInfo.setUserId(appUserAndShopRequest.getUserId());
+                        netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
+                        netInfo.setNetMarks(baseResponse.getMsg());
+                        netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                        netInfo.setOpenProductMarks(baseResponse.getMsg());
+                        netInfo.setChannelTypeSign(list.get(i));
+                        userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+                    }
                 }
             }
         }
 
-    }
-
-    /**
-     * 驳回充填
-     * @param hsyMerchantAuditRequest
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/reject",method = RequestMethod.POST)
-    public CommonResponse reject(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
-        if(hsyMerchantAuditRequest.getUid()==null||hsyMerchantAuditRequest.getUid()<=0){
-            return CommonResponse.simpleResponse(-1,"商户编码有误");
-        }
-        if(hsyMerchantAuditRequest.getId()==null||hsyMerchantAuditRequest.getId()<=0){
-            return CommonResponse.simpleResponse(-1,"店铺编码有误");
-        }
-        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(hsyMerchantAuditRequest.getUid());
-        if(appAuUser.getHxbStatus()==null){
-            return CommonResponse.simpleResponse(-1,"商户未通过审核，不能驳回充填");
-        }
-        if(appAuUser.getHxbStatus()==EnumHxbsStatus.PASS.getId()){
-            return CommonResponse.simpleResponse(-1,"只有全部通道都入网失败的才可以驳回");
-        }
-        if(appAuUser!=null&&appAuUser.getAccountID()>0){
-            accountService.delAcct(appAuUser.getAccountID());
-        }
-        hsyMerchantAuditRequest.setCheckErrorInfo("驳回充填");
-        hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
-        hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
-        hsyMerchantAuditService.stepChange(hsyMerchantAuditRequest.getUid());
-        hsyMerchantAuditRequest.setStat(1);
-        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"驳回充填成功");
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"重新入网成功");
     }
 
     private void merchantIn(long userId,long shopId){
@@ -370,6 +406,32 @@ public class HsyMerchantAuditController extends BaseController {
     }
 
 
+    /**
+     * 添加微信官方通道
+     * @param addWxChannelRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addWxChannel",method = RequestMethod.POST)
+    public CommonResponse addWxChannel(@RequestBody AddWxChannelRequest addWxChannelRequest){
+        Optional<UserChannelPolicy> userChannelPolicyOptional =  userChannelPolicyService.selectByUserIdAndChannelTypeSign(addWxChannelRequest.getUserId(),EnumPayChannelSign.WECHAT_PAY.getId());
+        if(userChannelPolicyOptional.isPresent()){
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"此通道已存在");
+        }
+        UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
+        userChannelPolicy.setUserId(addWxChannelRequest.getUserId());
+        userChannelPolicy.setChannelName("微信官方");
+        userChannelPolicy.setChannelTypeSign(EnumPayChannelSign.WECHAT_PAY.getId());
+        userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
+        userChannelPolicy.setSettleType(EnumPayChannelSign.WECHAT_PAY.getSettleType().getType());
+        userChannelPolicy.setNetStatus(EnumNetStatus.UNENT.getId());
+        userChannelPolicy.setOpenProductStatus(0);
+        userChannelPolicy.setExchannelCode(addWxChannelRequest.getExchannelCode());
+        userChannelPolicy.setAppId(addWxChannelRequest.getAppId());
+        userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+        userChannelPolicyService.insert(userChannelPolicy);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"添加成功");
+    }
 
 
 

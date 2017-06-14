@@ -108,7 +108,13 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
         if(list.get(0).getProductID()!=null&&productId!=list.get(0).getProductID())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一产品下");
-
+        if(list.get(0).getDealerID()==null||list.get(0).getDealerID()==0){
+            AppAuUser saveAppAuUser = new AppAuUser();
+            saveAppAuUser.setId(list.get(0).getId());
+            saveAppAuUser.setDealerID(currentDealerId);
+            saveAppAuUser.setProductID(productId);
+            hsyUserDao.updateByID(saveAppAuUser);
+        }
         //计算费率
 //        Triple<BigDecimal, BigDecimal, BigDecimal> decimalTriple = dealerChannelRateService.getMerchantRateByDealerId(currentDealerId,qrCodeOptional.get().getProductId());
 //        if(decimalTriple==null)

@@ -65,7 +65,12 @@ public enum EnumUpperChannel {
     /**
      * 汇聚支付
      */
-    HJ_PAY(11,"HJ_PAY","汇聚");
+    HJ_PAY(11,"HJ_PAY","汇聚"),
+
+    /**
+     * 微信官方支付
+     */
+    WECHAT(11,"WECHAT","微信官方支付");
 
     @Getter
     private int id;

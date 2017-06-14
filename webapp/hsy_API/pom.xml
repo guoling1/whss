@@ -276,8 +276,8 @@
     </dependencies>
 
     <properties>
-        <jetty-maven-plugin.port>8290</jetty-maven-plugin.port>
-        <tomcat-maven-plugin.port>8290</tomcat-maven-plugin.port>
+        <jetty-maven-plugin.port>8295</jetty-maven-plugin.port>
+        <tomcat-maven-plugin.port>8295</tomcat-maven-plugin.port>
     </properties>
 
     <build>

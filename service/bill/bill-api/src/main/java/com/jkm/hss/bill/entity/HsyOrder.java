@@ -8,8 +8,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Created by wayne on 17/5/15.
+ * Created by wayne on 17/5/15
+ *
  * 好收银业务订单
+ *
+ * tb_hsy_order
+ *
+ * {@link EnumHsyOrderStatus}
  */
 @Data
 public class HsyOrder extends BaseEntity {
@@ -27,6 +32,11 @@ public class HsyOrder extends BaseEntity {
     private long shopid;
 
     private String shopname;
+
+    /**
+     * 商户在平台的唯一编号
+     */
+    private String merchantNo;
 
     private String merchantname;
     /**
@@ -65,6 +75,25 @@ public class HsyOrder extends BaseEntity {
     private int sourcetype;
 
     /**
+     * 扫码用户在微信/支付宝的标识
+     */
+    private String memberId;
+
+    /**
+     * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
+     *
+     * 支付渠道
+     */
+    private int paymentChannel;
+
+    /**
+     * 结算类型
+     *
+     * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
+     */
+    private String settleType;
+
+    /**
      * 是否是 已经退款成功
      *
      * @return
@@ -93,6 +122,14 @@ public class HsyOrder extends BaseEntity {
                 &&!isRefundPart();
     }
 
+    /**
+     * 是否是待支付
+     *
+     * @return
+     */
+    public boolean isPendingPay() {
+        return EnumHsyOrderStatus.DUE_PAY.getId() == this.orderstatus;
+    }
 
 
 }

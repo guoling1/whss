@@ -5,6 +5,7 @@ import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,14 @@ public interface HsyOrderDao {
     int update(HsyOrder hsyOrder);
 
     /**
+     * 更新订单金额
+     *
+     * @param id
+     * @param amount
+     */
+    void updateAmount(@Param("id") long id, @Param("amount") BigDecimal amount);
+
+    /**
      * 根据交易号查找订单
      * @return
      */
@@ -38,6 +47,15 @@ public interface HsyOrderDao {
      * @return
      */
     HsyOrder selectById(@Param("id") long id);
+
+    /**
+     * 加锁按id查询
+     *
+     * @param id
+     * @return
+     */
+    HsyOrder selectByIdWithLock(@Param("id") long id);
+
 
    List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
                                       @Param("offset") int offset,
@@ -60,5 +78,4 @@ public interface HsyOrderDao {
                                           @Param("payChannelSigns") List<Integer> payChannelSigns,
                                           @Param("startTime") Date startTime,
                                           @Param("endTime") Date endTime);
-
 }
