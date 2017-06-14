@@ -128,7 +128,7 @@ public class HsyOrder extends BaseEntity {
      * @return
      */
     public boolean isPendingPay() {
-        return EnumHsyOrderStatus.DUE_PAY.getId() != this.orderstatus;
+        return EnumHsyOrderStatus.DUE_PAY.getId() == this.orderstatus;
     }
 
 

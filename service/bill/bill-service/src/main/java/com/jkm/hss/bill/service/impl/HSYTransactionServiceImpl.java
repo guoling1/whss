@@ -148,7 +148,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         updateOrder.setPaysn(callbackResponse.getSn());
                         updateOrder.setPaysuccesstime(callbackResponse.getSuccessTime());
                         updateOrder.setRemark(callbackResponse.getMessage());
-                        this.hsyOrderService.update(hsyOrder);
+                        this.hsyOrderService.update(updateOrder);
                         //生成分润消息记录
                         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
                         consumeMsgSplitProfitRecord.setHsyOrderId(hsyOrder1.getId());
@@ -166,11 +166,11 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_FAIL.getId());
                         updateOrder.setPaysn(callbackResponse.getSn());
                         updateOrder.setRemark(callbackResponse.getMessage());
-                        hsyOrderService.update(hsyOrder);
+                        hsyOrderService.update(updateOrder);
                         break;
                     case HANDLING:
                         updateOrder.setRemark(callbackResponse.getMessage());
-                        this.hsyOrderService.update(hsyOrder);
+                        this.hsyOrderService.update(updateOrder);
                         break;
                     default:
                         log.error("交易回调业务，返回状态码[{}]异常", callbackResponse.getCode());

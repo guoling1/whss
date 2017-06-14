@@ -84,7 +84,7 @@ public class TradeController extends BaseController {
         final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
                     .addParam("subMerName", resultPair.getRight())
                     .addParam("amount", payRequest.getTotalFee()).build();
         }

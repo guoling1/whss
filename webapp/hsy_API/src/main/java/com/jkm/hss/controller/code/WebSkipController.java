@@ -63,8 +63,8 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "orderId", required = true) long orderId, @RequestParam(value = "name") String name) throws IOException {
-        model.addAttribute("orderId", orderId);
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId, @RequestParam(value = "name") String name) throws IOException {
+        model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("merchantName", name);
         return "/payment-wx";
     }
@@ -79,8 +79,8 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "orderId", required = true) long orderId,@RequestParam(value = "name") String name) throws IOException {
-        model.addAttribute("orderId", orderId);
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "name") String name) throws IOException {
+        model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("merchantName", name);
         return "/payment-zfb";
     }

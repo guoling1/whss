@@ -84,6 +84,9 @@
           <if test="refundtime!=null">
               refund_time=#{refundtime}
           </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark}
+            </if>
         </set>
         WHERE id = #{id}
     </update>

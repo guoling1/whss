@@ -67,7 +67,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setOrderno(payResponse.getTradeOrderNo());
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
                 updateOrder.setRemark(payResponse.getMessage());
-                this.hsyOrderService.update(hsyOrder);
+                this.hsyOrderService.update(updateOrder);
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
             case SUCCESS:
                 updateOrder.setId(hsyOrder.getId());
@@ -75,7 +75,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setValidationcode(payResponse.getTradeOrderNo().substring(payResponse.getTradeOrderNo().length() - 4));
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
                 updateOrder.setRemark(payResponse.getMessage());
-                this.hsyOrderService.update(hsyOrder);
+                this.hsyOrderService.update(updateOrder);
                 return Triple.of(0, payResponse.getUrl(), shop.getName());
              default:
                  return Triple.of(-1, payResponse.getMessage(), shop.getName());

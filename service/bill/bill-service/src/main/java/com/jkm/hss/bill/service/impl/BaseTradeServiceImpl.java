@@ -337,6 +337,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         log.info("业务方[{}]-交易订单[{}]，支付成功, 支付渠道[{}]", order.getAppId(), order.getOrderNo(), paymentSdkPayCallbackResponse.getPayType());
         final Order updateOrder = new Order();
+        updateOrder.setAppId(order.getAppId());
         updateOrder.setId(order.getId());
         updateOrder.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         updateOrder.setPayType(paymentSdkPayCallbackResponse.getPayType());
@@ -345,7 +346,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         updateOrder.setPayChannelSign(enumPayChannelSign.getId());
-        updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order, enumPayChannelSign.getUpperChannel()));
+        updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order.getAppId(), updateOrder.getPaySuccessTime(), order.getSettleType(), enumPayChannelSign.getUpperChannel()));
         //TODO  hss-hsy
         if (EnumServiceType.APPRECIATION_PAY.getId() != order.getServiceType()) {
             final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()),
@@ -442,7 +443,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setTradeCardType(paymentSdkPayCallbackResponse.getTradeCardType());
         updateOrder.setTradeCardNo(paymentSdkPayCallbackResponse.getTradeCardNo());
         updateOrder.setWechatOrAlipayOrderNo(paymentSdkPayCallbackResponse.getWechatOrAlipayOrderNo());
-        updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order, enumPayChannelSign.getUpperChannel()));
+        updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order.getAppId(), updateOrder.getPaySuccessTime(), order.getSettleType(), enumPayChannelSign.getUpperChannel()));
         this.orderService.update(updateOrder);
         this.record(order.getId());
         //会员账户增加
