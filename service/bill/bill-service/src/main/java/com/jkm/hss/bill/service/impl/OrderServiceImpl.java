@@ -1526,7 +1526,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req) {
         List<AchievementStatisticsResponse> list = this.orderDao.getAchievement(req);
-
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if ("".equals(list.get(i).getTradeCount())||list.get(i).getTradeCount()==null){
+                    list.get(i).setTradeCount("0");
+                }
+                if ("".equals(list.get(i).getVaildTradeUserCount())||list.get(i).getVaildTradeUserCount()==null){
+                    list.get(i).setVaildTradeUserCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalCount())||list.get(i).getTradeTotalCount()==null){
+                    list.get(i).setTradeTotalCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalAmount("0");
+                }
+            }
+        }
         return list;
     }
 
@@ -1534,6 +1549,83 @@ public class OrderServiceImpl implements OrderService {
     public int getAchievementCount(QueryOrderRequest req) {
         return this.orderDao.getAchievementCount(req);
     }
+
+    @Override
+    public String downloadAchievement(QueryOrderRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateAchievement(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO generateAchievement(QueryOrderRequest req, String baseUrl) {
+        List<AchievementStatisticsResponse> list = downloadeYJ(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("Achievement");
+        heads.add("报单员登录名");
+        heads.add("报单员姓名");
+        heads.add("日期");
+        heads.add("当日有效商户数");
+        heads.add("当日5元以上交易笔数");
+        heads.add("当日名下商户交易总笔数");
+        heads.add("当日名下商户交易总额");
+        datas.add(heads);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getUsername());
+                columns.add(list.get(i).getRealname());
+                if (!"".equals(list.get(i).getCreateTime())&&list.get(i).getCreateTime()!=null){
+                    String checkedTime = sdf.format(date);
+                    columns.add(checkedTime);
+                }else {
+                    columns.add("--");
+                }
+                columns.add(list.get(i).getVaildTradeUserCount());
+                columns.add(list.get(i).getTradeCount());
+                columns.add(list.get(i).getTradeTotalCount());
+                columns.add(list.get(i).getTradeTotalAmount());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
+    private List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req) {
+        List<AchievementStatisticsResponse> list = this.orderDao.downloadeYJ(req);
+        return list;
+    }
+
 
     @Override
     public void save(GeTuiResponse geTuiResponse) {

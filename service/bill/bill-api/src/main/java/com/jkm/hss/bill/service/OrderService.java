@@ -532,6 +532,14 @@ public interface OrderService {
     int getAchievementCount(QueryOrderRequest req);
 
     /**
+     * 导出业绩
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadAchievement(QueryOrderRequest req, String baseUrl);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

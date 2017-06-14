@@ -537,4 +537,11 @@ public interface OrderDao {
      * @return
      */
     int getAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 导出业绩
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req);
 }
