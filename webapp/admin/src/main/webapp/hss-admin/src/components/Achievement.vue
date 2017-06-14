@@ -4,7 +4,7 @@
       <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">销售业绩统计（好收银）</h3>
-          <el-button size="small" class="pull-right">导出</el-button>
+          <el-button type="primary" @click="isMask = true" size="small" class="pull-right">导出</el-button>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -24,27 +24,24 @@
                               :editable="false"></el-date-picker>
             </li>
             <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
-              <div class="btn btn-primary" @click="reset">重置</div>
+              <el-button type="primary" size="small" @click="search">筛选</el-button>
+              <el-button type="primary" size="small" @click="reset">重置</el-button>
             </li>
           </ul>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column prop="realname" label="报单员登录名"></el-table-column>
-            <el-table-column prop="userName" label="报单员姓名"></el-table-column>
+            <el-table-column prop="username" label="报单员登录名"></el-table-column>
+            <el-table-column prop="realname" label="报单员姓名"></el-table-column>
             <el-table-column label="日期">
-              <template scope="scope">
-                {{scope.row.creatTime|changeDate}}
-              </template>
+              <template scope="scope">{{scope.row.createTime|changeDate}}</template>
             </el-table-column>
             <el-table-column prop="vaildTradeUserCount" label="当日有效商户数(有一笔5元以上交易)" align="right"></el-table-column>
-            <el-table-column prop="tradeCount" label="当日5元以上交易笔数" align="right">
-
-            </el-table-column>
+            <el-table-column prop="tradeCount" label="当日5元以上交易笔数" align="right"></el-table-column>
             <el-table-column prop="tradeTotalCount" label="当日名下商户交易总笔数" align="right"></el-table-column>
-            <el-table-column prop="tradeTotalAmount" label="当日名下商户交易总额（元）" align="right"></el-table-column>
-
+            <el-table-column prop="tradeTotalAmount" label="当日名下商户交易总额（元）" align="right">
+              <template scope="scope">{{scope.row.tradeTotalAmount|toFix}}</template>
+            </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
@@ -139,9 +136,9 @@
           }
           str = ary[0] + '-' + ary[1] + '-' + ary[2];
           if (j == 0) {
-            this.$data.query.startSettleDate = str;
+            this.query.startTime1 = str;
           } else {
-            this.$data.query.endSettleDate = str;
+            this.query.endTime = str;
           }
         }
       },
@@ -149,13 +146,10 @@
         this.query = {
           pageNo: 1,
           pageSize: 10,
-          userNo: "",//商户编号
-          userName: "",  //商户名字
-          userType: '',
-          startSettleDate: "",
-          endSettleDate: "",
-          checkedStatus: '',
-          settleStatus: ''
+          realname:'',
+          username:'',
+          startTime1:'',
+          endTime:''
         };
         this.currentDate()
       },
