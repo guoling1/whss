@@ -113,7 +113,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         if (hsyOrder.isPendingPay()) {
             final BigDecimal amount = new BigDecimal(totalAmount);
             this.hsyOrderService.updateAmount(hsyOrderId, amount);
-            return this.baseHSYTransactionService.placeOrderImpl(hsyOrder,amount);
+            return this.baseHSYTransactionService.placeOrderImpl(hsyOrder, amount);
         }
         return Triple.of(-1, "订单状态异常", "");
     }
