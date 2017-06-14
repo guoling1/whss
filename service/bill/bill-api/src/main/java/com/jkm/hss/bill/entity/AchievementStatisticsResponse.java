@@ -13,7 +13,7 @@ public class AchievementStatisticsResponse {
     private String realname;//报单员真实姓名
     private String username;//报单员登录
     private Date createTime;
-    private String creatTimes;//交易日期
+    private String createTimes;//交易日期
     private String tradeCount;//交易笔数
     private String vaildTradeUserCount;//有效商户数
     private String tradeTotalCount;//当日名下商户交易总笔数
