@@ -60,7 +60,6 @@ public class QueryOrderRequest {
      * 订单状态
      */
     private int status;
-
     /**
      * 订单创建时间：开始时间
      */
