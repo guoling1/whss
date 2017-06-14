@@ -337,7 +337,6 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         log.info("业务方[{}]-交易订单[{}]，支付成功, 支付渠道[{}]", order.getAppId(), order.getOrderNo(), paymentSdkPayCallbackResponse.getPayType());
         final Order updateOrder = new Order();
-        updateOrder.setAppId(order.getAppId());
         updateOrder.setId(order.getId());
         updateOrder.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         updateOrder.setPayType(paymentSdkPayCallbackResponse.getPayType());
