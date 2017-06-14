@@ -61,6 +61,7 @@ const routes = [
   {
     path: '/daili/app', redirect: '/daili/app/home', component: index,
     children: [
+      {path: 'achievement', name: "achievement", component: achievement},
       {path: 'development', name: "development", component: development},
       {path: 'home', name: "home", component: home},
       {path: 'profits_detail', name: "profits_detail", component: profits_detail},
