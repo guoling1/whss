@@ -34,4 +34,10 @@ public interface UserTradeRateDao {
      * @return
      */
     List<UserTradeRate> selectAllByUserId(@Param("userId") long userId);
+
+    /**
+     * 根据用户编码删除
+     * @param userId
+     */
+    void deleteByUserId(@Param("userId") long userId);
 }
