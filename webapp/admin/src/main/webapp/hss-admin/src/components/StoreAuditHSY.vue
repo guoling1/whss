@@ -325,7 +325,7 @@
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
-        <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
+        <!--<el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>-->
         <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
@@ -396,15 +396,15 @@
             <el-button @click="isReenter = false">取 消</el-button>
             <el-button type="primary" @click="reenter" :disabled="reenterClick">确 定</el-button>
           </span>
-        </el-dialog>
-      <el-dialog title="驳回重填" v-model="isReject" size="tiny">
-          <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
-          <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="isReject = false">取 消</el-button>
-            <el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>
-          </span>
-        </el-dialog>
+      </el-dialog>
+      <!--<el-dialog title="驳回重填" v-model="isReject" size="tiny">-->
+          <!--<p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>-->
+          <!--<p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>-->
+          <!--<span slot="footer" class="dialog-footer">-->
+            <!--<el-button @click="isReject = false">取 消</el-button>-->
+            <!--<el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>-->
+          <!--</span>-->
+        <!--</el-dialog>-->
       <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
