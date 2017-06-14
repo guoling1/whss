@@ -918,7 +918,7 @@
         tb_order a
         LEFT JOIN app_au_user b ON a.payee = b.ACCOUNTID
         WHERE
-        a.trade_type = 1 AND AND b.DEALERID=#{dealerId} and a.app_id='hsy'
+        a.trade_type = 1 AND a.app_id='hsy'
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -1326,7 +1326,7 @@
         tb_order a
         LEFT JOIN app_au_user b ON a.payee = b.ACCOUNTID
         WHERE
-        a.trade_type = 1 AND b.DEALERID in (select id from tb_dealer where id=#{dealerId} and level=1 union select id from tb_dealer where first_level_dealer_id=#{dealerId} and level=2 ) and a.app_id='hsy'
+        a.trade_type = 1 and a.app_id='hsy'
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>

@@ -520,7 +520,7 @@
 
     <!-- 更新注册手机号 -->
     <update id="changeMobile">
-        UPDATE app_au_user SET CHANGEPHONE=#{changePhone} WHERE ID=#{uid}
+        UPDATE app_au_user SET CELLPHONE=#{changePhone} WHERE ID=#{uid}
     </update>
 
     <!-- 查询详情hsy商户注册手机号更改手机号还有id -->

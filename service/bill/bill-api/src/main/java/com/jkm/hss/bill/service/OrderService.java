@@ -540,6 +540,22 @@ public interface OrderService {
     String downloadAchievement(QueryOrderRequest req, String baseUrl);
 
     /**
+     * 代理商后台导出所属二级
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downLoadHsyMerchantTrade(OrderTradeRequest req, String baseUrl);
+
+    /**
+     * 代理商后台导出一级代理商
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downLoadHsyMerchantTrade1(OrderTradeRequest req, String baseUrl);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

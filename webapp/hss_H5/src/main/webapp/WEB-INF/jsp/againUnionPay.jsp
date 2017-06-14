@@ -31,7 +31,7 @@
     <div class="group right" id="chooseBank">
       <div class="left">银行</div>
       <c:if test="${status==0}">
-        <div class="adaptive text" id="bank">${bankName} 尾号${shortNo} (本通道不支持)</div>
+        <div class="adaptive text" id="bank">${bankName} 尾号${shortNo} (选择其他银行)</div>
       </c:if>
       <c:if test="${status==1}">
         <div class="adaptive text active" id="bank">${bankName} 尾号${shortNo}</div>

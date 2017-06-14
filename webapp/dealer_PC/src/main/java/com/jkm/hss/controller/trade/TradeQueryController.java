@@ -116,24 +116,60 @@ public class TradeQueryController extends BaseController {
      * @return
      */
     private String downLoadHsyMerchant(@RequestBody final OrderTradeRequest req) throws ParseException {
-        final String fileZip = this.orderService.downloadExcel(req, ApplicationConsts.getApplicationConfig().ossBucke());
-
-        final ObjectMetadata meta = new ObjectMetadata();
-        meta.setCacheControl("public, max-age=31536000");
-        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-        meta.setContentType("application/x-xls");
-        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
-        String nowDate = sdf.format(new Date());
-        String fileName = "hss/"+  nowDate + "/" + "hsyMerchant.xls";
-        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
-        URL url = null;
-        try {
-            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
-            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
-        } catch (IOException e) {
-            log.error("上传文件失败", e);
+        long dealerId = super.getDealerId();
+        int level = super.getDealer().get().getLevel();
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
         }
+        req.setDealerId(dealerId);
+        if (level==2){
+            final String fileZip = this.orderService.downLoadHsyMerchantTrade(req, ApplicationConsts.getApplicationConfig().ossBucke());
+
+            final ObjectMetadata meta = new ObjectMetadata();
+            meta.setCacheControl("public, max-age=31536000");
+            meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+            meta.setContentType("application/x-xls");
+            SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+            String nowDate = sdf.format(new Date());
+            String fileName = "hss/"+  nowDate + "/" + "trade.xls";
+            final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+            URL url = null;
+            try {
+                ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+                url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+                return url.getHost() + url.getFile();
+            } catch (IOException e) {
+                log.error("上传文件失败", e);
+            }
+
+        }
+        if (level==1){
+            final String fileZip = this.orderService.downLoadHsyMerchantTrade1(req, ApplicationConsts.getApplicationConfig().ossBucke());
+
+            final ObjectMetadata meta = new ObjectMetadata();
+            meta.setCacheControl("public, max-age=31536000");
+            meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+            meta.setContentType("application/x-xls");
+            SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+            String nowDate = sdf.format(new Date());
+            String fileName = "hss/"+  nowDate + "/" + "trade.xls";
+            final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+            URL url = null;
+            try {
+                ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+                url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+                return url.getHost() + url.getFile();
+            } catch (IOException e) {
+                log.error("上传文件失败", e);
+            }
+        }
+
+
         return null;
     }
 }
