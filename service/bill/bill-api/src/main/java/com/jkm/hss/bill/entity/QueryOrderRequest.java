@@ -63,6 +63,11 @@ public class QueryOrderRequest {
     private String startTime;
 
     /**
+     * 订单创建时间：开始时间
+     */
+    private String startTime1;
+
+    /**
      * 订单创建时间：结束时间
      */
     private String endTime;
@@ -80,15 +85,24 @@ public class QueryOrderRequest {
     /**
      * 页数
      */
+    private Integer pageNo;
+    /**
+     * 每页条数
+     */
+    private Integer pageSize;
+    /**
+     * 条数
+     */
+    private Integer offset;
+
+    /**
+     * 页数
+     */
     private Integer page;
     /**
      * 每页条数
      */
     private Integer size;
-    /**
-     * 条数
-     */
-    private Integer offset;
 
 
 }

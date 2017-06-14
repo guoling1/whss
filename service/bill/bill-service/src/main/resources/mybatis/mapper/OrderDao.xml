@@ -2404,7 +2404,7 @@
 
     <!-- 业绩统计 -->
     <select id="getAchievement" resultType="com.jkm.hss.bill.entity.AchievementStatisticsResponse">
-        select x.id,tradeCount,x.realname,x.username,createTime,vaildTradeUserCount,tradeTotalCount,tradeTotalAmount from (select count(1) tradeCount,`REALNAME`,username, createTime. ,ID from (SELECT a.`trade_amount`,
+        select tradeCount,x.realname,x.username,x.createTime,vaildTradeUserCount,tradeTotalCount,tradeTotalAmount from (select count(1) tradeCount,`REALNAME`,username, createTime ,ID from (SELECT a.`trade_amount`,
                DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
                d.`id`,
                d.`username`,
@@ -2418,7 +2418,7 @@
          WHERE a.trade_type= 1
            AND a.trade_amount> 5
            AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
-         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) X
+         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) x
         left join (
         select realname,count(1) vaildTradeUserCount,id from(select realName,uid,id from (SELECT a.`trade_amount`,
                DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
@@ -2449,7 +2449,7 @@
           LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
          WHERE a.trade_type= 1
            AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
-         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) z on x.ID=z.ID limit #{offset}, #{size}
+         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) z on x.ID=z.ID limit #{offset}, #{pageSize}
     </select>
 
     <!-- 业绩统计总数 -->
@@ -2468,7 +2468,7 @@
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
         AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
-        ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) X
+        ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) x
         left join (
         select realname,count(1) vaildTradeUserCount,id from(select realName,uid,id from (SELECT a.`trade_amount`,
         DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,

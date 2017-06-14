@@ -21,7 +21,7 @@ import java.util.List;
  * Created by zhangbin on 2017/6/10.
  */
 @Controller
-@RequestMapping(value = "'/admin/AchievementStatistics")
+@RequestMapping(value = "/admin/AchievementStatistics")
 public class AchievementStatisticsController {
 
     @Autowired
@@ -30,7 +30,7 @@ public class AchievementStatisticsController {
     @ResponseBody
     @RequestMapping(value = "/getAchievement",method = RequestMethod.POST)
     public CommonResponse getAchievement(@RequestBody QueryOrderRequest req){
-        final PageModel<AchievementStatisticsResponse> pageModel = new PageModel<AchievementStatisticsResponse>(req.getPage(), req.getSize());
+        final PageModel<AchievementStatisticsResponse> pageModel = new PageModel<AchievementStatisticsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -41,6 +41,6 @@ public class AchievementStatisticsController {
         int count = this.orderService.getAchievementCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", list);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }

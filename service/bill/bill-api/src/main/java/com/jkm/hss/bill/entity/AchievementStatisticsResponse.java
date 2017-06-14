@@ -10,8 +10,8 @@ import java.util.Date;
 @Data
 public class AchievementStatisticsResponse {
     private long id;
-    private String realname;//报单员
-    private String username;//报单员真实姓名
+    private String realname;//报单员真实姓名
+    private String username;//报单员登录
     private Date createTime;
     private String creatTimes;//交易日期
     private String tradeCount;//交易笔数
