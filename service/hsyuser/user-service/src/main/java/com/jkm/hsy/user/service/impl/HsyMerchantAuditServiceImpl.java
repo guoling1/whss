@@ -582,7 +582,9 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         final ArrayList<String> heads = new ArrayList<>();
         excelSheetVO.setName("hsyMerchant");
         heads.add("商户编号");
-        heads.add("商户名称");
+        heads.add("商户全称");
+        heads.add("商户简称");
+        heads.add("店铺数量");
         heads.add("所属分公司");
         heads.add("所属一级代理");
         heads.add("所属二级代理");
@@ -599,7 +601,9 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getGlobalID());
+                columns.add(list.get(i).getName());
                 columns.add(list.get(i).getShortName());
+                columns.add(list.get(i).getShopNo());
                 columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());

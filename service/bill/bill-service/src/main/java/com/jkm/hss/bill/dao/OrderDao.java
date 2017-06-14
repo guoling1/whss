@@ -495,4 +495,40 @@ public interface OrderDao {
      * @return
      */
     String getOrderCount1(QueryOrderRequest req);
+
+    /**
+     * 统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount(OrderTradeRequest req);
+
+    /**
+     * 统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount1(OrderTradeRequest req);
+
+    /**
+     * 统计手续费
+     * @param req
+     * @return
+     */
+    String getPoundageCount(OrderTradeRequest req);
+
+    /**
+     * 统计手续费
+     * @param req
+     * @return
+     */
+    String getPoundageCount1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getTradeFirst1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTradeFirst1(OrderTradeRequest req);
 }
