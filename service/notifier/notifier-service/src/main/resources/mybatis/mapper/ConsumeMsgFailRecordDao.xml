@@ -4,13 +4,14 @@
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into tb_consume_msg_split_profit_record
         (
-
+        hsy_order_id,
         request_param,
         tag,
         status
         )
         values
         (
+        #{hsyOrderId},
         #{requestParam},
         #{tag},
         #{status}
