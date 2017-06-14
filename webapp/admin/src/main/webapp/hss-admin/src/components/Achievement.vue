@@ -31,15 +31,15 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column prop="username" label="报单员登录名"></el-table-column>
-            <el-table-column prop="realname" label="报单员姓名"></el-table-column>
-            <el-table-column label="日期">
+            <el-table-column prop="username" label="报单员登录名" min-width="110"></el-table-column>
+            <el-table-column prop="realname" label="报单员姓名" min-width="97"></el-table-column>
+            <el-table-column label="日期" min-width="100">
               <template scope="scope">{{scope.row.createTime|changeDate}}</template>
             </el-table-column>
-            <el-table-column prop="vaildTradeUserCount" label="当日有效商户数(有一笔5元以上交易)" align="right"></el-table-column>
-            <el-table-column prop="tradeCount" label="当日5元以上交易笔数" align="right"></el-table-column>
-            <el-table-column prop="tradeTotalCount" label="当日名下商户交易总笔数" align="right"></el-table-column>
-            <el-table-column prop="tradeTotalAmount" label="当日名下商户交易总额（元）" align="right">
+            <el-table-column prop="vaildTradeUserCount" label="当日有效商户数(有一笔5元以上交易)" align="right" min-width="234"></el-table-column>
+            <el-table-column prop="tradeCount" label="当日5元以上交易笔数" align="right"  min-width="155"></el-table-column>
+            <el-table-column prop="tradeTotalCount" label="当日名下商户交易总笔数" align="right" min-width="170"></el-table-column>
+            <el-table-column prop="tradeTotalAmount" label="当日名下商户交易总额（元）" align="right" min-width="200">
               <template scope="scope">{{scope.row.tradeTotalAmount|toFix}}</template>
             </el-table-column>
           </el-table>
@@ -81,13 +81,17 @@
     data(){
       return {
         pickerOptions: {
+          disabledDate: function (time) {
+           return time.getTime() > Date.now() - 8.64e7;
+          },
           onPick: function ({maxDate, minDate}) {
             if (maxDate == '' || maxDate == null) {
               this.disabledDate = function (maxDate) {
-                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate;
+                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate || maxDate > new Date().setTime(new Date().getTime()-24*60*60*1000) || minDate > new Date().setTime(new Date().getTime()-24*60*60*1000);
               }
             } else {
-              this.disabledDate = function () {
+              this.disabledDate= function (time) {
+                return time.getTime() > Date.now() - 8.64e7;
               }
             }
           }
@@ -105,7 +109,7 @@
         },
         loading: true,
         isMask: false,
-        loadUrl: '',
+        loadUrl: ''
       }
     },
     created: function () {
@@ -125,6 +129,7 @@
       },
       currentDate: function () {
         let time = new Date();
+        time.setTime(time.getTime()-24*60*60*1000);
         this.date = [time, time];
         for (var j = 0; j < this.date.length; j++) {
           var str = this.date[j];
@@ -160,6 +165,7 @@
             setTimeout(() => {
               this.loading = false;
               this.records = res.data.records;
+              this.loadUrl = res.data.ext;
             }, 1000)
             this.count = res.data.count;
           }, function (err) {
