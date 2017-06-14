@@ -2458,10 +2458,10 @@
             AND x.username = #{username}
         </if>
         <if test="startTime1!=null and startTime1!=''">
-            AND x.create_time <![CDATA[ >= ]]> #{startTime1}
+            AND x.createTime <![CDATA[ >= ]]> #{startTime1}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND x.create_time <![CDATA[ <= ]]> #{endTime}
+            AND x.createTime <![CDATA[ <= ]]> #{endTime}
         </if>
 
           limit #{offset}, #{pageSize}
@@ -2523,10 +2523,10 @@
             AND x.username = #{username}
         </if>
         <if test="startTime1!=null and startTime1!=''">
-            AND x.create_time <![CDATA[ >= ]]> #{startTime1}
+            AND x.createTime <![CDATA[ >= ]]> #{startTime1}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND x.create_time <![CDATA[ <= ]]> #{endTime}
+            AND x.createTime <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
 
@@ -2586,10 +2586,10 @@
             AND x.username = #{username}
         </if>
         <if test="startTime1!=null and startTime1!=''">
-            AND x.create_time <![CDATA[ >= ]]> #{startTime1}
+            AND x.createTime <![CDATA[ >= ]]> #{startTime1}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND x.create_time <![CDATA[ <= ]]> #{endTime}
+            AND x.createTime <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
 </mapper>
