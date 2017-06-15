@@ -1,7 +1,6 @@
 package com.jkm.hss.dealer.helper.requestparam;
 
 import com.jkm.hss.dealer.entity.DealerRatePolicy;
-import com.jkm.hss.dealer.helper.response.DealerRatePolicyResponse;
 import lombok.Data;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
  * Created by xingliujie on 2016/12/9.
  */
 @Data
-public class DealerRatePolicySaveOrUpdateRequest {
+public class DealerRatePolicySaveOrUpdateBossRequest {
     /**
      * 代理商编码
      */
@@ -18,5 +17,5 @@ public class DealerRatePolicySaveOrUpdateRequest {
     /**
      * 代理商政策
      */
-    private List<DealerRatePolicyResponse> dealerRatePolicies;
+    private List<DealerRatePolicy> dealerRatePolicies;
 }

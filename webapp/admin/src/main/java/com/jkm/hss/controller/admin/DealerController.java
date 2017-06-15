@@ -1173,7 +1173,7 @@ public class DealerController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/saveOrUpdateDealerRatePolicy", method = RequestMethod.POST)
-    public CommonResponse saveOrUpdateDealerRatePolicy (@RequestBody DealerRatePolicySaveOrUpdateRequest dealerRatePolicySaveOrUpdateRequest) {
+    public CommonResponse saveOrUpdateDealerRatePolicy (@RequestBody DealerRatePolicySaveOrUpdateBossRequest dealerRatePolicySaveOrUpdateRequest) {
         List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(dealerRatePolicySaveOrUpdateRequest.getDealerId());
         List<DealerRatePolicy> dealerRatePolicyList = dealerRatePolicySaveOrUpdateRequest.getDealerRatePolicies();
         if(dealerRatePolicyList.size()<=0){
@@ -1190,7 +1190,6 @@ public class DealerController extends BaseController {
                 if(!(EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicyList.get(i).getPolicyType())){
                     dealerRatePolicyList.get(i).setDealerTradeRateT1(dealerRatePolicyList.get(i).getDealerTradeRateT1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-                    dealerRatePolicyService.update(dealerRatePolicyList.get(i));
                     dealerRatePolicyList.get(i).setMerchantMinRateT1(dealerRatePolicyList.get(i).getMerchantMinRateT1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
                     dealerRatePolicyList.get(i).setMerchantMaxRateT1(dealerRatePolicyList.get(i).getMerchantMaxRateT1().
@@ -1198,7 +1197,6 @@ public class DealerController extends BaseController {
 
                     dealerRatePolicyList.get(i).setDealerTradeRateD1(dealerRatePolicyList.get(i).getDealerTradeRateD1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-                    dealerRatePolicyService.update(dealerRatePolicyList.get(i));
                     dealerRatePolicyList.get(i).setMerchantMinRateD1(dealerRatePolicyList.get(i).getMerchantMinRateD1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
                     dealerRatePolicyList.get(i).setMerchantMaxRateD1(dealerRatePolicyList.get(i).getMerchantMaxRateD1().
@@ -1206,7 +1204,6 @@ public class DealerController extends BaseController {
 
                     dealerRatePolicyList.get(i).setDealerTradeRateD0(dealerRatePolicyList.get(i).getDealerTradeRateD0().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-                    dealerRatePolicyService.update(dealerRatePolicyList.get(i));
                     dealerRatePolicyList.get(i).setMerchantMinRateD0(dealerRatePolicyList.get(i).getMerchantMinRateD0().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
                     dealerRatePolicyList.get(i).setMerchantMaxRateD0(dealerRatePolicyList.get(i).getMerchantMaxRateD0().
@@ -1221,7 +1218,6 @@ public class DealerController extends BaseController {
                 if(!(EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicyList.get(i).getPolicyType())){
                     dealerRatePolicyList.get(i).setDealerTradeRateT1(dealerRatePolicyList.get(i).getDealerTradeRateT1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-                    dealerRatePolicyService.update(dealerRatePolicyList.get(i));
                     dealerRatePolicyList.get(i).setMerchantMinRateT1(dealerRatePolicyList.get(i).getMerchantMinRateT1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
                     dealerRatePolicyList.get(i).setMerchantMaxRateT1(dealerRatePolicyList.get(i).getMerchantMaxRateT1().
@@ -1229,7 +1225,6 @@ public class DealerController extends BaseController {
 
                     dealerRatePolicyList.get(i).setDealerTradeRateD1(dealerRatePolicyList.get(i).getDealerTradeRateD1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-                    dealerRatePolicyService.update(dealerRatePolicyList.get(i));
                     dealerRatePolicyList.get(i).setMerchantMinRateD1(dealerRatePolicyList.get(i).getMerchantMinRateD1().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
                     dealerRatePolicyList.get(i).setMerchantMaxRateD1(dealerRatePolicyList.get(i).getMerchantMaxRateD1().
@@ -1237,7 +1232,6 @@ public class DealerController extends BaseController {
 
                     dealerRatePolicyList.get(i).setDealerTradeRateD0(dealerRatePolicyList.get(i).getDealerTradeRateD0().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-                    dealerRatePolicyService.update(dealerRatePolicyList.get(i));
                     dealerRatePolicyList.get(i).setMerchantMinRateD0(dealerRatePolicyList.get(i).getMerchantMinRateD0().
                             divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
                     dealerRatePolicyList.get(i).setMerchantMaxRateD0(dealerRatePolicyList.get(i).getMerchantMaxRateD0().
