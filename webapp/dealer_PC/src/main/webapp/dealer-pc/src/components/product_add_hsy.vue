@@ -20,11 +20,12 @@
                 <el-table-column label="T1代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item style="margin:10px 0 20px 0">
+                      <el-form-item prop="row.dealerTradeRateT1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>二级代理商费率默认与一级代理商相同，不可修改</span>
-                          <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1*100 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>-->
-                          <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>-->
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>
                           <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateT1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -70,11 +71,12 @@
                 <el-table-column label="D1代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item style="margin:10px 0 20px 0">
+                      <el-form-item prop="row.dealerTradeRateD1" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>二级代理商费率默认与一级代理商相同，不可修改</span>
-                          <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1*100 | toFix}} <br> 最大值：不超过D1商户费率的最小值</span>-->
-                          <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}} <br> 最大值：不超过D1商户提现手续费的最小值</span>-->
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1 | toFix}} <br> 最大值：不超过D1商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}} <br> 最大值：不超过D1商户提现手续费的最小值</span>
                           <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -120,11 +122,12 @@
                 <el-table-column label="D0代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item style="margin:10px 0 20px 0">
+                      <el-form-item prop="row.dealerTradeRateD0" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>二级代理商费率默认与一级代理商相同，不可修改</span>
-                          <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0*100 | toFix}} <br> 最大值：不超过D0商户费率的最小值</span>-->
-                          <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}} <br> 最大值：不超过D0商户提现手续费的最小值</span>-->
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0 | toFix}} <br> 最大值：不超过D0商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}} <br> 最大值：不超过D0商户提现手续费的最小值</span>
                           <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD0">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
