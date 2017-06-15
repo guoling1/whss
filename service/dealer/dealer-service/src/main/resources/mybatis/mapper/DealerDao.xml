@@ -220,8 +220,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
         </where>
     </select>
@@ -274,8 +277,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             ORDER BY d.create_time DESC LIMIT #{offset},#{count}
         </where>
@@ -298,8 +304,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -356,8 +365,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -443,8 +455,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
         </where>
     </select>
@@ -497,8 +512,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             ORDER BY d.create_time DESC LIMIT #{offset},#{count}
         </where>
