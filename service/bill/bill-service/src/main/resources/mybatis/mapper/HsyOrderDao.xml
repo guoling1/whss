@@ -256,7 +256,7 @@
         <if test="startTime != null and endTime != null">
             AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         </if>
-        AND orderstatus in (2,6,7)
+        AND orderstatus in (2)
         AND pay_channel_sign IN
         <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
             #{item}
