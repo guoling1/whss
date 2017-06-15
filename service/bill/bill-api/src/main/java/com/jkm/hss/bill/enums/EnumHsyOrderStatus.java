@@ -17,7 +17,11 @@ public enum EnumHsyOrderStatus {
     REFUNDING(4,"退款中"),
     REFUND_PART(5,"部分退款"),
     REFUND_SUCCESS(6, "全部退款"),
-    REFUND_FAIL(7, "退款失败")
+    REFUND_FAIL(7, "退款失败"),
+    /**
+     * 已请求交易
+     */
+    HAVE_REQUESTED_TRADE(8, "已请求交易")
     ;
 
     @Getter

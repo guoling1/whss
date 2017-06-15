@@ -84,11 +84,12 @@ public class HSYOrderServiceImpl implements HSYOrderService {
      *
      * @param id
      * @param amount
+     * @param status
      */
     @Override
     @Transactional
-    public void updateAmount(final long id, final BigDecimal amount) {
-        this.hsyOrderDao.updateAmount(id, amount);
+    public void updateAmountAndStatus(final long id, final BigDecimal amount, final int status) {
+        this.hsyOrderDao.updateAmountAndStatus(id, amount, status);
     }
 
     /**

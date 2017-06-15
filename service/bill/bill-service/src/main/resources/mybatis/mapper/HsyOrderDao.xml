@@ -91,8 +91,8 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateAmount">
-        UPDATE tb_hsy_order SET amount = #{amount} WHERE id = #{id}
+    <update id="updateAmountAndStatus">
+        UPDATE tb_hsy_order SET amount = #{amount}, orderstatus = #{status} WHERE id = #{id}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">

@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service.impl;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
+import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumServiceType;
 import com.jkm.hss.bill.helper.PayParams;
 import com.jkm.hss.bill.helper.PayResponse;
@@ -14,8 +15,10 @@ import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -33,6 +36,27 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     private HSYOrderService hsyOrderService;
     @Autowired
     private TradeService tradeService;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param hsyOrder
+     * @param totalAmount
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public long isNeedCreateNewOrder(final HsyOrder hsyOrder, final String totalAmount) {
+        if (hsyOrder.isHaveRequestedTrade()) {
+            final HsyOrder newHsyOrder = new HsyOrder();
+            BeanUtils.copyProperties(hsyOrder, newHsyOrder);
+            newHsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+            newHsyOrder.setAmount(new BigDecimal(totalAmount));
+            this.hsyOrderService.insert(newHsyOrder);
+            return newHsyOrder.getId();
+        }
+        return 0;
+    }
 
     /**
      * {@inheritDoc}
