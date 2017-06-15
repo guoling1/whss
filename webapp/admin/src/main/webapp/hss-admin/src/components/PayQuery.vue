@@ -193,15 +193,15 @@
         addTotal: 0,
         url:'',
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
-         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'
+         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
-        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',*/
+        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',
       }
     },
     created: function () {
