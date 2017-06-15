@@ -5,6 +5,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
@@ -89,6 +90,14 @@ public class TradeQueryController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/amountCount",method = RequestMethod.POST)
     public CommonResponse amountCount(@RequestBody OrderTradeRequest req) throws ParseException {
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime() !=null && req.getEndTime()!=null && req.getStartTime()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            req.setBegin(begin);
+            req.setEnd(end);
+        }
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
         req.setDealerId(dealerId);
