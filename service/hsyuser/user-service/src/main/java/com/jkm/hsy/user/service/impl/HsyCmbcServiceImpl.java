@@ -336,7 +336,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId());
             resultMap.put("t0tradeRate",userTradeRateOptional.get().getTradeRateD0().toString());
             resultMap.put("t1tradeRate",userTradeRateOptional.get().getTradeRateT1().toString());
-            resultMap.put("category",getWxCategory(industryCode));
+            resultMap.put("category",getMsWxCategory(industryCode));
             resultMap.put("settleType","T1");
             resultMap.put("payWay","WXZF");
         }
@@ -352,7 +352,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId());
             resultMap.put("t0tradeRate",userTradeRateOptional.get().getTradeRateD0().toString());
             resultMap.put("t1tradeRate",userTradeRateOptional.get().getTradeRateT1().toString());
-            resultMap.put("category",getWxCategory(industryCode));
+            resultMap.put("category",getMsWxCategory(industryCode));
             resultMap.put("settleType","D0");
             resultMap.put("payWay","WXZF");
         }
@@ -421,6 +421,31 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         String category = "";
         if(industry==1000){
             category="90";
+        }else if(industry==1001){
+            category="205";
+        }else if(industry==1002){
+            category="311";
+        }else if(industry==1003){
+            category="207";
+        }else if(industry==1004){
+            category="294";
+        }else if(industry==1005){
+            category="54";
+        }else if(industry==1006){
+            category="280";
+        }
+        return category;
+    }
+    /**
+     * 民生微信经营类目
+     * @param industryCode
+     * @return
+     */
+    private String getMsWxCategory(String industryCode){
+        int industry = Integer.parseInt(industryCode);
+        String category = "";
+        if(industry==1000){
+            category="153";
         }else if(industry==1001){
             category="205";
         }else if(industry==1002){
