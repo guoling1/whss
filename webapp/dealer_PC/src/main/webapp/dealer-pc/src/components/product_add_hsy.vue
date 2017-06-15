@@ -207,14 +207,16 @@
       switch (query.type) {
         case 'open':
           this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
-            this.form.dealerRatePolicies = res.data;
+            console.log(res.data);
+//            this.form.dealerRatePolicies = res.data;
           }, err => {
             console.log(err);
           });
           break;
         case 'check':
           this.$http.get('/daili/dealer/dealerRatePolicyDetail/' + query.dealerId).then(res => {
-            this.form.dealerRatePolicies = res.data;
+            console.log(res.data);
+//            this.form.dealerRatePolicies = res.data;
           }, err => {
             console.log(err);
           });
