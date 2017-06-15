@@ -21,7 +21,7 @@
               </div>
               <div class="screen-item">
                 <span class="screen-title">日期</span>
-                <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" style="width: 220px" @change="datetimeSelect"></el-date-picker>
+                <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" style="width: 220px" :picker-options="pickerOptions"  @change="datetimeSelect"></el-date-picker>
               </div>
               <div class="screen-item">
                 <span class="screen-title"></span>
@@ -86,6 +86,11 @@
     name: 'achievement',
     data(){
       return {
+        pickerOptions: {
+          disabledDate: function (time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          },
+        },
         date: '',
         records: [],
         count: 0,
@@ -103,6 +108,7 @@
       }
     },
     created: function () {
+      this.currentDate();
       this.getData()
     },
     methods: {
@@ -114,6 +120,26 @@
           let format = val.split(' - ');
           this.query.startTime1 = format[0];
           this.query.endTime = format[1];
+        }
+      },
+      currentDate: function () {
+        let time = new Date();
+        time.setTime(time.getTime()-24*60*60*1000);
+        this.date = [time, time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.query.startTime1 = str;
+          } else {
+            this.query.endTime = str;
+          }
         }
       },
       getData: function () {
