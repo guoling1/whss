@@ -234,13 +234,13 @@
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
       openHsy: function (id, productId) {
-        this.$router.push({path: '/daili/app/product_add_hsy', query: {product: 'hsy', dealerId: id, productId: productId}});
+        this.$router.push({path: '/daili/app/product_add_hsy', query: {product: 'hsy', dealerId: id, productId: productId, type: 'open'}});
       },
       checkHss: function (id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
       checkHsy: function (id, productId) {
-        this.$router.push({path: '/daili/app/product_add_hsy', query: {product: 'hsy', dealerId: id, productId: productId}});
+        this.$router.push({path: '/daili/app/product_add_hsy', query: {product: 'hsy', dealerId: id, productId: productId, type: 'check'}});
       },
       handleSizeChange(val) {
         this.pageSize = val;
