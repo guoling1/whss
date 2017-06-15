@@ -53,7 +53,7 @@ public class DaiLiAchievementStatisticsController extends BaseController {
             begin = DateFormatUtil.parse(req.getStartTime1()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             req.setBegin(begin);
-            req.setBegin(end);
+            req.setEnd(end);
         }
 
         long dealerId = super.getDealerId();
