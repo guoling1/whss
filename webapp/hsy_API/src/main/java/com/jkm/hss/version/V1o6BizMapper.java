@@ -88,6 +88,8 @@ public class V1o6BizMapper {
         bizMapper.put("HSY001054", new String[]{"hsyMembershipService","updateMemshipCardsStatus"});
         /**修改会员卡*/
         bizMapper.put("HSY001055", new String[]{"hsyMembershipService","updateMemshipCard"});
+        /**更改协议查看状态*/
+        bizMapper.put("HSY001056", new String[]{"hsyUserService","updateProtocolSeenStatus"});
 
     }
 }

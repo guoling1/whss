@@ -101,6 +101,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setParentID(0L);
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
+        appAuUser.setIsProtocolSeen(0);
         hsyUserDao.insert(appAuUser);
         AppAuUser appAuUserUp=new AppAuUser();
         appAuUserUp.setId(appAuUser.getId());
@@ -1184,6 +1185,26 @@ public class HsyUserServiceImpl implements HsyUserService {
         shop.setStatus(appBizShop.getStatus());
         map.put("appBizShop",shop);
         return gson.toJson(map);
+    }
+
+    /**HSY001056 更改协议查看状态*/
+    public String updateProtocolSeenStatus(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"查询用户ID");
+        appAuUser.setIsProtocolSeen(1);
+        appAuUser.setUpdateTime(new Date());
+        hsyUserDao.updateByID(appAuUser);
+        return "";
     }
 
 }
