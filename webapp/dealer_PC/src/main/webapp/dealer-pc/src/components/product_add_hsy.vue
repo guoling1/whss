@@ -23,8 +23,8 @@
                       <el-form-item prop="row.changeArr.dealerTradeRateT1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateT1 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>-->
-                          <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>-->
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateT1 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>
                           <el-input slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.changeArr.dealerTradeRateT1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -204,10 +204,10 @@
       switch (query.type) {
         case 'open':
           this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
-            for (let i = 0; i < res.data.length; i++) {
-              res.data[i].role = res.data[i];
+            for (let i = 0; i < this.form.dealerRatePolicies.length; i++) {
+              this.form.dealerRatePolicies[i].fixedArr = res.data[i].fixedArr;
+              this.form.dealerRatePolicies[i].role = res.data[i];
             }
-            this.form.dealerRatePolicies = res.data;
           }, err => {
             console.log(err);
           });
@@ -215,7 +215,10 @@
         case 'check':
           this.$http.get('/daili/dealer/dealerRatePolicyDetail/' + query.dealerId).then(res => {
             for (let i = 0; i < res.data.length; i++) {
-              res.data[i].role = {};
+              res.data[i].role = {
+                changeArr: {},
+                fixedArr: {}
+              };
             }
             this.form.dealerRatePolicies = res.data;
             this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
@@ -253,22 +256,8 @@
                 merchantMaxRateD0: ''
               },
               role: {
-                id: 0,
-                sn: 3,
-                policyType: "withdraw",
-                changeArr: {
-                  dealerTradeRateT1: '',
-                  dealerTradeRateD1: '',
-                  dealerTradeRateD0: ''
-                },
-                fixedArr: {
-                  merchantMinRateT1: '',
-                  merchantMaxRateT1: '',
-                  merchantMinRateD1: '',
-                  merchantMaxRateD1: '',
-                  merchantMinRateD0: '',
-                  merchantMaxRateD0: ''
-                }
+                changeArr: {},
+                fixedArr: {}
               }
             }, {
               id: 0,
@@ -288,22 +277,8 @@
                 merchantMaxRateD0: ''
               },
               role: {
-                id: 0,
-                sn: 3,
-                policyType: "withdraw",
-                changeArr: {
-                  dealerTradeRateT1: '',
-                  dealerTradeRateD1: '',
-                  dealerTradeRateD0: ''
-                },
-                fixedArr: {
-                  merchantMinRateT1: '',
-                  merchantMaxRateT1: '',
-                  merchantMinRateD1: '',
-                  merchantMaxRateD1: '',
-                  merchantMinRateD0: '',
-                  merchantMaxRateD0: ''
-                }
+                changeArr: {},
+                fixedArr: {}
               }
             }, {
               id: 0,
@@ -323,22 +298,8 @@
                 merchantMaxRateD0: ''
               },
               role: {
-                id: 0,
-                sn: 3,
-                policyType: "withdraw",
-                changeArr: {
-                  dealerTradeRateT1: '',
-                  dealerTradeRateD1: '',
-                  dealerTradeRateD0: ''
-                },
-                fixedArr: {
-                  merchantMinRateT1: '',
-                  merchantMaxRateT1: '',
-                  merchantMinRateD1: '',
-                  merchantMaxRateD1: '',
-                  merchantMinRateD0: '',
-                  merchantMaxRateD0: ''
-                }
+                changeArr: {},
+                fixedArr: {}
               }
             }
           ]
