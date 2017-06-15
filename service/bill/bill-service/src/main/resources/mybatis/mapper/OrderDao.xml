@@ -2609,6 +2609,7 @@
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2627,6 +2628,7 @@
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2644,6 +2646,7 @@
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2675,6 +2678,7 @@
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2693,6 +2697,7 @@
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2710,6 +2715,7 @@
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2738,8 +2744,8 @@
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
-        AND b.`DEALERID` = #{dealerId}
         AND a.trade_amount> 5
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2757,8 +2763,8 @@
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
-        AND b.`DEALERID` = #{dealerId}
         AND a.trade_amount> 5
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
@@ -2775,7 +2781,8 @@
         LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
-        WHERE a.trade_type= 1 AND b.`DEALERID` = #{dealerId}
+        WHERE a.trade_type= 1
+        and a.`status` = 4
         AND a.app_id= "hsy"
         and a.create_time <![CDATA[ >= ]]>#{begin}
         and a.create_time <![CDATA[ <= ]]>#{end}
