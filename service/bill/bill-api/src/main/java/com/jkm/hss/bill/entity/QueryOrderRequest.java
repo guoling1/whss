@@ -18,6 +18,8 @@ public class QueryOrderRequest {
     private Date begin;//开始时间
     private Date end;//结束时间
 
+    private String createTime;
+
     /**
      * 支付方式
      */
