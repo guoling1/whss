@@ -4,6 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.AchievementStatisticsResponse;
 import com.jkm.hss.bill.entity.QueryOrderRequest;
 import com.jkm.hss.bill.service.OrderService;
@@ -24,7 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -47,17 +47,15 @@ public class DaiLiAchievementStatisticsController extends BaseController {
         final PageModel<AchievementStatisticsResponse> pageModel = new PageModel<AchievementStatisticsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String checkedTime = sdf.format(date);
-        req.setStartTime(checkedTime);
-        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
-            Date dt = sdf.parse(req.getEndTime());
-            Calendar rightNow = Calendar.getInstance();
-            rightNow.setTime(dt);
-            rightNow.add(Calendar.DATE, 1);
-            req.setEndTime(sdf.format(rightNow.getTime()));
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime1() !=null && req.getEndTime()!=null && req.getStartTime1()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime1()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            req.setBegin(begin);
+            req.setBegin(end);
         }
+
         long dealerId = super.getDealerId();
         req.setDealerId(dealerId);
         List<AchievementStatisticsResponse> list = this.orderService.getDaiLiAchievement(req);

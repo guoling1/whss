@@ -2,6 +2,7 @@ package com.jkm.hss.bill.entity;
 
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,6 +14,9 @@ public class QueryOrderRequest {
     private String realname;//报单员真实姓名
     private String username;//报单员登录
     private long dealerId;//代理商id
+
+    private Date begin;//开始时间
+    private Date end;//结束时间
 
     /**
      * 支付方式
