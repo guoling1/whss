@@ -253,7 +253,7 @@ public class DealerServiceImpl implements DealerService {
                 break;
         }
         //获取产品的信息, 产品通道的费率
-        final Optional<Product> productOptional = this.productService.selectById(appAuUser.getProductID());
+        final Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSY.getId());
         final  Product product = productOptional.get();
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (appAuUser.getDealerID() == 0){
@@ -1083,6 +1083,9 @@ public class DealerServiceImpl implements DealerService {
             case HE_LI_UNIONPAY:
                 //收手续费,进一位,保留两位有效数字
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                return waitMoney;
+            case XMMS_BANK:
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
                 return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);

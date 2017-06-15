@@ -608,6 +608,26 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/getProductRatePolicyDetail", method = RequestMethod.POST)
     public CommonResponse getProductRatePolicyDetail () {
         List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(super.getDealerId());
+        if(dealerRatePolicies.size()>0){
+            for(int i=0;i<dealerRatePolicies.size();i++){
+                if(!(EnumPolicyType.WITHDRAW).equals(dealerRatePolicies.get(i).getPolicyType())){
+                    dealerRatePolicies.get(i).setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMaxRateD1(dealerRatePolicies.get(i).getMerchantMaxRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMinRateD0(dealerRatePolicies.get(i).getMerchantMinRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMaxRateD0(dealerRatePolicies.get(i).getMerchantMaxRateD0().multiply(new BigDecimal("100")).setScale(2));
+                }else{
+                    dealerRatePolicies.get(i).setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMaxRateD1(dealerRatePolicies.get(i).getMerchantMaxRateD1().setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMinRateD0(dealerRatePolicies.get(i).getMerchantMinRateD0().setScale(2));
+                    dealerRatePolicies.get(i).setMerchantMaxRateD0(dealerRatePolicies.get(i).getMerchantMaxRateD0().setScale(2));
+                }
+
+            }
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerRatePolicies);
     }
     /**
