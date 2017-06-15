@@ -26,12 +26,13 @@ public interface HSYOrderService {
     int update(HsyOrder hsyOrder);
 
     /**
-     * 更新订单金额
+     * 更新订单金额和状态
      *
      * @param id
      * @param amount
+     * @param status
      */
-    void updateAmount(long id, BigDecimal amount);
+    void updateAmountAndStatus(long id, BigDecimal amount, int status);
 
     /**
      * 按id查询

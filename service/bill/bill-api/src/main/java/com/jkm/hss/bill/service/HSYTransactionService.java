@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.service;
 
+import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.helper.CallbackResponse;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;

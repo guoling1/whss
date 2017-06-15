@@ -110,12 +110,22 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     public Triple<Integer, String, String> placeOrder(final String totalAmount, final long hsyOrderId) {
         log.info("订单[{}]发起支付请求，金额[{}]", hsyOrderId, totalAmount);
         final HsyOrder hsyOrder = this.hsyOrderService.getByIdWithLock(hsyOrderId).get();
-        if (hsyOrder.isPendingPay()) {
-            final BigDecimal amount = new BigDecimal(totalAmount);
-            this.hsyOrderService.updateAmount(hsyOrderId, amount);
-            return this.baseHSYTransactionService.placeOrderImpl(hsyOrder, amount);
+        final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder, totalAmount);
+        //说明已经请求过交易，用新订单再次请求
+        if (newOrderId > 0) {
+            final HsyOrder newOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
+            if (newOrder.isPendingPay()) {
+                return this.baseHSYTransactionService.placeOrderImpl(newOrder, new BigDecimal(totalAmount));
+            }
+        } else {
+            //说明第一次请求交易
+            if (hsyOrder.isPendingPay()) {
+                final BigDecimal amount = new BigDecimal(totalAmount);
+                this.hsyOrderService.updateAmountAndStatus(hsyOrderId, amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+                return this.baseHSYTransactionService.placeOrderImpl(hsyOrder, amount);
+            }
         }
-        return Triple.of(-1, "订单状态异常", "");
+        return Triple.of(-1, "订单异常", "");
     }
 
     /**
@@ -127,9 +137,9 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     @Transactional
     public void handlePayCallbackMsg(final CallbackResponse callbackResponse) {
         final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(callbackResponse.getTradeOrderNo()).get();
-        if (hsyOrder.isPendingPay()) {
+        if (hsyOrder.isPendingPay() || hsyOrder.isHaveRequestedTrade()) {
             final HsyOrder hsyOrder1 = this.hsyOrderService.getByIdWithLock(hsyOrder.getId()).get();
-            if (hsyOrder1.isPendingPay()) {
+            if (hsyOrder1.isPendingPay() || hsyOrder.isHaveRequestedTrade()) {
                 final EnumBasicStatus status = EnumBasicStatus.of(callbackResponse.getCode());
                 final HsyOrder updateOrder = new HsyOrder();
                 switch (status) {

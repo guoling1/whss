@@ -28,12 +28,12 @@ public interface HsyOrderDao {
     int update(HsyOrder hsyOrder);
 
     /**
-     * 更新订单金额
+     * 更新订单金额和状态
      *
      * @param id
      * @param amount
      */
-    void updateAmount(@Param("id") long id, @Param("amount") BigDecimal amount);
+    void updateAmountAndStatus(@Param("id") long id, @Param("amount") BigDecimal amount, @Param("status") int status);
 
     /**
      * 根据交易号查找订单

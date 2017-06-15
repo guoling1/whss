@@ -88,7 +88,7 @@ public class TradeController extends BaseController {
                     .addParam("subMerName", resultPair.getRight())
                     .addParam("amount", payRequest.getTotalFee()).build();
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
+        return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
     }
 
 

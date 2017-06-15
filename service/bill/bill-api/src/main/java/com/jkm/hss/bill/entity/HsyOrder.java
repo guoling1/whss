@@ -131,5 +131,14 @@ public class HsyOrder extends BaseEntity {
         return EnumHsyOrderStatus.DUE_PAY.getId() == this.orderstatus;
     }
 
+    /**
+     * 是否已经请求过交易
+     *
+     * @return
+     */
+    public boolean isHaveRequestedTrade() {
+        return EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId() == this.orderstatus;
+    }
+
 
 }
