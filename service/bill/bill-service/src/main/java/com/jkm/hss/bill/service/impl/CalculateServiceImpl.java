@@ -260,6 +260,9 @@ public class CalculateServiceImpl implements CalculateService {
                 //收手续费,进一位,保留两位有效数字
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;
+            case XMMS_BANK:
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
+                return  waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;
