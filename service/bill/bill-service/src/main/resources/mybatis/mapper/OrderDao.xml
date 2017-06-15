@@ -2725,7 +2725,7 @@
 
     <!-- 导出代理业务业绩统计 -->
     <select id="downloadeDaiLi" resultType="com.jkm.hss.bill.entity.AchievementStatisticsResponse">
-        select tradeCount,x.realname,x.username,x.createTime,x.dealerID,vaildTradeUserCount,tradeTotalCount,tradeTotalAmount from (select count(1) tradeCount,`REALNAME`,username,CONCAT(#{startTime1}," ~ ",#{endTime}) createTime ,ID,dealerID from (SELECT a.`trade_amount`,
+        select tradeCount,x.realname,x.username,x.createTimes,x.dealerID,vaildTradeUserCount,tradeTotalCount,tradeTotalAmount from (select count(1) tradeCount,`REALNAME`,username,CONCAT(#{startTime1}," ~ ",#{endTime}) createTimes ,ID,dealerID from (SELECT a.`trade_amount`,
         DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
         d.`id`,
         d.`username`,
