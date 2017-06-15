@@ -23,6 +23,10 @@
     <div class="text">付款成功</div>
   </div>
   <div class="group">
+    <div class="left">确认码</div>
+    <div class="right">${code}</div>
+  </div>
+  <div class="group">
     <div class="left">交易流水号</div>
     <div class="right">${sn}</div>
   </div>
