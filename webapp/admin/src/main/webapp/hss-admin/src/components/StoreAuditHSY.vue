@@ -803,10 +803,12 @@
         this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'wechat'})
           .then(res =>{
             this.wxchannel = res.data;
+            this.channelForm.wechatChannelTypeSign = res.data[0].channelTypeSign
           })
         this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'alipay'})
           .then(res =>{
             this.alichannel = res.data;
+            this.channelForm.alipayChannelTypeSign = res.data[0].channelTypeSign
           })
       },
       submitWxChannel: function () {
