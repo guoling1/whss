@@ -110,20 +110,16 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     public Triple<Integer, String, String> placeOrder(final String totalAmount, final long hsyOrderId) {
         log.info("订单[{}]发起支付请求，金额[{}]", hsyOrderId, totalAmount);
         final HsyOrder hsyOrder = this.hsyOrderService.getByIdWithLock(hsyOrderId).get();
-        final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder, totalAmount);
+        final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder);
+        HsyOrder tradeHsyOrder = hsyOrder;
         //说明已经请求过交易，用新订单再次请求
         if (newOrderId > 0) {
-            final HsyOrder newOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
-            if (newOrder.isPendingPay()) {
-                return this.baseHSYTransactionService.placeOrderImpl(newOrder, new BigDecimal(totalAmount));
-            }
-        } else {
-            //说明第一次请求交易
-            if (hsyOrder.isPendingPay()) {
-                final BigDecimal amount = new BigDecimal(totalAmount);
-                this.hsyOrderService.updateAmountAndStatus(hsyOrderId, amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
-                return this.baseHSYTransactionService.placeOrderImpl(hsyOrder, amount);
-            }
+            tradeHsyOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
+        }
+        if (tradeHsyOrder.isPendingPay()) {
+            final BigDecimal amount = new BigDecimal(totalAmount);
+            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+            return this.baseHSYTransactionService.placeOrderImpl(tradeHsyOrder, amount);
         }
         return Triple.of(-1, "订单异常", "");
     }

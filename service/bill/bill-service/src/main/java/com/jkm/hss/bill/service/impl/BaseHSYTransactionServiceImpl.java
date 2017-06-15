@@ -41,17 +41,15 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
      * {@inheritDoc}
      *
      * @param hsyOrder
-     * @param totalAmount
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public long isNeedCreateNewOrder(final HsyOrder hsyOrder, final String totalAmount) {
+    public long isNeedCreateNewOrder(final HsyOrder hsyOrder) {
         if (hsyOrder.isHaveRequestedTrade()) {
             final HsyOrder newHsyOrder = new HsyOrder();
             BeanUtils.copyProperties(hsyOrder, newHsyOrder);
             newHsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
-            newHsyOrder.setAmount(new BigDecimal(totalAmount));
             this.hsyOrderService.insert(newHsyOrder);
             return newHsyOrder.getId();
         }

@@ -15,10 +15,9 @@ public interface BaseHSYTransactionService {
      * 是否需要重新生成订单(如果已经发送过交易请求，则重新生成)
      *
      * @param hsyOrder
-     * @param totalAmount
      * @return
      */
-    long isNeedCreateNewOrder(HsyOrder hsyOrder, String totalAmount);
+    long isNeedCreateNewOrder(HsyOrder hsyOrder);
 
 
     /**
