@@ -20,14 +20,13 @@
                 <el-table-column label="T1代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.dealerTradeRateT1" style="margin:10px 0 20px 0"
+                      <el-form-item prop="row.changeArr.dealerTradeRateT1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>二级代理商费率默认与一级代理商相同，不可修改</span>
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>
-                          <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.dealerTradeRateT1">
+                          <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateT1 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>-->
+                          <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>-->
+                          <el-input slot="reference" size="small" placeholder="必填"
+                                    v-model="scope.row.changeArr.dealerTradeRateT1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
@@ -45,7 +44,7 @@
                           <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateT1*100 | toFix}} 并且 大于等于T1代理商的费率</span>-->
                           <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateT1}} 并且 大于等于T1代理商的提现手续费</span>-->
                           <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMinRateT1">
+                                    v-model="scope.row.fixedArr.merchantMinRateT1">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -58,7 +57,7 @@
                           <!--<span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1*100 | toFix}} 并且 大于等于最小值</span>-->
                           <!--<span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1}} 并且 大于等于最小值</span>-->
                           <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMaxRateT1">
+                                    v-model="scope.row.fixedArr.merchantMaxRateT1">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -71,14 +70,13 @@
                 <el-table-column label="D1代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.dealerTradeRateD1" style="margin:10px 0 20px 0"
+                      <el-form-item prop="row.changeArr.dealerTradeRateD1" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>二级代理商费率默认与一级代理商相同，不可修改</span>
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1 | toFix}} <br> 最大值：不超过D1商户费率的最小值</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}} <br> 最大值：不超过D1商户提现手续费的最小值</span>
-                          <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.dealerTradeRateD1">
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateD1 | toFix}} <br> 最大值：不超过D1商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateD1}} <br> 最大值：不超过D1商户提现手续费的最小值</span>
+                          <el-input slot="reference" size="small" placeholder="必填"
+                                    v-model="scope.row.changeArr.dealerTradeRateD1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
@@ -96,7 +94,7 @@
                           <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD1*100 | toFix}} 并且 大于等于D1代理商的费率</span>-->
                           <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD1}} 并且 大于等于D1代理商的提现手续费</span>-->
                           <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMinRateD1">
+                                    v-model="scope.row.fixedArr.merchantMinRateD1">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -109,7 +107,7 @@
                           <!--<span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1*100 | toFix}} 并且 大于等于最小值</span>-->
                           <!--<span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1}} 并且 大于等于最小值</span>-->
                           <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMaxRateD1">
+                                    v-model="scope.row.fixedArr.merchantMaxRateD1">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -122,14 +120,13 @@
                 <el-table-column label="D0代理商结算价" width="160px">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
-                      <el-form-item prop="row.dealerTradeRateD0" style="margin:10px 0 20px 0"
+                      <el-form-item prop="row.changeArr.dealerTradeRateD0" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'该输入框必填',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
-                          <span>二级代理商费率默认与一级代理商相同，不可修改</span>
-                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0 | toFix}} <br> 最大值：不超过D0商户费率的最小值</span>
-                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}} <br> 最大值：不超过D0商户提现手续费的最小值</span>
-                          <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.dealerTradeRateD0">
+                          <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateD0 | toFix}} <br> 最大值：不超过D0商户费率的最小值</span>
+                          <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.changeArr.dealerTradeRateD0}} <br> 最大值：不超过D0商户提现手续费的最小值</span>
+                          <el-input slot="reference" size="small" placeholder="必填"
+                                    v-model="scope.row.changeArr.dealerTradeRateD0">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
                           </el-input>
@@ -147,7 +144,7 @@
                           <!--<span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD0*100 | toFix}} 并且 大于等于D0代理商的费率</span>-->
                           <!--<span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD0}} 并且 大于等于D0代理商的提现手续费</span>-->
                           <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMinRateD0">
+                                    v-model="scope.row.fixedArr.merchantMinRateD0">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -160,7 +157,7 @@
                           <!--<span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0*100 | toFix}} 并且 大于等于最小值</span>-->
                           <!--<span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0}} 并且 大于等于最小值</span>-->
                           <el-input readonly slot="reference" size="small" placeholder="必填"
-                                    v-model="scope.row.merchantMaxRateD0">
+                                    v-model="scope.row.fixedArr.merchantMaxRateD0">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -207,16 +204,25 @@
       switch (query.type) {
         case 'open':
           this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
-            console.log(res.data);
-//            this.form.dealerRatePolicies = res.data;
+            for (let i = 0; i < res.data.length; i++) {
+              res.data[i].role = res.data[i];
+            }
+            this.form.dealerRatePolicies = res.data;
           }, err => {
             console.log(err);
           });
           break;
         case 'check':
           this.$http.get('/daili/dealer/dealerRatePolicyDetail/' + query.dealerId).then(res => {
-            console.log(res.data);
-//            this.form.dealerRatePolicies = res.data;
+            for (let i = 0; i < res.data.length; i++) {
+              res.data[i].role = {};
+            }
+            this.form.dealerRatePolicies = res.data;
+            this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
+              for (let i = 0; i < res.data.length; i++) {
+                this.form.dealerRatePolicies[i].role = res.data[i];
+              }
+            });
           }, err => {
             console.log(err);
           });
@@ -233,41 +239,107 @@
               id: 0,
               sn: 1,
               policyType: "wechat",
-              dealerTradeRateT1: '',
-              merchantMinRateT1: '',
-              merchantMaxRateT1: '',
-              dealerTradeRateD1: '',
-              merchantMinRateD1: '',
-              merchantMaxRateD1: '',
-              dealerTradeRateD0: '',
-              merchantMinRateD0: '',
-              merchantMaxRateD0: ''
+              changeArr: {
+                dealerTradeRateT1: '',
+                dealerTradeRateD1: '',
+                dealerTradeRateD0: ''
+              },
+              fixedArr: {
+                merchantMinRateT1: '',
+                merchantMaxRateT1: '',
+                merchantMinRateD1: '',
+                merchantMaxRateD1: '',
+                merchantMinRateD0: '',
+                merchantMaxRateD0: ''
+              },
+              role: {
+                id: 0,
+                sn: 3,
+                policyType: "withdraw",
+                changeArr: {
+                  dealerTradeRateT1: '',
+                  dealerTradeRateD1: '',
+                  dealerTradeRateD0: ''
+                },
+                fixedArr: {
+                  merchantMinRateT1: '',
+                  merchantMaxRateT1: '',
+                  merchantMinRateD1: '',
+                  merchantMaxRateD1: '',
+                  merchantMinRateD0: '',
+                  merchantMaxRateD0: ''
+                }
+              }
             }, {
               id: 0,
               sn: 2,
               policyType: "alipay",
-              dealerTradeRateT1: '',
-              merchantMinRateT1: '',
-              merchantMaxRateT1: '',
-              dealerTradeRateD1: '',
-              merchantMinRateD1: '',
-              merchantMaxRateD1: '',
-              dealerTradeRateD0: '',
-              merchantMinRateD0: '',
-              merchantMaxRateD0: ''
+              changeArr: {
+                dealerTradeRateT1: '',
+                dealerTradeRateD1: '',
+                dealerTradeRateD0: ''
+              },
+              fixedArr: {
+                merchantMinRateT1: '',
+                merchantMaxRateT1: '',
+                merchantMinRateD1: '',
+                merchantMaxRateD1: '',
+                merchantMinRateD0: '',
+                merchantMaxRateD0: ''
+              },
+              role: {
+                id: 0,
+                sn: 3,
+                policyType: "withdraw",
+                changeArr: {
+                  dealerTradeRateT1: '',
+                  dealerTradeRateD1: '',
+                  dealerTradeRateD0: ''
+                },
+                fixedArr: {
+                  merchantMinRateT1: '',
+                  merchantMaxRateT1: '',
+                  merchantMinRateD1: '',
+                  merchantMaxRateD1: '',
+                  merchantMinRateD0: '',
+                  merchantMaxRateD0: ''
+                }
+              }
             }, {
               id: 0,
               sn: 3,
               policyType: "withdraw",
-              dealerTradeRateT1: '',
-              merchantMinRateT1: '',
-              merchantMaxRateT1: '',
-              dealerTradeRateD1: '',
-              merchantMinRateD1: '',
-              merchantMaxRateD1: '',
-              dealerTradeRateD0: '',
-              merchantMinRateD0: '',
-              merchantMaxRateD0: ''
+              changeArr: {
+                dealerTradeRateT1: '',
+                dealerTradeRateD1: '',
+                dealerTradeRateD0: ''
+              },
+              fixedArr: {
+                merchantMinRateT1: '',
+                merchantMaxRateT1: '',
+                merchantMinRateD1: '',
+                merchantMaxRateD1: '',
+                merchantMinRateD0: '',
+                merchantMaxRateD0: ''
+              },
+              role: {
+                id: 0,
+                sn: 3,
+                policyType: "withdraw",
+                changeArr: {
+                  dealerTradeRateT1: '',
+                  dealerTradeRateD1: '',
+                  dealerTradeRateD0: ''
+                },
+                fixedArr: {
+                  merchantMinRateT1: '',
+                  merchantMaxRateT1: '',
+                  merchantMinRateD1: '',
+                  merchantMaxRateD1: '',
+                  merchantMinRateD0: '',
+                  merchantMaxRateD0: ''
+                }
+              }
             }
           ]
         }
@@ -290,7 +362,7 @@
         let valid = true;
         let validMsg = '';
         for (let m = 0; m < this.form.dealerRatePolicies.length; m++) {
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].dealerTradeRateT1))) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].changeArr.dealerTradeRateT1))) {
             valid = false;
             switch (this.form.dealerRatePolicies[m].policyType) {
               case 'wechat':
@@ -305,37 +377,7 @@
             }
             break;
           }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMinRateT1))) {
-            valid = false;
-            switch (this.form.dealerRatePolicies[m].policyType) {
-              case 'wechat':
-                validMsg = '微信 T1商户费率 最小值 未设置';
-                break;
-              case 'alipay':
-                validMsg = '支付宝 T1商户费率 最小值 未设置';
-                break;
-              case 'withdraw':
-                validMsg = '提现手续费 T1商户费率 最小值 未设置';
-                break;
-            }
-            break;
-          }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMaxRateT1))) {
-            valid = false;
-            switch (this.form.dealerRatePolicies[m].policyType) {
-              case 'wechat':
-                validMsg = '微信 T1商户费率 最大值 未设置';
-                break;
-              case 'alipay':
-                validMsg = '支付宝 T1商户费率 最大值 未设置';
-                break;
-              case 'withdraw':
-                validMsg = '提现手续费 T1商户费率 最大值 未设置';
-                break;
-            }
-            break;
-          }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].dealerTradeRateD1))) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].changeArr.dealerTradeRateD1))) {
             valid = false;
             switch (this.form.dealerRatePolicies[m].policyType) {
               case 'wechat':
@@ -350,37 +392,7 @@
             }
             break;
           }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMinRateD1))) {
-            valid = false;
-            switch (this.form.dealerRatePolicies[m].policyType) {
-              case 'wechat':
-                validMsg = '微信 D1商户费率 最小值 未设置';
-                break;
-              case 'alipay':
-                validMsg = '支付宝 D1商户费率 最小值 未设置';
-                break;
-              case 'withdraw':
-                validMsg = '提现手续费 D1商户费率 最小值 未设置';
-                break;
-            }
-            break;
-          }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMaxRateD1))) {
-            valid = false;
-            switch (this.form.dealerRatePolicies[m].policyType) {
-              case 'wechat':
-                validMsg = '微信 D1商户费率 最大值 未设置';
-                break;
-              case 'alipay':
-                validMsg = '支付宝 D1商户费率 最大值 未设置';
-                break;
-              case 'withdraw':
-                validMsg = '提现手续费 D1商户费率 最大值 未设置';
-                break;
-            }
-            break;
-          }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].dealerTradeRateD0))) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].changeArr.dealerTradeRateD0))) {
             valid = false;
             switch (this.form.dealerRatePolicies[m].policyType) {
               case 'wechat':
@@ -391,36 +403,6 @@
                 break;
               case 'withdraw':
                 validMsg = '提现手续费 D0代理商结算价 未设置';
-                break;
-            }
-            break;
-          }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMinRateD0))) {
-            valid = false;
-            switch (this.form.dealerRatePolicies[m].policyType) {
-              case 'wechat':
-                validMsg = '微信 D0商户费率 最小值 未设置';
-                break;
-              case 'alipay':
-                validMsg = '支付宝 D0商户费率 最小值 未设置';
-                break;
-              case 'withdraw':
-                validMsg = '提现手续费 D0商户费率 最小值 未设置';
-                break;
-            }
-            break;
-          }
-          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.form.dealerRatePolicies[m].merchantMaxRateD0))) {
-            valid = false;
-            switch (this.form.dealerRatePolicies[m].policyType) {
-              case 'wechat':
-                validMsg = '微信 D0商户费率 最大值 未设置';
-                break;
-              case 'alipay':
-                validMsg = '支付宝 D0商户费率 最大值 未设置';
-                break;
-              case 'withdraw':
-                validMsg = '提现手续费 D0商户费率 最大值 未设置';
                 break;
             }
             break;
