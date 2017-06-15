@@ -610,7 +610,7 @@ public class DealerController extends BaseController {
         List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(super.getDealerId());
         if(dealerRatePolicies.size()>0){
             for(int i=0;i<dealerRatePolicies.size();i++){
-                if(!(EnumPolicyType.WITHDRAW).equals(dealerRatePolicies.get(i).getPolicyType())){
+                if(!(EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicies.get(i).getPolicyType())){
                     dealerRatePolicies.get(i).setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().multiply(new BigDecimal("100")).setScale(2));
                     dealerRatePolicies.get(i).setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().multiply(new BigDecimal("100")).setScale(2));
                     dealerRatePolicies.get(i).setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().multiply(new BigDecimal("100")).setScale(2));
