@@ -1660,12 +1660,13 @@ public class OrderServiceImpl implements OrderService {
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getUsername());
                 columns.add(list.get(i).getRealname());
-                if (!"".equals(list.get(i).getCreateTime())&&list.get(i).getCreateTime()!=null){
-                    String checkedTime = sdf.format(date);
-                    columns.add(checkedTime);
-                }else {
-                    columns.add("--");
-                }
+//                if (!"".equals(list.get(i).getCreateTime())&&list.get(i).getCreateTime()!=null){
+//                    String checkedTime = sdf.format(date);
+//                    columns.add(checkedTime);
+//                }else {
+//                    columns.add("--");
+//                }
+                columns.add(req.getCreateTime());
                 columns.add(list.get(i).getVaildTradeUserCount());
                 columns.add(list.get(i).getTradeCount());
                 columns.add(list.get(i).getTradeTotalCount());
