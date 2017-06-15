@@ -117,7 +117,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         placeOrderRequest.setPayerName(placeOrderParams.getRealName());
         placeOrderRequest.setIdCardNo(placeOrderParams.getIdCard());
         try {
-            final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
+            final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
             return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
         } catch (final Throwable e){
             log.error("业务方[{}]-订单[{}]，下单失败-请求网关下单异常", order.getAppId(), order.getId());
@@ -683,7 +683,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                 //请求网关
                 PaymentSdkDaiFuResponse response;
                 try {
-                    final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
+                    final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_WITHDRAW,
                             SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
                     log.info("结算单[" + settlementRecord.getSettleNo() + "],  返回结果[{}]", content);
                     response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
