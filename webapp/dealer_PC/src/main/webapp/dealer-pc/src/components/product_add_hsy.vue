@@ -25,7 +25,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1*100 | toFix}} <br> 最大值：不超过T1商户费率的最小值</span>
                           <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateT1}} <br> 最大值：不超过T1商户提现手费率的最小值</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateT1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -43,7 +43,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateT1*100 | toFix}} 并且 大于等于T1代理商的费率</span>
                           <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateT1}} 并且 大于等于T1代理商的提现手续费</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateT1">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -56,7 +56,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1*100 | toFix}} 并且 大于等于最小值</span>
                           <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateT1}} 并且 大于等于最小值</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateT1">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -75,7 +75,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1*100 | toFix}} <br> 最大值：不超过D1商户费率的最小值</span>
                           <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD1}} <br> 最大值：不超过D1商户提现手续费的最小值</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD1">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -93,7 +93,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD1*100 | toFix}} 并且 大于等于D1代理商的费率</span>
                           <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD1}} 并且 大于等于D1代理商的提现手续费</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateD1">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -106,7 +106,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1*100 | toFix}} 并且 大于等于最小值</span>
                           <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD1}} 并且 大于等于最小值</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateD1">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -125,7 +125,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0*100 | toFix}} <br> 最大值：不超过D0商户费率的最小值</span>
                           <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.dealerTradeRateD0}} <br> 最大值：不超过D0商户提现手续费的最小值</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.dealerTradeRateD0">
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
                             <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
@@ -143,7 +143,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最小值：{{scope.row.role.merchantMinRateD0*100 | toFix}} 并且 大于等于D0代理商的费率</span>
                           <span v-if="scope.row.policyType=='withdraw'">最小值：{{scope.row.role.merchantMinRateD0}} 并且 大于等于D0代理商的提现手续费</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMinRateD0">
                             <template slot="prepend">最小值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -156,7 +156,7 @@
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span v-if="scope.row.policyType!='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0*100 | toFix}} 并且 大于等于最小值</span>
                           <span v-if="scope.row.policyType=='withdraw'">最大值：{{scope.row.role.merchantMaxRateD0}} 并且 大于等于最小值</span>
-                          <el-input slot="reference" size="small" placeholder="必填"
+                          <el-input readonly slot="reference" size="small" placeholder="必填"
                                     v-model="scope.row.merchantMaxRateD0">
                             <template slot="prepend">最大值</template>
                             <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
@@ -201,21 +201,22 @@
     created(){
       let query = this.$route.query;
       this.form.dealerId = query.dealerId;
-      // 获取产品校验规则
-      this.$http.get('/daili/dealer/dealerRatePolicyDetail/' + query.dealerId).then(res => {
-        for (let i = 0; i < res.data.length; i++) {
-          res.data[i].role = {};
-        }
-        this.form.dealerRatePolicies = res.data;
-        this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
-          for (let i = 0; i < res.data.length; i++) {
-            this.form.dealerRatePolicies[i].role = res.data[i];
-          }
-          console.log(this.form);
-        });
-      }, err => {
-        console.log(err);
-      })
+      switch (query.type) {
+        case 'open':
+          this.$http.post('/daili/dealer/getProductRatePolicyDetail').then(res => {
+            this.form.dealerRatePolicies = res.data;
+          }, err => {
+            console.log(err);
+          });
+          break;
+        case 'check':
+          this.$http.get('/daili/dealer/dealerRatePolicyDetail/' + query.dealerId).then(res => {
+            this.form.dealerRatePolicies = res.data;
+          }, err => {
+            console.log(err);
+          })
+          break;
+      }
     },
     data() {
       return {
@@ -234,8 +235,7 @@
               merchantMaxRateD1: '',
               dealerTradeRateD0: '',
               merchantMinRateD0: '',
-              merchantMaxRateD0: '',
-              role: {}
+              merchantMaxRateD0: ''
             }, {
               id: 0,
               sn: 2,
@@ -248,8 +248,7 @@
               merchantMaxRateD1: '',
               dealerTradeRateD0: '',
               merchantMinRateD0: '',
-              merchantMaxRateD0: '',
-              role: {}
+              merchantMaxRateD0: ''
             }, {
               id: 0,
               sn: 3,
@@ -262,8 +261,7 @@
               merchantMaxRateD1: '',
               dealerTradeRateD0: '',
               merchantMinRateD0: '',
-              merchantMaxRateD0: '',
-              role: {}
+              merchantMaxRateD0: ''
             }
           ]
         }
