@@ -265,8 +265,11 @@
                   <el-radio :label="4">T1结算到账户余额</el-radio>
                 </el-radio-group>
               </td>
-              <th style="text-align: right"></th>
-              <td></td>
+              <th style="text-align: right">联行号:</th>
+              <td>
+                <input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.branchCode" readonly>
+                <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)">补填联行号</el-button>
+              </td>
               <th style="text-align: right"></th>
               <td></td>
             </tr>
@@ -326,6 +329,7 @@
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <!--<el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>-->
+        <el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>
         <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
@@ -364,37 +368,55 @@
               </el-table-column>
             </el-table>
           </template>
-          <!--<template>
-            <el-table :data="tableData" border style="width: 100%">
-              <el-table-column prop="name" label="通道名称" ></el-table-column>
-              <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
-              <el-table-column prop="time" label="结算时间" ></el-table-column>
-              <el-table-column prop="money" label="提现手续费" ></el-table-column>
-              <el-table-column prop="status" label="入网状态" >
-                <template scope="scope">
-                  <span v-if="scope.row.status==0">未入网</span>
-                  <span v-if="scope.row.status==1">成功</span>
-                  <span v-if="scope.row.status==2">失败</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
-              <el-table-column prop="product" label="产品开通状态">
-                <template scope="scope">
-                  <span v-if="scope.row.product==0">未开通</span>
-                  <span v-if="scope.row.product==1">成功</span>
-                  <span v-if="scope.row.product==2">失败</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="proMsg" label="产品开通信息" ></el-table-column>
-            </el-table>
-          </template>-->
         </div>
       </div>
+      <el-dialog title="选择支行" :visible.sync="isWad">
+        <el-form :model="form">
+          <el-form-item label="银行名称" label-width="120px">
+            {{$msg.cardBank}}
+          </el-form-item>
+          <el-form-item label="省" label-width="120px">
+            <el-select v-model="form.province" size="small" style="width:100%" placeholder="请选择"
+                       @change="province_select">
+              <el-option v-for="item in item_province"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="市" label-width="120px">
+            <el-select v-model="form.city" size="small" style="width:100%" placeholder="请选择"
+                       @change="city_select">
+              <el-option v-for="item in item_city"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete v-model="form.branchName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="联行号" label-width="120px">
+            <el-input v-model="form.branchCode" size="small" style="width: 100%" disabled></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="isWad = false">取 消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </div>
+      </el-dialog>
       <el-dialog title="重新入网" v-model="isReenter" size="tiny">
           <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
           <span slot="footer" class="dialog-footer">
             <el-button @click="isReenter = false">取 消</el-button>
             <el-button type="primary" @click="reenter" :disabled="reenterClick">确 定</el-button>
+          </span>
+      </el-dialog>
+      <el-dialog title="修改信息" v-model="isModify" size="tiny">
+        <p style="text-align: center;font-weight: 700">确认修改信息吗？？</p>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isModify = false">取 消</el-button>
+            <el-button type="primary" @click="modify" :disabled="modifyClick">确 定</el-button>
           </span>
       </el-dialog>
       <!--<el-dialog title="驳回重填" v-model="isReject" size="tiny">-->
@@ -554,10 +576,12 @@
         auditClick:false,
         isReenter:false,
         isReject:false,
+        isWad: false,
         reason:'',
         isShow:true,
         reenterClick:false,
         rejectClick:false,
+        modifyClick:false,
         res: [],
         tableData:[{
           name:'支付宝',
@@ -594,6 +618,14 @@
         isChannel: false,
         wxchannel:[],
         alichannel:[],
+        form:{
+          province:'',
+          provinceName:'',
+          city:'',
+          cityName:'',
+          branchName:'',
+          branchCode:''
+        },
         channelForm:{
           userId:'',
           wechatChannelTypeSign:'',
@@ -645,8 +677,122 @@
         $box[0].setCapture&&$box[0].setCapture();
         return false;
       })
+      this.$http.post('/admin/unionNumber/findAllProvinces').then(res => {
+        this.item_province = res.data;
+      })
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
+        });
     },
     methods: {
+      wad:function () {
+        this.form = {
+          province:'',
+          provinceName:'',
+          city:'',
+          cityName:'',
+          branchName:'',
+          branchCode:''
+        }
+        this.isWad = true;
+      },
+      submit: function () {
+        if(this.form.branchCode==""){
+          this.$message({
+            showClose: true,
+            message: '请匹配联行号',
+            type: 'error'
+          });
+        }else{
+          this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,branchName:this.form.branchName,districtCode:this.form.city})
+            .then(res=>{
+              this.$message({
+                showClose: true,
+                message: '补填成功',
+                type: 'success'
+              });
+              this.isWad = false;
+              this.getData()
+            })
+            .catch(err=>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
+      },
+      handleSelect(item) {
+        console.log(item);
+        this.form.branchCode = item.branchCode;
+      },
+      province_select: function (provinceCode) {
+        for (let m = 0; m < this.item_province.length; m++) {
+          if (this.item_province[m].code == provinceCode) {
+            this.form.belongProvinceName = this.item_province[m].aname;
+          }
+        }
+        if(this.form.belongProvinceName=="北京市"||this.form.belongProvinceName=="天津市"||this.form.belongProvinceName=="上海市"||this.form.belongProvinceName=="重庆市"){
+          this.item_city = [{
+            code:this.form.province,
+            aname:this.form.belongProvinceName
+          }]
+          this.form.city = this.item_city[0].code;
+          this.form.belongCityName = this.item_city[0].aname;
+        }else{
+          this.$http.post('/admin/unionNumber/findAllCities', {
+            code: provinceCode
+          }).then(res => {
+            this.item_city = res.data;
+            this.form.city = res.data[0].code;
+            this.form.belongCityName = res.data[0].aname;
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
+      },
+      city_select: function (cityCode) {
+        for (let n = 0; n < this.item_city.length; n++) {
+          if (this.item_city[n].code == cityCode) {
+            this.form.belongCityName = this.item_city[n].aname;
+          }
+        }
+      },
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results=[];
+        //查支行
+        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:this.form.city})
+          .then(res=>{
+            for(let i=0; i<res.data.length; i++){
+              res.data[i].value = res.data[i].branchName;
+            }
+            results = res.data;
+          })
+          //        this.$http.post('/admin/unionNumber/bankName',{bankName:queryString})
+          //          .then(res=>{
+          //          for(let i=0; i<res.data.length; i++){
+          //            res.data[i].value = res.data[i].bankName;
+          //          }
+          //          results = res.data;
+          //        })
+          .catch(err=>{
+
+          });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
       channelChange: function () {
         this.channelForm = {
           userId:'',
@@ -941,6 +1087,31 @@
           })
         })
       },
+      // 修改信息
+      modify:function () {
+        this.modifyClick = true;
+        this.$http.post('/admin/hsyMerchantAudit/modify', {
+          shopId: this.id,//店铺编码
+          userId: this.msg.uid,//商户编码
+        }).then(function (res) {
+          this.isModify = false;
+          this.modifyClick = false;
+          this.getData();
+          this.$message({
+            showClose: true,
+            message: '修改成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.isModify = false;
+          this.modifyClick = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
       audit: function (event) {
         this.auditClick = true;
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
@@ -949,6 +1120,7 @@
           name: this.msg.name,
           checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
+          branchCode: this.msg.branchCode
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'

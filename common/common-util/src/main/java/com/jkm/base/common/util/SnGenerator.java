@@ -49,7 +49,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generate() {
-        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(6);
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
 
@@ -60,7 +60,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generateReqSn() {
-        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(5);
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
     }
     /**
      * 生成交易订单号
@@ -69,7 +69,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generateSn(final int tradeType) {
-        return tradeType + "0" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(6);
+        return tradeType + "0" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generateRefundSn() {
-        return "40" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(6);
+        return "40" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
     /**
@@ -89,7 +89,7 @@ public final class SnGenerator {
      */
     public static String generate(final int length) {
         Preconditions.checkArgument(length > 17);
-        return "JKM" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") +
+        return "JKM" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") +
                 RandomStringUtils.randomNumeric(length - 17);
     }
 
@@ -102,7 +102,7 @@ public final class SnGenerator {
     public static String generate(final String prefix, final int length) {
         final int minLength = 17 + prefix.length();
         Preconditions.checkArgument(length > minLength);
-        return prefix + DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(length - minLength);
+        return prefix + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(length - minLength);
     }
 
     /**
@@ -112,6 +112,6 @@ public final class SnGenerator {
      * @return
      */
     public static String generateFusionReqSn() {
-        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(3);
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(3);
     }
 }
