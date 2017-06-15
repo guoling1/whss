@@ -8,6 +8,7 @@ import com.jkm.hss.bill.helper.PayParams;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.TradeService;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -55,6 +56,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
         payParams.setPayeeAccountId(shop.getAccountID());
         payParams.setGoodsName(hsyOrder.getGoodsname());
         payParams.setGoodsDescribe(hsyOrder.getGoodsdescribe());
+        payParams.setWxAppId(WxConstants.APP_HSY_ID);
         payParams.setMemberId(hsyOrder.getMemberId());
         payParams.setMerchantNo(hsyOrder.getMerchantNo());
         payParams.setMerchantName(hsyOrder.getMerchantname());

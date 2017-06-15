@@ -66,6 +66,10 @@ public class PayParams {
      */
     private String goodsDescribe;
     /**
+     * 微信appId
+     */
+    private String wxAppId;
+    /**
      * 会员id
      */
     private String memberId;

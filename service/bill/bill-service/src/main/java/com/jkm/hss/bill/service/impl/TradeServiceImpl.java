@@ -172,7 +172,7 @@ public class TradeServiceImpl implements TradeService {
                     .merchantNo(payParams.getMerchantNo())
                     .returnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId())
                     .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
-                    .wxAppId(payParams.getAppId())
+                    .wxAppId(payParams.getWxAppId())
                     .memberId(payParams.getMemberId())
                     .bankBranchCode(payParams.getBankBranchCode())
                     .bankCardNo(payParams.getBankCardNo())
