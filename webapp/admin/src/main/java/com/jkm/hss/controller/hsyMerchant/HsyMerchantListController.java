@@ -343,4 +343,11 @@ public class HsyMerchantListController extends BaseController {
         userCurrentChannelPolicyService.updateByUserId(userCurrentChannelPolicy);
         return CommonResponse.simpleResponse(1, "修改成功");
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/getSettlementCard",method = RequestMethod.POST)
+    public CommonResponse getSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+
+        return null;
+    }
 }
