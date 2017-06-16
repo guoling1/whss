@@ -817,7 +817,7 @@
         }else if(this.msg.isPublic==0){
           url='/admin/hsyMerchantList/getPersonalBankNameList';
         }
-        this.$http.post(url,{bankName:queryString})
+        this.$http.post(url,{bankName:queryString,cardNo:this.bankForm.cardNo})
           .then(res=>{
             for(let i=0; i<res.data.length; i++){
               res.data[i].value = res.data[i].bankName;
