@@ -143,10 +143,10 @@
     <select id="findAppAuTokenByClientid" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
         select
         ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
-        from app_au_token
-        where 1=1
-        <if test="clientid!=null and clientid!=''">and CLIENTID=#{clientid}</if>
-        order by UPDATETIME desc
+        from app_au_token token left join app_au_user_token ut on token.ID=ut.TID
+        where ut.status=1
+        <if test="clientid!=null and clientid!=''">and token.CLIENTID=#{clientid}</if>
+        order by token.UPDATETIME desc
     </select>
 
     <update id="updateAppAuUserTokenStatus" parameterType="java.lang.Long">
