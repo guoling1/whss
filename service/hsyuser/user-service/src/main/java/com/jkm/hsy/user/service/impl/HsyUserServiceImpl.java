@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service("hsyUserService")
@@ -69,6 +70,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
     @Autowired
     private HsyChannelDao hsyChannelDao;
+    @Autowired
+    private UserTradeRateDao userTradeRateDao;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -215,12 +218,6 @@ public class HsyUserServiceImpl implements HsyUserService {
             userCurrentChannelPolicyDao.insert(userCurrentChannelPolicy);
         }
 
-
-//        List<AppCmChannelProduct> channelProductList=hsyChannelDao.findAllProductHsyChannel();
-//        for(AppCmChannelProduct p:channelProductList){
-//
-//        }
-
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -365,6 +362,27 @@ public class HsyUserServiceImpl implements HsyUserService {
             }
             appBizCard.setBranchDistrictName(districtName);
         }
+        if(appBizCard.getBranchCode()==null)
+            appBizCard.setBranchCode("-1");
+        List<UserTradeRate> userTradeRateList=userTradeRateDao.selectAllByUserId(appAuUserFind.getId());
+        AppChannelRate appChannelRate=new AppChannelRate();
+        appChannelRate.setIsOpenD0(appAuUserFind.getIsOpenD0());
+        appChannelRate.setWithdrawAmount(new BigDecimal("0.01"));
+        if(userTradeRateList!=null&&userTradeRateList.size()!=0){
+            for(UserTradeRate userTradeRate:userTradeRateList){
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.ALIPAY.getId()))
+                {
+                    appChannelRate.setAlipayTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setAlipayIsOpen(userTradeRate.getIsOpen());
+                }
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.WECHAT.getId()))
+                {
+                    appChannelRate.setWechatTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setWechatIsOpen(userTradeRate.getIsOpen());
+                }
+            }
+        }
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -409,6 +427,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
+        map.put("appChannelRate",appChannelRate);
         return gson.toJson(map);
     }
     /**HSY001048 刷新用户登录*/
@@ -1098,6 +1117,28 @@ public class HsyUserServiceImpl implements HsyUserService {
             }
             appBizCard.setBranchDistrictName(districtName);
         }
+
+        if(appBizCard.getBranchCode()==null)
+            appBizCard.setBranchCode("-1");
+        List<UserTradeRate> userTradeRateList=userTradeRateDao.selectAllByUserId(appAuUser.getId());
+        AppChannelRate appChannelRate=new AppChannelRate();
+        appChannelRate.setIsOpenD0(appAuUserFind.getIsOpenD0());
+        appChannelRate.setWithdrawAmount(new BigDecimal("0.01"));
+        if(userTradeRateList!=null&&userTradeRateList.size()!=0){
+            for(UserTradeRate userTradeRate:userTradeRateList){
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.ALIPAY.getId()))
+                {
+                    appChannelRate.setAlipayTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setAlipayIsOpen(userTradeRate.getIsOpen());
+                }
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.WECHAT.getId()))
+                {
+                    appChannelRate.setWechatTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setWechatIsOpen(userTradeRate.getIsOpen());
+                }
+            }
+        }
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -1162,6 +1203,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
+        map.put("appChannelRate",appChannelRate);
         return gson.toJson(map);
     }
 

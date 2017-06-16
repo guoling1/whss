@@ -27,7 +27,7 @@
         select distinct
         user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
         (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
-        user.ISPROTOCOLSEEN,
+        user.ISPROTOCOLSEEN,user.ISOPEND0,
         user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
         (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
         (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,

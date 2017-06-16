@@ -34,6 +34,7 @@ public class AppAuUser {
     private Date createTime;
     private Date updateTime;
     private String contractID;//签约合同照id
+    private Integer isOpenD0;//是否开通D0
     private Integer isProtocolSeen;//协议是否同意 0否 1是
 
     //展示字段
