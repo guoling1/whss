@@ -60,6 +60,8 @@ public class HsyMerchantListController extends BaseController {
     private HsyCmbcDao hsyCmbcDao;
     @Autowired
     private HsyShopService hsyShopService;
+    @Autowired
+    private HsyCmbcService hsyCmbcService;
 
 
     @ResponseBody
@@ -319,6 +321,7 @@ public class HsyMerchantListController extends BaseController {
             }
 
         }
+        hsyCmbcService.merchantBaseInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId());
         return CommonResponse.simpleResponse(1, "修改成功");
     }
     /**
