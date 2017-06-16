@@ -78,6 +78,9 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private UserTradeRateService userTradeRateService;
 
+    @Autowired
+    private HsyMerchantAuditDao hsyMerchantAuditDao;
+
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -468,8 +471,7 @@ public class HsyMerchantAuditController extends BaseController {
 
 
 
-    @Autowired
-    private HsyMerchantAuditDao hsyMerchantAuditDao;
+
     /**
      *  修改入网信息
      * @param appUserAndShopRequest
