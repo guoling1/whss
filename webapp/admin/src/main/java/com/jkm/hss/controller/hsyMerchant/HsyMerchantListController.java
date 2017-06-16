@@ -58,6 +58,8 @@ public class HsyMerchantListController extends BaseController {
     private UserChannelPolicyService userChannelPolicyService;
     @Autowired
     private HsyCmbcDao hsyCmbcDao;
+    @Autowired
+    private HsyShopService hsyShopService;
 
 
     @ResponseBody
@@ -354,7 +356,24 @@ public class HsyMerchantListController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/getSettlementCard",method = RequestMethod.POST)
     public CommonResponse getSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        if (hsyMerchantAuditRequest.getIsPublic()==1){
 
-        return null;
+        }
+
+        if (hsyMerchantAuditRequest.getIsPublic()==0){
+
+        }
+
+        return CommonResponse.simpleResponse(1, "修改成功");
+    }
+
+    /**
+     * 查询开户行列表BOSS后台
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getBankNameList",method = RequestMethod.POST)
+    public CommonResponse getBankNameList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        List<AppBizBankBranch> list = this.hsyShopService.getBankNameList(hsyMerchantAuditRequest.getBankName());
+        return CommonResponse.objectResponse(1,"SUCCESS",list);
     }
 }

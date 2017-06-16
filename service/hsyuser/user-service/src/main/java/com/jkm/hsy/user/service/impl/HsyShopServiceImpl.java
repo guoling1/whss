@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -718,5 +717,11 @@ public class HsyShopServiceImpl implements HsyShopService {
             }
         }).create();
         return gson.toJson(pageAll);
+    }
+
+    @Override
+    public List<AppBizBankBranch> getBankNameList(String bankName) {
+        List<AppBizBankBranch> list = this.hsyShopDao.getBankNameList(bankName);
+        return list;
     }
 }
