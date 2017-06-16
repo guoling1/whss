@@ -55,7 +55,7 @@ public class ActiveController {
             this.writeJsonToRrsponse(result, response, pw,startTime,"");
             return;
         }
-        log.info(">>>>--"+appParam.getServiceCode()+"--start-->>>>业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
+        log.info(">>>>--"+appParam.getServiceCode()+"--start-->>>>业务代码为："+appParam.getServiceCode()+"--版本号为："+appParam.getV()+"--token为："+appParam.getAccessToken()+"--appType为："+appParam.getAppType());
         log.info("请求参数是："+appParam.getRequestData());
 
         Map<String,String[]> bizMapper= VersionMapper.versionMap.get(appParam.getV());
@@ -162,7 +162,7 @@ public class ActiveController {
             this.writeJsonToRrsponse(result, response, pw,startTime,"");
             return;
         }
-        log.info(">>>>--"+appParam.getServiceCode()+"--start-->>>>业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
+        log.info(">>>>--"+appParam.getServiceCode()+"--start-->>>>业务代码为："+appParam.getServiceCode()+"--版本号为："+appParam.getV()+"--token为："+appParam.getAccessToken()+"--appType为："+appParam.getAppType());
         log.info("请求参数是："+appParam.getRequestData());
 
         Map<String,String[]> bizMapper= VersionMapper.versionMap.get(appParam.getV());
