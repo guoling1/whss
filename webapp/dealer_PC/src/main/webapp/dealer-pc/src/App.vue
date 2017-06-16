@@ -36,9 +36,10 @@
     margin-left: 50px;
   }
 
-  .el-message-box__close el-icon-close {
+  .el-message-box__close.el-icon-close {
     display: none;
   }
+
 
   #app .col-xs-13 {
     width: 60%;
