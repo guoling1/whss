@@ -183,7 +183,9 @@ public class HsyMerchantAuditController extends BaseController {
         Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appUserAndShopRequest.getUserId(),EnumPayChannelSign.SYJ_WECHAT.getId());
         if(userChannelPolicyOptional.isPresent()){
             if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
-                if(userChannelPolicyOptional.get().getOpenProductStatus()==null||userChannelPolicyOptional.get().getNetStatus()!=EnumOpenProductStatus.PASS.getId()){
+                if(userChannelPolicyOptional.get().getOpenProductStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumOpenProductStatus.PASS.getId()){
+
+                }else{
                     CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
                     if(cmbcResponse1.getCode()==1){
                         UserChannelPolicy openProduct = new UserChannelPolicy();
@@ -492,12 +494,13 @@ public class HsyMerchantAuditController extends BaseController {
         paramsMap.put("fullName", appBizShop.getName());//商户全称
         paramsMap.put("shortName", appBizShop.getShortName());//商户简称
         paramsMap.put("servicePhone","4006226233");//客服电话
-        if(appBizShop.getLicenceNO()==null||"".equals(appBizShop.getLicenceNO())){
-            paramsMap.put("businessLicense","");//证据编号
-            paramsMap.put("businessLicenseType","");//证件类型
-        }else{
+        if(appBizShop.getLicenceNO()!=null&&"".equals(appBizShop.getLicenceNO())){
             paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
             paramsMap.put("businessLicenseType","NATIONAL_LEGAL");//证件类型
+
+        }else{
+            paramsMap.put("businessLicense","");//证据编号
+            paramsMap.put("businessLicenseType","");//证件类型
         }
 
 
