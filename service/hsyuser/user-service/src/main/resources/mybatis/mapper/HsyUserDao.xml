@@ -5,6 +5,7 @@
     <select id="findAppAuUserByParam" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select distinct
           user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+          user.ISPROTOCOLSEEN,user.ISOPEND0,
           (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
           user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
