@@ -3,6 +3,7 @@ package com.jkm.hss.controller.hsyMerchant;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.SmPost;
@@ -139,12 +140,32 @@ public class HsyMerchantAuditController extends BaseController {
                 .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
                 .build()
         );
+        if(!"".equals(hsyMerchantAuditRequest.getMobile())&&hsyMerchantAuditRequest.getMobile()!=null){
+            String mobile = hsyMerchantAuditRequest.getMobile();
+//            MerchantSupport.decryptMobile(mobile);
+//            AdminUserSupporter.decryptMobile(0, mobile);
+            String name = hsyMerchantAuditRequest.getName();
+            String shopName="："+name+"，";
+            Map map = new HashMap();
+            map.put("name",shopName);
+            //审核未通过给报单员发短信
+            this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(AdminUserSupporter.decryptMobile(0, mobile))
+                    .uid("")
+                    .data(map)
+                    .userType(EnumUserType.BACKGROUND_USER)
+                    .noticeType(EnumNoticeType.NOT_PASS_MESSAGE_EMPLOYEE)
+                    .build()
+            );
+        }
+
 
         hsyMerchantAuditRequest.setStat(1);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(1,"审核未通过");
 
     }
+
+
 
 
     /**

@@ -2,12 +2,16 @@ package com.jkm.hss.controller.active;
 
 import com.google.gson.Gson;
 import com.jkm.base.common.spring.core.SpringContextHolder;
+import com.jkm.hss.version.ExcludeServiceCode;
 import com.jkm.hss.version.VersionMapper;
+import com.jkm.hsy.user.entity.AppAuUserToken;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.entity.AppResult;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
+import com.jkm.hsy.user.service.HsyActiveService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +32,10 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/active")
 public class ActiveController {
+
+    @Autowired
+    private HsyActiveService hsyActiveService;
+
     @RequestMapping("rest")
     public void rest(@ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
         AppResult result=new AppResult();
@@ -62,6 +71,37 @@ public class ActiveController {
             this.writeJsonToRrsponse(result, response, pw);
             return;
         }
+
+        if(!appParam.getServiceCode().equals("HSY001016"))
+        {
+            if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().trim().equals("")))
+            {
+                result.setResultCode(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultCode);
+                result.setResultMessage(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultMessage);
+                this.writeJsonToRrsponse(result, response, pw);
+                return;
+            }
+
+            if(!isExcludeServiceCode(appParam.getServiceCode())) {
+                AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
+                if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
+                    result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
+                    result.setResultMessage(ResultCode.USER_NOT_LOGIN.resultMessage);
+                    this.writeJsonToRrsponse(result, response, pw);
+                    return;
+                } else {
+                    if (appAuUserToken.getOutTime().before(new Date())) {
+                        result.setResultCode(ResultCode.USER_LOGIN_OUTTIME.resultCode);
+                        result.setResultMessage(ResultCode.USER_LOGIN_OUTTIME.resultMessage);
+                        this.writeJsonToRrsponse(result, response, pw);
+                        return;
+                    }
+                }
+            }
+        }
+
+        log.info("业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
+        log.info("请求参数是："+appParam.getRequestData());
 
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
 //        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
@@ -138,6 +178,34 @@ public class ActiveController {
             return;
         }
 
+        if(!appParam.getServiceCode().equals("HSY001016"))
+        {
+            if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().trim().equals("")))
+            {
+                result.setResultCode(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultCode);
+                result.setResultMessage(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultMessage);
+                this.writeJsonToRrsponse(result, response, pw);
+                return;
+            }
+
+            if(!isExcludeServiceCode(appParam.getServiceCode())) {
+                AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
+                if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
+                    result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
+                    result.setResultMessage(ResultCode.USER_NOT_LOGIN.resultMessage);
+                    this.writeJsonToRrsponse(result, response, pw);
+                    return;
+                } else {
+                    if (appAuUserToken.getOutTime().before(new Date())) {
+                        result.setResultCode(ResultCode.USER_LOGIN_OUTTIME.resultCode);
+                        result.setResultMessage(ResultCode.USER_LOGIN_OUTTIME.resultMessage);
+                        this.writeJsonToRrsponse(result, response, pw);
+                        return;
+                    }
+                }
+            }
+        }
+
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
 //        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
         Object obj=ac.getBean(strs[0]);
@@ -192,6 +260,15 @@ public class ActiveController {
             return true;
         if(!(appParam.getAppType().equals("ios")||appParam.getAppType().equals("android")))
             return true;
+        return false;
+    }
+
+    public boolean isExcludeServiceCode(String serviceCode){
+        for(int i=0; i<ExcludeServiceCode.excludeCode.length;i++)
+        {
+            if(serviceCode.equals(ExcludeServiceCode.excludeCode[i]))
+                return true;
+        }
         return false;
     }
 

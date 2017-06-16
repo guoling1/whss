@@ -17,11 +17,12 @@ public class AppPolicyMembershipCard {
     private BigDecimal depositAmount;//开卡储值金额
     private Integer isPresentedViaActivate;//是否开卡赠送0否 1是
     private BigDecimal presentAmount;//赠送金额
+    private Integer canRecharge;//是否继续充值 0否 1是
     private Integer isPresentedViaRecharge;//是否充值赠送0否 1是
     private BigDecimal rechargeLimitAmount;//单笔充值限额
     private BigDecimal rechargePresentAmount;//单笔充值赠送金额
     private Integer weight;//权重
-    private Integer status;//状态1正常
+    private Integer status;//状态1正常2停办
     private Date createTime;
     private Date updateTime;
 
@@ -161,5 +162,13 @@ public class AppPolicyMembershipCard {
 
     public void setSids(String sids) {
         this.sids = sids;
+    }
+
+    public Integer getCanRecharge() {
+        return canRecharge;
+    }
+
+    public void setCanRecharge(Integer canRecharge) {
+        this.canRecharge = canRecharge;
     }
 }

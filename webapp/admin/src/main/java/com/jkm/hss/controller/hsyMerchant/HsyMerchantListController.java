@@ -213,12 +213,13 @@ public class HsyMerchantListController extends BaseController {
     @RequestMapping(value = "/changeMobile",method = RequestMethod.POST)
     public CommonResponse changeMobile(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         HsyMerchantAuditResponse req = this.hsyMerchantAuditService.getCellphon(hsyMerchantAuditRequest.getId());
-        if (req.getChangePhone()==null) {
-            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
-        }else {
-            this.hsyMerchantAuditService.updatePhone(req.getChangePhone(),req.getUid());
-            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
-        }
+//        if (req.getChangePhone()==null) {
+//            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+//        }else {
+//            this.hsyMerchantAuditService.updatePhone(req.getChangePhone(),req.getUid());
+//            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+//        }
+        this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
         return CommonResponse.simpleResponse(1, "更改成功");
 
     }

@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
@@ -116,6 +117,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setParentID(0L);
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
+        appAuUser.setIsProtocolSeen(0);
         hsyUserDao.insert(appAuUser);
         AppAuUser appAuUserUp=new AppAuUser();
         appAuUserUp.setId(appAuUser.getId());
@@ -144,26 +146,32 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            String clientID=tokenList.get(0).getClientid();
+            if(clientID!=null&&!clientID.trim().equals("")) {
+                List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
+                for (AppAuToken token : tokenFindList)
+                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
             appAuUserToken.setUid(appAuUser.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -268,26 +276,32 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            String clientID=tokenList.get(0).getClientid();
+            if(clientID!=null&&!clientID.trim().equals("")) {
+                List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
+                for (AppAuToken token : tokenFindList)
+                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
             appAuUserToken.setUid(appAuUserFind.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -428,26 +442,32 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
-            List<AppAuToken> tokenFindList=hsyUserDao.findAppAuTokenByClientid(tokenList.get(0).getClientid());
-            for(AppAuToken token:tokenFindList)
-                hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            String clientID=tokenList.get(0).getClientid();
+            if(clientID!=null&&!clientID.trim().equals("")) {
+                List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
+                for (AppAuToken token : tokenFindList)
+                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+            }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
             appAuUserToken.setUid(appAuUserFind.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -1225,6 +1245,26 @@ public class HsyUserServiceImpl implements HsyUserService {
         shop.setStatus(appBizShop.getStatus());
         map.put("appBizShop",shop);
         return gson.toJson(map);
+    }
+
+    /**HSY001056 更改协议查看状态*/
+    public String updateProtocolSeenStatus(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"查询用户ID");
+        appAuUser.setIsProtocolSeen(1);
+        appAuUser.setUpdateTime(new Date());
+        hsyUserDao.updateByID(appAuUser);
+        return "";
     }
 
 }

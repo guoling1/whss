@@ -10,6 +10,7 @@ public class AppAuUserToken {
     private Long tid;
     private Integer status;//登录状态1登录 2未登录
     private Date loginTime;
+    private Date outTime;
 
     public Long getUid() {
         return uid;
@@ -41,5 +42,13 @@ public class AppAuUserToken {
 
     public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
+    }
+
+    public Date getOutTime() {
+        return outTime;
+    }
+
+    public void setOutTime(Date outTime) {
+        this.outTime = outTime;
     }
 }

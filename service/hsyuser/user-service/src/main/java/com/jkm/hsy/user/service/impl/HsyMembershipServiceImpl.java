@@ -3,17 +3,20 @@ package com.jkm.hsy.user.service.impl;
 import com.google.gson.*;
 import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.dao.HsyVerificationDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyMembershipService;
+import com.jkm.hsy.user.util.AppAesUtil;
 import com.jkm.hsy.user.util.AppDateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -26,6 +29,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     private HsyMembershipDao hsyMembershipDao;
     @Autowired
     private HsyVerificationDao hsyVerificationDao;
+    @Autowired
+    private HsyUserDao hsyUserDao;
 
     /**HSY001046 创建会员卡*/
     public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
@@ -67,6 +72,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         if(appPolicyMembershipCard.getIsPresentedViaActivate()==1)
             if(!(appPolicyMembershipCard.getPresentAmount()!=null&&!appPolicyMembershipCard.getPresentAmount().equals("")))
                 throw new ApiHandleException(ResultCode.PARAM_LACK,"开卡赠送金额");
+        if(!(appPolicyMembershipCard.getCanRecharge()!=null&&!appPolicyMembershipCard.getCanRecharge().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"自助充值功能");
         if(!(appPolicyMembershipCard.getIsPresentedViaRecharge()!=null&&!appPolicyMembershipCard.getIsPresentedViaRecharge().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"充值送功能");
         if(appPolicyMembershipCard.getIsPresentedViaRecharge()==1) {
@@ -151,6 +158,142 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         map.put("cardList",cardList);
         map.put("memberCount",memberCount);
         return gson.toJson(map);
+    }
+
+    /**HSY001052 返回开卡和储值二维码*/
+    public String findMemberQr(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        Map map=null;
+        BigDecimal id=null;
+        try{
+            map=gson.fromJson(dataParam, Map.class);
+            id=new BigDecimal(map.get("id")+"");
+        } catch(Exception e){
+            e.printStackTrace();
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(id!=null&&!id.equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+
+        List<AppAuUser> userList=hsyUserDao.findAppAuUserByID(id.longValue());
+        Long uid=null;
+        if(userList.get(0).getParentID()!=null&&userList.get(0).getParentID()!=0)
+            uid=userList.get(0).getParentID();
+        else
+            uid=userList.get(0).getId();
+
+        String uidEncode=null;
+        try {
+            String uidAES=AppAesUtil.encryptCBC_NoPaddingToBase64String(uid+"", AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
+            uidEncode= URLEncoder.encode(uidAES,"utf-8");
+        } catch (Exception e) {
+            throw new ApiHandleException(ResultCode.ESCAPE_FAIL);
+        }
+        Map result=new HashMap();
+        result.put("createQR",AppPolicyConstant.MEMBER_QR+OperateType.CREATE.key+"/"+uidEncode);
+        result.put("rechargeQR",AppPolicyConstant.MEMBER_QR+OperateType.RECHARGE.key+"/"+uidEncode);
+        return gson.toJson(result);
+    }
+
+    /**HSY001053 查询会员卡详细信息和统计值*/
+    public String findMemshipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMembershipCard appPolicyMembershipCard=null;
+        try{
+            appPolicyMembershipCard=gson.fromJson(dataParam, AppPolicyMembershipCard.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMembershipCard.getId()!=null&&!appPolicyMembershipCard.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"ID");
+
+        List<AppPolicyMembershipCard> list= hsyMembershipDao.findMemberCardByID(appPolicyMembershipCard.getId());
+        Integer cardCount=hsyMembershipDao.findMemberCardCountByMCID(appPolicyMembershipCard.getId());
+        Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid());
+
+        BigDecimal proportion=new BigDecimal(cardCount/cardTotalCount);
+        BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        Map result=new HashMap();
+        result.put("appPolicyMembershipCard",list.get(0));
+        result.put("cardCount",cardCount);
+        result.put("cardTotalCount",cardTotalCount);
+        result.put("proportion",proportionEx+"%");
+        return gson.toJson(result);
+    }
+
+    /**HSY001054 停止(启用)开通会员卡*/
+    public String updateMemshipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMembershipCard appPolicyMembershipCard=null;
+        try{
+            appPolicyMembershipCard=gson.fromJson(dataParam, AppPolicyMembershipCard.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMembershipCard.getId()!=null&&!appPolicyMembershipCard.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"ID");
+        if(!(appPolicyMembershipCard.getStatus()!=null&&!appPolicyMembershipCard.getStatus().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"开通状态");
+        if(!(appPolicyMembershipCard.getStatus()==CardStatus.USING.key||appPolicyMembershipCard.getStatus()==CardStatus.HALT_USING.key))
+            throw new ApiHandleException(ResultCode.MEMBERSHIP_CARD_STATUS_NOT_EXSIT);
+        hsyMembershipDao.updateMembershipCard(appPolicyMembershipCard);
+        return "";
+    }
+
+    /**HSY001055 修改会员卡*/
+    public String updateMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMembershipCard appPolicyMembershipCard=null;
+        try{
+            appPolicyMembershipCard=gson.fromJson(dataParam, AppPolicyMembershipCard.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMembershipCard.getId()!=null&&!appPolicyMembershipCard.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"ID");
+        if(appPolicyMembershipCard.getIsPresentedViaActivate()!=null&&appPolicyMembershipCard.getIsPresentedViaActivate()==1)
+            if(!(appPolicyMembershipCard.getPresentAmount()!=null&&!appPolicyMembershipCard.getPresentAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK,"开卡赠送金额");
+        if(appPolicyMembershipCard.getIsPresentedViaRecharge()!=null&&appPolicyMembershipCard.getIsPresentedViaRecharge()==1) {
+            if (!(appPolicyMembershipCard.getRechargeLimitAmount() != null && !appPolicyMembershipCard.getRechargeLimitAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "单笔充值限额");
+            if (!(appPolicyMembershipCard.getRechargePresentAmount() != null && !appPolicyMembershipCard.getRechargePresentAmount().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "单笔充值赠送金额");
+        }
+        appPolicyMembershipCard.setDiscount(null);
+        appPolicyMembershipCard.setIsDeposited(null);
+        appPolicyMembershipCard.setCanRecharge(null);
+
+        if(appPolicyMembershipCard.getSids()!=null&&!appPolicyMembershipCard.getSids().equals(""))
+        {
+            hsyMembershipDao.deleteMembershipCardShop(appPolicyMembershipCard.getId());
+            List<AppPolicyMembershipCardShop> appPolicyMembershipCardShopList=new ArrayList<AppPolicyMembershipCardShop>();
+            String[] sidStrs=appPolicyMembershipCard.getSids().split(",");
+            for(String sidStr:sidStrs)
+            {
+                Long sid=Long.parseLong(sidStr);
+                AppPolicyMembershipCardShop appPolicyMembershipCardShop=new AppPolicyMembershipCardShop();
+                appPolicyMembershipCardShop.setSid(sid);
+                appPolicyMembershipCardShop.setMcid(appPolicyMembershipCard.getId());
+                appPolicyMembershipCardShopList.add(appPolicyMembershipCardShop);
+            }
+            hsyMembershipDao.insertMembershipCardShopBatch(appPolicyMembershipCardShopList);
+        }
+        hsyMembershipDao.updateMembershipCard(appPolicyMembershipCard);
+        return "";
     }
 
     public AppPolicyConsumer findConsumerByOpenID(String openID){
