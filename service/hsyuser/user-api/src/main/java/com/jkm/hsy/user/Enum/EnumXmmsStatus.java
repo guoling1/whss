@@ -8,6 +8,8 @@ import lombok.Getter;
 public enum EnumXmmsStatus {
     HANDLING("handling", "已提交"),
 
+    SUCCESS("success", "已提交"),
+
     FAIL("fail", "入网失败");
 
     @Getter

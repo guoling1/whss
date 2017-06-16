@@ -9,6 +9,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.enums.EnumStatus;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.Enum.EnumIsOpen;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
@@ -336,9 +337,15 @@ public class HsyMerchantListController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/changeUseChannel",method = RequestMethod.POST)
     public CommonResponse changeUseChannel(@RequestBody UserCurrentChannelPolicy userCurrentChannelPolicy){
+        if(userCurrentChannelPolicy.getWechatChannelTypeSign()== EnumPayChannelSign.XMMS_WECHAT_D0.getId()){
+            return CommonResponse.simpleResponse(-1, "暂不支持民生微信D0通道");
+        }
+        if(userCurrentChannelPolicy.getWechatChannelTypeSign()== EnumPayChannelSign.XMMS_ALIPAY_D0.getId()){
+            return CommonResponse.simpleResponse(-1, "暂不支持民生支付宝D0通道");
+        }
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userCurrentChannelPolicy.getUserId());
         if(appAuUser==null){
-            return CommonResponse.simpleResponse(1, "商户不存在");
+            return CommonResponse.simpleResponse(-1, "商户不存在");
         }
         userCurrentChannelPolicyService.updateByUserId(userCurrentChannelPolicy);
         return CommonResponse.simpleResponse(1, "修改成功");
