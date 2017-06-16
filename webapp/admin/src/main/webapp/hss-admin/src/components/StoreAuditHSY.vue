@@ -790,7 +790,7 @@
 
       },
       bankSubmit: function () {
-        console.log(this.bankForm)
+        this.bankForm.id = this.id;
         this.$http.post('/admin/hsyMerchantList/changeSettlementCard',this.bankForm)
           .then(res =>{
             this.$message({
