@@ -233,7 +233,7 @@
       </div>
       <div class="box box-primary">
         <span class="lead">商户结算信息</span>
-        <!--<el-button type="text" @click="isBank = true">修改结算卡信息</el-button>-->
+        <el-button type="text" @click="bankChange">修改结算卡信息</el-button>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -241,22 +241,22 @@
               <th style="text-align: right">结算卡类型:</th>
               <td>
                 <el-radio-group v-model="msg.isPublic">
-                  <el-radio :label="1">对公</el-radio>
-                  <el-radio :label="0">对私</el-radio>
+                  <el-radio :label="1" disabled >对公</el-radio>
+                  <el-radio :label="0" disabled >对私</el-radio>
                 </el-radio-group>
               </td>
               <th style="text-align: right">结算卡开户名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardAccountName" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardAccountName" readonly></td>
               <th style="text-align: right" v-show="msg.isPublic==0">身份证号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly v-show="msg.isPublic==0"></td>
             </tr>
             <tr>
               <th style="text-align: right">商户结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardNO" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardNO" readonly></td>
               <th style="text-align: right">结算卡所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardBank" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardBank" readonly></td>
               <th style="text-align: right">支行信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankAddress" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.bankAddress" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">结算方式:</th>
@@ -383,11 +383,26 @@
           <el-form-item label="开户行" label-width="120px">
             <el-autocomplete style="width: 100%" v-model="bankForm.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
           </el-form-item>
-          <el-form-item label="支行地区" label-width="120px">
-            <el-input v-model="bankForm.bankAddress" size="small" style="width: 100%" placeholder="省/市/地区"></el-input>
+          <el-form-item label="省" label-width="120px">
+            <el-select v-model="bankForm.province" size="small" style="width:100%" placeholder="请选择"
+                       @change="province_select">
+              <el-option v-for="item in item_province"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="市" label-width="120px">
+            <el-select v-model="bankForm.districtCode" size="small" style="width:100%" placeholder="请选择"
+                       @change="city_select">
+              <el-option v-for="item in item_city"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="支行" label-width="120px">
-            <el-autocomplete style="width: 100%" v-model="bankForm.BANKADDRESS" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+            <el-autocomplete style="width: 100%" v-model="bankForm.bankAddress" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -654,6 +669,8 @@
         },
         //修改结算卡参数
         bankForm:{
+          province:'',
+          districtCode:'',
           cardNo:'',
           bankName:'',
           bankAddress:''
@@ -721,6 +738,16 @@
         });
     },
     methods: {
+      bankChange:function(){
+        this.isBank = true;
+        this.bankForm={
+          province:'',
+          districtCode:'',
+          cardNo:'',
+          bankName:'',
+          bankAddress:''
+        }
+      },
       wad:function () {
         this.form = {
           province:'',
@@ -764,10 +791,33 @@
       },
       bankSubmit: function () {
         console.log(this.bankForm)
+        this.$http.post('/admin/hsyMerchantList/changeSettlementCard',this.bankForm)
+          .then(res =>{
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
+            this.isBank = false;
+            this.getData()
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       marryBankSearch: function (queryString, cb) {
-        var results=[];
-        this.$http.post('/admin/hsyMerchantList/getBankNameList',{bankName:queryString})
+        var results=[],url='';
+        if(this.msg.isPublic==1){
+          //对公
+          url='/admin/hsyMerchantList/getBankNameList';
+        }else if(this.msg.isPublic==0){
+          url='/admin/hsyMerchantList/getPersonalBankNameList';
+        }
+        this.$http.post(url,{bankName:queryString})
           .then(res=>{
             for(let i=0; i<res.data.length; i++){
               res.data[i].value = res.data[i].bankName;
@@ -789,43 +839,81 @@
       province_select: function (provinceCode) {
         for (let m = 0; m < this.item_province.length; m++) {
           if (this.item_province[m].code == provinceCode) {
-            this.form.belongProvinceName = this.item_province[m].aname;
+            if(this.isBank==true){
+              this.bankForm.belongProvinceName = this.item_province[m].aname;
+            }else{
+              this.form.belongProvinceName = this.item_province[m].aname;
+            }
           }
         }
-        if(this.form.belongProvinceName=="北京市"||this.form.belongProvinceName=="天津市"||this.form.belongProvinceName=="上海市"||this.form.belongProvinceName=="重庆市"){
-          this.item_city = [{
-            code:this.form.province,
-            aname:this.form.belongProvinceName
-          }]
-          this.form.city = this.item_city[0].code;
-          this.form.belongCityName = this.item_city[0].aname;
-        }else{
-          this.$http.post('/admin/unionNumber/findAllCities', {
-            code: provinceCode
-          }).then(res => {
-            this.item_city = res.data;
-            this.form.city = res.data[0].code;
-            this.form.belongCityName = res.data[0].aname;
-          }, err => {
-            this.$message({
-              showClose: true,
-              message: err.data.msg,
-              type: 'error'
-            });
-          })
+        if(this.isBank==true){
+          if(this.bankForm.belongProvinceName=="北京市"||this.bankForm.belongProvinceName=="天津市"||this.bankForm.belongProvinceName=="上海市"||this.bankForm.belongProvinceName=="重庆市"){
+            this.item_city = [{
+              code:this.bankForm.province,
+              aname:this.bankForm.belongProvinceName
+            }]
+            this.bankForm.districtCode = this.item_city[0].code;
+            this.bankForm.belongCityName = this.item_city[0].aname;
+          }else{
+            this.$http.post('/admin/unionNumber/findAllCities', {
+              code: provinceCode
+            }).then(res => {
+              this.item_city = res.data;
+              this.bankForm.districtCode = res.data[0].code;
+              this.bankForm.belongCityName = res.data[0].aname;
+            }, err => {
+              this.$message({
+                showClose: true,
+                message: err.data.msg,
+                type: 'error'
+              });
+            })
+          }
+        }else {
+          if(this.form.belongProvinceName=="北京市"||this.form.belongProvinceName=="天津市"||this.form.belongProvinceName=="上海市"||this.form.belongProvinceName=="重庆市"){
+            this.item_city = [{
+              code:this.form.province,
+              aname:this.form.belongProvinceName
+            }]
+            this.form.city = this.item_city[0].code;
+            this.form.belongCityName = this.item_city[0].aname;
+          }else{
+            this.$http.post('/admin/unionNumber/findAllCities', {
+              code: provinceCode
+            }).then(res => {
+              this.item_city = res.data;
+              this.form.city = res.data[0].code;
+              this.form.belongCityName = res.data[0].aname;
+            }, err => {
+              this.$message({
+                showClose: true,
+                message: err.data.msg,
+                type: 'error'
+              });
+            })
+          }
         }
       },
       city_select: function (cityCode) {
         for (let n = 0; n < this.item_city.length; n++) {
           if (this.item_city[n].code == cityCode) {
-            this.form.belongCityName = this.item_city[n].aname;
+            if(this.isBank ==true){
+              this.bankForm.belongCityName = this.item_city[n].aname;
+            }else {
+              this.form.belongCityName = this.item_city[n].aname;
+            }
           }
         }
       },
       querySearchAsync(queryString, cb) {
-        var results=[];
+        var results=[],districtCode='';
         //查支行
-        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:this.form.city})
+        if(this.isBank==true){
+          districtCode=this.bankForm.districtCode
+        }else {
+          districtCode=this.form.city
+        }
+        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:districtCode})
           .then(res=>{
             for(let i=0; i<res.data.length; i++){
               res.data[i].value = res.data[i].branchName;
