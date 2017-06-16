@@ -53,9 +53,11 @@ public class BaseSettlementDateServiceImpl implements BaseSettlementDateService 
         switch (upperChannel) {
             case SYJ:
                 return this.getShouYinJiaPaySettleDate(tradeDate);
+            case XMMS_BANK:
+                return this.getXiaMenMinShengPaySettleDate(tradeDate);
+            default:
+                return DateTimeUtil.generateT1SettleDate(tradeDate);
         }
-        log.error("can not be here");
-        return new Date();
     }
 
     /**
@@ -89,6 +91,22 @@ public class BaseSettlementDateServiceImpl implements BaseSettlementDateService 
     private Date getShouYinJiaPaySettleDate(Date tradeDate) {
         if (HolidaySettlementConstants.HOLIDAY_OPEN) {
             final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.SYJ.getId());
+            if (null != settlementDate) {
+                return settlementDate;
+            }
+        }
+        return DateTimeUtil.generateT1SettleDate(tradeDate);
+    }
+
+    /**
+     * 获取厦门民生结算时间
+     *
+     * @param tradeDate
+     * @return
+     */
+    private Date getXiaMenMinShengPaySettleDate(Date tradeDate) {
+        if (HolidaySettlementConstants.HOLIDAY_OPEN) {
+            final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.XMMS_BANK.getId());
             if (null != settlementDate) {
                 return settlementDate;
             }
