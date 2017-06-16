@@ -183,7 +183,7 @@ public class HsyMerchantAuditController extends BaseController {
         Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appUserAndShopRequest.getUserId(),EnumPayChannelSign.SYJ_WECHAT.getId());
         if(userChannelPolicyOptional.isPresent()){
             if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
-                if(userChannelPolicyOptional.get().getOpenProductStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumOpenProductStatus.PASS.getId()){
+                if(userChannelPolicyOptional.get().getOpenProductStatus()!=null&&userChannelPolicyOptional.get().getOpenProductStatus()==EnumOpenProductStatus.PASS.getId()){
 
                 }else{
                     CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
