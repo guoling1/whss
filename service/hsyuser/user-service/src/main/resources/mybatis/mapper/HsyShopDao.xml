@@ -337,4 +337,23 @@
         order by BANKINDEX,ID
     </select>
 
+    <update id="changeSettlementCard">
+        UPDATE app_biz_card
+        <set>
+            <if test="cardNo != null">
+                CARDNO = #{cardNo},
+            </if>
+            <if test="bankName != null">
+                CARDBANK = #{bankName},
+            </if>
+            <if test="productName != null">
+                BRANCHDISTRICTCODE = #{districtCode},
+            </if>
+            <if test="bankAddress != null">
+                BANKADDRESS = #{bankAddress},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
 </mapper>

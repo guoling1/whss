@@ -726,4 +726,24 @@ public class HsyShopServiceImpl implements HsyShopService {
         List<AppBizBankBranch> list = this.hsyShopDao.getBankNameList(bankName);
         return list;
     }
+
+    @Override
+    public String getPersonalBankNameList(String cardNo) {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        Optional<BankCardBin> bankCardBinOptional=null;
+        try {
+            bankCardBinOptional = bankCardBinService.analyseCardNo(cardNo);
+        }catch(Exception e){
+            return gson.toJson(null);
+        }
+        if(bankCardBinOptional.isPresent())
+            return gson.toJson(bankCardBinOptional.get());
+        else
+            return gson.toJson(bankCardBinOptional.absent());
+    }
+
+    @Override
+    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress) {
+        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress);
+    }
 }

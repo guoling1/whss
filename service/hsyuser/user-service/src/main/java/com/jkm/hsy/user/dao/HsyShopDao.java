@@ -47,4 +47,14 @@ public interface HsyShopDao {
      * @return
      */
     List<AppBizBankBranch> getBankNameList(@Param("bankName") String bankName);
+
+    /**
+     * 修改默认结算卡
+     * @param cardNo
+     * @param bankName
+     * @param districtCode
+     * @param bankAddress
+     */
+    void changeSettlementCard(@Param("cardNo") String cardNo,@Param("bankName") String bankName,
+                              @Param("districtCode") String districtCode,@Param("bankAddress") String bankAddress);
 }
