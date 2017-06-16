@@ -232,7 +232,8 @@
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead">商户结算信息</p>
+        <span class="lead">商户结算信息</span>
+        <!--<el-button type="text" @click="isBank = true">修改结算卡信息</el-button>-->
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -370,6 +371,30 @@
           </template>
         </div>
       </div>
+      <el-dialog title="修改商户结算卡" :visible.sync="isBank">
+        <el-form :model="bankForm">
+          <el-form-item label="账户类型" label-width="120px">
+            <span v-if="msg.isPublic==1">对公</span>
+            <span v-if="msg.isPublic==0">对私</span>
+          </el-form-item>
+          <el-form-item label="账号" label-width="120px">
+            <el-input v-model="bankForm.cardNo" size="small" style="width: 100%"></el-input>
+          </el-form-item>
+          <el-form-item label="开户行" label-width="120px">
+            <el-autocomplete style="width: 100%" v-model="bankForm.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="支行地区" label-width="120px">
+            <el-input v-model="bankForm.bankAddress" size="small" style="width: 100%" placeholder="省/市/地区"></el-input>
+          </el-form-item>
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete style="width: 100%" v-model="bankForm.BANKADDRESS" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="isWad = false">取 消</el-button>
+          <el-button type="primary" @click="bankSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
       <el-dialog title="选择支行" :visible.sync="isWad">
         <el-form :model="form">
           <el-form-item label="银行名称" label-width="120px">
@@ -419,14 +444,14 @@
             <el-button type="primary" @click="modify" :disabled="modifyClick">确 定</el-button>
           </span>
       </el-dialog>
-      <!--<el-dialog title="驳回重填" v-model="isReject" size="tiny">-->
-          <!--<p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>-->
-          <!--<p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>-->
-          <!--<span slot="footer" class="dialog-footer">-->
-            <!--<el-button @click="isReject = false">取 消</el-button>-->
-            <!--<el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>-->
-          <!--</span>-->
-        <!--</el-dialog>-->
+      <!--<el-dialog title="驳回重填" v-model="isReject" size="tiny">
+          <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
+          <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="isReject = false">取 消</el-button>
+            <el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>
+          </span>
+        </el-dialog>-->
       <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -579,6 +604,7 @@
         isWad: false,
         reason:'',
         isShow:true,
+        isBank:false,
         reenterClick:false,
         rejectClick:false,
         modifyClick:false,
@@ -625,6 +651,12 @@
           cityName:'',
           branchName:'',
           branchCode:''
+        },
+        //修改结算卡参数
+        bankForm:{
+          cardNo:'',
+          bankName:'',
+          bankAddress:''
         },
         channelForm:{
           userId:'',
@@ -727,6 +759,29 @@
             })
         }
       },
+      marryBank: function () {
+
+      },
+      bankSubmit: function () {
+        console.log(this.bankForm)
+      },
+      marryBankSearch: function (queryString, cb) {
+        var results=[];
+        this.$http.post('/admin/hsyMerchantList/getBankNameList',{bankName:queryString})
+          .then(res=>{
+            for(let i=0; i<res.data.length; i++){
+              res.data[i].value = res.data[i].bankName;
+            }
+            results = res.data;
+          })
+          .catch(err=>{
+
+          });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
       handleSelect(item) {
         console.log(item);
         this.form.branchCode = item.branchCode;
@@ -768,7 +823,6 @@
         }
       },
       querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
         var results=[];
         //查支行
         this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:this.form.city})
@@ -866,6 +920,7 @@
         this.auditClick = true;
         for(let i=0; i<this.rateData.length; i++){
           this.rateData[i].userId = this.msg.uid;
+          this.rateData[i].shopId = this.id;
         }
         this.$http.post('/admin/hsyMerchantList/updateRate',this.rateData)
           .then(res=>{
