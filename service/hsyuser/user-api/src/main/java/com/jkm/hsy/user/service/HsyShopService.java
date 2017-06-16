@@ -33,4 +33,20 @@ public interface HsyShopService {
      * @return
      */
     List<AppBizBankBranch> getBankNameList(String bankName);
+
+    /**
+     * 查询开户行列表BOSS后台对私
+     * @param cardNo
+     * @return
+     */
+    String getPersonalBankNameList(String cardNo);
+
+    /**
+     * 修改默认结算卡
+     * @param cardNo
+     * @param bankName
+     * @param districtCode
+     * @param bankAddress
+     */
+    void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress);
 }

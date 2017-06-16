@@ -358,26 +358,31 @@ public class HsyMerchantListController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getSettlementCard",method = RequestMethod.POST)
-    public CommonResponse getSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
-        if (hsyMerchantAuditRequest.getIsPublic()==1){
-
-        }
-
-        if (hsyMerchantAuditRequest.getIsPublic()==0){
-
-        }
+    @RequestMapping(value = "/changeSettlementCard",method = RequestMethod.POST)
+    public CommonResponse changeSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
+                hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress());
 
         return CommonResponse.simpleResponse(1, "修改成功");
     }
 
     /**
-     * 查询开户行列表BOSS后台
+     * 查询开户行列表BOSS后台对公
      */
     @ResponseBody
     @RequestMapping(value = "/getBankNameList",method = RequestMethod.POST)
     public CommonResponse getBankNameList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
         List<AppBizBankBranch> list = this.hsyShopService.getBankNameList(hsyMerchantAuditRequest.getBankName());
         return CommonResponse.objectResponse(1,"SUCCESS",list);
+    }
+
+    /**
+     * 查询开户行列表BOSS后台对私
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getPersonalBankNameList",method = RequestMethod.POST)
+    public CommonResponse getPersonalBankNameList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        String result = this.hsyShopService.getPersonalBankNameList(hsyMerchantAuditRequest.getCardNo());
+        return CommonResponse.objectResponse(1,"SUCCESS",result);
     }
 }
