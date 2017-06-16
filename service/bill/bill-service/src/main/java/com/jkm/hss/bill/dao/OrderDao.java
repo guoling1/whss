@@ -495,4 +495,82 @@ public interface OrderDao {
      * @return
      */
     String getOrderCount1(QueryOrderRequest req);
+
+    /**
+     * 统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount(OrderTradeRequest req);
+
+    /**
+     * 统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount1(OrderTradeRequest req);
+
+    /**
+     * 统计手续费
+     * @param req
+     * @return
+     */
+    String getPoundageCount(OrderTradeRequest req);
+
+    /**
+     * 统计手续费
+     * @param req
+     * @return
+     */
+    String getPoundageCount1(OrderTradeRequest req);
+
+    /**
+     * 业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req);
+
+    /**
+     * 业绩统计总数
+     * @param req
+     * @return
+     */
+    int getAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 导出业绩
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getDaiLiAchievement(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计总数
+     * @param req
+     * @return
+     */
+    int getDaiLiAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计总数
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> downloadeDaiLi(QueryOrderRequest req);
+
+    List<MerchantTradeResponse> getTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getTradeFirst1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTradeFirst1(OrderTradeRequest req);
 }

@@ -57,6 +57,9 @@ public class AppAuUser {
     private String hxbRemarks;//华夏商户入驻返回信息
     private Integer hxbOpenProduct;//是否开通了华夏产品
 
+    //扩展
+    private Integer utype;//类型1主店 2分店
+
     public Long getId() {
         return id;
     }

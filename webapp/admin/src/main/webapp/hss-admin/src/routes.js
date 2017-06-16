@@ -39,6 +39,7 @@ const StoreNotice = r => require.ensure([], () => r(require('components/StoreNot
 const StoreNoticeDet = r => require.ensure([], () => r(require('components/StoreNoticeDet')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
 const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
+const Achievement = r => require.ensure([], () => r(require('components/Achievement')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
@@ -69,6 +70,7 @@ const TemplateAdd = r => require.ensure([], () => r(require('components/Template
 const PassAdd = r => require.ensure([], () => r(require('components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('components/PassList')), 'group-record');
 const LimitList = r => require.ensure([], () => r(require('components/LimitList')), 'group-record');
+const UnionLine = r => require.ensure([], () => r(require('components/UnionLine')), 'group-record');
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('components/PersonnelAdd')), 'group-record');
@@ -96,7 +98,9 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'achievement', name: 'Achievement', component: Achievement},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
@@ -174,6 +178,8 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'achievement', name: 'Achievement', component: Achievement},
+      {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'template', name: 'Template', component: Template},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},

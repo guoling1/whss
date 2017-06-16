@@ -504,6 +504,80 @@ public interface OrderService {
     String getOrderCount1(QueryOrderRequest req);
 
     /**
+     * 代理商交易统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount(OrderTradeRequest req);
+
+    /**
+     * 代理商交易统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount1(OrderTradeRequest req);
+
+    /**
+     * 业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req);
+
+    /**
+     * 业绩统计总数
+     * @param req
+     * @return
+     */
+    int getAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 导出业绩
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadAchievement(QueryOrderRequest req, String baseUrl);
+
+    /**
+     * 代理商后台导出所属二级
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downLoadHsyMerchantTrade(OrderTradeRequest req, String baseUrl);
+
+    /**
+     * 代理商后台导出一级代理商
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downLoadHsyMerchantTrade1(OrderTradeRequest req, String baseUrl);
+
+    /**
+     * 代理商业务统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getDaiLiAchievement(QueryOrderRequest req);
+
+    /**
+     * 代理商业务统计总数
+     * @param req
+     * @return
+     */
+    int getDaiLiAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 导出代理商业务统计
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadDaiLiAchievement(QueryOrderRequest req, String baseUrl);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

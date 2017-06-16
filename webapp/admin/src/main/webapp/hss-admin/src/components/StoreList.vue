@@ -122,7 +122,11 @@
                   <el-input style="width: 193px" v-model="queryHsy.globalID" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
-                  <label>商户名称:</label>
+                  <label>商户全称:</label>
+                  <el-input style="width: 193px" v-model="queryHsy.name" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>商户简称:</label>
                   <el-input style="width: 193px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
@@ -181,7 +185,9 @@
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>
                 <el-table-column type="index" width="62" label="序号"></el-table-column>
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
-                <el-table-column prop="shortName" label="商户名称"></el-table-column>
+                <el-table-column prop="name" label="商户全称"></el-table-column>
+                <el-table-column prop="shortName" label="商户简称"></el-table-column>
+                <el-table-column prop="shopNo" label="店铺数量"></el-table-column>
                 <!--<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>-->
                 <el-table-column prop="proxyName" label="所属一级代理"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>

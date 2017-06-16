@@ -11,6 +11,9 @@ import java.util.Date;
 public class HsyMerchantAuditRequest {
 
     private String changePhone;//更改后的手机号
+    private String branchCode;//联行号
+    private String bankName;//银行名称
+    private String branchName;//联行名称
     private String mobile;//报单员手机号
 
     /**

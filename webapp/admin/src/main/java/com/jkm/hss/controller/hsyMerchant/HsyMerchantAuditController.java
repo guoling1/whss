@@ -4,6 +4,8 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.merchant.helper.MerchantConsts;
+import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
@@ -14,12 +16,14 @@ import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
+import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.service.HsyCmbcService;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,6 +72,9 @@ public class HsyMerchantAuditController extends BaseController {
         final HsyMerchantAuditResponse hsyMerchantAudit = this.hsyMerchantAuditService.selectById(hsyMerchantAuditRequest.getId());
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getBranchCode())||hsyMerchantAuditRequest.getBranchCode()==null){
+            return CommonResponse.simpleResponse(-1, "联行号不能为空");
         }
         AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
         if (acct!=null){
@@ -241,5 +248,82 @@ public class HsyMerchantAuditController extends BaseController {
         hsyMerchantAuditRequest.setStat(1);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"驳回充填成功");
+    }
+
+
+    @Autowired
+    private HsyMerchantAuditDao hsyMerchantAuditDao;
+    /**
+     *  修改入网信息
+     * @param appUserAndShopRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/modify",method = RequestMethod.POST)
+    public CommonResponse modify(@RequestBody final AppUserAndShopRequest appUserAndShopRequest){
+
+        final long userId = appUserAndShopRequest.getUserId();
+        final long shopId = appUserAndShopRequest.getShopId();
+        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
+        AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
+        AppBizCard appBizCard = hsyCmbcDao.selectByCardId(shopId);
+
+        CmbcResponse cmbcResponse = new CmbcResponse();
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        //商户信息-MerchantInfo
+        paramsMap.put("merchantNo", appAuUser.getGlobalID());//商户编号
+        paramsMap.put("fullName", appBizShop.getName());//商户全称
+        paramsMap.put("shortName", appBizShop.getShortName());//商户简称
+        paramsMap.put("servicePhone","4006226233");//客服电话
+        if(appBizShop.getLicenceNO()==null||"".equals(appBizShop.getLicenceNO())){
+            paramsMap.put("businessLicense","");//证据编号
+            paramsMap.put("businessLicenseType","");//证件类型
+        }else{
+            paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
+            paramsMap.put("businessLicenseType","NATIONAL_LEGAL");//证件类型
+        }
+
+
+        //联系人信息-contactInfo
+        paramsMap.put("contactName",appAuUser.getRealname());//联系人名称
+        paramsMap.put("contactPhone",appAuUser.getCellphone());//联系人手机号
+        paramsMap.put("contactPersonType","LEGAL_PERSON");//联系人类型
+        paramsMap.put("contactIdCard",appAuUser.getIdcard());//身份证号
+        paramsMap.put("contactEmail","");//邮箱
+        //结算卡信息-bankCardInfo
+        paramsMap.put("bankAccountNo",appBizCard.getCardNO());//银行账号
+        paramsMap.put("bankAccountName",appBizCard.getCardAccountName());//开户名称
+        paramsMap.put("idCard",appBizCard.getIdcardNO());//开户身份证号
+        if(appBizShop.getIsPublic()==1){//对公
+            paramsMap.put("bankAccountType","2");//账户类型
+        }else{
+            paramsMap.put("bankAccountType","1");//账户类型
+        }
+        paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());//银行联行号
+        paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());//开户行地址
+        //联系人地址信息-addressInfo
+        HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
+        paramsMap.put("district",district.getAName());//商户地址区
+        HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
+        paramsMap.put("city",city.getAName());//商户地址市
+        if("110000,120000,310000,500000".contains(city.getCode())){
+            paramsMap.put("province",city.getAName().replace("市",""));//商户地址省
+        }else{
+            HsyMerchantAuditResponse province = hsyMerchantAuditDao.getCode(city.getParentCode());
+            paramsMap.put("province",province.getAName());//商户地址省
+        }
+        paramsMap.put("address",appBizShop.getAddress());//详细地址
+        log.info("民生银行商户基础信息注册参数为："+ JSONObject.fromObject(paramsMap).toString());
+        String result = SmPost.post("http://pay.qianbaojiajia.com/syj/merchant/modify", paramsMap);
+        if (result != null && !"".equals(result)) {
+            JSONObject jo = JSONObject.fromObject(result);
+            log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
+            cmbcResponse.setCode(jo.getInt("code"));
+            cmbcResponse.setMsg(jo.getString("msg"));
+        } else {//超时
+            cmbcResponse.setCode(-1);
+            cmbcResponse.setMsg("进件超时");
+        }
+        return CommonResponse.simpleResponse(1,"SUCCESS");
     }
 }

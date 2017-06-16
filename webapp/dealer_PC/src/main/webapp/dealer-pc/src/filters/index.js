@@ -37,6 +37,25 @@ Vue.filter('datetime', function (date) {
   }
   return format;
 });
+Vue.filter('changeDate', function (val) {
+  if (val == '' || val == null) {
+    return ''
+  } else {
+    val = new Date(val);
+    let year = val.getFullYear();
+    let month = val.getMonth() + 1;
+    let date = val.getDate();
+
+    function tod(a) {
+      if (a < 10) {
+        a = "0" + a
+      }
+      return a;
+    }
+
+    return year + "-" + tod(month) + "-" + tod(date) ;
+  }
+});
 
 Vue.filter('filter_businessType', function (value) {
   const encryption = {

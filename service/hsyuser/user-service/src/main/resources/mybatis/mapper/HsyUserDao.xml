@@ -206,6 +206,9 @@
         <if test="role!=null and role==2">
             AND sur.ROLE=3
         </if>
+        <if test="utype!=null and utype==1">
+            AND sur.type=1
+        </if>
         order by UPDATETIME desc
     </select>
 
@@ -238,7 +241,7 @@ where T.ACCESSTOKEN=#{acccesstoken}
 AND ATT.STATUS=1
 limit 1
     </select>
-    <select id="findAppAuUserRole" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="java.lang.Integer">
-        select ROLE from app_biz_shop_user_role where SID=#{sid} AND  UID=#{parentID} limit 1
+    <select id="findAppAuUserRole" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+        select * from app_biz_shop_user_role where SID=#{sid} AND  UID=#{parentID} limit 1
     </select>
 </mapper>
