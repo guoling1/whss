@@ -38,19 +38,23 @@ public class ActiveController {
 
     @RequestMapping("rest")
     public void rest(@ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
+        long startTime=System.currentTimeMillis();
+        log.info(">>>>--start-->>>>业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
+        log.info("请求参数是："+appParam.getRequestData());
+
         AppResult result=new AppResult();
         if(appParam==null)
         {
             result.setResultCode(ResultCode.PARAM_EXCEPTION.resultCode);
             result.setResultMessage(ResultCode.PARAM_EXCEPTION.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
         if(this.isLackOfParam(appParam))
         {
             result.setResultCode(ResultCode.PARAM_EXCEPTION.resultCode);
             result.setResultMessage(ResultCode.PARAM_EXCEPTION.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -59,7 +63,7 @@ public class ActiveController {
         {
             result.setResultCode(ResultCode.VERSION_NOT_EXIST.resultCode);
             result.setResultMessage(ResultCode.VERSION_NOT_EXIST.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -68,7 +72,7 @@ public class ActiveController {
         {
             result.setResultCode(ResultCode.CLASS_NOT_EXIST.resultCode);
             result.setResultMessage(ResultCode.CLASS_NOT_EXIST.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -78,7 +82,7 @@ public class ActiveController {
             {
                 result.setResultCode(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultCode);
                 result.setResultMessage(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultMessage);
-                this.writeJsonToRrsponse(result, response, pw);
+                this.writeJsonToRrsponse(result, response, pw,startTime);
                 return;
             }
 
@@ -87,21 +91,18 @@ public class ActiveController {
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
                     result.setResultMessage(ResultCode.USER_NOT_LOGIN.resultMessage);
-                    this.writeJsonToRrsponse(result, response, pw);
+                    this.writeJsonToRrsponse(result, response, pw,startTime);
                     return;
                 } else {
                     if (appAuUserToken.getOutTime().before(new Date())) {
                         result.setResultCode(ResultCode.USER_LOGIN_OUTTIME.resultCode);
                         result.setResultMessage(ResultCode.USER_LOGIN_OUTTIME.resultMessage);
-                        this.writeJsonToRrsponse(result, response, pw);
+                        this.writeJsonToRrsponse(result, response, pw,startTime);
                         return;
                     }
                 }
             }
         }
-
-        log.info("业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
-        log.info("请求参数是："+appParam.getRequestData());
 
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
 //        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
@@ -123,12 +124,12 @@ public class ActiveController {
                 if(ahe.getMsg()!=null)
                     msg=":"+ahe.getMsg();
                 result.setResultMessage(ahe.getResultCode().resultMessage+msg);
-                this.writeJsonToRrsponse(result, response, pw);
+                this.writeJsonToRrsponse(result, response, pw,startTime);
                 return;
             }
             result.setResultCode(ResultCode.FUNCTION_REMOTE_CALL_FAILED.resultCode);
             result.setResultMessage(ResultCode.FUNCTION_REMOTE_CALL_FAILED.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -138,25 +139,29 @@ public class ActiveController {
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
         result.setEncryptDataResult(appResult);
-        this.writeJsonToRrsponse(result, response, pw);
+        this.writeJsonToRrsponse(result, response, pw,startTime);
         return;
     }
 
     @RequestMapping("file")
     public void file(@RequestParam(value = "fileA", required = false) MultipartFile fileA,@RequestParam(value = "fileB", required = false) MultipartFile fileB,@RequestParam(value = "fileC", required = false) MultipartFile fileC,@RequestParam(value = "fileD", required = false) MultipartFile fileD, @ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
+        long startTime=System.currentTimeMillis();
+        log.info("业务代码为："+appParam.getServiceCode()+"-版本号为："+appParam.getV()+"-token为："+appParam.getAccessToken());
+        log.info("请求参数是："+appParam.getRequestData());
+
         AppResult result=new AppResult();
         if(appParam==null)
         {
             result.setResultCode(ResultCode.PARAM_EXCEPTION.resultCode);
             result.setResultMessage(ResultCode.PARAM_EXCEPTION.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
         if(this.isLackOfParam(appParam))
         {
             result.setResultCode(ResultCode.PARAM_EXCEPTION.resultCode);
             result.setResultMessage(ResultCode.PARAM_EXCEPTION.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -165,7 +170,7 @@ public class ActiveController {
         {
             result.setResultCode(ResultCode.VERSION_NOT_EXIST.resultCode);
             result.setResultMessage(ResultCode.VERSION_NOT_EXIST.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -174,7 +179,7 @@ public class ActiveController {
         {
             result.setResultCode(ResultCode.CLASS_NOT_EXIST.resultCode);
             result.setResultMessage(ResultCode.CLASS_NOT_EXIST.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -184,7 +189,7 @@ public class ActiveController {
             {
                 result.setResultCode(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultCode);
                 result.setResultMessage(ResultCode.TOKEN_CAN_NOT_BE_NULL.resultMessage);
-                this.writeJsonToRrsponse(result, response, pw);
+                this.writeJsonToRrsponse(result, response, pw,startTime);
                 return;
             }
 
@@ -193,13 +198,13 @@ public class ActiveController {
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
                     result.setResultMessage(ResultCode.USER_NOT_LOGIN.resultMessage);
-                    this.writeJsonToRrsponse(result, response, pw);
+                    this.writeJsonToRrsponse(result, response, pw,startTime);
                     return;
                 } else {
                     if (appAuUserToken.getOutTime().before(new Date())) {
                         result.setResultCode(ResultCode.USER_LOGIN_OUTTIME.resultCode);
                         result.setResultMessage(ResultCode.USER_LOGIN_OUTTIME.resultMessage);
-                        this.writeJsonToRrsponse(result, response, pw);
+                        this.writeJsonToRrsponse(result, response, pw,startTime);
                         return;
                     }
                 }
@@ -232,12 +237,12 @@ public class ActiveController {
                 if(ahe.getMsg()!=null)
                     msg=":"+ahe.getMsg();
                 result.setResultMessage(ahe.getResultCode().resultMessage+msg);
-                this.writeJsonToRrsponse(result, response, pw);
+                this.writeJsonToRrsponse(result, response, pw,startTime);
                 return;
             }
             result.setResultCode(ResultCode.FUNCTION_REMOTE_CALL_FAILED.resultCode);
             result.setResultMessage(ResultCode.FUNCTION_REMOTE_CALL_FAILED.resultMessage);
-            this.writeJsonToRrsponse(result, response, pw);
+            this.writeJsonToRrsponse(result, response, pw,startTime);
             return;
         }
 
@@ -247,7 +252,7 @@ public class ActiveController {
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
         result.setEncryptDataResult(appResult);
-        this.writeJsonToRrsponse(result, response, pw);
+        this.writeJsonToRrsponse(result, response, pw,startTime);
         return;
     }
 
@@ -272,10 +277,14 @@ public class ActiveController {
         return false;
     }
 
-    public void writeJsonToRrsponse(Object obj,HttpServletResponse response,PrintWriter pw){
+    public void writeJsonToRrsponse(Object obj,HttpServletResponse response,PrintWriter pw,long startTime){
+        long endTime=System.currentTimeMillis();
+        float excTime=(float)(endTime-startTime)/1000;
         response.setContentType("application/json;charset=utf-8");
         Gson gson=new Gson();
         String json=gson.toJson(obj);
+        log.info("返回结果是："+json);
+        log.info("<<<<--end--<<<<执行时间是："+excTime+"s");
         pw.write(json);
     }
 }
