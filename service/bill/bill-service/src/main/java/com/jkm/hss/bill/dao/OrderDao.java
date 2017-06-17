@@ -573,4 +573,11 @@ public interface OrderDao {
     List<MerchantTradeResponse> getTradeFirst1(OrderTradeRequest req);
 
     List<MerchantTradeResponse> getHsyTradeFirst1(OrderTradeRequest req);
+
+    /**
+     * hsy交易详情
+     * @param orderNo
+     * @return
+     */
+    MerchantTradeResponse selectOrderListHsy(String orderNo);
 }
