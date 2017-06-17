@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,10 @@ public class HsyMerchantListController extends BaseController {
     private UserChannelPolicyService userChannelPolicyService;
     @Autowired
     private HsyCmbcDao hsyCmbcDao;
+    @Autowired
+    private HsyShopService hsyShopService;
+    @Autowired
+    private HsyCmbcService hsyCmbcService;
 
 
     @ResponseBody
@@ -211,12 +216,13 @@ public class HsyMerchantListController extends BaseController {
     @RequestMapping(value = "/changeMobile",method = RequestMethod.POST)
     public CommonResponse changeMobile(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         HsyMerchantAuditResponse req = this.hsyMerchantAuditService.getCellphon(hsyMerchantAuditRequest.getId());
-        if (req.getChangePhone()==null) {
-            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
-        }else {
-            this.hsyMerchantAuditService.updatePhone(req.getChangePhone(),req.getUid());
-            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
-        }
+//        if (req.getChangePhone()==null) {
+//            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+//        }else {
+//            this.hsyMerchantAuditService.updatePhone(req.getChangePhone(),req.getUid());
+//            this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
+//        }
+        this.hsyMerchantAuditService.changeMobile(req.getUid(),hsyMerchantAuditRequest.getChangePhone());
         return CommonResponse.simpleResponse(1, "更改成功");
 
     }
@@ -316,6 +322,10 @@ public class HsyMerchantListController extends BaseController {
             }
 
         }
+        boolean b = hsyCmbcService.merchantInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId());
+        if (b==false){
+            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
+        }
         return CommonResponse.simpleResponse(1, "修改成功");
     }
     /**
@@ -352,9 +362,59 @@ public class HsyMerchantListController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getSettlementCard",method = RequestMethod.POST)
-    public CommonResponse getSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+    @RequestMapping(value = "/changeSettlementCard",method = RequestMethod.POST)
+    public CommonResponse changeSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        if ("".equals(hsyMerchantAuditRequest.getCardNo())&&hsyMerchantAuditRequest.getCardNo()==null){
+            return CommonResponse.simpleResponse(-1, "账号不能为空");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getBankName())&&hsyMerchantAuditRequest.getBankName()==null){
+            return CommonResponse.simpleResponse(-1, "开户行不能为空");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getDistrictCode())&&hsyMerchantAuditRequest.getDistrictCode()==null){
+            return CommonResponse.simpleResponse(-1, "省市不能为空");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getBankAddress())&&hsyMerchantAuditRequest.getBankAddress()==null){
+            return CommonResponse.simpleResponse(-1, "支行不能为空");
+        }
 
-        return null;
+        long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
+
+        this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
+                hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress());
+
+        boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId());
+        if (b==false){
+            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
+        }
+
+        return CommonResponse.simpleResponse(1, "修改成功");
+    }
+
+    /**
+     * 查询开户行列表BOSS后台对公
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getBankNameList",method = RequestMethod.POST)
+    public CommonResponse getBankNameList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        List<AppBizBankBranch> list = this.hsyShopService.getBankNameList(hsyMerchantAuditRequest.getBankName());
+        return CommonResponse.objectResponse(1,"SUCCESS",list);
+    }
+
+    /**
+     * 查询开户行列表BOSS后台对私
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getPersonalBankNameList",method = RequestMethod.POST)
+    public CommonResponse getPersonalBankNameList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        if ("".equals(hsyMerchantAuditRequest.getCardNo())&&hsyMerchantAuditRequest.getCardNo()==null){
+            return CommonResponse.simpleResponse(-1, "账号不能为空");
+        }
+        JSONObject jsonObject = new JSONObject();
+
+        String list = this.hsyShopService.getPersonalBankNameList(hsyMerchantAuditRequest.getCardNo());
+        jsonObject.put("bankName",list);
+        List list1 = new ArrayList();
+        list1.add(jsonObject);
+        return CommonResponse.objectResponse(1,"SUCCESS",list1);
     }
 }

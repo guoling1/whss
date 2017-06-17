@@ -328,4 +328,32 @@
         order by sur.TYPE,shop.CREATETIME
     </select>
 
+    <select id="getBankNameList" resultType="com.jkm.hsy.user.entity.AppBizBankBranch">
+        select BANKNAME,BANKINDEX from app_biz_bank_branch group by BANKNAME,AVAILABLE
+        having AVAILABLE=1
+        <if test="bankName!=null and bankName!=''">
+            AND BANKNAME LIKE CONCAT('%',#{bankName},'%')
+        </if>
+        order by BANKINDEX,ID
+    </select>
+
+    <update id="changeSettlementCard">
+        UPDATE app_biz_card
+        <set>
+            <if test="cardNo != null">
+                CARDNO = #{cardNo},
+            </if>
+            <if test="bankName != null">
+                CARDBANK = #{bankName},
+            </if>
+            <if test="productName != null">
+                BRANCHDISTRICTCODE = #{districtCode},
+            </if>
+            <if test="bankAddress != null">
+                BANKADDRESS = #{bankAddress},
+            </if>
+        </set>
+        WHERE SID = #{id}
+    </update>
+
 </mapper>

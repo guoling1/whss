@@ -2,6 +2,7 @@ package com.jkm.hss.bill.entity;
 
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,6 +10,15 @@ import java.util.List;
  */
 @Data
 public class QueryOrderRequest {
+
+    private String realname;//报单员真实姓名
+    private String username;//报单员登录
+    private long dealerId;//代理商id
+
+    private Date begin;//开始时间
+    private Date end;//结束时间
+
+    private String createTime;
 
     /**
      * 支付方式
@@ -56,11 +66,15 @@ public class QueryOrderRequest {
      * 订单状态
      */
     private int status;
-
     /**
      * 订单创建时间：开始时间
      */
     private String startTime;
+
+    /**
+     * 订单创建时间：开始时间
+     */
+    private String startTime1;
 
     /**
      * 订单创建时间：结束时间
@@ -80,15 +94,24 @@ public class QueryOrderRequest {
     /**
      * 页数
      */
+    private Integer pageNo;
+    /**
+     * 每页条数
+     */
+    private Integer pageSize;
+    /**
+     * 条数
+     */
+    private Integer offset;
+
+    /**
+     * 页数
+     */
     private Integer page;
     /**
      * 每页条数
      */
     private Integer size;
-    /**
-     * 条数
-     */
-    private Integer offset;
 
 
 }

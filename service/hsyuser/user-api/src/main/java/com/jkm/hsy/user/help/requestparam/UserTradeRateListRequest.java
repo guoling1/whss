@@ -13,6 +13,10 @@ import java.util.List;
 @Data
 public class UserTradeRateListRequest {
     /**
+     * 主店编码
+     */
+    private long shopId;
+    /**
      * 用户编码
      */
     private long userId;

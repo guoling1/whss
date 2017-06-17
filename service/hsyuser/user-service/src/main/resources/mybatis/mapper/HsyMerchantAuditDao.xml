@@ -74,7 +74,7 @@
     <!-- 查询商户列表 -->
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
+        a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,e.mobile,
         (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE SID=a.ID) AS shopNo,
         (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
         (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
@@ -247,6 +247,7 @@
 			g.realname,
 			g.username,
 			h.BRANCHCODE,
+			g.mobile,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDC) AS IDCARDC,
@@ -298,7 +299,7 @@
     </update>
 
 
-    <!-- 审核不通过更改提交资料步骤 -->
+    <!---->
     <select id="getUid" resultType="java.lang.Long">
         SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id} AND ROLE = 1 AND TYPE=1
     </select>
@@ -520,7 +521,7 @@
 
     <!-- 更新注册手机号 -->
     <update id="changeMobile">
-        UPDATE app_au_user SET CHANGEPHONE=#{changePhone} WHERE ID=#{uid}
+        UPDATE app_au_user SET CELLPHONE=#{changePhone} WHERE ID=#{uid}
     </update>
 
     <!-- 查询详情hsy商户注册手机号更改手机号还有id -->

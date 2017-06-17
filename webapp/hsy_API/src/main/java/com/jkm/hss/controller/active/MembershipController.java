@@ -20,10 +20,7 @@ import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
-import com.jkm.hsy.user.constant.AppConstant;
-import com.jkm.hsy.user.constant.AppPolicyConstant;
-import com.jkm.hsy.user.constant.MemberStatus;
-import com.jkm.hsy.user.constant.VerificationCodeType;
+import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -73,8 +70,8 @@ public class MembershipController {
     @Autowired
     private TradeService tradeService;
 
-    @RequestMapping("getAuth/{uidEncode}")
-    public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode){
+    @RequestMapping("getAuth/{operate}/{uidEncode}")
+    public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode,@PathVariable String operate){
         String agent = request.getHeader("User-Agent").toLowerCase();
         if (agent.indexOf("micromessenger") > -1){
             try {
@@ -84,10 +81,10 @@ public class MembershipController {
                 model.addAttribute("tips","转义失败,请稍后再试！");
                 return "/tips";
             }
-            return "redirect:"+ WxConstants.WEIXIN_HSY_MEMBERSHIP_AUTHINFO+uidEncode+"%7CWX"+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+            return "redirect:"+ WxConstants.WEIXIN_HSY_MEMBERSHIP_AUTHINFO+uidEncode+"%7C"+operate+"%7CWX"+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }
         if (agent.indexOf("aliapp") > -1) {
-            return "redirect:"+ AlipayServiceConstants.OAUTH_URL+uidEncode+"%7CZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI;
+            return "redirect:"+ AlipayServiceConstants.OAUTH_URL+uidEncode+"%7C"+operate+"%7CZFB"+AlipayServiceConstants.OAUTH_URL_LATER+AlipayServiceConstants.MEMBERSHIP_REDIRECT_URI;
         }
         model.addAttribute("tips","请使用微信或支付宝");
         return "/tips";
@@ -104,7 +101,8 @@ public class MembershipController {
                 String openID=ret.get("openid");
                 redirectAttributes.addAttribute("openID",openID);
                 String[] str=authParam.getState().split("\\|");
-                redirectAttributes.addAttribute("source",str[1]);
+                redirectAttributes.addAttribute("source",str[str.length-1]);
+                redirectAttributes.addAttribute("operate",str[1]);
                 try {
                     redirectAttributes.addAttribute("uidEncode", URLEncoder.encode(str[0], AppPolicyConstant.enc));
                 }catch(Exception e){
@@ -122,7 +120,8 @@ public class MembershipController {
                     String userID = alipayOauthService.getUserId(authParam.getAuth_code());
                     redirectAttributes.addAttribute("userID", userID);
                     String[] str=authParam.getState().split("\\|");
-                    redirectAttributes.addAttribute("source",str[1]);
+                    redirectAttributes.addAttribute("source",str[str.length-1]);
+                    redirectAttributes.addAttribute("operate",str[1]);
                     try {
                         redirectAttributes.addAttribute("uidEncode", URLEncoder.encode(str[0], AppPolicyConstant.enc));
                     }catch(Exception e){
@@ -170,61 +169,67 @@ public class MembershipController {
             return "/tips";
         }
 
-        Long uid;
-        try {
-            String uidHttp=URLDecoder.decode(authInfo.getUidEncode(),AppPolicyConstant.enc);
-            String uidAES=AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
-            uid=Long.parseLong(uidAES.trim());
-        } catch (Exception e) {
-            log.info("http转义失败");
-            model.addAttribute("tips","请稍后再试！");
-            return "/tips";
-        }
+        if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
+            Long uid;
+            try {
+                String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
+                String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
+                uid = Long.parseLong(uidAES.trim());
+            } catch (Exception e) {
+                log.info("http转义失败");
+                model.addAttribute("tips", "请稍后再试！");
+                return "/tips";
+            }
 
-        List<AppPolicyMembershipCard> cardList=hsyMembershipService.findMemberCardByUID(uid);
-        if(cardList==null||cardList.size()==0)
-        {
-            model.addAttribute("tips","该店铺没有会员卡！");
-            return "/tips";
-        }
+            List<AppPolicyMembershipCard> cardList = hsyMembershipService.findMemberCardByUID(uid);
+            if (cardList == null || cardList.size() == 0) {
+                model.addAttribute("tips", "该店铺没有会员卡！");
+                return "/tips";
+            }
 
-        model.addAttribute("cardList",cardList);
+            model.addAttribute("cardList", cardList);
 
-        AppPolicyConsumer appPolicyConsumer=null;
-        if(authInfo.getSource().equals("WX")){
-            appPolicyConsumer=hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
-            if(appPolicyConsumer==null){
-                model.addAttribute("authInfo",authInfo);
+            AppPolicyConsumer appPolicyConsumer = null;
+            if (authInfo.getSource().equals("WX")) {
+                appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
+                if (appPolicyConsumer == null) {
+                    model.addAttribute("authInfo", authInfo);
+                    return "/createMember";
+                }
+            } else if (authInfo.getSource().equals("ZFB")) {
+                appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
+                if (appPolicyConsumer == null) {
+                    model.addAttribute("authInfo", authInfo);
+                    return "/createMember";
+                }
+            } else {
+                model.addAttribute("tips", "请使用微信或支付宝");
+                return "/tips";
+            }
+
+            AppPolicyMember appPolicyMember = hsyMembershipService.findMemberByCIDAndUID(appPolicyConsumer.getId(), uid);
+            if (appPolicyMember == null) {
+                model.addAttribute("authInfo", authInfo);
+                model.addAttribute("appPolicyConsumer", appPolicyConsumer);
                 return "/createMember";
             }
-        }else if(authInfo.getSource().equals("ZFB")){
-            appPolicyConsumer=hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
-            if(appPolicyConsumer==null){
-                model.addAttribute("authInfo",authInfo);
-                return "/createMember";
+
+            if (appPolicyMember.getStatus() == 2) {
+                model.addAttribute("mid", appPolicyMember.getId());
+                model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
+                model.addAttribute("source", authInfo.getSource());
+                return "/needRecharge";
             }
-        }else{
-            model.addAttribute("tips","请使用微信或支付宝");
+
+            model.addAttribute("mid", appPolicyMember.getId());
+            return "redirect:/membership/createMemberSuccess";
+        }else if(OperateType.RECHARGE.key.equals(authInfo.getOperate())){
+            return "";
+        }
+        else{
+            model.addAttribute("tips","找不到该操作！");
             return "/tips";
         }
-
-        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberByCIDAndUID(appPolicyConsumer.getId(),uid);
-        if(appPolicyMember==null) {
-            model.addAttribute("authInfo", authInfo);
-            model.addAttribute("appPolicyConsumer", appPolicyConsumer);
-            return "/createMember";
-        }
-
-        if(appPolicyMember.getStatus()==2)
-        {
-            model.addAttribute("mid",appPolicyMember.getId());
-            model.addAttribute("cellphone",appPolicyConsumer.getConsumerCellphone());
-            model.addAttribute("source",authInfo.getSource());
-            return "/needRecharge";
-        }
-
-        model.addAttribute("mid", appPolicyMember.getId());
-        return "redirect:/membership/createMemberSuccess";
     }
 
     @RequestMapping("createMember")

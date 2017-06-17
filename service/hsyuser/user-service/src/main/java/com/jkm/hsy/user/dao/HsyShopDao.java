@@ -40,4 +40,21 @@ public interface HsyShopDao {
     public List<AppBizBankBranch> findBankListByPage(Page<AppBizBankBranch> entity);
     public Integer findBankListByPageCount(AppBizBankBranch entity);
     public List<AppBizShop> findShopListByUID(@Param("uid")Long uid);
+
+    /**
+     * 查询开户行列表BOSS后台
+     * @param bankName
+     * @return
+     */
+    List<AppBizBankBranch> getBankNameList(@Param("bankName") String bankName);
+
+    /**
+     * 修改默认结算卡
+     * @param cardNo
+     * @param bankName
+     * @param districtCode
+     * @param bankAddress
+     */
+    void changeSettlementCard(@Param("cardNo") String cardNo,@Param("bankName") String bankName,
+                              @Param("districtCode") String districtCode,@Param("bankAddress") String bankAddress);
 }

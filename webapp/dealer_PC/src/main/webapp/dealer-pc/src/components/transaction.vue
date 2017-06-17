@@ -7,7 +7,7 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">交易查询</h3>
-              <!--<a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>-->
+              <el-button type="primary" class="pull-right" size="small" @click="isMask=true">导出</el-button>
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
@@ -84,6 +84,10 @@
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
+            <div class="box-body" style="padding-bottom: 0">
+              <span><b>支付金额：</b>统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</span>
+              <span style="margin-left: 20px"><b>手续费：</b>统计总额 {{allTotal1 | fix}}元 当页总额 {{pageTotal1 | fix}}元</span>
+            </div>
             <div class="box-body">
               <el-table v-loading.body="tableLoading" style="font-size: 12px;margin:15px 0" :data="records" border>
                 <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
@@ -142,6 +146,22 @@
                              :total="total">
               </el-pagination>
             </div>
+            <div class="box box-info mask el-message-box" v-if="isMask">
+              <div class="maskCon">
+                <div class="head">
+                  <div class="title">消息</div>
+                  <i class="el-icon-close" @click="isMask=false"></i>
+                </div>
+                <div class="body">
+                  <div>确定导出列表吗？</div>
+                </div>
+                <div class="foot">
+                  <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+                  <a :href="'http://'+loadUrl" @click="isMask=false"
+                     class="el-button el-button-default el-button--primary ">下载</a>
+                </div>
+              </div>
+            </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
@@ -158,6 +178,8 @@
   export default {
     data () {
       return {
+        isMask: false,
+        loadUrl:'',
         query: {
           page: 1,
           size: 20,
@@ -211,7 +233,11 @@
           {value: 'yijia_alipay', label: '溢+支付宝'},
         ],
         date: '',
-        total: 0
+        total: 0,
+        pageTotal: 0,
+        pageTotal1: 0,
+        allTotal: 0,
+        allTotal1: 0
       }
     },
     created(){
@@ -242,6 +268,7 @@
         }
       }
       this.getData();
+      this.getTotal();
     },
     methods: {
       datetimeSelect: function (val) {
@@ -257,6 +284,15 @@
       screen: function () {
         this.query.page = 1;
         this.getData();
+        this.getTotal();
+      },
+      getTotal: function () {
+        this.$http.post('/daili/tradeQuery/amountCount', this.query).then(res => {
+          this.allTotal = res.data.totalPayment==null?0:res.data.totalPayment;
+          this.allTotal1 = res.data.totalPoundage==null?0:res.data.totalPoundage;
+        }, err => {
+          console.log(err);
+        })
       },
       getData: function () {
         this.tableLoading = true;
@@ -264,6 +300,14 @@
           this.tableLoading = false;
           this.total = res.data.count;
           this.records = res.data.records;
+          this.loadUrl = res.data.ext;
+          let t = 0,s = 0;
+          for (let i = 0; i < res.data.records.length; i++) {
+            t += res.data.records[i].tradeAmount / 1;
+            s += res.data.records[i].poundage / 1;
+          }
+          this.pageTotal = t;
+          this.pageTotal1 = s;
         }, err => {
           this.tableLoading = false;
           this.$message({
@@ -307,5 +351,79 @@
     display: block;
     height: 24px;
     line-height: 24px;
+  }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+
+  .maskCon {
+    margin: 250px auto;
+    text-align: left;
+    vertical-align: middle;
+    background-color: #fff;
+    width: 420px;
+    border-radius: 3px;
+    font-size: 16px;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+  .head {
+    position: relative;
+    padding: 20px 20px 0;
+
+  .title {
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 700;
+    height: 18px;
+    color: #333;
+  }
+
+  i {
+    font-family: element-icons !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    vertical-align: baseline;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    top: 19px;
+    right: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 20px;
+    text-align: center;
+  }
+
+  }
+  .body {
+    padding: 30px 20px;
+    color: #48576a;
+    font-size: 14px;
+    position: relative;
+
+  div {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #48576a;
+    font-weight: 400;
+  }
+  }
+  .foot {
+    padding: 10px 20px 15px;
+    text-align: right;
+  }
+  }
   }
 </style>

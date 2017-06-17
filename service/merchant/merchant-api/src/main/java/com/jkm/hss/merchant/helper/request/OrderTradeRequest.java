@@ -2,6 +2,8 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Created by Thinkpad on 2016/12/20.
  */
@@ -12,6 +14,10 @@ public class OrderTradeRequest {
 //     * 退款单号
 //     */
 //    private String refundOrderNo;
+
+    private Date begin;
+
+    private Date end;
 
     /**
      * 店铺shop编码
