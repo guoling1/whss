@@ -60,7 +60,6 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     @Override
     public boolean merchantInfoModify(long userId,long shopId) {
         boolean backResult = true;
-        CmbcResponse result = new CmbcResponse();
         Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(userId,EnumPayChannelSign.SYJ_WECHAT.getId());
         if(userChannelPolicyOptional.isPresent()){
             if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()== EnumNetStatus.SUCCESS.getId()){

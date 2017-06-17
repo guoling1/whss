@@ -324,7 +324,7 @@ public class HsyMerchantListController extends BaseController {
         }
         boolean b = hsyCmbcService.merchantInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId());
         if (b==false){
-            return CommonResponse.simpleResponse(1, "修改上游银行卡失败，请务必联系技术解决！！");
+            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
         }
         return CommonResponse.simpleResponse(1, "修改成功");
     }
@@ -384,7 +384,7 @@ public class HsyMerchantListController extends BaseController {
 
         boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId());
         if (b==false){
-            return CommonResponse.simpleResponse(1, "修改上游银行卡失败，请务必联系技术解决！！");
+            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
         }
 
         return CommonResponse.simpleResponse(1, "修改成功");
