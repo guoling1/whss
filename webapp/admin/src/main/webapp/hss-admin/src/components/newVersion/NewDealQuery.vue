@@ -160,7 +160,7 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/details/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text" target="_blank">详情
+                <router-link :to="{path:'/admin/details/newDealDet',query:{orderNo:scope.row.orderNo,appId:scope.row.appId}}" type="text" target="_blank">详情
                 </router-link>
               </template>
             </el-table-column>

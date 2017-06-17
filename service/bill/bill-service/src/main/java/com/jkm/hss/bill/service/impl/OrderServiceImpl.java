@@ -664,6 +664,54 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
+        if("hsy".equals(req.getAppId())){
+            MerchantTradeResponse list = orderDao.selectOrderListHsy(req.getOrderNo());
+            if (list!=null){
+
+                if (list.getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.setAppId(hss);
+                }
+                if (list.getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.setAppId(hsy);
+                }
+
+                if (list.getMobile()!=null&&!"".equals(list.getMobile())){
+                    list.setMobile(MerchantSupport.decryptMobile(list.getMobile()));
+                }
+                if (list.getBankNo()!=null&&!"".equals(list.getBankNo())){
+                    list.setBankNo(MerchantSupport.decryptBankCard(list.getBankNo()));
+                }
+                if (list.getReserveMobile()!=null&&!"".equals(list.getReserveMobile())){
+                    list.setReserveMobile(MerchantSupport.decryptMobile(list.getReserveMobile()));
+                }
+                if (list.getIdentity()!=null&&!"".equals(list.getIdentity())){
+                    list.setIdentity(MerchantSupport.decryptIdentity(list.getIdentity()));
+                }
+                if (list.getPayChannelSign()!=0) {
+                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
+                }
+
+                if (list.getPayType()!=null&&!list.getPayType().equals("")) {
+                    if (list.getPayChannelSign()!=0) {
+                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                    }
+
+                }
+                if (list.getLevel()==1){
+                    list.setProxyName(list.getProxyName());
+                }
+                if (list.getLevel()==2){
+                    list.setProxyName1(list.getProxyName());
+                    String proxyName = dealerService.selectProxyName(list.getFirstLevelDealerId());
+                    list.setProxyName(proxyName);
+                }
+
+            }
+            return list;
+
+        }
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
 
