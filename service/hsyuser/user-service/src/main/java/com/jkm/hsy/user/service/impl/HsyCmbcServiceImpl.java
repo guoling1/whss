@@ -77,7 +77,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                     netInfo.setNetMarks(cr.getMsg());
                     userChannelPolicyService.updateHxNetInfo(netInfo);
                 }
-                if(userChannelPolicyOptional.get().getOpenProductStatus()==null||userChannelPolicyOptional.get().getNetStatus()!= EnumOpenProductStatus.PASS.getId()){
+                if(userChannelPolicyOptional.get().getOpenProductStatus()!=null&&userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId()){
                     CmbcResponse cm = this.merchantUpdateBindChannel(userId);
                     if(cm.getCode()==1){
                         UserChannelPolicy openProduct = new UserChannelPolicy();
@@ -106,7 +106,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         for(int i=0;i<list.size();i++){
             Optional<UserChannelPolicy> ucp = userChannelPolicyService.selectByUserIdAndChannelTypeSign(userId,list.get(i));
             if(ucp.isPresent()){
-                if(ucp.get().getNetStatus()!=null&&ucp.get().getNetStatus()!=EnumNetStatus.SUCCESS.getId()){
+                if(ucp.get().getNetStatus()!=null&&ucp.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
                     XmmsResponse xmmsResponse = this.merchantModify(userId,shopId);
 
                     XmmsResponse.BaseResponse wxT1 = xmmsResponse.getWxT1();
