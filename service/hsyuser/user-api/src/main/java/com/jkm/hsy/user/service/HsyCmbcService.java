@@ -14,7 +14,7 @@ public interface HsyCmbcService {
      * @param shopId
      * @return
      */
-    void merchantInfoModify(long userId,long shopId);
+    boolean merchantInfoModify(long userId,long shopId);
     /**
      * 民生银行商户基础信息注册
      * @param userId //用户编码

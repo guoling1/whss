@@ -58,7 +58,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
      * @return
      */
     @Override
-    public void merchantInfoModify(long userId,long shopId) {
+    public boolean merchantInfoModify(long userId,long shopId) {
+        boolean backResult = true;
         CmbcResponse result = new CmbcResponse();
         Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(userId,EnumPayChannelSign.SYJ_WECHAT.getId());
         if(userChannelPolicyOptional.isPresent()){
@@ -71,6 +72,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                     netInfo.setNetMarks(cr.getMsg());
                     userChannelPolicyService.updateHxNetInfo(netInfo);
                 }else{
+                    backResult = false;
                     UserChannelPolicy netInfo = new UserChannelPolicy();
                     netInfo.setUserId(userId);
                     netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
@@ -86,6 +88,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                         openProduct.setOpenProductMarks(cm.getMsg());
                         userChannelPolicyService.updateHxOpenProduct(openProduct);
                     }else{
+                        backResult = false;
                         UserChannelPolicy openProduct = new UserChannelPolicy();
                         openProduct.setUserId(userId);
                         openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
@@ -124,10 +127,12 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                             netInfo.setNetMarks(wxT1.getResult().getMsg());
                             netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
                             netInfo.setOpenProductMarks(wxT1.getResult().getMsg());
+                            backResult = false;
                         }
                         netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
                         userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
                     }else{
+                        backResult = false;
                         UserChannelPolicy netInfo = new UserChannelPolicy();
                         netInfo.setUserId(userId);
                         netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
@@ -149,6 +154,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                             netInfo.setOpenProductMarks(zfbT1.getResult().getMsg());
                         }
                         if((EnumXmmsStatus.FAIL.getId()).equals(zfbT1.getResult().getStatus())){
+                            backResult = false;
                             netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
                             netInfo.setNetMarks(zfbT1.getResult().getMsg());
                             netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
@@ -157,6 +163,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                         netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_T1.getId());
                         userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
                     }else{
+                        backResult = false;
                         UserChannelPolicy netInfo = new UserChannelPolicy();
                         netInfo.setUserId(userId);
                         netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
@@ -178,6 +185,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                             netInfo.setOpenProductMarks(wxD0.getResult().getMsg());
                         }
                         if((EnumXmmsStatus.FAIL.getId()).equals(wxD0.getResult().getStatus())){
+                            backResult = false;
                             netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
                             netInfo.setNetMarks(wxD0.getResult().getMsg());
                             netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
@@ -186,6 +194,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                         netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
                         userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
                     }else{
+                        backResult = false;
                         UserChannelPolicy netInfo = new UserChannelPolicy();
                         netInfo.setUserId(userId);
                         netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
@@ -207,6 +216,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                             netInfo.setOpenProductMarks(zfbD0.getResult().getMsg());
                         }
                         if((EnumXmmsStatus.FAIL.getId()).equals(zfbD0.getResult().getStatus())){
+                            backResult = false;
                             netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
                             netInfo.setNetMarks(zfbD0.getResult().getMsg());
                             netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
@@ -215,6 +225,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                         netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
                         userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
                     }else{
+                        backResult = false;
                         UserChannelPolicy netInfo = new UserChannelPolicy();
                         netInfo.setUserId(userId);
                         netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
@@ -227,6 +238,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                 }
             }
         }
+        return backResult;
     }
 
 
