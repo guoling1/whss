@@ -719,6 +719,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId());
             resultMap.put("t0tradeRate",userTradeRateOptional.get().getTradeRateD0().toString());
             resultMap.put("t1tradeRate",userTradeRateOptional.get().getTradeRateT1().toString());
+            resultMap.put("category",getMsWxCategory(industryCode));
             resultMap.put("settleType","T1");
             resultMap.put("payWay","WXZF");
         }
@@ -726,6 +727,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId());
             resultMap.put("t0tradeRate",userTradeRateOptional.get().getTradeRateD0().toString());
             resultMap.put("t1tradeRate",userTradeRateOptional.get().getTradeRateT1().toString());
+            resultMap.put("category",getAlipayCategory(industryCode));
             resultMap.put("settleType","T1");
             resultMap.put("payWay","ZFBZF");
         }
@@ -733,6 +735,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId());
             resultMap.put("t0tradeRate",userTradeRateOptional.get().getTradeRateD0().toString());
             resultMap.put("t1tradeRate",userTradeRateOptional.get().getTradeRateT1().toString());
+            resultMap.put("category",getMsWxCategory(industryCode));
             resultMap.put("settleType","D0");
             resultMap.put("payWay","WXZF");
         }
@@ -740,6 +743,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId());
             resultMap.put("t0tradeRate",userTradeRateOptional.get().getTradeRateD0().toString());
             resultMap.put("t1tradeRate",userTradeRateOptional.get().getTradeRateT1().toString());
+            resultMap.put("category",getAlipayCategory(industryCode));
             resultMap.put("settleType","D0");
             resultMap.put("payWay","ZFBZF");
         }
