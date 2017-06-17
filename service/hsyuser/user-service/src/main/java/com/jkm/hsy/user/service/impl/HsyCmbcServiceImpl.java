@@ -748,7 +748,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("payWay","ZFBZF");
         }
         log.info("参数{}",JSONObject.fromObject(resultMap).toString());
-        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantXmmsIn(), resultMap);
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantXmmsModify(), resultMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
             log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
