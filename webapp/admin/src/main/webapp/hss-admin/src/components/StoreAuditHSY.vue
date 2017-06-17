@@ -1118,7 +1118,14 @@
             this.res = res.data.list;
             this.rateData = res.data.rateList;
             this.channelList = res.data.channelList;
-            this.userChannelList = res.data.userChannelList;
+            if(res.data.userChannelList==null){
+              this.userChannelList={
+                wechatChannelTypeSign:'',
+                alipayChannelTypeSign:''
+              }
+            }else {
+              this.userChannelList = res.data.userChannelList;
+            }
             this.rateList = JSON.parse(JSON.stringify(res.data.rateList));
             if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
               this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
