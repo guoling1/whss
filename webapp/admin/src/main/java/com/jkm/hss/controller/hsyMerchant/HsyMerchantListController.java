@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -360,9 +361,24 @@ public class HsyMerchantListController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/changeSettlementCard",method = RequestMethod.POST)
     public CommonResponse changeSettlementCard(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        if ("".equals(hsyMerchantAuditRequest.getCardNo())&&hsyMerchantAuditRequest.getCardNo()==null){
+            return CommonResponse.simpleResponse(-1, "账号不能为空");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getBankName())&&hsyMerchantAuditRequest.getBankName()==null){
+            return CommonResponse.simpleResponse(-1, "开户行不能为空");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getDistrictCode())&&hsyMerchantAuditRequest.getDistrictCode()==null){
+            return CommonResponse.simpleResponse(-1, "省市不能为空");
+        }
+        if ("".equals(hsyMerchantAuditRequest.getBankAddress())&&hsyMerchantAuditRequest.getBankAddress()==null){
+            return CommonResponse.simpleResponse(-1, "支行不能为空");
+        }
+
+        long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
         this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
                 hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress());
 
+        hsyCmbcService.merchantInfoModify(userId,hsyMerchantAuditRequest.getId());
         return CommonResponse.simpleResponse(1, "修改成功");
     }
 
@@ -382,7 +398,15 @@ public class HsyMerchantListController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/getPersonalBankNameList",method = RequestMethod.POST)
     public CommonResponse getPersonalBankNameList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
-        String result = this.hsyShopService.getPersonalBankNameList(hsyMerchantAuditRequest.getCardNo());
-        return CommonResponse.objectResponse(1,"SUCCESS",result);
+        if ("".equals(hsyMerchantAuditRequest.getCardNo())&&hsyMerchantAuditRequest.getCardNo()==null){
+            return CommonResponse.simpleResponse(-1, "账号不能为空");
+        }
+        JSONObject jsonObject = new JSONObject();
+
+        String list = this.hsyShopService.getPersonalBankNameList(hsyMerchantAuditRequest.getCardNo());
+        jsonObject.put("bankName",list);
+        List list1 = new ArrayList();
+        list1.add(jsonObject);
+        return CommonResponse.objectResponse(1,"SUCCESS",list1);
     }
 }

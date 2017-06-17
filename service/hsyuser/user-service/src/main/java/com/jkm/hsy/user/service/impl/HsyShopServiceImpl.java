@@ -729,17 +729,11 @@ public class HsyShopServiceImpl implements HsyShopService {
 
     @Override
     public String getPersonalBankNameList(String cardNo) {
-        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        String result = "";
         Optional<BankCardBin> bankCardBinOptional=null;
-        try {
-            bankCardBinOptional = bankCardBinService.analyseCardNo(cardNo);
-        }catch(Exception e){
-            return gson.toJson(null);
-        }
-        if(bankCardBinOptional.isPresent())
-            return gson.toJson(bankCardBinOptional.get());
-        else
-            return gson.toJson(bankCardBinOptional.absent());
+        bankCardBinOptional = bankCardBinService.analyseCardNo(cardNo);
+        result = bankCardBinOptional.get().getBankName();
+        return result;
     }
 
     @Override
