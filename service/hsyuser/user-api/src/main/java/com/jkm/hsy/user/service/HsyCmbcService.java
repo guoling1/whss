@@ -51,7 +51,7 @@ public interface HsyCmbcService {
      * @param userId //用户编码
      * @param shopId //主店编码
      */
-    XmmsResponse merchantModify(long userId, long shopId);
+    XmmsResponse.BaseResponse merchantModify(long userId, long shopId,int channelTypeSign);
 
     /**
      * 厦门民生入网
