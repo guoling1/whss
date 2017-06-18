@@ -9,8 +9,8 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>付款给商户</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.1.0.0.css">
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <link rel="stylesheet" href="/css/style.1.0.0.css">
+  <link rel="stylesheet" href="/css/weui/weui.css">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
     </div>
   </div>
   <div class="safe">
-    <img src="http://static.jinkaimen.cn/hss/assets/wx-gray.png" alt="">
+    <img src="/assets/wx-gray.png" alt="">
     微信安全支付
   </div>
   <div class="keyboard" id="keyboard">
@@ -71,6 +71,6 @@
 </script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.1.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.1.1/payment.min.js"></script>
+<script src="/js/vendor.2.0.1.3.min.js"></script>
+<script src="/js/2.0.1.1/payment.min.js"></script>
 </html>
