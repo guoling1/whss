@@ -140,7 +140,7 @@ public class CodeController extends BaseController {
                     log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
                 }
-                final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
+                final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign(),merchantId,openId,code);
                 model.addAttribute("hsyOrderId",hsyOrderId);
                 url = "/sqb/paymentZfb";
             }
