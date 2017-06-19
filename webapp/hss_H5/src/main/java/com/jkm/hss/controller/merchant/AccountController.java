@@ -226,17 +226,17 @@ public class AccountController extends BaseController{
                     this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(channelRateRequest).get();
 
             final Account account = this.accountService.getById(merchantInfo.getAccountId()).get();
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
             AccountInfoResponse response = new AccountInfoResponse();
             response.setTotalAmount(account.getTotalAmount());
             response.setAvailable(account.getAvailable());
-            response.setBankName(merchantInfo.getBankName());
+            response.setBankName(accountBank.getBankName());
             response.setWithdrawFee(merchantChannelRate.getMerchantWithdrawFee());
             response.setSettleAmount(account.getDueSettleAmount());
 
-            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
             final String bankNo = accountBank.getBankNo();
             response.setBankNo("尾号" + bankNo.substring(bankNo.length() - 4 , bankNo.length()));
-            response.setMobile( merchantInfo.getPlainBankMobile( MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile())));
+            response.setMobile(merchantInfo.getPlainBankMobile(MerchantSupport.decryptMobile(merchantInfo.getId(), accountBank.getReserveMobile())));
 
             return CommonResponse.objectResponse(1, "SUCCESS", response);
 
