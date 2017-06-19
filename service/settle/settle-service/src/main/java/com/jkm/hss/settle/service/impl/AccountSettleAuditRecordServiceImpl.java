@@ -249,11 +249,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
 
     /**
      * {@inheritDoc}
+     *
+     * @param date 结算日期
      */
     @Override
     @Transactional
-    synchronized public Pair<Integer, String> generateHsySettleAuditRecordTask() {
-        final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
+    synchronized public Pair<Integer, String> generateHsySettleAuditRecordTask(final Date date) {
+        Date settleDate = date;
+        if (null == settleDate) {
+            settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
+        }
         final int count = this.accountSettleAuditRecordDao.selectCountBySettleDate(settleDate);
         if (count > 0) {
             log.error("###############今日记录已经生成，不可以重复生成#################");

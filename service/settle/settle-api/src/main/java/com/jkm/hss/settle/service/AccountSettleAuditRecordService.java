@@ -2,12 +2,12 @@ package com.jkm.hss.settle.service;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -93,7 +93,7 @@ public interface AccountSettleAuditRecordService {
     /**
      * 处理 T1 结算审核, 生成记录
      */
-    Pair<Integer, String> generateHsySettleAuditRecordTask();
+    Pair<Integer, String> generateHsySettleAuditRecordTask(Date settleDate);
 
     /**
      * 处理 T1 结算审核,自动结算
