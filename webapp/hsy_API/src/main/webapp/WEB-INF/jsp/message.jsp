@@ -7,13 +7,13 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>钱包加加</title>
-  <link rel="stylesheet" href="/css/style.1.0.0.css">
-  <link rel="stylesheet" href="/css/weui/weui.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.1.0.0.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
 <div id="prompt">
-  <img src="/assets/hss-prompt.png" alt="">
+  <img src="http://static.jinkaimen.cn/hss/assets/hss-prompt.png" alt="">
 
   <p>${message}</p>
 
