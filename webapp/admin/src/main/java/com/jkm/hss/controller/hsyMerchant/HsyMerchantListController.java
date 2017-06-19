@@ -380,7 +380,7 @@ public class HsyMerchantListController extends BaseController {
         long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
 
         this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
-                hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress());
+                hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress(),hsyMerchantAuditRequest.getId());
 
         boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId());
         if (b==false){
