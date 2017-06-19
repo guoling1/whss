@@ -147,7 +147,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
 
 
     /**
-     * 民生银行商户基础信息注册
+     * 收银家商户基础信息注册
      * @param userId //用户编码
      * @param shopId //主店编码
      * @return
@@ -205,11 +205,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("remitD0",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
         paramsMap.put("address",appBizShop.getAddress());//详细地址
-        log.info("民生银行商户基础信息注册参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("收银家商户基础信息注册参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBaseInfoReg(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
+            log.info("收银家商户基础信息注册返回结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
             cmbcResponse.setResult(jo.getString("result"));
@@ -221,7 +221,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     }
 
     /**
-     * 民生银行商户基础信息修改
+     * 收银家商户基础信息修改
      *
      * @param userId //用户编码
      * @param shopId //主店编码
@@ -275,11 +275,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             paramsMap.put("province",province.getAName());//商户地址省
         }
         paramsMap.put("address",appBizShop.getAddress());//详细地址
-        log.info("民生银行商户基础信息修改参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("收银家商户基础信息修改参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBaseInfoModify(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息修改返回结果为："+jo.toString());
+            log.info("收银家商户基础信息修改返回结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
             cmbcResponse.setResult(jo.getString("result"));
@@ -291,7 +291,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     }
 
     /**
-     * 民生银行商户支付通道绑定
+     * 收银家开通产品
      *
      * @param userId
      * @return
@@ -309,24 +309,24 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("wxBizCategory", getWxCategory(appBizShop.getIndustryCode()));
         paramsMap.put("zfbOnlineRate", zfbUt.get().getTradeRateT1().toString());
         paramsMap.put("zfbBizCategory",getAlipayCategory(appBizShop.getIndustryCode()));
-        log.info("民生银行商户支付通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("收银家开通产品参数为："+ JSONObject.fromObject(paramsMap).toString());
         log.info("url:{}",MerchantConsts.getMerchantConfig().merchantBindChannel());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBindChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户支付通道绑定返回结果为："+jo.toString());
+            log.info("收银家开通产品返回结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
             cmbcResponse.setResult(jo.getString("result"));
         } else {//超时
             cmbcResponse.setCode(-1);
-            cmbcResponse.setMsg("商户支付通道绑定请求超时");
+            cmbcResponse.setMsg("收银家开通产品请求超时");
         }
         return cmbcResponse;
     }
 
     /**
-     * 民生银行商户支付修改通道绑定
+     * 收银家修改产品
      *
      * @param userId
      * @return
@@ -341,17 +341,17 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("merchantNo", appAuUser.getGlobalID());
         paramsMap.put("wxOnlineRate", wxUt.get().getTradeRateT1().toString());
         paramsMap.put("zfbOnlineRate", zfbUt.get().getTradeRateT1().toString());
-        log.info("民生银行商户支付修改通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("收银家修改产品参数为："+ JSONObject.fromObject(paramsMap).toString());
         log.info("url:{}",MerchantConsts.getMerchantConfig().merchantUpdateChannel());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdateChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户支付通道绑定返回结果为："+jo.toString());
+            log.info("收银家修改产品返回结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
         } else {//超时
             cmbcResponse.setCode(-1);
-            cmbcResponse.setMsg("商户支付通道绑定请求超时");
+            cmbcResponse.setMsg("收银家修改产品请求超时");
         }
         return cmbcResponse;
     }
@@ -598,7 +598,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("settleType","D0");
             resultMap.put("payWay","ZFBZF");
         }
-        log.info("参数{}",JSONObject.fromObject(resultMap).toString());
+        log.info("厦门民生入网参数{}",JSONObject.fromObject(resultMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantXmmsIn(), resultMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
@@ -656,11 +656,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("settleType","D0");
             resultMap.put("payWay","ZFBZF");
         }
-        log.info("参数{}",JSONObject.fromObject(resultMap).toString());
+        log.info("厦门民生修改入网参数{}",JSONObject.fromObject(resultMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantXmmsModify(), resultMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
+            log.info("厦门民生修改入网返回结果为："+jo.toString());
             baseResponse.setCode(jo.getInt("code"));
             baseResponse.setMsg(jo.getString("msg"));
             XmmsResponse.Result rs = new XmmsResponse.Result();
@@ -672,7 +672,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             baseResponse.setResult(rs);
         } else {//超时
             baseResponse.setCode(-1);
-            baseResponse.setMsg("进件超时");
+            baseResponse.setMsg("厦门民生修改入网进件超时");
         }
         return baseResponse;
 
