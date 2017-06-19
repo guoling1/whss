@@ -98,7 +98,7 @@ public interface AccountSettleAuditRecordService {
     /**
      * 处理 T1 结算审核,自动结算
      */
-    void handleSettleAuditRecordTask();
+    void handleSettleAuditRecordTask(Date settleDate);
 
     /**
      * 正常结算

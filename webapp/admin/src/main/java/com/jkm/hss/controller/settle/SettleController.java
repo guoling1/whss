@@ -51,10 +51,20 @@ public class SettleController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "settleTest")
     public CommonResponse settleTest(final String date) {
-        log.info("结算审核定时任务--start--test");
+        log.info("生成结算审核记录--start--test");
         final Date settleDate = DateFormatUtil.parse(date , DateFormatUtil.yyyy_MM_dd);
         this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask(settleDate);
-        log.info("结算审核定时任务--end--test");
+        log.info("生成结算审核记录--end--test");
+        return CommonResponse.simpleResponse(0, "success");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "markSettledTest")
+    public CommonResponse marksettledTest(final String date) {
+        log.info("更新结算审核记录--start--test");
+        final Date settleDate = DateFormatUtil.parse(date , DateFormatUtil.yyyy_MM_dd);
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask(settleDate);
+        log.info("更新结算审核记录--end--test");
         return CommonResponse.simpleResponse(0, "success");
     }
 
@@ -83,7 +93,7 @@ public class SettleController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "markSettled")
     public CommonResponse markSettled() {
-        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask(null);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
     /**

@@ -27,7 +27,7 @@ public class Task {
     @Scheduled(cron = "0 30 15 * * ?")
     public void handleUpdateSettlementTask() {
         log.info("更新结算审核记录状态定时任务-start");
-        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask(null);
         log.info("更新结算审核记录状态定时任务-end");
     }
 }

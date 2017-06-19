@@ -392,11 +392,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
 
     /**
      * {@inheritDoc}
+     *
+     * @param date 结算日期
      */
     @Override
     @Transactional
-    public void handleSettleAuditRecordTask() {
-        final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
+    public void handleSettleAuditRecordTask(final Date date) {
+        Date settleDate = date;
+        if (null == settleDate) {
+            settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
+        }
         //查询结算单--结算
         final List<Long> pendingIds = this.accountSettleAuditRecordDao.selectPendingSettleAuditRecordIdsBySettleDateAndSettleStatus(settleDate, EnumSettleStatus.DUE_SETTLE.getId());
         log.info("今日[{}], 可以结算的结算审核记录[{}]", settleDate, pendingIds);
