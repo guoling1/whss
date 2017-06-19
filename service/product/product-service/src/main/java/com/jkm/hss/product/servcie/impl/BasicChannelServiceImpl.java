@@ -101,12 +101,12 @@ public class BasicChannelServiceImpl implements BasicChannelService {
             return enumPayChannelSign.getCode() + "_code";
         }
         switch (type){
-
             case MERCHANT_CODE:
                 return enumPayChannelSign.getCode() + "_code";
-
             case MERCHANT_JSAPI:
                 return enumPayChannelSign.getCode() + "_jsapi";
+            case MERCHANT_BAR:
+                return enumPayChannelSign.getCode();
 
         }
         return "";

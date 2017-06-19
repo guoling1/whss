@@ -81,6 +81,10 @@ public class PayParams {
      * 商户名
      */
     private String merchantName;
+    /**
+     * 主扫时的用户的code码
+     */
+    private String authCode;
 
     //#######会员卡支付############
 

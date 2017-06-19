@@ -113,6 +113,7 @@ public class TradeServiceImpl implements TradeService {
                 .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
                 .wxAppId(rechargeParams.getAppId())
                 .memberId(rechargeParams.getMemberId())
+                .authCode(rechargeParams.getAuthCode())
                 .build();
         final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
         return this.baseTradeService.handlePlaceOrderResult(paymentSdkPlaceOrderResponse, rechargeParams.getMerchantPayType(), order);
@@ -174,6 +175,7 @@ public class TradeServiceImpl implements TradeService {
                     .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
                     .wxAppId(payParams.getWxAppId())
                     .memberId(payParams.getMemberId())
+                    .authCode(payParams.getAuthCode())
                     .bankBranchCode(payParams.getBankBranchCode())
                     .bankCardNo(payParams.getBankCardNo())
                     .realName(payParams.getRealName())

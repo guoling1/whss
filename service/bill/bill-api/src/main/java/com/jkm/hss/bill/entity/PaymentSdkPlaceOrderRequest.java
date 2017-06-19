@@ -67,6 +67,11 @@ public class PaymentSdkPlaceOrderRequest {
      */
     private String memberId;
 
+    /**
+     * 主扫时的用户的code码
+     */
+    private String authCode;
+
 
     //////**卡盟通道所需参数**//////////
 
