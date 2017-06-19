@@ -118,9 +118,9 @@ public class UserTradeRateServiceImpl implements UserTradeRateService {
         }
         UserTradeRate zfbTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId());
         if(zfbTradeRate!=null){
-            wxRate = zfbTradeRate.getTradeRateT1();
+            zfbRate = zfbTradeRate.getTradeRateT1();
         }
-        return Pair.of(wxRate,zfbRate);
+        return Pair.of(wxRate, zfbRate);
     }
 
     /**
