@@ -558,7 +558,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
         paramsMap.put("t1drawFee","0.20");
-        XmmsResponse.BaseResponse baseResponse = getMerchantInResult(paramsMap,userId, EnumPayChannelSign.XMMS_WECHAT_T1.getId(),appBizShop.getIndustryCode());
+        XmmsResponse.BaseResponse baseResponse = getMerchantInResult(paramsMap,userId, channelTypeSign,appBizShop.getIndustryCode());
         return baseResponse;
     }
 
