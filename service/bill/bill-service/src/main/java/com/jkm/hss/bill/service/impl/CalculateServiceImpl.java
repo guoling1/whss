@@ -181,7 +181,7 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public BigDecimal getMerchantPayPoundage(final BigDecimal traderAmount, final BigDecimal merchantPayPoundageRate, final int channelSign) {
-
+        log.info("支付成功计算手续费，交易金额[{}]，费率[{}]", traderAmount, merchantPayPoundageRate);
         //原始手续费
         final BigDecimal originDueSplitAmount = traderAmount.multiply(merchantPayPoundageRate);
 
