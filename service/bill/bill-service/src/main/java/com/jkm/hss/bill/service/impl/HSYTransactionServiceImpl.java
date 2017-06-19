@@ -12,6 +12,7 @@ import com.jkm.hss.bill.helper.SplitProfitParams;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.bill.service.TradeService;
+import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
@@ -239,11 +240,12 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 }
                 if (null != firstMoneyTriple) {
                     final SplitProfitParams.SplitProfitDetail splitProfitDetail = splitProfitParams.new SplitProfitDetail();
-                    final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(firstMoneyTriple.getLeft()).get(0);
+//                    final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(firstMoneyTriple.getLeft()).get(0);
+                    final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
                     splitProfitDetails.add(splitProfitDetail);
                     splitProfitDetail.setAccountId(firstMoneyTriple.getLeft());
-                    splitProfitDetail.setUserNo(appAuUser.getGlobalID());
-                    splitProfitDetail.setUserName(appAuUser.getShopShortName());
+                    splitProfitDetail.setUserNo(dealer.getMarkCode());
+                    splitProfitDetail.setUserName(dealer.getProxyName());
                     splitProfitDetail.setProfit(firstMoneyTriple.getMiddle());
                     splitProfitDetail.setRate(firstMoneyTriple.getRight());
                     splitProfitDetail.setAccountUserType(EnumAccountUserType.DEALER.getId());
@@ -251,11 +253,12 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 }
                 if (null != secondMoneyTriple) {
                     final SplitProfitParams.SplitProfitDetail splitProfitDetail = splitProfitParams.new SplitProfitDetail();
-                    final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(secondMoneyTriple.getLeft()).get(0);
+//                    final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(secondMoneyTriple.getLeft()).get(0);
+                    final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
                     splitProfitDetails.add(splitProfitDetail);
                     splitProfitDetail.setAccountId(secondMoneyTriple.getLeft());
-                    splitProfitDetail.setUserNo(appAuUser.getGlobalID());
-                    splitProfitDetail.setUserName(appAuUser.getShopShortName());
+                    splitProfitDetail.setUserNo(dealer.getMarkCode());
+                    splitProfitDetail.setUserName(dealer.getProxyName());
                     splitProfitDetail.setProfit(secondMoneyTriple.getMiddle());
                     splitProfitDetail.setRate(secondMoneyTriple.getRight());
                     splitProfitDetail.setAccountUserType(EnumAccountUserType.DEALER.getId());
