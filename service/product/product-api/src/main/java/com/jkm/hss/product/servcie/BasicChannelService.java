@@ -81,4 +81,9 @@ public interface BasicChannelService {
      * @return
      */
 //    BasicChannel selectChannel(int channelTypeSign);
+    /**
+     * 查询好收银通道
+     * @return
+     */
+    List<BasicChannel> selectHsyAll();
 }

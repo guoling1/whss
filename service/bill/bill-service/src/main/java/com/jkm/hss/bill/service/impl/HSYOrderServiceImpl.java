@@ -60,7 +60,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             idStr=idStr.substring(idStr.length()-8);
         }
         hsyOrder.setOrdernumber(DateFormatUtil.format(new Date(),"yyyyMMdd")+idStr);
-        hsyOrder.setValidationcode(hsyOrder.getOrdernumber().substring(hsyOrder.getOrdernumber().length()-4));
+//        hsyOrder.setValidationcode(hsyOrder.getOrdernumber().substring(hsyOrder.getOrdernumber().length()-4));
         hsyOrderDao.update(hsyOrder);
     }
     private String getFixLenthString(int strLength) {
@@ -77,6 +77,41 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     public int update(HsyOrder hsyOrder) {
         return hsyOrderDao.update(hsyOrder);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     * @param amount
+     * @param status
+     */
+    @Override
+    @Transactional
+    public void updateAmountAndStatus(final long id, final BigDecimal amount, final int status) {
+        this.hsyOrderDao.updateAmountAndStatus(id, amount, status);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param hsyOrderId
+     * @return
+     */
+    @Override
+    public Optional<HsyOrder> getById(final long hsyOrderId) {
+        return Optional.fromNullable(this.hsyOrderDao.selectById(hsyOrderId));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param hsyOrderId
+     * @return
+     */
+    @Override
+    public Optional<HsyOrder> getByIdWithLock(final long hsyOrderId) {
+        return Optional.fromNullable(this.hsyOrderDao.selectByIdWithLock(hsyOrderId));
     }
 
     @Override

@@ -170,8 +170,10 @@ public class PushServiceImpl implements PushService {
         List<Map>  list=pushDao.selectUserAppByUid(uid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
-            String clientid=map.get("CLIENTID").toString();
-            clients.add(clientid);
+            if(map.get("CLIENTID")!=null){
+                String clientid=map.get("CLIENTID").toString();
+                clients.add(clientid);
+            }
         }
 
         final SmsTemplate messageTemplate;

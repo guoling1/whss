@@ -10,6 +10,7 @@ public class AuthInfo {
     private String source;
     private String userID;
     private String openID;
+    private String operate;
 
     public String getSource() {
         return source;
@@ -59,7 +60,16 @@ public class AuthInfo {
         this.infoDetail = infoDetail;
     }
 
-    public String toString() {
-        return "successFlag:"+successFlag+",uidEncode:"+uidEncode+",userID:"+userID+",openID:"+openID+",infoDetail:"+infoDetail;
+    public String getOperate() {
+        return operate;
     }
+
+    public void setOperate(String operate) {
+        this.operate = operate;
+    }
+
+    public String toString() {
+        return "successFlag:"+successFlag+",uidEncode:"+uidEncode+",userID:"+userID+",openID:"+openID+",infoDetail:"+infoDetail+",operate:"+operate;
+    }
+
 }

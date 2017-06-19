@@ -14,21 +14,22 @@ import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumInviteBtn;
+import com.jkm.hss.dealer.enums.EnumPolicyType;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerRatePolicyResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
-import com.jkm.hss.dealer.service.DealerChannelRateService;
-import com.jkm.hss.dealer.service.DealerRateService;
-import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
+import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.helper.response.DealerDetailResponse;
 import com.jkm.hss.helper.response.DealerPolicyResponse;
 import com.jkm.hss.helper.response.SecondDealerProductDetailResponse;
 import com.jkm.hss.helper.response.SecondLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.product.entity.BasicChannel;
@@ -73,6 +74,8 @@ public class DealerController extends BaseController {
     private DealerUpgerdeRateService dealerUpgerdeRateService;
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private DealerRatePolicyService dealerRatePolicyService;
     /**
      * 二级代理商列表
      *
@@ -85,7 +88,7 @@ public class DealerController extends BaseController {
         secondDealerSearchRequest.setDealerId(dealerId);
         final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(secondDealerSearchRequest);
         Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
-        Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+        Integer hsyProductId = dealerRatePolicyService.selectCountByDealerId(dealerId);
         long hssProduct = 0;
         long hsyProduct = 0;
         if(hssProductId!=null){
@@ -561,6 +564,357 @@ public class DealerController extends BaseController {
         }
     }
 
+    /**
+     * 好收银代理商政策
+     * @param dealerId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/dealerRatePolicyDetail/{dealerId}", method = RequestMethod.GET)
+    public CommonResponse dealerRatePolicyDetail (@PathVariable long dealerId) {
+        List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(dealerId);
+        List<DealerRatePolicyResponse> dealerRatePolicyResponses = new ArrayList<DealerRatePolicyResponse>();
+        if(dealerRatePolicies.size()>0){
+            for(int i=0;i<dealerRatePolicies.size();i++){
+                DealerRatePolicyResponse dealerRatePolicyResponse = new DealerRatePolicyResponse();
+                dealerRatePolicyResponse.setId(dealerRatePolicies.get(i).getId());
+                dealerRatePolicyResponse.setDealerId(dealerRatePolicies.get(i).getDealerId());
+                dealerRatePolicyResponse.setPolicyType(dealerRatePolicies.get(i).getPolicyType());
+                dealerRatePolicyResponse.setSn(dealerRatePolicies.get(i).getSn());
+                dealerRatePolicyResponse.setStatus(dealerRatePolicies.get(i).getStatus());
+                dealerRatePolicyResponse.setCreateTime(dealerRatePolicies.get(i).getCreateTime());
+                dealerRatePolicyResponse.setUpdateTime(dealerRatePolicies.get(i).getUpdateTime());
+                if((EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicies.get(i).getPolicyType())){
+                    DealerRatePolicyResponse.FixedArr fixedArr = new DealerRatePolicyResponse.FixedArr();
+                    DealerRatePolicyResponse.ChangeArr changeArr = new DealerRatePolicyResponse.ChangeArr();
+                    changeArr.setDealerTradeRateT1(dealerRatePolicies.get(i).getDealerTradeRateT1().setScale(2));
+                    fixedArr.setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().setScale(2));
+                    fixedArr.setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().setScale(2));
+                    changeArr.setDealerTradeRateD1(dealerRatePolicies.get(i).getDealerTradeRateD1().setScale(2));
+                    fixedArr.setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().setScale(2));
+                    fixedArr.setMerchantMaxRateD1(dealerRatePolicies.get(i).getMerchantMaxRateD1().setScale(2));
+                    changeArr.setDealerTradeRateD0(dealerRatePolicies.get(i).getDealerTradeRateD0().setScale(2));
+                    fixedArr.setMerchantMinRateD0(dealerRatePolicies.get(i).getMerchantMinRateD0().setScale(2));
+                    fixedArr.setMerchantMaxRateD0(dealerRatePolicies.get(i).getMerchantMaxRateD0().setScale(2));
+                    dealerRatePolicyResponse.setFixedArr(fixedArr);
+                    dealerRatePolicyResponse.setChangeArr(changeArr);
+                }else{
+                    DealerRatePolicyResponse.FixedArr fixedArr = new DealerRatePolicyResponse.FixedArr();
+                    DealerRatePolicyResponse.ChangeArr changeArr = new DealerRatePolicyResponse.ChangeArr();
+                    changeArr.setDealerTradeRateT1(dealerRatePolicies.get(i).getDealerTradeRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    changeArr.setDealerTradeRateD1(dealerRatePolicies.get(i).getDealerTradeRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMaxRateD1(dealerRatePolicies.get(i).getMerchantMaxRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    changeArr.setDealerTradeRateD0(dealerRatePolicies.get(i).getDealerTradeRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMinRateD0(dealerRatePolicies.get(i).getMerchantMinRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMaxRateD0(dealerRatePolicies.get(i).getMerchantMaxRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicyResponse.setFixedArr(fixedArr);
+                    dealerRatePolicyResponse.setChangeArr(changeArr);
+                }
+                dealerRatePolicyResponses.add(dealerRatePolicyResponse);
+            }
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerRatePolicyResponses);
+    }
+
+    /**
+     * 登录代理商好收银政策
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getProductRatePolicyDetail", method = RequestMethod.POST)
+    public CommonResponse getProductRatePolicyDetail () {
+        List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(super.getDealerId());
+        List<DealerRatePolicyResponse> dealerRatePolicyResponses = new ArrayList<DealerRatePolicyResponse>();
+        if(dealerRatePolicies.size()>0){
+            for(int i=0;i<dealerRatePolicies.size();i++){
+                DealerRatePolicyResponse dealerRatePolicyResponse = new DealerRatePolicyResponse();
+                dealerRatePolicyResponse.setId(dealerRatePolicies.get(i).getId());
+                dealerRatePolicyResponse.setDealerId(dealerRatePolicies.get(i).getDealerId());
+                dealerRatePolicyResponse.setPolicyType(dealerRatePolicies.get(i).getPolicyType());
+                dealerRatePolicyResponse.setSn(dealerRatePolicies.get(i).getSn());
+                dealerRatePolicyResponse.setStatus(dealerRatePolicies.get(i).getStatus());
+                dealerRatePolicyResponse.setCreateTime(dealerRatePolicies.get(i).getCreateTime());
+                dealerRatePolicyResponse.setUpdateTime(dealerRatePolicies.get(i).getUpdateTime());
+                if(!(EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicies.get(i).getPolicyType())){
+                    DealerRatePolicyResponse.FixedArr fixedArr = new DealerRatePolicyResponse.FixedArr();
+                    DealerRatePolicyResponse.ChangeArr changeArr = new DealerRatePolicyResponse.ChangeArr();
+                    changeArr.setDealerTradeRateT1(dealerRatePolicies.get(i).getDealerTradeRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    changeArr.setDealerTradeRateD1(dealerRatePolicies.get(i).getDealerTradeRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    changeArr.setDealerTradeRateD0(dealerRatePolicies.get(i).getDealerTradeRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMaxRateD1(dealerRatePolicies.get(i).getMerchantMaxRateD1().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMinRateD0(dealerRatePolicies.get(i).getMerchantMinRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    fixedArr.setMerchantMaxRateD0(dealerRatePolicies.get(i).getMerchantMaxRateD0().multiply(new BigDecimal("100")).setScale(2));
+                    dealerRatePolicyResponse.setFixedArr(fixedArr);
+                    dealerRatePolicyResponse.setChangeArr(changeArr);
+                }else{
+                    DealerRatePolicyResponse.FixedArr fixedArr = new DealerRatePolicyResponse.FixedArr();
+                    DealerRatePolicyResponse.ChangeArr changeArr = new DealerRatePolicyResponse.ChangeArr();
+                    changeArr.setDealerTradeRateT1(dealerRatePolicies.get(i).getDealerTradeRateT1().setScale(2));
+                    changeArr.setDealerTradeRateD1(dealerRatePolicies.get(i).getDealerTradeRateD1().setScale(2));
+                    changeArr.setDealerTradeRateD0(dealerRatePolicies.get(i).getDealerTradeRateD0().setScale(2));
+                    fixedArr.setMerchantMinRateT1(dealerRatePolicies.get(i).getMerchantMinRateT1().setScale(2));
+                    fixedArr.setMerchantMaxRateT1(dealerRatePolicies.get(i).getMerchantMaxRateT1().setScale(2));
+                    fixedArr.setMerchantMinRateD1(dealerRatePolicies.get(i).getMerchantMinRateD1().setScale(2));
+                    fixedArr.setMerchantMaxRateD1(dealerRatePolicies.get(i).getMerchantMaxRateD1().setScale(2));
+                    fixedArr.setMerchantMinRateD0(dealerRatePolicies.get(i).getMerchantMinRateD0().setScale(2));
+                    fixedArr.setMerchantMaxRateD0(dealerRatePolicies.get(i).getMerchantMaxRateD0().setScale(2));
+                    dealerRatePolicyResponse.setFixedArr(fixedArr);
+                    dealerRatePolicyResponse.setChangeArr(changeArr);
+                }
+                dealerRatePolicyResponses.add(dealerRatePolicyResponse);
+            }
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerRatePolicyResponses);
+    }
+    /**
+     * 保存或修改好收银代理商政策
+     * @param dealerRatePolicySaveOrUpdateRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveOrUpdateDealerRatePolicy", method = RequestMethod.POST)
+    public CommonResponse saveOrUpdateDealerRatePolicy (@RequestBody DealerRatePolicySaveOrUpdateRequest dealerRatePolicySaveOrUpdateRequest) {
+        List<DealerRatePolicy> dealerRatePolicies = dealerRatePolicyService.selectByDealerId(dealerRatePolicySaveOrUpdateRequest.getDealerId());
+        List<DealerRatePolicyResponse> dealerRatePolicyList = dealerRatePolicySaveOrUpdateRequest.getDealerRatePolicies();
+        if(dealerRatePolicyList.size()<=0){
+            return CommonResponse.simpleResponse(-1, "政策不能为空");
+        }
+        final CommonResponse commonResponse = this.checkRatePolicy(dealerRatePolicyList);
+        if (1 != commonResponse.getCode()) {
+            return commonResponse;
+        }
+        if(dealerRatePolicies.size()>0){
+            for(int i=0;i<dealerRatePolicyList.size();i++){
+                DealerRatePolicy dealerRatePolicy = new DealerRatePolicy();
+                dealerRatePolicy.setId(dealerRatePolicyList.get(i).getId());
+                dealerRatePolicy.setStatus(EnumStatus.NORMAL.getId());
+                dealerRatePolicy.setDealerId(dealerRatePolicySaveOrUpdateRequest.getDealerId());
+                dealerRatePolicy.setPolicyType(dealerRatePolicyList.get(i).getPolicyType());
+                dealerRatePolicy.setSn(dealerRatePolicyList.get(i).getSn());
+                if(!(EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicyList.get(i).getPolicyType())){
+                    dealerRatePolicy.setDealerTradeRateT1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateT1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMinRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateT1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMaxRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateT1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+
+                    dealerRatePolicy.setDealerTradeRateD1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMinRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMaxRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+
+                    dealerRatePolicy.setDealerTradeRateD0(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD0().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMinRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD0().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMaxRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD0().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                }else{
+                    dealerRatePolicy.setDealerTradeRateT1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateT1());
+                    dealerRatePolicy.setMerchantMinRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateT1());
+                    dealerRatePolicy.setMerchantMaxRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateT1());
+
+                    dealerRatePolicy.setDealerTradeRateD1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD1());
+                    dealerRatePolicy.setMerchantMinRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD1());
+                    dealerRatePolicy.setMerchantMaxRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD1());
+
+                    dealerRatePolicy.setDealerTradeRateD0(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD0());
+                    dealerRatePolicy.setMerchantMinRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD0());
+                    dealerRatePolicy.setMerchantMaxRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD0());
+                }
+                dealerRatePolicyService.update(dealerRatePolicy);
+            }
+        }else{
+            for(int i=0;i<dealerRatePolicyList.size();i++){
+                DealerRatePolicy dealerRatePolicy = new DealerRatePolicy();
+                dealerRatePolicy.setStatus(EnumStatus.NORMAL.getId());
+                dealerRatePolicy.setDealerId(dealerRatePolicySaveOrUpdateRequest.getDealerId());
+                dealerRatePolicy.setPolicyType(dealerRatePolicyList.get(i).getPolicyType());
+                dealerRatePolicy.setSn(dealerRatePolicyList.get(i).getSn());
+                if(!(EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicyList.get(i).getPolicyType())){
+                    dealerRatePolicy.setDealerTradeRateT1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateT1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMinRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateT1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMaxRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateT1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+
+                    dealerRatePolicy.setDealerTradeRateD1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMinRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMaxRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD1().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+
+                    dealerRatePolicy.setDealerTradeRateD0(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD0().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMinRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD0().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                    dealerRatePolicy.setMerchantMaxRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD0().
+                            divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
+                }else{
+                    dealerRatePolicy.setDealerTradeRateT1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateT1());
+                    dealerRatePolicy.setMerchantMinRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateT1());
+                    dealerRatePolicy.setMerchantMaxRateT1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateT1());
+
+                    dealerRatePolicy.setDealerTradeRateD1(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD1());
+                    dealerRatePolicy.setMerchantMinRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD1());
+                    dealerRatePolicy.setMerchantMaxRateD1(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD1());
+
+                    dealerRatePolicy.setDealerTradeRateD0(dealerRatePolicyList.get(i).getChangeArr().getDealerTradeRateD0());
+                    dealerRatePolicy.setMerchantMinRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMinRateD0());
+                    dealerRatePolicy.setMerchantMaxRateD0(dealerRatePolicyList.get(i).getFixedArr().getMerchantMaxRateD0());
+                }
+                dealerRatePolicyService.insert(dealerRatePolicy);
+            }
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    private CommonResponse checkRatePolicy(List<DealerRatePolicyResponse> dealerRatePolicyList){
+        if(dealerRatePolicyList.size()!=3){
+            return CommonResponse.simpleResponse(-1, "尚有未填写选项");
+        }
+        for(int i=0;i<dealerRatePolicyList.size();i++){
+            DealerRatePolicyResponse dealerRatePolicy = dealerRatePolicyList.get(i);
+            if((EnumPolicyType.WECHAT.getId()).equals(dealerRatePolicy.getPolicyType())){
+                Optional<DealerRatePolicy> dealerRatePolicyOptional = dealerRatePolicyService.selectByDealerIdAndPolicyType(super.getDealerId(),EnumPolicyType.WECHAT.getId());
+                if(!dealerRatePolicyOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "boss尚未给一代设置微信T1代理政策");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "微信T1代理商结算价不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "微信T1商户最小费率不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "微信T1商户最大费率不能为空");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "微信D1代理商结算价不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "微信D1商户最小费率不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "微信D1商户最大费率不能为空");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "微信D0代理商结算价不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "微信D0商户最小费率不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "微信D0商户最大费率不能为空");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateT1().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateT1().divide(new BigDecimal("100")))>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代微信T1代理商结算价");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD1().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateD1().divide(new BigDecimal("100")))>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代微信D1代理商结算价");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD0().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateD0().divide(new BigDecimal("100")))>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代微信D0代理商结算价");
+                }
+            }
+            if((EnumPolicyType.ALIPAY.getId()).equals(dealerRatePolicy.getPolicyType())){
+                Optional<DealerRatePolicy> dealerRatePolicyOptional = dealerRatePolicyService.selectByDealerIdAndPolicyType(super.getDealerId(),EnumPolicyType.ALIPAY.getId());
+                if(!dealerRatePolicyOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "boss尚未给一代设置支付宝T1代理政策");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝T1代理商结算价不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝T1商户最小费率不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝T1商户最大费率不能为空");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝D1代理商结算价不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝D1商户最小费率不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝D1商户最大费率不能为空");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝D0代理商结算价不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝D0商户最小费率不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "支付宝D0商户最大费率不能为空");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateT1().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateT1().divide(new BigDecimal("100")))>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代支付宝T1代理商结算价");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD1().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateD1().divide(new BigDecimal("100")))>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代支付宝D1代理商结算价");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD0().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateD0().divide(new BigDecimal("100")))>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代支付宝D0代理商结算价");
+                }
+            }
+            if((EnumPolicyType.WITHDRAW.getId()).equals(dealerRatePolicy.getPolicyType())){
+                Optional<DealerRatePolicy> dealerRatePolicyOptional = dealerRatePolicyService.selectByDealerIdAndPolicyType(super.getDealerId(),EnumPolicyType.WITHDRAW.getId());
+                if(!dealerRatePolicyOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "boss尚未给一代设置提现手续费T1代理政策");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费T1代理商手续费不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费T1商户最小手续费不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateT1()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费T1商户最大手续费不能为空");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D1代理商手续费不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D1商户最小手续费不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateD1()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D1商户最大手续费不能为空");
+                }
+                if(dealerRatePolicy.getChangeArr().getDealerTradeRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D0代理商手续费不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMinRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D0商户最小手续费不能为空");
+                }
+                if(dealerRatePolicy.getFixedArr().getMerchantMaxRateD0()==null){
+                    return CommonResponse.simpleResponse(-1, "提现手续费D0商户最大手续费不能为空");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateT1().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateT1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代T1提现手续费");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD1().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateD1())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代D1提现手续费");
+                }
+                if(dealerRatePolicyOptional.get().getDealerTradeRateD0().compareTo(dealerRatePolicy.getChangeArr().getDealerTradeRateD0())>0){
+                    return CommonResponse.simpleResponse(-1, "二代必须大于等于一代D0提现手续费");
+                }
+            }
+        }
+        return CommonResponse.simpleResponse(1, "");
+    }
     /**
      * 注册信息
      * @return

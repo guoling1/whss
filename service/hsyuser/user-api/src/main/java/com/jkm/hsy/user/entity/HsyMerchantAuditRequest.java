@@ -14,6 +14,10 @@ public class HsyMerchantAuditRequest {
     private String branchCode;//联行号
     private String bankName;//银行名称
     private String branchName;//联行名称
+    private String cardNo;//银行号
+    private String bankAddress;//支行名称
+    private String mobile;//报单员手机号
+
     /**
      * 状态
      */

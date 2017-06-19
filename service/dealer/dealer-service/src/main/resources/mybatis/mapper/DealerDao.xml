@@ -220,8 +220,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType=='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType=='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
         </where>
     </select>
@@ -255,20 +258,8 @@
         )
         ) AS hss_product_id,
         (
-        SELECT DISTINCT
-        (product_id)
-        FROM
-        tb_dealer_channel_rate
-        WHERE
-        dealer_id = d.id
-        AND product_id IN (
-        SELECT
-        id
-        FROM
-        tb_product
-        WHERE
-        type = 'hsy'
-        )
+        SELECT count(1) FROM app_dealer_rate_policy
+        WHERE dealer_id=d.id and status = 1
         ) AS hsy_product_id,
         d.mobile
         FROM tb_dealer as d
@@ -286,8 +277,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType=='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType=='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             ORDER BY d.create_time DESC LIMIT #{offset},#{count}
         </where>
@@ -310,8 +304,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType=='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType=='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -348,20 +345,8 @@
         )
         ) AS hss_product_id,
         (
-        SELECT DISTINCT
-        (product_id)
-        FROM
-        tb_dealer_channel_rate
-        WHERE
-        dealer_id = d.id
-        AND product_id IN (
-        SELECT
-        id
-        FROM
-        tb_product
-        WHERE
-        type = 'hsy'
-        )
+        SELECT count(1) FROM app_dealer_rate_policy
+        WHERE dealer_id=d.id and status = 1
         ) AS hsy_product_id,
         (select proxy_name from tb_dealer WHERE id =d.first_level_dealer_id) as first_proxy_name,
         d.mobile
@@ -380,8 +365,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType=='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType=='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -467,8 +455,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType=='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType=='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
         </where>
     </select>
@@ -502,20 +493,8 @@
         )
         ) AS hss_product_id,
         (
-        SELECT DISTINCT
-        (product_id)
-        FROM
-        tb_dealer_channel_rate
-        WHERE
-        dealer_id = d.id
-        AND product_id IN (
-        SELECT
-        id
-        FROM
-        tb_product
-        WHERE
-        type = 'hsy'
-        )
+        SELECT count(1) FROM app_dealer_rate_policy
+        WHERE dealer_id=d.id and status = 1
         ) AS hsy_product_id,
         d.mobile
         FROM tb_dealer as d
@@ -533,8 +512,11 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
-            <if test="sysType != null and sysType!=''">
+            <if test="sysType != null and sysType!='' and sysType=='hss'">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="sysType != null and sysType!='' and sysType=='hsy'">
+                AND d.id IN (select distinct(dealer_id) from app_dealer_rate_policy where status=1)
             </if>
             ORDER BY d.create_time DESC LIMIT #{offset},#{count}
         </where>

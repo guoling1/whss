@@ -73,8 +73,8 @@
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
-                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProductHsy,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProductHsy,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改结算政策</a>
               </template>
             </el-table-column>
           </el-table>
@@ -92,7 +92,7 @@
         </div>
       </div>
     </div>
-  </div>
+
   </div>
 </template>
 <script lang="babel">
@@ -163,9 +163,15 @@
         window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
 //        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:idproductId:productId,product:val}});
       },
+      openProductHsy:function (id,productId,val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddProHsy?dealerId='+id+'&productId='+productId+'&product='+val);
+      },
       auditProduct:function (id,productId,val) {
         window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
 //        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+      },
+      auditProductHsy:function (id,productId,val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddProHsy?dealerId='+id+'&productId='+productId+'&product='+val);
       },
       agentAdd:function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/agentAddBase');

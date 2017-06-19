@@ -103,20 +103,28 @@ public enum EnumPayChannelSign {
     /**
      * 民生微信
      */
-    MS_WECHAT(701, "ms_wechat", EnumPaymentChannel.WECHAT_PAY, "民生微信", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
+    XMMS_WECHAT_T1(701, "xmms_wechat_t1", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信T1", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, true),
     /**
      * 民生支付宝
      */
-    MS_ALIPAY(702, "ms_alipay", EnumPaymentChannel.ALIPAY, "民生支付宝", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
+    XMMS_ALIPAY_T1(702, "xmms_alipay_t1", EnumPaymentChannel.ALIPAY, "厦门民生支付宝T1", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, true),
+    /**
+     * 民生微信
+     */
+    XMMS_WECHAT_D0(703, "xmms_wechat_d0", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信D0", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
+    /**
+     * 民生支付宝
+     */
+    XMMS_ALIPAY_D0(704, "xmms_alipay_d0", EnumPaymentChannel.ALIPAY, "厦门民生支付宝D0", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
 
     /**
      * 收银家WX
      */
-    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
     /**
      * 收银家zfb
      */
-    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
     /**
      * 合利宝快捷
      */
@@ -136,7 +144,11 @@ public enum EnumPayChannelSign {
     /**
      * 合利宝QQ
      */
-    HJ_QQPAY(1004, "hj_qqpay", EnumPaymentChannel.QQPAY, "汇聚QQ钱包", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false);
+    HJ_QQPAY(1004, "hj_qqpay", EnumPaymentChannel.QQPAY, "汇聚QQ钱包", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
+    /**
+     * 微信官方支付
+     */
+    WECHAT_PAY(1101, "wechat_pay", EnumPaymentChannel.WECHAT_PAY, "微信官方支付", EnumUpperChannel.WECHAT, false, EnumBalanceTimeType.T1, true);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;

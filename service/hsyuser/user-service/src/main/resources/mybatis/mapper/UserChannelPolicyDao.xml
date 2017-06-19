@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.UserChannelPolicyDao">
+
+    <sql id="Base_Column_List">
+        id,	user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,
+        open_product_status,open_product_marks,exchannel_code,app_id,exchannel_event_code,status,
+        create_time,update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_user_channel_policy(user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,open_product_status,open_product_marks,exchannel_code,app_id,exchannel_event_code,status)
+        VALUES(#{userId},#{channelName},#{channelTypeSign},#{policyType},#{settleType},#{netStatus},#{netMarks},#{openProductStatus},#{openProductMarks},#{exchannelCode},#{appId},#{exchannelEventCode},#{status})
+    </insert>
+
+    <update id="updateInit">
+        UPDATE app_user_channel_policy
+        SET
+        user_id = #{userId},
+        channel_name = #{channelName},
+        channel_type_sign = #{channelTypeSign},
+        policy_type = #{policyType},
+        settle_type = #{settleType},
+        net_status = #{netStatus},
+        open_product_status = #{openProductStatus},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByUserIdAndChannelTypeSign" resultType="com.jkm.hsy.user.entity.UserChannelPolicy">
+        SELECT <include refid="Base_Column_List"/> FROM app_user_channel_policy
+        WHERE channel_type_sign=#{channelTypeSign} and user_id=#{userId} and status = 1;
+    </select>
+
+    <update id="updateByUserIdAndChannelTypeSign">
+        UPDATE app_user_channel_policy
+        <set>
+            <if test="netStatus!=null and netStatus!=''">net_status = #{netStatus},</if>
+            <if test="netMarks!=null and netMarks!=''">net_marks = #{netMarks},</if>
+            <if test="openProductStatus!=null and openProductStatus!=''">open_product_status = #{openProductStatus},</if>
+            <if test="openProductMarks!=null and openProductMarks!=''">open_product_marks = #{openProductMarks},</if>
+            <if test="exchannelCode!=null and exchannelCode!=''">exchannel_code = #{exchannelCode},</if>
+            <if test="exchannelEventCode!=null and exchannelEventCode!=''">exchannel_event_code = #{exchannelEventCode}</if>
+        </set>
+        WHERE user_id = #{userId} and channel_type_sign = #{channelTypeSign}
+    </update>
+
+    <update id="updateHxNetInfo">
+        UPDATE app_user_channel_policy
+        <set>
+            <if test="netStatus!=null and netStatus!=''">net_status = #{netStatus},</if>
+            <if test="netMarks!=null and netMarks!=''">net_marks = #{netMarks},</if>
+            <if test="exchannelCode!=null and exchannelCode!=''">exchannel_code = #{exchannelCode}</if>
+        </set>
+        WHERE user_id = #{userId} and channel_type_sign in(801,802)
+    </update>
+
+    <update id="updateHxOpenProduct">
+        UPDATE app_user_channel_policy
+        <set>
+            <if test="openProductStatus!=null and openProductStatus!=''">open_product_status = #{openProductStatus},</if>
+            <if test="openProductMarks!=null and openProductMarks!=''">open_product_marks = #{openProductMarks},</if>
+            <if test="exchannelEventCode!=null and exchannelEventCode!=''">exchannel_event_code = #{exchannelEventCode}</if>
+        </set>
+        WHERE user_id = #{userId} and channel_type_sign in(801,802)
+    </update>
+
+    <select id="getUserChannelList" resultType="com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse">
+        SELECT c.channel_name,c.settle_type,c.net_status,c.net_marks,
+        c.open_product_status,c.open_product_marks,c.exchannel_code,c.app_id,c.exchannel_event_code,
+        (select count(1) from app_user_current_channel_policy where user_id=c.user_id and (wechat_channel_type_sign=c.channel_type_sign or alipay_channel_type_sign=c.channel_type_sign)) as is_use
+        FROM app_user_channel_policy as c
+        WHERE c.user_id = #{userId} and c.status = 1 ORDER by c.channel_type_sign;
+    </select>
+
+    <select id="getUserChannelByUserIdAndPolicyType" resultType="com.jkm.hsy.user.help.requestparam.UserChannelPolicyUseResponse">
+        SELECT channel_name,channel_type_sign FROM app_user_channel_policy
+        WHERE policy_type=#{policyType} and user_id = #{userId} and status = 1 order by channel_type_sign;
+    </select>
+
+    <select id="getCurrentChannelName" resultType="com.jkm.hsy.user.help.requestparam.UserChannelListResponse">
+        SELECT (select channel_name from app_user_channel_policy where user_id=#{userId} and channel_type_sign=p.wechat_channel_type_sign) as wxChannelName,
+        (select channel_name from app_user_channel_policy where user_id=#{userId} and channel_type_sign=p.alipay_channel_type_sign) as zfbChannelName
+        FROM app_user_current_channel_policy as p
+        WHERE user_id = #{userId} and status = 1;
+    </select>
+</mapper>

@@ -38,4 +38,10 @@ public interface HsyCmbcDao {
      * @return
      */
     void updateHxbUserById(@Param("hxbOpenProduct") int hxbOpenProduct,@Param("hxbOpenProductRemarks") String hxbOpenProductRemarks,@Param("id") long id);
+    /**
+     * 根据globalId查询好收银用户
+     * @param globalId
+     * @return
+     */
+    AppAuUser selectByGlobalId(@Param("globalId") String globalId);
 }

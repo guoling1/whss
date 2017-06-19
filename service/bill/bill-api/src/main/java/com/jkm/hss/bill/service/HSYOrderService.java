@@ -5,6 +5,8 @@ import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
+
 /**
  * Created by wayne on 17/5/17.
  * 好收银订单处理
@@ -22,6 +24,31 @@ public interface HSYOrderService {
      * @return
      */
     int update(HsyOrder hsyOrder);
+
+    /**
+     * 更新订单金额和状态
+     *
+     * @param id
+     * @param amount
+     * @param status
+     */
+    void updateAmountAndStatus(long id, BigDecimal amount, int status);
+
+    /**
+     * 按id查询
+     *
+     * @param hsyOrderId
+     * @return
+     */
+    Optional<HsyOrder> getById(long hsyOrderId);
+
+    /**
+     * 加锁按id查询
+     *
+     * @param hsyOrderId
+     * @return
+     */
+    Optional<HsyOrder> getByIdWithLock(long hsyOrderId);
 
     /**
      * 根据交易订单号查询hsy订单

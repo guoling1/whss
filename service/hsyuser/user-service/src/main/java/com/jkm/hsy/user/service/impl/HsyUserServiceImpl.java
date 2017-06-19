@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
@@ -11,13 +12,20 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.entity.SmsTemplate;
+import com.jkm.hss.product.dao.BasicChannelDao;
+import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hsy.user.Enum.EnumNetStatus;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.constant.VerificationCodeType;
+import com.jkm.hsy.user.dao.*;
 import com.jkm.hsy.user.dao.HsyChannelDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -33,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service("hsyUserService")
@@ -54,7 +63,15 @@ public class HsyUserServiceImpl implements HsyUserService {
     @Autowired
     private QRCodeService qRCodeService;
     @Autowired
+    private BasicChannelDao basicChannelDao;
+    @Autowired
+    private UserChannelPolicyDao userChannelPolicyDao;
+    @Autowired
+    private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
+    @Autowired
     private HsyChannelDao hsyChannelDao;
+    @Autowired
+    private UserTradeRateDao userTradeRateDao;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -103,6 +120,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setParentID(0L);
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
+        appAuUser.setIsProtocolSeen(0);
         hsyUserDao.insert(appAuUser);
         AppAuUser appAuUserUp=new AppAuUser();
         appAuUserUp.setId(appAuUser.getId());
@@ -143,27 +161,62 @@ public class HsyUserServiceImpl implements HsyUserService {
             appAuUserToken.setUid(appAuUser.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
 
-//        List<AppCmChannelProduct> channelProductList=hsyChannelDao.findAllProductHsyChannel();
-//        for(AppCmChannelProduct p:channelProductList){
-//
-//        }
+        List<BasicChannel> channelList=basicChannelDao.selectHsyAll();
+        for(BasicChannel basicChannel:channelList)
+        {
+            UserChannelPolicy userChannelPolicyFind=userChannelPolicyDao.selectByUserIdAndChannelTypeSign(appAuUser.getId(),basicChannel.getChannelTypeSign());
+            if(userChannelPolicyFind==null) {
+                UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
+                if (basicChannel.getIsNeed() == 1)
+                    userChannelPolicy.setNetStatus(EnumNetStatus.UNSUPPORT.getId());
+                else
+                    userChannelPolicy.setNetStatus(EnumNetStatus.UNENT.getId());
+
+                if (basicChannel.getThirdCompany().equals("微信"))
+                    userChannelPolicy.setPolicyType(EnumPolicyType.WECHAT.getId());
+                else
+                    userChannelPolicy.setPolicyType(EnumPolicyType.ALIPAY.getId());
+
+                userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+                userChannelPolicy.setChannelName(basicChannel.getChannelName());
+                userChannelPolicy.setChannelTypeSign(basicChannel.getChannelTypeSign());
+                userChannelPolicy.setSettleType(basicChannel.getBasicBalanceType());
+                userChannelPolicy.setUserId(appAuUser.getId());
+                userChannelPolicy.setOpenProductStatus(0);
+
+                userChannelPolicyDao.insert(userChannelPolicy);
+            }
+        }
+        UserCurrentChannelPolicy ucc = userCurrentChannelPolicyDao.selectByUserId(appAuUser.getId());
+        if(ucc==null)
+        {
+            UserCurrentChannelPolicy userCurrentChannelPolicy = new UserCurrentChannelPolicy();
+            userCurrentChannelPolicy.setUserId(appAuUser.getId());
+            userCurrentChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+            userCurrentChannelPolicy.setWechatChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+            userCurrentChannelPolicy.setAlipayChannelTypeSign(EnumPayChannelSign.SYJ_ALIPAY.getId());
+            userCurrentChannelPolicyDao.insert(userCurrentChannelPolicy);
+        }
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
@@ -232,17 +285,20 @@ public class HsyUserServiceImpl implements HsyUserService {
             appAuUserToken.setUid(appAuUserFind.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -306,6 +362,27 @@ public class HsyUserServiceImpl implements HsyUserService {
             }
             appBizCard.setBranchDistrictName(districtName);
         }
+        if(appBizCard.getBranchCode()==null)
+            appBizCard.setBranchCode("-1");
+        List<UserTradeRate> userTradeRateList=userTradeRateDao.selectAllByUserId(appAuUserFind.getId());
+        AppChannelRate appChannelRate=new AppChannelRate();
+        appChannelRate.setIsOpenD0(appAuUserFind.getIsOpenD0());
+        appChannelRate.setWithdrawAmount(new BigDecimal("0.01"));
+        if(userTradeRateList!=null&&userTradeRateList.size()!=0){
+            for(UserTradeRate userTradeRate:userTradeRateList){
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.ALIPAY.getId()))
+                {
+                    appChannelRate.setAlipayTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setAlipayIsOpen(userTradeRate.getIsOpen());
+                }
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.WECHAT.getId()))
+                {
+                    appChannelRate.setWechatTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setWechatIsOpen(userTradeRate.getIsOpen());
+                }
+            }
+        }
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -350,6 +427,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
+        map.put("appChannelRate",appChannelRate);
         return gson.toJson(map);
     }
     /**HSY001048 刷新用户登录*/
@@ -395,17 +473,20 @@ public class HsyUserServiceImpl implements HsyUserService {
             appAuUserToken.setUid(appAuUserFind.getId());
             appAuUserToken.setTid(tokenList.get(0).getId());
             List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            Date dateToken=new Date();
             if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
             {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
-                appAuUserTokenUpdate.setLoginTime(new Date());
+                appAuUserTokenUpdate.setLoginTime(dateToken);
+                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
             {
                 appAuUserToken.setStatus(1);
-                appAuUserToken.setLoginTime(new Date());
+                appAuUserToken.setLoginTime(dateToken);
+                appAuUserToken.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.insertAppAuUserToken(appAuUserToken);
             }
         }
@@ -1036,6 +1117,28 @@ public class HsyUserServiceImpl implements HsyUserService {
             }
             appBizCard.setBranchDistrictName(districtName);
         }
+
+        if(appBizCard.getBranchCode()==null)
+            appBizCard.setBranchCode("-1");
+        List<UserTradeRate> userTradeRateList=userTradeRateDao.selectAllByUserId(appAuUser.getId());
+        AppChannelRate appChannelRate=new AppChannelRate();
+        appChannelRate.setIsOpenD0(appAuUserFind.getIsOpenD0());
+        appChannelRate.setWithdrawAmount(new BigDecimal("0.01"));
+        if(userTradeRateList!=null&&userTradeRateList.size()!=0){
+            for(UserTradeRate userTradeRate:userTradeRateList){
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.ALIPAY.getId()))
+                {
+                    appChannelRate.setAlipayTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setAlipayIsOpen(userTradeRate.getIsOpen());
+                }
+                if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.WECHAT.getId()))
+                {
+                    appChannelRate.setWechatTradeRateT1(userTradeRate.getTradeRateT1());
+                    appChannelRate.setWechatIsOpen(userTradeRate.getIsOpen());
+                }
+            }
+        }
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -1100,6 +1203,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
+        map.put("appChannelRate",appChannelRate);
         return gson.toJson(map);
     }
 
@@ -1183,6 +1287,26 @@ public class HsyUserServiceImpl implements HsyUserService {
         shop.setStatus(appBizShop.getStatus());
         map.put("appBizShop",shop);
         return gson.toJson(map);
+    }
+
+    /**HSY001056 更改协议查看状态*/
+    public String updateProtocolSeenStatus(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"查询用户ID");
+        appAuUser.setIsProtocolSeen(1);
+        appAuUser.setUpdateTime(new Date());
+        hsyUserDao.updateByID(appAuUser);
+        return "";
     }
 
 }

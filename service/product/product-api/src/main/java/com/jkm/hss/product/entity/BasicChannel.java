@@ -128,6 +128,16 @@ public class BasicChannel extends BaseEntity{
     private int isUse;
 
     /**
+     * 0 否 1是
+     */
+    private int isHsy;
+
+    /**
+     * 0否 1是
+     */
+    private int isSpecial;
+
+    /**
      * 备注
      */
     private String remarks;

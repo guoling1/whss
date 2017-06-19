@@ -78,7 +78,18 @@ public class V1o6BizMapper {
         bizMapper.put("HSY001049", new String[]{"hsyShopService","updateHsyShopEmail"});
         /**首页广告*/
         bizMapper.put("HSY001050", new String[]{"AdvertisementService","getvalidList","首页广告"});
-        /**首页广告*/
+        /**查询会员卡*/
         bizMapper.put("HSY001051", new String[]{"hsyMembershipService","findMemshipCards"});
+        /**查询会员卡开卡二维码*/
+        bizMapper.put("HSY001052", new String[]{"hsyMembershipService","findMemberQr"});
+        /**查询会员卡详情*/
+        bizMapper.put("HSY001053", new String[]{"hsyMembershipService","findMemshipCardsInfo"});
+        /**停止(启用)开通会员卡*/
+        bizMapper.put("HSY001054", new String[]{"hsyMembershipService","updateMemshipCardsStatus"});
+        /**修改会员卡*/
+        bizMapper.put("HSY001055", new String[]{"hsyMembershipService","updateMemshipCard"});
+        /**更改协议查看状态*/
+        bizMapper.put("HSY001056", new String[]{"hsyUserService","updateProtocolSeenStatus"});
+
     }
 }

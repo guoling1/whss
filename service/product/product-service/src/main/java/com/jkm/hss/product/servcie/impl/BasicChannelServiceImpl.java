@@ -128,6 +128,16 @@ public class BasicChannelServiceImpl implements BasicChannelService {
             return EnumPayChannelSign.codeOf(payType);
         }
     }
+
+    /**
+     * 查询好收银通道
+     *
+     * @return
+     */
+    @Override
+    public List<BasicChannel> selectHsyAll() {
+        return this.basicChannelDao.selectHsyAll();
+    }
 //    @Override
 //    public List<BasicChannel> selectListChannel() {
 //        return this.basicChannelDao.selectListChannel();

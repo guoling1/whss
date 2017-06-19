@@ -13,9 +13,11 @@ public interface BaseSettlementDateService {
     /**
      * 获取结算时间
      *
-     * @param order
+     * @param appId
+     * @param tradeDate
+     * @param settleType
      * @param upperChannel
      * @return
      */
-    Date getSettlementDate(Order order, EnumUpperChannel upperChannel);
+    Date getSettlementDate(String appId, Date tradeDate, String settleType, EnumUpperChannel upperChannel);
 }

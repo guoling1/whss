@@ -31,4 +31,8 @@
     <update id="updateHxbUserById">
         update app_au_user set HXBOPENPRODUCT=#{hxbOpenProduct},HXBOPENPRODUCTREMARKS=#{hxbOpenProductRemarks} where ID=#{id}
     </update>
+    <!-- 根据globalId查询好收银用户 -->
+    <select id="selectByGlobalId" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        SELECT <include refid="Base_Column_User_List" /> FROM app_au_user WHERE GLOBALID = #{globalId}
+    </select>
 </mapper>

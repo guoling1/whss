@@ -5,6 +5,7 @@
     <select id="findAppAuUserByParam" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select distinct
           user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+          user.ISPROTOCOLSEEN,user.ISOPEND0,
           (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
           user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
@@ -27,6 +28,7 @@
         select distinct
         user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
         (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+        user.ISPROTOCOLSEEN,user.ISOPEND0,
         user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
         (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
         (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
@@ -45,7 +47,7 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUser">
-        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,PARENTID,ROLETEMP,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{accountID},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{parentID},#{roleTemp},#{createTime},#{updateTime})
+        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,PARENTID,ROLETEMP,ISPROTOCOLSEEN,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{accountID},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{parentID},#{roleTemp},#{isProtocolSeen},#{createTime},#{updateTime})
     </insert>
 
     <update id="update" parameterType="com.jkm.hsy.user.entity.AppAuUser">
@@ -101,6 +103,7 @@
             <if test="parentID!=null">PARENTID=#{parentID},</if>
             <if test="roleTemp!=null">ROLETEMP=#{roleTemp},</if>
             <if test="contractID!=null and contractID!=''">CONTRACTID=#{contractID},</if>
+            <if test="isProtocolSeen!=null">ISPROTOCOLSEEN=#{isProtocolSeen},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -140,10 +143,10 @@
     <select id="findAppAuTokenByClientid" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
         select
         ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
-        from app_au_token
-        where 1=1
-        <if test="clientid!=null and clientid!=''">and CLIENTID=#{clientid}</if>
-        order by UPDATETIME desc
+        from app_au_token token left join app_au_user_token ut on token.ID=ut.TID
+        where ut.status=1
+        <if test="clientid!=null and clientid!=''">and token.CLIENTID=#{clientid}</if>
+        order by token.UPDATETIME desc
     </select>
 
     <update id="updateAppAuUserTokenStatus" parameterType="java.lang.Long">
@@ -163,11 +166,11 @@
     </select>
 
     <insert id="insertAppAuUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
-        insert into app_au_user_token(UID,TID,STATUS,LOGINTIME) values(#{uid},#{tid},#{status},#{loginTime})
+        insert into app_au_user_token(UID,TID,STATUS,LOGINTIME,OUTTIME) values(#{uid},#{tid},#{status},#{loginTime},#{outTime})
     </insert>
 
     <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
-        update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime} where UID=#{uid} and TID=#{tid}
+        update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime},OUTTIME=#{outTime} where UID=#{uid} and TID=#{tid}
     </update>
 
     <update id="updateAppAuUserTokenStatusByTid" parameterType="java.lang.Long">

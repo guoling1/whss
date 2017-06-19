@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -307,6 +306,8 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"开户行");
         if(!(appBizCard.getBranchCode()!=null&&!appBizCard.getBranchCode().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"联行号");
+        if(appBizCard.getBranchCode().equals("-1"))
+            appBizCard.setBranchCode(null);
         if(!(appBizCard.getBankAddress()!=null&&!appBizCard.getBankAddress().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"所在支行");
         if(!(appBizCard.getCardAccountName()!=null&&!appBizCard.getCardAccountName().equals("")))
@@ -718,5 +719,25 @@ public class HsyShopServiceImpl implements HsyShopService {
             }
         }).create();
         return gson.toJson(pageAll);
+    }
+
+    @Override
+    public List<AppBizBankBranch> getBankNameList(String bankName) {
+        List<AppBizBankBranch> list = this.hsyShopDao.getBankNameList(bankName);
+        return list;
+    }
+
+    @Override
+    public String getPersonalBankNameList(String cardNo) {
+        String result = "";
+        Optional<BankCardBin> bankCardBinOptional=null;
+        bankCardBinOptional = bankCardBinService.analyseCardNo(cardNo);
+        result = bankCardBinOptional.get().getBankName();
+        return result;
+    }
+
+    @Override
+    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress) {
+        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress);
     }
 }
