@@ -11,6 +11,10 @@ import lombok.Getter;
  */
 public enum EnumPaymentChannel {
 
+    /**
+     * 会员卡支付
+     */
+    MEMBER_PAY(5, "会员卡"),
 
     /**
      * 微信
@@ -32,7 +36,7 @@ public enum EnumPaymentChannel {
     /**
      * 银联扫码
      */
-    UNIONPAY_CODE(5,"银联扫码");
+    UNIONPAY_CODE(6,"银联扫码");
 
     @Getter
     private int id;

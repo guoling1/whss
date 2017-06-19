@@ -350,6 +350,12 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getTrade(OrderTradeRequest req);
+    /**
+     * 代理商pc交易查询二级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getHsyTrade(OrderTradeRequest req);
 
     /**
      * 代理商pc交易查询一级
@@ -357,6 +363,12 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req);
+    /**
+     * 代理商pc交易查询一级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getHsyTradeFirst(OrderTradeRequest req);
 
     /**
      *  代理商pc交易查询二级总数
@@ -364,6 +376,12 @@ public interface OrderDao {
      * @return
      */
     int listCount(OrderTradeRequest req);
+    /**
+     *  代理商pc交易查询二级总数
+     * @param req
+     * @return
+     */
+    int listHsyCount(OrderTradeRequest req);
 
     /**
      * 代理商pc交易查询一级总数
@@ -371,6 +389,12 @@ public interface OrderDao {
      * @return
      */
     int listFirstCount(OrderTradeRequest req);
+    /**
+     * 代理商pc交易查询一级总数
+     * @param req
+     * @return
+     */
+    int listHsyFirstCount(OrderTradeRequest req);
 
     /**
      * 提现下载
@@ -471,4 +495,89 @@ public interface OrderDao {
      * @return
      */
     String getOrderCount1(QueryOrderRequest req);
+
+    /**
+     * 统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount(OrderTradeRequest req);
+
+    /**
+     * 统计金额
+     * @param req
+     * @return
+     */
+    String getAmountCount1(OrderTradeRequest req);
+
+    /**
+     * 统计手续费
+     * @param req
+     * @return
+     */
+    String getPoundageCount(OrderTradeRequest req);
+
+    /**
+     * 统计手续费
+     * @param req
+     * @return
+     */
+    String getPoundageCount1(OrderTradeRequest req);
+
+    /**
+     * 业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req);
+
+    /**
+     * 业绩统计总数
+     * @param req
+     * @return
+     */
+    int getAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 导出业绩
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> getDaiLiAchievement(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计总数
+     * @param req
+     * @return
+     */
+    int getDaiLiAchievementCount(QueryOrderRequest req);
+
+    /**
+     * 代理商业绩统计总数
+     * @param req
+     * @return
+     */
+    List<AchievementStatisticsResponse> downloadeDaiLi(QueryOrderRequest req);
+
+    List<MerchantTradeResponse> getTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTrade1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getTradeFirst1(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> getHsyTradeFirst1(OrderTradeRequest req);
+
+    /**
+     * hsy交易详情
+     * @param orderNo
+     * @return
+     */
+    MerchantTradeResponse selectOrderListHsy(String orderNo);
 }

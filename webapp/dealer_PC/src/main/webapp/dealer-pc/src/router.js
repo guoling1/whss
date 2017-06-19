@@ -17,6 +17,7 @@ import dealer_add from './components/dealer_add.vue'
 import first_dealer_add from './components/first_dealer_add.vue'
 import dealer_modify from './components/dealer_modify.vue'
 import product_add from './components/product_add.vue'
+import product_add_hsy from './components/product_add_hsy.vue'
 import distribution_qrcode from './components/distribution_qrcode.vue'
 import production_qrcode from './components/production_qrcode.vue'
 import production_qrcode_record from './components/production_qrcode_record.vue'
@@ -38,6 +39,7 @@ import roles_add from './components/roles_add.vue'
 import information from './components/information.vue'
 import policy from './components/policy.vue'
 import change_password from './components/change_password.vue'
+import achievement from './components/achievement.vue'
 
 import store from './store/index'
 
@@ -67,6 +69,7 @@ const routes = [
   {
     path: '/daili/app', redirect: '/daili/app/home', component: index,
     children: [
+      {path: 'achievement', name: "achievement", component: achievement},
       {path: 'development', name: "development", component: development},
       {path: 'home', name: "home", component: home},
       {path: 'profits_detail', name: "profits_detail", component: profits_detail},
@@ -77,6 +80,7 @@ const routes = [
       {path: 'first_dealer_add', name: "first_dealer_add", component: first_dealer_add},
       {path: 'dealer_modify', name: "dealer_modify", component: dealer_modify},
       {path: 'product_add', name: "product_add", component: product_add},
+      {path: 'product_add_hsy', name: "product_add_hsy", component: product_add_hsy},
       {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},
       {path: 'production_qrcode', name: "production_qrcode", component: production_qrcode},
       {path: 'production_qrcode_record', name: "production_qrcode_record", component: production_qrcode_record},

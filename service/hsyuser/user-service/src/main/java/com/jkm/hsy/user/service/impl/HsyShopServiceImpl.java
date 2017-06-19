@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -179,6 +178,114 @@ public class HsyShopServiceImpl implements HsyShopService {
         hsyUserDao.updateByID(appAuUser);
         return "{\"auStep\":\"3\"}";
     }
+    /**HSY001006 更新店铺资料联系人 v1o6版本增加 by wayne*/
+    public String updateHsyShopContact1o6(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+
+        /**参数转化*/
+        AppBizShop appBizShop=null;
+        try{
+            appBizShop=gson.fromJson(dataParam, AppBizShop.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appBizShop.getId()!=null&&!appBizShop.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
+        if(!(appBizShop.getContactName()!=null&&!appBizShop.getContactName().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"联系人");
+        if(!(appBizShop.getContactCellphone()!=null&&!appBizShop.getContactCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"联系人手机");
+        if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+        if (!ValidateUtils.isMobile(appBizShop.getContactCellphone()))
+            throw new ApiHandleException(ResultCode.CELLPHONE_NOT_CORRECT_FORMAT);
+
+        MultipartFile fileA=files.get("fileA");
+        if(fileA==null||(fileA!=null&&fileA.getSize()==0))
+            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileA");
+        MultipartFile fileB=files.get("fileB");
+        if(fileB==null||(fileB!=null&&fileB.getSize()==0))
+            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileB");
+        MultipartFile fileC=files.get("fileC");
+        if(fileC==null||(fileC!=null&&fileC.getSize()==0))
+            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileC");
+//        MultipartFile fileD=files.get("fileD");
+//        if(fileD==null||(fileD!=null&&fileD.getSize()==0))
+//            throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,"fileD");
+
+
+        AppAuUser appAuUser=new AppAuUser();
+        appAuUser.setId(appBizShop.getUid());
+        Set<String> set=files.keySet();
+        Iterator<String> it=set.iterator();
+        while(it.hasNext()){
+            String fileKey=it.next();
+            MultipartFile file=files.get(fileKey);
+            String type="";
+            if(fileKey.equals("fileA")&&FileType.contains(appBizShop.getFileA()))
+                type=appBizShop.getFileA();
+            else if(fileKey.equals("fileB")&&FileType.contains(appBizShop.getFileB()))
+                type=appBizShop.getFileB();
+            else if(fileKey.equals("fileC")&&FileType.contains(appBizShop.getFileC()))
+                type=appBizShop.getFileC();
+//            else if(fileKey.equals("fileD")&&FileType.contains(appBizShop.getFileD()))
+//                type=appBizShop.getFileD();
+            else
+                throw new ApiHandleException(ResultCode.FILE_TYPE_NOT_EXSIT);
+            String uuid="";
+            try {
+                uuid=hsyFileService.insertFileAndUpload(file, type);
+            }catch(Exception e){
+                e.printStackTrace();
+                throw new ApiHandleException(ResultCode.FILE_UPLOAD_FAIL);
+            }
+            if(type.equals(FileType.IDCARDF.fileIndex))
+                appAuUser.setIdcardf(uuid);
+            else if(type.equals(FileType.IDCARDB.fileIndex))
+                appAuUser.setIdcardb(uuid);
+            else if(type.equals(FileType.IDCARDC.fileIndex))
+                appAuUser.setIdcardc(uuid);
+//            else if(type.equals(FileType.CONTRACT.fileIndex))
+//                appAuUser.setContractID(uuid);
+        }
+
+        /**商铺 用户修改*/
+        Date date=new Date();
+        appBizShop.setUpdateTime(date);
+        hsyShopDao.update(appBizShop);
+        appAuUser.setUpdateTime(date);
+        appAuUser.setAuStep("3");
+        appAuUser.setRealname(appBizShop.getContactName());
+        hsyUserDao.updateByID(appAuUser);
+        return "{\"auStep\":\"3\"}";
+    }
+
+    /**
+     * 设置商户邮箱
+     */
+    public String updateHsyShopEmail(String dataParam, AppParam appParam) throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+
+        /**参数转化*/
+        AppBizShop appBizShop=null;
+        try{
+            appBizShop=gson.fromJson(dataParam, AppBizShop.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+        /**参数验证*/
+        if(!(appBizShop.getId()!=null&&!appBizShop.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
+        if(!(appBizShop.getEmail()!=null&&!appBizShop.getEmail().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"邮箱");
+        /**商铺 用户修改*/
+        Date date=new Date();
+        appBizShop.setUpdateTime(date);
+        hsyShopDao.update(appBizShop);
+        return "";
+    }
 
     /**HSY001007 保存结算账户*/
     public String insertHsyCard(String dataParam,AppParam appParam)throws ApiHandleException{
@@ -199,6 +306,8 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"开户行");
         if(!(appBizCard.getBranchCode()!=null&&!appBizCard.getBranchCode().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"联行号");
+        if(appBizCard.getBranchCode().equals("-1"))
+            appBizCard.setBranchCode(null);
         if(!(appBizCard.getBankAddress()!=null&&!appBizCard.getBankAddress().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"所在支行");
         if(!(appBizCard.getCardAccountName()!=null&&!appBizCard.getCardAccountName().equals("")))
@@ -610,5 +719,25 @@ public class HsyShopServiceImpl implements HsyShopService {
             }
         }).create();
         return gson.toJson(pageAll);
+    }
+
+    @Override
+    public List<AppBizBankBranch> getBankNameList(String bankName) {
+        List<AppBizBankBranch> list = this.hsyShopDao.getBankNameList(bankName);
+        return list;
+    }
+
+    @Override
+    public String getPersonalBankNameList(String cardNo) {
+        String result = "";
+        Optional<BankCardBin> bankCardBinOptional=null;
+        bankCardBinOptional = bankCardBinService.analyseCardNo(cardNo);
+        result = bankCardBinOptional.get().getBankName();
+        return result;
+    }
+
+    @Override
+    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress) {
+        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress);
     }
 }

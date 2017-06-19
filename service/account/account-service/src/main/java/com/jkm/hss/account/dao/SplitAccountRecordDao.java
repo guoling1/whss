@@ -7,6 +7,7 @@ import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +45,18 @@ public interface SplitAccountRecordDao {
 
     long selectCountByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo, @Param("businessType") String businessType,
                             @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
+
+    /**
+     * 分润统计
+     * @param accountId
+     * @param orderNo
+     * @param businessType
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    BigDecimal selectStatisticsByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo,
+                                       @Param("businessType") String businessType, @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
 
     /**
      * 按分账单流水号查询

@@ -11,10 +11,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
-import com.jkm.hss.account.entity.Account;
-import com.jkm.hss.account.entity.FrozenRecord;
-import com.jkm.hss.account.entity.SettleAccountFlow;
-import com.jkm.hss.account.entity.SplitAccountRefundRecord;
+import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.AccountFlowService;
@@ -27,6 +24,7 @@ import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.helper.WithdrawParams;
 import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -51,6 +49,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
@@ -291,6 +290,63 @@ public class OrderServiceImpl implements OrderService {
         return playMoneyOrder.getId();
     }
 
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param withdrawParams
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public long createWithdrawOrder(final WithdrawParams withdrawParams) {
+        final Account account = this.accountService.getByIdWithLock(withdrawParams.getAccountId()).get();
+        Preconditions.checkState(account.getAvailable().compareTo(withdrawParams.getWithdrawAmount()) >= 0, "余额不足");
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(withdrawParams.getWithdrawAmount());
+        playMoneyOrder.setRealPayAmount(withdrawParams.getWithdrawAmount());
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(withdrawParams.getChannel());
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(withdrawParams.getAppId());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, withdrawParams.getAccountId(), withdrawParams.getChannel());
+        Preconditions.checkState(withdrawParams.getWithdrawAmount().compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
+        playMoneyOrder.setPoundage(merchantWithdrawPoundage);
+        playMoneyOrder.setGoodsName(withdrawParams.getNote());
+        playMoneyOrder.setGoodsDescribe(withdrawParams.getNote());
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setSettleType(withdrawParams.getSettleType());
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+        this.add(playMoneyOrder);
+        this.accountService.decreaseAvailableAmount(account.getId(), withdrawParams.getWithdrawAmount());
+        this.accountService.increaseFrozenAmount(account.getId(), withdrawParams.getWithdrawAmount());
+        final FrozenRecord frozenRecord = new FrozenRecord();
+        frozenRecord.setAccountId(account.getId());
+        frozenRecord.setFrozenAmount(withdrawParams.getWithdrawAmount());
+        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+        frozenRecord.setFrozenTime(new Date());
+        frozenRecord.setRemark("提现");
+        this.frozenRecordService.add(frozenRecord);
+        //添加账户流水--减少
+        final AccountFlow accountFlow = new AccountFlow();
+        accountFlow.setAccountId(account.getId());
+        accountFlow.setOrderNo(playMoneyOrder.getOrderNo());
+        accountFlow.setRefundOrderNo("");
+        accountFlow.setIncomeAmount(new BigDecimal("0.00"));
+        accountFlow.setOutAmount(withdrawParams.getWithdrawAmount());
+        accountFlow.setBeforeAmount(account.getAvailable());
+        accountFlow.setAfterAmount(account.getAvailable().subtract(accountFlow.getOutAmount()));
+        accountFlow.setChangeTime(new Date());
+        accountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+        accountFlow.setRemark("提现出账");
+        this.accountFlowService.add(accountFlow);
+        return playMoneyOrder.getId();
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -437,6 +493,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("appId",req.getAppId());
         map.put("globalId",req.getGlobalId());
         map.put("shortName",req.getShortName());
+        map.put("proxyNameHsy",req.getProxyNameHsy());
+        map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
         List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
@@ -608,6 +666,54 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
+        if("hsy".equals(req.getAppId())){
+            MerchantTradeResponse list = orderDao.selectOrderListHsy(req.getOrderNo());
+            if (list!=null){
+
+                if (list.getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.setAppId(hss);
+                }
+                if (list.getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.setAppId(hsy);
+                }
+
+                if (list.getMobile()!=null&&!"".equals(list.getMobile())){
+                    list.setMobile(MerchantSupport.decryptMobile(list.getMobile()));
+                }
+                if (list.getBankNo()!=null&&!"".equals(list.getBankNo())){
+                    list.setBankNo(MerchantSupport.decryptBankCard(list.getBankNo()));
+                }
+                if (list.getReserveMobile()!=null&&!"".equals(list.getReserveMobile())){
+                    list.setReserveMobile(MerchantSupport.decryptMobile(list.getReserveMobile()));
+                }
+                if (list.getIdentity()!=null&&!"".equals(list.getIdentity())){
+                    list.setIdentity(MerchantSupport.decryptIdentity(list.getIdentity()));
+                }
+                if (list.getPayChannelSign()!=0) {
+                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
+                }
+
+                if (list.getPayType()!=null&&!list.getPayType().equals("")) {
+                    if (list.getPayChannelSign()!=0) {
+                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                    }
+
+                }
+                if (list.getLevel()==1){
+                    list.setProxyName(list.getProxyName());
+                }
+                if (list.getLevel()==2){
+                    list.setProxyName1(list.getProxyName());
+                    String proxyName = dealerService.selectProxyName(list.getFirstLevelDealerId());
+                    list.setProxyName(proxyName);
+                }
+
+            }
+            return list;
+
+        }
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
                 if (list.getOemId()==0){
@@ -1095,7 +1201,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> getTrade(OrderTradeRequest req) {
-        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTrade(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTrade(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1138,7 +1251,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req) {
-        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTradeFirst(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTradeFirst(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1182,12 +1302,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int listCount(OrderTradeRequest req) {
-        return this.orderDao.listCount(req);
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.listCount(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            return this.orderDao.listHsyCount(req);
+        }
+        return 0;
     }
 
     @Override
     public int listFirstCount(OrderTradeRequest req) {
-        return this.orderDao.listFirstCount(req);
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.listFirstCount(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            return this.orderDao.listHsyFirstCount(req);
+        }
+        return 0;
     }
 
     @Override
@@ -1420,6 +1552,507 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public String getAmountCount(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCount(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCount1(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAmountCount1(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getPoundageCount(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getPoundageCount1(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<AchievementStatisticsResponse> getAchievement(QueryOrderRequest req) {
+        List<AchievementStatisticsResponse> list = this.orderDao.getAchievement(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if ("".equals(list.get(i).getTradeCount())||list.get(i).getTradeCount()==null){
+                    list.get(i).setTradeCount("0");
+                }
+                if ("".equals(list.get(i).getVaildTradeUserCount())||list.get(i).getVaildTradeUserCount()==null){
+                    list.get(i).setVaildTradeUserCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalCount())||list.get(i).getTradeTotalCount()==null){
+                    list.get(i).setTradeTotalCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalAmount("0");
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int getAchievementCount(QueryOrderRequest req) {
+        return this.orderDao.getAchievementCount(req);
+    }
+
+    @Override
+    public String downloadAchievement(QueryOrderRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateAchievement(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public List<AchievementStatisticsResponse> getDaiLiAchievement(QueryOrderRequest req) {
+        List<AchievementStatisticsResponse> list = this.orderDao.getDaiLiAchievement(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if ("".equals(list.get(i).getTradeCount())||list.get(i).getTradeCount()==null){
+                    list.get(i).setTradeCount("0");
+                }
+                if ("".equals(list.get(i).getVaildTradeUserCount())||list.get(i).getVaildTradeUserCount()==null){
+                    list.get(i).setVaildTradeUserCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalCount())||list.get(i).getTradeTotalCount()==null){
+                    list.get(i).setTradeTotalCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalAmount("0");
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int getDaiLiAchievementCount(QueryOrderRequest req) {
+        return this.orderDao.getDaiLiAchievementCount(req);
+    }
+
+    @Override
+    public String downloadDaiLiAchievement(QueryOrderRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateDaiLiAchievement(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO generateDaiLiAchievement(QueryOrderRequest req, String baseUrl) {
+        List<AchievementStatisticsResponse> list = downloadeDaiLi(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("Achievement");
+        heads.add("报单员登录名");
+        heads.add("报单员姓名");
+        heads.add("日期");
+        heads.add("当日有效商户数");
+        heads.add("当日5元以上交易笔数");
+        heads.add("当日名下商户交易总笔数");
+        heads.add("当日名下商户交易总额");
+        datas.add(heads);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getUsername());
+                columns.add(list.get(i).getRealname());
+//                if (!"".equals(list.get(i).getCreateTime())&&list.get(i).getCreateTime()!=null){
+//                    String checkedTime = sdf.format(date);
+//                    columns.add(checkedTime);
+//                }else {
+//                    columns.add("--");
+//                }
+                columns.add(req.getCreateTime());
+                columns.add(list.get(i).getVaildTradeUserCount());
+                columns.add(list.get(i).getTradeCount());
+                columns.add(list.get(i).getTradeTotalCount());
+                columns.add(list.get(i).getTradeTotalAmount());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
+    private List<AchievementStatisticsResponse> downloadeDaiLi(QueryOrderRequest req) {
+        List<AchievementStatisticsResponse> list = this.orderDao.downloadeDaiLi(req);
+        return list;
+    }
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO generateAchievement(QueryOrderRequest req, String baseUrl) {
+        List<AchievementStatisticsResponse> list = downloadeYJ(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("Achievement");
+        heads.add("报单员登录名");
+        heads.add("报单员姓名");
+        heads.add("日期");
+        heads.add("当日有效商户数");
+        heads.add("当日5元以上交易笔数");
+        heads.add("当日名下商户交易总笔数");
+        heads.add("当日名下商户交易总额");
+        datas.add(heads);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getUsername());
+                columns.add(list.get(i).getRealname());
+                if (!"".equals(list.get(i).getCreateTime())&&list.get(i).getCreateTime()!=null){
+                    String checkedTime = sdf.format(date);
+                    columns.add(checkedTime);
+                }else {
+                    columns.add("--");
+                }
+                columns.add(list.get(i).getVaildTradeUserCount());
+                columns.add(list.get(i).getTradeCount());
+                columns.add(list.get(i).getTradeTotalCount());
+                columns.add(list.get(i).getTradeTotalAmount());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
+    private List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req) {
+        List<AchievementStatisticsResponse> list = this.orderDao.downloadeYJ(req);
+        return list;
+    }
+
+
+    @Override
+    public String downLoadHsyMerchantTrade(OrderTradeRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = downLoadHsyMerchantTrades(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+
+    }
+
+    @Override
+    public String downLoadHsyMerchantTrade1(OrderTradeRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = downLoadHsyMerchantTrades1(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO downLoadHsyMerchantTrades(OrderTradeRequest req,String baseUrl) {
+        List<MerchantTradeResponse> list = downLoadHsyMerchantTrades(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("trade");
+        heads.add("业务方");
+        heads.add("交易订单号");
+        heads.add("收款商户名称");
+        heads.add("所属一级");
+        heads.add("所属二级");
+        heads.add("业务订单号");
+        heads.add("支付金额");
+        heads.add("手续费");
+        heads.add("交易状态");
+        heads.add("支付流水号");
+        heads.add("支付方式");
+        heads.add("结算状态");
+        heads.add("交易时间");
+        heads.add("成功时间");
+        heads.add("结算周期");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getAppId());
+                columns.add(list.get(i).getOrderNo());
+                columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getProxyName());
+                columns.add(list.get(i).getProxyName1());
+                columns.add(list.get(i).getBusinessOrderNo());
+                columns.add(list.get(i).getTradeAmount());
+                columns.add(list.get(i).getPoundage());
+                columns.add(list.get(i).getStatusValue());
+                columns.add(list.get(i).getSn());
+                columns.add(list.get(i).getPayType());
+                columns.add(list.get(i).getSettleStat());
+                columns.add(list.get(i).getCreateTimed());
+                columns.add(list.get(i).getPaySuccessTimes());
+                columns.add(list.get(i).getSettleType());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
+    private ExcelSheetVO downLoadHsyMerchantTrades1(OrderTradeRequest req,String baseUrl) {
+        List<MerchantTradeResponse> list = downLoadHsyMerchantTrades1(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("trade");
+        heads.add("业务方");
+        heads.add("交易订单号");
+        heads.add("收款商户名称");
+        heads.add("所属一级");
+        heads.add("所属二级");
+        heads.add("业务订单号");
+        heads.add("支付金额");
+        heads.add("手续费");
+        heads.add("交易状态");
+        heads.add("支付流水号");
+        heads.add("支付方式");
+        heads.add("结算状态");
+        heads.add("交易时间");
+        heads.add("成功时间");
+        heads.add("结算周期");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getAppId());
+                columns.add(list.get(i).getOrderNo());
+                columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getProxyName());
+                columns.add(list.get(i).getProxyName1());
+                columns.add(list.get(i).getBusinessOrderNo());
+                columns.add(list.get(i).getTradeAmount());
+                columns.add(list.get(i).getPoundage());
+                columns.add(list.get(i).getStatusValue());
+                columns.add(list.get(i).getSn());
+                columns.add(list.get(i).getPayType());
+                columns.add(list.get(i).getSettleStat());
+                columns.add(list.get(i).getCreateTimed());
+                columns.add(list.get(i).getPaySuccessTimes());
+                columns.add(list.get(i).getSettleType());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
+    /**
+     * 一级导出
+     * @param req
+     * @return
+     */
+    public List<MerchantTradeResponse> downLoadHsyMerchantTrades1(OrderTradeRequest req) {
+
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTradeFirst1(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTradeFirst1(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+
+                list.get(i).setSettleStat(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
+
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+                list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
+
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                    }
+
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 二级导出
+     * @param req
+     * @return
+     */
+    public List<MerchantTradeResponse> downLoadHsyMerchantTrades(OrderTradeRequest req) {
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getTrade1(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getHsyTrade1(req);
+        }
+//        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+
+                list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
+
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+                if (list.get(i).getPayChannelSign()!=0) {
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                    }
+
+                }
+
+            }
+        }
+        return list;
+    }
+
+    @Override
     public void save(GeTuiResponse geTuiResponse) {
         this.orderDao.save(geTuiResponse);
     }
@@ -1560,6 +2193,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("appId",req.getAppId());
         map.put("globalId",req.getGlobalId());
         map.put("shortName",req.getShortName());
+        map.put("proxyNameHsy",req.getProxyNameHsy());
+        map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
         return orderDao.selectOrderListCount(map);
     }

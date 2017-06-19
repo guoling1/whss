@@ -150,7 +150,8 @@ public class MerchantTradeResponse {
     /**
      * 交易金额
      */
-    private BigDecimal tradeAmount;
+//    private BigDecimal tradeAmount;
+    private String tradeAmount;
 
     /**
      * 实付金额（未来可能有红包）
@@ -209,7 +210,8 @@ public class MerchantTradeResponse {
     /**
      * 手续费
      */
-    private BigDecimal poundage;
+//    private BigDecimal poundage;
+    private String poundage;
 
     /**
      * 支付费率（只有支付时，有费率，提现没有）

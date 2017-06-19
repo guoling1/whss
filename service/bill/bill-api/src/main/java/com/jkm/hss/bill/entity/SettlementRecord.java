@@ -72,6 +72,11 @@ public class SettlementRecord extends BaseEntity {
     private BigDecimal settleAmount;
 
     /**
+     * 结算手续费
+     */
+    private BigDecimal settlePoundage;
+
+    /**
      * 结算目的地(结算类型)
      *
      * {@link com.jkm.hss.bill.enums.EnumSettleDestinationType}

@@ -92,6 +92,10 @@ public class MerchantConsts {
         @DefaultValue("")
         String merchantBaseInfoReg();
 
+        @Key("merchant.baseInfo.modify")
+        @DefaultValue("")
+        String merchantBaseInfoModify();
+
         @Key("merchant.bind.channel")
         @DefaultValue("")
         String merchantBindChannel();
@@ -99,5 +103,13 @@ public class MerchantConsts {
         @Key("merchant.update.channel")
         @DefaultValue("")
         String merchantUpdateChannel();
+
+        @Key("merchant.xmms.in")
+        @DefaultValue("")
+        String merchantXmmsIn();
+
+        @Key("merchant.xmms.modify")
+        @DefaultValue("")
+        String merchantXmmsModify();
     }
 }

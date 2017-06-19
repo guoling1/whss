@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>支付结果</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.17.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>

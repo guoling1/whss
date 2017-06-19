@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.enums;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -34,5 +36,20 @@ public enum EnumTradeType {
     EnumTradeType(final int id, final String value) {
         this.id = id;
         this.value = value;
+    }
+
+    private static ImmutableMap<Integer, EnumTradeType> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<Integer, EnumTradeType> builder = new ImmutableMap.Builder<>();
+        for (EnumTradeType tradeType : EnumTradeType.values()) {
+            builder.put(tradeType.getId(), tradeType);
+        }
+        INIT_MAP = builder.build();
+    }
+
+    public static EnumTradeType of (final int tradeType) {
+        Preconditions.checkState(INIT_MAP.containsKey(tradeType), "unknown tradeType[{}]", tradeType);
+        return INIT_MAP.get(tradeType);
     }
 }

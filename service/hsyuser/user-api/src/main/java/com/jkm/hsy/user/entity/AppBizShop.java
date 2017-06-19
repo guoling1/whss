@@ -46,12 +46,14 @@ public class AppBizShop {
     private String fileA;
     private String fileB;
     private String fileC;
+    private String fileD;
 
     private Integer countEmployee;//员工个数
     private Integer countQR;//二维码个数
 
     private String industryName;//行业名称
     private String districtName;//行政区名称
+    private String email="";
 
     public Long getId() {
         return id;
@@ -245,6 +247,14 @@ public class AppBizShop {
         this.fileC = fileC;
     }
 
+    public String getFileD() {
+        return fileD;
+    }
+
+    public void setFileD(String fileD) {
+        this.fileD = fileD;
+    }
+
     public String getStorefrontURL() {
         return storefrontURL;
     }
@@ -355,5 +365,13 @@ public class AppBizShop {
 
     public void setDistrictName(String districtName) {
         this.districtName = districtName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

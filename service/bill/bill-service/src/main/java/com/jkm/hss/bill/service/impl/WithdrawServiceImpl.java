@@ -109,7 +109,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             paymentSdkDaiFuRequest.setTradeType(EnumPayChannelSign.idOf(payChannelSign).getSettleType().getType());
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile(accountBank.getReserveMobile());
-            paymentSdkDaiFuRequest.setBankCity(accountBank.getBranchCityName());
+            paymentSdkDaiFuRequest.setBankCity(accountBank.getBranchCityName() == null ? "北京市" : accountBank.getBranchCityName());
             paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
             paymentSdkDaiFuRequest.setBankCode(accountBank.getBankBin());
             paymentSdkDaiFuRequest.setAccountName(merchant.getName());

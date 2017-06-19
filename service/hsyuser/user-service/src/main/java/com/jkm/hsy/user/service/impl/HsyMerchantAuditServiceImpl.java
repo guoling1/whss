@@ -124,12 +124,13 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         }
         String districtCode = res.getDistrictCode();
-        if (districtCode!=null&&!districtCode.equals("")){
+        if (!"".equals(districtCode)&&districtCode!=null){
             HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
             if (!("0").equals(ret.getParentCode())){
                 HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
                 if (!("0").equals(ret.getParentCode())){
                     HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                    res.setDistrictCode(reu.getAName()+ret.getAName());
                     if (reu1!=null) {
                         res.setDistrictCode(reu1.getAName() + reu.getAName() + ret.getAName());
                     }
@@ -137,8 +138,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                     res.setDistrictCode(reu.getAName()+ret.getAName());
                 }
 
-            }
-            if(!("0").equals(ret.getParentCode())){
+            }else{
                 HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
                 res.setDistrictCode(reu.getAName());
             }
@@ -545,6 +545,22 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return "";
     }
 
+    @Override
+    public void changeMobile(Long uid,String changePhone) {
+        this.hsyMerchantAuditDao.changeMobile(uid,changePhone);
+    }
+
+    @Override
+    public HsyMerchantAuditResponse getCellphon(Long id) {
+        HsyMerchantAuditResponse req = this.hsyMerchantAuditDao.getCellphon(id);
+        return req;
+    }
+
+    @Override
+    public void updatePhone(String changePhone, Long uid) {
+        this.hsyMerchantAuditDao.updatePhone(changePhone,uid);
+    }
+
     /**
      * 获取临时路径
      *
@@ -566,7 +582,9 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         final ArrayList<String> heads = new ArrayList<>();
         excelSheetVO.setName("hsyMerchant");
         heads.add("商户编号");
-        heads.add("商户名称");
+        heads.add("商户全称");
+        heads.add("商户简称");
+        heads.add("店铺数量");
         heads.add("所属分公司");
         heads.add("所属一级代理");
         heads.add("所属二级代理");
@@ -583,7 +601,9 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(list.get(i).getGlobalID());
+                columns.add(list.get(i).getName());
                 columns.add(list.get(i).getShortName());
+                columns.add(list.get(i).getShopNo());
                 columns.add(list.get(i).getDealerBelong());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());

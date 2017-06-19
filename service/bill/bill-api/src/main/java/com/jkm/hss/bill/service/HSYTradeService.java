@@ -1,6 +1,8 @@
 package com.jkm.hss.bill.service;
 
 
+import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.HsyRefundOrder;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.RefundOrder;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
@@ -43,6 +45,22 @@ public interface HSYTradeService {
     String tradeList1(String dataParam, AppParam appParam);
 
     /**
+     * 好收银订单列表
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String tradeListhsy(String dataParam, AppParam appParam);
+
+    /**
+     * 好收银订单详情
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String appOrderDetailhsy(String dataParam, AppParam appParam);
+
+    /**
      * app收款
      *
      * @param paramData
@@ -69,14 +87,18 @@ public interface HSYTradeService {
      */
     String appRefund(String paramData, AppParam appParam);
 
+    String appRefund1o6(String paramData, AppParam appParam);
+
     /**
      * 退款实现
      *
      * @param refundOrder 退款单
      * @param payOrder 交易单
+     * @param hsyRefundOrder 好收银退款单
+     * @param hsyOrder 好收银订单
      * @return
      */
-    Pair<Integer, String> refundImpl(RefundOrder refundOrder, Order payOrder);
+    Pair<Integer, String> refundImpl(RefundOrder refundOrder, Order payOrder, HsyRefundOrder hsyRefundOrder,HsyOrder hsyOrder);
 
     /**
      * 退款到手续费
@@ -115,7 +137,7 @@ public interface HSYTradeService {
      * @param memberId 会员id
      * @return
      */
-    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId, final String memberId);
+    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId, final String memberId,final String code);
 
     /**
      * 下单实现
@@ -171,10 +193,9 @@ public interface HSYTradeService {
     /**
      * 分账
      *
-     * @param order
-     * @param shop
+     * @param orderId
      */
-    void paySplitAccount(Order order, AppBizShop shop);
+    void paySplitAccount(long orderId);
 
 
     /**

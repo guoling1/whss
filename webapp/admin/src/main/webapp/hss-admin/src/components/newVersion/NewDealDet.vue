@@ -211,7 +211,13 @@
     },
     created: function(){
       this.record={};
-      this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo})
+      let appId='';
+      if(this.$route.query.appId=='好收收'){
+        appId = 'hss'
+      }else if(this.$route.query.appId=='好收银'){
+        appId = 'hsy'
+      }
+      this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo,appId:appId})
         .then(function (res) {
           this.record = res.data.orderList;
           this.payList = res.data.payList;

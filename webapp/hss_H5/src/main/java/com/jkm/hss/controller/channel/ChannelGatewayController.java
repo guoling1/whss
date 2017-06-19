@@ -23,6 +23,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelGatewayService;
 import com.jkm.hss.product.servcie.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +39,7 @@ import java.util.Map;
 /**
  * Created by yuxiang on 2017-03-30.
  */
-
+@Slf4j
 @Controller
 @RequestMapping("/channel")
 public class ChannelGatewayController extends BaseController {
@@ -111,6 +112,7 @@ public class ChannelGatewayController extends BaseController {
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getValue());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
+            log.info( channelSign + ">>>>>>>>>>>>>>>>>>>>>>" + merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
             merchantChannelResponse.setChannelRate(merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
             merchantChannelResponse.setFee(merchantChannelRateMap.get(channelSign).getMerchantWithdrawFee().toString());
             merchantChannelResponse.setChannelSign(channelSign);

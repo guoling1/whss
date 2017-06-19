@@ -174,10 +174,12 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getOrderId(),
                 payRequest.getPayChannel(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
+            final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payRequest.getPayChannel());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", merchantInfo.getMerchantName())
-                    .addParam("amount", businessOrderOptional.get().getTradeAmount()).build();
+                    .addParam("amount", businessOrderOptional.get().getTradeAmount())
+                    .addParam("payType", payChannelSign.getPaymentChannel().getId()).build();
         }
         return CommonResponse.simpleResponse(-1, "请稍后重试");
     }

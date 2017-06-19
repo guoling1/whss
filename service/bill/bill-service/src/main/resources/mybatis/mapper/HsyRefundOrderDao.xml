@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.HsyRefundOrderDao">
+    <insert id="insert"   useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `tb_hsy_refundorder`
+        (
+        `refund_no`,
+        `hsyorderid`,
+        `refund_amount`,
+        `refund_poundagea`,
+        `refund_status`,
+        `upper_channel`,
+        `remark`)
+        VALUES
+        (
+        #{refundno},
+        #{hsyorderid},
+        #{refundamount},
+        #{refundpoundagea},
+        #{refundstatus},
+        #{upperchannel},
+        #{remark});
+    </insert>
+    <update id="update">
+        UPDATE tb_hsy_refundorder
+        <set>
+            <if test="refundstatus>0">
+                refund_status=#{refundstatus},
+            </if>
+            <if test="refundno!=null and refundno!='' ">
+                refund_no=#{refundno},
+            </if>
+            <if test="refundtime!=null ">
+                refund_time=#{refundtime},
+            </if>
+            <if test="remark!=null and remark!='' ">
+                remark=#{remark}
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+</mapper>

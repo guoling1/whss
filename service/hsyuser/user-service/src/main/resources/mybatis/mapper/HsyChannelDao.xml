@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyChannelDao">
+
+    <insert id="insertAppCmCurrentChannel" parameterType="com.jkm.hsy.user.entity.AppCmCurrentChannel">
+        insert into app_cm_current_channel(UID,WECHARTRATET1ID,ALIPAYRATET1ID,WECHARTRATET0ID,ALIPAYRATET0ID)
+        values(#{uid},#{wecharTrateT1ID},#{alipayRateT1ID},#{wecharTrateT0ID},#{alipayRateT0ID})
+    </insert>
+
+    <update id="updateAppCmCurrentChannel" parameterType="com.jkm.hsy.user.entity.AppCmCurrentChannel">
+        update app_cm_channel_relate
+        <set>
+            <if test="wecharTrateT1ID!=null">WECHARTRATET1ID=#{wecharTrateT1ID},</if>
+            <if test="alipayRateT1ID!=null">ALIPAYRATET1ID=#{alipayRateT1ID},</if>
+            <if test="wecharTrateT0ID!=null">WECHARTRATET0ID=#{wecharTrateT0ID},</if>
+            <if test="alipayRateT0ID!=null">ALIPAYRATET0ID=#{alipayRateT0ID}</if>
+        </set> where UID=#{uid}
+    </update>
+
+    <select id="selectAppCmChannelRelateByParam" parameterType="com.jkm.hsy.user.entity.AppCmChannelRelate">
+        select ID,UID,PID,CHANNELNAME,CHANNELTYPE,CHANNELSETTLETYPE,CHANNELRATE,CHANNELWITHDRAWFEE,CHANNELSIGN,ISNEED,BELONGCHANNELSTATUS,BELONGCHANNELINFO,ACCESSCHANNELSTATUS,ACCESSCHANNELINFO,EXCHANNELCODE,EXCHANNELEVENTCODE,CREATETIME,UPDATETIME
+        from app_cm_channel_relate
+        where 1=1
+        <if test="id!=null">and ID=#{id}</if>
+        <if test="uid!=null">and UID=#{uid}</if>
+        <if test="channelType!=null and channelType!=''">and CHANNELTYPE=#{channelType}</if>
+        <if test="channelSettleType!=null and channelSettleType!=''">and CHANNELSETTLETYPE=#{channelSettleType}</if>
+        <if test="channelSign!=null">and CHANNELSIGN=#{channelSign}</if>
+    </select>
+
+    <insert id="insertAppCmChannelRelate" parameterType="com.jkm.hsy.user.entity.AppCmChannelRelate">
+        insert into app_cm_channel_relate(UID,PID,CHANNELNAME,CHANNELTYPE,CHANNELSETTLETYPE,CHANNELRATE,CHANNELWITHDRAWFEE,CHANNELSIGN,ISNEED,BELONGCHANNELSTATUS,BELONGCHANNELINFO,ACCESSCHANNELSTATUS,ACCESSCHANNELINFO,EXCHANNELCODE,EXCHANNELEVENTCODE,CREATETIME,UPDATETIME)
+        values(#{uid},#{pid},#{channelName},#{channelType},#{channelSettleType},#{channelRate},#{channelWithdrawFee},#{channelSign},#{isNeed},#{belongChannelStatus},#{belongChannelInfo},#{accessChannelStatus},#{accessChannelInfo},#{exchannelCode},#{exchannelEventCode},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateAppCmChannelRelate" parameterType="com.jkm.hsy.user.entity.AppCmChannelRelate">
+        update app_cm_channel_relate
+        <set>
+            <if test="uid!=null">UID=#{uid},</if>
+            <if test="pid!=null">PID=#{pid},</if>
+            <if test="channelName!=null and channelName!=''">CHANNELNAME=#{channelName},</if>
+            <if test="channelType!=null and channelType!=''">CHANNELTYPE=#{channelType},</if>
+            <if test="channelSettleType!=null and channelSettleType!=''">CHANNELSETTLETYPE=#{channelSettleType},</if>
+            <if test="channelRate!=null">CHANNELRATE=#{channelRate},</if>
+            <if test="channelWithdrawFee!=null">CHANNELWITHDRAWFEE=#{channelWithdrawFee},</if>
+            <if test="channelSign!=null">CHANNELSIGN=#{channelSign},</if>
+            <if test="isNeed!=null">ISNEED=#{isNeed},</if>
+            <if test="belongChannelStatus!=null">BELONGCHANNELSTATUS=#{belongChannelStatus},</if>
+            <if test="belongChannelInfo!=null and belongChannelInfo!=''">BELONGCHANNELINFO=#{belongChannelInfo},</if>
+            <if test="accessChannelStatus!=null">ACCESSCHANNELSTATUS=#{accessChannelStatus},</if>
+            <if test="accessChannelInfo!=null and accessChannelInfo!=''">ACCESSCHANNELINFO=#{accessChannelInfo},</if>
+            <if test="exchannelCode!=null and exchannelCode!=''">EXCHANNELCODE=#{exchannelCode},</if>
+            <if test="exchannelEventCode!=null and exchannelEventCode!=''">EXCHANNELEVENTCODE=#{exchannelEventCode},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <select id="findAllProductHsyChannel" resultType="com.jkm.hsy.user.entity.AppCmChannelProduct">
+        select distinct cd.id id,bc.channel_name channelName,
+        (case when bc.third_company='微信' then 'wechat'when bc.third_company='支付宝' then 'alipay' else '' end) channelType,
+        cd.product_balance_type channelSettleType,cd.product_merchant_pay_rate channelRate,cd.product_merchant_withdraw_fee channelWithdrawFee,cd.channel_type_sign channelSign,bc.is_need isNeed
+        from tb_product_channel_detail cd
+                left join tb_product product on cd.product_id =product.id
+                left join tb_basic_channel bc on cd.channel_type_sign=bc.channel_type_sign
+        where product.type='hsy'
+        order by channelSign
+    </select>
+
+    <select id="findProductHsyChannelByType" resultType="com.jkm.hsy.user.entity.AppCmChannelProduct">
+        select distinct cd.id id,bc.channel_name channelName,
+        (case when bc.third_company='微信' then 'wechat'when bc.third_company='支付宝' then 'alipay' else '' end) channelType,
+        cd.product_balance_type channelSettleType,cd.product_merchant_pay_rate channelRate,cd.product_merchant_withdraw_fee channelWithdrawFee,cd.channel_type_sign channelSign,bc.is_need isNeed
+        from tb_product_channel_detail cd
+                left join tb_product product on cd.product_id =product.id
+                left join tb_basic_channel bc on cd.channel_type_sign=bc.channel_type_sign
+        where product.type='hsy'
+        <if test="channelType!=null and channelType!=''">and CHANNELTYPE=#{channelType}</if>
+        order by channelSign
+    </select>
+
+    <select id="findCurrentChannel" resultType="com.jkm.hsy.user.entity.AppCmCurrentChannel">
+        select distinct channel.UID,channel.WECHARTRATET1ID,channel.ALIPAYRATET1ID,channel.WECHARTRATET0ID,channel.ALIPAYRATET0ID
+        from app_cm_current_channel channel left join app_biz_shop_user_role sur on sur.UID=channel.UID
+        where sur.sid=#{sid} and sur.TYPE=1
+    </select>
+
+</mapper>

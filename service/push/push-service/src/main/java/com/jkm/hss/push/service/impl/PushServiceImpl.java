@@ -13,6 +13,8 @@ import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -168,8 +170,10 @@ public class PushServiceImpl implements PushService {
         List<Map>  list=pushDao.selectUserAppByUid(uid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
-            String clientid=map.get("CLIENTID").toString();
-            clients.add(clientid);
+            if(map.get("CLIENTID")!=null){
+                String clientid=map.get("CLIENTID").toString();
+                clients.add(clientid);
+            }
         }
 
         final SmsTemplate messageTemplate;
@@ -201,7 +205,14 @@ public class PushServiceImpl implements PushService {
      * @return
      */
     @Override
-    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code) {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public Map pushCashMsg(Long sid, String payChannel, Double amount, String code, String transactionNumber) {
+        final int count = this.pushDao.getTransactionNumber(transactionNumber);
+        if (count > 0){
+            Map map = new HashMap();
+            map.put("result","已经推送过，不可重复推送");
+            return map;
+        }
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
@@ -224,7 +235,7 @@ public class PushServiceImpl implements PushService {
 
 
 //        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
-        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients);
+        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
         return ret;
     }
 
@@ -322,7 +333,7 @@ public class PushServiceImpl implements PushService {
     }
 
 
-    public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets) {
+    public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets,String transactionNumber) {
 
 
         String target="";
@@ -352,6 +363,7 @@ public class PushServiceImpl implements PushService {
         push.setTaskId((String) ret.get("taskId"));
         push.setClientId((String) ret.get("clientId"));
         push.setTargets(target);
+        push.setTransactionNumber(transactionNumber);
         pushDao.insert(push);
         return ret;
     }

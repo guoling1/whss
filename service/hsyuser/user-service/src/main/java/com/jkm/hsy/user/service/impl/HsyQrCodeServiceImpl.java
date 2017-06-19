@@ -1,6 +1,5 @@
 package com.jkm.hsy.user.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,8 +8,6 @@ import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
-import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
-import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -21,7 +18,6 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
-import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.service.HsyCmbcService;
 import com.jkm.hsy.user.service.HsyQrCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -113,44 +108,54 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
         if(list.get(0).getProductID()!=null&&productId!=list.get(0).getProductID())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一产品下");
-
-        //计算费率
-        Triple<BigDecimal, BigDecimal, BigDecimal> decimalTriple = dealerChannelRateService.getMerchantRateByDealerId(currentDealerId,qrCodeOptional.get().getProductId());
-        if(decimalTriple==null)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"费率计算错误");
-        //保存费率
-        AppAuUser saveAppAuUser = new AppAuUser();
-        saveAppAuUser.setId(list.get(0).getId());
-        saveAppAuUser.setDealerID(currentDealerId);
-        saveAppAuUser.setProductID(productId);
-        saveAppAuUser.setWeixinRate(decimalTriple.getLeft());
-        saveAppAuUser.setAlipayRate(decimalTriple.getMiddle());
-        saveAppAuUser.setFastRate(decimalTriple.getRight());
-        hsyUserDao.updateByID(saveAppAuUser);
-        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
-        if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
-
-            if(appAuUser.getHxbOpenProduct()!=null && appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.PASS.getId()){//开通产品成功
-                log.info("修改产品");
-                CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
-                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
-                if(cmbcResponse.getCode()==-1){
-                    throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
-                }
-            }else{//未开通产品或者开通产品失败
-                log.info("新增产品");
-                CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId(),appBindShop.getShopId());
-                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
-                if(cmbcResponse.getCode()==-1){
-                    throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
-                }
-                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
-                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse.getMsg(),list.get(0).getId());
-            }
-        }else{
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户未入网");
+        if(list.get(0).getDealerID()==null){
+            AppAuUser saveAppAuUser = new AppAuUser();
+            saveAppAuUser.setId(list.get(0).getId());
+            saveAppAuUser.setDealerID(currentDealerId);
+            saveAppAuUser.setProductID(productId);
+            hsyUserDao.updateByID(saveAppAuUser);
         }
-        log.info("开通产品成功");
+        //计算费率
+//        Triple<BigDecimal, BigDecimal, BigDecimal> decimalTriple = dealerChannelRateService.getMerchantRateByDealerId(currentDealerId,qrCodeOptional.get().getProductId());
+//        if(decimalTriple==null)
+//            throw new ApiHandleException(ResultCode.RESULT_FAILE,"费率计算错误");
+//
+//        if(list.get(0).getWeixinRate()==null||list.get(0).getAlipayRate()==null){
+//            //保存费率
+//            AppAuUser saveAppAuUser = new AppAuUser();
+//            saveAppAuUser.setId(list.get(0).getId());
+//            saveAppAuUser.setDealerID(currentDealerId);
+//            saveAppAuUser.setProductID(productId);
+//            saveAppAuUser.setWeixinRate(decimalTriple.getLeft());
+//            saveAppAuUser.setAlipayRate(decimalTriple.getMiddle());
+//            saveAppAuUser.setFastRate(decimalTriple.getRight());
+//            hsyUserDao.updateByID(saveAppAuUser);
+//        }
+//
+//        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
+//        if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
+//
+//            if(appAuUser.getHxbOpenProduct()!=null && appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.PASS.getId()){//开通产品成功
+//                log.info("修改产品");
+//                CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
+//                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
+//                if(cmbcResponse.getCode()==-1){
+//                    throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
+//                }
+//            }else{//未开通产品或者开通产品失败
+//                log.info("新增产品");
+//                CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId(),appBindShop.getShopId());
+//                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
+//                if(cmbcResponse.getCode()==-1){
+//                    throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
+//                }
+//                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
+//                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse.getMsg(),list.get(0).getId());
+//            }
+//        }else{
+//            throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户未入网");
+//        }
+//        log.info("开通产品成功");
         //绑定并激活
         qrCodeService.markAsActivate(appBindShop.getCode(),appBindShop.getShopId());
         return appBindShop.getCode();

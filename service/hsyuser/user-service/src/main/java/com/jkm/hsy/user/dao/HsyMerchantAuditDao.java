@@ -143,5 +143,24 @@ public interface HsyMerchantAuditDao {
      */
     List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
+    /**
+     * 更改注册手机号
+     * @param uid
+     */
+    void changeMobile(@Param("uid") Long uid,@Param("changePhone") String changePhone);
+
+    /**
+     * 查询hsy商户注册手机号及id
+     * @param id
+     * @return
+     */
+    HsyMerchantAuditResponse getCellphon(@Param("id") Long id);
+
+    /**
+     * 更新上次注册手机号
+     * @param changePhone
+     * @param uid
+     */
+    void updatePhone(@Param("changePhone") String changePhone,@Param("uid") Long uid);
 
 }

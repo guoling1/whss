@@ -2,21 +2,15 @@ package com.jkm.hss.controller.channel;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ProductAddRequest;
+import com.jkm.hss.helper.response.ProductListHsyResponse;
 import com.jkm.hss.helper.response.ProductListResponse;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.*;
-import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductChannelGatewayService;
-import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yuxiang on 2016-11-29.
@@ -47,6 +43,8 @@ public class ProductController extends BaseController {
     private AccountService accountService;
     @Autowired
     private ProductChannelGatewayService productChannelGatewayService;
+    @Autowired
+    private ProductRatePolicyService productRatePolicyService;
     /**
      * 录入产品
      *
@@ -101,7 +99,7 @@ public class ProductController extends BaseController {
         if (list == null){
             return CommonResponse.objectResponse(1, "success", Collections.EMPTY_LIST);
         }
-        final List<ProductListResponse> responseList = Lists.newArrayList();
+        final Map<String, Object> map = new HashMap<>();
         for (Product product : list){
             //根据产品查找产品详情
             final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(product.getId());
@@ -110,27 +108,54 @@ public class ProductController extends BaseController {
                 detail.setProductTradeRate(detail.getProductTradeRate().multiply(new BigDecimal(100)).setScale(2));
             }
             final ProductListResponse response = new ProductListResponse();
-            if (product.getType().equals("hss")){
+            if (product.getType().equals("hss")) {
                 response.setType(EnumProductType.HSS.getId());
+                response.setProductId(product.getId());
+                response.setProductName(product.getProductName());
+                response.setAccountId(product.getAccountId());
+                response.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal(100)).setScale(2));
+                response.setLimitWithdrawFeeRate(product.getLimitWithdrawFeeRate());
+                response.setMerchantWithdrawType(product.getMerchantWithdrawType());
+                response.setDealerBalanceType(product.getDealerBalanceType());
+                response.setList(detailList);
+                map.put("hss", response);
+            }else {
+                final List<ProductRatePolicy> productRatePolicies = this.productRatePolicyService.selectByProductId(product.getId());
+                final ProductListHsyResponse productListHsyResponse = new ProductListHsyResponse();
+                productListHsyResponse.setProductId(product.getId());
+                productListHsyResponse.setProductName(product.getProductName());
+                productListHsyResponse.setList(productRatePolicies);
+                productListHsyResponse.setType(EnumProductType.HSY.getId());
+                map.put("hsy", productListHsyResponse);
             }
-            if (product.getType().equals("hsy")){
-                response.setType(EnumProductType.HSY.getId());
-            }
-            response.setProductId(product.getId());
-            response.setProductName(product.getProductName());
-            response.setAccountId(product.getAccountId());
-            response.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal(100)).setScale(2));
-            response.setLimitWithdrawFeeRate(product.getLimitWithdrawFeeRate());
-            response.setMerchantWithdrawType(product.getMerchantWithdrawType());
-            response.setDealerBalanceType(product.getDealerBalanceType());
-            response.setList(detailList);
-            responseList.add(response);
         }
-        return  CommonResponse.objectResponse(1, "success", responseList);
+        return  CommonResponse.objectResponse(1, "success", map);
     }
 
     /**
      * 修改产品
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateHsy", method = RequestMethod.POST)
+    public CommonResponse updateHsy(@RequestBody final ProductListHsyResponse request) {
+        try{
+            final Product product = this.productService.selectById(request.getProductId()).get();
+            product.setProductName(request.getProductName());
+            this.productService.update(product);
+            for (ProductRatePolicy detail : request.getList()){
+                detail.setProductId(request.getProductId());
+                this.productRatePolicyService.update(detail);
+            }
+            return  CommonResponse.simpleResponse(1, "success");
+        }catch (final Throwable throwable){
+            log.error("修改产品信息异常,异常信息:" + throwable.getMessage());
+        }
+        return CommonResponse.simpleResponse(-1, "fail");
+    }
+
+    /**
+     * 修改Hsy产品
      * @return
      */
     @ResponseBody

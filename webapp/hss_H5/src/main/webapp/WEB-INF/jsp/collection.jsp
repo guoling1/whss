@@ -12,8 +12,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>付款给商家</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.17.css">
+  <title>收款</title>
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -67,8 +67,8 @@
         <%--<div class="ali-logo"></div>--%>
         <%--<div class="word">支付宝</div>--%>
         <%--</div>--%>
-        <div class="all-pay" keyCtrl="pay">
-          <div class="word big">收款</div>
+        <div class="all-pay" keyCtrl="pay" pay="true">
+          收款
         </div>
       </div>
     </div>
@@ -102,5 +102,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="/js/hss/2.2.28/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.30/collection.min.js"></script>
 </html>

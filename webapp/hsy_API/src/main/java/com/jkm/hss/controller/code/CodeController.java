@@ -6,15 +6,23 @@ import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
+import com.jkm.hsy.user.Enum.EnumNetStatus;
+import com.jkm.hsy.user.Enum.EnumOpenProductStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
+import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +50,16 @@ public class CodeController extends BaseController {
 
     @Autowired
     private HsyShopDao hsyShopDao;
+
+    @Autowired
+    private HSYTransactionService hsyTransactionService;
+
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
+
 
     /**
      * 扫码
@@ -75,15 +93,18 @@ public class CodeController extends BaseController {
             Preconditions.checkState(appBizShops.get(0).getStatus()==AppConstant.SHOP_STATUS_NORMAL, "商户未通过审核");
             List<AppAuUser> appAuUsers = hsyShopDao.findCorporateUserByShopID(merchantId);
             Preconditions.checkState(appAuUsers!=null&&appAuUsers.size()>0, "商户不存在");
-            Preconditions.checkState(appAuUsers.get(0).getHxbStatus()!=null, "商户未通过审核");
-            Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()!=null, "商户未通过审核");
-            Preconditions.checkState(appAuUsers.get(0).getHxbStatus()== EnumHxbsStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
-            Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()== EnumHxbsOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
-            model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
+            Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(appAuUsers.get(0).getId());
+            Preconditions.checkState(userCurrentChannelPolicyOptional.isPresent(), "商户使用中通道未设置");
             if (agent.indexOf("micromessenger") > -1) {
+                Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appAuUsers.get(0).getId(),userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
+                Preconditions.checkState(userChannelPolicyOptional.isPresent(), "商户通道不存在");
+                Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()!=null, "商户未通过审核");
+                Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()!=null, "商户未通过审核");
+                Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()== EnumNetStatus.SUCCESS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+                Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
                     if(request.getQueryString() == null){
@@ -94,12 +115,18 @@ public class CodeController extends BaseController {
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                     return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
-                model.addAttribute("openId",openId);
+
+                final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
+                model.addAttribute("hsyOrderId",hsyOrderId);
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
-                log.info("进入支付宝");
-                log.info("alipay的openId={}",openId);
+                Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appAuUsers.get(0).getId(),userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign());
+                Preconditions.checkState(userChannelPolicyOptional.isPresent(), "商户通道不存在");
+                Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()!=null, "商户未通过审核");
+                Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()!=null, "商户未通过审核");
+                Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()== EnumNetStatus.SUCCESS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+                Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
                     if(request.getQueryString() == null){
@@ -113,7 +140,8 @@ public class CodeController extends BaseController {
                     log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
                 }
-                model.addAttribute("openId",openId);
+                final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign(),merchantId,openId,code);
+                model.addAttribute("hsyOrderId",hsyOrderId);
                 url = "/sqb/paymentZfb";
             }
         } else {

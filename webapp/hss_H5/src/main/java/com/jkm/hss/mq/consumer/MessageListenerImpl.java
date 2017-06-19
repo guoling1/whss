@@ -7,6 +7,7 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.WithdrawService;
+import com.jkm.hss.bill.service.impl.BaseTradeService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,8 @@ public class MessageListenerImpl implements MessageListener {
     private WithdrawService withdrawService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private BaseTradeService baseTradeService;
     /**
      * 消费消息
      *
@@ -36,12 +39,18 @@ public class MessageListenerImpl implements MessageListener {
         try {
             final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
             if (MqConfig.MERCHANT_WITHDRAW.equals(message.getTag())) {
-                log.info("消费消息--结算单[{}]， D0-向网关发送提现请求", body.getLongValue("settlementRecordId"));
+                log.info("消费消息--结算单[{}]， 向网关发送提现请求", body.getLongValue("settlementRecordId"));
                 final long merchantId = body.getLongValue("merchantId");
                 final long settlementRecordId = body.getLongValue("settlementRecordId");
                 final String payOrderSn = body.getString("payOrderSn");
                 final int payChannelSign = body.getIntValue("payChannelSign");
                 this.withdrawService.merchantWithdrawBySettlementRecord(merchantId, settlementRecordId, payOrderSn, payChannelSign);
+            } else if (MqConfig.MERCHANT_WITHDRAW_D0.equals(message.getTag())) {
+                log.info("消费消息--结算单[{}]， D0-向网关发送提现请求", body.getLongValue("settlementRecordId"));
+                final long settlementRecordId = body.getLongValue("settlementRecordId");
+                final String payOrderSn = body.getString("payOrderSn");
+                final int payChannelSign = body.getIntValue("payChannelSign");
+                this.baseTradeService.withdrawBySettlement(settlementRecordId, payOrderSn, payChannelSign);
             } else if (MqConfig.MERCHANT_WITHDRAW_T1.equals(message.getTag())) {
                 log.info("消费消息--订单[{}], T1-发起提现请求", body.getLongValue("orderId"));
                 final long orderId = body.getLongValue("orderId");

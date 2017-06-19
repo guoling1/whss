@@ -40,6 +40,7 @@
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
+            <div class="box-body">统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</div>
             <div class="box-body">
               <el-table :data="tableData" border
                         v-loading="tableLoading"
@@ -148,7 +149,9 @@
               picker.$emit('pick', [start, end]);
             }
           }]
-        }
+        },
+        pageTotal: 0,
+        allTotal: 0
       }
     },
     created() {
@@ -166,6 +169,15 @@
       this.startTime = query.splitDates;
       this.endTime = query.splitDates;
       this.getData();
+      this.getTotal();
+    },
+    filters: {
+      fix(v = 0){
+        if (v) {
+          return v.toFixed(2);
+        }
+        return '0.00';
+      }
     },
     methods: {
       datetimeSelect: function (val) {
@@ -175,6 +187,19 @@
       },
       screen: function () {
         this.getData();
+        this.getTotal();
+      },
+      getTotal: function () {
+        this.$http.post('/daili/profit/profitAmount', {
+          orderNo: this.orderNo,
+          businessType: this.businessType,
+          beginDate: this.beginDate,
+          endDate: this.endDate
+        }).then(res => {
+          this.allTotal = res.data;
+        }, err => {
+          console.log(err);
+        })
       },
       getData: function () {
         this.tableLoading = true;
@@ -189,6 +214,11 @@
           this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
+          let t = 0;
+          for (let i = 0; i < res.data.records.length; i++) {
+            t += res.data.records[i].splitAmount / 1;
+          }
+          this.pageTotal = t;
         }, err => {
           this.tableLoading = false;
           this.$message({

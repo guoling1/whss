@@ -13,7 +13,9 @@
             <tbody>
             <tr>
               <th style="text-align: right">注册手机:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cellphone" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cellphone" readonly>
+                <el-button type="text" @click="isPhone = true">修改</el-button>
+              </td>
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
@@ -113,6 +115,8 @@
             <tr class="row">
               <th class="col-md-3" style="text-align: center;">身份证正面:</th>
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
+              <th class="col-md-3" style="text-align: center;">结算卡正面:</th>
+              <th class="col-md-3" style="text-align: center;">签约合同照:</th>
               <th class="col-md-3" style="text-align: center;" v-if="msg.isPublic==1">营业执照:</th>
               <th class="col-md-3" style="text-align: center;">店面照片:</th>
               <th class="col-md-3" style="text-align: center;">收银台:</th>
@@ -122,7 +126,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardf" alt="" v-if="$msg.idcardf!=null&&$msg.idcardf!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardf!=null&&$msg.idcardf!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('1')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('1')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.idcardf==null&&$msg.idcardf==''&&$msg.status!=1&&$msg.status!==2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -140,7 +144,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardb" alt="" v-if="$msg.idcardb!=null&&$msg.idcardb!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardb!=null&&$msg.idcardb!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('2')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('2')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.idcardb==null&&$msg.idcardb==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -155,28 +159,23 @@
                   <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
                 </el-upload>-->
               </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardc" alt="" v-if="$msg.idcardc!=null&&$msg.idcardc!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardc!=null&&$msg.idcardc!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('7')">点击更换</el-button>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.contractId" alt="" v-if="$msg.contractId!=null&&$msg.contractId!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.contractId!=null&&$msg.contractId!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('8')">点击更换</el-button>
+              </td>
               <td class="col-md-3" style="text-align: center;border: none;" v-if="msg.isPublic==1">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.licenceID!=null&&$msg.licenceID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.licenceID==null&&$msg.licenceID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:3}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.storefrontID" alt="" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('4')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.storefrontID==null&&$msg.storefrontID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -194,7 +193,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.counterID" alt="" v-if="$msg.counterID!=null&&$msg.counterID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.counterID!=null&&$msg.counterID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('5')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('5')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.counterID==null&&$msg.counterID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -212,7 +211,7 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.indoorID!=null&&$msg.indoorID!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
                 <!--<el-upload v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status!=1||$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
@@ -233,7 +232,8 @@
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead">商户结算信息</p>
+        <span class="lead">商户结算信息</span>
+        <el-button type="text" @click="bankChange">修改结算卡信息</el-button>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -241,22 +241,22 @@
               <th style="text-align: right">结算卡类型:</th>
               <td>
                 <el-radio-group v-model="msg.isPublic">
-                  <el-radio :label="1">对公</el-radio>
-                  <el-radio :label="0">对私</el-radio>
+                  <el-radio :label="1" disabled >对公</el-radio>
+                  <el-radio :label="0" disabled >对私</el-radio>
                 </el-radio-group>
               </td>
               <th style="text-align: right">结算卡开户名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardAccountName" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardAccountName" readonly></td>
               <th style="text-align: right" v-show="msg.isPublic==0">身份证号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly v-show="msg.isPublic==0"></td>
             </tr>
             <tr>
               <th style="text-align: right">商户结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardNO" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardNO" readonly></td>
               <th style="text-align: right">结算卡所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardBank" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardBank" readonly></td>
               <th style="text-align: right">支行信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankAddress" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.bankAddress" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">结算方式:</th>
@@ -266,8 +266,11 @@
                   <el-radio :label="4">T1结算到账户余额</el-radio>
                 </el-radio-group>
               </td>
-              <th style="text-align: right"></th>
-              <td></td>
+              <th style="text-align: right">联行号:</th>
+              <td>
+                <input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.branchCode" readonly>
+                <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)">补填联行号</el-button>
+              </td>
               <th style="text-align: right"></th>
               <td></td>
             </tr>
@@ -276,50 +279,194 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
-        <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
-        <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
+        <el-button type="text" v-if="isInput == false" @click="isInput = true">修改费率</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
-            <el-table :data="tableData" border style="width: 100%">
-              <el-table-column prop="name" label="通道名称" ></el-table-column>
-              <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
-              <el-table-column prop="time" label="结算时间" ></el-table-column>
-              <el-table-column prop="money" label="提现手续费" ></el-table-column>
-              <el-table-column prop="status" label="入网状态" >
+            <el-table :data="rateData" border style="width: 100%;margin-bottom: 15px">
+              <el-table-column prop="rateName" label="支付方式" ></el-table-column>
+              <el-table-column label="T1">
                 <template scope="scope">
-                  <span v-if="scope.row.status==0">未入网</span>
-                  <span v-if="scope.row.status==1">成功</span>
-                  <span v-if="scope.row.status==2">失败</span>
+                  <span v-if="!isInput&&scope.row.tradeRateT1!=null">{{scope.row.tradeRateT1}}
+                    <span v-if="scope.row.policyType!='withdraw'">%</span>
+                    <span v-if="scope.row.policyType=='withdraw'">元/笔</span>
+                  </span>
+                  <el-input placeholder="请输入内容" v-model="scope.row.tradeRateT1" v-if="isInput" size="small">
+                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                  </el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
-              <el-table-column prop="product" label="产品开通状态">
+              <el-table-column prop="time" label="D1">
                 <template scope="scope">
-                  <span v-if="scope.row.product==0">未开通</span>
-                  <span v-if="scope.row.product==1">成功</span>
-                  <span v-if="scope.row.product==2">失败</span>
+                  <span v-if="!isInput&&scope.row.tradeRateD1!=null">{{scope.row.tradeRateD1}}
+                    <span v-if="scope.row.policyType!='withdraw'">%</span>
+                    <span v-if="scope.row.policyType=='withdraw'">元/笔</span>
+                  </span>
+                  <el-input placeholder="请输入内容" v-model="scope.row.tradeRateD1" v-if="isInput" size="small">
+                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                  </el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="proMsg" label="产品开通信息" ></el-table-column>
+              <el-table-column prop="money" label="D0">
+                <template scope="scope">
+                  <span v-if="!isInput&&scope.row.tradeRateD0!=null">{{scope.row.tradeRateD0}}
+                    <span v-if="scope.row.policyType!='withdraw'">%</span>
+                    <span v-if="scope.row.policyType=='withdraw'">元/笔</span>
+                  </span>
+                  <el-input placeholder="请输入内容" v-model="scope.row.tradeRateD0" v-if="isInput" size="small">
+                    <template slot="append" v-if="scope.row.policyType!='withdraw'">%</template>
+                    <template slot="append" v-if="scope.row.policyType=='withdraw'">元/笔</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button type="primary" size="small" v-if="isInput" @click="rateChange" :disabled="auditClick">保存</el-button>
+            <el-button type="primary" size="small" v-if="isInput" @click="rateNoChange">取消</el-button>
+          </template>
+        </div>
+      </div>
+      <div class="box box-primary" style="overflow: hidden">
+        <span class="lead">商户通道</span>
+        <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
+        <!--<el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>-->
+        <el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>
+        <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
+        <div style="width: 80%;margin: 0 0 15px 15px;">
+          <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
+            <el-button type="primary" size="small" @click="channelChange">修改</el-button>
+          </div>
+          <template>
+            <el-table :data="$channelList" border style="width: 100%;margin-top: 15px;">
+              <el-table-column prop="channelName" label="通道名称" ></el-table-column>
+              <el-table-column prop="settleType" label="结算时间"></el-table-column>
+              <el-table-column prop="netStatus" label="入网状态" >
+                <template scope="scope">
+                  <span v-if="scope.row.netStatus==1">未入网</span>
+                  <span v-if="scope.row.netStatus==2">不需入网</span>
+                  <span v-if="scope.row.netStatus==3">已提交</span>
+                  <span v-if="scope.row.netStatus==4">成功</span>
+                  <span v-if="scope.row.netStatus==5">失败</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="netMarks" label="入网信息" ></el-table-column>
+              <el-table-column prop="openProductStatus" label="产品开通状态">
+                <template scope="scope">
+                  <span v-if="scope.row.openProductStatus==1">开通产品成功</span>
+                  <span v-if="scope.row.openProductStatus==2">开通产品失败</span>
+                  <span v-if="scope.row.openProductStatus==3">已提交</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="openProductMarks" label="产品开通信息" ></el-table-column>
+              <el-table-column prop="exchannelCode" label="渠道商户编号"></el-table-column>
+              <el-table-column prop="appId" label="公众号" ></el-table-column>
+              <el-table-column prop="exchannelEventCode" label="活动编号" ></el-table-column>
+              <el-table-column prop="isUse" label="使用状态">
+                <template scope="scope">
+                  <span v-if="scope.row.isUse==1">使用中</span>
+                  <span v-if="scope.row.isUse==0">未使用</span>
+                </template>
+              </el-table-column>
             </el-table>
           </template>
         </div>
       </div>
+      <el-dialog title="修改商户结算卡" :visible.sync="isBank">
+        <el-form :model="bankForm">
+          <el-form-item label="账户类型" label-width="120px">
+            <span v-if="msg.isPublic==1">对公</span>
+            <span v-if="msg.isPublic==0">对私</span>
+          </el-form-item>
+          <el-form-item label="账号" label-width="120px">
+            <el-input v-model="bankForm.cardNo" size="small" style="width: 100%"></el-input>
+          </el-form-item>
+          <el-form-item label="开户行" label-width="120px">
+            <el-autocomplete style="width: 100%" v-model="bankForm.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="省" label-width="120px">
+            <el-select v-model="bankForm.province" size="small" style="width:100%" placeholder="请选择"
+                       @change="province_select">
+              <el-option v-for="item in item_province"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="市" label-width="120px">
+            <el-select v-model="bankForm.districtCode" size="small" style="width:100%" placeholder="请选择"
+                       @change="city_select">
+              <el-option v-for="item in item_city"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete style="width: 100%" v-model="bankForm.bankAddress" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="isWad = false">取 消</el-button>
+          <el-button type="primary" @click="bankSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="选择支行" :visible.sync="isWad">
+        <el-form :model="form">
+          <el-form-item label="银行名称" label-width="120px">
+            {{$msg.cardBank}}
+          </el-form-item>
+          <el-form-item label="省" label-width="120px">
+            <el-select v-model="form.province" size="small" style="width:100%" placeholder="请选择"
+                       @change="province_select">
+              <el-option v-for="item in item_province"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="市" label-width="120px">
+            <el-select v-model="form.city" size="small" style="width:100%" placeholder="请选择"
+                       @change="city_select">
+              <el-option v-for="item in item_city"
+                         :label="item.aname"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete v-model="form.branchName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="联行号" label-width="120px">
+            <el-input v-model="form.branchCode" size="small" style="width: 100%" disabled></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="isWad = false">取 消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </div>
+      </el-dialog>
       <el-dialog title="重新入网" v-model="isReenter" size="tiny">
           <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
           <span slot="footer" class="dialog-footer">
             <el-button @click="isReenter = false">取 消</el-button>
             <el-button type="primary" @click="reenter" :disabled="reenterClick">确 定</el-button>
           </span>
-        </el-dialog>
-      <el-dialog title="驳回重填" v-model="isReject" size="tiny">
+      </el-dialog>
+      <el-dialog title="修改信息" v-model="isModify" size="tiny">
+        <p style="text-align: center;font-weight: 700">确认修改信息吗？？</p>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isModify = false">取 消</el-button>
+            <el-button type="primary" @click="modify" :disabled="modifyClick">确 定</el-button>
+          </span>
+      </el-dialog>
+      <!--<el-dialog title="驳回重填" v-model="isReject" size="tiny">
           <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
           <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
           <span slot="footer" class="dialog-footer">
             <el-button @click="isReject = false">取 消</el-button>
             <el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>
           </span>
-        </el-dialog>
+        </el-dialog>-->
       <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -398,6 +545,62 @@
           </el-form-item>
         </el-form>
       </el-dialog>
+      <el-dialog title="更换注册手机号" v-model="isPhone">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="原手机号：" width="120" style="margin-bottom: 0">
+            {{msg.cellphone}}
+          </el-form-item>
+          <el-form-item label="新手机号：" width="120" style="margin-bottom: 0">
+            <el-input v-model="newPhone" placeholder="请输入内容"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="isPhone = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="changePhone" type="primary" style="position: relative;top: -20px;"  :disabled="auditClick">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="切换商户通道" v-model="isChannel">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="微信通道：" width="120" style="margin-bottom: 0">
+            <el-select v-model="channelForm.wechatChannelTypeSign" placeholder="请选择">
+              <el-option
+                v-for="item in wxchannel"
+                :key="item.value"
+                :label="item.channelName"
+                :value="item.channelTypeSign">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支付宝通道：" width="120" style="margin-bottom: 0">
+            <el-select v-model="channelForm.alipayChannelTypeSign" placeholder="请选择">
+              <el-option
+                v-for="item in alichannel"
+                :key="item.value"
+                :label="item.channelName"
+                :value="item.channelTypeSign">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="isChannel = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="submitChannel" type="primary" style="position: relative;top: -20px;" :disabled="auditClick">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="添加微信官方通道" v-model="isWxChannel">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="微信子商户编号：" width="120" style="margin-bottom: 0">
+            <el-input v-model="wxChannelForm.exchannelCode" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item label="子商户公众号ID：" width="120" style="margin-bottom: 0">
+            <el-input v-model="wxChannelForm.appId" placeholder="可选"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="isWxChannel = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="submitWxChannel" type="primary" style="position: relative;top: -20px;" :disabled="auditClick">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -413,10 +616,13 @@
         auditClick:false,
         isReenter:false,
         isReject:false,
+        isWad: false,
         reason:'',
         isShow:true,
+        isBank:false,
         reenterClick:false,
         rejectClick:false,
+        modifyClick:false,
         res: [],
         tableData:[{
           name:'支付宝',
@@ -443,7 +649,43 @@
         src:'',
         current:0,
         height:0,
-        width:0
+        width:0,
+        isPhone:false,
+        newPhone:'',
+        rateData:[],
+        isInput: false,
+        channelList:[],
+        userChannelList:[],
+        isChannel: false,
+        wxchannel:[],
+        alichannel:[],
+        form:{
+          province:'',
+          provinceName:'',
+          city:'',
+          cityName:'',
+          branchName:'',
+          branchCode:''
+        },
+        //修改结算卡参数
+        bankForm:{
+          province:'',
+          districtCode:'',
+          cardNo:'',
+          bankName:'',
+          bankAddress:''
+        },
+        channelForm:{
+          userId:'',
+          wechatChannelTypeSign:'',
+          alipayChannelTypeSign:''
+        },
+        isWxChannel:false,
+        wxChannelForm:{
+          userId:'',
+          exchannelCode:"",
+          appId:""
+        }
       }
     },
     created: function () {
@@ -484,8 +726,313 @@
         $box[0].setCapture&&$box[0].setCapture();
         return false;
       })
+      this.$http.post('/admin/unionNumber/findAllProvinces').then(res => {
+        this.item_province = res.data;
+      })
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
+        });
     },
     methods: {
+      bankChange:function(){
+        this.isBank = true;
+        this.bankForm={
+          province:'',
+          districtCode:'',
+          cardNo:'',
+          bankName:'',
+          bankAddress:''
+        }
+      },
+      wad:function () {
+        this.form = {
+          province:'',
+          provinceName:'',
+          city:'',
+          cityName:'',
+          branchName:'',
+          branchCode:''
+        }
+        this.isWad = true;
+      },
+      submit: function () {
+        if(this.form.branchCode==""){
+          this.$message({
+            showClose: true,
+            message: '请匹配联行号',
+            type: 'error'
+          });
+        }else{
+          this.$http.post('/admin/wad/updateBranch',{sid:this.id,branchCode:this.form.branchCode,branchName:this.form.branchName,districtCode:this.form.city})
+            .then(res=>{
+              this.$message({
+                showClose: true,
+                message: '补填成功',
+                type: 'success'
+              });
+              this.isWad = false;
+              this.getData()
+            })
+            .catch(err=>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
+      },
+      marryBank: function () {
+
+      },
+      bankSubmit: function () {
+        this.bankForm.id = this.id;
+        this.$http.post('/admin/hsyMerchantList/changeSettlementCard',this.bankForm)
+          .then(res =>{
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
+            this.isBank = false;
+            this.getData()
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      marryBankSearch: function (queryString, cb) {
+        var results=[],url='';
+        if(this.msg.isPublic==1){
+          //对公
+          url='/admin/hsyMerchantList/getBankNameList';
+        }else if(this.msg.isPublic==0){
+          url='/admin/hsyMerchantList/getPersonalBankNameList';
+        }
+        this.$http.post(url,{bankName:queryString,cardNo:this.bankForm.cardNo})
+          .then(res=>{
+            for(let i=0; i<res.data.length; i++){
+              res.data[i].value = res.data[i].bankName;
+            }
+            results = res.data;
+          })
+          .catch(err=>{
+
+          });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
+      handleSelect(item) {
+        console.log(item);
+        this.form.branchCode = item.branchCode;
+      },
+      province_select: function (provinceCode) {
+        for (let m = 0; m < this.item_province.length; m++) {
+          if (this.item_province[m].code == provinceCode) {
+            if(this.isBank==true){
+              this.bankForm.belongProvinceName = this.item_province[m].aname;
+            }else{
+              this.form.belongProvinceName = this.item_province[m].aname;
+            }
+          }
+        }
+        if(this.isBank==true){
+          if(this.bankForm.belongProvinceName=="北京市"||this.bankForm.belongProvinceName=="天津市"||this.bankForm.belongProvinceName=="上海市"||this.bankForm.belongProvinceName=="重庆市"){
+            this.item_city = [{
+              code:this.bankForm.province,
+              aname:this.bankForm.belongProvinceName
+            }]
+            this.bankForm.districtCode = this.item_city[0].code;
+            this.bankForm.belongCityName = this.item_city[0].aname;
+          }else{
+            this.$http.post('/admin/unionNumber/findAllCities', {
+              code: provinceCode
+            }).then(res => {
+              this.item_city = res.data;
+              this.bankForm.districtCode = res.data[0].code;
+              this.bankForm.belongCityName = res.data[0].aname;
+            }, err => {
+              this.$message({
+                showClose: true,
+                message: err.data.msg,
+                type: 'error'
+              });
+            })
+          }
+        }else {
+          if(this.form.belongProvinceName=="北京市"||this.form.belongProvinceName=="天津市"||this.form.belongProvinceName=="上海市"||this.form.belongProvinceName=="重庆市"){
+            this.item_city = [{
+              code:this.form.province,
+              aname:this.form.belongProvinceName
+            }]
+            this.form.city = this.item_city[0].code;
+            this.form.belongCityName = this.item_city[0].aname;
+          }else{
+            this.$http.post('/admin/unionNumber/findAllCities', {
+              code: provinceCode
+            }).then(res => {
+              this.item_city = res.data;
+              this.form.city = res.data[0].code;
+              this.form.belongCityName = res.data[0].aname;
+            }, err => {
+              this.$message({
+                showClose: true,
+                message: err.data.msg,
+                type: 'error'
+              });
+            })
+          }
+        }
+      },
+      city_select: function (cityCode) {
+        for (let n = 0; n < this.item_city.length; n++) {
+          if (this.item_city[n].code == cityCode) {
+            if(this.isBank ==true){
+              this.bankForm.belongCityName = this.item_city[n].aname;
+            }else {
+              this.form.belongCityName = this.item_city[n].aname;
+            }
+          }
+        }
+      },
+      querySearchAsync(queryString, cb) {
+        var results=[],districtCode='';
+        //查支行
+        if(this.isBank==true){
+          districtCode=this.bankForm.districtCode
+        }else {
+          districtCode=this.form.city
+        }
+        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:districtCode})
+          .then(res=>{
+            for(let i=0; i<res.data.length; i++){
+              res.data[i].value = res.data[i].branchName;
+            }
+            results = res.data;
+          })
+          //        this.$http.post('/admin/unionNumber/bankName',{bankName:queryString})
+          //          .then(res=>{
+          //          for(let i=0; i<res.data.length; i++){
+          //            res.data[i].value = res.data[i].bankName;
+          //          }
+          //          results = res.data;
+          //        })
+          .catch(err=>{
+
+          });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
+      channelChange: function () {
+        this.channelForm = {
+          userId:'',
+          wechatChannelTypeSign:'',
+          alipayChannelTypeSign:''
+        };
+        this.isChannel = true;
+        this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'wechat'})
+          .then(res =>{
+            this.wxchannel = res.data;
+            this.channelForm.wechatChannelTypeSign = res.data[0].channelTypeSign
+          })
+        this.$http.post('/admin/hsyMerchantList/useChannel',{userId:this.msg.uid,policyType:'alipay'})
+          .then(res =>{
+            this.alichannel = res.data;
+            this.channelForm.alipayChannelTypeSign = res.data[0].channelTypeSign
+          })
+      },
+      submitWxChannel: function () {
+        this.auditClick = true;
+        this.wxChannelForm.userId = this.msg.uid;
+        this.$http.post('/admin/hsyMerchantAudit/addWxChannel',this.wxChannelForm)
+          .then(res =>{
+            this.$message({
+              showClose: true,
+              message: '添加成功',
+              type: 'success'
+            });
+            this.auditClick = false;
+            this.isWxChannel=false;
+            this.getData();
+            this.wxChannelForm = {
+                userId:'',
+                exchannelCode:"",
+                appId:""
+            }
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+          })
+      },
+      submitChannel:function () {
+        this.channelForm.userId = this.msg.uid;
+        this.auditClick = true;
+        this.$http.post('/admin/hsyMerchantList/changeUseChannel',this.channelForm)
+          .then(res=>{
+            this.isChannel = false;
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
+            this.getData()
+            this.auditClick = false;
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+          })
+      },
+      rateChange: function () {
+        this.auditClick = true;
+        for(let i=0; i<this.rateData.length; i++){
+          this.rateData[i].userId = this.msg.uid;
+          this.rateData[i].shopId = this.id;
+        }
+        this.$http.post('/admin/hsyMerchantList/updateRate',this.rateData)
+          .then(res=>{
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            })
+            this.isInput = false;
+            this.auditClick = false;
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+          })
+      },
+      rateNoChange: function () {
+        this.isInput = false;
+        this.rateData = this.rateList;
+      },
       move:function (e) {
         var oBox=document.getElementById("imgBox");
         e=e||window.event;
@@ -569,6 +1116,17 @@
           .then(function (res) {
             this.msg = res.data.res;
             this.res = res.data.list;
+            this.rateData = res.data.rateList;
+            this.channelList = res.data.channelList;
+            if(res.data.userChannelList==null){
+              this.userChannelList={
+                wechatChannelTypeSign:'',
+                alipayChannelTypeSign:''
+              }
+            }else {
+              this.userChannelList = res.data.userChannelList;
+            }
+            this.rateList = JSON.parse(JSON.stringify(res.data.rateList));
             if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
               this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
             }
@@ -608,6 +1166,26 @@
           message: '上传失败',
           type: 'error'
         });
+      },
+      changePhone: function () {
+        this.auditClick = true;
+        this.$http.post('/admin/hsyMerchantList/changeMobile',{id:this.id,changePhone:this.newPhone})
+          .then(function (res) {
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
+            this.auditClick = false;
+            location.reload()
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+          })
       },
       toDet:function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id+'&type=hsy');
@@ -661,6 +1239,31 @@
           })
         })
       },
+      // 修改信息
+      modify:function () {
+        this.modifyClick = true;
+        this.$http.post('/admin/hsyMerchantAudit/modify', {
+          shopId: this.id,//店铺编码
+          userId: this.msg.uid,//商户编码
+        }).then(function (res) {
+          this.isModify = false;
+          this.modifyClick = false;
+          this.getData();
+          this.$message({
+            showClose: true,
+            message: '修改成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.isModify = false;
+          this.modifyClick = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
       audit: function (event) {
         this.auditClick = true;
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
@@ -669,6 +1272,7 @@
           name: this.msg.name,
           checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
+          branchCode: this.msg.branchCode
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'
@@ -691,6 +1295,7 @@
           name: this.msg.name,
           checkErrorInfo: this.reason,
           cellphone: this.msg.cellphone,
+          mobile: this.msg.mobile
         })
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -728,6 +1333,12 @@
     computed:{
       $msg:function () {
         return this.msg
+      },
+      $userChannelList: function(){
+        return this.userChannelList;
+      },
+      $channelList: function () {
+        return this.channelList;
       }
     },
     filters: {

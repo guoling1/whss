@@ -127,8 +127,12 @@
                   <el-input style="width: 188px" v-model="queryHsy.globalID" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
-                  <label>商户名称:</label>
-                  <el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
+                  <label>商户全称:</label>
+                  <el-input style="width: 193px" v-model="queryHsy.name" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>商户简称:</label>
+                  <el-input style="width: 193px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册手机号:</label>
@@ -194,7 +198,9 @@
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>
                 <el-table-column type="index" width="62" label="序号"></el-table-column>
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
-                <el-table-column prop="shortName" label="商户名称"></el-table-column>
+                <el-table-column prop="name" label="商户全称"></el-table-column>
+                <el-table-column prop="shortName" label="商户简称"></el-table-column>
+                <el-table-column prop="shopNo" label="店铺数量"></el-table-column>
                 <!--<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>-->
                 <el-table-column prop="proxyName" label="所属一级代理"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
@@ -272,31 +278,15 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
+          onPick:function({ maxDate, minDate }){
+            if(maxDate==''||maxDate==null){
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
             }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          }
         },
         dateHss:'',
         dateHss1:'',

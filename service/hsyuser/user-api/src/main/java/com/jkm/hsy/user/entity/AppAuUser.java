@@ -1,13 +1,17 @@
 package com.jkm.hsy.user.entity;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 /** app_au_user*/
+@Data
 public class AppAuUser {
     private Long id;
     private String globalID;//对外ID
     private String cellphone;//手机号
+    private String changePhone;//更改后的手机号
     private String password;//密码
     private String nickname;//昵称
     private String realname;//真实姓名
@@ -18,6 +22,7 @@ public class AppAuUser {
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
     private String idcardh;//身份证手持照
+    private String idcardc;//结算卡号正面照
     private Long accountID;//账户ID
     private Long dealerID;//代理商ID
     private Long productID;//产品ID
@@ -29,6 +34,8 @@ public class AppAuUser {
     private Date createTime;
     private Date updateTime;
     private String contractID;//签约合同照id
+    private Integer isOpenD0;//是否开通D0
+    private Integer isProtocolSeen;//协议是否同意 0否 1是
 
     //展示字段
     private String code;//验证码
@@ -50,6 +57,9 @@ public class AppAuUser {
     private Integer hxbStatus;//华夏商户入驻结果
     private String hxbRemarks;//华夏商户入驻返回信息
     private Integer hxbOpenProduct;//是否开通了华夏产品
+
+    //扩展
+    private Integer utype;//类型1主店 2分店
 
     public Long getId() {
         return id;
@@ -137,6 +147,13 @@ public class AppAuUser {
 
     public void setIdcardh(String idcardh) {
         this.idcardh = idcardh;
+    }
+    public String getIdcardc() {
+        return idcardc;
+    }
+
+    public void setIdcardc(String idcardc) {
+        this.idcardc = idcardc;
     }
 
     public Date getCreateTime() {

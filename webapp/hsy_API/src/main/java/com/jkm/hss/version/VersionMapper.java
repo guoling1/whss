@@ -8,5 +8,6 @@ public class VersionMapper {
 	static{
 		versionMap.put("v1.0", V1BizMapper.bizMapper);
 		versionMap.put("v1.5", V1BizMapper.bizMapper);
+		versionMap.put("v1.6", V1o6BizMapper.bizMapper);
 	}
 }

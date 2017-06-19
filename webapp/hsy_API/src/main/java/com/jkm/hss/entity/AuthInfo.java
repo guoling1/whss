@@ -5,10 +5,20 @@ package com.jkm.hss.entity;
  */
 public class AuthInfo {
     private boolean successFlag;
-    private String sidEncode;
+    private String infoDetail;
+    private String uidEncode;
+    private String source;
     private String userID;
     private String openID;
-    private String infoDetail;
+    private String operate;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 
     public boolean isSuccessFlag() {
         return successFlag;
@@ -18,12 +28,12 @@ public class AuthInfo {
         this.successFlag = successFlag;
     }
 
-    public String getSidEncode() {
-        return sidEncode;
+    public String getUidEncode() {
+        return uidEncode;
     }
 
-    public void setSidEncode(String sidEncode) {
-        this.sidEncode = sidEncode;
+    public void setUidEncode(String uidEncode) {
+        this.uidEncode = uidEncode;
     }
 
     public String getUserID() {
@@ -50,7 +60,16 @@ public class AuthInfo {
         this.infoDetail = infoDetail;
     }
 
-    public String toString() {
-        return "successFlag:"+successFlag+",sidEncode:"+sidEncode+",userID:"+userID+",openID:"+openID+",infoDetail:"+infoDetail;
+    public String getOperate() {
+        return operate;
     }
+
+    public void setOperate(String operate) {
+        this.operate = operate;
+    }
+
+    public String toString() {
+        return "successFlag:"+successFlag+",uidEncode:"+uidEncode+",userID:"+userID+",openID:"+openID+",infoDetail:"+infoDetail+",operate:"+operate;
+    }
+
 }

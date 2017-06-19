@@ -39,11 +39,13 @@ const StoreNotice = r => require.ensure([], () => r(require('components/StoreNot
 const StoreNoticeDet = r => require.ensure([], () => r(require('components/StoreNoticeDet')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
 const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
+const Achievement = r => require.ensure([], () => r(require('components/Achievement')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('components/AgentAdd')), 'group-record');
 const AgentAddPro = r => require.ensure([], () => r(require('components/AgentAddPro')), 'group-record');
+const AgentAddProHsy = r => require.ensure([], () => r(require('components/AgentAddProHsy')), 'group-record');
 const AgentAddBase = r => require.ensure([], () => r(require('components/AgentAddBase')), 'group-record');
 const AgentPersonnel = r => require.ensure([], () => r(require('components/AgentPersonnel')), 'group-record');
 const AgentPersonnelDet = r => require.ensure([], () => r(require('components/AgentPersonnelDet')), 'group-record');
@@ -59,6 +61,7 @@ const CodeAll = r => require.ensure([], () => r(require('components/CodeAll')), 
 const CodeDet = r => require.ensure([], () => r(require('components/CodeDet')), 'group-record');
 //产品
 const ProductAdd = r => require.ensure([], () => r(require('components/ProductAdd')), 'group-record');
+const ProductAddHsy = r => require.ensure([], () => r(require('components/ProductAddHsy')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('components/ProductList')), 'group-record');
 const Invite = r => require.ensure([], () => r(require('components/Invite')), 'group-record');
 const Gateway = r => require.ensure([], () => r(require('components/Gateway')), 'group-record');
@@ -69,6 +72,7 @@ const TemplateAdd = r => require.ensure([], () => r(require('components/Template
 const PassAdd = r => require.ensure([], () => r(require('components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('components/PassList')), 'group-record');
 const LimitList = r => require.ensure([], () => r(require('components/LimitList')), 'group-record');
+const UnionLine = r => require.ensure([], () => r(require('components/UnionLine')), 'group-record');
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('components/PersonnelAdd')), 'group-record');
@@ -105,7 +109,9 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'achievement', name: 'Achievement', component: Achievement},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
@@ -151,11 +157,13 @@ let routes = [
       {path: 'agentListSec', name: 'AgentListSec', component: AgentListSec},
       {path: 'agentAdd', name: 'AgentAdd', component: AgentAdd},
       {path: 'agentAddPro', name: 'AgentAddPro', component: AgentAddPro},
+      {path: 'agentAddProHsy', name: 'AgentAddProHsy', component: AgentAddProHsy},
       {path: 'agentAddBase', name: 'AgentAddBase', component: AgentAddBase},
       {path: 'passAdd', name: 'PassAdd', component: PassAdd},
       {path: 'passList', name: 'PassList', component: PassList},
       {path: 'limitList', name: 'LimitList', component: LimitList},
       {path: 'productAdd', name: 'ProductAdd', component: ProductAdd},
+      {path: 'productAddHsy', name: 'ProductAddHsy', component: ProductAddHsy},
       {path: 'productList', name: 'ProductList', component: ProductList},
       {path: 'issue', name: 'Issue', component: Issue},
       {path: 'issueRecord', name: 'IssueRecord', component: IssueRecord},
@@ -194,10 +202,12 @@ let routes = [
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
+      {path: 'achievement', name: 'Achievement', component: Achievement},
+      {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
-      {path: 'template', name: 'Template', component: Template},
+      // {path: 'template', name: 'Template', component: Template},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
-      {path: 'template', name: 'Template', component: Template},
+      // {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},

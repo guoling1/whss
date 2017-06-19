@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.HsyOrderDao">
+
+    <insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `tb_hsy_order`
+        (
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchant_no`,
+        `merchantname`,
+        `order_no`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `goods_name`,
+        `goods_describe`,
+        `member_id`,
+        `payment_channel`,
+        `settle_type`,
+        `remark`)
+        VALUES
+        (
+        #{ordernumber},
+        #{shopid},
+        #{shopname},
+        #{merchantNo},
+        #{merchantname},
+        #{orderno},
+        #{orderstatus},
+        #{sourcetype},
+        #{validationcode},
+        #{amount},
+        #{qrcode},
+        #{cashierid},
+        #{cashiername},
+        #{paytype},
+        #{paychannelsign},
+        #{goodsname},
+        #{goodsdescribe},
+        #{memberId},
+        #{paymentChannel},
+        #{settleType},
+        #{remark});
+    </insert>
+
+    <update id="update">
+        UPDATE tb_hsy_order
+        <set>
+          <if test="ordernumber!=null and ordernumber!='' ">
+              ordernumber=#{ordernumber},
+          </if>
+            <if test="validationcode!=null and validationcode!='' ">
+                validationcode=#{validationcode},
+            </if>
+            <if test="orderid>0 ">
+                order_id=#{orderid},
+            </if>
+          <if test="orderno!=null and orderno!='' ">
+              order_no=#{orderno},
+          </if>
+          <if test="orderstatus>0">
+              orderstatus=#{orderstatus},
+          </if>
+          <if test="poundage!=null ">
+              poundage=#{poundage},
+          </if>
+          <if test="paysn!=null and paysn!='' ">
+              pay_sn=#{paysn},
+          </if>
+          <if test="paysuccesstime!=null">
+              pay_success_time=#{paysuccesstime},
+          </if>
+          <if test="refundamount!=null">
+              refund_amount=#{refundamount},
+          </if>
+          <if test="refundtime!=null">
+              refund_time=#{refundtime}
+          </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAmountAndStatus">
+        UPDATE tb_hsy_order SET amount = #{amount}, orderstatus = #{status} WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE id = #{id}
+        ;
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT * FROM tb_hsy_order WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE order_no = #{orderNo}
+    </select>
+    <select id="selectByOrderId"  resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectOrdersByParam" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT `id`,
+        `ordernumber`,
+        `shopid`,
+        `shopname`,
+        `merchantname`,
+        `order_no`,
+        `order_id`,
+        `orderstatus`,
+        `sourcetype`,
+        `validationcode`,
+        `amount`,
+        `poundage`,
+        `qrcode`,
+        `cashierid`,
+        `cashiername`,
+        `pay_sn`,
+        `pay_type`,
+        `pay_channel_sign`,
+        `pay_success_time`,
+        `refund_amount`,
+        `refund_status`,
+        `refund_time`,
+        `goods_name`,
+        `goods_describe`,
+        `remark`,
+        `create_time`,
+        `update_time`
+        FROM `tb_hsy_order`
+        WHERE  shopid=#{shopId}
+        <if test="startTime != null and endTime != null">
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND orderstatus in (2,6,7)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY pay_success_time DESC
+        LIMIT #{offset}, #{count}
+    </select>
+    <select id="selectOrderCountByParam" resultType="java.lang.Long">
+      SELECT COUNT(1)
+        FROM `tb_hsy_order`
+        WHERE
+        shopid=#{shopId}
+        <if test="startTime != null and endTime != null">
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND orderstatus in (2,6,7)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectDayOrderStByParm"  resultType="com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse">
+        select sum(amount) as totalAmount,count(1) as number  from tb_hsy_order
+        WHERE  shopid=#{shopId}
+        <if test="startTime != null and endTime != null">
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND orderstatus in (2)
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectOrderStByParm" resultType="com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse">
+        select sum(amount) as totalAmount,count(1) as number  from tb_hsy_order
+        WHERE  shopid=#{shopId}
+        AND orderstatus=2
+        <if test="startTime != null and endTime != null">
+            AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        AND pay_channel_sign IN
+        <foreach collection="payChannelSigns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

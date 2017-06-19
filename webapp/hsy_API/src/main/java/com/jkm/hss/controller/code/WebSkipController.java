@@ -58,16 +58,14 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param merchantId
      * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name, @RequestParam(value = "openId") String openId) throws IOException {
-        model.addAttribute("mid", merchantId);
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId, @RequestParam(value = "name") String name) throws IOException {
+        model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("merchantName", name);
-        model.addAttribute("openId", openId);
         return "/payment-wx";
     }
 
@@ -76,17 +74,14 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param merchantId
      * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId) throws IOException {
-        model.addAttribute("mid", merchantId);
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "name") String name) throws IOException {
+        model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("merchantName", name);
-        model.addAttribute("openId", openId);
-        log.info("openId={}",openId);
         return "/payment-zfb";
     }
 

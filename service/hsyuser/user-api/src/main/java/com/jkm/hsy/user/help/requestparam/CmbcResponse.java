@@ -15,4 +15,8 @@ public class CmbcResponse {
      * 返回描述信息
      */
     private String msg;
+    /**
+     * 渠道商户编号
+     */
+    private String result;
 }

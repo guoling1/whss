@@ -8,6 +8,7 @@ import lombok.Getter;
  * 打款渠道
  */
 public enum EnumUpperChannel {
+
     /**
      * 扫米
      */
@@ -39,14 +40,20 @@ public enum EnumUpperChannel {
     EASY_LINK(6, "EL", "易联"),
 
     /**
-     * 民生银行
+     * 厦门民生银行
      */
-    MS_BANK(7, "MS", "民生银行"),
+    XMMS_BANK(7, "XMMS","厦门民生银行"),
 
     /**
      * 收银家
      */
     SYJ(8, "SYJ", "收银家"),
+
+
+    /**
+     * 会员卡
+     */
+    MEMBER(12, "MEMBER", "会员卡"),
 
 
     /**
@@ -58,7 +65,12 @@ public enum EnumUpperChannel {
     /**
      * 汇聚支付
      */
-    HJ_PAY(11,"HJ_PAY","汇聚");
+    HJ_PAY(11,"HJ_PAY","汇聚"),
+
+    /**
+     * 微信官方支付
+     */
+    WECHAT(11,"WECHAT","微信官方支付");
 
     @Getter
     private int id;

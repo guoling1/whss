@@ -18,6 +18,7 @@
             <if test="industryCode!=null and industryCode!=''">INDUSTRYCODE=#{industryCode},</if>
             <if test="districtCode!=null and districtCode!=''">DISTRICTCODE=#{districtCode},</if>
             <if test="address!=null and address!=''">ADDRESS=#{address},</if>
+            <if test="email!=null and email!=''">EMAIL=#{email},</if>
             <if test="licenceID!=null and licenceID!=''">LICENCEID=#{licenceID},</if>
             <if test="storefrontID!=null and storefrontID!=''">STOREFRONTID=#{storefrontID},</if>
             <if test="counterID!=null and counterID!=''">COUNTERID=#{counterID},</if>
@@ -70,7 +71,7 @@
 
     <select id="findPrimaryAppBizShopByUserID" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
-          shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+          shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.EMAIL,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
         shop.licenceNO,shop.licenceStartDate,shop.licenceEndDate,shop.checkErrorInfo,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
@@ -326,5 +327,33 @@
         where sur.UID=#{uid}
         order by sur.TYPE,shop.CREATETIME
     </select>
+
+    <select id="getBankNameList" resultType="com.jkm.hsy.user.entity.AppBizBankBranch">
+        select BANKNAME,BANKINDEX from app_biz_bank_branch group by BANKNAME,AVAILABLE
+        having AVAILABLE=1
+        <if test="bankName!=null and bankName!=''">
+            AND BANKNAME LIKE CONCAT('%',#{bankName},'%')
+        </if>
+        order by BANKINDEX,ID
+    </select>
+
+    <update id="changeSettlementCard">
+        UPDATE app_biz_card
+        <set>
+            <if test="cardNo != null">
+                CARDNO = #{cardNo},
+            </if>
+            <if test="bankName != null">
+                CARDBANK = #{bankName},
+            </if>
+            <if test="productName != null">
+                BRANCHDISTRICTCODE = #{districtCode},
+            </if>
+            <if test="bankAddress != null">
+                BANKADDRESS = #{bankAddress},
+            </if>
+        </set>
+        WHERE SID = #{id}
+    </update>
 
 </mapper>
