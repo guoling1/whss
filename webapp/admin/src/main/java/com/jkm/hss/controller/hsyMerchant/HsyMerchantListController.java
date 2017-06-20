@@ -11,6 +11,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.Enum.EnumIsOpen;
+import com.jkm.hsy.user.Enum.EnumOpt;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.entity.*;
@@ -320,11 +321,10 @@ public class HsyMerchantListController extends BaseController {
                     userWithdrawRateService.insert(userWithdrawRate);
                 }
             }
-
         }
-        boolean b = hsyCmbcService.merchantInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId());
+        boolean b = hsyCmbcService.merchantInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId(),super.getAdminUser().getId(), EnumOpt.MODIFYRATES.getMsg());
         if (b==false){
-            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
+            return CommonResponse.simpleResponse(-1, "修改费率失败，请务必联系技术解决！！");
         }
         return CommonResponse.simpleResponse(1, "修改成功");
     }
@@ -382,7 +382,7 @@ public class HsyMerchantListController extends BaseController {
         this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
                 hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress(),hsyMerchantAuditRequest.getId());
 
-        boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId());
+        boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId(),super.getAdminUser().getId(), EnumOpt.MODIFYDEFAULTCARD.getMsg());
         if (b==false){
             return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
         }
