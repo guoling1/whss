@@ -35,7 +35,7 @@
                 <el-option label="打款失败" value="5">打款失败</el-option>
               </el-select>
             </li>
-            <li class="same">
+            <!--<li class="same">
               <label>打款日期:</label>
               <el-date-picker
                 style="width: 193px"
@@ -46,7 +46,7 @@
                 placeholder="选择日期范围"
                 :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
-            </li>
+            </li>-->
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
