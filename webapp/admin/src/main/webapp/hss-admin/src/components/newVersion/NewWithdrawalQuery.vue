@@ -11,29 +11,41 @@
           <ul class="search">
             <li class="same">
               <label>打款流水号:</label>
-              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易单号:</label>
-              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>备注:</label>
-              <el-input style="width: 188px" v-model="query.remark" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.remark" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>收款账户名:</label>
-              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 193px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>打款状态:</label>
-              <el-select style="width: 188px" clearable v-model="query.status" size="small">
+              <el-select style="width: 193px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待提现" value="1">待提现</el-option>
                 <el-option label="请求成功" value="3">请求成功</el-option>
                 <el-option label="打款成功" value="4">打款成功</el-option>
                 <el-option label="打款失败" value="5">打款失败</el-option>
               </el-select>
+            </li>
+            <li class="same">
+              <label>打款日期:</label>
+              <el-date-picker
+                style="width: 193px"
+                v-model="date"
+                type="daterange"
+                align="right"
+                @change="datetimeSelect"
+                placeholder="选择日期范围"
+                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
+              </el-date-picker>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -140,6 +152,19 @@
     name: 'withDrawal',
     data(){
       return {
+        pickerOptions: {
+          onPick:function({ maxDate, minDate }){
+            console.log({maxDate,minDate})
+            if(maxDate==''||maxDate==null){
+              console.log(maxDate,minDate)
+              this.disabledDate=function(maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+              }
+            }else{
+              this.disabledDate=function(){}
+            }
+          }
+        },
         isMask:false,
         query:{
           pageNo:1,
@@ -148,8 +173,11 @@
           remark:'',
           sn:'',
           userName:'',
-          status:''
+          status:'',
+          startTime: '',
+          endTime: ''
         },
+        date:'',
         records: [],
         count: 0,
         total: '',
@@ -158,16 +186,20 @@
         pageTotal: 0,
         addTotal: 0,
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
-         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
+         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',*/
 
         //测试
         /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
         addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',*/
+        queryUrl:'http://192.168.1.133:8240/order/withdraw/listOrder',
+         excelUrl:'http://192.168.1.133:8240/order/withdraw/exportExcel',
+         syncUrl:'http://192.168.1.133:8240/order/syncWithdrawOrder',
+         addUrl:'http://192.168.1.133:8240/order/withdraw/countAmount',
       }
     },
     created: function () {
@@ -180,10 +212,37 @@
           type: 'success'
         });
       });
+      let time = new Date();
+      this.date = [time, time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.query.startTime = str;
+        } else {
+          this.query.endTime = str;
+        }
+      }
       this.getData();
-      this.getAddTotal()
+      this.getAddTotal();
     },
     methods: {
+      datetimeSelect: function (val) {
+        if (val == undefined) {
+          this.query.startTime = '';
+          this.query.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
+        }
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.queryUrl,this.$data.query)
@@ -203,16 +262,6 @@
               price = toFix(parseFloat(price)+parseFloat(res.data.records[i].amount));
             }
             this.pageTotal = price;
-            /*if(this.records.length!=0){
-              this.records.push({
-                orderNo:"当页总额",
-                amount:price
-              },{
-                orderNo:"筛选条件统计",
-                amount:''
-              });
-              this.records[this.records.length-1].amount = this.total;
-            }*/
           },function (err) {
             setTimeout(()=>{
               this.loading = false;
@@ -315,52 +364,6 @@
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
         this.getData()
-      },
-    },
-    watch: {
-      date: function (val, oldVal) {
-        if (val[0] != null) {
-          for (var j = 0; j < val.length; j++) {
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for (var i = 0, len = ary.length; i < len; i++) {
-              if (ary[i] < 10) {
-                ary[i] = '0' + ary[i];
-              }
-            }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if (j == 0) {
-              this.$data.query.startCreateTime = str;
-            } else {
-              this.$data.query.endCreateTime = str;
-            }
-          }
-        } else {
-          this.$data.query.startCreateTime = '';
-          this.$data.query.endCreateTime = '';
-        }
-      },
-      date1: function (val, oldVal) {
-        if (val[0] != null) {
-          for (var j = 0; j < val.length; j++) {
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for (var i = 0, len = ary.length; i < len; i++) {
-              if (ary[i] < 10) {
-                ary[i] = '0' + ary[i];
-              }
-            }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if (j == 0) {
-              this.$data.query.startFinishTime = str;
-            } else {
-              this.$data.query.endFinishTime = str;
-            }
-          }
-        } else {
-          this.$data.query.startFinishTime = '';
-          this.$data.query.endFinishTime = '';
-        }
       },
     },
     filters: {
