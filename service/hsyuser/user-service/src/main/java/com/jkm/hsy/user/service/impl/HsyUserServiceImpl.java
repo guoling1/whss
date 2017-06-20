@@ -374,13 +374,20 @@ public class HsyUserServiceImpl implements HsyUserService {
                 {
                     appChannelRate.setAlipayTradeRateT1(userTradeRate.getTradeRateT1());
                     appChannelRate.setAlipayIsOpen(userTradeRate.getIsOpen());
+                    appAuUserFind.setAlipayRate(userTradeRate.getTradeRateT1());
                 }
                 if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.WECHAT.getId()))
                 {
                     appChannelRate.setWechatTradeRateT1(userTradeRate.getTradeRateT1());
                     appChannelRate.setWechatIsOpen(userTradeRate.getIsOpen());
+                    appAuUserFind.setWeixinRate(userTradeRate.getTradeRateT1());
                 }
             }
+        }else{
+            if(appAuUser.getAlipayRate()==null)
+                appAuUser.setAlipayRate(BigDecimal.ZERO);
+            if(appAuUser.getWeixinRate()==null)
+                appAuUser.setWeixinRate(BigDecimal.ZERO);
         }
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
@@ -1074,6 +1081,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 appAuUserFind.setDealerID(parentList.get(0).getDealerID());
             }
         }
+
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
@@ -1130,13 +1138,20 @@ public class HsyUserServiceImpl implements HsyUserService {
                 {
                     appChannelRate.setAlipayTradeRateT1(userTradeRate.getTradeRateT1());
                     appChannelRate.setAlipayIsOpen(userTradeRate.getIsOpen());
+                    appAuUserFind.setAlipayRate(userTradeRate.getTradeRateT1());
                 }
                 if(userTradeRate.getPolicyType()!=null&&userTradeRate.getPolicyType().equals(EnumPolicyType.WECHAT.getId()))
                 {
                     appChannelRate.setWechatTradeRateT1(userTradeRate.getTradeRateT1());
                     appChannelRate.setWechatIsOpen(userTradeRate.getIsOpen());
+                    appAuUserFind.setWeixinRate(userTradeRate.getTradeRateT1());
                 }
             }
+        }else{
+            if(appAuUser.getAlipayRate()==null)
+                appAuUser.setAlipayRate(BigDecimal.ZERO);
+            if(appAuUser.getWeixinRate()==null)
+                appAuUser.setWeixinRate(BigDecimal.ZERO);
         }
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {

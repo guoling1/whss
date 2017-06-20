@@ -546,6 +546,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("appId",req.getAppId());
         map.put("globalId",req.getGlobalId());
         map.put("shortName",req.getShortName());
+        map.put("proxyNameHsy",req.getProxyNameHsy());
+        map.put("proxyNameHsy1",req.getProxyNameHsy1());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -2133,6 +2135,10 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getMerchantName());
                 columns.add(list.get(i).getMarkCode());
                 columns.add(list.get(i).getDealerBelong());
+                if (list.get(i).getAppId().equals("hsy")){
+                    columns.add(list.get(i).getProxyNameHsy());
+                    columns.add(list.get(i).getProxyNameHsy1());
+                }
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));

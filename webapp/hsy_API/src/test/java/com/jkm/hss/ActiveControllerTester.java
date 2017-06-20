@@ -207,11 +207,11 @@ public class ActiveControllerTester {
     public void testFindContractInfo()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001015");
-        p.setAccessToken("");
+        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
-        String param="{\"id\":10}";
+        p.setV("v1.6");
+        String param="{\"id\":329}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

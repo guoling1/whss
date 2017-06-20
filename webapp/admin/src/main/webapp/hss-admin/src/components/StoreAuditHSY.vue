@@ -906,14 +906,16 @@
         }
       },
       querySearchAsync(queryString, cb) {
-        var results=[],districtCode='';
+        var results=[],districtCode='',cardBank = '';
         //查支行
         if(this.isBank==true){
           districtCode=this.bankForm.districtCode
+          cardBank = this.bankForm.bankName
         }else {
           districtCode=this.form.city
+          cardBank=this.msg.cardBank
         }
-        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:districtCode})
+        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:cardBank,districtCode:districtCode})
           .then(res=>{
             for(let i=0; i<res.data.length; i++){
               res.data[i].value = res.data[i].branchName;

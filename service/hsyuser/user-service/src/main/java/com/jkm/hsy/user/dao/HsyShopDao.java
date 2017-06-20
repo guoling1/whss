@@ -56,5 +56,5 @@ public interface HsyShopDao {
      * @param bankAddress
      */
     void changeSettlementCard(@Param("cardNo") String cardNo,@Param("bankName") String bankName,
-                              @Param("districtCode") String districtCode,@Param("bankAddress") String bankAddress);
+                              @Param("districtCode") String districtCode,@Param("bankAddress") String bankAddress,@Param("id") Long id);
 }

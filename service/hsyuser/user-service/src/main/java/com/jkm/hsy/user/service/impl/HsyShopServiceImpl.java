@@ -10,9 +10,11 @@ import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.service.BankCardBinService;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
+import com.jkm.hsy.user.dao.UserTradeRateDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -40,6 +42,8 @@ public class HsyShopServiceImpl implements HsyShopService {
     private HsyUserDao hsyUserDao;
     @Autowired
     private QRCodeService qRCodeService;
+    @Autowired
+    private UserTradeRateDao userTradeRateDao;
 
     /**HSY001005 更新店铺资料店铺名字*/
     public String updateHsyShop(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException{
@@ -575,18 +579,27 @@ public class HsyShopServiceImpl implements HsyShopService {
         AppAuUser appAuUser=null;
         if(userList!=null&&userList.size()!=0)
             appAuUser=userList.get(0);
+        else
+        {
+            appAuUser=new AppAuUser();
+            appAuUser.setId(-1L);
+        }
+
+        UserTradeRate wechatTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(appAuUser.getId(), EnumPolicyType.WECHAT.getId());
+        UserTradeRate alipayTradeRate = userTradeRateDao.selectByUserIdAndPolicyType(appAuUser.getId(), EnumPolicyType.ALIPAY.getId());
+
         List<Map> rateList=new ArrayList<Map>();
         Map rateMapWX=new HashMap();
         rateMapWX.put("name","微信费率");
-        rateMapWX.put("rate",appAuUser==null||appAuUser.getWeixinRate()==null?0:appAuUser.getWeixinRate());
+        rateMapWX.put("rate",wechatTradeRate==null||wechatTradeRate.getTradeRateT1()==null?0:wechatTradeRate.getTradeRateT1());
         rateList.add(rateMapWX);
         Map rateMapAL=new HashMap();
         rateMapAL.put("name","支付宝费率");
-        rateMapAL.put("rate",appAuUser==null||appAuUser.getAlipayRate()==null?0:appAuUser.getAlipayRate());
+        rateMapAL.put("rate",alipayTradeRate==null||alipayTradeRate.getTradeRateT1()==null?0:alipayTradeRate.getTradeRateT1());
         rateList.add(rateMapAL);
         Map rateMapF=new HashMap();
         rateMapF.put("name","快捷费率");
-        rateMapF.put("rate",appAuUser==null||appAuUser.getFastRate()==null?0:appAuUser.getFastRate());
+        rateMapF.put("rate",0);
         rateList.add(rateMapF);
 
         Map map=new HashMap();
@@ -737,7 +750,7 @@ public class HsyShopServiceImpl implements HsyShopService {
     }
 
     @Override
-    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress) {
-        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress);
+    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress, Long id) {
+        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress,id);
     }
 }
