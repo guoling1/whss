@@ -216,10 +216,14 @@ public class PushServiceImpl implements PushService {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for(Map map: list){
-            String clientid=map.get("CLIENTID").toString();
-            System.out.print("------------------------------------");
-            System.out.print(clientid);
-            clients.add(clientid);
+            if(map.get("CLIENTID")!=null){
+                String clientid=map.get("CLIENTID").toString();
+                clients.add(clientid);
+            }
+//            String clientid=map.get("CLIENTID").toString();
+//            System.out.print("------------------------------------");
+//            System.out.print(clientid);
+//            clients.add(clientid);
         }
          SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
 
