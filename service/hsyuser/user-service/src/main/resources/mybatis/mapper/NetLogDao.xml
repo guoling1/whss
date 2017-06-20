@@ -20,7 +20,7 @@
          n.result,
          n.create_time
         FROM app_net_log as n
-        WHERE n.user_id=#{userId} and n.status = 1 limit #{offset},#{pageSize};
+        WHERE n.user_id=#{userId} and n.status = 1 order by n.create_time desc limit #{offset},#{pageSize};
     </select>
 
     <select id="selectCountByUserId" resultType="java.lang.Long">
