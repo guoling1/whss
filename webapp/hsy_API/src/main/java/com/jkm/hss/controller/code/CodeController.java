@@ -109,7 +109,9 @@ public class CodeController extends BaseController {
                 }
                 String appId = WxConstants.APP_HSY_ID;
                 if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()==EnumPayChannelSign.WECHAT_PAY.getId()){
-                    if(userChannelPolicyOptional.get().getAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getAppId())){
+                    if(userChannelPolicyOptional.get().getSubAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getSubAppId())){
+                        appId = userChannelPolicyOptional.get().getSubAppId();
+                    }else{
                         appId = userChannelPolicyOptional.get().getAppId();
                     }
                 }

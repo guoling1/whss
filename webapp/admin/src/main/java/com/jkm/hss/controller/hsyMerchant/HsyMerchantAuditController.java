@@ -30,6 +30,7 @@ import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -448,9 +449,12 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/addWxChannel",method = RequestMethod.POST)
     public CommonResponse addWxChannel(@RequestBody AddWxChannelRequest addWxChannelRequest){
+        if(StringUtils.isBlank(addWxChannelRequest.getAppId())){
+            return CommonResponse.simpleResponse(-1,"appId不能为空");
+        }
         Optional<UserChannelPolicy> userChannelPolicyOptional =  userChannelPolicyService.selectByUserIdAndChannelTypeSign(addWxChannelRequest.getUserId(),EnumPayChannelSign.WECHAT_PAY.getId());
         if(userChannelPolicyOptional.isPresent()){
-            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"此通道已存在");
+            return CommonResponse.simpleResponse(-1,"此通道已存在");
         }
         UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
         userChannelPolicy.setUserId(addWxChannelRequest.getUserId());
@@ -462,6 +466,7 @@ public class HsyMerchantAuditController extends BaseController {
         userChannelPolicy.setOpenProductStatus(0);
         userChannelPolicy.setExchannelCode(addWxChannelRequest.getExchannelCode());
         userChannelPolicy.setAppId(addWxChannelRequest.getAppId());
+        userChannelPolicy.setSubAppId(addWxChannelRequest.getSubAppId());
         userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
         userChannelPolicyService.insert(userChannelPolicy);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"添加成功");

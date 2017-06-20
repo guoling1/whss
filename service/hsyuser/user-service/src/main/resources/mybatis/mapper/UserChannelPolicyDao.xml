@@ -4,13 +4,13 @@
 
     <sql id="Base_Column_List">
         id,	user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,
-        open_product_status,open_product_marks,exchannel_code,app_id,exchannel_event_code,status,
+        open_product_status,open_product_marks,exchannel_code,app_id,sub_app_id,exchannel_event_code,status,
         create_time,update_time
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO app_user_channel_policy(user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,open_product_status,open_product_marks,exchannel_code,app_id,exchannel_event_code,status)
-        VALUES(#{userId},#{channelName},#{channelTypeSign},#{policyType},#{settleType},#{netStatus},#{netMarks},#{openProductStatus},#{openProductMarks},#{exchannelCode},#{appId},#{exchannelEventCode},#{status})
+        INSERT INTO app_user_channel_policy(user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,open_product_status,open_product_marks,exchannel_code,app_id,sub_app_id,exchannel_event_code,status)
+        VALUES(#{userId},#{channelName},#{channelTypeSign},#{policyType},#{settleType},#{netStatus},#{netMarks},#{openProductStatus},#{openProductMarks},#{exchannelCode},#{appId},#{subAppId},#{exchannelEventCode},#{status})
     </insert>
 
     <update id="updateInit">
@@ -67,7 +67,7 @@
 
     <select id="getUserChannelList" resultType="com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse">
         SELECT c.channel_name,c.settle_type,c.net_status,c.net_marks,
-        c.open_product_status,c.open_product_marks,c.exchannel_code,c.app_id,c.exchannel_event_code,
+        c.open_product_status,c.open_product_marks,c.exchannel_code,c.app_id,c.sub_app_id,c.exchannel_event_code,
         (select count(1) from app_user_current_channel_policy where user_id=c.user_id and (wechat_channel_type_sign=c.channel_type_sign or alipay_channel_type_sign=c.channel_type_sign)) as is_use
         FROM app_user_channel_policy as c
         WHERE c.user_id = #{userId} and c.status = 1 ORDER by c.channel_type_sign;

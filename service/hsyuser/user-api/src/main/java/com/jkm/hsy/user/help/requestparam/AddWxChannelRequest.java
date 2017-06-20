@@ -16,7 +16,11 @@ public class AddWxChannelRequest {
      */
     private String exchannelCode;
     /**
-     * 公众号
+     * 主公众号
      */
     private String appId;
+    /**
+     * 子公众号
+     */
+    private String subAppId;
 }
