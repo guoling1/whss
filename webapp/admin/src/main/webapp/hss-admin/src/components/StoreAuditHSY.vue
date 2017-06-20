@@ -377,11 +377,15 @@
           <template>
             <el-table :data="$netLogList" border style="width: 100%;margin: 15px 0;">
               <el-table-column prop="adminName" label="操作人" ></el-table-column>
-              <el-table-column prop="createTime" label="操作时间"></el-table-column>
-              <el-table-column prop="channelTypeSignName" label="通道名称" ></el-table-column>
               <el-table-column prop="opt" label="操作" ></el-table-column>
+              <el-table-column prop="channelTypeSignName" label="通道名称" ></el-table-column>
               <el-table-column prop="act" label="动作"></el-table-column>
               <el-table-column prop="result" label="结果" ></el-table-column>
+              <el-table-column prop="createTime" label="操作时间">
+                <template scope="scope">
+                  {{scope.row.createTime|changeTime}}
+                </template>
+              </el-table-column>
             </el-table>
             <div class="block" style="text-align: right">
               <el-pagination @size-change="handleSizeChange"
