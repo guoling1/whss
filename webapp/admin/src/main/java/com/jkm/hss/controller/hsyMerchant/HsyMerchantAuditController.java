@@ -2,9 +2,13 @@ package com.jkm.hss.controller.hsyMerchant;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.helper.DealerSupport;
+import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.enums.EnumStatus;
@@ -21,15 +25,12 @@ import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
-import com.jkm.hsy.user.help.requestparam.AddWxChannelRequest;
-import com.jkm.hsy.user.help.requestparam.CmbcResponse;
-import com.jkm.hsy.user.help.requestparam.XmmsResponse;
-import com.jkm.hsy.user.service.HsyCmbcService;
-import com.jkm.hsy.user.service.HsyMerchantAuditService;
-import com.jkm.hsy.user.service.UserChannelPolicyService;
-import com.jkm.hsy.user.service.UserTradeRateService;
+import com.jkm.hsy.user.help.requestparam.*;
+import com.jkm.hsy.user.service.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +82,9 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private HsyMerchantAuditDao hsyMerchantAuditDao;
 
+    @Autowired
+    private NetLogService netLogService;
+
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -114,7 +118,7 @@ public class HsyMerchantAuditController extends BaseController {
                 .build()
         );
         //入网
-        merchantIn(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId());
+        merchantIn(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId(),super.getAdminUser().getId());
         hsyMerchantAuditRequest.setStat(0);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
@@ -183,11 +187,21 @@ public class HsyMerchantAuditController extends BaseController {
         if(appBizShop.getStatus()!=AppConstant.SHOP_STATUS_NORMAL){
             return CommonResponse.simpleResponse(-1,"该商户未通过审核，不能重新入网");
         }
+        long adminId = super.getAdminUser().getId();
         Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appUserAndShopRequest.getUserId(),EnumPayChannelSign.SYJ_WECHAT.getId());
         if(userChannelPolicyOptional.isPresent()){
             if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
                 if(userChannelPolicyOptional.get().getOpenProductStatus()==null||userChannelPolicyOptional.get().getOpenProductStatus()!=EnumOpenProductStatus.PASS.getId()){
                     CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                    NetLog netLog = new NetLog();
+                    netLog.setAdminId(adminId);
+                    netLog.setUserId(appUserAndShopRequest.getUserId());
+                    netLog.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+                    netLog.setOpt(EnumOpt.REENTER.getMsg());
+                    netLog.setAct(EnumAct.SYJOPENPRODUCT.getMsg());
+                    netLog.setResult(cmbcResponse1.getMsg());
+                    netLog.setStatus(EnumStatus.NORMAL.getId());
+                    netLogService.insert(netLog);
                     if(cmbcResponse1.getCode()==1){
                         UserChannelPolicy openProduct = new UserChannelPolicy();
                         openProduct.setUserId(appUserAndShopRequest.getUserId());
@@ -206,6 +220,15 @@ public class HsyMerchantAuditController extends BaseController {
                 }
             }else{
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                NetLog netLog = new NetLog();
+                netLog.setAdminId(adminId);
+                netLog.setUserId(appUserAndShopRequest.getUserId());
+                netLog.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+                netLog.setOpt(EnumOpt.REENTER.getMsg());
+                netLog.setAct(EnumAct.SYJNET.getMsg());
+                netLog.setResult(cmbcResponse.getMsg());
+                netLog.setStatus(EnumStatus.NORMAL.getId());
+                netLogService.insert(netLog);
                 if(cmbcResponse.getCode()==1){
                     UserChannelPolicy netInfo = new UserChannelPolicy();
                     netInfo.setUserId(appUserAndShopRequest.getUserId());
@@ -214,6 +237,15 @@ public class HsyMerchantAuditController extends BaseController {
                     netInfo.setExchannelCode(cmbcResponse.getResult());
                     userChannelPolicyService.updateHxNetInfo(netInfo);
                     CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                    NetLog netLog1 = new NetLog();
+                    netLog1.setAdminId(adminId);
+                    netLog1.setUserId(appUserAndShopRequest.getUserId());
+                    netLog1.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+                    netLog1.setOpt(EnumOpt.REENTER.getMsg());
+                    netLog1.setAct(EnumAct.SYJOPENPRODUCT.getMsg());
+                    netLog1.setResult(cmbcResponse1.getMsg());
+                    netLog1.setStatus(EnumStatus.NORMAL.getId());
+                    netLogService.insert(netLog1);
                     if(cmbcResponse1.getCode()==1){
                         UserChannelPolicy openProduct = new UserChannelPolicy();
                         openProduct.setUserId(appUserAndShopRequest.getUserId());
@@ -253,6 +285,16 @@ public class HsyMerchantAuditController extends BaseController {
                 if(ucp.get().getNetStatus()!=null&&ucp.get().getNetStatus()!=EnumNetStatus.SUCCESS.getId()&&ucp.get().getNetStatus()!=EnumNetStatus.HANDLING.getId()){
                     XmmsResponse.BaseResponse baseResponse= hsyCmbcService.merchantIn(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId(),list.get(i));
                     if(baseResponse.getCode()==1){
+                        NetLog netLog = new NetLog();
+                        netLog.setAdminId(adminId);
+                        netLog.setUserId(appUserAndShopRequest.getUserId());
+                        netLog.setChannelTypeSign(list.get(i));
+                        netLog.setOpt(EnumOpt.REENTER.getMsg());
+                        netLog.setAct(EnumAct.XMMSNET.getMsg());
+                        netLog.setResult(baseResponse.getResult().getMsg());
+                        netLog.setStatus(EnumStatus.NORMAL.getId());
+                        netLogService.insert(netLog);
+
                         UserChannelPolicy netInfo = new UserChannelPolicy();
                         netInfo.setUserId(appUserAndShopRequest.getUserId());
                         if((EnumXmmsStatus.HANDLING.getId()).equals(baseResponse.getResult().getStatus())){
@@ -278,6 +320,16 @@ public class HsyMerchantAuditController extends BaseController {
                         netInfo.setOpenProductMarks(baseResponse.getMsg());
                         netInfo.setChannelTypeSign(list.get(i));
                         userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+
+                        NetLog netLog = new NetLog();
+                        netLog.setAdminId(adminId);
+                        netLog.setUserId(appUserAndShopRequest.getUserId());
+                        netLog.setChannelTypeSign(list.get(i));
+                        netLog.setOpt(EnumOpt.REENTER.getMsg());
+                        netLog.setAct(EnumAct.XMMSNET.getMsg());
+                        netLog.setResult(baseResponse.getMsg());
+                        netLog.setStatus(EnumStatus.NORMAL.getId());
+                        netLogService.insert(netLog);
                     }
                 }
             }
@@ -286,8 +338,17 @@ public class HsyMerchantAuditController extends BaseController {
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"重新入网成功");
     }
 
-    private void merchantIn(long userId,long shopId){
+    private void merchantIn(long userId,long shopId,long adminId){
         CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(userId,shopId);
+        NetLog netLog = new NetLog();
+        netLog.setAdminId(adminId);
+        netLog.setUserId(userId);
+        netLog.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+        netLog.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+        netLog.setAct(EnumAct.SYJNET.getMsg());
+        netLog.setResult(cmbcResponse.getMsg());
+        netLog.setStatus(EnumStatus.NORMAL.getId());
+        netLogService.insert(netLog);
         if(cmbcResponse.getCode()==1){
             UserChannelPolicy netInfo = new UserChannelPolicy();
             netInfo.setUserId(userId);
@@ -296,6 +357,16 @@ public class HsyMerchantAuditController extends BaseController {
             netInfo.setExchannelCode(cmbcResponse.getResult());
             userChannelPolicyService.updateHxNetInfo(netInfo);
             CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(userId,shopId);
+            NetLog netLog1 = new NetLog();
+            netLog1.setAdminId(adminId);
+            netLog1.setUserId(userId);
+            netLog1.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+            netLog1.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLog1.setAct(EnumAct.SYJOPENPRODUCT.getMsg());
+            netLog1.setResult(cmbcResponse.getMsg());
+            netLog1.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLog1);
+
             if(cmbcResponse1.getCode()==1){//开通产品成功
                 UserChannelPolicy openProduct = new UserChannelPolicy();
                 openProduct.setUserId(userId);
@@ -324,6 +395,16 @@ public class HsyMerchantAuditController extends BaseController {
         XmmsResponse xmmsResponse = hsyCmbcService.merchantIn(userId,shopId);
         XmmsResponse.BaseResponse wxT1 = xmmsResponse.getWxT1();
         if(wxT1.getCode()==1){
+            NetLog netLogWxT1 = new NetLog();
+            netLogWxT1.setAdminId(adminId);
+            netLogWxT1.setUserId(userId);
+            netLogWxT1.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
+            netLogWxT1.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogWxT1.setAct(EnumAct.XMMSNET.getMsg());
+            netLogWxT1.setResult(wxT1.getResult().getMsg());
+            netLogWxT1.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogWxT1);
+
             UserChannelPolicy netInfo = new UserChannelPolicy();
             netInfo.setUserId(userId);
             if((EnumXmmsStatus.HANDLING.getId()).equals(wxT1.getResult().getStatus())){
@@ -349,10 +430,30 @@ public class HsyMerchantAuditController extends BaseController {
             netInfo.setOpenProductMarks(wxT1.getMsg());
             netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
             userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+
+            NetLog netLogWxT1 = new NetLog();
+            netLogWxT1.setAdminId(adminId);
+            netLogWxT1.setUserId(userId);
+            netLogWxT1.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
+            netLogWxT1.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogWxT1.setAct(EnumAct.XMMSNET.getMsg());
+            netLogWxT1.setResult(wxT1.getMsg());
+            netLogWxT1.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogWxT1);
         }
 
         XmmsResponse.BaseResponse zfbT1 = xmmsResponse.getZfbT1();
         if(zfbT1.getCode()==1){
+            NetLog netLogZfbT1 = new NetLog();
+            netLogZfbT1.setAdminId(adminId);
+            netLogZfbT1.setUserId(userId);
+            netLogZfbT1.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_T1.getId());
+            netLogZfbT1.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogZfbT1.setAct(EnumAct.XMMSNET.getMsg());
+            netLogZfbT1.setResult(zfbT1.getResult().getMsg());
+            netLogZfbT1.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogZfbT1);
+
             UserChannelPolicy netInfo = new UserChannelPolicy();
             netInfo.setUserId(userId);
             if((EnumXmmsStatus.HANDLING.getId()).equals(zfbT1.getResult().getStatus())){
@@ -378,10 +479,28 @@ public class HsyMerchantAuditController extends BaseController {
             netInfo.setOpenProductMarks(zfbT1.getMsg());
             netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_T1.getId());
             userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+            NetLog netLogZfbT1 = new NetLog();
+            netLogZfbT1.setAdminId(adminId);
+            netLogZfbT1.setUserId(userId);
+            netLogZfbT1.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_T1.getId());
+            netLogZfbT1.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogZfbT1.setAct(EnumAct.XMMSNET.getMsg());
+            netLogZfbT1.setResult(zfbT1.getMsg());
+            netLogZfbT1.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogZfbT1);
         }
 
         XmmsResponse.BaseResponse wxD0 = xmmsResponse.getWxD0();
         if(wxD0.getCode()==1){
+            NetLog netLogWxD0 = new NetLog();
+            netLogWxD0.setAdminId(adminId);
+            netLogWxD0.setUserId(userId);
+            netLogWxD0.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
+            netLogWxD0.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogWxD0.setAct(EnumAct.XMMSNET.getMsg());
+            netLogWxD0.setResult(wxD0.getResult().getMsg());
+            netLogWxD0.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogWxD0);
             UserChannelPolicy netInfo = new UserChannelPolicy();
             netInfo.setUserId(userId);
             if((EnumXmmsStatus.HANDLING.getId()).equals(wxD0.getResult().getStatus())){
@@ -407,10 +526,28 @@ public class HsyMerchantAuditController extends BaseController {
             netInfo.setOpenProductMarks(wxD0.getMsg());
             netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
             userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+            NetLog netLogWxD0 = new NetLog();
+            netLogWxD0.setAdminId(adminId);
+            netLogWxD0.setUserId(userId);
+            netLogWxD0.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
+            netLogWxD0.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogWxD0.setAct(EnumAct.XMMSNET.getMsg());
+            netLogWxD0.setResult(wxD0.getMsg());
+            netLogWxD0.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogWxD0);
         }
 
         XmmsResponse.BaseResponse zfbD0 = xmmsResponse.getZfbD0();
         if(zfbD0.getCode()==1){
+            NetLog netLogZfbD0 = new NetLog();
+            netLogZfbD0.setAdminId(adminId);
+            netLogZfbD0.setUserId(userId);
+            netLogZfbD0.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
+            netLogZfbD0.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogZfbD0.setAct(EnumAct.XMMSNET.getMsg());
+            netLogZfbD0.setResult(zfbD0.getResult().getMsg());
+            netLogZfbD0.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogZfbD0);
             UserChannelPolicy netInfo = new UserChannelPolicy();
             netInfo.setUserId(userId);
             if((EnumXmmsStatus.HANDLING.getId()).equals(zfbD0.getResult().getStatus())){
@@ -436,6 +573,15 @@ public class HsyMerchantAuditController extends BaseController {
             netInfo.setOpenProductMarks(zfbD0.getMsg());
             netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
             userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+            NetLog netLogZfbD0 = new NetLog();
+            netLogZfbD0.setAdminId(adminId);
+            netLogZfbD0.setUserId(userId);
+            netLogZfbD0.setChannelTypeSign(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
+            netLogZfbD0.setOpt(EnumOpt.MERCHANTAUDIT.getMsg());
+            netLogZfbD0.setAct(EnumAct.XMMSNET.getMsg());
+            netLogZfbD0.setResult(zfbD0.getMsg());
+            netLogZfbD0.setStatus(EnumStatus.NORMAL.getId());
+            netLogService.insert(netLogZfbD0);
         }
     }
 
@@ -544,5 +690,17 @@ public class HsyMerchantAuditController extends BaseController {
             cmbcResponse.setMsg("进件超时");
         }
         return CommonResponse.simpleResponse(1,"SUCCESS");
+    }
+
+    /**
+     * 入网记录
+     * @param netLogRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/netLogList", method = RequestMethod.POST)
+    public CommonResponse listDealer(@RequestBody NetLogRequest netLogRequest) {
+        PageModel<NetLogResponse> netLogResponsePageModel = netLogService.selectByUserId(netLogRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", netLogResponsePageModel);
     }
 }

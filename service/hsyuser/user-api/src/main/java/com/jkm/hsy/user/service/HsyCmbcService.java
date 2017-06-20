@@ -14,7 +14,7 @@ public interface HsyCmbcService {
      * @param shopId
      * @return
      */
-    boolean merchantInfoModify(long userId,long shopId);
+    boolean merchantInfoModify(long userId,long shopId,long adminId,String opt);
     /**
      * 民生银行商户基础信息注册
      * @param userId //用户编码
@@ -30,7 +30,7 @@ public interface HsyCmbcService {
      */
     CmbcResponse merchantBaseInfoModify(long userId,long shopId);
     /**
-     * 民生银行商户支付通道绑定
+     * 收银家开通产品
      * @return
      */
     CmbcResponse merchantBindChannel(long userId,long shopId);
