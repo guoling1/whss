@@ -2135,10 +2135,12 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getMerchantName());
                 columns.add(list.get(i).getMarkCode());
                 columns.add(list.get(i).getDealerBelong());
-                if (list.get(i).getAppId().equals("hsy")){
+                if (!"".equals(list.get(i).getProxyNameHsy())||!"".equals(list.get(i).getProxyNameHsy1())){
                     columns.add(list.get(i).getProxyNameHsy());
                     columns.add(list.get(i).getProxyNameHsy1());
+                    log.debug(list.get(i).getProxyNameHsy());
                 }
+                log.debug(list.get(i).getProxyNameHsy());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
