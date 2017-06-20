@@ -90,9 +90,9 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                     netLogCm.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
                     netLogCm.setOpt(opt);
                     netLogCm.setAct(EnumAct.SYJUPDATEPRODUCT.getMsg());
-                    netLogCm.setResult(cr.getMsg());
+                    netLogCm.setResult(cm.getMsg());
                     netLogCm.setStatus(EnumStatus.NORMAL.getId());
-                    netLogService.insert(netLogCr);
+                    netLogService.insert(netLogCm);
 
                     if(cm.getCode()==1){
                         UserChannelPolicy openProduct = new UserChannelPolicy();
