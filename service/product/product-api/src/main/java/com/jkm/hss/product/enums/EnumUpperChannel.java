@@ -49,13 +49,6 @@ public enum EnumUpperChannel {
      */
     SYJ(8, "SYJ", "收银家"),
 
-
-    /**
-     * 会员卡
-     */
-    MEMBER(12, "MEMBER", "会员卡"),
-
-
     /**
      * 合利宝
      */
@@ -65,12 +58,17 @@ public enum EnumUpperChannel {
     /**
      * 汇聚支付
      */
-    HJ_PAY(11,"HJ_PAY","汇聚"),
+    HJ_PAY(11, "HJ_PAY","汇聚"),
+
+    /**
+     * 会员卡
+     */
+    MEMBER(12, "MEMBER", "会员卡"),
 
     /**
      * 微信官方支付
      */
-    WECHAT(11,"WECHAT","微信官方支付");
+    WECHAT(13, "WECHAT","微信官方支付");
 
     @Getter
     private int id;
