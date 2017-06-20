@@ -330,7 +330,7 @@
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <!--<el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>-->
-        <el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>
+        <!--<el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>-->
         <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
