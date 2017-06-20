@@ -418,7 +418,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("address",appBizShop.getAddress());//详细地址
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
-        paramsMap.put("t1drawFee","0.20");
+        paramsMap.put("t1drawFee", userWithdrawRateOptional.get().getWithdrawRateT1().toString());
 
         XmmsResponse.BaseResponse baseResponse701 = getMerchantInResult(paramsMap,userId, EnumPayChannelSign.XMMS_WECHAT_T1.getId(),appBizShop.getIndustryCode());
         xmmsResponse.setWxT1(baseResponse701);
@@ -484,7 +484,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("address",appBizShop.getAddress());//详细地址
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
-        paramsMap.put("t1drawFee","0.20");
+        paramsMap.put("t1drawFee",userWithdrawRateOptional.get().getWithdrawRateT1().toString());
 
         XmmsResponse.BaseResponse baseResponse = getMerchantModifyResult(paramsMap,userId, channelTypeSign,appBizShop.getIndustryCode());
         return baseResponse;
@@ -553,7 +553,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("address",appBizShop.getAddress());//详细地址
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
-        paramsMap.put("t1drawFee","0.20");
+        paramsMap.put("t1drawFee",userWithdrawRateOptional.get().getWithdrawRateT1().toString());
         XmmsResponse.BaseResponse baseResponse = getMerchantInResult(paramsMap,userId, channelTypeSign,appBizShop.getIndustryCode());
         return baseResponse;
     }
