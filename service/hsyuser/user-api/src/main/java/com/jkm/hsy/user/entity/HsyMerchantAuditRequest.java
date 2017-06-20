@@ -18,6 +18,9 @@ public class HsyMerchantAuditRequest {
     private String bankAddress;//支行名称
     private String mobile;//报单员手机号
 
+    private int source;//直销参数
+    private int channel;//渠道参数
+
     /**
      * 状态
      */

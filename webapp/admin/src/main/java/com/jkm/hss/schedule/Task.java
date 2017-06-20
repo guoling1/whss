@@ -38,7 +38,7 @@ public class Task {
     /**
      * 更新结算审核记录状态-临时策略
      */
-    @Scheduled(cron = "0 30 3 20 6 ? 2017")
+    @Scheduled(cron = "0 30 3 20 6 ?")
     public void handleUpdateSettlementTaskTest() {
         log.info("更新结算审核记录状态定时任务（2017-06-20）-临时策略-start");
         final Date settleDate = DateFormatUtil.parse("2017-06-20" , DateFormatUtil.yyyy_MM_dd);

@@ -21,6 +21,12 @@
         <if test="realname!=null and realname!=''">
             AND e.realname =#{realname}
         </if>
+        <if test="source!=null and source!=''">
+            AND c.DEALERID = 0 AND c.`DEALERID` = ""
+        </if>
+        <if test="channel!=null and channel!=''">
+            AND c.DEALERID <![CDATA[ > ]]> 0
+        </if>
         <if test="username!=null and username!=''">
             AND e.username =#{username}
         </if>
@@ -89,6 +95,12 @@
         <if test="realname!=null and realname!=''">
             AND e.realname =#{realname}
         </if>
+        <if test="source!=null and source!=''">
+            AND c.DEALERID = 0 AND c.`DEALERID` = ""
+        </if>
+        <if test="channel!=null and channel!=''">
+            AND c.DEALERID <![CDATA[ > ]]> 0
+        </if>
         <if test="username!=null and username!=''">
             AND e.username =#{username}
         </if>
@@ -147,6 +159,12 @@
         b.ROLE = 1 AND b.TYPE=1
         <if test="realname!=null and realname!=''">
             AND e.realname =#{realname}
+        </if>
+        <if test="source!=null and source!=''">
+            AND c.DEALERID = 0 AND c.`DEALERID` = ""
+        </if>
+        <if test="channel!=null and channel!=''">
+            AND c.DEALERID <![CDATA[ > ]]> 0
         </if>
         <if test="username!=null and username!=''">
             AND e.username =#{username}

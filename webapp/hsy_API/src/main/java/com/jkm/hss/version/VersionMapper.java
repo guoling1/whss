@@ -9,5 +9,6 @@ public class VersionMapper {
 		versionMap.put("v1.0", V1BizMapper.bizMapper);
 		versionMap.put("v1.5", V1BizMapper.bizMapper);
 		versionMap.put("v1.6", V1o6BizMapper.bizMapper);
+		versionMap.put("v1.7", V1o7BizMapper.bizMapper);
 	}
 }

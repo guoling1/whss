@@ -346,7 +346,7 @@
             <if test="bankName != null">
                 CARDBANK = #{bankName},
             </if>
-            <if test="productName != null">
+            <if test="districtCode != null">
                 BRANCHDISTRICTCODE = #{districtCode},
             </if>
             <if test="bankAddress != null">
