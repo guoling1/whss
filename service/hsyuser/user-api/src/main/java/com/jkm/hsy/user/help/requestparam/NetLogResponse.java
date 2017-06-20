@@ -4,6 +4,8 @@ import com.jkm.hsy.user.Enum.EnumAct;
 import com.jkm.hsy.user.Enum.EnumOpt;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Created by xingliujie on 2017/6/19.
  */
@@ -31,4 +33,8 @@ public class NetLogResponse {
      * 结果
      */
     private String result;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 }
