@@ -599,6 +599,9 @@
           <el-form-item label="子商户公众号ID：" width="120" style="margin-bottom: 0">
             <el-input v-model="wxChannelForm.subAppId" placeholder="可选"></el-input>
           </el-form-item>
+          <el-form-item label="密钥：" width="120" style="margin-bottom: 0">
+            <el-input v-model="wxChannelForm.appSecret" placeholder="可选"></el-input>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="isWxChannel = false" style="position: relative;top: -20px;">取 消</el-button>
@@ -689,7 +692,8 @@
           userId:'',
           exchannelCode:"",
           appId:"",
-          subAppId:''
+          subAppId:'',
+          appSecret:''
         }
       }
     },
@@ -977,7 +981,8 @@
                 userId:'',
                 exchannelCode:"",
                 appId:"",
-              subAppId:''
+              subAppId:'',
+              appSecret:''
             }
           })
           .catch(err=>{
