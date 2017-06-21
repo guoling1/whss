@@ -330,7 +330,7 @@
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
         <!--<el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>-->
-        <el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>
+        <!--<el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>-->
         <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
@@ -371,6 +371,40 @@
           </template>
         </div>
       </div>
+      <div class="box box-primary" style="overflow: hidden">
+        <span class="lead">入网记录</span>
+        <div style="width: 80%;margin: 0 0 15px 15px;">
+          <template>
+            <el-table :data="$netLogList" border style="width: 100%;margin: 15px 0;">
+              <el-table-column prop="adminName" label="操作人" ></el-table-column>
+              <el-table-column prop="opt" label="操作" ></el-table-column>
+              <el-table-column prop="channelTypeSignName" label="通道名称" >
+                <template scope="scope">
+                  <span v-if="scope.row.channelTypeSignName=='收银家微信T1'">收银家</span>
+                  <span v-if="scope.row.channelTypeSignName!='收银家微信T1'">{{scope.row.channelTypeSignName}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="act" label="动作"></el-table-column>
+              <el-table-column prop="result" label="结果" ></el-table-column>
+              <el-table-column prop="createTime" label="操作时间">
+                <template scope="scope">
+                  {{scope.row.createTime|changeTime}}
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="block" style="text-align: right">
+              <el-pagination @size-change="handleSizeChange"
+                             @current-change="handleCurrentChange"
+                             :current-page="netLogQuery.pageNo"
+                             :page-sizes="[10, 20, 50]"
+                             :page-size="netLogQuery.pageSize"
+                             layout="total, sizes, prev, pager, next, jumper"
+                             :total="count">
+              </el-pagination>
+            </div>
+          </template>
+        </div>
+      </div>
       <el-dialog title="修改商户结算卡" :visible.sync="isBank">
         <el-form :model="bankForm">
           <el-form-item label="账户类型" label-width="120px">
@@ -406,7 +440,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="isWad = false">取 消</el-button>
+          <el-button @click="isBank = false">取 消</el-button>
           <el-button type="primary" @click="bankSubmit">确 定</el-button>
         </div>
       </el-dialog>
@@ -612,6 +646,13 @@
     data () {
       return {
         id: '',
+        netLogQuery:{
+          userId:'',
+          pageNo:1,
+          pageSize:10
+        },
+        netLogList:[],
+        count:0,
         msg:{},
         auditClick:false,
         isReenter:false,
@@ -738,6 +779,30 @@
         });
     },
     methods: {
+      getNetLogData: function(){
+        this.netLogQuery.userId = this.msg.uid;
+         this.$http.post('/admin/hsyMerchantAudit/netLogList',this.netLogQuery)
+           .then(res=>{
+             this.netLogList = res.data.records;
+             this.count = res.data.count;
+           })
+           .catch(err=>{
+             this.$message({
+               showClose: true,
+               message: err.statusMessage,
+               type: 'error'
+             })
+           })
+      },
+      handleSizeChange(val) {
+        this.netLogQuery.pageNo = 1;
+        this.netLogQuery.pageSize = val;
+        this.getNetLogData();
+      },
+      handleCurrentChange(val) {
+        this.netLogQuery.pageNo = val;
+        this.getNetLogData()
+      },
       bankChange:function(){
         this.isBank = true;
         this.bankForm={
@@ -906,14 +971,16 @@
         }
       },
       querySearchAsync(queryString, cb) {
-        var results=[],districtCode='';
+        var results=[],districtCode='',cardBank = '';
         //查支行
         if(this.isBank==true){
           districtCode=this.bankForm.districtCode
+          cardBank = this.bankForm.bankName
         }else {
           districtCode=this.form.city
+          cardBank=this.msg.cardBank
         }
-        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:this.msg.cardBank,districtCode:districtCode})
+        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:cardBank,districtCode:districtCode})
           .then(res=>{
             for(let i=0; i<res.data.length; i++){
               res.data[i].value = res.data[i].branchName;
@@ -1137,7 +1204,7 @@
             this.tableData[0].status = this.tableData[1].status = res.data.res.hxbStatus;
             this.tableData[0].msg = this.tableData[1].msg = res.data.res.hxbRemarks;
             this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenProductRemarks;
-
+            this.getNetLogData();
           },function (err) {
             this.$message({
               showClose: true,
@@ -1339,6 +1406,9 @@
       },
       $channelList: function () {
         return this.channelList;
+      },
+      $netLogList: function(){
+        return this.netLogList;
       }
     },
     filters: {

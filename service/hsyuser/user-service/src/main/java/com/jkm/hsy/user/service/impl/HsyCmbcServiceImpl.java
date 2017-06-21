@@ -1,25 +1,20 @@
 package com.jkm.hsy.user.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hsy.user.Enum.EnumNetStatus;
-import com.jkm.hsy.user.Enum.EnumOpenProductStatus;
-import com.jkm.hsy.user.Enum.EnumPolicyType;
-import com.jkm.hsy.user.Enum.EnumXmmsStatus;
+import com.jkm.hsy.user.Enum.*;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.help.requestparam.XmmsResponse;
-import com.jkm.hsy.user.service.HsyCmbcService;
-import com.jkm.hsy.user.service.UserChannelPolicyService;
-import com.jkm.hsy.user.service.UserTradeRateService;
-import com.jkm.hsy.user.service.UserWithdrawRateService;
+import com.jkm.hsy.user.service.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,28 +37,41 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     @Autowired
     private HsyMerchantAuditDao hsyMerchantAuditDao;
     @Autowired
-    private BasicChannelService basicChannelService;
-    @Autowired
     private UserTradeRateService userTradeRateService;
     @Autowired
     private UserWithdrawRateService userWithdrawRateService;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private NetLogService netLogService;
 
 
     /**
-     * 民生银行商户基础信息注册
-     * @param userId //用户编码
-     * @param shopId //主店编码
+     * 修改入网及开通产品信息
+     * @param userId
+     * @param shopId
+     * @param adminId
+     * @param opt
      * @return
      */
     @Override
-    public boolean merchantInfoModify(long userId,long shopId) {
+    public boolean merchantInfoModify(long userId,long shopId,long adminId,String opt) {
         boolean backResult = true;
         Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(userId,EnumPayChannelSign.SYJ_WECHAT.getId());
         if(userChannelPolicyOptional.isPresent()){
             if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()== EnumNetStatus.SUCCESS.getId()){
                 CmbcResponse cr = this.merchantBaseInfoModify(userId,shopId);
+
+                NetLog netLogCr = new NetLog();
+                netLogCr.setAdminId(adminId);
+                netLogCr.setUserId(userId);
+                netLogCr.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+                netLogCr.setOpt(opt);
+                netLogCr.setAct(EnumAct.SYJUPDATENET.getMsg());
+                netLogCr.setResult(cr.getMsg());
+                netLogCr.setStatus(EnumStatus.NORMAL.getId());
+                netLogService.insert(netLogCr);
+
                 if(cr.getCode()==1){
                     UserChannelPolicy netInfo = new UserChannelPolicy();
                     netInfo.setUserId(userId);
@@ -72,14 +80,20 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                     userChannelPolicyService.updateHxNetInfo(netInfo);
                 }else{
                     backResult = false;
-                    UserChannelPolicy netInfo = new UserChannelPolicy();
-                    netInfo.setUserId(userId);
-                    netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
-                    netInfo.setNetMarks(cr.getMsg());
-                    userChannelPolicyService.updateHxNetInfo(netInfo);
                 }
                 if(userChannelPolicyOptional.get().getOpenProductStatus()!=null&&userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId()){
                     CmbcResponse cm = this.merchantUpdateBindChannel(userId);
+
+                    NetLog netLogCm = new NetLog();
+                    netLogCm.setAdminId(adminId);
+                    netLogCm.setUserId(userId);
+                    netLogCm.setChannelTypeSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+                    netLogCm.setOpt(opt);
+                    netLogCm.setAct(EnumAct.SYJUPDATEPRODUCT.getMsg());
+                    netLogCm.setResult(cm.getMsg());
+                    netLogCm.setStatus(EnumStatus.NORMAL.getId());
+                    netLogService.insert(netLogCm);
+
                     if(cm.getCode()==1){
                         UserChannelPolicy openProduct = new UserChannelPolicy();
                         openProduct.setUserId(userId);
@@ -88,11 +102,6 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                         userChannelPolicyService.updateHxOpenProduct(openProduct);
                     }else{
                         backResult = false;
-                        UserChannelPolicy openProduct = new UserChannelPolicy();
-                        openProduct.setUserId(userId);
-                        openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
-                        openProduct.setOpenProductMarks(cm.getMsg());
-                        userChannelPolicyService.updateHxOpenProduct(openProduct);
                     }
                 }
             }
@@ -111,33 +120,39 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
                 if(ucp.get().getNetStatus()!=null&&ucp.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
                     XmmsResponse.BaseResponse xmmsResponse = this.merchantModify(userId,shopId,list.get(i));
                     if(xmmsResponse.getCode()==1){
-                        UserChannelPolicy netInfo = new UserChannelPolicy();
-                        netInfo.setUserId(userId);
                         if((EnumXmmsStatus.SUCCESS.getId()).equals(xmmsResponse.getResult().getStatus())){
+                            UserChannelPolicy netInfo = new UserChannelPolicy();
+                            netInfo.setUserId(userId);
                             netInfo.setNetStatus(EnumNetStatus.SUCCESS.getId());
                             netInfo.setNetMarks(xmmsResponse.getResult().getMsg());
                             netInfo.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
                             netInfo.setOpenProductMarks(xmmsResponse.getResult().getMsg());
+                            netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
+                            userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
                         }
                         if((EnumXmmsStatus.FAIL.getId()).equals(xmmsResponse.getResult().getStatus())){
-                            netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
-                            netInfo.setNetMarks(xmmsResponse.getResult().getMsg());
-                            netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
-                            netInfo.setOpenProductMarks(xmmsResponse.getResult().getMsg());
                             backResult = false;
                         }
-                        netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
-                        userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+                        NetLog netLogXmms = new NetLog();
+                        netLogXmms.setAdminId(adminId);
+                        netLogXmms.setUserId(userId);
+                        netLogXmms.setChannelTypeSign(list.get(i));
+                        netLogXmms.setOpt(opt);
+                        netLogXmms.setAct(EnumAct.XMMSUPDATENET.getMsg());
+                        netLogXmms.setResult(xmmsResponse.getResult().getMsg());
+                        netLogXmms.setStatus(EnumStatus.NORMAL.getId());
+                        netLogService.insert(netLogXmms);
                     }else{
                         backResult = false;
-                        UserChannelPolicy netInfo = new UserChannelPolicy();
-                        netInfo.setUserId(userId);
-                        netInfo.setNetStatus(EnumNetStatus.FAIL.getId());
-                        netInfo.setNetMarks(xmmsResponse.getMsg());
-                        netInfo.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
-                        netInfo.setOpenProductMarks(xmmsResponse.getMsg());
-                        netInfo.setChannelTypeSign(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
-                        userChannelPolicyService.updateByUserIdAndChannelTypeSign(netInfo);
+                        NetLog netLogXmms = new NetLog();
+                        netLogXmms.setAdminId(adminId);
+                        netLogXmms.setUserId(userId);
+                        netLogXmms.setChannelTypeSign(list.get(i));
+                        netLogXmms.setOpt(opt);
+                        netLogXmms.setAct(EnumAct.XMMSUPDATENET.getMsg());
+                        netLogXmms.setResult(xmmsResponse.getMsg());
+                        netLogXmms.setStatus(EnumStatus.NORMAL.getId());
+                        netLogService.insert(netLogXmms);
                     }
                 }
             }
@@ -147,7 +162,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
 
 
     /**
-     * 民生银行商户基础信息注册
+     * 收银家商户进件
      * @param userId //用户编码
      * @param shopId //主店编码
      * @return
@@ -157,10 +172,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         AppBizCard appBizCard = hsyCmbcDao.selectByCardId(shopId);
-
         CmbcResponse cmbcResponse = new CmbcResponse();
         Map<String, String> paramsMap = new HashMap<String, String>();
-        //商户信息-MerchantInfo
         paramsMap.put("merchantNo", appAuUser.getGlobalID());//商户编号
         paramsMap.put("fullName", appBizShop.getName());//商户全称
         paramsMap.put("shortName", appBizShop.getShortName());//商户简称
@@ -172,15 +185,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
             paramsMap.put("businessLicenseType","NATIONAL_LEGAL");//证件类型
         }
-
-
-        //联系人信息-contactInfo
         paramsMap.put("contactName",appAuUser.getRealname());//联系人名称
         paramsMap.put("contactPhone",appAuUser.getCellphone());//联系人手机号
         paramsMap.put("contactPersonType","LEGAL_PERSON");//联系人类型
         paramsMap.put("contactIdCard",appAuUser.getIdcard());//身份证号
         paramsMap.put("contactEmail","");//邮箱
-        //结算卡信息-bankCardInfo
         paramsMap.put("bankAccountNo",appBizCard.getCardNO());//银行账号
         paramsMap.put("bankAccountName",appBizCard.getCardAccountName());//开户名称
         paramsMap.put("idCard",appBizCard.getIdcardNO());//开户身份证号
@@ -191,7 +200,6 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         }
         paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());//银行联行号
         paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());//开户行地址
-        //联系人地址信息-addressInfo
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
         paramsMap.put("district",district.getAName());//商户地址区
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
@@ -205,23 +213,23 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("remitD0",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
         paramsMap.put("address",appBizShop.getAddress());//详细地址
-        log.info("民生银行商户基础信息注册参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("收银家商户进件参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBaseInfoReg(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
+            log.info("收银家商户进件结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
             cmbcResponse.setResult(jo.getString("result"));
-        } else {//超时
+        } else {
             cmbcResponse.setCode(-1);
-            cmbcResponse.setMsg("进件超时");
+            cmbcResponse.setMsg("请求超时");
         }
         return cmbcResponse;
     }
 
     /**
-     * 民生银行商户基础信息修改
+     * 收银家修改商户进件
      *
      * @param userId //用户编码
      * @param shopId //主店编码
@@ -232,66 +240,61 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         AppBizCard appBizCard = hsyCmbcDao.selectByCardId(shopId);
-
         CmbcResponse cmbcResponse = new CmbcResponse();
         Map<String, String> paramsMap = new HashMap<String, String>();
-        //商户信息-MerchantInfo
-        paramsMap.put("merchantNo", appAuUser.getGlobalID());//商户编号
-        paramsMap.put("shortName", appBizShop.getShortName());//商户简称
-        paramsMap.put("servicePhone","4006226233");//客服电话
+        paramsMap.put("merchantNo", appAuUser.getGlobalID());
+        paramsMap.put("shortName", appBizShop.getShortName());
+        paramsMap.put("servicePhone","4006226233");
         if(appBizShop.getLicenceNO()==null||"".equals(appBizShop.getLicenceNO())){
-            paramsMap.put("businessLicense","");//证据编号
-            paramsMap.put("businessLicenseType","");//证件类型
+            paramsMap.put("businessLicense","");
+            paramsMap.put("businessLicenseType","");
         }else{
-            paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
-            paramsMap.put("businessLicenseType","NATIONAL_LEGAL");//证件类型
+            paramsMap.put("businessLicense",appBizShop.getLicenceNO());
+            paramsMap.put("businessLicenseType","NATIONAL_LEGAL");
         }
-        //联系人信息-contactInfo
-        paramsMap.put("contactName",appAuUser.getRealname());//联系人名称
-        paramsMap.put("contactPhone",appAuUser.getCellphone());//联系人手机号
-        paramsMap.put("contactPersonType","LEGAL_PERSON");//联系人类型
-        paramsMap.put("contactIdCard",appAuUser.getIdcard());//身份证号
-        paramsMap.put("contactEmail","");//邮箱
-        //结算卡信息-bankCardInfo
-        paramsMap.put("bankAccountNo",appBizCard.getCardNO());//银行账号
-        paramsMap.put("bankAccountName",appBizCard.getCardAccountName());//开户名称
-        paramsMap.put("idCard",appBizCard.getIdcardNO());//开户身份证号
-        if(appBizShop.getIsPublic()==1){//对公
-            paramsMap.put("bankAccountType","2");//账户类型
+        paramsMap.put("contactName",appAuUser.getRealname());
+        paramsMap.put("contactPhone",appAuUser.getCellphone());
+        paramsMap.put("contactPersonType","LEGAL_PERSON");
+        paramsMap.put("contactIdCard",appAuUser.getIdcard());
+        paramsMap.put("contactEmail","");
+        paramsMap.put("bankAccountNo",appBizCard.getCardNO());
+        paramsMap.put("bankAccountName",appBizCard.getCardAccountName());
+        paramsMap.put("idCard",appBizCard.getIdcardNO());
+        if(appBizShop.getIsPublic()==1){
+            paramsMap.put("bankAccountType","2");
         }else{
-            paramsMap.put("bankAccountType","1");//账户类型
+            paramsMap.put("bankAccountType","1");
         }
-        paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());//银行联行号
-        paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());//开户行地址
-        //联系人地址信息-addressInfo
+        paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());
+        paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
-        paramsMap.put("district",district.getAName());//商户地址区
+        paramsMap.put("district",district.getAName());
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
-        paramsMap.put("city",city.getAName());//商户地址市
+        paramsMap.put("city",city.getAName());
         if("110000,120000,310000,500000".contains(city.getCode())){
-            paramsMap.put("province",city.getAName().replace("市",""));//商户地址省
+            paramsMap.put("province",city.getAName().replace("市",""));
         }else{
             HsyMerchantAuditResponse province = hsyMerchantAuditDao.getCode(city.getParentCode());
-            paramsMap.put("province",province.getAName());//商户地址省
+            paramsMap.put("province",province.getAName());
         }
-        paramsMap.put("address",appBizShop.getAddress());//详细地址
-        log.info("民生银行商户基础信息修改参数为："+ JSONObject.fromObject(paramsMap).toString());
+        paramsMap.put("address",appBizShop.getAddress());
+        log.info("收银家修改商户进件参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBaseInfoModify(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息修改返回结果为："+jo.toString());
+            log.info("收银家修改商户进件结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
             cmbcResponse.setResult(jo.getString("result"));
-        } else {//超时
+        } else {
             cmbcResponse.setCode(-1);
-            cmbcResponse.setMsg("进件超时");
+            cmbcResponse.setMsg("请求超时");
         }
         return cmbcResponse;
     }
 
     /**
-     * 民生银行商户支付通道绑定
+     * 收银家开通产品
      *
      * @param userId
      * @return
@@ -309,24 +312,23 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("wxBizCategory", getWxCategory(appBizShop.getIndustryCode()));
         paramsMap.put("zfbOnlineRate", zfbUt.get().getTradeRateT1().toString());
         paramsMap.put("zfbBizCategory",getAlipayCategory(appBizShop.getIndustryCode()));
-        log.info("民生银行商户支付通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
-        log.info("url:{}",MerchantConsts.getMerchantConfig().merchantBindChannel());
+        log.info("收银家开通产品参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBindChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户支付通道绑定返回结果为："+jo.toString());
+            log.info("收银家开通产品结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
             cmbcResponse.setResult(jo.getString("result"));
-        } else {//超时
+        } else {
             cmbcResponse.setCode(-1);
-            cmbcResponse.setMsg("商户支付通道绑定请求超时");
+            cmbcResponse.setMsg("请求超时");
         }
         return cmbcResponse;
     }
 
     /**
-     * 民生银行商户支付修改通道绑定
+     * 收银家修改产品
      *
      * @param userId
      * @return
@@ -341,23 +343,22 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("merchantNo", appAuUser.getGlobalID());
         paramsMap.put("wxOnlineRate", wxUt.get().getTradeRateT1().toString());
         paramsMap.put("zfbOnlineRate", zfbUt.get().getTradeRateT1().toString());
-        log.info("民生银行商户支付修改通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
-        log.info("url:{}",MerchantConsts.getMerchantConfig().merchantUpdateChannel());
+        log.info("收银家修改产品参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdateChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户支付通道绑定返回结果为："+jo.toString());
+            log.info("收银家修改产品结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
-        } else {//超时
+        } else {
             cmbcResponse.setCode(-1);
-            cmbcResponse.setMsg("商户支付通道绑定请求超时");
+            cmbcResponse.setMsg("请求超时");
         }
         return cmbcResponse;
     }
 
     /**
-     * 厦门民生入网
+     * 民生一次性入网
      *
      * @param userId //用户编码
      * @param shopId //主店编码
@@ -368,59 +369,54 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         AppBizCard appBizCard = hsyCmbcDao.selectByCardId(shopId);
-
         Map<String, String> paramsMap = new HashMap<String, String>();
-        //商户信息-MerchantInfo
-        paramsMap.put("upperChannel", EnumUpperChannel.XMMS_BANK.getId()+"");//商户编号
-        paramsMap.put("merchantNo", appAuUser.getGlobalID());//商户编号
-        paramsMap.put("fullName", appBizShop.getName());//商户全称
-        paramsMap.put("shortName", appBizShop.getShortName());//商户简称
-        paramsMap.put("servicePhone","4006226233");//客服电话
+        paramsMap.put("upperChannel", EnumUpperChannel.XMMS_BANK.getId()+"");
+        paramsMap.put("merchantNo", appAuUser.getGlobalID());
+        paramsMap.put("fullName", appBizShop.getName());
+        paramsMap.put("shortName", appBizShop.getShortName());
+        paramsMap.put("servicePhone","4006226233");
         if(appBizShop.getLicenceNO()==null||"".equals(appBizShop.getLicenceNO())){
-            paramsMap.put("businessLicense","");//证据编号
+            paramsMap.put("businessLicense","");
         }else{
-            paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
+            paramsMap.put("businessLicense",appBizShop.getLicenceNO());
         }
-        //联系人信息-contactInfo
-        paramsMap.put("contactName",appAuUser.getRealname());//联系人名称
-        paramsMap.put("contactPhone",appAuUser.getCellphone());//联系人手机号
-        paramsMap.put("contactIdCard",appAuUser.getIdcard());//身份证号
-        //结算卡信息-bankCardInfo
-        paramsMap.put("bankName",appBizCard.getCardBank());//银行联行号
-        paramsMap.put("bankAccountNo",appBizCard.getCardNO());//银行账号
-        paramsMap.put("bankAccountName",appBizCard.getCardAccountName());//开户名称
-        paramsMap.put("idCard",appBizCard.getIdcardNO());//开户身份证号
-        paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());//银行联行号
-        paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());//开户行地址
-        //联系人地址信息-addressInfo
+        paramsMap.put("contactName",appAuUser.getRealname());
+        paramsMap.put("contactPhone",appAuUser.getCellphone());
+        paramsMap.put("contactIdCard",appAuUser.getIdcard());
+        paramsMap.put("bankName",appBizCard.getCardBank());
+        paramsMap.put("bankAccountNo",appBizCard.getCardNO());
+        paramsMap.put("bankAccountName",appBizCard.getCardAccountName());
+        paramsMap.put("idCard",appBizCard.getIdcardNO());
+        paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());
+        paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
-        paramsMap.put("district",district.getAName());//商户地址区
-        paramsMap.put("districtCode",district.getCode());//商户地址区
+        paramsMap.put("district",district.getAName());
+        paramsMap.put("districtCode",district.getCode());
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
-        paramsMap.put("city",city.getAName());//商户地址市
+        paramsMap.put("city",city.getAName());
         if("110000".equals(city.getCode())){
-            paramsMap.put("cityCode","110100");//市编码
+            paramsMap.put("cityCode","110100");
         }else if("120000".equals(city.getCode())){
-            paramsMap.put("cityCode","120100");//市编码
+            paramsMap.put("cityCode","120100");
         }else if("310000".equals(city.getCode())){
-            paramsMap.put("cityCode","310100");//市编码
+            paramsMap.put("cityCode","310100");
         }else if("500000".equals(city.getCode())){
-            paramsMap.put("cityCode","500100");//市编码
+            paramsMap.put("cityCode","500100");
         }else{
-            paramsMap.put("cityCode",city.getCode());//市编码
+            paramsMap.put("cityCode",city.getCode());
         }
         if("110000,120000,310000,500000".contains(city.getCode())){
-            paramsMap.put("province",city.getAName().replace("市",""));//商户地址省
-            paramsMap.put("provinceCode",city.getCode());//省份编码
+            paramsMap.put("province",city.getAName().replace("市",""));
+            paramsMap.put("provinceCode",city.getCode());
         }else{
             HsyMerchantAuditResponse province = hsyMerchantAuditDao.getCode(city.getParentCode());
-            paramsMap.put("province",province.getAName());//商户地址省
-            paramsMap.put("provinceCode",province.getCode());//省份编码
+            paramsMap.put("province",province.getAName());
+            paramsMap.put("provinceCode",province.getCode());
         }
-        paramsMap.put("address",appBizShop.getAddress());//详细地址
+        paramsMap.put("address",appBizShop.getAddress());
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
-        paramsMap.put("t1drawFee","0.20");
+        paramsMap.put("t1drawFee", userWithdrawRateOptional.get().getWithdrawRateT1().toString());
 
         XmmsResponse.BaseResponse baseResponse701 = getMerchantInResult(paramsMap,userId, EnumPayChannelSign.XMMS_WECHAT_T1.getId(),appBizShop.getIndustryCode());
         xmmsResponse.setWxT1(baseResponse701);
@@ -441,7 +437,6 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
      */
     @Override
     public XmmsResponse.BaseResponse merchantModify(long userId, long shopId,int channelTypeSign) {
-        XmmsResponse xmmsResponse = new XmmsResponse();
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         AppBizCard appBizCard = hsyCmbcDao.selectByCardId(shopId);
@@ -487,7 +482,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("address",appBizShop.getAddress());//详细地址
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
-        paramsMap.put("t1drawFee","0.20");
+        paramsMap.put("t1drawFee",userWithdrawRateOptional.get().getWithdrawRateT1().toString());
 
         XmmsResponse.BaseResponse baseResponse = getMerchantModifyResult(paramsMap,userId, channelTypeSign,appBizShop.getIndustryCode());
         return baseResponse;
@@ -501,7 +496,6 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
      */
     @Override
     public XmmsResponse.BaseResponse merchantIn(long userId, long shopId,int channelTypeSign) {
-        XmmsResponse xmmsResponse = new XmmsResponse();
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         AppBizCard appBizCard = hsyCmbcDao.selectByCardId(shopId);
@@ -557,8 +551,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("address",appBizShop.getAddress());//详细地址
         Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
         paramsMap.put("t0drawFee",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
-        paramsMap.put("t1drawFee","0.20");
-        XmmsResponse.BaseResponse baseResponse = getMerchantInResult(paramsMap,userId, EnumPayChannelSign.XMMS_WECHAT_T1.getId(),appBizShop.getIndustryCode());
+        paramsMap.put("t1drawFee",userWithdrawRateOptional.get().getWithdrawRateT1().toString());
+        XmmsResponse.BaseResponse baseResponse = getMerchantInResult(paramsMap,userId, channelTypeSign,appBizShop.getIndustryCode());
         return baseResponse;
     }
 
@@ -573,6 +567,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("category",getMsWxCategory(industryCode));
             resultMap.put("settleType","T1");
             resultMap.put("payWay","WXZF");
+            log.info("民生微信T1入网参数{}",JSONObject.fromObject(resultMap).toString());
         }
         if(channelTypeSign==EnumPayChannelSign.XMMS_ALIPAY_T1.getId()){
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId());
@@ -581,6 +576,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("category",getAlipayCategory(industryCode));
             resultMap.put("settleType","T1");
             resultMap.put("payWay","ZFBZF");
+            log.info("民生支付宝T1入网参数{}",JSONObject.fromObject(resultMap).toString());
         }
         if(channelTypeSign==EnumPayChannelSign.XMMS_WECHAT_D0.getId()){
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId());
@@ -589,6 +585,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("category",getMsWxCategory(industryCode));
             resultMap.put("settleType","D0");
             resultMap.put("payWay","WXZF");
+            log.info("民生微信D0入网参数{}",JSONObject.fromObject(resultMap).toString());
         }
         if(channelTypeSign==EnumPayChannelSign.XMMS_ALIPAY_D0.getId()){
             Optional<UserTradeRate> userTradeRateOptional =  userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId());
@@ -597,12 +594,12 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("category",getAlipayCategory(industryCode));
             resultMap.put("settleType","D0");
             resultMap.put("payWay","ZFBZF");
+            log.info("民生支付宝D0入网参数{}",JSONObject.fromObject(resultMap).toString());
         }
-        log.info("参数{}",JSONObject.fromObject(resultMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantXmmsIn(), resultMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
+            log.info("民生入网返回结果为："+jo.toString());
             baseResponse.setCode(jo.getInt("code"));
             baseResponse.setMsg(jo.getString("msg"));
             XmmsResponse.Result rs = new XmmsResponse.Result();
@@ -614,12 +611,20 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             baseResponse.setResult(rs);
         } else {//超时
             baseResponse.setCode(-1);
-            baseResponse.setMsg("进件超时");
+            baseResponse.setMsg("请求超时");
         }
         return baseResponse;
 
     }
 
+    /**
+     * 修改民生入网信息
+     * @param paramsMap
+     * @param userId
+     * @param channelTypeSign
+     * @param industryCode
+     * @return
+     */
     private XmmsResponse.BaseResponse getMerchantModifyResult(Map<String, String> paramsMap,long userId,int channelTypeSign,String industryCode){
         XmmsResponse.BaseResponse baseResponse = new XmmsResponse.BaseResponse();
         Map<String, String> resultMap = new HashMap<String, String>();
@@ -656,11 +661,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             resultMap.put("settleType","D0");
             resultMap.put("payWay","ZFBZF");
         }
-        log.info("参数{}",JSONObject.fromObject(resultMap).toString());
+        log.info("修改民生入网参数{}",JSONObject.fromObject(resultMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantXmmsModify(), resultMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
-            log.info("民生银行商户基础信息注册返回结果为："+jo.toString());
+            log.info("修改民生入网返回结果为："+jo.toString());
             baseResponse.setCode(jo.getInt("code"));
             baseResponse.setMsg(jo.getString("msg"));
             XmmsResponse.Result rs = new XmmsResponse.Result();
@@ -672,7 +677,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             baseResponse.setResult(rs);
         } else {//超时
             baseResponse.setCode(-1);
-            baseResponse.setMsg("进件超时");
+            baseResponse.setMsg("请求超时");
         }
         return baseResponse;
 

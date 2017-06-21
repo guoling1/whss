@@ -161,6 +161,14 @@
                   <el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>商户来源:</label>
+                  <el-select style="width: 193px" v-model="queryHsy.source" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value="">全部</el-option>
+                    <el-option label="直销" value="1">直销</el-option>
+                    <el-option label="渠道" value="2">渠道</el-option>
+                  </el-select>
+                </li>
+                <li class="same">
                   <label>报单员:</label>
                   <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
                 </li>
@@ -328,7 +336,8 @@
           endTime:'',
           auditTime:'',
           auditTime1:'',
-          realname:''
+          realname:'',
+          source:''
         },
         recordsHss: [],
         recordsHsy: [],
@@ -396,7 +405,8 @@
             endTime:'',
             auditTime:'',
             auditTime1:'',
-            realname:''
+            realname:'',
+            source:''
           }
         }
       },

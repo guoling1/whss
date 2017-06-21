@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
@@ -14,7 +15,6 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.BatchSettleRequest;
 import com.jkm.hss.helper.request.SettleRequest;
 import com.jkm.hss.helper.response.ListSettleAuditRecordResponse;
-import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import com.jkm.hss.settle.enums.EnumSettleOptionType;
@@ -25,16 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2017/1/16.
@@ -54,10 +50,21 @@ public class SettleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "settleTest")
-    public CommonResponse settleTest() {
-        log.info("结算审核定时任务--start--test");
-        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
-        log.info("结算审核定时任务--end--test");
+    public CommonResponse settleTest(final String date) {
+        log.info("生成结算审核记录--start--test");
+        final Date settleDate = DateFormatUtil.parse(date , DateFormatUtil.yyyy_MM_dd);
+        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask(settleDate);
+        log.info("生成结算审核记录--end--test");
+        return CommonResponse.simpleResponse(0, "success");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "markSettledTest")
+    public CommonResponse marksettledTest(final String date) {
+        log.info("更新结算审核记录--start--test");
+        final Date settleDate = DateFormatUtil.parse(date , DateFormatUtil.yyyy_MM_dd);
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask(settleDate);
+        log.info("更新结算审核记录--end--test");
         return CommonResponse.simpleResponse(0, "success");
     }
 
@@ -70,7 +77,7 @@ public class SettleController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "generateRecord")
     public CommonResponse generateSettleAuditRecord() {
-        final Pair<Integer, String> result = this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
+        final Pair<Integer, String> result = this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask(null);
         if (0 == result.getLeft()) {
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
         }
@@ -86,7 +93,7 @@ public class SettleController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "markSettled")
     public CommonResponse markSettled() {
-        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask(null);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
     /**
