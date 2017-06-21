@@ -284,4 +284,13 @@ public enum EnumPayChannelSign {
                 || EL_UNIONPAY.getId() == channelSign
                 || HE_LI_UNIONPAY.getId() == channelSign;
     }
+
+    /**
+     * 是否是微信官方支付
+     *
+     * @return
+     */
+    public static boolean isWechatOfficialPay(final int channelSign) {
+        return WECHAT_PAY.getId() == channelSign;
+    }
 }

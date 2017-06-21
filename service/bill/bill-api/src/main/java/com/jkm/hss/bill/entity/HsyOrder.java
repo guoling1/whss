@@ -75,7 +75,7 @@ public class HsyOrder extends BaseEntity {
     private int sourcetype;
 
     /**
-     * 扫码用户在微信/支付宝的标识
+     * 扫码用户在微信/支付宝的标识(可能是子商户的公众号的标识)
      */
     private String memberId;
 
