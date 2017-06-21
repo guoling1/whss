@@ -68,7 +68,7 @@
             <mvc:mapping path="/admin/product/**"/>
             <mvc:mapping path="/admin/upgrade/**"/>
             <mvc:mapping path="/admin/hsyMerchantAudit/**"/>
-            <mvc:mapping path="/admin/hsyMerchantList/**"/>
+            <!--<mvc:mapping path="/admin/hsyMerchantList/**"/>-->
             <mvc:mapping path="/admin/accountBank/**"/>
             <mvc:mapping path="/admin/changeMerchantName/**"/>
             <mvc:mapping path="/admin/merchantInfoCheckRecord/**"/>
