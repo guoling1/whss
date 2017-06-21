@@ -4,7 +4,7 @@
     <!-- Logo -->
     <div href="javascript:;" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">金开门</span>
+      <span class="logo-mini">金</span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg">金开门</span>
     </div>
