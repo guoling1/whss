@@ -4,13 +4,13 @@
 
     <sql id="Base_Column_List">
         id,	user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,
-        open_product_status,open_product_marks,exchannel_code,app_id,sub_app_id,exchannel_event_code,status,
+        open_product_status,open_product_marks,exchannel_code,app_id,app_secret,sub_app_id,exchannel_event_code,status,
         create_time,update_time
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO app_user_channel_policy(user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,open_product_status,open_product_marks,exchannel_code,app_id,sub_app_id,exchannel_event_code,status)
-        VALUES(#{userId},#{channelName},#{channelTypeSign},#{policyType},#{settleType},#{netStatus},#{netMarks},#{openProductStatus},#{openProductMarks},#{exchannelCode},#{appId},#{subAppId},#{exchannelEventCode},#{status})
+        INSERT INTO app_user_channel_policy(user_id,channel_name,channel_type_sign,policy_type,settle_type,net_status,net_marks,open_product_status,open_product_marks,exchannel_code,app_id,app_secret,sub_app_id,exchannel_event_code,status)
+        VALUES(#{userId},#{channelName},#{channelTypeSign},#{policyType},#{settleType},#{netStatus},#{netMarks},#{openProductStatus},#{openProductMarks},#{exchannelCode},#{appId},#{appSecret},#{subAppId},#{exchannelEventCode},#{status})
     </insert>
 
     <update id="updateInit">
@@ -83,5 +83,10 @@
         (select channel_name from app_user_channel_policy where user_id=#{userId} and channel_type_sign=p.alipay_channel_type_sign) as zfbChannelName
         FROM app_user_current_channel_policy as p
         WHERE user_id = #{userId} and status = 1;
+    </select>
+
+    <select id="selectAppSecretByAppId" resultType="java.lang.String">
+        SELECT app_secret as appSecret FROM app_user_channel_policy
+        WHERE  app_id= #{appId} or sub_app_id=#{appId} and status = 1 limit 0,1;
     </select>
 </mapper>

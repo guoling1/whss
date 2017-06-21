@@ -119,5 +119,16 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
         return Optional.fromNullable(userChannelPolicyDao.selectByUserIdAndChannelTypeSign(userId,channelTypeSign));
     }
 
+    /**
+     * 根据AppId查找AppSecret
+     *
+     * @param appId
+     * @return
+     */
+    @Override
+    public String selectAppSecretByAppId(String appId) {
+        return userChannelPolicyDao.selectAppSecretByAppId(appId);
+    }
+
 
 }

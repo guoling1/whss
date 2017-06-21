@@ -23,4 +23,8 @@ public class AddWxChannelRequest {
      * 子公众号
      */
     private String subAppId;
+    /**
+     * 秘钥
+     */
+    private String appSecret;
 }

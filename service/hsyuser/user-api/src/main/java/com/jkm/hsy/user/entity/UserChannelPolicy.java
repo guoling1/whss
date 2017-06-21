@@ -63,5 +63,9 @@ public class UserChannelPolicy extends BaseEntity{
      * 子公众号
      */
     private String subAppId;
+    /**
+     * appSecret
+     */
+    private String appSecret;
 
 }

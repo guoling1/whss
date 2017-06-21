@@ -452,6 +452,9 @@ public class HsyMerchantAuditController extends BaseController {
         if(StringUtils.isBlank(addWxChannelRequest.getAppId())){
             return CommonResponse.simpleResponse(-1,"appId不能为空");
         }
+        if(StringUtils.isBlank(addWxChannelRequest.getAppSecret())){
+            return CommonResponse.simpleResponse(-1,"秘钥不能为空");
+        }
         Optional<UserChannelPolicy> userChannelPolicyOptional =  userChannelPolicyService.selectByUserIdAndChannelTypeSign(addWxChannelRequest.getUserId(),EnumPayChannelSign.WECHAT_PAY.getId());
         if(userChannelPolicyOptional.isPresent()){
             return CommonResponse.simpleResponse(-1,"此通道已存在");
@@ -468,6 +471,7 @@ public class HsyMerchantAuditController extends BaseController {
         userChannelPolicy.setAppId(addWxChannelRequest.getAppId());
         userChannelPolicy.setSubAppId(addWxChannelRequest.getSubAppId());
         userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+        userChannelPolicy.setAppSecret(addWxChannelRequest.getAppSecret());
         userChannelPolicyService.insert(userChannelPolicy);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"添加成功");
     }

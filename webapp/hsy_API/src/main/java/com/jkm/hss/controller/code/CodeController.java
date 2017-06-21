@@ -120,7 +120,7 @@ public class CodeController extends BaseController {
                     if(request.getQueryString() == null){
                         requestUrl = "";
                     }else{
-                        requestUrl = request.getQueryString();
+                        requestUrl = request.getQueryString()+"&appId="+appId;
                     }
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                     return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO_START+appId+WxConstants.WEIXIN_HSY_MERCHANT_USERINFO_END+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
