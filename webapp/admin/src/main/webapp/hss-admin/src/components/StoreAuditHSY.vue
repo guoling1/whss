@@ -359,7 +359,8 @@
               </el-table-column>
               <el-table-column prop="openProductMarks" label="产品开通信息" ></el-table-column>
               <el-table-column prop="exchannelCode" label="渠道商户编号"></el-table-column>
-              <el-table-column prop="appId" label="公众号" ></el-table-column>
+              <el-table-column prop="appId" label="主公众号" ></el-table-column>
+              <el-table-column prop="subAppId" label="子公众号" ></el-table-column>
               <el-table-column prop="exchannelEventCode" label="活动编号" ></el-table-column>
               <el-table-column prop="isUse" label="使用状态">
                 <template scope="scope">
@@ -592,8 +593,11 @@
           <el-form-item label="微信子商户编号：" width="120" style="margin-bottom: 0">
             <el-input v-model="wxChannelForm.exchannelCode" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <el-form-item label="子商户公众号ID：" width="120" style="margin-bottom: 0">
+          <el-form-item label="主商户公众号ID：" width="120" style="margin-bottom: 0">
             <el-input v-model="wxChannelForm.appId" placeholder="可选"></el-input>
+          </el-form-item>
+          <el-form-item label="子商户公众号ID：" width="120" style="margin-bottom: 0">
+            <el-input v-model="wxChannelForm.subAppId" placeholder="可选"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
@@ -684,7 +688,8 @@
         wxChannelForm:{
           userId:'',
           exchannelCode:"",
-          appId:""
+          appId:"",
+          subAppId:''
         }
       }
     },
@@ -971,7 +976,8 @@
             this.wxChannelForm = {
                 userId:'',
                 exchannelCode:"",
-                appId:""
+                appId:"",
+              subAppId:''
             }
           })
           .catch(err=>{
