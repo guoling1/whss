@@ -186,7 +186,7 @@
                   <div class="btn btn-primary" @click="reset('hsy')">重置</div>
                 </li>
                 <li class="same" style="float: right">
-                  <el-button @click="_$power(onload,'boss_merchant_export')" download="商户列表" type="primary" :disabled="isLoad">导出</el-button>
+                  <el-button @click="_$power(onload,'boss_merchant_export')" download="商户列表" type="primary"  :loading="isLoading" size="small">导出</el-button>
                 </li>
               </ul>
               <!--表格-->
@@ -271,6 +271,7 @@
     data(){
       return {
         isLoad:false,
+        isLoading: false,
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
@@ -482,15 +483,18 @@
           this.isMask = true;
         }else if(this.activeName == 'second'){
           this.isLoad = true
+          this.isLoading = true
 //          this.$data.loadUrl = this.loadUrlHsy;
           this.$http.post('/admin/hsyMerchantList/downLoadHsyMerchant',this.queryHsy)
             .then(res=>{
             this.isLoad = false;
+            this.isLoading = false;
             this.loadUrl = res.data[0].url;
           this.isMask = true;
           })
           .catch(err=>{
             this.isLoad = false;
+            this.isLoading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
