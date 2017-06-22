@@ -30,7 +30,7 @@ public interface HsyShopDao {
     public String findShopNameByID(@Param("id")Long id);
     public List<AppBizShop> findAppBizShopByAccountIDList(List<Long> accountIDList);
     public List<AppBizShop> findPrimaryAppBizShopByAccountID(@Param("accountID")Long accountID);
-    public List<AppBizShop> findCorporateUserByShopIDList(List<Long> idList);
+    public List<AppAuUser> findCorporateUserByShopIDList(List<Long> idList);
     public boolean isShopStatusCheckPass(@Param("accountID")Long accountID);
     public List<AppBizShopUserRole> findAppBizShopUserRoleBySidAndUid(AppBizShopUserRole appBizShopUserRole);
     public List<AppAuUser> findAuUserByAccountID(@Param("accountID")Long accountID);
