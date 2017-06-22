@@ -10,10 +10,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
-import com.jkm.hss.admin.enums.EnumAdminType;
-import com.jkm.hss.admin.enums.EnumAdminUserStatus;
-import com.jkm.hss.admin.enums.EnumIsMaster;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.enums.*;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.*;
 import com.jkm.hss.admin.helper.responseparam.*;
@@ -23,6 +20,7 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
@@ -32,6 +30,7 @@ import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hss.dealer.service.DealerRatePolicyService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -103,6 +102,9 @@ public class AdminController extends BaseController {
 
     @Autowired
     private AdminRoleService adminRoleService;
+
+    @Autowired
+    private DealerRatePolicyService dealerRatePolicyService;
 
     /**
      * 登录
@@ -893,9 +895,17 @@ public class AdminController extends BaseController {
         //判断是否有权限
         Optional<Product> productOptional = productService.selectByType(distributeQrCodeRequest.getSysType());
         long productId = productOptional.get().getId();
-        List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productId);
-        if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
-            return CommonResponse.simpleResponse(-1, "未开通此产品");
+
+        if((EnumQRCodeSysType.HSS.getId()).equals(distributeQrCodeRequest.getSysType())){
+            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productId);
+            if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
+                return CommonResponse.simpleResponse(-1, "未开通此产品");
+            }
+        }else{
+            List<DealerRatePolicy> dealerRatePolicyList = dealerRatePolicyService.selectByDealerId(dealerOptional.get().getId());
+            if(dealerRatePolicyList==null||dealerRatePolicyList.size()==0){
+                return CommonResponse.simpleResponse(-1, "未开通此产品");
+            }
         }
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
         if(distributeQrCodeRequest.getDistributeType()==1){//按码段
