@@ -106,7 +106,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
             case MERCHANT_JSAPI:
                 return enumPayChannelSign.getCode() + "_jsapi";
             case MERCHANT_BAR:
-                return enumPayChannelSign.getCode();
+                return enumPayChannelSign.getCode() + "_" + type.getId();
 
         }
         return "";
@@ -124,6 +124,8 @@ public class BasicChannelServiceImpl implements BasicChannelService {
             return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_code")));
         } else if (payType.contains("_jsapi")) {
             return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_jsapi")));
+        } else if (payType.contains("_bar")) {
+            return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_bar")));
         } else {
             return EnumPayChannelSign.codeOf(payType);
         }

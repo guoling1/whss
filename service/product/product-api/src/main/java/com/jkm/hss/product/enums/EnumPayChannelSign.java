@@ -116,14 +116,6 @@ public enum EnumPayChannelSign {
      * 民生支付宝
      */
     XMMS_ALIPAY_D0(704, "xmms_alipay_d0", EnumPaymentChannel.ALIPAY, "厦门民生支付宝D0", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
-    /**
-     * 厦门民生微信
-     */
-    XMMS_WECHAT_T1_BAR(705, "xmms_wechat_t1_bar", EnumPaymentChannel.WECHAT_PAY, "厦门民生微信条形码", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, false),
-    /**
-     * 厦门民生支付宝
-     */
-    XMMS_ALIPAY_T1_BAR(706, "xmms_alipay_t1_bar", EnumPaymentChannel.ALIPAY, "厦门民生支付宝条形码", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.T1, false),
 
     /**
      * 收银家WX
@@ -133,14 +125,6 @@ public enum EnumPayChannelSign {
      * 收银家zfb
      */
     SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
-    /**
-     * 收银家WX公众号支付
-     */
-    SYJ_WECHAT_BAR(805, "syj_wechat_bar", EnumPaymentChannel.WECHAT_PAY, "收银家微信公众号", EnumUpperChannel.SYJ, false, EnumBalanceTimeType.T1, false),
-    /**
-     * 收银家zfb公众号支付
-     */
-    SYJ_ALIPAY_BAR(806, "syj_alipay_bar", EnumPaymentChannel.ALIPAY, "收银家支付宝公众号", EnumUpperChannel.SYJ, false, EnumBalanceTimeType.T1, false),
 
     /**
      * 合利宝快捷
