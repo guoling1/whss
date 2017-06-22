@@ -721,7 +721,7 @@
           });
         });
       },
-      luhmCheck: function (cord) {
+      luhmCheck: function (bankno) {
         var lastNum=bankno.substr(bankno.length-1,1);//取出最后一位（与luhm进行比较）
 
         var first15Num=bankno.substr(0,bankno.length-1);//前15或18位
