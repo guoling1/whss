@@ -182,11 +182,13 @@
                   </el-select>
                 </li>
                 <li class="same">
-                  <div class="btn btn-primary" @click="search('hsy')">筛选</div>
-                  <div class="btn btn-primary" @click="reset('hsy')">重置</div>
+                  <label></label>
+                  <el-button type="primary" size="small" @click="search('hsy')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hsy')">重置</el-button>
                 </li>
-                <li class="same" style="float: right">
-                  <el-button @click="_$power(onload,'boss_merchant_export')" download="商户列表" type="primary"  :loading="isLoading" size="small">导出</el-button>
+                <li class="same rightBtn">
+                  <label></label>
+                  <el-button @click="_$power(onload,'boss_merchant_export')" type="primary"  :loading="isLoading" size="small">导出</el-button>
                 </li>
               </ul>
               <!--表格-->
@@ -650,9 +652,15 @@
   }
   .search{
     margin-bottom:0;
+    position: relative;
     label{
       display: block;
       margin-bottom: 0;
+    }
+    .rightBtn{
+      position: absolute;
+      bottom: 0;
+      right:0;
     }
   }
   .same{

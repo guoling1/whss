@@ -5,7 +5,6 @@
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/details/deal" class="pull-right btn btn-primary" style="margin-left: 20px" target="_blank">切换旧版</router-link>
-          <el-button @click="_$power(onload,'boss_trade_export')" download="交易记录" type="primary" :loading="isLoading" size="small" class="pull-right" style="background: #367fa9">导出</el-button>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -101,8 +100,11 @@
               </el-select>
             </li>
             <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
-              <div class="btn btn-primary" @click="reset">重置</div>
+              <el-button type="primary" size="small" @click="search">筛选</el-button>
+              <el-button type="primary" size="small" @click="reset">重置</el-button>
+            </li>
+            <li class="same rightBtn">
+              <el-button @click="_$power(onload,'boss_trade_export')" type="primary" :loading="isLoading" size="small">导出</el-button>
             </li>
           </ul>
           <!--表格-->
@@ -514,9 +516,15 @@
     margin:0;
   }
   .search{
+    position: relative;
     label{
       display: block;
       margin-bottom: 0;
+    }
+    .rightBtn{
+      position: absolute;
+      bottom: 0;
+      right:0;
     }
   }
 
