@@ -195,11 +195,13 @@
                   </el-select>-->
                 </li>
                 <li class="same">
-                  <div class="btn btn-primary" @click="search('hsy')">筛选</div>
-                  <div class="btn btn-primary" @click="reset('hsy')">重置</div>
+                  <label></label>
+                  <el-button type="primary" size="small" @click="search('hsy')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hsy')">重置</el-button>
                 </li>
-                <li class="same" style="float: right">
-                  <span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>
+                <li class="same rightBtn">
+                  <label></label>
+                  <el-button @click="_$power(onload,'boss_merchant_export')" type="primary"  :loading="isLoading" size="small">导出</el-button>
                 </li>
               </ul>
               <!--表格-->
@@ -283,6 +285,7 @@
     name: 'storeList',
     data(){
       return {
+        isLoading: false,
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
@@ -488,12 +491,29 @@
           })
       },
       onload: function () {
+
         if(this.activeName == 'first'){
           this.$data.loadUrl = this.loadUrlHss;
+          this.isMask = true;
         }else if(this.activeName == 'second'){
-          this.$data.loadUrl = this.loadUrlHsy;
+          this.isLoading = true
+//          this.$data.loadUrl = this.loadUrlHsy;
+          this.$http.post('/admin/hsyMerchantList/downLoadHsyMerchant',this.queryHsy)
+            .then(res=>{
+            this.isLoading = false;
+            this.loadUrl = res.data[0].url;
+          this.isMask = true;
+          })
+          .catch(err=>{
+            this.isLoading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
         }
-         this.$data.isMask = true;
+
       },
       search(val){
         if(val == 'hss'){
@@ -645,9 +665,15 @@
   }
   .search{
     margin-bottom:0;
+    position: relative;
     label{
       display: block;
       margin-bottom: 0;
+    }
+    .rightBtn{
+      position: absolute;
+      bottom: 0;
+      right:0;
     }
   }
   .same{

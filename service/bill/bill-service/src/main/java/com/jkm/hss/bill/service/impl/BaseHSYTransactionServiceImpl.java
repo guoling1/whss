@@ -11,9 +11,13 @@ import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,8 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     private HSYOrderService hsyOrderService;
     @Autowired
     private TradeService tradeService;
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
 
     /**
      * {@inheritDoc}
@@ -46,7 +52,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public long isNeedCreateNewOrder(final HsyOrder hsyOrder) {
-        if (hsyOrder.isHaveRequestedTrade()) {
+        if (hsyOrder.isNeedCreateNew()) {
             final HsyOrder newHsyOrder = new HsyOrder();
             BeanUtils.copyProperties(hsyOrder, newHsyOrder);
             newHsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
@@ -82,6 +88,19 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
         payParams.setMemberId(hsyOrder.getMemberId());
         payParams.setMerchantNo(hsyOrder.getMerchantNo());
         payParams.setMerchantName(hsyOrder.getMerchantname());
+        if (EnumPayChannelSign.isWechatOfficialPay(hsyOrder.getPaychannelsign())) {//微信官方支付
+            final long uid = this.hsyShopDao.findsurByRoleTypeSid(shop.getId()).get(0).getUid();
+            final UserChannelPolicy userChannelPolicy = this.userChannelPolicyService.selectByUserIdAndChannelTypeSign(uid,
+                    hsyOrder.getPaychannelsign()).get();
+            payParams.setWxAppId(userChannelPolicy.getAppId());
+            payParams.setSubMerchantId(userChannelPolicy.getExchannelCode());
+            if (StringUtils.isEmpty(userChannelPolicy.getSubAppId())) {
+                payParams.setMemberId(hsyOrder.getMemberId());
+            } else {
+                payParams.setSubAppId(userChannelPolicy.getSubAppId());
+                payParams.setSubMemberId(hsyOrder.getMemberId());
+            }
+        }
         final PayResponse payResponse = this.tradeService.pay(payParams);
         final EnumBasicStatus status = EnumBasicStatus.of(payResponse.getCode());
         final HsyOrder updateOrder = new HsyOrder();

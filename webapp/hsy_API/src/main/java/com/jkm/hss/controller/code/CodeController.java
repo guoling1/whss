@@ -100,20 +100,30 @@ public class CodeController extends BaseController {
             Preconditions.checkState(userCurrentChannelPolicyOptional.isPresent(), "商户使用中通道未设置");
             if (agent.indexOf("micromessenger") > -1) {
                 Optional<UserChannelPolicy> userChannelPolicyOptional = userChannelPolicyService.selectByUserIdAndChannelTypeSign(appAuUsers.get(0).getId(),userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
-                Preconditions.checkState(userChannelPolicyOptional.isPresent(), "商户通道不存在");
-                Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()!=null, "商户未通过审核");
-                Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()!=null, "商户未通过审核");
-                Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()== EnumNetStatus.SUCCESS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
-                Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+                if(userChannelPolicyOptional.get().getNetStatus()!=EnumNetStatus.UNENT.getId()){
+                    Preconditions.checkState(userChannelPolicyOptional.isPresent(), "商户通道不存在");
+                    Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()!=null, "商户未通过审核");
+                    Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()!=null, "商户未通过审核");
+                    Preconditions.checkState(userChannelPolicyOptional.get().getNetStatus()== EnumNetStatus.SUCCESS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+                    Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+                }
+                String appId = WxConstants.APP_HSY_ID;
+                if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()==EnumPayChannelSign.WECHAT_PAY.getId()){
+                    if(userChannelPolicyOptional.get().getSubAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getSubAppId())){
+                        appId = userChannelPolicyOptional.get().getSubAppId();
+                    }else{
+                        appId = userChannelPolicyOptional.get().getAppId();
+                    }
+                }
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
                     if(request.getQueryString() == null){
                         requestUrl = "";
                     }else{
-                        requestUrl = request.getQueryString();
+                        requestUrl = request.getQueryString()+"&appId="+appId;
                     }
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-                    return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                    return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO_START+appId+WxConstants.WEIXIN_HSY_MERCHANT_USERINFO_END+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
 
                 final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);

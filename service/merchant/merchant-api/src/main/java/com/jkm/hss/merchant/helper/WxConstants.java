@@ -35,7 +35,8 @@ public class WxConstants {
     /**
      * 好收银
      */
-    public final static String WEIXIN_HSY_MERCHANT_USERINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_HSY_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN1+"%2fsqb%2ftoSkip&response_type=code&scope=snsapi_base&state=";
+    public final static String WEIXIN_HSY_MERCHANT_USERINFO_START="https://open.weixin.qq.com/connect/oauth2/authorize?appid=";
+    public final static String WEIXIN_HSY_MERCHANT_USERINFO_END="&redirect_uri=http%3a%2f%2f"+DOMAIN1+"%2fsqb%2ftoSkip&response_type=code&scope=snsapi_base&state=";
     public final static String WEIXIN_HSY_MEMBERSHIP_AUTHINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_HSY_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN1+"%2fmembership%2fgetAuthInfo&response_type=code&scope=snsapi_base&state=";
 
 }

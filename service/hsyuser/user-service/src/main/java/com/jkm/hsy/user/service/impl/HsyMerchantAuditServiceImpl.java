@@ -456,6 +456,8 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
     public List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.hsyMerchant(hsyMerchantAuditRequest);
+        System.out.print("----------------------");
+        System.out.print(new Date());
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.size()>0){
@@ -514,6 +516,8 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 }
             }
         }
+        System.out.print("++++++++++++++");
+        System.out.print(new Date());
         return list;
     }
 

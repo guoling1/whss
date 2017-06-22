@@ -25,6 +25,7 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.DealerRatePolicy;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.requestparam.DealerOfFirstDealerRequest;
@@ -32,6 +33,7 @@ import com.jkm.hss.dealer.helper.requestparam.DistributeRecordRequest;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hss.dealer.service.DealerRatePolicyService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.DistributeQRCodeRecordResponse;
@@ -78,6 +80,8 @@ public class QrCodeController extends BaseController {
     private QRCodeService qrCodeService;
     @Autowired
     private OSSClient ossClient;
+    @Autowired
+    private DealerRatePolicyService dealerRatePolicyService;
     @Autowired
     private ProductionQrCodeRecordService productionQrCodeRecordService;
     /**
@@ -249,9 +253,17 @@ public class QrCodeController extends BaseController {
         //判断是否有权限
         Optional<Product> productOptional = productService.selectByType(distributeQrCodeRequest.getSysType());
         long productId = productOptional.get().getId();
-        List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(super.getDealerId(),productId);
-        if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
-            return CommonResponse.simpleResponse(-1, "您未开通此产品");
+
+        if((EnumQRCodeSysType.HSS.getId()).equals(distributeQrCodeRequest.getSysType())){
+            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(super.getDealerId(),productId);
+            if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
+                return CommonResponse.simpleResponse(-1, "您未开通此产品");
+            }
+        }else{
+            List<DealerRatePolicy> dealerRatePolicyList = dealerRatePolicyService.selectByDealerId(super.getDealerId());
+            if(dealerRatePolicyList==null||dealerRatePolicyList.size()==0){
+                return CommonResponse.simpleResponse(-1, "您未开通此产品");
+            }
         }
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
 

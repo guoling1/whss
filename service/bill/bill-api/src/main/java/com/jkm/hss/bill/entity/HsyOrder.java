@@ -75,7 +75,7 @@ public class HsyOrder extends BaseEntity {
     private int sourcetype;
 
     /**
-     * 扫码用户在微信/支付宝的标识
+     * 扫码用户在微信/支付宝的标识(可能是子商户的公众号的标识)
      */
     private String memberId;
 
@@ -140,5 +140,16 @@ public class HsyOrder extends BaseEntity {
         return EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId() == this.orderstatus;
     }
 
+
+    /**
+     * 是否创建新订单
+     *
+     * @return
+     */
+    public boolean isNeedCreateNew() {
+        return EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId() == this.orderstatus
+                || EnumHsyOrderStatus.PAY_SUCCESS.getId() == this.orderstatus
+                || EnumHsyOrderStatus.PAY_FAIL.getId() == this.orderstatus;
+    }
 
 }

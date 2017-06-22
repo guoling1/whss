@@ -2,6 +2,7 @@ package com.jkm.hss.controller.code;
 
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
+import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
@@ -9,6 +10,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class WebSkipController extends BaseController {
     private OrderService orderService;
     @Autowired
     private AlipayOauthService alipayOauthService;
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
     /**
      * 支付升级成功页面
      * @param request
@@ -94,15 +98,12 @@ public class WebSkipController extends BaseController {
      */
     @RequestMapping(value = "toSkip", method = RequestMethod.GET)
     public String  toSkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
-        String getQueryString = "";
-        if(request.getQueryString() == null){
-            getQueryString="";
-        }else{
-            getQueryString = request.getQueryString();
-        }
+        Preconditions.checkState(request.getQueryString() != null, "微信授权失败");
+        String getQueryString = request.getQueryString();
         String[] arr = getQueryString.split("&");
         String code="";
         String state="";
+        String appId = "";
         for(int i =0;i<arr.length;i++){
             if("code".equals(arr[i].split("=")[0])){
                 code = arr[i].split("=")[1];
@@ -111,11 +112,20 @@ public class WebSkipController extends BaseController {
                 state = arr[i].split("=")[1];
             }
         }
-        Map<String,String> ret = WxPubUtil.getOpenid(code, WxConstants.APP_HSY_ID,WxConstants.APP_HSY_SECRET);
-        model.addAttribute("openId", ret.get("openid"));
-        log.info("openid是：{}",ret.get("openid"));
         String tempUrl = URLDecoder.decode(state, "UTF-8");
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        String[] arr1 = redirectUrl.split("&");
+        for(int j =0;j<arr1.length;j++){
+            if("appId".equals(arr1[j].split("=")[0])){
+                appId = arr1[j].split("=")[1];
+            }
+        }
+        Preconditions.checkState(appId!=null&&!"".equals(appId), "微信授权失败");
+        String appSecret = userChannelPolicyService.selectAppSecretByAppId(appId);
+        Map<String,String> ret = WxPubUtil.getOpenid(code, appId,appSecret);
+        Preconditions.checkState(ret.get("openid")!=null&&!"".equals(ret.get("openid")), "微信授权失败");
+        model.addAttribute("openId", ret.get("openid"));
+        log.info("openid是：{}",ret.get("openid"));
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;

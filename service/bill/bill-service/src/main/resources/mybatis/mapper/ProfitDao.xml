@@ -63,7 +63,7 @@
         LEFT JOIN tb_dealer c ON c.account_id = a.receipt_money_account_id
         LEFT JOIN tb_order d ON d.order_no = a.order_no
         WHERE
-        1 = 1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        1 = 1
         <if test="startTime!=null and startTime!=''">
             AND a.split_date <![CDATA[ >= ]]> #{startTime}
         </if>

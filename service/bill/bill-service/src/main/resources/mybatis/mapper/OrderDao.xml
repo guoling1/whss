@@ -1649,7 +1649,7 @@
         LEFT JOIN `app_biz_card` y ON y.`SID`= x.`ID`
         LEFT JOIN tb_dealer c ON c.id= b.`DEALERID`
         WHERE
-        a.trade_type = 1 AND a.order_no=#{orderNo}
+        a.trade_type = 1 AND a.order_no=#{orderNo} AND y.`CARDNO` IS NOT NULL
 
     </select>
 
