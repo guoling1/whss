@@ -52,7 +52,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public long isNeedCreateNewOrder(final HsyOrder hsyOrder) {
-        if (hsyOrder.isHaveRequestedTrade()) {
+        if (hsyOrder.isNeedCreateNew()) {
             final HsyOrder newHsyOrder = new HsyOrder();
             BeanUtils.copyProperties(hsyOrder, newHsyOrder);
             newHsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());

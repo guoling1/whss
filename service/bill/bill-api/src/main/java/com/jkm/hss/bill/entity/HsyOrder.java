@@ -141,4 +141,15 @@ public class HsyOrder extends BaseEntity {
     }
 
 
+    /**
+     * 是否创建新订单
+     *
+     * @return
+     */
+    public boolean isNeedCreateNew() {
+        return EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId() == this.orderstatus
+                || EnumHsyOrderStatus.PAY_SUCCESS.getId() == this.orderstatus
+                || EnumHsyOrderStatus.PAY_FAIL.getId() == this.orderstatus;
+    }
+
 }
