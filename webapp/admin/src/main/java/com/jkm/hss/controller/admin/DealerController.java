@@ -67,7 +67,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by yulong.zhang on 2016/11/25.
+ * Created by liujie.xing on 2016/11/25.
  */
 @Slf4j
 @Controller
@@ -165,6 +165,7 @@ public class DealerController extends BaseController {
         final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(listSecondDealerRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
+
     /**
      * 根据代理商编码查找代理商信息
      * @param dealerId
@@ -470,6 +471,7 @@ public class DealerController extends BaseController {
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", oemHssResponse);
     }
+
     /**
      * hsy查询代理商信息
      *
@@ -546,18 +548,6 @@ public class DealerController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", firstLevelDealerGet3Response);
     }
 
-
-    private BigDecimal getDvalue(List<HssDealerAddOrUpdateRequest.Channel> channels,int currentChannelTypeSign){
-        BigDecimal dvalue = null;
-        for(int i=0;i<channels.size();i++){
-            if(channels.get(i).getChannelType()==currentChannelTypeSign){
-                BigDecimal merchantSettleRate = new BigDecimal(channels.get(i).getMerchantSettleRate()).divide(new BigDecimal("100"));
-                BigDecimal paymentSettleRate = new BigDecimal(channels.get(i).getPaymentSettleRate()).divide(new BigDecimal("100"));
-                dvalue = merchantSettleRate.subtract(paymentSettleRate);
-            }
-        }
-        return dvalue;
-    }
     /**
      * 新增或添加好收收配置
      *
@@ -579,10 +569,6 @@ public class DealerController extends BaseController {
                     if(request.getDealerProfits().get(i).getProfitSpace()==null){
                         return CommonResponse.simpleResponse(-1, "请设置"+request.getDealerProfits().get(i).getChannelName()+"的推荐分润");
                     }
-//                    BigDecimal dvalue = getDvalue(request.getProduct().getChannels(),request.getDealerProfits().get(i).getChannelTypeSign());
-//                    if ((request.getDealerProfits().get(i).getProfitSpace().divide(new BigDecimal("100"))).compareTo(dvalue) > 0) {
-//                        return CommonResponse.simpleResponse(-1,"总分润空间不得大于"+request.getDealerProfits().get(i).getChannelName()+"通道商户费率与一级代理商结算价之差");
-//                    }
                 }
 
             }
@@ -627,6 +613,7 @@ public class DealerController extends BaseController {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("dealerId", request.getDealerId()).build();
     }
+
     /**
      * 新增或添加分公司配置
      *

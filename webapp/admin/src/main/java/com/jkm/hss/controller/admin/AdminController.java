@@ -68,7 +68,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by yulong.zhang on 2016/11/23.
+ * Created by liujie.xing on 2016/11/23.
  */
 @Slf4j
 @Controller
@@ -81,22 +81,13 @@ public class AdminController extends BaseController {
     private DealerService dealerService;
 
     @Autowired
-    private DealerRateService dealerRateService;
-
-    @Autowired
     private BankCardBinService bankCardBinService;
 
     @Autowired
     private ProductService productService;
 
     @Autowired
-    private ProductChannelDetailService productChannelDetailService;
-
-    @Autowired
     private DealerChannelRateService dealerChannelRateService;
-
-    @Autowired
-    private QRCodeService qrCodeService;
 
     @Autowired
     private OSSClient ossClient;
@@ -109,8 +100,8 @@ public class AdminController extends BaseController {
 
     /**
      * 登录
-     *
      * @param adminUserLoginRequest
+     * @param response
      * @return
      */
     @ResponseBody
@@ -154,7 +145,6 @@ public class AdminController extends BaseController {
 
     /**
      * 退出登录
-     *
      * @param response
      * @return
      */
@@ -165,92 +155,6 @@ public class AdminController extends BaseController {
         CookieUtil.deleteCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, ApplicationConsts.getApplicationConfig().domain());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登出成功");
     }
-
-    /**
-     * 给一级代理商分配码段
-     *
-     * @param distributeQRCodeRequest
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/distributeQRCode", method = RequestMethod.POST)
-    public CommonResponse distributeQRCode(@RequestBody DistributeQRCodeRequest distributeQRCodeRequest) {
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQRCodeRequest.getDealerId());
-        if(!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
-        }
-        if (distributeQRCodeRequest.getCount() <= 0) {
-            return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
-        }
-        if (StringUtils.isBlank(distributeQRCodeRequest.getSysType())) {
-            return CommonResponse.simpleResponse(-1, "请选择所属项目");
-        }
-        final Dealer dealer = dealerOptional.get();
-        final Triple<Integer, String, List<Pair<QRCode, QRCode>>> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
-                distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount(),distributeQRCodeRequest.getSysType());
-        if (1 != resultTriple.getLeft()) {
-            return CommonResponse.simpleResponse(-1, resultTriple.getMiddle());
-        }
-        final List<Pair<QRCode, QRCode>> codePairs = resultTriple.getRight();
-        final DistributeQRCodeResponse distributeQRCodeResponse = new DistributeQRCodeResponse();
-        distributeQRCodeResponse.setDealerId(distributeQRCodeRequest.getDealerId());
-        distributeQRCodeResponse.setName(dealer.getProxyName());
-        distributeQRCodeResponse.setMobile(dealer.getMobile());
-        distributeQRCodeResponse.setDistributeDate(new Date());
-        distributeQRCodeResponse.setCount(distributeQRCodeRequest.getCount());
-        final ArrayList<DistributeQRCodeResponse.Code> codes = new ArrayList<>();
-        for (Pair<QRCode, QRCode> pair : codePairs) {
-            final DistributeQRCodeResponse.Code code = distributeQRCodeResponse.new Code();
-            code.setStartCode(pair.getLeft().getCode());
-            code.setEndCode(pair.getRight().getCode());
-            codes.add(code);
-        }
-        distributeQRCodeResponse.setCodes(codes);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeResponse);
-    }
-
-
-    /**
-     * 按码段范围给一级代理商分配码段
-     *
-     * @param distributeRangeQRCodeRequest
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/distributeRangeQRCode", method = RequestMethod.POST)
-    public CommonResponse distributeRangeQRCode(@RequestBody DistributeRangeQRCodeRequest distributeRangeQRCodeRequest) {
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeRangeQRCodeRequest.getDealerId());
-        if(!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
-        }
-        if (StringUtils.isBlank(distributeRangeQRCodeRequest.getSysType())) {
-            return CommonResponse.simpleResponse(-1, "请选择所属项目");
-        }
-        final Dealer dealer = dealerOptional.get();
-        final List<Pair<QRCode, QRCode>> pairs = this.adminUserService.distributeRangeQRCode(distributeRangeQRCodeRequest.getDealerId(),
-                distributeRangeQRCodeRequest.getStartCode(), distributeRangeQRCodeRequest.getEndCode(),distributeRangeQRCodeRequest.getSysType());
-        if (CollectionUtils.isEmpty(pairs)) {
-            return CommonResponse.simpleResponse(-1, "此范围不存在可分配的二维码");
-        }
-        final DistributeRangeQRCodeResponse distribute = new DistributeRangeQRCodeResponse();
-        distribute.setDealerId(dealer.getId());
-        distribute.setName(dealer.getProxyName());
-        distribute.setMobile(dealer.getMobile());
-        distribute.setDistributeDate(new Date());
-        final ArrayList<DistributeRangeQRCodeResponse.Code> codes = new ArrayList<>();
-        int count = 0;
-        for (Pair<QRCode, QRCode> pair : pairs) {
-            final DistributeRangeQRCodeResponse.Code code = distribute.new Code();
-            code.setStartCode(pair.getLeft().getCode());
-            code.setEndCode(pair.getRight().getCode());
-            count += (int) (Long.valueOf(pair.getRight().getCode()) - Long.valueOf(pair.getLeft().getCode()) + 1);
-            codes.add(code);
-        }
-        distribute.setCount(count);
-        distribute.setCodes(codes);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distribute);
-    }
-
 
     /**
      *码段查询
@@ -585,8 +489,6 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bossDistributeQRCodeRecordResponse);
     }
 
-
-    //    员工管理
 
     /**
      * 新增员工
