@@ -1330,4 +1330,38 @@ public class HsyUserServiceImpl implements HsyUserService {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param email
+     * @param id
+     * @return
+     */
+    @Override
+    public int updateEmailById(final String email, final long id) {
+        return this.hsyUserDao.updateEmailById(email, id);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int enableAutoSendBalanceAccountEmail(final long id) {
+        return this.hsyUserDao.enableAutoSendBalanceAccountEmail(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int disableAutoSendBalanceAccountEmail(final long id) {
+        return this.hsyUserDao.disableAutoSendBalanceAccountEmail(id);
+    }
+
 }

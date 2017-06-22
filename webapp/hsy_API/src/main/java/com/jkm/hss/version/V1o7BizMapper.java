@@ -91,5 +91,7 @@ public class V1o7BizMapper {
         /**更改协议查看状态*/
         bizMapper.put("HSY001056", new String[]{"hsyUserService","updateProtocolSeenStatus"});
 
+
+        bizMapper.put("HSY001060", new String[]{"hsyBalanceAccountEmailService","updateAutoSendBalanceAccountEmail"});
     }
 }

@@ -22,4 +22,29 @@ public interface HsyUserService {
 
     public String refreshlogin(String dataParam,AppParam appParam)throws ApiHandleException;
     public String updateProtocolSeenStatus(String dataParam,AppParam appParam)throws ApiHandleException;
+
+    /**
+     * 更新email
+     *
+     * @param email
+     * @param id
+     * @return
+     */
+    int updateEmailById(String email, long id);
+
+    /**
+     * 启用自动发送邮件
+     *
+     * @param id
+     * @return
+     */
+    int enableAutoSendBalanceAccountEmail(long id);
+
+    /**
+     * 禁用自动发送邮件
+     *
+     * @param id
+     * @return
+     */
+    int disableAutoSendBalanceAccountEmail(long id);
 }
