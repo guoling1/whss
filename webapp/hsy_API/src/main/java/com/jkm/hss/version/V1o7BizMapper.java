@@ -90,6 +90,12 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001055", new String[]{"hsyMembershipService","updateMemshipCard"});
         /**更改协议查看状态*/
         bizMapper.put("HSY001056", new String[]{"hsyUserService","updateProtocolSeenStatus"});
+        /**主扫创建订单*/
+        bizMapper.put("HSY001057", new String[]{"hsyOrderScanService","insertHsyOrder"});
+        /**更新订单并支付*/
+        bizMapper.put("HSY001058", new String[]{"hsyOrderScanService","updateHsyOrderPay"});
+        /**更新订单并支付*/
+        bizMapper.put("HSY001059", new String[]{"hsyOrderScanService","findHsyOrderRelateInfo"});
 
     }
 }

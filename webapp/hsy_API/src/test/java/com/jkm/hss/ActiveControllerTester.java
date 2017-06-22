@@ -25,15 +25,18 @@ public class ActiveControllerTester {
 //    public static String url="http://192.168.1.99:8080/hsy/active/rest";
     public static String url="http://localhost:8080/active/rest";
 //    public static String url="http://hsy.qianbaojiajia.com/active/rest";
+    
+    public static String v="v1.7";
+    public static String accessToken="76b2bf0a5b08edda6b02047f49b14016";
 
     @Test
     public void testInsertHsyUser()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001001");
-        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"cellphone\": \"13111111113\",\"password\":\"123456\",\"code\":\"123456\",\"shopName\":\"张玉龙专用测试店铺名称\",\"industryCode\":\"1000\"}";
 //        String param="{\"cellphone\": \"18640426296\",\"password\":\"123456\",\"code\":\"123456\",\"shopName\":\"张玉龙专用测试店铺名称\",\"industryCode\":\"1000\"}";
 //        String param="{\"cellphone\": \"13521691435\",\"password\":\"123456\",\"code\":\"272683\",\"shopName\":\"店铺名称\",\"industryCode\":\"1000\"}";
@@ -45,11 +48,11 @@ public class ActiveControllerTester {
     public void testLogin()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001002");
-        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAccessToken(accessToken);
 //        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
 //        String param="{\"cellphone\": \"13521691431\",\"password\":\"888888\"}";
         String param="{\"cellphone\": \"13521691432\",\"password\":\"123456\"}";
         p.setRequestData(param);
@@ -60,10 +63,10 @@ public class ActiveControllerTester {
     public void testInsertAndSendVerificationCode()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001003");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
 //        String param="{\"cellphone\": \"13041250755\",\"type\":\"2\"}";
         String param="{\"cellphone\": \"13521691431\",\"type\":\"1\"}";
         p.setRequestData(param);
@@ -74,10 +77,10 @@ public class ActiveControllerTester {
     public void testUpdateHsyUserForSetPassword()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001004");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"cellphone\": \"13041250755\",\"password\":\"654321\",\"code\":\"227959\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -87,10 +90,10 @@ public class ActiveControllerTester {
     public void testUpdateHsyShop()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001005");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"id\":10,\"shortName\":\"商铺简称\",\"districtCode\":\"110000\",\"address\":\"街道\",\"isPublic\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -100,10 +103,10 @@ public class ActiveControllerTester {
     public void testUpdateHsyShopContact()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001006");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"id\":5,\"contactName\":\"联系人\",\"contactCellphone\":\"13521691431\",\"uid\":18}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -113,10 +116,10 @@ public class ActiveControllerTester {
     public void testInsertHsyCard()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001007");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"cardNO\":\"6214830107011438\",\"cardBank\":\"招商银行\",\"cardAccountName\":\"张玉龙\",\"sid\":25,\"bankAddress\":\"招商银行北新桥分行\",\"branchCode\":\"001121004578\",\"idcardNO\":\"1111199001013333\",\"branchDistrictCode\":\"110109\"}";
 //        String param="{\"cardNO\":\"4033930019071753\",\"cardBank\":\"1000000\",\"cardAccountName\":\"开户名\",\"sid\":5,\"bankAddress\":\"开户行支行\"}";
         p.setRequestData(param);
@@ -127,10 +130,10 @@ public class ActiveControllerTester {
     public void testFindHsyCardBankByBankNO()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001008");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"cardNO\":\"4033930019071753\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -140,10 +143,10 @@ public class ActiveControllerTester {
     public void testFindDistrictByParentCode()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001009");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
 //        String param="{\"parentCode\":\"0\"}";
         String param="{\"parentCode\":\"110000\"}";
         p.setRequestData(param);
@@ -154,10 +157,10 @@ public class ActiveControllerTester {
     public void testFindShopList()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001010");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"uid\":18}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -167,10 +170,10 @@ public class ActiveControllerTester {
     public void testFindShopDetail()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001012");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"id\":62}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -180,10 +183,10 @@ public class ActiveControllerTester {
     public void testFindIndustryList()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001013");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
 //        String param="{\"parentCode\":\"0\"}";
         String param="";
         p.setRequestData(param);
@@ -194,10 +197,10 @@ public class ActiveControllerTester {
     public void testInsertBranchShop()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001014");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"uid\":18,\"shortName\":\"分店简称\",\"districtCode\":\"110000\",\"address\":\"分店街道\",\"contactCellphone\":\"13844256711\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -207,10 +210,10 @@ public class ActiveControllerTester {
     public void testFindContractInfo()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001015");
-        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.6");
+        p.setV(v);
         String param="{\"id\":329}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -220,10 +223,10 @@ public class ActiveControllerTester {
     public void testInsertTokenDeviceClientInfoAndReturnKey()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001016");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*
             clientid可选 appChannel可选
          */
@@ -240,7 +243,7 @@ public class ActiveControllerTester {
         p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"clientid\":\"clientid12345678\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -253,7 +256,7 @@ public class ActiveControllerTester {
         p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -263,10 +266,10 @@ public class ActiveControllerTester {
     public void testInserHsyUserViaCorporation()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001019");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*role 值：2店长，3店员  sid可选 parentID当前登录用户的id*/
 //        String param="{\"role\":3,\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
         String param="{\"role\":2,\"cellphone\":\"13301129906\",\"realname\":\"张斌\",\"parentID\":18}";
@@ -278,10 +281,10 @@ public class ActiveControllerTester {
     public void testFindHsyUserViaCorporation()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001021");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*id为店员ID sid为当前登录用户的主店铺id */
         String param="{\"id\":35,\"sid\":10}";
         p.setRequestData(param);
@@ -292,10 +295,10 @@ public class ActiveControllerTester {
     public void testFindHsyUserListViaCorporation()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001022");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*parentID为当前登录用户的id sid为当前登录用户的主店铺id */
         String param="{\"parentID\":18,\"sid\":10}";
         p.setRequestData(param);
@@ -306,10 +309,10 @@ public class ActiveControllerTester {
     public void testUpdateHsyUserViaCorporation()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001023");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*role 值：2店长，3店员  sid可选 parentID当前登录用户的id*/
         String param="{\"id\":34,\"role\":2,\"originCellphone\":\"13521691441\",\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
         p.setRequestData(param);
@@ -320,10 +323,10 @@ public class ActiveControllerTester {
     public void testUpdateHsyShopUserViaCorporation()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001024");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*sid店铺id parentID当前登录用户的id  id所需分配的店员*/
         String param="{\"id\":34,\"parentID\":18,\"sid\":10}";
         p.setRequestData(param);
@@ -334,10 +337,10 @@ public class ActiveControllerTester {
     public void testUpdateHsyUserStatusViaCorporation()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001025");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         /*status 1正常 99禁用 id所需分配的店员*/
         String param="{\"id\":34,\"status\":1}";
         p.setRequestData(param);
@@ -348,10 +351,10 @@ public class ActiveControllerTester {
     public void testGetAppVersion()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001026");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("ios");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"versionCode\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -361,10 +364,10 @@ public class ActiveControllerTester {
     public void testGetAppVersionAndroid()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001027");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -374,10 +377,10 @@ public class ActiveControllerTester {
     public void testFindLoginInfo()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001028");
-        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"id\":352}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -387,10 +390,10 @@ public class ActiveControllerTester {
     public void testFindLoginInfoShort()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001029");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"id\":18}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -400,10 +403,10 @@ public class ActiveControllerTester {
     public void testFindVersionDetailByVersionCode()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001037");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("ios");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"versionCode\":8}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -416,7 +419,7 @@ public class ActiveControllerTester {
         p.setAccessToken("661bf9ce274d196264ebe457bf2bbfdf");
         p.setAppType("ios");
         p.setTimeStamp("2017-04-20 15:24:21");
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"recordId\":8,\"pageNo\":1,\"pageSize\":10}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -426,10 +429,10 @@ public class ActiveControllerTester {
     public void testFindAllPageComponent()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001040");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("ios");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -439,10 +442,10 @@ public class ActiveControllerTester {
     public void testFindBankBranchList()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001041");
-        p.setAccessToken("");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"bankName\": \"招商银行\",\"districtCode\":\"110000\",\"currentPage\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -452,10 +455,10 @@ public class ActiveControllerTester {
     public void testFindBankList()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001042");
-        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"bankName\": \"中\",\"currentPage\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -465,10 +468,10 @@ public class ActiveControllerTester {
     public void testUpdateProtocolSeenStatus()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001056");
-        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.6");
+        p.setV(v);
         String param="{\"id\":351}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -578,7 +581,7 @@ public class ActiveControllerTester {
         p.setAccessToken("661bf9ce274d196264ebe457bf2bbfdf");
         p.setAppType("ios");
         p.setTimeStamp("2017-04-20 15:24:21");
-        p.setV("v1.0");
+        p.setV(v);
         String param="{\"recordId\":8}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);

@@ -47,6 +47,14 @@ public enum ResultCode {
 	USER_LOGIN_OUTTIME(2041,"用户登录超时请重新登录"),
 	ESCAPE_FAIL(2042,"转义失败"),
 	MEMBERSHIP_CARD_STATUS_NOT_EXSIT(2043,"会员卡状态不存在"),
+	DEALER_HAS_NO_RIGHT(2044,"该代理商没有登录权限"),
+	DEALER_HAS_NO_OPEN_HSY(2045,"该代理商没有开通钱包++"),
+	DEALER_NOT_EXSITED(2046,"该商户没有代理商"),
+	SHOP_NOT_EXSIT(2047,"店铺不存在"),
+	SHOP_HAS_BEEN_CHECKED_SUCCESSFULLY(2048,"店铺已经审核成功"),
+	AUTHCODE_NOT_BELONG_BOTH(2049,"该付款码不是微信付款码或支付宝付款码"),
+	ORDER_TO_TRADE_FAIL(2050,"付款错误"),
+	ORDER_NOT_FOUND(2051,"找不到该订单"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

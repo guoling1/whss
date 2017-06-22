@@ -9,7 +9,8 @@ import lombok.Getter;
  */
 public enum EnumHsySourceType {
 
-    QRCODE(1,"二维码付款")
+    QRCODE(1,"二维码付款"),
+    SCAN(2,"主扫付款"),
     ;
     @Getter
     private int id;

@@ -17,7 +17,8 @@ import java.util.Date;
  * {@link EnumHsyOrderStatus}
  */
 @Data
-public class HsyOrder extends BaseEntity {
+public class HsyOrder{
+    private Long id;
     /**
      * 订单号
      */
@@ -25,11 +26,11 @@ public class HsyOrder extends BaseEntity {
     /**
      *订单状态
      */
-    private int orderstatus;
+    private Integer orderstatus;
     /**
      * 店铺ID
      */
-    private long shopid;
+    private Long shopid;
 
     private String shopname;
 
@@ -46,7 +47,7 @@ public class HsyOrder extends BaseEntity {
     /**
      * 交易订单ID
      */
-    private long orderid;
+    private Long orderid;
     /**
      * 确认码
      */
@@ -54,37 +55,43 @@ public class HsyOrder extends BaseEntity {
     private BigDecimal amount;
     private BigDecimal poundage;
     private String qrcode;
-    private int cashierid;
+    private Integer cashierid;
     private String cashiername;
     /**
      * 第三方交易流水号
      */
     private String paysn;
     private String paytype;
-    private int paychannelsign;
+    private Integer paychannelsign;
     private Date paysuccesstime;
     private BigDecimal refundamount;
-    private int refundstatus;
+    private Integer refundstatus;
     private Date refundtime;
     private String goodsname;
     private String goodsdescribe;
     private String remark;
     /**
-     * 支付类型  1二维码付款/2充值
+     * 支付类型  1二维码付款/2主扫付款
      */
-    private int sourcetype;
+    private Integer sourcetype;
 
     /**
      * 扫码用户在微信/支付宝的标识
      */
     private String memberId;
+    /**
+     * 主扫时的用户的code码
+     */
+    private String authCode;
+
+    private BigDecimal realAmount;//实际交易金额
 
     /**
      * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      *
      * 支付渠道
      */
-    private int paymentChannel;
+    private Integer paymentChannel;
 
     /**
      * 结算类型
@@ -92,6 +99,13 @@ public class HsyOrder extends BaseEntity {
      * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
      */
     private String settleType;
+
+    private Long uid;
+    private Long accountid;
+    private Long dealerid;
+
+    private Date createTime;
+    private Date updateTime;
 
     /**
      * 是否是 已经退款成功

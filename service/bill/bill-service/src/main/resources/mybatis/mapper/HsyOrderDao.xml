@@ -25,6 +25,11 @@
         `member_id`,
         `payment_channel`,
         `settle_type`,
+        authCode,
+        realAmount,
+        uid,
+        accountid,
+        dealerid,
         `remark`)
         VALUES
         (
@@ -48,6 +53,11 @@
         #{memberId},
         #{paymentChannel},
         #{settleType},
+        #{authCode},
+        #{realAmount},
+        #{uid},
+        #{accountid},
+        #{dealerid},
         #{remark});
     </insert>
 
@@ -75,6 +85,9 @@
           <if test="paysn!=null and paysn!='' ">
               pay_sn=#{paysn},
           </if>
+        <if test="paytype!=null">
+            pay_type=#{paytype},
+        </if>
           <if test="paysuccesstime!=null">
               pay_success_time=#{paysuccesstime},
           </if>
@@ -82,8 +95,32 @@
               refund_amount=#{refundamount},
           </if>
           <if test="refundtime!=null">
-              refund_time=#{refundtime}
+              refund_time=#{refundtime},
           </if>
+            <if test="authCode!=null and authCode!=''">
+                authCode=#{authCode},
+            </if>
+            <if test="paychannelsign!=null">
+                pay_channel_sign=#{paychannelsign},
+            </if>
+            <if test="paymentChannel!=null">
+                payment_channel=#{paymentChannel},
+            </if>
+            <if test="goodsname!=null">
+                goods_name=#{goodsname},
+            </if>
+            <if test="goodsdescribe!=null">
+                goods_describe=#{goodsdescribe},
+            </if>
+            <if test="realAmount!=null">
+                realAmount=#{realAmount},
+            </if>
+            <if test="settleType!=null">
+                settle_type=#{settleType},
+            </if>
+            <if test="paytype!=null">
+                pay_type=#{paytype},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}
             </if>
@@ -100,6 +137,7 @@
         `ordernumber`,
         `shopid`,
         `shopname`,
+        merchant_no,
         `merchantname`,
         `order_no`,
         `order_id`,
@@ -120,6 +158,11 @@
         `refund_time`,
         `goods_name`,
         `goods_describe`,
+        authCode,
+        realAmount,
+        uid,
+        accountid,
+        dealerid,
         `remark`,
         `create_time`,
         `update_time`
