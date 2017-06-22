@@ -35,7 +35,7 @@
                 <el-option label="打款失败" value="5">打款失败</el-option>
               </el-select>
             </li>
-            <li class="same">
+            <!--<li class="same">
               <label>打款日期:</label>
               <el-date-picker
                 style="width: 193px"
@@ -46,7 +46,7 @@
                 placeholder="选择日期范围"
                 :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
               </el-date-picker>
-            </li>
+            </li>-->
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
@@ -186,20 +186,20 @@
         pageTotal: 0,
         addTotal: 0,
         //正式
-        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
+        queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
-         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',*/
+         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
 
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
-        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',*/
-        queryUrl:'http://192.168.1.133:8240/order/withdraw/listOrder',
+//        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+//        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
+//        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
+//        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',
+        /*queryUrl:'http://192.168.1.133:8240/order/withdraw/listOrder',
          excelUrl:'http://192.168.1.133:8240/order/withdraw/exportExcel',
          syncUrl:'http://192.168.1.133:8240/order/syncWithdrawOrder',
-         addUrl:'http://192.168.1.133:8240/order/withdraw/countAmount',
+         addUrl:'http://192.168.1.133:8240/order/withdraw/countAmount',*/
       }
     },
     created: function () {

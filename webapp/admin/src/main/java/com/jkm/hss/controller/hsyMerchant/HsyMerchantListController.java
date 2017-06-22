@@ -11,6 +11,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.Enum.EnumIsOpen;
+import com.jkm.hsy.user.Enum.EnumOpt;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.entity.*;
@@ -92,8 +93,8 @@ public class HsyMerchantListController extends BaseController {
         }
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        String downLoadHsyMerchant = downLoadHsyMerchant(hsyMerchantAuditRequest);
-        pageModel.setExt(downLoadHsyMerchant);
+//        String downLoadHsyMerchant = downLoadHsyMerchant(hsyMerchantAuditRequest);
+//        pageModel.setExt(downLoadHsyMerchant);
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
 
@@ -101,7 +102,9 @@ public class HsyMerchantListController extends BaseController {
      * 导出全部
      * @return
      */
-    private String downLoadHsyMerchant(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
+    @ResponseBody
+    @RequestMapping(value = "/downLoadHsyMerchant",method = RequestMethod.POST)
+    private CommonResponse downLoadHsyMerchant(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         final String fileZip = this.hsyMerchantAuditService.downLoadHsyMerchant(hsyMerchantAuditRequest, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -112,11 +115,15 @@ public class HsyMerchantListController extends BaseController {
         String nowDate = sdf.format(new Date());
         String fileName = "hss/"+  nowDate + "/" + "hsyMerchant.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+        JSONObject jsonObject = new JSONObject();
+        List list = new ArrayList();
         URL url = null;
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
+            jsonObject.put("url",url.getHost() + url.getFile());
+            list.add(jsonObject);
+            return CommonResponse.objectResponse(1, "success", list);
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }
@@ -320,11 +327,10 @@ public class HsyMerchantListController extends BaseController {
                     userWithdrawRateService.insert(userWithdrawRate);
                 }
             }
-
         }
-        boolean b = hsyCmbcService.merchantInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId());
+        boolean b = hsyCmbcService.merchantInfoModify(userTradeRateListRequest.get(0).getUserId(),userTradeRateListRequest.get(0).getShopId(),super.getAdminUser().getId(), EnumOpt.MODIFYRATES.getMsg());
         if (b==false){
-            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
+            return CommonResponse.simpleResponse(-1, "修改费率失败，请务必联系技术解决！！");
         }
         return CommonResponse.simpleResponse(1, "修改成功");
     }
@@ -382,7 +388,7 @@ public class HsyMerchantListController extends BaseController {
         this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
                 hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress(),hsyMerchantAuditRequest.getId());
 
-        boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId());
+        boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId(),super.getAdminUser().getId(), EnumOpt.MODIFYDEFAULTCARD.getMsg());
         if (b==false){
             return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
         }

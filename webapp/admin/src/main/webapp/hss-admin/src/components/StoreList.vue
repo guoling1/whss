@@ -156,6 +156,14 @@
                   <el-input style="width: 193px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>商户来源:</label>
+                  <el-select style="width: 193px" v-model="queryHsy.source" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value="">全部</el-option>
+                    <el-option label="直销" value="1">直销</el-option>
+                    <el-option label="渠道" value="2">渠道</el-option>
+                  </el-select>
+                </li>
+                <li class="same">
                   <label>报单员:</label>
                   <el-input style="width: 193px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
                 </li>
@@ -174,11 +182,13 @@
                   </el-select>
                 </li>
                 <li class="same">
-                  <div class="btn btn-primary" @click="search('hsy')">筛选</div>
-                  <div class="btn btn-primary" @click="reset('hsy')">重置</div>
+                  <label></label>
+                  <el-button type="primary" size="small" @click="search('hsy')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hsy')">重置</el-button>
                 </li>
-                <li class="same" style="float: right">
-                  <span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>
+                <li class="same rightBtn">
+                  <label></label>
+                  <el-button @click="_$power(onload,'boss_merchant_export')" type="primary"  :loading="isLoading" size="small">导出</el-button>
                 </li>
               </ul>
               <!--表格-->
@@ -262,6 +272,7 @@
     name: 'storeList',
     data(){
       return {
+        isLoading: false,
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
@@ -315,7 +326,8 @@
           endTime:'',
           auditTime:'',
           auditTime1:'',
-          realname:''
+          realname:'',
+          source:''
         },
         recordsHss: [],
         recordsHsy: [],
@@ -383,7 +395,8 @@
             endTime:'',
             auditTime:'',
             auditTime1:'',
-            realname:''
+            realname:'',
+            source:''
           }
         }
       },
@@ -465,12 +478,29 @@
           })
       },
       onload: function () {
+
         if(this.activeName == 'first'){
           this.$data.loadUrl = this.loadUrlHss;
+          this.isMask = true;
         }else if(this.activeName == 'second'){
-          this.$data.loadUrl = this.loadUrlHsy;
+          this.isLoading = true
+//          this.$data.loadUrl = this.loadUrlHsy;
+          this.$http.post('/admin/hsyMerchantList/downLoadHsyMerchant',this.queryHsy)
+            .then(res=>{
+            this.isLoading = false;
+            this.loadUrl = res.data[0].url;
+          this.isMask = true;
+          })
+          .catch(err=>{
+            this.isLoading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
         }
-         this.$data.isMask = true;
+
       },
       search(val){
         if(val == 'hss'){
@@ -622,9 +652,15 @@
   }
   .search{
     margin-bottom:0;
+    position: relative;
     label{
       display: block;
       margin-bottom: 0;
+    }
+    .rightBtn{
+      position: absolute;
+      bottom: 0;
+      right:0;
     }
   }
   .same{

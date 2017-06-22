@@ -152,8 +152,10 @@ public class HsyUserServiceImpl implements HsyUserService {
             String clientID=tokenList.get(0).getClientid();
             if(clientID!=null&&!clientID.trim().equals("")) {
                 List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
-                for (AppAuToken token : tokenFindList)
-                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+                for (AppAuToken token : tokenFindList) {
+                    if(!token.getAccessToken().equals(appParam.getAccessToken()))
+                        hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+                }
             }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
@@ -276,8 +278,10 @@ public class HsyUserServiceImpl implements HsyUserService {
             String clientID=tokenList.get(0).getClientid();
             if(clientID!=null&&!clientID.trim().equals("")) {
                 List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
-                for (AppAuToken token : tokenFindList)
-                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+                for (AppAuToken token : tokenFindList) {
+                    if(!token.getAccessToken().equals(appParam.getAccessToken()))
+                        hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+                }
             }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
@@ -471,8 +475,10 @@ public class HsyUserServiceImpl implements HsyUserService {
             String clientID=tokenList.get(0).getClientid();
             if(clientID!=null&&!clientID.trim().equals("")) {
                 List<AppAuToken> tokenFindList = hsyUserDao.findAppAuTokenByClientid(clientID);
-                for (AppAuToken token : tokenFindList)
-                    hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+                for (AppAuToken token : tokenFindList) {
+                    if(!token.getAccessToken().equals(appParam.getAccessToken()))
+                        hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
+                }
             }
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 

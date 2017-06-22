@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.NetLogDao">
+
+    <sql id="Base_Column_List">
+        id,	admin_id,user_id,channel_type_sign,opt,act,result,status,create_time,update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app_net_log(admin_id,user_id,channel_type_sign,opt,act,result,status)
+        VALUES(#{adminId},#{userId},#{channelTypeSign},#{opt},#{act},#{result},#{status})
+    </insert>
+
+    <select id="selectListByUserId" resultType="com.jkm.hsy.user.help.requestparam.NetLogResponse">
+        SELECT
+        (select username from tb_admin_user where id=n.admin_id) as adminName,
+        (SELECT channel_name from tb_basic_channel where channel_type_sign=n.channel_type_sign) as channelTypeSignName,
+         n.opt,
+         n.act,
+         n.result,
+         n.create_time
+        FROM app_net_log as n
+        WHERE n.user_id=#{userId} and n.status = 1 order by n.create_time desc limit #{offset},#{pageSize};
+    </select>
+
+    <select id="selectCountByUserId" resultType="java.lang.Long">
+        SELECT
+        count(1)
+        FROM app_net_log
+        WHERE user_id=#{userId} and status = 1;
+    </select>
+</mapper>

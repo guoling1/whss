@@ -47,7 +47,7 @@ export default {
 </style>-->
 <template lang="html">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="margin-left: 130px;" id="content">
+  <div class="content-wrapper"  id="content">
     <!-- Content Header (Page header) -->
     <!-- <section class="content-header">
       <h1>
