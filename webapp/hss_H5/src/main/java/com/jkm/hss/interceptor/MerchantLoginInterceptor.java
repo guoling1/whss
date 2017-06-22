@@ -2,14 +2,18 @@ package com.jkm.hss.interceptor;
 
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.entity.RequestUrlParam;
+import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.service.RequestUrlParamService;
+import com.jkm.hss.merchant.service.UserInfoService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,31 +30,33 @@ import java.net.URLEncoder;
 public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
     @Setter
     private OemInfoService oemInfoService;
+    @Setter
+    private RequestUrlParamService requestUrlParamService;
+    @Setter
+    private UserInfoService userInfoService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-        if ("".equals(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY))) {//get请求走获取openId
+        RequestUrlParam requestUrlParam = new RequestUrlParam();
+        requestUrlParam.setRequestUrl(encoderUrl);
+        requestUrlParamService.insert(requestUrlParam);
+        if ("".equals(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY))) {
             String oemNo = request.getParameter("oemNo");
             if(oemNo!=null&&!"".equals(oemNo)){
-                log.info("omeNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-                String url = "";
-                if(oemInfoOptional.isPresent()){
-                    log.info("有分公司");
-                    url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
-                }else{
-                    log.info("无分公司");
-                    url = WxConstants.WEIXIN_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-                }
+                Preconditions.checkState(oemInfoOptional.isPresent(), "参数不合法");
+                String url = WxConstants.WEIXIN_MERCHANT_USERINFO_START+oemInfoOptional.get().getAppId()+WxConstants.WEIXIN_MERCHANT_USERINFO_END+requestUrlParam.getUuid()+WxConstants.WEIXIN_USERINFO_REDIRECT;
                 response.sendRedirect(url);
                 return false;
             }else{
-                String url = WxConstants.WEIXIN_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                String url = WxConstants.WEIXIN_USERINFO+requestUrlParam.getUuid()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 response.sendRedirect(url);
                 return false;
             }
+        }else{
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY));
+            Preconditions.checkState(userInfoOptional.isPresent(), "商户不存在");
         }
-        log.info("有cookie直接跳走");
         return super.preHandle(request, response, handler);
     }
 }

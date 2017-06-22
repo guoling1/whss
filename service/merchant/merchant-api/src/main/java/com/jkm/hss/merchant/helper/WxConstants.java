@@ -30,6 +30,8 @@ public class WxConstants {
     public final static String WEIXIN_TICKET_USERINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN+"%2fwx%2ftoTicketSkip&response_type=code&scope=snsapi_base&state=1012#wechat_redirect";
     public final static String WEIXIN_MERCHANT_USERINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN+"%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state=";
     public final static String WEIXIN_DEALER_USERINFO="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+APP_ID+"&redirect_uri=http%3a%2f%2f"+DOMAIN+"%2fwx%2ftoDealerSkip&response_type=code&scope=snsapi_base&state=";
+    public final static String WEIXIN_MERCHANT_USERINFO_START = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=";
+    public final static String WEIXIN_MERCHANT_USERINFO_END = "&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fpage%2ftoSkip&response_type=code&scope=snsapi_base&state=";
     /**
      * 好收银
      */

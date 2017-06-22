@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.RequestUrlParamDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uuid">
+        INSERT INTO tb_request_url_param (uuid,request_url) values (UUID(),#{requestUrl});
+    </insert>
+    <select id="getRequestUrlByUuid" resultType="java.lang.String">
+        SELECT request_url as requestUrl
+        FROM tb_request_url_param
+        WHERE uuid=#{uuid};
+    </select>
+</mapper>

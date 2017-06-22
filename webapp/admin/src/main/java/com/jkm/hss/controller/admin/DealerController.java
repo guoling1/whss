@@ -103,11 +103,6 @@ public class DealerController extends BaseController {
 
     @Autowired
     private OSSClient ossClient;
-    @Autowired
-    private RevokeQrCodeRecordService revokeQrCodeRecordService;
-
-    @Autowired
-    private PartnerRuleSettingService partnerRuleSettingService;
 
     @Autowired
     private DealerProfitService dealerProfitService;
