@@ -270,7 +270,6 @@
     name: 'storeList',
     data(){
       return {
-        isLoad:false,
         isLoading: false,
         isMask: false,
         activeName: 'first', //选项卡选中第一个
@@ -482,18 +481,15 @@
           this.$data.loadUrl = this.loadUrlHss;
           this.isMask = true;
         }else if(this.activeName == 'second'){
-          this.isLoad = true
           this.isLoading = true
 //          this.$data.loadUrl = this.loadUrlHsy;
           this.$http.post('/admin/hsyMerchantList/downLoadHsyMerchant',this.queryHsy)
             .then(res=>{
-            this.isLoad = false;
             this.isLoading = false;
             this.loadUrl = res.data[0].url;
           this.isMask = true;
           })
           .catch(err=>{
-            this.isLoad = false;
             this.isLoading = false;
             this.$message({
               showClose: true,

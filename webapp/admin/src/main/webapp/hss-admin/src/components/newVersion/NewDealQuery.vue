@@ -5,7 +5,7 @@
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/details/deal" class="pull-right btn btn-primary" style="margin-left: 20px" target="_blank">切换旧版</router-link>
-          <span @click="_$power(onload,'boss_trade_export')" download="交易记录" class="btn btn-primary" style="float: right">导出</span>
+          <el-button @click="_$power(onload,'boss_trade_export')" download="交易记录" type="primary" :loading="isLoading" size="small" class="pull-right" style="background: #367fa9">导出</el-button>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -211,6 +211,7 @@
     name: 'deal',
     data(){
       return {
+        isLoading:false,
         pickerOptions: {
           onPick:function({ maxDate, minDate }){
             console.log({maxDate,minDate})
@@ -394,8 +395,23 @@
 
       },
       onload: function () {
-        this.loadUrl = this.loadUrl1;
-        this.isMask = true;
+//        this.loadUrl = this.loadUrl1;
+//        this.isMask = true;
+        this.isLoading = true
+        this.$http.post('/admin/queryOrder/downLoad',this.query)
+          .then(res=>{
+            this.isLoading = false;
+            this.loadUrl = res.data[0].url;
+            this.isMask = true;
+          })
+          .catch(err=>{
+            this.isLoading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       changeSettleStatus: function (row, column) {
         var val = row.settleStatus;
