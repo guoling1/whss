@@ -918,16 +918,16 @@
       },
       bankSubmit: function () {
         this.bankForm.id = this.id;
-        if(this.msg.isPublic==0){
-          if(!this.luhmCheck(this.bankForm.cardNo)){
-            this.$message({
-              showClose: true,
-              message: '银行卡号不正确',
-              type: 'error'
-            })
-            return
-          }
-        }
+//        if(this.msg.isPublic==0){
+//          if(!this.luhmCheck(this.bankForm.cardNo)){
+//            this.$message({
+//              showClose: true,
+//              message: '银行卡号不正确',
+//              type: 'error'
+//            })
+//            return
+//          }
+//        }
         this.$http.post('/admin/hsyMerchantList/changeSettlementCard',this.bankForm)
           .then(res =>{
             this.$message({
@@ -1405,16 +1405,16 @@
       },
       audit: function (event) {
         let reg=/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
-        if(this.msg.isPublic==0){
-          if(!this.luhmCheck(this.msg.cardNO)){
-            this.$message({
-              showClose: true,
-              message: '银行卡号不正确',
-              type: 'error'
-            })
-            return
-          }
-        }
+//        if(this.msg.isPublic==0){
+//          if(!this.luhmCheck(this.msg.cardNO)){
+//            this.$message({
+//              showClose: true,
+//              message: '银行卡号不正确',
+//              type: 'error'
+//            })
+//            return
+//          }
+//        }
         if(!reg.test(this.msg.idcardNO)){
           this.$message({
             showClose: true,

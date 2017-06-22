@@ -791,12 +791,6 @@
             type: 'error'
           })
           return;
-        }else if(!this.luhmCheck(this.msg.bankNo)){
-          this.$message({
-            showClose: true,
-            message: '银行卡号不正确',
-            type: 'error'
-          })
         }else{
           this.auditClick = true;
           this.$http.post('/admin/merchantInfoCheckRecord/record', {
