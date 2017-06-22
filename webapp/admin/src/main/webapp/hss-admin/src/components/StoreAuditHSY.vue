@@ -855,6 +855,7 @@
 
       },
       luhmCheck: function (bankno) {
+        bankno=bankno.toString()
         var lastNum=bankno.substr(bankno.length-1,1);//取出最后一位（与luhm进行比较）
 
         var first15Num=bankno.substr(0,bankno.length-1);//前15或18位
@@ -1405,7 +1406,7 @@
       audit: function (event) {
         let reg=/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
         if(this.msg.isPublic==0){
-          if(!this.luhmCheck(this.msg.bankNo)){
+          if(!this.luhmCheck(this.msg.cardNO)){
             this.$message({
               showClose: true,
               message: '银行卡号不正确',
