@@ -144,9 +144,17 @@ public class QrCodeController extends BaseController {
         //判断是否有权限
         Optional<Product> productOptional = productService.selectByType(distributeQrCodeRequest.getSysType());
         long productId = productOptional.get().getId();
-        List<DealerRatePolicy> dealerRatePolicyList = dealerRatePolicyService.selectByDealerId(super.getDealerId());
-        if(dealerRatePolicyList==null||dealerRatePolicyList.size()==0){
-            return CommonResponse.simpleResponse(-1, "您未开通此产品");
+
+        if((EnumQRCodeSysType.HSS.getId()).equals(distributeQrCodeRequest.getSysType())){
+            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(super.getDealerId(),productId);
+            if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
+                return CommonResponse.simpleResponse(-1, "您未开通此产品");
+            }
+        }else{
+            List<DealerRatePolicy> dealerRatePolicyList = dealerRatePolicyService.selectByDealerId(super.getDealerId());
+            if(dealerRatePolicyList==null||dealerRatePolicyList.size()==0){
+                return CommonResponse.simpleResponse(-1, "您未开通此产品");
+            }
         }
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
 
