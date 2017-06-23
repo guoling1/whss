@@ -275,4 +275,8 @@
             #{item}
         </foreach>
     </select>
+
+    <select id="selectByMerchantNoAndTime" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT * FROM tb_hsy_order WHERE merchant_no = #{merchantNo} AND create_time BETWEEN #{startTime} AND #{endTime}
+    </select>
 </mapper>

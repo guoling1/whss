@@ -292,4 +292,19 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         //return gson.toJson(hsyTradeListResponse);
         return JSON.toJSONString(hsyTradeListResponse);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantNo
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<HsyOrder> getByMerchantNoAndTime(final String merchantNo, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.selectByMerchantNoAndTime(merchantNo, startTime, endTime);
+    }
+
+
 }

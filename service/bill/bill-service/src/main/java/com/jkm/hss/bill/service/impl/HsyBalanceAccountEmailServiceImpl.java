@@ -2,7 +2,12 @@ package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
+import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.AppBizShopUserRole;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -23,6 +28,12 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
 
     @Autowired
     private HsyUserService hsyUserService;
+    @Autowired
+    private HsyShopDao hsyShopDao;
+    @Autowired
+    private HsyUserDao hsyUserDao;
+    @Autowired
+    private HSYOrderService hsyOrderService;
 
     /**
      * {@inheritDoc}
@@ -69,8 +80,10 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         if (!StringUtils.isEmpty(endTimeStr)) {
             endTime = DateFormatUtil.parse(endTimeStr, DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
-
-
+        final AppBizShopUserRole userRole = this.hsyShopDao.findsurByRoleTypeSid(shopId).get(0);
+        final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(userRole.getUid()).get(0);
+        this.hsyUserService.updateEmailById(email, appAuUser.getId());
+        final String merchantNo = appAuUser.getGlobalID();
 
         return null;
     }

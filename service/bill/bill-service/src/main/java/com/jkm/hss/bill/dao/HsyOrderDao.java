@@ -78,4 +78,14 @@ public interface HsyOrderDao {
                                           @Param("payChannelSigns") List<Integer> payChannelSigns,
                                           @Param("startTime") Date startTime,
                                           @Param("endTime") Date endTime);
+
+    /**
+     * 按商户编号和时间查询订单
+     *
+     * @param merchantNo
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<HsyOrder> selectByMerchantNoAndTime(@Param("merchantNo") String merchantNo, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

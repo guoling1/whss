@@ -34,6 +34,11 @@ public class HsyOrder extends BaseEntity {
     private String shopname;
 
     /**
+     * 法人id
+     */
+    private long uid;
+
+    /**
      * 商户在平台的唯一编号
      */
     private String merchantNo;
