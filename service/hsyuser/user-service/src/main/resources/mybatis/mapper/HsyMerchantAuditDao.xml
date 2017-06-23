@@ -21,10 +21,10 @@
         <if test="realname!=null and realname!=''">
             AND e.realname =#{realname}
         </if>
-        <if test="source!=null and source!=''">
+        <if test="source==1">
             AND c.DEALERID = 0 AND c.`DEALERID` = ""
         </if>
-        <if test="channel!=null and channel!=''">
+        <if test="source==2">
             AND c.DEALERID <![CDATA[ > ]]> 0
         </if>
         <if test="username!=null and username!=''">
@@ -95,10 +95,10 @@
         <if test="realname!=null and realname!=''">
             AND e.realname =#{realname}
         </if>
-        <if test="source!=null and source!=''">
+        <if test="source==1">
             AND c.DEALERID = 0 AND c.`DEALERID` = ""
         </if>
-        <if test="channel!=null and channel!=''">
+        <if test="source==2">
             AND c.DEALERID <![CDATA[ > ]]> 0
         </if>
         <if test="username!=null and username!=''">
@@ -160,10 +160,10 @@
         <if test="realname!=null and realname!=''">
             AND e.realname =#{realname}
         </if>
-        <if test="source!=null and source!=''">
+        <if test="source==1">
             AND c.DEALERID = 0 AND c.`DEALERID` = ""
         </if>
-        <if test="channel!=null and channel!=''">
+        <if test="source==2">
             AND c.DEALERID <![CDATA[ > ]]> 0
         </if>
         <if test="username!=null and username!=''">

@@ -88,7 +88,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             paymentSdkDaiFuRequest.setOrderNo(playMoneyOrder.getOrderNo());
             paymentSdkDaiFuRequest.setTotalAmount(playMoneyOrder.getTradeAmount().subtract(playMoneyOrder.getPoundage()).toPlainString());
             // TODO
-            paymentSdkDaiFuRequest.setTradeType("D0");
+            paymentSdkDaiFuRequest.setTradeType("T1");
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile(DealerSupport.decryptMobile(dealer.getId() , dealer.getBankReserveMobile()));
             paymentSdkDaiFuRequest.setBankName(dealer.getBankName());

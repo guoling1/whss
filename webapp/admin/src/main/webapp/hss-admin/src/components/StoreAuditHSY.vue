@@ -378,7 +378,12 @@
             <el-table :data="$netLogList" border style="width: 100%;margin: 15px 0;">
               <el-table-column prop="adminName" label="操作人" ></el-table-column>
               <el-table-column prop="opt" label="操作" ></el-table-column>
-              <el-table-column prop="channelTypeSignName" label="通道名称" ></el-table-column>
+              <el-table-column prop="channelTypeSignName" label="通道名称" >
+                <template scope="scope">
+                  <span v-if="scope.row.channelTypeSignName=='收银家微信T1'">收银家</span>
+                  <span v-if="scope.row.channelTypeSignName!='收银家微信T1'">{{scope.row.channelTypeSignName}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="act" label="动作"></el-table-column>
               <el-table-column prop="result" label="结果" ></el-table-column>
               <el-table-column prop="createTime" label="操作时间">
@@ -849,8 +854,80 @@
       marryBank: function () {
 
       },
+      luhmCheck: function (bankno) {
+        bankno=bankno.toString()
+        var lastNum=bankno.substr(bankno.length-1,1);//取出最后一位（与luhm进行比较）
+
+        var first15Num=bankno.substr(0,bankno.length-1);//前15或18位
+        var newArr=new Array();
+        for(var i=first15Num.length-1;i>-1;i--){    //前15或18位倒序存进数组
+          newArr.push(first15Num.substr(i,1));
+        }
+        var arrJiShu=new Array();  //奇数位*2的积 <9
+        var arrJiShu2=new Array(); //奇数位*2的积 >9
+
+        var arrOuShu=new Array();  //偶数位数组
+        for(var j=0;j<newArr.length;j++){
+          if((j+1)%2==1){//奇数位
+            if(parseInt(newArr[j])*2<9)
+              arrJiShu.push(parseInt(newArr[j])*2);
+            else
+              arrJiShu2.push(parseInt(newArr[j])*2);
+          }
+          else //偶数位
+            arrOuShu.push(newArr[j]);
+        }
+
+        var jishu_child1=new Array();//奇数位*2 >9 的分割之后的数组个位数
+        var jishu_child2=new Array();//奇数位*2 >9 的分割之后的数组十位数
+        for(var h=0;h<arrJiShu2.length;h++){
+          jishu_child1.push(parseInt(arrJiShu2[h])%10);
+          jishu_child2.push(parseInt(arrJiShu2[h])/10);
+        }
+
+        var sumJiShu=0; //奇数位*2 < 9 的数组之和
+        var sumOuShu=0; //偶数位数组之和
+        var sumJiShuChild1=0; //奇数位*2 >9 的分割之后的数组个位数之和
+        var sumJiShuChild2=0; //奇数位*2 >9 的分割之后的数组十位数之和
+        var sumTotal=0;
+        for(var m=0;m<arrJiShu.length;m++){
+          sumJiShu=sumJiShu+parseInt(arrJiShu[m]);
+        }
+
+        for(var n=0;n<arrOuShu.length;n++){
+          sumOuShu=sumOuShu+parseInt(arrOuShu[n]);
+        }
+
+        for(var p=0;p<jishu_child1.length;p++){
+          sumJiShuChild1=sumJiShuChild1+parseInt(jishu_child1[p]);
+          sumJiShuChild2=sumJiShuChild2+parseInt(jishu_child2[p]);
+        }
+        //计算总和
+        sumTotal=parseInt(sumJiShu)+parseInt(sumOuShu)+parseInt(sumJiShuChild1)+parseInt(sumJiShuChild2);
+
+        //计算Luhm值
+        var k= parseInt(sumTotal)%10==0?10:parseInt(sumTotal)%10;
+        var luhm= 10-k;
+
+        if(lastNum==luhm && lastNum.length != 0){
+          return true;
+        }
+        else{
+          return false;
+        }
+      },
       bankSubmit: function () {
         this.bankForm.id = this.id;
+//        if(this.msg.isPublic==0){
+//          if(!this.luhmCheck(this.bankForm.cardNo)){
+//            this.$message({
+//              showClose: true,
+//              message: '银行卡号不正确',
+//              type: 'error'
+//            })
+//            return
+//          }
+//        }
         this.$http.post('/admin/hsyMerchantList/changeSettlementCard',this.bankForm)
           .then(res =>{
             this.$message({
@@ -1327,6 +1404,17 @@
         })
       },
       audit: function (event) {
+        let reg=/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
+//        if(this.msg.isPublic==0){
+//          if(!this.luhmCheck(this.msg.cardNO)){
+//            this.$message({
+//              showClose: true,
+//              message: '银行卡号不正确',
+//              type: 'error'
+//            })
+//            return
+//          }
+//        }
         this.auditClick = true;
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.id,
@@ -1348,6 +1436,16 @@
           })
           this.auditClick = false;
         })
+        /*if(!reg.test(this.msg.idcardNO)){
+          this.$message({
+            showClose: true,
+            message: '身份证号不正确',
+            type: 'error'
+          })
+          return;
+        }else{
+
+        }*/
       },
       unAudit: function () {
         this.auditClick = true;

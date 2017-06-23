@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -77,8 +78,8 @@ public class OrderTradeController extends BaseController{
         int count = orderService.selectOrderListCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
-        String downLoadExcel = downLoad(req);
-        pageModel.setExt(downLoadExcel);
+//        String downLoadExcel = downLoad(req);
+//        pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
@@ -146,7 +147,9 @@ public class OrderTradeController extends BaseController{
      * 导出全部
      * @return
      */
-    private String downLoad(@RequestBody OrderTradeRequest req){
+    @ResponseBody
+    @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
+    private CommonResponse downLoad(@RequestBody OrderTradeRequest req){
         final String fileZip = this.orderService.downloadExcel(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -158,10 +161,14 @@ public class OrderTradeController extends BaseController{
         String fileName = "hss/"+  nowDate + "/" + "trade.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
         URL url = null;
+        JSONObject jsonObject = new JSONObject();
+        List list = new ArrayList();
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
+            jsonObject.put("url",url.getHost() + url.getFile());
+            list.add(jsonObject);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", list);
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }

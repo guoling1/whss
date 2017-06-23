@@ -285,5 +285,35 @@ public class MerchantTradeResponse {
      */
     private String settleType;
 
+    /**
+     * 银行名字
+     */
+    private String bankName;
+
+    /**
+     * 交易卡类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumBankType}
+     */
+    private int tradeCardType;
+
+    /**
+     * 交易卡号
+     */
+    private String tradeCardNo;
+
+    /**
+     * 退款状态
+     *
+     * {@link com.jkm.hss.bill.enums.EnumOrderRefundStatus}
+     */
+    private int refundStatus;
+
+    /**
+     * 退款金额
+     */
+    private BigDecimal refundAmount;
+
+
 
 }
