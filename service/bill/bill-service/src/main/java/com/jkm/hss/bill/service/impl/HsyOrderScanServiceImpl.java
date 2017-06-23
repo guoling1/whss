@@ -182,6 +182,7 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
 
         hsyOrder.setOrderid(payResponse.getTradeOrderId());
         hsyOrder.setOrderno(payResponse.getTradeOrderNo());
+        hsyOrder.setValidationcode(hsyOrder.getOrderno().substring(hsyOrder.getOrderno().length()-4));
         hsyOrderDao.update(hsyOrder);
 
         HsyOrder hsyOrderReturn=new HsyOrder();
