@@ -19,7 +19,7 @@ public class RequestUrlParamServiceImpl implements RequestUrlParamService{
     }
 
     @Override
-    public String getRequestUrlByUuid(String uuid) {
-        return requestUrlParamDao.getRequestUrlByUuid(uuid);
+    public String getRequestUrlById(Long id) {
+        return requestUrlParamDao.getRequestUrlById(id);
     }
 }

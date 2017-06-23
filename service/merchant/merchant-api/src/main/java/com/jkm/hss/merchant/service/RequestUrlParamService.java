@@ -7,5 +7,5 @@ import com.jkm.hss.merchant.entity.RequestUrlParam;
  */
 public interface RequestUrlParamService {
     void insert(RequestUrlParam requestUrlParam);
-    String getRequestUrlByUuid(String uuid);
+    String getRequestUrlById(Long id);
 }

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RequestUrlParamDao {
-    String insert(RequestUrlParam requestUrlParam);
-    String getRequestUrlByUuid(@Param("uuid") String uuid);
+    void insert(RequestUrlParam requestUrlParam);
+    String getRequestUrlById(@Param("id") Long id);
 }

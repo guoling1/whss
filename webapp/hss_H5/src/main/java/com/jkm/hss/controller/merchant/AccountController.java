@@ -94,7 +94,6 @@ public class AccountController extends BaseController{
      */
     @RequestMapping(value = "/toWithdraw", method = RequestMethod.GET)
     public String toWithdrawJsp(final HttpServletRequest request, final HttpServletResponse response,Model model) throws UnsupportedEncodingException {
-        boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
         if(oemNo!=null&&!"".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
@@ -103,90 +102,7 @@ public class AccountController extends BaseController{
             model.addAttribute("oemName","好收收");
         }
         model.addAttribute("oemNo",oemNo);
-
-        if(!super.isLogin(request)){
-            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-            if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
-                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-                if(oemInfoOptional.isPresent()){
-                    log.info("有分公司");
-                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
-                }else{
-                    model.addAttribute("message","分公司不存在");
-                    return "/message";
-                }
-            }else{//总公司
-                return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-            }
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-
-                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
-                        if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
-                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
-                            if(oemInfoOptional.isPresent()){
-                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
-                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                                }
-                            }else{
-                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
-                                model.addAttribute("message","分公司尚未配置");
-                                return "redirect:/sqb/message";
-                            }
-                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
-                        if(result.get().getOemId()>0){//分公司商户
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }
-
-
-
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-
-                        url = "/withdraw";
-                    }
-                }else{
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
-        }
-
+        return "/withdraw";
     }
 
     /**
@@ -195,7 +111,6 @@ public class AccountController extends BaseController{
      */
     @RequestMapping(value = "/toHssAccount", method = RequestMethod.GET)
     public String toHssAccount(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws UnsupportedEncodingException {
-        boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
         if(oemNo!=null&&!"".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
@@ -204,88 +119,7 @@ public class AccountController extends BaseController{
             model.addAttribute("oemName","好收收");
         }
         model.addAttribute("oemNo",oemNo);
-        if(!super.isLogin(request)){
-            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-            if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
-                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-                if(oemInfoOptional.isPresent()){
-                    log.info("有分公司");
-                    return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
-                }else{
-                    model.addAttribute("message","分公司不存在");
-                    return "/message";
-                }
-            }else{//总公司
-                return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-            }
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-
-                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
-                        if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
-                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
-                            if(oemInfoOptional.isPresent()){
-                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
-                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                                }
-                            }else{
-                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
-                                model.addAttribute("message","分公司尚未配置");
-                                return "redirect:/sqb/message";
-                            }
-                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
-                        if(result.get().getOemId()>0){//分公司商户
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
-                    }
-
-
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-
-                        url = "/hssAccount";
-                    }
-                }else{
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
-        }
-
+        return "/hssAccount";
     }
 
     /**

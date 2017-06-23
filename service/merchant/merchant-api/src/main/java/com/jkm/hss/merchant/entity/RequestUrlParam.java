@@ -10,7 +10,7 @@ public class RequestUrlParam {
     /**
      * 唯一标示
      */
-    private String uuid;
+    private String id;
     /**
      * 请求地址
      */

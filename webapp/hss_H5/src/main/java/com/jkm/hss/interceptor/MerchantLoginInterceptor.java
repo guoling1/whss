@@ -12,6 +12,8 @@ import com.jkm.hss.merchant.entity.RequestUrlParam;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.service.MerchantInfoCheckRecordService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.RequestUrlParamService;
 import com.jkm.hss.merchant.service.UserInfoService;
@@ -21,7 +23,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * @desc:
@@ -39,11 +41,13 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
     private UserInfoService userInfoService;
     @Setter
     private MerchantInfoService merchantInfoService;
+    @Setter
+    private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
+        String tempUrl = request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
         RequestUrlParam requestUrlParam = new RequestUrlParam();
-        requestUrlParam.setRequestUrl(encoderUrl);
+        requestUrlParam.setRequestUrl(tempUrl);
         requestUrlParamService.insert(requestUrlParam);
         String oemNo = request.getParameter("oemNo");
         request.setAttribute("oemNo",oemNo);
@@ -51,11 +55,11 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
             if(oemNo!=null&&!"".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 Preconditions.checkState(oemInfoOptional.isPresent(), "参数不合法");
-                String url = WxConstants.WEIXIN_MERCHANT_USERINFO_START+oemInfoOptional.get().getAppId()+WxConstants.WEIXIN_MERCHANT_USERINFO_END+requestUrlParam.getUuid()+WxConstants.WEIXIN_USERINFO_REDIRECT;
+                String url = WxConstants.WEIXIN_MERCHANT_USERINFO_START+oemInfoOptional.get().getAppId()+WxConstants.WEIXIN_MERCHANT_USERINFO_END+requestUrlParam.getId()+WxConstants.WEIXIN_USERINFO_REDIRECT;
                 response.sendRedirect(url);
                 return false;
             }else{
-                String url = WxConstants.WEIXIN_USERINFO+requestUrlParam.getUuid()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                String url = WxConstants.WEIXIN_USERINFO+requestUrlParam.getId()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 response.sendRedirect(url);
                 return false;
             }
@@ -90,18 +94,54 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     response.sendRedirect("/sqb/reg");
                     return false;
                 }else if(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                    response.sendRedirect("/sqb/addInfo");
+                    String appId = WxConstants.APP_ID;
+                    String appSecret = WxConstants.APP_KEY;
+                    if(oemNo!=null&&!"".equals(oemNo)){
+                        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                        appId=oemInfoOptional.get().getAppId();
+                        appSecret = oemInfoOptional.get().getAppSecret();
+                        request.setAttribute("oemName",oemInfoOptional.get().getBrandName());
+                    }else{
+                        request.setAttribute("oemName","好收收");
+                    }
+                    Map<String, String> res = WxPubUtil.sign(tempUrl,appId,appSecret);
+                    request.setAttribute("config",res);
+                    request.setAttribute("markCode",merchantInfoOptional.get().getMarkCode());
+                    request.getRequestDispatcher("/WEB-INF/jsp/material.jsp").forward(request, response);
                     return false;
                 }else if(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                    response.sendRedirect("/sqb/addNext");
+                    String appId = WxConstants.APP_ID;
+                    String appSecret = WxConstants.APP_KEY;
+                    if(oemNo!=null&&!"".equals(oemNo)){
+                        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                        appId=oemInfoOptional.get().getAppId();
+                        appSecret = oemInfoOptional.get().getAppSecret();
+                        request.setAttribute("oemName",oemInfoOptional.get().getBrandName());
+                    }else{
+                        request.setAttribute("oemName","好收收");
+                    }
+                    Map<String, String> res = WxPubUtil.sign(tempUrl,appId,appSecret);
+                    request.setAttribute("config",res);
+                    request.getRequestDispatcher("/WEB-INF/jsp/upload.jsp").forward(request, response);
                     return false;
                 }else if(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
                         merchantInfoOptional.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
                         merchantInfoOptional.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                    response.sendRedirect("/sqb/prompt");
-                    return false;
-                }else if(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.PASSED.getId()||merchantInfoOptional.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                    response.sendRedirect("/sqb/wallet");
+                    if(oemNo!=null&&!"".equals(oemNo)){
+                        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                        request.setAttribute("oemName",oemInfoOptional.get().getBrandName());
+                    }else{
+                        request.setAttribute("oemName","好收收");
+                    }
+                    String res = merchantInfoCheckRecordService.selectById(userInfoOptional.get().getMerchantId());
+                    if (merchantInfoOptional.get().getStatus()==EnumMerchantStatus.UNPASSED.getId()){
+                        request.setAttribute("res",res);
+                        request.setAttribute("id",merchantInfoOptional.get().getId());
+                        request.getRequestDispatcher("/WEB-INF/jsp/prompt.jsp").forward(request, response);
+                    }if (merchantInfoOptional.get().getStatus()==EnumMerchantStatus.REVIEW.getId()){
+                        request.setAttribute("res","您的资料已经提交，我们将在一个工作日内处理");
+                        request.getRequestDispatcher("/WEB-INF/jsp/prompt1.jsp").forward(request, response);
+                    }
                     return false;
                 }
             }else{

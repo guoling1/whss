@@ -7,6 +7,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.RequestUrlParamService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import java.util.Map;
 
 /**
@@ -50,7 +52,7 @@ public class MerchantPageController extends BaseController {
                 state = arr[i].split("=")[1];
             }
         }
-        String url = requestUrlParamService.getRequestUrlByUuid(state);
+        String url = requestUrlParamService.getRequestUrlById(Long.parseLong(state));
         Preconditions.checkState(url!=null&&!"".equals(url), "微信授权失败");
         String[] temArr = url.split("[?]");
         String oemNo = "";
@@ -58,16 +60,24 @@ public class MerchantPageController extends BaseController {
             String[] temArr1 = temArr[1].split("&");
             for(int i =0;i<temArr1.length;i++){
                 if("oemNo".equals(temArr1[i].split("=")[0])){
-                    oemNo = temArr1[i].split("=")[1];
+                    String[] temArr2 = temArr1[i].split("=");
+                    if(temArr2.length==2){
+                        oemNo = temArr1[i].split("=")[1];
+                    }
                 }
             }
         }
         Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司不存在");
-        Map<String,String> ret = WxPubUtil.getOpenid(code,oemInfoOptional.get().getAppId(),oemInfoOptional.get().getAppSecret());
+        Map<String,String> ret = null;
+        if(oemInfoOptional.isPresent()){
+            ret = WxPubUtil.getOpenid(code,oemInfoOptional.get().getAppId(),oemInfoOptional.get().getAppSecret());
+        }else{
+            ret = WxPubUtil.getOpenid(code, WxConstants.APP_ID,WxConstants.APP_KEY);
+        }
         Preconditions.checkState(ret!=null, "微信授权失败");
         CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
                 ApplicationConsts.getApplicationConfig().domain());
-        return "redirect:"+state;
+        System.out.println("cookie="+CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY));
+        return "redirect:"+url;
     }
 }

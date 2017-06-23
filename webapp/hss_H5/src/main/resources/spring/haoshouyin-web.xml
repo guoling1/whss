@@ -76,17 +76,33 @@
             </bean>
         </mvc:interceptor>
 
-        <!--<mvc:interceptor>-->
-            <!--<mvc:mapping path="/sqb/addInfo"/>-->
-            <!--<mvc:mapping path="/sqb/addNext"/>-->
-            <!--<mvc:mapping path="/sqb/prompt"/>-->
-            <!--<mvc:mapping path="/sqb/collection"/>-->
-            <!--<bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">-->
-                <!--<property name="oemInfoService" ref="oemInfoServiceImpl"/>-->
-                <!--<property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>-->
-                <!--<property name="userInfoService" ref="userInfoServiceImpl"/>-->
-                <!--<property name="merchantInfoService" ref="merchantInfoServiceImpl"/>-->
-            <!--</bean>-->
-        <!--</mvc:interceptor>-->
+        <mvc:interceptor>
+            <mvc:mapping path="/sqb/addInfo"/>
+            <mvc:mapping path="/sqb/addNext"/>
+            <mvc:mapping path="/sqb/unFinishedPrompt"/>
+            <mvc:mapping path="/sqb/prompt"/>
+            <mvc:mapping path="/sqb/follow"/>
+            <mvc:mapping path="/sqb/charge"/>
+            <mvc:mapping path="/sqb/collection"/>
+            <mvc:mapping path="/sqb/tradeRecord"/>
+            <mvc:mapping path="/sqb/bank"/>
+            <mvc:mapping path="/sqb/creditCardAuthen"/>
+            <mvc:mapping path="/sqb/myRecommend"/>
+            <mvc:mapping path="/sqb/upgradeMax"/>
+            <mvc:mapping path="/sqb/upgradeMin"/>
+            <mvc:mapping path="/sqb/toUpgrade"/>
+            <mvc:mapping path="/sqb/authentication"/>
+            <mvc:mapping path="/trade/firstUnionPayPage"/>
+            <mvc:mapping path="/trade/againUnionPayPage"/>
+            <mvc:mapping path="/trade/toWithdraw"/>
+            <mvc:mapping path="/trade/toHssAccount"/>
+            <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
+                <property name="oemInfoService" ref="oemInfoServiceImpl"/>
+                <property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>
+                <property name="userInfoService" ref="userInfoServiceImpl"/>
+                <property name="merchantInfoService" ref="merchantInfoServiceImpl"/>
+                <property name="merchantInfoCheckRecordService" ref="merchantInfoCheckRecordServiceImpl"/>
+            </bean>
+        </mvc:interceptor>
     </mvc:interceptors>
 </beans>

@@ -222,13 +222,9 @@ public class WxPubController extends BaseController {
         }
         String[] arr = getQueryString.split("&");
         String code="";
-        String state="";
         for(int i =0;i<arr.length;i++){
             if("code".equals(arr[i].split("=")[0])){
                 code = arr[i].split("=")[1];
-            }
-            if("state".equals(arr[i].split("=")[0])){
-                state = arr[i].split("=")[1];
             }
         }
         Map<String,String> ret = WxPubUtil.getOpenid(code);
