@@ -1,10 +1,10 @@
 package com.jkm.hss.schedule;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.notifier.entity.ConsumeMsgSplitProfitRecord;
-import com.jkm.hss.notifier.enums.EnumConsumeMsgSplitProfitRecordStatus;
 import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,8 @@ public class Task {
 
     @Autowired
     private SendMqMsgService sendMqMsgService;
+    @Autowired
+    private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
 
 
     /**
@@ -74,4 +76,24 @@ public class Task {
             }
         }
     }
+
+    /**
+     * 周一发送上周对账邮件
+     */
+//    @Scheduled(cron = "0 0 18 ? * MON")
+    @Scheduled(cron = "0 16 16 * * ?")
+    public void sendWeekEmail() {
+        log.info("定时任务--处理每周发送邮件");
+        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
+    }
+
+    /**
+     * 1号发送上月对账邮件
+     */
+    @Scheduled(cron = "0 0 18 1 * ?")
+    public void sendMonthEmail() {
+        log.info("定时任务--处理每周发送邮件");
+        this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
+    }
+
 }

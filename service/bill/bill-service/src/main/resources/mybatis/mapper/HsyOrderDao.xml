@@ -277,6 +277,9 @@
     </select>
 
     <select id="selectByMerchantNoAndTime" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT * FROM tb_hsy_order WHERE merchant_no = #{merchantNo} AND create_time BETWEEN #{startTime} AND #{endTime}
+        SELECT * FROM tb_hsy_order
+        WHERE merchant_no = #{merchantNo}
+        AND create_time BETWEEN #{startTime} AND #{endTime}
+        AND orderstatus in (2, 5, 6)
     </select>
 </mapper>

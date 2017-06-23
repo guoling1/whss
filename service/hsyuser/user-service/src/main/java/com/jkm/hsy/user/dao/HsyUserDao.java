@@ -35,6 +35,13 @@ public interface HsyUserDao {
     public AppBizShopUserRole findAppAuUserRole(AppAuUser appAuUser);
 
     /**
+     * 查找所有法人
+     *
+     * @return
+     */
+    List<AppAuUser> selectAllCorporationUser();
+
+    /**
      * 更新email
      *
      * @param email

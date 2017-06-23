@@ -18,6 +18,16 @@ public interface HsyBalanceAccountEmailService {
     String updateAutoSendBalanceAccountEmail(String paramData, AppParam appParam) throws ApiHandleException;
 
     /**
+     * 周账单发送
+     */
+    void sendWeekBalanceAccountEmail();
+
+    /**
+     * 周账单发送
+     */
+    void sendMonthBalanceAccountEmail();
+
+    /**
      * 发送对账邮件
      *
      * @param paramData

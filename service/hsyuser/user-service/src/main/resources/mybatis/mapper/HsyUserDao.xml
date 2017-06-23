@@ -26,7 +26,7 @@
 
     <select id="findAppAuUserByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select distinct
-        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.EMAIL,
         (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
         user.ISPROTOCOLSEEN,user.ISOPEND0,
         user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
@@ -257,5 +257,9 @@ limit 1
     </select>
     <select id="findAppAuUserRole" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
         select * from app_biz_shop_user_role where SID=#{sid} AND  UID=#{parentID} limit 1
+    </select>
+
+    <select id="selectAllCorporationUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        SELECT REALNAME, EMAIL, globalID FROM app_au_user WHERE PARENTID = 0;
     </select>
 </mapper>
