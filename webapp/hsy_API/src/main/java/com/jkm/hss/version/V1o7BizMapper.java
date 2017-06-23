@@ -94,7 +94,7 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001057", new String[]{"hsyOrderScanService","insertHsyOrder"});
         /**更新订单并支付*/
         bizMapper.put("HSY001058", new String[]{"hsyOrderScanService","updateHsyOrderPay"});
-        /**更新订单并支付*/
+        /**查找订单信息*/
         bizMapper.put("HSY001059", new String[]{"hsyOrderScanService","findHsyOrderRelateInfo"});
 
     }

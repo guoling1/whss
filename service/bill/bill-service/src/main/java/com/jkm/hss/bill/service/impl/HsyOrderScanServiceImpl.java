@@ -195,7 +195,7 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         return gson.toJson(map);
     }
 
-    /**HSY001059 更新订单并支付*/
+    /**HSY001059 查找订单信息*/
     public String findHsyOrderRelateInfo(String dataParam, AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
