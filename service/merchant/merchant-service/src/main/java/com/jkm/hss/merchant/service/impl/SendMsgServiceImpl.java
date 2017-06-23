@@ -89,7 +89,7 @@ public class SendMsgServiceImpl implements SendMsgService {
         }
 
     @Override
-    public void refundSendMessage(final String orderNo, final BigDecimal refundAmount, final String touser) {
+    public void refundSendMessage(final String shopName, final String payType, final String orderNo, final BigDecimal refundAmount, final String touser) {
         final Map<String, String> ret = new HashMap<String, String>();
         final String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken(WxConstants.APP_HSY_ID, WxConstants.APP_HSY_SECRET);
         final HttpClient client = new DefaultHttpClient();
@@ -103,16 +103,22 @@ public class SendMsgServiceImpl implements SendMsgService {
             first.put("value","钱包++提醒您，您有一笔退款成功，请留意。");
             jo.put("first",first);
             final JSONObject keyword1 =new JSONObject();
-            keyword1.put("value", orderNo);
+            keyword1.put("value", shopName);
             jo.put("keyword1", keyword1);
             final JSONObject keyword2 =new JSONObject();
-            keyword2.put("value", "￥" + refundAmount.toPlainString());
+            keyword2.put("value", orderNo);
             jo.put("keyword2", keyword2);
+            final JSONObject keyword3 =new JSONObject();
+            keyword3.put("value", payType);
+            jo.put("keyword3", keyword3);
+            final JSONObject keyword4 =new JSONObject();
+            keyword4.put("value", "￥" + refundAmount.toPlainString());
+            jo.put("keyword4", keyword4);
             final  JSONObject remark = new JSONObject();
             remark.put("value","更多精彩福利，尽请关注~");
             jo.put("remark",remark);
             jsonParam.put("touser",touser);
-            jsonParam.put("template_id","Pr1819gVEMAKcr0bB2wJXCo_q2gaW3pt1hXzRpbPY1I");
+            jsonParam.put("template_id","qz0Bn4Ri4HjQihoa5AXL0vZSJoehGB44LEp1STOR8Uo");
             jsonParam.put("data",jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             final HttpResponse res = client.execute(method);

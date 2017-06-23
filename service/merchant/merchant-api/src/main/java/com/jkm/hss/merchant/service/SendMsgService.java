@@ -20,7 +20,7 @@ public interface SendMsgService {
      * @param refundAmount
      * @param touser
      */
-    void refundSendMessage(String orderNo, BigDecimal refundAmount, String touser);
+    void refundSendMessage(String shopName, String payType, String orderNo, BigDecimal refundAmount, String touser);
 
     /**
      * 提现成功推送
