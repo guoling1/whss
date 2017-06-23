@@ -12,7 +12,6 @@ import com.jkm.hss.merchant.entity.RequestUrlParam;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.WxConstants;
-import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.RequestUrlParamService;
 import com.jkm.hss.merchant.service.UserInfoService;
@@ -23,7 +22,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
-import java.util.Map;
 
 /**
  * @desc:
@@ -48,6 +46,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
         requestUrlParam.setRequestUrl(encoderUrl);
         requestUrlParamService.insert(requestUrlParam);
         String oemNo = request.getParameter("oemNo");
+        request.setAttribute("oemNo",oemNo);
         if ("".equals(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY))) {
             if(oemNo!=null&&!"".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);

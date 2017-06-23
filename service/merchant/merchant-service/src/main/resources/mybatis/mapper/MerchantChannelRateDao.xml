@@ -27,10 +27,10 @@
         distinct(merchant_id)
         FROM tb_merchant_channel_rate
         WHERE
-        enter_net = #{entId}
+        enter_net = #{entId} and status=0
     </select>
     <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
-        SELECT * FROM tb_merchant_channel_rate WHERE merchant_id = #{merchantId} and status=0
+        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_channel_rate WHERE merchant_id = #{merchantId} and status=0
     </select>
 
     <!--费率初始化-->
@@ -98,7 +98,7 @@
         distinct(merchant_id)
         FROM tb_merchant_channel_rate
         WHERE
-        enter_net = #{entId} AND remarks like '%异常%'
+        enter_net = #{entId} AND remarks like '%异常%' and status=0
     </select>
     <update id="toUpgrade">
         UPDATE tb_merchant_channel_rate

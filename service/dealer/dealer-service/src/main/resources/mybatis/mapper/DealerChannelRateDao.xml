@@ -77,7 +77,7 @@
         FROM
         tb_product
         WHERE
-        type = #{sysType})
+        type = #{sysType}) AND status = 2
     </select>
 
     <update id="updateSecondDealerRate">
@@ -88,6 +88,6 @@
         WHERE id = #{id}
     </update>
     <select id="initDealerData" resultType="java.lang.Long">
-        SELECT DISTINCT(dealer_id) as dealerId  FROM tb_dealer_channel_rate where product_id=6
+        SELECT DISTINCT(dealer_id) as dealerId  FROM tb_dealer_channel_rate where product_id=6 AND status = 2
     </select>
 </mapper>
