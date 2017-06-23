@@ -1403,8 +1403,67 @@
           })
         })
       },
+      test:function(num) {
+        num = num.toString();
+        num = num.toUpperCase();
+        //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
+        if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
+          return false;
+        }
+        //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+        //下面分别分析出生日期和校验位
+        var len, re;
+        len = num.length;
+        if (len == 15) {
+
+          re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
+          var arrSplit = num.match(re);
+
+          //检查生日日期是否正确
+          var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
+          var bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) && (dtmBirth.getDate() == Number(arrSplit[4]));
+
+          if (!bGoodDay) {
+            return false;
+          } else {
+            return 1;
+          }
+        }
+
+        if (len == 18) {
+
+          re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
+          var arrSplit = num.match(re);
+
+          //检查生日日期是否正确
+          var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
+          var bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) && (dtmBirth.getDate() == Number(arrSplit[4]));
+
+          if (!bGoodDay) {
+            return false;
+          } else {
+            //检验18位身份证的校验码是否正确。
+            //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+            var valnum;
+            var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+            var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+            var nTemp = 0, i;
+            for(i = 0; i < 17; i ++) {
+              nTemp += num.substr(i, 1) * arrInt[i];
+            }
+
+            valnum = arrCh[nTemp % 11];
+            if (valnum != num.substr(17, 1)) {
+              return false;
+            }
+
+            return true;
+          }
+        }
+
+        return false;
+      },
       audit: function (event) {
-        let reg=/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
 //        if(this.msg.isPublic==0){
 //          if(!this.luhmCheck(this.msg.cardNO)){
 //            this.$message({
@@ -1415,28 +1474,13 @@
 //            return
 //          }
 //        }
-        this.auditClick = true;
-        this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
-          id: this.id,
-          uid: this.msg.uid,
-          name: this.msg.name,
-          checkErrorInfo: this.reason,
-          cellphone: this.msg.cellphone,
-          branchCode: this.msg.branchCode
-        }).then(function (res) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '操作成功'
-          })
-          this.auditClick = false;
-        }, function (err) {
+        if(this.msg.idcardNO==''||this.msg.idcardNO==null){
           this.$message({
             showClose: true,
-            message: err.statusMessage,
+            message: '身份证号不正确',
             type: 'error'
           })
-          this.auditClick = false;
-        })
-        /*if(!reg.test(this.msg.idcardNO)){
+        }else if(!this.test(this.msg.idcardNO)){
           this.$message({
             showClose: true,
             message: '身份证号不正确',
@@ -1444,8 +1488,28 @@
           })
           return;
         }else{
-
-        }*/
+          this.auditClick = true;
+          this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
+            id: this.id,
+            uid: this.msg.uid,
+            name: this.msg.name,
+            checkErrorInfo: this.reason,
+            cellphone: this.msg.cellphone,
+            branchCode: this.msg.branchCode
+          }).then(function (res) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
+            })
+            this.auditClick = false;
+          }, function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+          })
+        }
       },
       unAudit: function () {
         this.auditClick = true;
