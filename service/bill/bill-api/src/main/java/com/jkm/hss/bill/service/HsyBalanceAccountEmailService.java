@@ -1,4 +1,4 @@
-package com.jkm.hsy.user.service;
+package com.jkm.hss.bill.service;
 
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
