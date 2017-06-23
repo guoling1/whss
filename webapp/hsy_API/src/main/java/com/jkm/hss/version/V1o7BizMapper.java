@@ -93,5 +93,7 @@ public class V1o7BizMapper {
 
 
         bizMapper.put("HSY001060", new String[]{"hsyBalanceAccountEmailService","updateAutoSendBalanceAccountEmail"});
+        bizMapper.put("HSY001061", new String[]{"hsyBalanceAccountEmailService","sendBalanceAccountEmail"});
+        bizMapper.put("HSY001062", new String[]{"hsyBalanceAccountEmailService","checkAutoSendBalanceAccountEmail"});
     }
 }

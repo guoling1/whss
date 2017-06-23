@@ -8,6 +8,16 @@ import com.jkm.hsy.user.exception.ApiHandleException;
  */
 public interface HsyBalanceAccountEmailService {
 
+
+    /**
+     * 判断是否是自动发送
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    String checkAutoSendBalanceAccountEmail(String paramData, AppParam appParam);
+
     /**
      * 启用/禁用自动发送对账邮件
      *

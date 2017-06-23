@@ -10,6 +10,7 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.HSYTradeService;
 import com.jkm.hss.bill.service.HSYTransactionService;
+import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.CreateOrderRequest;
@@ -55,6 +56,8 @@ public class TradeController extends BaseController {
     private HsyCmbcService hsyCmbcService;
     @Autowired
     private HSYTransactionService hsyTransactionService;
+    @Autowired
+    private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
 
     /**
      * 创建好收银订单
@@ -258,6 +261,6 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "test")
     public void test(final HttpServletRequest httpServletRequest) {
-        hsyCmbcService.merchantBindChannel(106,99);
+        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
     }
 }

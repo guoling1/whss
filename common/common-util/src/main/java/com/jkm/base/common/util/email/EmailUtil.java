@@ -12,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * Created by yulong.zhang on 2017/6/23.
@@ -26,12 +27,14 @@ public final class EmailUtil {
      * @param baseEmailInfo
      */
     public static void sendEmail(final BaseEmailInfo baseEmailInfo) {
-        final Session session = Session.getDefaultInstance(baseEmailInfo.getProperties(), new Authenticator() {
+        final Properties properties = baseEmailInfo.getProperties();
+        final Authenticator authenticator = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(baseEmailInfo.getUsername(), baseEmailInfo.getPassword());
             }
-        });
+        };
+        final Session session = Session.getDefaultInstance(properties, authenticator);
         final Message message = new MimeMessage(session);
 
         try {

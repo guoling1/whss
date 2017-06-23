@@ -5,6 +5,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.email.BaseEmailInfo;
@@ -25,6 +26,7 @@ import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -62,17 +64,43 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
      * @param appParam
      * @return
      */
+    public String checkAutoSendBalanceAccountEmail(final String paramData, final AppParam appParam) {
+        final JSONObject result = new JSONObject();
+        final JSONObject paramJo = JSONObject.parseObject(paramData);
+        final long shopId = paramJo.getLongValue("shopId");
+        final AppBizShopUserRole userRole = this.hsyShopDao.findsurByRoleTypeSid(shopId).get(0);
+        final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(userRole.getUid()).get(0);
+        if (EnumBoolean.TRUE.getCode() == appAuUser.getAutoSendBalanceAccountEmail()) {
+            result.put("autoSend", 1);
+            result.put("email", appAuUser.getEmail());
+        } else {
+            result.put("autoSend", 2);
+        }
+        return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
     @Override
     public String updateAutoSendBalanceAccountEmail(String paramData, AppParam appParam) throws ApiHandleException {
         final JSONObject paramJo = JSONObject.parseObject(paramData);
-        final long userId = paramJo.getLongValue("userId");
+        final long shopId = paramJo.getLongValue("shopId");
+        final String email = paramJo.getString("email");
         //1:启用，2禁用
         final int autoSend = paramJo.getIntValue("autoSend");
+        final AppBizShopUserRole userRole = this.hsyShopDao.findsurByRoleTypeSid(shopId).get(0);
+        final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(userRole.getUid()).get(0);
+        this.hsyUserService.updateEmailById(email, appAuUser.getId());
         if (1 == autoSend) {
-            this.hsyUserService.enableAutoSendBalanceAccountEmail(userId);
+            this.hsyUserService.enableAutoSendBalanceAccountEmail(appAuUser.getId());
             return "success";
         } else if (2 == autoSend) {
-            this.hsyUserService.disableAutoSendBalanceAccountEmail(userId);
+            this.hsyUserService.disableAutoSendBalanceAccountEmail(appAuUser.getId());
             return "success";
         }
         throw new ApiHandleException(ResultCode.PARAM_EXCEPTION, "autoSend值错误");
@@ -97,7 +125,14 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final Date endTime = DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final List<AppAuUser> appAuUsers = this.hsyUserDao.selectAllCorporationUser();
         for (AppAuUser appAuUser : appAuUsers) {
-            this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+            try {
+                if (!StringUtils.isEmpty(appAuUser.getEmail())) {
+                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+                    log.info("商户[{}], 发送周邮件成功", appAuUser.getGlobalID());
+                }
+            } catch (final Throwable e) {
+                log.error("商户[" + appAuUser.getGlobalID() + "],发送周邮件失败", e);
+            }
         }
     }
 
@@ -116,7 +151,14 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final Date endTime = DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final List<AppAuUser> appAuUsers = this.hsyUserDao.selectAllCorporationUser();
         for (AppAuUser appAuUser : appAuUsers) {
-            this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+            try {
+                if (!StringUtils.isEmpty(appAuUser.getEmail())) {
+                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+                    log.info("商户[{}], 发送月邮件成功", appAuUser.getGlobalID());
+                }
+            } catch (final Throwable e) {
+                log.error("商户[" + appAuUser.getGlobalID() + "],发送月邮件失败", e);
+            }
         }
     }
 
@@ -152,9 +194,12 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
 
     private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName, final String settleDate) {
         final List<HsyOrder> hsyOrders = this.hsyOrderService.getByMerchantNoAndTime(merchantNo, startTime, endTime);
+        if (CollectionUtils.isEmpty(hsyOrders)) {
+            return;
+        }
         final ExcelSheetVO excelSheetVO = this.generateExcelSheet(hsyOrders, merchantNo);
         final String fileUrl = this.uploadToServer(excelSheetVO);
-        Preconditions.checkState(StringUtils.isEmpty(fileUrl), "上传文件到oss异常");
+        Preconditions.checkState(!StringUtils.isEmpty(fileUrl), "上传文件到oss异常");
         final BaseEmailInfo baseEmailInfo = new BaseEmailInfo();
         baseEmailInfo.setServerHost(ApplicationConsts.getApplicationConfig().emailServerHost());
         baseEmailInfo.setServerPort(ApplicationConsts.getApplicationConfig().emailServerPort());
@@ -240,9 +285,9 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             columns.add(hsyOrder.getQrcode());
             columns.add(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getValue());
             columns.add(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-            columns.add(hsyOrder.getAmount().toPlainString());
-            columns.add(hsyOrder.getPoundage().toPlainString());
-            columns.add(hsyOrder.getRefundamount().toPlainString());
+            columns.add(null != hsyOrder.getAmount() ? hsyOrder.getAmount().toPlainString() : "0.00");
+            columns.add(null != hsyOrder.getPoundage() ? hsyOrder.getPoundage().toPlainString() : "0.00");
+            columns.add(null != hsyOrder.getRefundamount() ? hsyOrder.getRefundamount().toPlainString() : "0.00");
             columns.add(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
         }
         return excelSheetVO;
@@ -259,7 +304,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheetVO);
         FileOutputStream fileOutputStream = null;
-        String fileName = "hsycheckorder" + File.separator +  DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd) + File.separator + ".xls";
+        String fileName = "hsycheckorder" + File.separator +  DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd) + File.separator + excelSheetVO.getName() + ".xls";
         try {
             fileOutputStream = new FileOutputStream(excelFile);
             ExcelUtil.exportExcel(excelSheets, fileOutputStream);
@@ -267,7 +312,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             meta.setCacheControl("public, max-age=31536000");
             meta.setExpirationTime(new DateTime().plusYears(1).toDate());
             meta.setContentType("application/octet-stream ");
-            this.ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBindHost(), fileName, new FileInputStream(excelFile), meta);
+            this.ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(excelFile), meta);
             return fileName;
         }catch (Exception e){
             log.debug("上传文件失败",e);

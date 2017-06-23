@@ -260,6 +260,6 @@ limit 1
     </select>
 
     <select id="selectAllCorporationUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
-        SELECT REALNAME, EMAIL, globalID FROM app_au_user WHERE PARENTID = 0;
+        SELECT ID, REALNAME, EMAIL, globalID FROM app_au_user WHERE PARENTID = 0;
     </select>
 </mapper>
