@@ -1692,7 +1692,7 @@
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="shortName != null and shortName!=''">
-            AND x.SHORTNAME = #{shortName}
+            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -2473,53 +2473,63 @@
 
     <!-- 业绩统计 -->
     <select id="getAchievement" resultType="com.jkm.hss.bill.entity.AchievementStatisticsResponse">
-        select tradeCount,x.realname,x.username,x.createTime,vaildTradeUserCount,tradeTotalCount,tradeTotalAmount from (select count(1) tradeCount,`REALNAME`,username, createTime ,ID from (SELECT a.`trade_amount`,
-               DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
-               d.`id`,
-               d.`username`,
-               d.`realname`,
-               b.`ID` uid,
-               b.`REALNAME` uname
-          FROM tb_order a
-          LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
-          LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
-          LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
-         WHERE a.trade_type= 1
-           AND a.trade_amount> 5
-           AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
-         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) x
+        select tradeCount,x.realname,x.username,x.createTimes,x.dealerID,vaildTradeUserCount,tradeTotalCount,tradeTotalAmount from (select count(1) tradeCount,`REALNAME`,username,#{createTime} createTimes ,ID,dealerID from (SELECT a.`trade_amount`,
+        DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
+        d.`id`,
+        d.`username`,
+        d.`realname`,
+        b.`ID` uid,
+        b.`REALNAME` uname,
+        b.`DEALERID` dealerID
+        FROM tb_order a
+        LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
+        LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
+        LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
+        WHERE a.trade_type= 1
+        AND a.trade_amount> 5
+        and a.`status` = 4
+        AND a.app_id= "hsy"
+        and a.create_time <![CDATA[ >= ]]>#{begin}
+        and a.create_time <![CDATA[ <= ]]>#{end}
+        ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) x
         left join (
         select realname,count(1) vaildTradeUserCount,id from(select realName,uid,id from (SELECT a.`trade_amount`,
-               DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
-               d.`username`,
-               d.`id`,
-               d.`realname`,
-               b.`ID` uid,
-               b.`REALNAME` uname
-          FROM tb_order a
-          LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
-          LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
-          LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
-         WHERE a.trade_type= 1
-           AND a.trade_amount> 5
-           AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
-         ORDER BY createTime DESC,`REALNAME`) fake1 group by uid ORDER BY realname) fake2 group by realname) y on x.ID=y.ID
+        DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
+        d.`username`,
+        d.`id`,
+        d.`realname`,
+        b.`ID` uid,
+        b.`REALNAME` uname
+        FROM tb_order a
+        LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
+        LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
+        LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
+        WHERE a.trade_type= 1
+        AND a.trade_amount> 5
+        and a.`status` = 4
+        AND a.app_id= "hsy"
+        and a.create_time <![CDATA[ >= ]]>#{begin}
+        and a.create_time <![CDATA[ <= ]]>#{end}
+        ORDER BY createTime DESC,`REALNAME`) fake1 group by uid ORDER BY realname) fake2 group by realname) y on x.ID=y.ID
         left join
         (select count(1) tradeTotalCount,sum(trade_Amount) tradeTotalAmount,`REALNAME`, createTime ,ID from (SELECT a.`trade_amount`,
-               DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
-               d.`id`,
-               d.`username`,
-               d.`realname`,
-               b.`ID` uid,
-               b.`REALNAME` uname
-          FROM tb_order a
-          LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
-          LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
-          LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
-         WHERE a.trade_type= 1
-           AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
-         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) z on x.ID=z.ID
-          WHERE 1=1
+        DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
+        d.`id`,
+        d.`username`,
+        d.`realname`,
+        b.`ID` uid,
+        b.`REALNAME` uname
+        FROM tb_order a
+        LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
+        LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
+        LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
+        WHERE a.trade_type= 1
+        and a.`status` = 4
+        AND a.app_id= "hsy"
+        and a.create_time <![CDATA[ >= ]]>#{begin}
+        and a.create_time <![CDATA[ <= ]]>#{end}
+        ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) z on x.ID=z.ID
+        WHERE 1=1
         <if test="realname != null and realname!=''">
             AND x.REALNAME = #{realname}
         </if>
@@ -2538,20 +2548,24 @@
 
     <!-- 业绩统计总数 -->
     <select id="getAchievementCount" resultType="java.lang.Integer">
-        select COUNT(*) from (select count(1) tradeCount,`REALNAME`,username,createTime,ID from (SELECT a.`trade_amount`,
+        select COUNT(*) from (select count(1) tradeCount,`REALNAME`,username,#{createTime} createTimes ,ID,dealerID from (SELECT a.`trade_amount`,
         DATE_FORMAT(a.create_time, '%Y-%m-%d') AS createTime,
         d.`id`,
         d.`username`,
         d.`realname`,
         b.`ID` uid,
-        b.`REALNAME` uname
+        b.`REALNAME` uname,
+        b.`DEALERID` dealerID
         FROM tb_order a
         LEFT JOIN app_au_user b ON b.ACCOUNTID= a.payee
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
-        AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
+        and a.`status` = 4
+        AND a.app_id= "hsy"
+        and a.create_time <![CDATA[ >= ]]>#{begin}
+        and a.create_time <![CDATA[ <= ]]>#{end}
         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) x
         left join (
         select realname,count(1) vaildTradeUserCount,id from(select realName,uid,id from (SELECT a.`trade_amount`,
@@ -2567,7 +2581,10 @@
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
         AND a.trade_amount> 5
-        AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
+        and a.`status` = 4
+        AND a.app_id= "hsy"
+        and a.create_time <![CDATA[ >= ]]>#{begin}
+        and a.create_time <![CDATA[ <= ]]>#{end}
         ORDER BY createTime DESC,`REALNAME`) fake1 group by uid ORDER BY realname) fake2 group by realname) y on x.ID=y.ID
         left join
         (select count(1) tradeTotalCount,sum(trade_Amount) tradeTotalAmount,`REALNAME`, createTime ,ID from (SELECT a.`trade_amount`,
@@ -2582,7 +2599,10 @@
         LEFT JOIN `app_au_user_admin` c ON c.`UID`= b.`ID`
         LEFT JOIN `tb_admin_user` d ON d.`id`= c.`AUID`
         WHERE a.trade_type= 1
-        AND a.app_id= "hsy" and date_format(a.create_time,'%Y-%m-%d')<![CDATA[ < ]]>#{startTime}
+        and a.`status` = 4
+        AND a.app_id= "hsy"
+        and a.create_time <![CDATA[ >= ]]>#{begin}
+        and a.create_time <![CDATA[ <= ]]>#{end}
         ORDER BY createTime DESC,`REALNAME` ) fake GROUP BY  realName) z on x.ID=z.ID
         WHERE 1=1
         <if test="realname != null and realname!=''">
