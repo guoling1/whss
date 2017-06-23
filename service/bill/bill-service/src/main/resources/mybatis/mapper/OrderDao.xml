@@ -1427,7 +1427,7 @@
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="shortName != null and shortName!=''">
-            AND x.SHORTNAME = #{shortName}
+            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -2537,10 +2537,10 @@
             AND x.username = #{username}
         </if>
         <if test="startTime1!=null and startTime1!=''">
-            AND x.createTime <![CDATA[ >= ]]> #{startTime1}
+            AND x.createTimes <![CDATA[ >= ]]> #{startTime1}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND x.createTime <![CDATA[ <= ]]> #{endTime}
+            AND x.createTimes <![CDATA[ <= ]]> #{endTime}
         </if>
 
           limit #{offset}, #{pageSize}
@@ -2612,10 +2612,10 @@
             AND x.username = #{username}
         </if>
         <if test="startTime1!=null and startTime1!=''">
-            AND x.createTime <![CDATA[ >= ]]> #{startTime1}
+            AND x.createTimes <![CDATA[ >= ]]> #{startTime1}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND x.createTime <![CDATA[ <= ]]> #{endTime}
+            AND x.createTimes <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
 
