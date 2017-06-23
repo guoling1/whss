@@ -1426,7 +1426,28 @@
 //            return
 //          }
 //        }
-        if(!reg.test(this.msg.idcardNO)){
+        this.auditClick = true;
+        this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
+          id: this.id,
+          uid: this.msg.uid,
+          name: this.msg.name,
+          checkErrorInfo: this.reason,
+          cellphone: this.msg.cellphone,
+          branchCode: this.msg.branchCode
+        }).then(function (res) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
+          this.auditClick = false;
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+          this.auditClick = false;
+        })
+        /*if(!reg.test(this.msg.idcardNO)){
           this.$message({
             showClose: true,
             message: '身份证号不正确',
@@ -1434,28 +1455,8 @@
           })
           return;
         }else{
-          this.auditClick = true;
-          this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
-            id: this.id,
-            uid: this.msg.uid,
-            name: this.msg.name,
-            checkErrorInfo: this.reason,
-            cellphone: this.msg.cellphone,
-            branchCode: this.msg.branchCode
-          }).then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '操作成功'
-            })
-            this.auditClick = false;
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-            this.auditClick = false;
-          })
-        }
+
+        }*/
       },
       unAudit: function () {
         this.auditClick = true;

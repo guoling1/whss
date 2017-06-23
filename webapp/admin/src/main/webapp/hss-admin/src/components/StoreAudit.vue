@@ -795,7 +795,23 @@
       },
       audit: function (event) {
         let reg=/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
-        if(!reg.test(this.msg.idcardNO)){
+        this.auditClick = true;
+        this.$http.post('/admin/merchantInfoCheckRecord/record', {
+          merchantId: this.$data.id
+        }).then(function (res) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
+          this.auditClick = false;
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+          this.auditClick = false;
+        })
+        /*if(!reg.test(this.msg.idcardNO)){
           this.$message({
             showClose: true,
             message: '身份证号不正确',
@@ -803,23 +819,8 @@
           })
           return;
         }else{
-          this.auditClick = true;
-          this.$http.post('/admin/merchantInfoCheckRecord/record', {
-            merchantId: this.$data.id
-          }).then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '操作成功'
-            })
-            this.auditClick = false;
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-            this.auditClick = false;
-          })
-        }
+
+        }*/
       },
       unAudit: function () {
         this.auditClick = true;
