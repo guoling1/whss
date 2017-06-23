@@ -506,9 +506,9 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
                         list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
@@ -559,9 +559,9 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
                         list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
@@ -678,9 +678,9 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.setAppId(hsy);
                 }
-                if (list.getPayChannelSign()!=0) {
-                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
-                }
+//                if (list.getPayChannelSign()!=0) {
+//                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
+//                }
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
@@ -725,9 +725,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.getIdentity()!=null&&!"".equals(list.getIdentity())){
                     list.setIdentity(MerchantSupport.decryptIdentity(list.getIdentity()));
                 }
-                if (list.getPayChannelSign()!=0) {
-                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
-                }
+//                if (list.getPayChannelSign()!=0) {
+//                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
+//                }
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
@@ -2122,14 +2122,15 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getMerchantName());
                 columns.add(list.get(i).getMarkCode());
                 columns.add(list.get(i).getDealerBelong());
-                if (!"".equals(list.get(i).getProxyNameHsy())||!"".equals(list.get(i).getProxyNameHsy1())){
+                if ("好收银".equals(list.get(i).getAppId())){
                     columns.add(list.get(i).getProxyNameHsy());
                     columns.add(list.get(i).getProxyNameHsy1());
-                    log.debug(list.get(i).getProxyNameHsy());
+//                    log.debug(list.get(i).getProxyNameHsy());
+                }else {
+//                    log.debug(list.get(i).getProxyNameHsy());
+                    columns.add(list.get(i).getProxyName());
+                    columns.add(list.get(i).getProxyName1());
                 }
-                log.debug(list.get(i).getProxyNameHsy());
-                columns.add(list.get(i).getProxyName());
-                columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
                 columns.add(String.valueOf(list.get(i).getPayRate()));
                 columns.add(EnumOrderStatus.of(list.get(i).getStatus()).getValue());

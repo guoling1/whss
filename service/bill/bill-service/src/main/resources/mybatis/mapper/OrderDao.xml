@@ -478,9 +478,11 @@
             (select proxy_name from tb_dealer where id=z.`DEALERID` AND `level` =1) as proxyNameHsy,
             (select proxy_name from tb_dealer where id=b.second_dealer_id AND `level` =2) as proxyNameHsy1,
             x.SHORTNAME AS merchantName,
-            x.GLOBALID AS markCode
+            x.GLOBALID AS markCode,
+            n.`channel_short_name` AS payChannelSigns
         FROM
             tb_order a
+        LEFT JOIN `tb_basic_channel` n ON n.`channel_type_sign` = a.`pay_channel_sign`
         LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
         LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
         LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
@@ -1371,39 +1373,41 @@
     <!-- 导出 -->
     <select id="downloadOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-        a.pay_order_id,
-        a.business_order_no,
-        a.order_no,
-        a.trade_amount,
-        a.real_pay_amount,
-        a.trade_type,
-        a.payer,
-        a.payee,
-        a.pay_account,
-        a.pay_account_type,
-        a.pay_type,
-        a.pay_success_time,
-        a.poundage,
-        a.pay_rate,
-        a.settle_status,
-        a.settle_time,
-        a.success_settle_time,
-        a.pay_channel_sign,
-        a.remark,
-        a. STATUS,
-        a.create_time,
-        b.merchant_name,
-        b.mark_code,
-        a.sn,
-        a.app_id,
-        (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
-        (select proxy_name from tb_dealer where id=z.`DEALERID` AND `level` =1) as proxyNameHsy,
-        (select proxy_name from tb_dealer where id=b.second_dealer_id AND `level` =2) as proxyNameHsy1,
-        x.SHORTNAME AS merchantName,
-        x.GLOBALID AS markCode
+            a.pay_order_id,
+            a.business_order_no,
+            a.order_no,
+            a.trade_amount,
+            a.real_pay_amount,
+            a.trade_type,
+            a.payer,
+            a.payee,
+            a.pay_account,
+            a.pay_account_type,
+            a.pay_type,
+            a.pay_success_time,
+            a.poundage,
+            a.pay_rate,
+            a.settle_status,
+            a.settle_time,
+            a.success_settle_time,
+            a.pay_channel_sign,
+            a.remark,
+            a. STATUS,
+            a.create_time,
+            b.merchant_name,
+            b.mark_code,
+            a.sn,
+            a.app_id,
+            (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
+            (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            (select proxy_name from tb_dealer where id=z.`DEALERID` AND `level` =1) as proxyNameHsy,
+            (select proxy_name from tb_dealer where id=b.second_dealer_id AND `level` =2) as proxyNameHsy1,
+            x.SHORTNAME AS merchantName,
+            x.GLOBALID AS markCode,
+            n.`channel_short_name` AS payChannelSigns
         FROM
-        tb_order a
+            tb_order a
+        LEFT JOIN `tb_basic_channel` n ON n.`channel_type_sign` = a.`pay_channel_sign`
         LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
         LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
         LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
@@ -1668,6 +1672,7 @@
         SELECT COUNT(1)
         FROM
         tb_order a
+        LEFT JOIN `tb_basic_channel` n ON n.`channel_type_sign` = a.`pay_channel_sign`
         LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
         LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
         LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
@@ -1742,6 +1747,7 @@
         SUM(a.trade_amount)
         FROM
         tb_order a
+        LEFT JOIN `tb_basic_channel` n ON n.`channel_type_sign` = a.`pay_channel_sign`
         LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
         LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
         LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1

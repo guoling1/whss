@@ -149,7 +149,15 @@ public class OrderTradeController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
-    private CommonResponse downLoad(@RequestBody OrderTradeRequest req){
+    private CommonResponse downLoad(@RequestBody OrderTradeRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         final String fileZip = this.orderService.downloadExcel(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
