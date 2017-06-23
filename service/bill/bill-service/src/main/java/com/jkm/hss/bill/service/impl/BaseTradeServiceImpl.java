@@ -411,7 +411,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         callbackResponse.setSn(updateOrder.getSn());
         callbackResponse.setSuccessTime(updateOrder.getPaySuccessTime());
         callbackResponse.setTradeAmount(order.getTradeAmount());
-        callbackResponse.setPoundage(order.getPoundage());
+        callbackResponse.setPoundage(updateOrder.getPoundage());
         callbackResponse.setCode(EnumBasicStatus.SUCCESS.getId());
         callbackResponse.setMessage(updateOrder.getRemark());
         this.hsyTransactionService.handlePayCallbackMsg(callbackResponse);
