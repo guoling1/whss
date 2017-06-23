@@ -78,9 +78,6 @@ public class LoginController extends BaseController {
     private MerchantInfoService merchantInfoService;
 
     @Autowired
-    private AccountInfoService accountInfoService;
-
-    @Autowired
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
 
     @Autowired
@@ -94,9 +91,6 @@ public class LoginController extends BaseController {
 
     @Autowired
     private AccountService accountService;
-
-    @Autowired
-    private ShallProfitDetailService shallProfitDetailService;
 
     @Autowired
     private UpgradePayRecordService upgradePayRecordService;

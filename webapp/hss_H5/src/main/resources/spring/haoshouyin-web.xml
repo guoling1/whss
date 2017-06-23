@@ -83,6 +83,9 @@
             <!--<mvc:mapping path="/sqb/collection"/>-->
             <!--<bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">-->
                 <!--<property name="oemInfoService" ref="oemInfoServiceImpl"/>-->
+                <!--<property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>-->
+                <!--<property name="userInfoService" ref="userInfoServiceImpl"/>-->
+                <!--<property name="merchantInfoService" ref="merchantInfoServiceImpl"/>-->
             <!--</bean>-->
         <!--</mvc:interceptor>-->
     </mvc:interceptors>
