@@ -71,6 +71,16 @@ public class AchievementStatisticsController extends BaseController {
      * @return
      */
     private String downLoad(@RequestBody QueryOrderRequest req){
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime1() !=null && req.getEndTime()!=null && req.getStartTime1()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime1()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime1() + "~" + req.getEndTime();
+            req.setCreateTime(s);
+            req.setBegin(begin);
+            req.setEnd(end);
+        }
         final String fileZip = this.orderService.downloadAchievement(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
