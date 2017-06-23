@@ -182,7 +182,7 @@ public class QrCodeController extends BaseController {
     public CommonResponse proxyProduct() {
         long dealerId = super.getDealerId();
         Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
-        Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+        Integer hsyProductId = dealerRatePolicyService.selectCountByDealerId(dealerId);
         ProxyProductResponse proxyProductResponse = new ProxyProductResponse();
         proxyProductResponse.setProxyHss((hssProductId==null?0:hssProductId));
         proxyProductResponse.setProxyHsy((hsyProductId==null?0:hsyProductId));
