@@ -74,6 +74,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             result.put("email", appAuUser.getEmail());
         } else {
             result.put("autoSend", 2);
+            result.put("email", appAuUser.getEmail());
         }
         return result.toJSONString();
     }
