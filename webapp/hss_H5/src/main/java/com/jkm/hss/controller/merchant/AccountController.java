@@ -173,7 +173,7 @@ public class AccountController extends BaseController{
 
             final String bankNo = accountBank.getBankNo();
             response.setBankNo("尾号" + bankNo.substring(bankNo.length() - 4 , bankNo.length()));
-            response.setMobile(merchantInfo.getPlainBankMobile(MerchantSupport.decryptMobile(merchantInfo.getId(), accountBank.getReserveMobile())));
+            response.setMobile(accountBank.getReserveMobile());
 
             return CommonResponse.objectResponse(1, "SUCCESS", response);
 
