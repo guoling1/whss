@@ -2548,13 +2548,6 @@
         <if test="username != null and username!=''">
             AND x.username = #{username}
         </if>
-        <if test="startTime1!=null and startTime1!=''">
-            AND x.createTimes <![CDATA[ >= ]]> #{startTime1}
-        </if>
-        <if test="endTime!=null and endTime!=''">
-            AND x.createTimes <![CDATA[ <= ]]> #{endTime}
-        </if>
-
           limit #{offset}, #{pageSize}
     </select>
 
@@ -2623,12 +2616,6 @@
         <if test="username != null and username!=''">
             AND x.username = #{username}
         </if>
-        <if test="startTime1!=null and startTime1!=''">
-            AND x.createTimes <![CDATA[ >= ]]> #{startTime1}
-        </if>
-        <if test="endTime!=null and endTime!=''">
-            AND x.createTimes <![CDATA[ <= ]]> #{endTime}
-        </if>
     </select>
 
     <!-- 导出业绩统计 -->
@@ -2695,12 +2682,6 @@
         </if>
         <if test="username != null and username!=''">
             AND x.username = #{username}
-        </if>
-        <if test="startTime1!=null and startTime1!=''">
-            AND x.createTimes <![CDATA[ >= ]]> #{startTime1}
-        </if>
-        <if test="endTime!=null and endTime!=''">
-            AND x.createTimes <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
 
