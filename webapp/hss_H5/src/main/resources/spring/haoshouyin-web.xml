@@ -94,8 +94,8 @@
             <mvc:mapping path="/sqb/authentication"/>
             <mvc:mapping path="/trade/firstUnionPayPage"/>
             <mvc:mapping path="/trade/againUnionPayPage"/>
-            <mvc:mapping path="/trade/toWithdraw"/>
-            <mvc:mapping path="/trade/toHssAccount"/>
+            <mvc:mapping path="/account/toWithdraw"/>
+            <mvc:mapping path="/account/toHssAccount"/>
             <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
                 <property name="oemInfoService" ref="oemInfoServiceImpl"/>
                 <property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>
