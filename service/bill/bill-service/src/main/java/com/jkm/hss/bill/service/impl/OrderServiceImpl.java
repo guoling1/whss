@@ -682,6 +682,11 @@ public class OrderServiceImpl implements OrderService {
 //                if (list.getPayChannelSign()!=0) {
 //                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
 //                }
+                if (!"".equals(list.getTradeCardNo())||list.getTradeCardNo()!=null){
+                    final String cardNo = MerchantSupport.decryptBankCard(list.getTradeCardNo());
+                    final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
+                    list.setTradeCardNo(s);
+                }
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
