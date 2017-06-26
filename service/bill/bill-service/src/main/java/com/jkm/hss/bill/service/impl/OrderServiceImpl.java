@@ -1748,7 +1748,7 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getUsername());
                 columns.add(list.get(i).getRealname());
 
-                columns.add(req.getStartTime1()+req.getEndTime());
+                columns.add(req.getStartTime1()+"~"+req.getEndTime());
 
                 columns.add(list.get(i).getVaildTradeUserCount());
                 columns.add(list.get(i).getTradeCount());
@@ -1763,6 +1763,22 @@ public class OrderServiceImpl implements OrderService {
 
     private List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req) {
         List<AchievementStatisticsResponse> list = this.orderDao.downloadeYJ(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if ("".equals(list.get(i).getVaildTradeUserCount())||list.get(i).getVaildTradeUserCount()==null){
+                    list.get(i).setVaildTradeUserCount("0");
+                }
+                if ("".equals(list.get(i).getTradeCount())||list.get(i).getTradeCount()==null){
+                    list.get(i).setTradeCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalAmount("0.00");
+                }
+            }
+        }
         return list;
     }
 
