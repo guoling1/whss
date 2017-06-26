@@ -29,7 +29,7 @@
         user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.EMAIL,
         (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
         user.ISPROTOCOLSEEN,user.ISOPEND0,
-        user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+        user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME, user.AUTOSENDBALANCEACCOUNTEMAIL,
         (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
         (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
         (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
