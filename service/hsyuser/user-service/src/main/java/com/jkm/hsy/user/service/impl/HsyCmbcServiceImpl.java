@@ -110,8 +110,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             {
                 add(EnumPayChannelSign.XMMS_WECHAT_T1.getId());
                 add(EnumPayChannelSign.XMMS_ALIPAY_T1.getId());
-                add(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
-                add(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
+//                add(EnumPayChannelSign.XMMS_WECHAT_D0.getId());
+//                add(EnumPayChannelSign.XMMS_ALIPAY_D0.getId());
             }
         };
         for(int i=0;i<list.size();i++){
@@ -422,10 +422,10 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         xmmsResponse.setWxT1(baseResponse701);
         XmmsResponse.BaseResponse baseResponse702 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_ALIPAY_T1.getId(),appBizShop.getIndustryCode());
         xmmsResponse.setZfbT1(baseResponse702);
-        XmmsResponse.BaseResponse baseResponse703 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_WECHAT_D0.getId(),appBizShop.getIndustryCode());
-        xmmsResponse.setWxD0(baseResponse703);
-        XmmsResponse.BaseResponse baseResponse704 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_ALIPAY_D0.getId(),appBizShop.getIndustryCode());
-        xmmsResponse.setZfbD0(baseResponse704);
+//        XmmsResponse.BaseResponse baseResponse703 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_WECHAT_D0.getId(),appBizShop.getIndustryCode());
+//        xmmsResponse.setWxD0(baseResponse703);
+//        XmmsResponse.BaseResponse baseResponse704 = getMerchantInResult(paramsMap,userId,EnumPayChannelSign.XMMS_ALIPAY_D0.getId(),appBizShop.getIndustryCode());
+//        xmmsResponse.setZfbD0(baseResponse704);
         return xmmsResponse;
     }
 
