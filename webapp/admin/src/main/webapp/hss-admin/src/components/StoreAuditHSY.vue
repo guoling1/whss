@@ -468,7 +468,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="支行" label-width="120px">
-            <el-autocomplete v-model="form.branchName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+            <el-autocomplete v-model="form.branchName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:100%"></el-autocomplete>
           </el-form-item>
           <el-form-item label="联行号" label-width="120px">
             <el-input v-model="form.branchCode" size="small" style="width: 100%" disabled></el-input>
