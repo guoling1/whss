@@ -6,12 +6,8 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.helper.DealerSupport;
-import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
-import com.jkm.hss.merchant.helper.MerchantConsts;
-import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.enums.EnumStatus;
+import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
@@ -29,16 +25,16 @@ import com.jkm.hsy.user.help.requestparam.*;
 import com.jkm.hsy.user.service.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,10 +95,10 @@ public class HsyMerchantAuditController extends BaseController {
         if(userTradeRateList.size()==0){
             return CommonResponse.simpleResponse(-1, "商户费率为空");
         }
-        AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
-        if (acct!=null){
-            accountService.delAcct(acct.getAccountID());
-        }
+//        AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
+//        if (acct!=null){
+//            accountService.delAcct(acct.getAccountID());
+//        }
         final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
         hsyMerchantAuditRequest.setAccountID(accountId);
         hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());
