@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.merchant;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +74,7 @@ public class AchievementStatisticsController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
-    private String downLoad(@RequestBody QueryOrderRequest req){
+    private CommonResponse downLoad(@RequestBody QueryOrderRequest req){
         Date begin =null;
         Date end =null;
         if (req.getStartTime1() !=null && req.getEndTime()!=null && req.getStartTime1()!="" && req.getEndTime()!=""){
@@ -94,10 +96,14 @@ public class AchievementStatisticsController extends BaseController {
         String fileName = "hss/"+  nowDate + "/" + "Achievement.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
         URL url = null;
+        JSONObject jsonObject = new JSONObject();
+        List list = new ArrayList();
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
+            jsonObject.put("url",url.getHost() + url.getFile());
+            list.add(jsonObject);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "导出成功", list);
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }
