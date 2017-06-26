@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="content-wrapper">
     <!-- Main content -->
-    <section class="content">
+    <section class="content" v-if="isDealer">
       <table class="table">
         <tbody>
         <tr>
@@ -86,6 +86,14 @@
         </tbody>
       </table>
     </section>
+    <section class="content" v-if="!isDealer">
+      <h4 class="text-center top">
+        您好，{{userName}}
+      </h4>
+      <h2 class="text-center bottom">
+        welcome
+      </h2>
+    </section>
   </div>
 </template>
 <script lang="babel">
@@ -125,8 +133,25 @@
           ydaycheckMerNumberDir: 0,
           ydaycheckMerNumberSub: 0
         },
-        accountData: ''
+        accountData: '',
+        isDealer: false
       }
+    },
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            vm.dealerInfo = data.dealerInfo;
+            if (data.dealerLeavel == 1) {
+              vm.isDealer = true
+            } else if (data.dealerLeavel == 2) {
+              vm.isDealer = true
+            } else {
+              vm.isDealer = false
+            }
+          }
+        });
+      });
     },
     created (){
       this.$http.post('/daili/account/info').then(res => {
