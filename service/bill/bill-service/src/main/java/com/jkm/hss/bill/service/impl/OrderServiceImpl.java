@@ -682,7 +682,7 @@ public class OrderServiceImpl implements OrderService {
 //                if (list.getPayChannelSign()!=0) {
 //                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
 //                }
-                if (!"".equals(list.getTradeCardNo())||list.getTradeCardNo()!=null){
+                if (!"".equals(list.getTradeCardNo())&&list.getTradeCardNo()!=null){
                     final String cardNo = MerchantSupport.decryptBankCard(list.getTradeCardNo());
                     final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
                     list.setTradeCardNo(s);
@@ -754,6 +754,12 @@ public class OrderServiceImpl implements OrderService {
             }
         return list;
     }
+
+//    public static void main(String[] args){
+//        final String cardNo = MerchantSupport.decryptBankCard("XJd0_EGryy4osdzVoZnmiQ7mYYlZSDWUkCiDsOy60rY");
+//        final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
+//        System.out.print(s);
+//    }
 
     /**
      * {@inheritDoc}
