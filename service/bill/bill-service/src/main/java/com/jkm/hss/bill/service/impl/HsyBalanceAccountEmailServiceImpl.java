@@ -42,7 +42,7 @@ import java.util.*;
  * Created by yulong.zhang on 2017/6/22.
  */
 @Slf4j
-@Service
+@Service("hsyBalanceAccountEmailService")
 public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmailService {
 
     @Autowired
@@ -97,10 +97,10 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         this.hsyUserService.updateEmailById(email, appAuUser.getId());
         if (1 == autoSend) {
             this.hsyUserService.enableAutoSendBalanceAccountEmail(appAuUser.getId());
-            return "success";
+            return "";
         } else if (2 == autoSend) {
             this.hsyUserService.disableAutoSendBalanceAccountEmail(appAuUser.getId());
-            return "success";
+            return "";
         }
         throw new ApiHandleException(ResultCode.PARAM_EXCEPTION, "autoSend值错误");
     }
@@ -188,7 +188,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         this.hsyUserService.updateEmailById(email, appAuUser.getId());
         final String merchantNo = appAuUser.getGlobalID();
         this.simpleSend(merchantNo, startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
-        return "success";
+        return "";
     }
 
     private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName, final String settleDate) {
