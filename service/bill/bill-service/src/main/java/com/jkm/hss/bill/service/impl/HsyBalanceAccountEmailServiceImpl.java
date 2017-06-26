@@ -15,7 +15,6 @@ import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.helper.ApplicationConsts;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.UploadConsts;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -121,8 +120,8 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         calendar2.add(Calendar.DATE, -1*7);
         calendar2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 
-        final Date startTime = DateFormatUtil.parse(DateFormatUtil.format(calendar.getTime(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        final Date endTime = DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date startTime = DateFormatUtil.parse("2017-06-11 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);//DateFormatUtil.parse(DateFormatUtil.format(calendar.getTime(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endTime = DateFormatUtil.parse("2017-06-24 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);//DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final List<AppAuUser> appAuUsers = this.hsyUserDao.selectAllCorporationUser();
         for (AppAuUser appAuUser : appAuUsers) {
             try {
@@ -210,7 +209,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         baseEmailInfo.setToAddress(email);
         baseEmailInfo.setSubject("钱包++ 对账单");
         final String startDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(startTime);
-        final String endDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(startTime);
+        final String endDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(endTime);
         String tradeDate;
         if (startDate.equals(endDate)) {
             tradeDate = startDate;
@@ -218,7 +217,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             tradeDate = startDate + "-" + endDate;
         }
         this.sendEmail(baseEmailInfo, userName, "",
-                merchantNo, tradeDate, ApplicationConsts.getApplicationConfig().ossFilePath() + fileUrl);
+                merchantNo, tradeDate, ApplicationConsts.getApplicationConfig().ossFilePath() + File.separator + fileUrl);
     }
 
     private void sendEmail(final BaseEmailInfo baseEmailInfo, final String userName, final String settleDate,
@@ -283,7 +282,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             columns.add(hsyOrder.getOrderno());
             columns.add(hsyOrder.getShopname());
             columns.add(hsyOrder.getQrcode());
-            columns.add(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getValue());
+//            columns.add(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getValue());
             columns.add(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
             columns.add(null != hsyOrder.getAmount() ? hsyOrder.getAmount().toPlainString() : "0.00");
             columns.add(null != hsyOrder.getPoundage() ? hsyOrder.getPoundage().toPlainString() : "0.00");
@@ -312,7 +311,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             meta.setCacheControl("public, max-age=31536000");
             meta.setExpirationTime(new DateTime().plusYears(1).toDate());
             meta.setContentType("application/octet-stream ");
-            this.ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(excelFile), meta);
+            this.ossClient.putObject(ApplicationConsts.getApplicationConfig().ossFile(), fileName, new FileInputStream(excelFile), meta);
             return fileName;
         }catch (Exception e){
             log.debug("上传文件失败",e);

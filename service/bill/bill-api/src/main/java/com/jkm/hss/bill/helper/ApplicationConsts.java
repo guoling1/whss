@@ -35,7 +35,11 @@ public final class ApplicationConsts {
          * @return
          */
         @Key("oss_bucket")
-        String ossBucke();
+        String ossBucket();
+
+        @Key("oss_file")
+        @DefaultValue("jkm-file")
+        String ossFile();
 
         /**
          * oss_bind_host
@@ -51,7 +55,7 @@ public final class ApplicationConsts {
          * @return
          */
         @Key("oss.file.path")
-        @DefaultValue("http://img.jinkaimen.cn/")
+        @DefaultValue("http://img.jinkaimen.cn")
         String ossFilePath();
 
         /**
