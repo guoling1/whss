@@ -59,7 +59,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 response.sendRedirect(url);
                 return false;
             }else{
-                String url = WxConstants.WEIXIN_USERINFO+requestUrlParam.getId()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                String url = WxConstants.WEIXIN_USERINFO_NEW+requestUrlParam.getId()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 response.sendRedirect(url);
                 return false;
             }
@@ -91,7 +91,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     }
                 }
                 if (merchantInfoOptional.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                    response.sendRedirect("/sqb/reg");
+                    response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg");
                     return false;
                 }else if(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.INIT.getId()){
                     String appId = WxConstants.APP_ID;
@@ -146,7 +146,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                response.sendRedirect("/sqb/reg");
+                response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg");
                 return false;
             }
         }
