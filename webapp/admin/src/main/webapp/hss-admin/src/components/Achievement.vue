@@ -4,7 +4,7 @@
       <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">销售业绩统计（好收银）</h3>
-          <el-button type="primary" @click="isMask = true" size="small" class="pull-right">导出</el-button>
+          <el-button type="primary" @click="onload" size="small" class="pull-right" :loading="isLoading">导出</el-button>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -80,6 +80,7 @@
     name: 'achievement',
     data(){
       return {
+        isLoading:false,
         pickerOptions: {
           disabledDate: function (time) {
            return time.getTime() > Date.now() - 8.64e7;
@@ -178,6 +179,23 @@
               type: 'error'
             })
           })
+      },
+      onload: function () {
+        this.isLoading = true
+        this.$http.post('/admin/AchievementStatistics/downLoad',this.query)
+          .then(res=>{
+          this.isLoading = false;
+          this.loadUrl = res.data[0].url;
+          this.isMask = true;
+        })
+        .catch(err=>{
+          this.isLoading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       },
       search: function () {
         this.query.pageNo = 1;
