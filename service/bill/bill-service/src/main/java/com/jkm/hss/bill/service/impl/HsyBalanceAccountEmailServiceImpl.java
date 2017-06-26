@@ -15,7 +15,7 @@ import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.helper.ApplicationConsts;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
-import com.jkm.hsy.user.constant.UploadConsts;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -282,7 +282,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             columns.add(hsyOrder.getOrderno());
             columns.add(hsyOrder.getShopname());
             columns.add(hsyOrder.getQrcode());
-//            columns.add(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getValue());
+            columns.add(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getValue());
             columns.add(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
             columns.add(null != hsyOrder.getAmount() ? hsyOrder.getAmount().toPlainString() : "0.00");
             columns.add(null != hsyOrder.getPoundage() ? hsyOrder.getPoundage().toPlainString() : "0.00");

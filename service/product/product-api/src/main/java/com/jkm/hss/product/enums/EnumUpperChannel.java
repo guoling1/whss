@@ -70,7 +70,7 @@ public enum EnumUpperChannel {
     /**
      * 微信官方支付
      */
-    WECHAT(11,"WECHAT","微信官方支付");
+    WECHAT(13,"WECHAT","微信官方支付");
 
     @Getter
     private int id;
