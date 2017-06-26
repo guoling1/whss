@@ -34,5 +34,35 @@ public interface HsyUserDao {
     public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
     public AppBizShopUserRole findAppAuUserRole(AppAuUser appAuUser);
 
+    /**
+     * 查找所有法人
+     *
+     * @return
+     */
+    List<AppAuUser> selectAllCorporationUser();
 
+    /**
+     * 更新email
+     *
+     * @param email
+     * @param id
+     * @return
+     */
+    int updateEmailById(@Param("email") String email, @Param("id") long id);
+
+    /**
+     * 启用自动发送邮件
+     *
+     * @param id
+     * @return
+     */
+    int enableAutoSendBalanceAccountEmail(@Param("id") long id);
+
+    /**
+     * 禁用自动发送邮件
+     *
+     * @param id
+     * @return
+     */
+    int disableAutoSendBalanceAccountEmail(@Param("id") long id);
 }

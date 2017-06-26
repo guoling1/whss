@@ -61,6 +61,15 @@ public class AppAuUser {
     //扩展
     private Integer utype;//类型1主店 2分店
 
+    /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 是否自动发送对账邮件
+     */
+    private int autoSendBalanceAccountEmail;
+
     public Long getId() {
         return id;
     }
