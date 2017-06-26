@@ -61,8 +61,8 @@ public class AchievementStatisticsController extends BaseController {
         int count = this.orderService.getAchievementCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        String downLoadExcel = downLoad(req);
-        pageModel.setExt(downLoadExcel);
+//        String downLoadExcel = downLoad(req);
+//        pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
@@ -70,6 +70,8 @@ public class AchievementStatisticsController extends BaseController {
      * 导出全部
      * @return
      */
+    @ResponseBody
+    @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
     private String downLoad(@RequestBody QueryOrderRequest req){
         Date begin =null;
         Date end =null;
