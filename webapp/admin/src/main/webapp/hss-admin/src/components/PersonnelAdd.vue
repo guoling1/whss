@@ -123,7 +123,7 @@
                     :on-success="handleSuccess"
                     :file-list="fileList"
                     list-type="picture" style="margin-bottom: 10px">
-                    <el-button v-if="hasButton" style="float: left" size="small" type="primary">点击上传</el-button>
+                    <el-button v-if="hasButton" style="float: left;margin-right:250px;" size="small" type="primary" >点击上传</el-button>
                   </el-upload>
                   <div v-if="hasButton" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff;"></div>
                   <div v-if="!hasButton" style="position: absolute;top: 0;margin-left:0;width: 200px;height: 30px;background: #fff;"></div>
@@ -148,7 +148,7 @@
                     :on-remove="handleRemove1"
                     :file-list="fileList1"
                     list-type="picture" style="margin-bottom: 10px">
-                    <el-button v-if="hasButton1" style="float: left" size="small" type="primary">点击上传</el-button>
+                    <el-button v-if="hasButton1" style="float: left;margin-right:250px;" size="small" type="primary">点击上传</el-button>
                   </el-upload>
                   <div v-if="hasButton1" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff"></div>
                   <div v-if="!hasButton1" style="position: absolute;top: 0;margin-left:0;width: 200px;height: 30px;background: #fff"></div>

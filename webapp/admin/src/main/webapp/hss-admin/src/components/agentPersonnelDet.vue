@@ -53,37 +53,37 @@
               </div>
             </el-dialog>
 
-            <!--<el-row type="flex" class="row-bg" justify="center">-->
-              <!--<el-col :span="4">-->
-                <!--<div class="alignRight">所属分公司:</div>-->
-              <!--</el-col>-->
-              <!--<el-col :span="6">-->
-                <!--<div class="grid-content bg-purple-light">-->
-                  <!--<el-select style="width: 100%" v-model="query.companyId" clearable placeholder="请选择" size="small">-->
-                    <!--<el-option :label="com.dictName" :value="com.dictValue" v-for="com in company">{{com.dictName}}</el-option>-->
-                  <!--</el-select>-->
-                <!--</div>-->
-              <!--</el-col>-->
-              <!--<el-col :span="8">-->
-                <!--<div class="grid-content bg-purple-light"></div>-->
-              <!--</el-col>-->
-            <!--</el-row>-->
-            <!--<el-row type="flex" class="row-bg" justify="center">-->
-              <!--<el-col :span="4">-->
-                <!--<div class="alignRight">所属部门:</div>-->
-              <!--</el-col>-->
-              <!--<el-col :span="6">-->
-                <!--<div class="grid-content bg-purple-light">-->
-                  <!--<el-select style="width: 100%" v-model="query.deptId" clearable placeholder="请选择" size="small">-->
-                    <!--<el-option :label="com.dictName" :value="com.dictValue" v-for="com in dept">{{com.dictName}}</el-option>-->
-                  <!--</el-select>-->
-                <!--</div>-->
-              <!--</el-col>-->
-              <!--<el-col :span="8">-->
-                <!--<div class="grid-content bg-purple-light" style="margin: 0 15px;">-->
-                <!--</div>-->
-              <!--</el-col>-->
-            <!--</el-row>-->
+            <!--<el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">所属分公司:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-select style="width: 100%" v-model="query.companyId" clearable placeholder="请选择" size="small">
+                    <el-option :label="com.dictName" :value="com.dictValue" v-for="com in company">{{com.dictName}}</el-option>
+                  </el-select>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">所属部门:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-select style="width: 100%" v-model="query.deptId" clearable placeholder="请选择" size="small">
+                    <el-option :label="com.dictName" :value="com.dictValue" v-for="com in dept">{{com.dictName}}</el-option>
+                  </el-select>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
+                </div>
+              </el-col>
+            </el-row>-->
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
                 <div class="alignRight">真实姓名:</div>
@@ -116,7 +116,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone">
-                  <el-upload id="upload" style="position: relative" action="/upload/picUpload"
+                  <!--<el-upload id="upload" style="position: relative" action="/upload/picUpload"
                              type="drag" :thumbnail-mode="true"
                              :on-preview="handlePreview"
                              :on-remove="handleRemove"
@@ -125,12 +125,24 @@
                              :default-file-list="fileList">
                     <i class="el-icon-upload"></i>
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                    &lt;!&ndash;<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;
                   </el-upload>
                   <div
                     style="position: absolute;top: 127px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div
-                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>-->
+                  <el-upload
+                    class="upload-demo"
+                    action="/upload/picUpload"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :file-list="fileList"
+                    list-type="picture" style="margin-bottom: 10px">
+                    <el-button v-if="hasButton" style="float: left;margin-right:250px;" size="small" type="primary" >点击上传</el-button>
+                  </el-upload>
+                  <div v-if="hasButton" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff;"></div>
+                  <div v-if="!hasButton" style="position: absolute;top: 0;margin-left:0;width: 200px;height: 30px;background: #fff;"></div>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -143,18 +155,30 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone1">
-                  <el-upload id="upload" style="position: relative" action="/upload/picUpload" type="drag"
+                  <!--<el-upload id="upload" style="position: relative" action="/upload/picUpload" type="drag"
                              :thumbnail-mode="true"
                              :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove1"
                              :on-success="handleSuccess1" :default-file-list="fileList1">
                     <i class="el-icon-upload"></i>
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                    &lt;!&ndash;<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;
                   </el-upload>
                   <div
                     style="position: absolute;top: 127px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
                   <div
-                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>-->
+                  <el-upload
+                    class="upload-demo"
+                    action="/upload/picUpload"
+                    :on-preview="handleProgress"
+                    :on-success="handleSuccess1"
+                    :on-remove="handleRemove1"
+                    :file-list="fileList1"
+                    list-type="picture" style="margin-bottom: 10px">
+                    <el-button v-if="hasButton1" style="float: left;margin-right:250px;" size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                  <div v-if="hasButton1" style="position: absolute;top: 28px;margin-left:0;width: 200px;height: 30px;background: #fff"></div>
+                  <div v-if="!hasButton1" style="position: absolute;top: 0;margin-left:0;width: 200px;height: 30px;background: #fff"></div>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -265,7 +289,9 @@
         productId: '',
         fileList: [],
         fileList1: [],
-        type:''
+        type:'',
+        hasButton:true,
+        hasButton1:true,
       }
     },
     created: function () {
@@ -290,26 +316,28 @@
                 this.role = res.data;
               })
             if (res.data.realIdentityFacePic != null) {
+              this.hasButton = false;
               this.fileList.push({
                 url: res.data.realIdentityFacePic
               });
-              setTimeout(function () {
+              /*setTimeout(function () {
                 var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
                 document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
-              }, 300)
+              }, 300)*/
             }
             if (res.data.realIdentityOppositePic != null) {
+              this.hasButton1 = false;
               this.fileList1.push({
                 url: res.data.realIdentityOppositePic
               })
-              setTimeout(function () {
+              /*setTimeout(function () {
                 var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
                 if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
                   document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
                 } else {
                   document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
                 }
-              }, 300)
+              }, 300)*/
             }
           })
       }
@@ -318,29 +346,35 @@
       //传成功
       handleSuccess: function (response, file, fileList) {
         this.query.identityFacePic = response.result.url;
+        this.hasButton = false;
         //移除继续上传按钮
-        setTimeout(function () {
+        /*setTimeout(function () {
           var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
           document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
-        }, 300)
+        }, 300)*/
       },
       handleSuccess1: function (response, file, fileList) {
-        this.query.identityOppositePic = response.result.url
+        this.query.identityOppositePic = response.result.url;
+        this.hasButton1 = false;
         //移除继续上传按钮
-        setTimeout(function () {
+        /*setTimeout(function () {
           var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
           if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
             document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
           } else {
             document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
           }
-        }, 300)
+        }, 300)*/
       },
       handleRemove: function () {
         this.query.identityFacePic = ''
+        this.fileList =[];
+        this.hasButton = true;
       },
       handleRemove1: function () {
         this.query.identityOppositePic = ''
+        this.fileList1 =[]
+        this.hasButton1 = true;
       },
       handleErr:function (err) {
         this.$message({
