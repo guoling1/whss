@@ -594,9 +594,11 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/addWxChannel",method = RequestMethod.POST)
     public CommonResponse addWxChannel(@RequestBody AddWxChannelRequest addWxChannelRequest){
-        Optional<UserChannelPolicy> userChannelPolicyOptional =  userChannelPolicyService.selectByUserIdAndChannelTypeSign(addWxChannelRequest.getUserId(),EnumPayChannelSign.WECHAT_PAY.getId());
-        if(userChannelPolicyOptional.isPresent()){
-            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"此通道已存在");
+        if(StringUtils.isBlank(addWxChannelRequest.getAppId())){
+            return CommonResponse.simpleResponse(-1,"appId不能为空");
+        }
+        if(StringUtils.isBlank(addWxChannelRequest.getAppSecret())){
+            return CommonResponse.simpleResponse(-1,"秘钥不能为空");
         }
         UserChannelPolicy userChannelPolicy = new UserChannelPolicy();
         userChannelPolicy.setUserId(addWxChannelRequest.getUserId());
@@ -608,7 +610,9 @@ public class HsyMerchantAuditController extends BaseController {
         userChannelPolicy.setOpenProductStatus(0);
         userChannelPolicy.setExchannelCode(addWxChannelRequest.getExchannelCode());
         userChannelPolicy.setAppId(addWxChannelRequest.getAppId());
+        userChannelPolicy.setSubAppId(addWxChannelRequest.getSubAppId());
         userChannelPolicy.setStatus(EnumStatus.NORMAL.getId());
+        userChannelPolicy.setAppSecret(addWxChannelRequest.getAppSecret());
         userChannelPolicyService.insert(userChannelPolicy);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"添加成功");
     }
