@@ -158,6 +158,12 @@ public class OrderTradeController extends BaseController{
             rightNow.add(Calendar.DATE, 1);
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
+        if (req.getAppId().equals("好收收")){
+            req.setAppId("hss");
+        }
+        if (req.getAppId().equals("好收银")){
+            req.setAppId("hsy");
+        }
         final String fileZip = this.orderService.downloadExcel(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();

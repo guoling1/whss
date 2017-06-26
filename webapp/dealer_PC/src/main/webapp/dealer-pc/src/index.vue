@@ -141,28 +141,16 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
           <li class="header">钱包++ Version 1.0</li>
-          <li class="active">
-            <router-link :to="{path:'/daili/app/home'}">
-              <i class="glyphicon glyphicon-home"></i> <span>主页</span>
-              <!--<span class="pull-right-container">-->
-              <!--<i class="fa fa-angle-left pull-right"></i>-->
-              <!--</span>-->
-            </router-link>
-            <!--<ul class="treeview-menu">-->
-            <!--<li><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>-->
-            <!--<li class="active"><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>-->
-            <!--</ul>-->
-          </li>
-          <li class="treeview" v-for="(menu,index) in menus">
-            <a href="#">
+          <li  v-for="(menu,index) in menus" :class="index==0?'active treeview':'treeview'">
+            <router-link :to="{path:menu.url}">
               <i :class="classList[index]"></i>
               <span>{{menu.menuName}}</span>
-              <span class="pull-right-container">
+              <span class="pull-right-container" v-if="menu.menuName!='首页'">
                 <i class="fa fa-angle-left pull-right"></i>
                 <!-- <small class="label pull-right bg-green">new</small> -->
               </span>
-            </a>
-            <ul class="treeview-menu">
+            </router-link>
+            <ul class="treeview-menu" v-if="menu.menuName!='首页'">
               <li v-for="item in menu.children">
                 <router-link :to="item.menuUrl"><i class="fa fa-circle-o"></i>{{item.menuName}}</router-link>
               </li>
@@ -170,10 +158,44 @@
               <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
               <!--</li>-->
               <!--<li>-->
-                <!--<router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>-->
+              <!--<router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>-->
               <!--</li>-->
             </ul>
           </li>
+
+          <!--<li class="active">
+            <router-link :to="{path:'/daili/app/home'}">
+              <i class="glyphicon glyphicon-home"></i> <span>主页</span>
+              &lt;!&ndash;<span class="pull-right-container">&ndash;&gt;
+              &lt;!&ndash;<i class="fa fa-angle-left pull-right"></i>&ndash;&gt;
+              &lt;!&ndash;</span>&ndash;&gt;
+            </router-link>
+            &lt;!&ndash;<ul class="treeview-menu">&ndash;&gt;
+            &lt;!&ndash;<li><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>&ndash;&gt;
+            &lt;!&ndash;<li class="active"><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>&ndash;&gt;
+            &lt;!&ndash;</ul>&ndash;&gt;
+          </li>
+          <li class="treeview" v-for="(menu,index) in menus">
+            <a href="#">
+              <i :class="classList[index]"></i>
+              <span>{{menu.menuName}}</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li v-for="item in menu.children">
+                <router-link :to="item.menuUrl"><i class="fa fa-circle-o"></i>{{item.menuName}}</router-link>
+              </li>
+              &lt;!&ndash;<li>&ndash;&gt;
+              &lt;!&ndash;<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+            </ul>
+          </li>-->
           <!--<li class="treeview">
             <a href="#">
               <i class="fa fa-money"></i>
@@ -317,7 +339,8 @@
         position: '',
         dealerLeavel: '',
         list:{},
-        classList:['fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus','fa fa-user']
+        classList:['glyphicon glyphicon-home','fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus','fa fa-user']
+//        classList:['fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus','fa fa-user']
       }
     },
     beforeRouteEnter (to, from, next){
