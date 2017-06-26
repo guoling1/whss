@@ -14,6 +14,7 @@ import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
+import com.jkm.hss.account.enums.EnumBankType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.FrozenRecordService;
@@ -703,7 +704,8 @@ public class OrderServiceImpl implements OrderService {
         }
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
-
+                list.setRefundStat(EnumOrderRefundStatus.of(list.getRefundStatus()).getValue());
+                list.setTradeCardTypes(EnumBankType.of(list.getTradeCardType()).getValue());
                 if (list.getAppId().equals("hss")){
                     String hss="好收收";
                     list.setAppId(hss);
