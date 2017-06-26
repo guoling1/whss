@@ -81,7 +81,6 @@
             <mvc:mapping path="/sqb/addNext"/>
             <mvc:mapping path="/sqb/unFinishedPrompt"/>
             <mvc:mapping path="/sqb/prompt"/>
-            <mvc:mapping path="/sqb/follow"/>
             <mvc:mapping path="/sqb/charge"/>
             <mvc:mapping path="/sqb/collection"/>
             <mvc:mapping path="/sqb/tradeRecord"/>
