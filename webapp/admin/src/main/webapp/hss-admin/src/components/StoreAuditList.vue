@@ -291,10 +291,10 @@
       },
       auditHsy: function (id,status) {
 //        this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
-        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAuditHSY?id='+id+'&status='+status);
+        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAuditHSY?id='+id+'&status='+status,'_blank');
       },
       audit: function (id,status) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAudit?id='+id+'&status='+status);
+        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAudit?id='+id+'&status='+status,'_blank');
 //        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       getDataHss: function () {
