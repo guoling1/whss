@@ -67,6 +67,21 @@ public class PaymentSdkPlaceOrderRequest {
      */
     private String memberId;
 
+    /**
+     * 子商户公众账号ID
+     */
+    private String subAppId;
+
+    /**
+     * 子商户号
+     */
+    private String subMerchantId;
+
+    /**
+     * 用户子标识
+     */
+    private String subMemberId;
+
 
     //////**卡盟通道所需参数**//////////
 

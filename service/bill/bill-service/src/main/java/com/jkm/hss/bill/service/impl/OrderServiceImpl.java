@@ -14,6 +14,7 @@ import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
+import com.jkm.hss.account.enums.EnumBankType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.FrozenRecordService;
@@ -681,6 +682,11 @@ public class OrderServiceImpl implements OrderService {
 //                if (list.getPayChannelSign()!=0) {
 //                    list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
 //                }
+                if (!"".equals(list.getTradeCardNo())&&list.getTradeCardNo()!=null){
+                    final String cardNo = MerchantSupport.decryptBankCard(list.getTradeCardNo());
+                    final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
+                    list.setTradeCardNo(s);
+                }
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
@@ -703,7 +709,8 @@ public class OrderServiceImpl implements OrderService {
         }
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if (list!=null){
-
+                list.setRefundStat(EnumOrderRefundStatus.of(list.getRefundStatus()).getValue());
+                list.setTradeCardTypes(EnumBankType.of(list.getTradeCardType()).getValue());
                 if (list.getAppId().equals("hss")){
                     String hss="好收收";
                     list.setAppId(hss);
@@ -747,6 +754,12 @@ public class OrderServiceImpl implements OrderService {
             }
         return list;
     }
+
+//    public static void main(String[] args){
+//        final String cardNo = MerchantSupport.decryptBankCard("XJd0_EGryy4osdzVoZnmiQ7mYYlZSDWUkCiDsOy60rY");
+//        final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
+//        System.out.print(s);
+//    }
 
     /**
      * {@inheritDoc}
@@ -1748,7 +1761,7 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getUsername());
                 columns.add(list.get(i).getRealname());
 
-                columns.add(req.getStartTime1()+req.getEndTime());
+                columns.add(req.getStartTime1()+"~"+req.getEndTime());
 
                 columns.add(list.get(i).getVaildTradeUserCount());
                 columns.add(list.get(i).getTradeCount());
@@ -1763,6 +1776,22 @@ public class OrderServiceImpl implements OrderService {
 
     private List<AchievementStatisticsResponse> downloadeYJ(QueryOrderRequest req) {
         List<AchievementStatisticsResponse> list = this.orderDao.downloadeYJ(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if ("".equals(list.get(i).getVaildTradeUserCount())||list.get(i).getVaildTradeUserCount()==null){
+                    list.get(i).setVaildTradeUserCount("0");
+                }
+                if ("".equals(list.get(i).getTradeCount())||list.get(i).getTradeCount()==null){
+                    list.get(i).setTradeCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalCount("0");
+                }
+                if ("".equals(list.get(i).getTradeTotalAmount())||list.get(i).getTradeTotalAmount()==null){
+                    list.get(i).setTradeTotalAmount("0.00");
+                }
+            }
+        }
         return list;
     }
 

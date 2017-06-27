@@ -66,4 +66,11 @@ public interface UserChannelPolicyService {
      */
     Optional<UserChannelPolicy> selectByUserIdAndChannelTypeSign(long userId,int channelTypeSign);
 
+    /**
+     * 根据AppId查找AppSecret
+     * @param appId
+     * @return
+     */
+    String selectAppSecretByAppId(String appId);
+
 }

@@ -11,9 +11,124 @@
           <table class="table">
             <tbody>
             <tr>
+              <th style="text-align: right">商户名称:</th>
+              <td>{{record.merchantName}}</td>
+              <!--<td>{{record.merchantType|changeMerchantType}}</td>-->
+              <th style="text-align: right">商户编号:</th>
+              <td>{{record.markCode}}</td>
+              <th style="text-align: right;color: #fff">付款人名称：</th>
+              <td style="color: #fff">{{record.payAccount}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">注册手机号:</th>
+              <td>{{record.mobile}}</td>
+              <th style="text-align: right">银行卡号:</th>
+              <td>{{record.bankNo}}</td>
+              <th style="text-align: right;color: #fff">x</th>
+              <td></td>
+              <!--<th style="text-align: right">银行预留手机号:</th>
+              <td>{{record.reserveMobile}}</td>-->
+            </tr>
+            <tr>
+              <th style="text-align: right">一级代理名称:</th>
+              <td>{{record.proxyName}}</td>
+              <th style="text-align: right">二级代理名称:</th>
+              <td>{{record.proxyName1}}</td>
+              <th style="text-align: right"></th>
+              <td></td>
+            </tr>
+            </tbody></table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead"> 交易信息</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">交易流水号</th>
+              <td>{{record.sn}}</td>
+              <th style="text-align: right">结算周期:</th>
+              <td>{{record.settleType}}</td>
+              <th style="text-align: right">付款人名称:</th>
+              <td>{{record.payAccount}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">订单号:</th>
+              <td>{{record.orderNo}}</td>
+              <th style="text-align: right">结算状态:</th>
+              <td>{{record.settleStatus|changeSettleStatus}}</td>
+              <th style="text-align: right">支付方式:</th>
+              <td>{{record.payType}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">交易时间:</th>
+              <td>{{record.createTime|changeTime}}</td>
+              <th style="text-align: right">结算时间:</th>
+              <td>{{record.successSettleTime|changeTime}}</td>
+              <th style="text-align: right">通道名称:</th>
+              <td>{{record.payChannelSigns}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">交易金额:</th>
+              <td>{{record.tradeAmount}}</td>
+              <th style="text-align: right">收款商户名称:</th>
+              <td>{{record.merchantName}}</td>
+              <th style="text-align: right">付款银行:</th>
+              <td>{{record.bankName}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">手续费率:</th>
+              <td>{{record.payRate}}</td>
+              <th style="text-align: right">商品名称:</th>
+              <td>{{record.goodsName}}</td>
+              <th style="text-align: right">付款银行卡号:</th>
+              <td>{{record.tradeCardNo}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">手续费:</th>
+              <td>{{record.poundage}}</td>
+              <th style="text-align: right">商品描述:</th>
+              <td>{{record.goodsDescribe}}</td>
+              <th style="text-align: right">银行卡类型:</th>
+              <td>{{record.tradeCardTypes}}</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">交易类型:</th>
+              <td>{{record.tradeType|changeTradeType}}</td>
+              <th style="text-align: right">备注信息:</th>
+              <td>{{record.remark}}</td>
+              <th style="text-align: right"></th>
+              <td></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">交易状态:</th>
+              <td>{{record.status|changeStatus}}</td>
+              <th style="text-align: right">已退金额:</th>
+              <td>{{record.refundAmount}}</td>
+              <th style="text-align: right"></th>
+              <td></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">交易成功时间:</th>
+              <td>{{record.paySuccessTime|changeTime}}</td>
+              <th style="text-align: right">退款状态:</th>
+              <td>{{record.refundStat}}</td>
+              <th style="text-align: right"></th>
+              <td></td>
+            </tr>
+            </tbody></table>
+        </div>
+      </div>
+      <!--<div class="box box-primary">
+        <p class="lead"> 收款商户详情</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
               <th style="text-align: right">商户类型:</th>
               <td>—</td>
-              <!--<td>{{record.merchantType|changeMerchantType}}</td>-->
+              &lt;!&ndash;<td>{{record.merchantType|changeMerchantType}}</td>&ndash;&gt;
               <th style="text-align: right">商户编号:</th>
               <td>{{record.markCode}}</td>
               <th style="text-align: right">商户名称:</th>
@@ -101,7 +216,7 @@
             </tr>
             </tbody></table>
         </div>
-      </div>
+      </div>-->
       <div class="box box-primary">
         <p class="lead"> 支付流水</p>
         <div class="table-responsive">

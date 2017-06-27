@@ -182,7 +182,7 @@ public class OrderTradeController extends BaseController{
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
             jsonObject.put("url",url.getHost() + url.getFile());
             list.add(jsonObject);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", list);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "导出成功", list);
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }

@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.bill.service.CalculateService;
@@ -105,6 +106,11 @@ public class CalculateServiceImpl implements CalculateService {
 
         }else{
             //hsy
+            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+            final BasicChannel basicChannel = channelOptional.get();
+            if (basicChannel.getIsSpecial() == EnumBoolean.TRUE.getCode()){
+                return new BigDecimal("0.00");
+            }
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findAuUserByAccountID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
             final Pair<BigDecimal, BigDecimal> currentUserRate = this.userTradeRateService.getCurrentUserRate(appAuUser.getId());
@@ -191,6 +197,9 @@ public class CalculateServiceImpl implements CalculateService {
     //按照通道计算商户手续费，
     private BigDecimal calculateMerchantFee(BigDecimal totalFee, BigDecimal waitOriginMoney, int channelSign) {
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+        if (basicChannel.getIsSpecial() == EnumBoolean.TRUE.getCode()){
+            return new BigDecimal("0.00");
+        }
         BigDecimal waitMoney;
         final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
         switch (upperChannel){

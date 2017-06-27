@@ -50,4 +50,8 @@ public class UserChannelPolicyResponse {
      * 使用中
      */
     private int isUse;
+    /**
+     * 子公众号
+     */
+    private String subAppId;
 }

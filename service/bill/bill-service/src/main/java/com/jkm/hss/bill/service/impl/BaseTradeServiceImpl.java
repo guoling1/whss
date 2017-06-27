@@ -110,6 +110,9 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         placeOrderRequest.setChannel(order.getPayType());
         placeOrderRequest.setWxAppId(placeOrderParams.getWxAppId());
         placeOrderRequest.setMemberId(order.getPayAccount());
+        placeOrderRequest.setSubAppId(placeOrderParams.getSubAppId());
+        placeOrderRequest.setSubMerchantId(placeOrderParams.getSubMerchantId());
+        placeOrderRequest.setSubMemberId(placeOrderParams.getSubMemberId());
 
         placeOrderRequest.setSettleNotifyUrl(placeOrderParams.getSettleNotifyUrl());
         placeOrderRequest.setBankCode(placeOrderParams.getBankBranchCode());
@@ -408,7 +411,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         callbackResponse.setSn(updateOrder.getSn());
         callbackResponse.setSuccessTime(updateOrder.getPaySuccessTime());
         callbackResponse.setTradeAmount(order.getTradeAmount());
-        callbackResponse.setPoundage(order.getPoundage());
+        callbackResponse.setPoundage(updateOrder.getPoundage());
         callbackResponse.setCode(EnumBasicStatus.SUCCESS.getId());
         callbackResponse.setMessage(updateOrder.getRemark());
         this.hsyTransactionService.handlePayCallbackMsg(callbackResponse);

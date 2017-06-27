@@ -65,4 +65,11 @@ public interface UserChannelPolicyDao {
      * @return
      */
     UserChannelListResponse getCurrentChannelName(@Param("userId") long userId);
+    /**
+     * 根据AppId查找AppSecret
+     * @param appId
+     * @return
+     */
+    String selectAppSecretByAppId(@Param("appId") String appId);
+
 }

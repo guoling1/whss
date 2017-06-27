@@ -654,7 +654,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
                 if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
                     try {
-                        this.sendMsgService.refundSendMessage(payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
+                        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payOrder.getPayChannelSign());
+                        this.sendMsgService.refundSendMessage(hsyOrder.getShopname(), payChannelSign.getPaymentChannel().getValue(),
+                                payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
                     } catch (final Throwable e) {
                         log.error("推送失败");
                     }
