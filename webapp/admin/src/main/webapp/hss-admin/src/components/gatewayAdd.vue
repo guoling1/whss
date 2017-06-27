@@ -113,12 +113,20 @@
       this.dealerId = this.$route.query.id;
       this.$http.post('/admin/product/list')
         .then(function (res) {
-          this.products = res.data;
-          for(var i=0;i<this.products.length;i++){
-            if(this.products[i].productId==this.$route.query.productId){
-              this.productType = this.products[i].type;
+//          this.products = res.data;
+          for(var j in res.data){
+            if(res.data[j].productId==this.$route.query.productId){
+              this.products[0] = res.data[j];
             }
           }
+          this.productType = this.products[0].type;
+//          for(var i=0;i<this.products.length;i++){
+//            if(this.products[i].productId==this.$route.query.productId){
+//              this.productType = this.products[i].type;
+//            }
+//          }
+//          this.products = [].push(this.products['this.productType'])
+          console.log(this.products)
         }, function (err) {
           this.$message({
             showClose: true,
