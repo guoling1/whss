@@ -116,8 +116,8 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         calendar2.add(Calendar.DATE, -1*7);
         calendar2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 
-        final Date startTime = DateFormatUtil.parse("2017-06-11 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);//DateFormatUtil.parse(DateFormatUtil.format(calendar.getTime(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        final Date endTime = DateFormatUtil.parse("2017-06-24 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);//DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date startTime = DateFormatUtil.parse(DateFormatUtil.format(calendar.getTime(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endTime = DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final List<AppAuUser> appAuUsers = this.hsyUserDao.selectAllCorporationUser();
         for (AppAuUser appAuUser : appAuUsers) {
             try {
