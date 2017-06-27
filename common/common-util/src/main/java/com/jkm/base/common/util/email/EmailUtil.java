@@ -55,13 +55,13 @@ public final class EmailUtil {
             //存在附件
             final String[] filePaths = baseEmailInfo.getAttachFileNames();
             if (filePaths != null && filePaths.length > 0) {
-                for(String filePath:filePaths){
-                    File file = new File(filePath);
+                for(String filePath : filePaths){
+                    final File file = new File(filePath);
                     if(file.exists()){//附件存在磁盘中
-                        FileDataSource fds = new FileDataSource(file);//得到数据源
-                        messageBodyPart.setDataHandler(new DataHandler(fds));//得到附件本身并至入BodyPart
-                        messageBodyPart.setFileName(file.getName());//得到文件名同样至入BodyPart
-                        mainPart.addBodyPart(messageBodyPart);
+                        final MimeBodyPart fileBodyPart = new MimeBodyPart();
+                        fileBodyPart.setDataHandler(new DataHandler(new FileDataSource(file)));//得到附件本身并至入BodyPart
+                        fileBodyPart.setFileName(file.getName());//得到文件名同样至入BodyPart
+                        mainPart.addBodyPart(fileBodyPart);
                     }
                 }
             }
