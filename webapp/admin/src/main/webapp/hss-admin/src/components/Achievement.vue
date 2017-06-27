@@ -4,7 +4,7 @@
       <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">销售业绩统计（好收银）</h3>
-          <el-button type="primary" @click="isMask = true" size="small" class="pull-right">导出</el-button>
+          <el-button type="primary" @click="onload" size="small" class="pull-right" :loading="isLoading">导出</el-button>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -33,13 +33,11 @@
             <el-table-column width="62" label="序号" type="index"></el-table-column>
             <el-table-column prop="username" label="报单员登录名" min-width="110"></el-table-column>
             <el-table-column prop="realname" label="报单员姓名" min-width="97"></el-table-column>
-            <el-table-column label="日期" min-width="100">
-              <template scope="scope">{{scope.row.createTime|changeDate}}</template>
-            </el-table-column>
-            <el-table-column prop="vaildTradeUserCount" label="当日有效商户数(有一笔5元以上交易)" align="right" min-width="234"></el-table-column>
-            <el-table-column prop="tradeCount" label="当日5元以上交易笔数" align="right"  min-width="155"></el-table-column>
-            <el-table-column prop="tradeTotalCount" label="当日名下商户交易总笔数" align="right" min-width="170"></el-table-column>
-            <el-table-column prop="tradeTotalAmount" label="当日名下商户交易总额（元）" align="right" min-width="200">
+            <el-table-column prop="createTimes" label="日期" min-width="100"></el-table-column>
+            <el-table-column prop="vaildTradeUserCount" label="有效商户数(有一笔5元以上交易)" align="right" min-width="234"></el-table-column>
+            <el-table-column prop="tradeCount" label="5元以上交易笔数" align="right"  min-width="155"></el-table-column>
+            <el-table-column prop="tradeTotalCount" label="名下商户交易总笔数" align="right" min-width="170"></el-table-column>
+            <el-table-column prop="tradeTotalAmount" label="名下商户交易总额（元）" align="right" min-width="200">
               <template scope="scope">{{scope.row.tradeTotalAmount|toFix}}</template>
             </el-table-column>
           </el-table>
@@ -80,6 +78,7 @@
     name: 'achievement',
     data(){
       return {
+        isLoading:false,
         pickerOptions: {
           disabledDate: function (time) {
            return time.getTime() > Date.now() - 8.64e7;
@@ -178,6 +177,23 @@
               type: 'error'
             })
           })
+      },
+      onload: function () {
+        this.isLoading = true
+        this.$http.post('/admin/AchievementStatistics/downLoad',this.query)
+          .then(res=>{
+          this.isLoading = false;
+          this.loadUrl = res.data[0].url;
+          this.isMask = true;
+        })
+        .catch(err=>{
+          this.isLoading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       },
       search: function () {
         this.query.pageNo = 1;

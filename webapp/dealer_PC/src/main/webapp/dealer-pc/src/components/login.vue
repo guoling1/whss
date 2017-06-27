@@ -73,10 +73,30 @@
             } else {
               localStorage.setItem('accountInfo', null);
             }
-
+            let data = res.data;
+            let flag= false;
+            let url='';
             sessionStorage.setItem('login', JSON.stringify(res.data));
             // 跳转到 home 页
-            this.$router.push('/daili/app/home');
+            for(var i=0;i<data.length;i++){
+                if(data[i].url!=null){
+                  url = data[i].url;
+                  break;
+                }else {
+                    for(var j=0;j<data[i].children.length;j++){
+                      if(data[i].children[j]!=null){
+                        url = data[i].children[j].menuUrl;
+                        flag = true;
+                        break;
+                      }
+                    }
+                }
+                if(flag){
+                    break
+                }
+            }
+
+            this.$router.push(url);
             this.isLogin = false;
           }, err => {
             this.isLogin = false;

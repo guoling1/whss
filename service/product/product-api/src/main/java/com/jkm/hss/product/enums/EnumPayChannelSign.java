@@ -118,33 +118,37 @@ public enum EnumPayChannelSign {
     XMMS_ALIPAY_D0(704, "xmms_alipay_d0", EnumPaymentChannel.ALIPAY, "厦门民生支付宝D0", EnumUpperChannel.XMMS_BANK, false, EnumBalanceTimeType.D0, true),
 
     /**
-     * 收银家WX
+     * 厦门华夏微信
      */
-    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "厦门华夏微信", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
     /**
-     * 收银家zfb
+     * 厦门华夏支付宝
      */
-    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "厦门华夏支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
     /**
      * 合利宝快捷
      */
     HE_LI_UNIONPAY(901, "he_li_unionpay", EnumPaymentChannel.UNIONPAY, "合利宝快捷", EnumUpperChannel.HE_LI_UNIONPAY, false, EnumBalanceTimeType.D0, false),
     /**
-     * 合利宝快捷
+     * 汇聚微信
      */
     HJ_WECHAT(1001, "hj_wechat", EnumPaymentChannel.WECHAT_PAY, "汇聚微信", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
     /**
-     * 合利宝快捷
+     * 汇聚支付宝
      */
     HJ_ALIPAY(1002, "hj_alipay", EnumPaymentChannel.ALIPAY, "汇聚支付宝", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
     /**
-     * 合利宝快捷
+     * 汇聚银联
      */
     HJ_UNIONPAY(1003, "hj_unionpay", EnumPaymentChannel.UNIONPAY_CODE, "汇聚银联", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
     /**
-     * 合利宝QQ
+     * 汇聚QQ钱包
      */
     HJ_QQPAY(1004, "hj_qqpay", EnumPaymentChannel.QQPAY, "汇聚QQ钱包", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
+    /**
+     * 汇聚QQ钱包
+     */
+    HJ_FAST_PAY(1005, "hj_fast_pay", EnumPaymentChannel.UNIONPAY, "汇聚快捷", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
     /**
      * 微信官方支付
      */
@@ -272,8 +276,7 @@ public enum EnumPayChannelSign {
         return Pair.of(weixin,zhifubao);
     }
 
-    /**
-     * 是否是快捷支付渠道(只针对，需要系统对信用卡做处理的，有些是渠道直接处理，在此不算在内，比如阳光快捷)
+    /**     * 是否是快捷支付渠道(只针对，需要系统对信用卡做处理的，有些是渠道直接处理，在此不算在内，比如阳光快捷)
      *
      * @param channelSign
      * @return
@@ -282,7 +285,8 @@ public enum EnumPayChannelSign {
         return MB_UNIONPAY.getId() == channelSign
                 || MB_UNIONPAY_DO.getId() == channelSign
                 || EL_UNIONPAY.getId() == channelSign
-                || HE_LI_UNIONPAY.getId() == channelSign;
+                || HE_LI_UNIONPAY.getId() == channelSign
+                || HJ_FAST_PAY.getId() == channelSign;
     }
 
     /**
