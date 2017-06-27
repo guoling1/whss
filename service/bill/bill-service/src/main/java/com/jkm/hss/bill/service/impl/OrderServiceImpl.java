@@ -719,6 +719,11 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.setAppId(hsy);
                 }
+                if (!"".equals(list.getTradeCardNo())&&list.getTradeCardNo()!=null){
+                    final String cardNo = MerchantSupport.decryptBankCard(list.getTradeCardNo());
+                    final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
+                    list.setTradeCardNo(s);
+                }
 
                 if (list.getMobile()!=null&&!"".equals(list.getMobile())){
                     list.setMobile(MerchantSupport.decryptMobile(list.getMobile()));
@@ -755,11 +760,11 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
-//    public static void main(String[] args){
-//        final String cardNo = MerchantSupport.decryptBankCard("XJd0_EGryy4osdzVoZnmiQ7mYYlZSDWUkCiDsOy60rY");
-//        final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
-//        System.out.print(s);
-//    }
+    public static void main(String[] args){
+        final String cardNo = MerchantSupport.decryptBankCard("L3zTNwdijJsm-TxYWgpPKPEH3MUGcLIKDif3qDTVfPg");
+        final String s = cardNo.substring(0, 6) + "******" + cardNo.substring(cardNo.length() - 4, cardNo.length());
+        System.out.print(s);
+    }
 
     /**
      * {@inheritDoc}
