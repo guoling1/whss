@@ -589,9 +589,12 @@ public class WxPubController extends BaseController {
                     mi.setLevel(EnumUpGradeType.COMMON.getId());
                     mi.setHierarchy(0);
                     mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+                    if(oemId>0){
+                        mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
+                    }
                     mi.setOemId(oemId);
                     //判断是否能升级
-                    if(mi.getFirstDealerId()>0){
+                    if(mi.getFirstDealerId()>0&&oemId==0){
                         Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
                         if(dealerOptional.isPresent()){
                             int recommendBtn = dealerOptional.get().getRecommendBtn();
@@ -605,14 +608,18 @@ public class WxPubController extends BaseController {
                     //添加商户
                     merchantInfoService.regByCode(mi);
                     //初始化费率
-                    if(mi.getFirstDealerId()>0){
+                    if(mi.getFirstDealerId()>0||oemId>0){
+                        long currentDealerId = oemId;
+                        if(mi.getFirstDealerId()>0){
+                            currentDealerId = mi.getFirstDealerId();
+                        }
                         log.info("开始继承代理商产品费率配置");
                         //配置代理商费率
-                        Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
+                        Optional<Dealer> dealerOptional = dealerService.getById(currentDealerId);
                         if(dealerOptional.isPresent()){//存在
                             //②配置费率
-                            log.info("该商户继承代理商{}费率",mi.getFirstDealerId());
-                            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(mi.getFirstDealerId(),productId);
+                            log.info("该商户继承代理商{}费率",currentDealerId);
+                            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(currentDealerId,productId);
                             if(dealerChannelRateList.size()>0){
                                     for(int i=0;i<dealerChannelRateList.size();i++){
                                         MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
@@ -654,7 +661,7 @@ public class WxPubController extends BaseController {
                                 return CommonResponse.simpleResponse(-1, "代理商产品费率配置有误");
                             }
                         }else{
-                            log.info("初始化费率是二维码{}对应的代理商{}不存在",loginRequest.getQrCode(),mi.getFirstDealerId());
+                            log.info("初始化费率是二维码{}对应的代理商{}不存在",loginRequest.getQrCode(),currentDealerId);
                             return CommonResponse.simpleResponse(-1, "代理商不存在");
                         }
                     }else{
