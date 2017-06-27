@@ -131,6 +131,7 @@ public class TradeServiceImpl implements TradeService {
         log.info("业务方[{}],通过渠道[{}]进行支付[{}],实付金额[{}]", payParams.getAppId(), payParams.getChannel(), payParams.getTradeAmount(), payParams.getRealPayAmount());
         final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(payParams.getBusinessOrderNo());
         if (orderOptional.isPresent()) {
+            log.info("业务订单号重复【{}】", payParams.getBusinessOrderNo());
             final PayResponse payResponse = new PayResponse();
             payResponse.setBusinessOrderNo(payParams.getBusinessOrderNo());
             payResponse.setCode(EnumBasicStatus.FAIL.getId());

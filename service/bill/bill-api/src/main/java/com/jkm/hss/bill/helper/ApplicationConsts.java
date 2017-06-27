@@ -37,7 +37,7 @@ public final class ApplicationConsts {
         @Key("oss_bucket")
         String ossBucket();
 
-        @Key("oss_file")
+        @Key("oss.file")
         @DefaultValue("jkm-file")
         String ossFile();
 
