@@ -121,7 +121,10 @@ public class WebSkipController extends BaseController {
             }
         }
         Preconditions.checkState(appId!=null&&!"".equals(appId), "微信授权失败");
-        String appSecret = userChannelPolicyService.selectAppSecretByAppId(appId);
+        String appSecret =WxConstants.APP_HSY_SECRET;
+        if(!(WxConstants.APP_HSY_ID).equals(appId)){
+            appSecret = userChannelPolicyService.selectAppSecretByAppId(appId);
+        }
         Map<String,String> ret = WxPubUtil.getOpenid(code, appId,appSecret);
         Preconditions.checkState(ret.get("openid")!=null&&!"".equals(ret.get("openid")), "微信授权失败");
         model.addAttribute("openId", ret.get("openid"));
