@@ -145,6 +145,7 @@ public enum EnumPayChannelSign {
      * 合利宝QQ
      */
     HJ_QQPAY(1004, "hj_qqpay", EnumPaymentChannel.QQPAY, "汇聚QQ钱包", EnumUpperChannel.HJ_PAY, false, EnumBalanceTimeType.D0, false),
+
     /**
      * 微信官方支付
      */

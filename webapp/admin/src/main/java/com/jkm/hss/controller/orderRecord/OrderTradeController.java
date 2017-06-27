@@ -149,7 +149,21 @@ public class OrderTradeController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
-    private CommonResponse downLoad(@RequestBody OrderTradeRequest req){
+    private CommonResponse downLoad(@RequestBody OrderTradeRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        if (req.getAppId().equals("好收收")){
+            req.setAppId("hss");
+        }
+        if (req.getAppId().equals("好收银")){
+            req.setAppId("hsy");
+        }
         final String fileZip = this.orderService.downloadExcel(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -168,7 +182,7 @@ public class OrderTradeController extends BaseController{
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
             jsonObject.put("url",url.getHost() + url.getFile());
             list.add(jsonObject);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", list);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "导出成功", list);
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }

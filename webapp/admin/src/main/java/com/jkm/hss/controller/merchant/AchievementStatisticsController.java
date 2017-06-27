@@ -1,9 +1,11 @@
 package com.jkm.hss.controller.merchant;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.AchievementStatisticsResponse;
 import com.jkm.hss.bill.entity.QueryOrderRequest;
 import com.jkm.hss.bill.service.OrderService;
@@ -24,7 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,23 +49,22 @@ public class AchievementStatisticsController extends BaseController {
     public CommonResponse getAchievement(@RequestBody QueryOrderRequest req) throws ParseException {
         final PageModel<AchievementStatisticsResponse> pageModel = new PageModel<AchievementStatisticsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String checkedTime = sdf.format(date);
-        req.setStartTime(checkedTime);
-        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
-            Date dt = sdf.parse(req.getEndTime());
-            Calendar rightNow = Calendar.getInstance();
-            rightNow.setTime(dt);
-            rightNow.add(Calendar.DATE, 1);
-            req.setEndTime(sdf.format(rightNow.getTime()));
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime1() !=null && req.getEndTime()!=null && req.getStartTime1()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime1()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime1() + "~" + req.getEndTime();
+            req.setCreateTime(s);
+            req.setBegin(begin);
+            req.setEnd(end);
         }
         List<AchievementStatisticsResponse> list = this.orderService.getAchievement(req);
         int count = this.orderService.getAchievementCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        String downLoadExcel = downLoad(req);
-        pageModel.setExt(downLoadExcel);
+//        String downLoadExcel = downLoad(req);
+//        pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
@@ -71,7 +72,19 @@ public class AchievementStatisticsController extends BaseController {
      * 导出全部
      * @return
      */
-    private String downLoad(@RequestBody QueryOrderRequest req){
+    @ResponseBody
+    @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
+    private CommonResponse downLoad(@RequestBody QueryOrderRequest req){
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime1() !=null && req.getEndTime()!=null && req.getStartTime1()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime1()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime1() + "~" + req.getEndTime();
+            req.setCreateTime(s);
+            req.setBegin(begin);
+            req.setEnd(end);
+        }
         final String fileZip = this.orderService.downloadAchievement(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -83,10 +96,14 @@ public class AchievementStatisticsController extends BaseController {
         String fileName = "hss/"+  nowDate + "/" + "Achievement.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
         URL url = null;
+        JSONObject jsonObject = new JSONObject();
+        List list = new ArrayList();
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
+            jsonObject.put("url",url.getHost() + url.getFile());
+            list.add(jsonObject);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "导出成功", list);
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }
