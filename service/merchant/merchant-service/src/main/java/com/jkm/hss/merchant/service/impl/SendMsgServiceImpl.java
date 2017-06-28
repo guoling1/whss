@@ -291,7 +291,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             JSONObject jsonParam = new JSONObject();
             JSONObject jo = new JSONObject();
             final JSONObject first =new JSONObject();
-            first.put("value", "恭喜您，商户资料审核通过，您可以直接扫描收款牌上的二维码收款，也可以从“好收收”公众号发起收款。");
+            first.put("value", "恭喜您，商户资料审核通过，您可以从公众号发起收款啦。");
             jo.put("first", first);
             final JSONObject keyword1 =new JSONObject();
             keyword1.put("value", result);

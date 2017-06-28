@@ -932,6 +932,7 @@ public class WxPubController extends BaseController {
         if(userInfoOptional.isPresent()){//用户存在
             int returnCount = userInfoService.cleanOpenId(userInfoOptional.get().getId());
             if(returnCount>0){
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "解绑成功");
             }else{
                 return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "解绑失败，请重试");
