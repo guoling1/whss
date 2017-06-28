@@ -70,6 +70,8 @@ public class AppAuUser {
      */
     private int autoSendBalanceAccountEmail;
 
+    private String passwordOrigin;//原始密码
+
     public Long getId() {
         return id;
     }

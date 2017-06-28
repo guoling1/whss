@@ -132,6 +132,8 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         if(type==null)
             throw new ApiHandleException(ResultCode.AUTHCODE_NOT_BELONG_BOTH);
         hsyOrder=hsyOrderDao.selectById(hsyOrder.getId());
+        if(hsyOrder.getOrderstatus()!=null&&hsyOrder.getOrderstatus()==EnumOrderStatus.PAY_FAIL.getId())
+            throw new ApiHandleException(ResultCode.ORDER_HAS_FAILED);
         hsyOrder.setAuthCode(authCode);
 
         UserCurrentChannelPolicy userCurrentChannelPolicy=userCurrentChannelPolicyDao.selectByUserId(hsyOrder.getUid());
