@@ -89,6 +89,9 @@ public class DealerLoginController extends BaseController{
                 }
             }
             List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(adminUserOptional.get().getRoleId(),type,adminUserOptional.get().getIsMaster());
+            if(loginMenu.isEmpty()){
+                return CommonResponse.simpleResponse(-1, "权限不足");
+            }
             return CommonResponse.objectResponse(1, adminUserOptional.get().getRealname(),loginMenu);
         }
         return CommonResponse.simpleResponse(-1, "登录失败,密码错误");

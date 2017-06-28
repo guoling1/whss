@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.helper;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jkm.hss.merchant.entity.WxConfig;
@@ -113,16 +114,15 @@ public class WxPubUtil {
             HttpEntity entity = res.getEntity();
             responseContent = EntityUtils.toString(entity, "UTF-8");
             JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
-            // 将json字符串转换为json对象
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
             {
                 if (json.get("errcode")!=null)
-                {// 错误时微信会返回错误码等信息，{"errcode":40013,"errmsg":"invalid appid"}
-//                    ret.put("errcode", json.get("errcode").getAsString());
-//                    ret.put("errmsg",json.get("errmsg").getAsString());
+                {
+                    log.info("微信授权返回信息[{}]",json.toString());
+                    Preconditions.checkState(json.get("errcode")==null, "微信授权失败");
                 }
                 else
-                {// 正常情况下{"access_token":"ACCESS_TOKEN","expires_in":7200}
+                {
                     ret.put("openid", json.get("openid").getAsString());
                     ret.put("accesstoken",json.get("access_token").getAsString());
                     ret.put("refresh_token",json.get("refresh_token").getAsString());

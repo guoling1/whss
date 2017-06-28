@@ -312,6 +312,8 @@ public class MerchantTradeResponse {
      */
     private int tradeCardType;
 
+    private String tradeCardTypes;
+
     /**
      * 交易卡号
      */
@@ -323,6 +325,8 @@ public class MerchantTradeResponse {
      * {@link com.jkm.hss.bill.enums.EnumOrderRefundStatus}
      */
     private int refundStatus;
+
+    private String refundStat;
 
     /**
      * 退款金额

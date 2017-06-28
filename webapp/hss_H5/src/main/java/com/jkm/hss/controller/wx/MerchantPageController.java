@@ -40,7 +40,7 @@ public class MerchantPageController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "toSkip", method = RequestMethod.GET)
-    public String  toOemSkip(HttpServletRequest request,HttpServletResponse response) throws Exception{
+    public String  toSkip(HttpServletRequest request,HttpServletResponse response) throws Exception{
         String[] arr = request.getQueryString().split("&");
         String code="";
         String state="";

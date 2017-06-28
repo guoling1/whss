@@ -97,6 +97,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
             if (StringUtils.isEmpty(userChannelPolicy.getSubAppId())) {
                 payParams.setMemberId(hsyOrder.getMemberId());
             } else {
+                payParams.setMemberId("");
                 payParams.setSubAppId(userChannelPolicy.getSubAppId());
                 payParams.setSubMemberId(hsyOrder.getMemberId());
             }
