@@ -395,11 +395,16 @@ public class HsyUserServiceImpl implements HsyUserService {
                 }
             }
         }else{
-            if(appAuUser.getAlipayRate()==null)
-                appAuUser.setAlipayRate(BigDecimal.ZERO);
-            if(appAuUser.getWeixinRate()==null)
-                appAuUser.setWeixinRate(BigDecimal.ZERO);
+            if(appAuUserFind.getAlipayRate()==null)
+                appAuUserFind.setAlipayRate(BigDecimal.ZERO);
+            if(appAuUserFind.getWeixinRate()==null)
+                appAuUserFind.setWeixinRate(BigDecimal.ZERO);
         }
+
+        if(appAuUserFind.getPassword().equals("888888"))
+            appAuUserFind.setIsNeededAltingPassword(1);
+        else
+            appAuUserFind.setIsNeededAltingPassword(0);
 
         List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
         if(adminUserList!=null&&adminUserList.size()!=0)
@@ -1169,11 +1174,16 @@ public class HsyUserServiceImpl implements HsyUserService {
                 }
             }
         }else{
-            if(appAuUser.getAlipayRate()==null)
-                appAuUser.setAlipayRate(BigDecimal.ZERO);
-            if(appAuUser.getWeixinRate()==null)
-                appAuUser.setWeixinRate(BigDecimal.ZERO);
+            if(appAuUserFind.getAlipayRate()==null)
+                appAuUserFind.setAlipayRate(BigDecimal.ZERO);
+            if(appAuUserFind.getWeixinRate()==null)
+                appAuUserFind.setWeixinRate(BigDecimal.ZERO);
         }
+
+        if(appAuUserFind.getPassword().equals("888888"))
+            appAuUserFind.setIsNeededAltingPassword(1);
+        else
+            appAuUserFind.setIsNeededAltingPassword(0);
 
         List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
         if(adminUserList!=null&&adminUserList.size()!=0)
