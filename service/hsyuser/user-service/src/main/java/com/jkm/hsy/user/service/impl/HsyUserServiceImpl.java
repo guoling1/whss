@@ -35,6 +35,7 @@ import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyUserService;
 import com.jkm.hsy.user.util.AppDateUtil;
+import com.jkm.hsy.user.util.HttpUtil;
 import com.jkm.hsy.user.util.ShaUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1328,6 +1329,126 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setUpdateTime(new Date());
         hsyUserDao.updateByID(appAuUser);
         return "";
+    }
+
+    /**HSY001063 修改密码*/
+    public String updatePassword(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+        if(!(appAuUser.getPasswordOrigin()!=null&&!appAuUser.getPasswordOrigin().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户原密码");
+        if(!(appAuUser.getPassword()!=null&&!appAuUser.getPassword().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户新密码");
+
+        /**查询用户*/
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByID(appAuUser.getId());
+        if(!(list!=null&&list.size()!=0))
+            throw new ApiHandleException(ResultCode.USER_CAN_NOT_BE_FOUND);
+
+        AppAuUser appAuUserFind=list.get(0);
+        if(!appAuUser.getPasswordOrigin().equals(appAuUserFind.getPassword()))
+            throw new ApiHandleException(ResultCode.ORIGINAL_PASSWORD_NOT_MATCH);
+
+        hsyUserDao.updateByID(appAuUser);
+
+        return "";
+    }
+
+    /**HSY001064 发送语音验证码*/
+    public String insertAndSendVoiceVerificationCode(String dataParam,AppParam appParam)throws ApiHandleException{
+        Date date=new Date();
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuVerification appAuVerification=null;
+        try{
+            appAuVerification=gson.fromJson(dataParam, AppAuVerification.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuVerification.getCellphone()!=null&&!appAuVerification.getCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"手机号");
+        if (!ValidateUtils.isMobile(appAuVerification.getCellphone()))
+            throw new ApiHandleException(ResultCode.CELLPHONE_NOT_CORRECT_FORMAT);
+        if(!(appAuVerification.getType()!=null))
+            throw new ApiHandleException(ResultCode.VERIFICATIONCODE_TYPE_NULL);
+        if(!VerificationCodeType.contains(appAuVerification.getType()))
+            throw new ApiHandleException(ResultCode.VERIFICATIONCODE_TYPE_NOT_EXSIT);
+
+        /**数据验证*/
+        appAuVerification.setCreateTime(AppDateUtil.changeDate(date, Calendar.MINUTE,-10));
+        appAuVerification.setUpdateTime(date);
+        Integer countFrequent=hsyVerificationDao.findVCodeCountWithinTime(appAuVerification);
+        if(countFrequent>=2)
+            throw new ApiHandleException(ResultCode.VERIFICATIONCODE_FREQUENT);
+
+        AppAuUser appAuUser=new AppAuUser();
+        appAuUser.setCellphone(appAuVerification.getCellphone());
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
+        if(appAuVerification.getType()==1) {
+            if (list != null && list.size() != 0)
+                throw new ApiHandleException(ResultCode.CELLPHONE_HAS_BEEN_REGISTERED);
+        } else if(appAuVerification.getType()==2){
+            if (!(list != null && list.size() != 0))
+                throw new ApiHandleException(ResultCode.CEELLPHONE_HAS_NOT_BEEN_REGISTERED);
+        }
+
+
+        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.VERIFICATION_NOTICE_TYPE_ID_VOICE);
+        String template="";
+        if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
+            template=messageTemplate.getMessageTemplate();
+        else
+            template=AppConstant.VERIFICATION_MESSAGE_VOICE;
+        /**发送验证码*/
+        String sn="";
+        String reg="<[^>]*>";
+        String code=(int)((Math.random()*9+1)*100000)+"";
+        String content=template.replace("${code}",code).replace("${type}",VerificationCodeType.getValue(appAuVerification.getType()));
+        Map<String,String> keyValueForm=new HashMap<String, String>();
+        keyValueForm.put("sn", AppConstant.SN_VOICE);
+        keyValueForm.put("pwd", AppConstant.PWD_VOICE);
+        keyValueForm.put("mobile", appAuVerification.getCellphone());
+        keyValueForm.put("content", content);
+        keyValueForm.put("ext", "");
+        keyValueForm.put("stime", "");
+        try {
+            String ret = HttpUtil.httpRequestWithForm(AppConstant.SMSURL_VOICE, "utf-8", keyValueForm);
+            sn=ret.replaceAll(reg,"").replace("\r","").replace("\n","");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ApiHandleException(ResultCode.VERIFICATIONCODE_SEND_FAIL);
+        }
+
+        SendMessageRecord sendRecord = new SendMessageRecord();
+        sendRecord.setUserType(1);
+        sendRecord.setMobile(appAuVerification.getCellphone());
+        sendRecord.setContent(content);
+        sendRecord.setMessageTemplateId(messageTemplate.getId());
+        sendRecord.setSn(sn);
+        sendRecord.setStatus(1);
+        sendMessageRecordDao.insert(sendRecord);
+
+        /**验证码保存*/
+        appAuVerification.setSn(sn);
+        appAuVerification.setTimeout(AppDateUtil.changeDate(date, Calendar.MINUTE,5));
+        Date dateN=new Date();
+        appAuVerification.setCreateTime(dateN);
+        appAuVerification.setUpdateTime(dateN);
+        appAuVerification.setCode(code);
+        hsyVerificationDao.insert(appAuVerification);
+        return "{\"sn\":\""+sn+"\"}";
     }
 
     /**

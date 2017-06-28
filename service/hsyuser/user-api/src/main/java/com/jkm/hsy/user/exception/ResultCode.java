@@ -56,6 +56,7 @@ public enum ResultCode {
 	ORDER_TO_TRADE_FAIL(2050,"付款错误"),
 	ORDER_NOT_FOUND(2051,"找不到该订单"),
 	ORDER_HAS_FAILED(2052,"下单已经失败"),
+	ORIGINAL_PASSWORD_NOT_MATCH(2053,"原密码输入错误"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

@@ -48,4 +48,31 @@ public class ActiveScanControllerTester {
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
+
+    @Test
+    public void testUpdatePassword()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001063");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"id\": 71,\"passwordOrigin\":\"123456\",\"password\":\"hao0818\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testInsertAndSendVerificationCode()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001064");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"cellphone\": \"18612406643\",\"type\":\"2\"}";
+//        String param="{\"cellphone\": \"13521691431\",\"type\":\"2\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
 }

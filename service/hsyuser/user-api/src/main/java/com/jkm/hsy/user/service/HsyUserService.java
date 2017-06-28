@@ -23,6 +23,9 @@ public interface HsyUserService {
     public String refreshlogin(String dataParam,AppParam appParam)throws ApiHandleException;
     public String updateProtocolSeenStatus(String dataParam,AppParam appParam)throws ApiHandleException;
 
+    public String updatePassword(String dataParam,AppParam appParam)throws ApiHandleException;
+    public String insertAndSendVoiceVerificationCode(String dataParam,AppParam appParam)throws ApiHandleException;
+
     /**
      * 更新email
      *

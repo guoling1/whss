@@ -101,5 +101,10 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001060", new String[]{"hsyBalanceAccountEmailService","updateAutoSendBalanceAccountEmail"});
         bizMapper.put("HSY001061", new String[]{"hsyBalanceAccountEmailService","sendBalanceAccountEmail"});
         bizMapper.put("HSY001062", new String[]{"hsyBalanceAccountEmailService","checkAutoSendBalanceAccountEmail"});
+        /**修改密码*/
+        bizMapper.put("HSY001063", new String[]{"hsyUserService","updatePassword"});
+        /**发送语音验证码*/
+        bizMapper.put("HSY001064", new String[]{"hsyUserService","insertAndSendVoiceVerificationCode"});
+
     }
 }
