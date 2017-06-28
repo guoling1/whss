@@ -1,9 +1,6 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -27,14 +24,14 @@ import com.jkm.hsy.user.service.HsyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -53,8 +50,6 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
     private HsyUserDao hsyUserDao;
     @Autowired
     private HSYOrderService hsyOrderService;
-    @Autowired
-    private OSSClient ossClient;
 
     /**
      * {@inheritDoc}
@@ -121,13 +116,13 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         calendar2.add(Calendar.DATE, -1*7);
         calendar2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 
-        final Date startTime = DateFormatUtil.parse("2017-06-11 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);//DateFormatUtil.parse(DateFormatUtil.format(calendar.getTime(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        final Date endTime = DateFormatUtil.parse("2017-06-24 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);//DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date startTime = DateFormatUtil.parse(DateFormatUtil.format(calendar.getTime(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endTime = DateFormatUtil.parse(DateFormatUtil.format(calendar2.getTime(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final List<AppAuUser> appAuUsers = this.hsyUserDao.selectAllCorporationUser();
         for (AppAuUser appAuUser : appAuUsers) {
             try {
                 if (!StringUtils.isEmpty(appAuUser.getEmail())) {
-                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
                     log.info("商户[{}], 发送周邮件成功", appAuUser.getGlobalID());
                 }
             } catch (final Throwable e) {
@@ -153,7 +148,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         for (AppAuUser appAuUser : appAuUsers) {
             try {
                 if (!StringUtils.isEmpty(appAuUser.getEmail())) {
-                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
                     log.info("商户[{}], 发送月邮件成功", appAuUser.getGlobalID());
                 }
             } catch (final Throwable e) {
@@ -188,19 +183,17 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(userRole.getUid()).get(0);
         this.hsyUserService.updateEmailById(email, appAuUser.getId());
         final String merchantNo = appAuUser.getGlobalID();
-        this.simpleSend(merchantNo, startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname(), "");
+        this.simpleSend(merchantNo, startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
         return "";
     }
 
-    private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName, final String settleDate) {
+    private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName) {
         final List<HsyOrder> hsyOrders = this.hsyOrderService.getByMerchantNoAndTime(merchantNo, startTime, endTime);
         log.info("商户【{}】，发送对账邮件【{}】-【{}】交易个数【{}】", merchantNo, startTime, endTime, hsyOrders.size());
         if (CollectionUtils.isEmpty(hsyOrders)) {
             return;
         }
-        final ExcelSheetVO excelSheetVO = this.generateExcelSheet(hsyOrders, merchantNo);
-        final String fileUrl = this.uploadToServer(excelSheetVO);
-        Preconditions.checkState(!StringUtils.isEmpty(fileUrl), "上传文件到oss异常");
+        final String fileUrl = this.generateExcelSheet(hsyOrders, merchantNo);
         final BaseEmailInfo baseEmailInfo = new BaseEmailInfo();
         baseEmailInfo.setServerHost(ApplicationConsts.getApplicationConfig().emailServerHost());
         baseEmailInfo.setServerPort(ApplicationConsts.getApplicationConfig().emailServerPort());
@@ -210,6 +203,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         baseEmailInfo.setFromAddress(ApplicationConsts.getApplicationConfig().emailFromAddress());
         baseEmailInfo.setToAddress(email);
         baseEmailInfo.setSubject("钱包++ 对账单");
+        baseEmailInfo.setAttachFileNames(new String[]{fileUrl});
         final String startDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(startTime);
         final String endDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(endTime);
         String tradeDate;
@@ -218,12 +212,11 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         } else {
             tradeDate = startDate + "-" + endDate;
         }
-        this.sendEmail(baseEmailInfo, userName, "",
-                merchantNo, tradeDate, ApplicationConsts.getApplicationConfig().ossFilePath() + File.separator + fileUrl);
+        this.sendEmail(baseEmailInfo, userName, merchantNo, tradeDate);
     }
 
-    private void sendEmail(final BaseEmailInfo baseEmailInfo, final String userName, final String settleDate,
-                           final String merchantNo, final String tradeDate, final String url) {
+    private void sendEmail(final BaseEmailInfo baseEmailInfo, final String userName,
+                           final String merchantNo, final String tradeDate) {
         final StringBuffer emailStr = new StringBuffer();
         emailStr.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">")
                 .append("<html xmlns=\"http://www.w3.org/1999/xhtml\">")
@@ -242,14 +235,12 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
                 .append("<div style=\"width:560px;height:1px;background: -webkit-linear-gradient(left, white , #33a688, white);background: -o-linear-gradient(right, white, #33a688, white);background: -moz-linear-gradient(right, white, #33a688, white);background: linear-gradient(to right, white , #33a688, white);\"></div>")
                 .append("<br><br>")
                 .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\">您好，</div>")
-                .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\">感谢您使用钱包加加，以下是您" + settleDate + "结算的交易对账单明细</div>")
+                .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\">感谢您使用钱包加加，以下是您的对账单</div>")
                 .append("<br>")
                 .append("<div style=\"font-size:18px;color:#222222;font-weight:bold;line-height:30px;\">商户号：" + merchantNo + "</div>")
                 .append("<div style=\"font-size:18px;color:#222222;font-weight:bold;line-height:30px;\">结算交易周期：" + tradeDate + "</div>")
-                .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\">具体交易明细请点击以下加密链接下载：</div>")
-                .append("<br><br><br>")
-                .append("<a href=\" " + url + "\" style=\"display:block;width:230px;height:55px;line-height:55px;margin: 0 auto;border-radius:5px;background-color:#33a688;font-size:20px;color:#ececec;text-decoration:none;text-align: center;\">下载对账文件</a>")
-                .append("<br><br><br>")
+                .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\">具体交易明细请下载附件</div>")
+                .append("<br><br>")
                 .append("<div style=\"font-size:18px;color:#777777;line-height:30px;\">*为了保证交易信息安全，切勿将邮件转发给其他人。</div>")
                 .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\">再次感谢您的支持，如有任何疑问，欢迎与我们联系，客服电话</div>")
                 .append("<div style=\"font-size:18px;color:#222222;line-height:30px;\"> 400-622-6233 。</div>")
@@ -261,6 +252,12 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
                 .append("</body></html>");
         baseEmailInfo.setContent(emailStr.toString());
         EmailUtil.sendEmail(baseEmailInfo);
+        final String[] attachFileNames = baseEmailInfo.getAttachFileNames();
+        if (!ArrayUtils.isEmpty(attachFileNames)) {
+            for (String fileUrl : attachFileNames) {
+                FileUtils.deleteQuietly(new File(fileUrl));
+            }
+        }
     }
 
     /**
@@ -270,7 +267,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
      * @param merchantNo
      * @return
      */
-    private ExcelSheetVO generateExcelSheet(final List<HsyOrder> hsyOrders, final String merchantNo) {
+    private String generateExcelSheet(final List<HsyOrder> hsyOrders, final String merchantNo) {
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final ArrayList<List<String>> datas = new ArrayList<>();
         excelSheetVO.setDatas(datas);
@@ -291,37 +288,18 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             columns.add(null != hsyOrder.getRefundamount() ? hsyOrder.getRefundamount().toPlainString() : "0.00");
             columns.add(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
         }
-        return excelSheetVO;
-    }
-
-    /**
-     * 上传到服务器
-     *
-     * @param excelSheetVO
-     */
-    private String uploadToServer(final ExcelSheetVO excelSheetVO) {
         final String tempDir = this.getTempDir();
         final File excelFile = new File(tempDir + File.separator + excelSheetVO.getName() + ".xls");
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheetVO);
-        FileOutputStream fileOutputStream = null;
-        String fileName = "hsycheckorder" + File.separator +  DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd) + File.separator + excelSheetVO.getName() + ".xls";
         try {
-            fileOutputStream = new FileOutputStream(excelFile);
-            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
-            final ObjectMetadata meta = new ObjectMetadata();
-            meta.setCacheControl("public, max-age=31536000");
-            meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-            meta.setContentType("application/octet-stream ");
-            this.ossClient.putObject(ApplicationConsts.getApplicationConfig().ossFile(), fileName, new FileInputStream(excelFile), meta);
-            return fileName;
+            ExcelUtil.exportExcel(excelSheets, new FileOutputStream(excelFile));
         }catch (Exception e){
-            log.debug("上传文件失败",e);
-        } finally {
-            FileUtils.deleteQuietly(excelFile);
+            log.debug("生成excel异常",e);
         }
-        return "";
+        return excelFile.getAbsolutePath();
     }
+
 
     /**
      * 获取临时路径

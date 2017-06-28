@@ -37,10 +37,6 @@ public final class ApplicationConsts {
         @Key("oss_bucket")
         String ossBucket();
 
-        @Key("oss.file")
-        @DefaultValue("jkm-file")
-        String ossFile();
-
         /**
          * oss_bind_host
          *
@@ -48,15 +44,6 @@ public final class ApplicationConsts {
          */
         @Key("oss_bind_host")
         String ossBindHost();
-
-        /**
-         * 域名
-         *
-         * @return
-         */
-        @Key("oss.file.path")
-        @DefaultValue("http://img.jinkaimen.cn")
-        String ossFilePath();
 
         /**
          * 邮件服务器server

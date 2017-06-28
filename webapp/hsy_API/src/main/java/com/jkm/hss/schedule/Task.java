@@ -81,7 +81,7 @@ public class Task {
      * 周一发送上周对账邮件
      */
 //    @Scheduled(cron = "0 0 18 ? * MON")
-    @Scheduled(cron = "0 0 15 * * ?")
+    @Scheduled(cron = "0 35 15 * * ?")
     public void sendWeekEmail() {
         log.info("定时任务--处理每周发送邮件");
         this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
