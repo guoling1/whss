@@ -161,6 +161,7 @@
         this.$data.query.businessType = this.$route.query.type;
         this.query.startTime = this.$route.query.time.slice(0,10);
         this.query.endTime = this.$route.query.time.slice(11);
+        delete this.query.splitDate;
         this.isShow =false
       }else if(this.$route.path=="/admin/details/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
