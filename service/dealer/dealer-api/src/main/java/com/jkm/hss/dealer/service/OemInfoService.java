@@ -34,10 +34,10 @@ public interface OemInfoService {
 
     /**
      * 根据自生成号查询分公司信息
-     * @param omeNo
+     * @param oemNo
      * @return
      */
-    Optional<OemInfo> selectByOemNo(String omeNo);
+    Optional<OemInfo> selectByOemNo(String oemNo);
 
     /**
      * 根据分公司编码查询分公司O单配置

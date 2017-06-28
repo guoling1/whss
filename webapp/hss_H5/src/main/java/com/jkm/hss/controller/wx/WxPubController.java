@@ -261,15 +261,15 @@ public class WxPubController extends BaseController {
 
         String tempUrl = URLDecoder.decode(state, "UTF-8");
         String[] temArr = tempUrl.split("&");
-        String oemNo = "0";
+        String oemId = "0";
         if(temArr.length>0){
             for(int i =0;i<temArr.length;i++){
-                if("oemNo".equals(temArr[i].split("=")[0])){
-                    oemNo = temArr[i].split("=")[1];
+                if("oemId".equals(temArr[i].split("=")[0])){
+                    oemId = temArr[i].split("=")[1];
                 }
             }
         }
-        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(Long.parseLong(oemNo));
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(Long.parseLong(oemId));
         Map<String,String> ret = null;
         if(!oemInfoOptional.isPresent()){
             ret = WxPubUtil.getOpenid(code);
@@ -282,6 +282,8 @@ public class WxPubController extends BaseController {
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
         log.info("redirectUrl是：{}",redirectUrl);
         String finalRedirectUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
+                ApplicationConsts.getApplicationConfig().domain());
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
     }

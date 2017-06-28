@@ -105,9 +105,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
@@ -136,9 +136,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
@@ -170,9 +170,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
@@ -203,9 +203,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
@@ -234,9 +234,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");

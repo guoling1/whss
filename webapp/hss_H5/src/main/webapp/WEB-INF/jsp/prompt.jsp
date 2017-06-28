@@ -19,7 +19,7 @@
   <p>您的审核未通过,请重新提交审核资料</p>
 
   <p class="small">${res}</p>
-  <a href="/sqb/repeatAddInfo/${id}" class="btn">重新提交资料</a>
+  <a href="/sqb/repeatAddInfo/${id}?oemNo=${oemNo}" class="btn">重新提交资料</a>
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>

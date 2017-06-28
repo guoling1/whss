@@ -44,6 +44,10 @@ public class OemDetailResponse {
      */
     private String qrCode;
     /**
+     * 分公司机构号
+     */
+    private String oemNo;
+    /**
      * 公众号二维码真实地址
      */
     private String realQrCodeUrl;

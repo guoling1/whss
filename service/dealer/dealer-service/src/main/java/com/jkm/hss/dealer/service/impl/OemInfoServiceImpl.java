@@ -63,7 +63,7 @@ public class OemInfoServiceImpl implements OemInfoService {
             oemDetailResponse.setAppId(oemInfo.getAppId());
             oemDetailResponse.setAppSecret(oemInfo.getAppSecret());
             oemDetailResponse.setLogo(oemInfo.getLogo());
-
+            oemDetailResponse.setOemNo(oemInfo.getOemNo());
             oemDetailResponse.setQrCode(oemInfo.getQrCode());
             List<TemplateInfo> templateInfoListArr = templateInfoDao.selectByOemId(oemInfo.getId());
             if(templateInfoListArr.size()>0){
@@ -164,12 +164,12 @@ public class OemInfoServiceImpl implements OemInfoService {
     /**
      * 根据自生成号查询分公司信息
      *
-     * @param omeNo
+     * @param oemNo
      * @return
      */
     @Override
-    public Optional<OemInfo> selectByOemNo(String omeNo) {
-        return Optional.fromNullable(oemInfoDao.selectByOemNo(omeNo));
+    public Optional<OemInfo> selectByOemNo(String oemNo) {
+        return Optional.fromNullable(oemInfoDao.selectByOemNo(oemNo));
     }
 
     /**

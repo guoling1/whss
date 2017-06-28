@@ -1,6 +1,11 @@
 package com.jkm.hss.interceptor;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -13,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Slf4j
 public class CommonInterceptor extends HandlerInterceptorAdapter {
+    @Setter
+    private OemInfoService oemInfoService;
     /**
      * 添加一些公共属性
      * 例如request_url
@@ -25,8 +32,13 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
-        log.info("请求地址：{}",request.getRequestURL());
-        log.info("请求方式：{}",request.getMethod());
+        log.info("请求地址：{}",StringUtils.isNotBlank(request.getQueryString()) ?
+                request.getRequestURL() + "?" + request.getQueryString() : request.getRequestURL().toString());
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            Preconditions.checkState(oemInfoOptional.isPresent(), "O单参数有误");
+        }
         setRequestUrlAttribute(request);
         return super.preHandle(request, response, handler);
     }
