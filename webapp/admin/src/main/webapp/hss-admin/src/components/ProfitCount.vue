@@ -49,7 +49,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDate}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDates}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>

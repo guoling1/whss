@@ -56,7 +56,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderNo" label="交易订单号" width="218"></el-table-column>
-            <el-table-column prop="settleType" label="结算周期"></el-table-column>
+            <el-table-column prop="settleType1" label="结算周期"></el-table-column>
             <el-table-column label="分润总额" align="right" min-width="90">
               <template scope="scope">
                 <span>{{scope.row.splitTotalAmount|toFix}}</span>
@@ -148,6 +148,7 @@
       }
     },
     created: function () {
+      this.currentDate();
       if(this.$route.path=="/admin/record/profitDet"){
         this.$data.path = '/admin/queryProfit/profitDetails';
         this.$data.totalUrl = '/admin/queryProfit/profitAmount'
@@ -158,6 +159,8 @@
         this.$data.query.accId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
+        this.query.startTime = this.$route.query.time.slice(0,10);
+        this.query.endTime = this.$route.query.time.slice(11);
         this.isShow =false
       }else if(this.$route.path=="/admin/details/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
@@ -174,7 +177,6 @@
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }
-      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
