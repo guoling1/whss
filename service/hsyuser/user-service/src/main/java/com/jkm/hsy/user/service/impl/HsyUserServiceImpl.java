@@ -398,7 +398,8 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
         if(adminUserList!=null&&adminUserList.size()!=0)
-            appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
+            if(adminUserList.get(0).getMobile()!=null)
+                appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
@@ -1168,7 +1169,8 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
         if(adminUserList!=null&&adminUserList.size()!=0)
-            appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
+            if(adminUserList.get(0).getMobile()!=null)
+                appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
