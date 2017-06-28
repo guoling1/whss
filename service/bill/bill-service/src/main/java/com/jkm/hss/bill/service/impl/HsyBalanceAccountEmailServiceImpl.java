@@ -189,7 +189,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
 
     private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName) {
         final List<HsyOrder> hsyOrders = this.hsyOrderService.getByMerchantNoAndTime(merchantNo, startTime, endTime);
-        log.info("商户【{}】，发送对账邮件【{}】，【{}】-【{}】交易个数【{}】", email, merchantNo, startTime, endTime, hsyOrders.size());
+        log.info("商户【{}】，发送对账邮件【{}】，【{}】-【{}】交易个数【{}】", merchantNo, email, startTime, endTime, hsyOrders.size());
         if (CollectionUtils.isEmpty(hsyOrders)) {
             return;
         }
