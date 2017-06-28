@@ -41,7 +41,7 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
         </div>
@@ -91,7 +91,6 @@
         },
         records: [],
         count: 0,
-        total: 0,
         currentPage: 1,
         loading: false,
         index: '',
@@ -120,7 +119,6 @@
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
           this.$data.loading = false;
           /*var changeTime = function (val) {
             if (val == '' || val == null) {
@@ -184,7 +182,6 @@
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
             this.$data.loading = false;
             var changeTime = function (val) {
               if (val == '' || val == null) {
@@ -225,7 +222,6 @@
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
             this.$data.loading = false;
             var changeTime = function (val) {
               if (val == '' || val == null) {
