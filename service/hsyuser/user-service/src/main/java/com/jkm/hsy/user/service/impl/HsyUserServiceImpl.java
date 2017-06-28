@@ -159,6 +159,8 @@ public class HsyUserServiceImpl implements HsyUserService {
                         hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
                 }
             }
+
+            hsyUserDao.updateAppAuUserTokenStatusByTIDExceptUID(tokenList.get(0).getId(),appAuUser.getId());
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -285,6 +287,9 @@ public class HsyUserServiceImpl implements HsyUserService {
                         hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
                 }
             }
+
+            hsyUserDao.updateAppAuUserTokenStatusByTIDExceptUID(tokenList.get(0).getId(),appAuUserFind.getId());
+
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -488,6 +493,8 @@ public class HsyUserServiceImpl implements HsyUserService {
                         hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
                 }
             }
+
+            hsyUserDao.updateAppAuUserTokenStatusByTIDExceptUID(tokenList.get(0).getId(),appAuUserFind.getId());
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
