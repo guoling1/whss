@@ -1,9 +1,6 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.entity.AppAuToken;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppAuUserToken;
-import com.jkm.hsy.user.entity.AppBizShopUserRole;
+import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -33,6 +30,7 @@ public interface HsyUserDao {
     public void updateHxbsStatus(@Param("status")Integer status,@Param("remarks")String remarks,@Param("uid")Long uid);
     public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
     public AppBizShopUserRole findAppAuUserRole(AppAuUser appAuUser);
+    public List<AdminUser> findAdminUserByUID(@Param("uid")Long uid);
 
     /**
      * 查找所有法人

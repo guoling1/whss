@@ -262,4 +262,9 @@ limit 1
     <select id="selectAllCorporationUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
         SELECT ID, REALNAME, EMAIL, globalID FROM app_au_user WHERE PARENTID = 0;
     </select>
+
+    <select id="findAdminUserByUID" resultType="com.jkm.hsy.user.entity.AdminUser">
+        SELECT id,username,password,salt,realname,email,mobile,type,dealer_id dealID FROM tb_admin_user adminUser left join app_au_user_admin ua on adminUser.id=ua.AUID
+        where UID=#{uid}
+    </select>
 </mapper>

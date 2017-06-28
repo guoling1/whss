@@ -71,6 +71,7 @@ public class AppAuUser {
     private int autoSendBalanceAccountEmail;
 
     private String passwordOrigin;//原始密码
+    private String auCellphone;//销售电话
 
     public Long getId() {
         return id;

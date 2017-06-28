@@ -10,6 +10,7 @@ import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.enums.EnumStatus;
@@ -395,6 +396,10 @@ public class HsyUserServiceImpl implements HsyUserService {
                 appAuUser.setWeixinRate(BigDecimal.ZERO);
         }
 
+        List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
+        if(adminUserList!=null&&adminUserList.size()!=0)
+            appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -493,7 +498,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
                 appAuUserTokenUpdate.setStatus(1);
                 appAuUserTokenUpdate.setLoginTime(dateToken);
-                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
+//                appAuUserTokenUpdate.setOutTime(AppDateUtil.changeDate(dateToken,Calendar.MONTH,1));
                 hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
             }
             else
@@ -1160,6 +1165,10 @@ public class HsyUserServiceImpl implements HsyUserService {
             if(appAuUser.getWeixinRate()==null)
                 appAuUser.setWeixinRate(BigDecimal.ZERO);
         }
+
+        List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
+        if(adminUserList!=null&&adminUserList.size()!=0)
+            appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
