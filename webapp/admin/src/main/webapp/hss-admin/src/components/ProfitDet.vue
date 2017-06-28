@@ -35,7 +35,9 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
+                :picker-options="pickerOptions" size="small"
+                :clearable="false"
+                :editable="false" @change="datetimeSelect">
               </el-date-picker>
             </li>
             <li class="same">
@@ -104,13 +106,18 @@
     data(){
       return {
         pickerOptions: {
-          onPick:function({ maxDate, minDate }){
-            if(maxDate==''||maxDate==null){
-              this.disabledDate=function(maxDate) {
-                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+          disabledDate: function (time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          },
+          onPick: function ({maxDate, minDate}) {
+            if (maxDate == '' || maxDate == null) {
+              this.disabledDate = function (maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate || maxDate > new Date().setTime(new Date().getTime()-24*60*60*1000) || minDate > new Date().setTime(new Date().getTime()-24*60*60*1000);
               }
-            }else{
-              this.disabledDate=function(){}
+            } else {
+              this.disabledDate= function (time) {
+                return time.getTime() > Date.now() - 8.64e7;
+              }
             }
           }
         },
@@ -172,8 +179,19 @@
       this.getAddTotal()
     },
     methods: {
+      datetimeSelect: function (val) {
+        if (val == undefined) {
+          this.query.startTime = '';
+          this.query.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
+        }
+      },
       currentDate: function () {
         let time = new Date();
+        time.setTime(time.getTime()-24*60*60*1000);
         this.date = [time,time];
         for (var j = 0; j < this.date.length; j++) {
           var str = this.date[j];
@@ -269,7 +287,7 @@
         this.getData()
       },
     },
-    watch: {
+    /*watch: {
       date: function (val, oldVal) {
         if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
@@ -292,7 +310,7 @@
           this.query.endTime = '';
         }
       }
-    }
+    }*/
   }
 </script>
 <style scoped lang="less">
