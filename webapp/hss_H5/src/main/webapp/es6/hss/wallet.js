@@ -80,6 +80,6 @@ unbundlingSubmit.addEventListener('click', function () {
   http.post('/wx/unbundling', {}, function (res) {
     message.prompt_show('解绑成功');
     layer.style.display = 'none';
-    window.location.href = '/sqb/login';
+    window.location.href = '/sqb/login?oemNo=' + pageData.oemNo;
   })
 });
