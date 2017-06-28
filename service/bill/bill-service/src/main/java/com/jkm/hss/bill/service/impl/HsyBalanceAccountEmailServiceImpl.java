@@ -183,13 +183,13 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(userRole.getUid()).get(0);
         this.hsyUserService.updateEmailById(email, appAuUser.getId());
         final String merchantNo = appAuUser.getGlobalID();
-        this.simpleSend(merchantNo, startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
+        this.simpleSend(merchantNo, startTime, endTime, email, appAuUser.getRealname());
         return "";
     }
 
     private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName) {
         final List<HsyOrder> hsyOrders = this.hsyOrderService.getByMerchantNoAndTime(merchantNo, startTime, endTime);
-        log.info("商户【{}】，发送对账邮件【{}】-【{}】交易个数【{}】", merchantNo, startTime, endTime, hsyOrders.size());
+        log.info("商户【{}】，发送对账邮件【{}】，【{}】-【{}】交易个数【{}】", merchantNo, email, startTime, endTime, hsyOrders.size());
         if (CollectionUtils.isEmpty(hsyOrders)) {
             return;
         }
@@ -213,6 +213,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             tradeDate = startDate + "-" + endDate;
         }
         this.sendEmail(baseEmailInfo, userName, merchantNo, tradeDate);
+        log.info("商户【{}】，发送对账邮件成功", merchantNo);
     }
 
     private void sendEmail(final BaseEmailInfo baseEmailInfo, final String userName,
