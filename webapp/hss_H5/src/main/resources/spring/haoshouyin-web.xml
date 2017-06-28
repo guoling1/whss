@@ -79,6 +79,8 @@
         </mvc:interceptor>
 
         <mvc:interceptor>
+            <mvc:mapping path="/sqb/addInfo"/>
+            <mvc:mapping path="/sqb/addNext"/>
             <mvc:mapping path="/sqb/charge"/>
             <mvc:mapping path="/sqb/collection"/>
             <mvc:mapping path="/sqb/tradeRecord"/>
