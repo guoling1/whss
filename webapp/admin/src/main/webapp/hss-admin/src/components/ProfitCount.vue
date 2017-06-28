@@ -256,13 +256,18 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          onPick:function({ maxDate, minDate }){
-            if(maxDate==''||maxDate==null){
-              this.disabledDate=function(maxDate) {
-                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+          disabledDate: function (time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          },
+          onPick: function ({maxDate, minDate}) {
+            if (maxDate == '' || maxDate == null) {
+              this.disabledDate = function (maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate || maxDate > new Date().setTime(new Date().getTime()-24*60*60*1000) || minDate > new Date().setTime(new Date().getTime()-24*60*60*1000);
               }
-            }else{
-              this.disabledDate=function(){}
+            } else {
+              this.disabledDate= function (time) {
+                return time.getTime() > Date.now() - 8.64e7;
+              }
             }
           }
         },
@@ -337,6 +342,7 @@
     },
     created: function () {
       let time = new Date();
+      time.setTime(time.getTime()-24*60*60*1000);
       this.date = [time,time];
       this.date1 = [time,time];
       this.date2 = [time,time];
