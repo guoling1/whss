@@ -38,7 +38,7 @@
                 <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column label="收益日期">
                   <template scope="scope">
-                    <span>{{scope.row.splitDate|changeDate}}</span>
+                    <span>{{scope.row.splitDates}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="businessType" label="收益类型"></el-table-column>
