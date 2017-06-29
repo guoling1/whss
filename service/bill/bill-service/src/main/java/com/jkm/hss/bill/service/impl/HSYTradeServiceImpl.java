@@ -651,16 +651,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                     hsyOrder.setRefundtime(DateFormatUtil.parse(paymentSdkRefundResponse.getSuccessTime(), DateFormatUtil.yyyyMMddHHmmss));
                     this.hsyOrderService.update(hsyOrder);
                 }
-
-                if (EnumPaymentChannel.WECHAT_PAY.getId() == EnumPayChannelSign.idOf(payOrder.getPayChannelSign()).getPaymentChannel().getId()) {
-                    try {
-                        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payOrder.getPayChannelSign());
-                        this.sendMsgService.refundSendMessage(hsyOrder.getShopname(), payChannelSign.getPaymentChannel().getValue(),
-                                payOrder.getOrderNo(), refundOrder.getRefundAmount(), payOrder.getPayAccount());
-                    } catch (final Throwable e) {
-                        log.error("推送失败");
-                    }
-                }
                 return Pair.of(0, "退款成功");
             default:
                 log.error("退款[{}]， 网关返回状态异常", refundOrder.getId());

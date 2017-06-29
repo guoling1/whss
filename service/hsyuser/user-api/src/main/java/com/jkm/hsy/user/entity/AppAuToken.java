@@ -17,6 +17,7 @@ public class AppAuToken {
     private String appCode;//APP编号
     private String appVersion;//APP版本
     private String appChannel;//app来源
+    private Integer isAvoidingTone;//是否消除提示音 0 否 1是
     private Date createTime;
     private Date updateTime;
 
@@ -122,5 +123,13 @@ public class AppAuToken {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getIsAvoidingTone() {
+        return isAvoidingTone;
+    }
+
+    public void setIsAvoidingTone(Integer isAvoidingTone) {
+        this.isAvoidingTone = isAvoidingTone;
     }
 }

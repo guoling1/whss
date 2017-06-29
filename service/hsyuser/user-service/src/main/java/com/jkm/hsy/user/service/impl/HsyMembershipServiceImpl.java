@@ -32,7 +32,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     @Autowired
     private HsyUserDao hsyUserDao;
 
-    /**HSY001046 创建会员卡*/
+    /**HSY001047 创建会员卡*/
     public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/

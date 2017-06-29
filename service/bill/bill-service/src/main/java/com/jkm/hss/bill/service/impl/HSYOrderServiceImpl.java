@@ -8,7 +8,9 @@ import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
+import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
@@ -18,6 +20,9 @@ import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +44,10 @@ public class HSYOrderServiceImpl implements HSYOrderService {
 
     @Autowired
     private HsyOrderDao hsyOrderDao;
+    @Autowired
+    private HsyShopDao hsyShopDao;
+    @Autowired
+    private OrderDao orderDao;
 
     @Override
     @Transactional
@@ -292,4 +301,64 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         //return gson.toJson(hsyTradeListResponse);
         return JSON.toJSONString(hsyTradeListResponse);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantNo
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<HsyOrder> getByMerchantNoAndTime(final String merchantNo, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.selectByMerchantNoAndTime(merchantNo, startTime, endTime);
+    }
+
+
+    //同步商户号
+    @Override
+    public void test1() {
+        final List<Long> shopIds = this.hsyOrderDao.selectTest();
+        int totalCount = 0;
+        log.info("================同步商户号====店铺数[{}]", shopIds.size());
+        for (int i = 0; i < shopIds.size(); i++) {
+            final Long shopId = shopIds.get(i);
+            try {
+                final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
+                final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(appBizShop.getAccountID()).get(0);
+                final int count = this.hsyOrderDao.updateTest(shopId, appAuUser.getGlobalID());
+                totalCount = totalCount + count;
+                if (i != 0 && i % 10 == 0) {
+                    Thread.sleep(100);
+                }
+            } catch (final Throwable e) {
+                log.error("店铺[{}],同步商户号错误", shopId);
+            }
+        }
+        log.info("================同步商户号====总个数[{}]", totalCount);
+    }
+
+    //同步费率
+    @Override
+    public void test2() {
+        final List<Long> ids = this.hsyOrderDao.selectTestId();
+        log.info("=========同步手续费====总个数[{}]-开始", ids.size());
+        for (int i = 0; i < ids.size(); i++) {
+            final Long id = ids.get(i);
+            try {
+                final Order order = this.orderDao.selectById(id);
+                this.hsyOrderDao.updateTest2(id, order.getPoundage());
+                if (i != 0 && i % 1000 == 0) {
+                    Thread.sleep(100);
+                }
+            } catch (final Throwable e) {
+                log.error("====同步费率===[{}]出错", id);
+            }
+
+        }
+        log.info("=========同步手续费====总个数[{}]--结束", ids.size());
+    }
+
+
 }

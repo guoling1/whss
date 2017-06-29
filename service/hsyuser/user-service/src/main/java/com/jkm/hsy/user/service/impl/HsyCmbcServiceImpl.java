@@ -430,8 +430,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
     }
 
     /**
-     * 厦门民生入网
      *
+     * 修改民生入网信息
      * @param userId //用户编码
      * @param shopId //主店编码
      */
@@ -602,13 +602,15 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             log.info("民生入网返回结果为："+jo.toString());
             baseResponse.setCode(jo.getInt("code"));
             baseResponse.setMsg(jo.getString("msg"));
-            XmmsResponse.Result rs = new XmmsResponse.Result();
-            JSONObject jn = jo.getJSONObject("result");
-            rs.setMerchantNo(jn.getString("merchantNo"));
-            rs.setMsg(jn.getString("msg"));
-            rs.setSmId(jn.getString("smId"));
-            rs.setStatus(jn.getString("status"));
-            baseResponse.setResult(rs);
+            if(jo.getInt("code")==1){
+                XmmsResponse.Result rs = new XmmsResponse.Result();
+                JSONObject jn = jo.getJSONObject("result");
+                rs.setMerchantNo(jn.getString("merchantNo"));
+                rs.setMsg(jn.getString("msg"));
+                rs.setSmId(jn.getString("smId"));
+                rs.setStatus(jn.getString("status"));
+                baseResponse.setResult(rs);
+            }
         } else {//超时
             baseResponse.setCode(-1);
             baseResponse.setMsg("请求超时");
@@ -668,13 +670,15 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             log.info("修改民生入网返回结果为："+jo.toString());
             baseResponse.setCode(jo.getInt("code"));
             baseResponse.setMsg(jo.getString("msg"));
-            XmmsResponse.Result rs = new XmmsResponse.Result();
-            JSONObject jn = jo.getJSONObject("result");
-            rs.setMerchantNo(jn.getString("merchantNo"));
-            rs.setMsg(jn.getString("msg"));
-            rs.setSmId(jn.getString("smId"));
-            rs.setStatus(jn.getString("status"));
-            baseResponse.setResult(rs);
+            if(jo.getInt("code")==1){
+                XmmsResponse.Result rs = new XmmsResponse.Result();
+                JSONObject jn = jo.getJSONObject("result");
+                rs.setMerchantNo(jn.getString("merchantNo"));
+                rs.setMsg(jn.getString("msg"));
+                rs.setSmId(jn.getString("smId"));
+                rs.setStatus(jn.getString("status"));
+                baseResponse.setResult(rs);
+            }
         } else {//超时
             baseResponse.setCode(-1);
             baseResponse.setMsg("请求超时");

@@ -46,5 +46,22 @@ public class ShareProfitServiceImpl implements ShareProfitService {
         return shareProfitDao.selectAccountDetailsCount(req);
     }
 
+    @Override
+    public Account getChannel() {
+        Account result = this.shareProfitDao.getChannel();
+        return result;
+    }
+
+    @Override
+    public List<AccountDetailsResponse> selectChannelDetails(ProfitDetailsRequest req) {
+        List<AccountDetailsResponse> list = this.shareProfitDao.selectChannelDetails(req);
+        return list;
+    }
+
+    @Override
+    public int selectChannelDetailsCount(ProfitDetailsRequest req) {
+        return this.shareProfitDao.selectChannelDetailsCount(req);
+    }
+
 
 }
