@@ -63,7 +63,7 @@ public class SettleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "markSettledTest")
-    public CommonResponse marksettledTest(final String date) {
+    public CommonResponse markSettledTest(final String date) {
         log.info("更新结算审核记录--start--test");
         final Date settleDate = DateFormatUtil.parse(date , DateFormatUtil.yyyy_MM_dd);
         this.accountSettleAuditRecordService.handleSettleAuditRecordTask(settleDate);
