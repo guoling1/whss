@@ -216,6 +216,8 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrder=hsyOrderDao.selectById(hsyOrder.getId());
         if(!(hsyOrder!=null&&hsyOrder.getOrderstatus()!=null))
             throw new ApiHandleException(ResultCode.ORDER_NOT_FOUND);
+        if(hsyOrder.getOrderstatus()==EnumOrderStatus.PAY_FAIL.getId())
+            throw new ApiHandleException(ResultCode.ORDER_TO_TRADE_FAIL,hsyOrder.getRemark());
 
         HsyOrder hsyOrderReturn=new HsyOrder();
         hsyOrderReturn.setId(hsyOrder.getId());
