@@ -216,8 +216,6 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrder=hsyOrderDao.selectById(hsyOrder.getId());
         if(!(hsyOrder!=null&&hsyOrder.getOrderstatus()!=null))
             throw new ApiHandleException(ResultCode.ORDER_NOT_FOUND);
-        if(hsyOrder.getOrderstatus()==EnumOrderStatus.PAY_FAIL.getId())
-            throw new ApiHandleException(ResultCode.ORDER_TO_TRADE_FAIL,hsyOrder.getRemark());
 
         HsyOrder hsyOrderReturn=new HsyOrder();
         hsyOrderReturn.setId(hsyOrder.getId());
@@ -225,6 +223,7 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrderReturn.setOrderno(hsyOrder.getOrderno());
         hsyOrderReturn.setOrderstatus(hsyOrder.getOrderstatus());
         hsyOrderReturn.setPaysuccesstime(hsyOrder.getPaysuccesstime());
+        hsyOrderReturn.setRemark(hsyOrder.getRemark());
 
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
             public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
