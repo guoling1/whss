@@ -8,10 +8,80 @@
     <div style="margin: 0 15px">
       <div class="box box-primary">
         <p class="lead">商户注册信息</p>
-        <div class="table-responsive">
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
+          <el-col :span="5">
+            <div class="label">注册手机号：<span>{{$msg.cellphone}}</span>
+            </div>
+            <el-button type="text" @click="isPhone = true" style="padding: 0">修改</el-button>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">商户编号：<span>{{$msg.globalID}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
+          <el-col :span="5">
+            <div class="label">注册时间：<span>{{$msg.createTime|changeTime}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">注册方式：
+              <span>报单注册</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">一级代理编号：<span v-if="$msg.markCode!=0">{{$msg.markCode}}</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">一级代理名称：<span>{{$msg.proxyName}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">二级代理编号：<span v-if="$msg.markCode1!=0">{{$msg.markCode1}}</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">二级代理名称：<span>{{$msg.proxyName1}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="padding-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">报单员：<span>{{$msg.username}}</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">姓名：<span>{{$msg.realname}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <!--<div class="table-responsive">
           <table class="table">
             <tbody>
-            <tr>
+            &lt;!&ndash;<tr>
               <th style="text-align: right">注册手机:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cellphone" readonly>
                 <el-button type="text" @click="isPhone = true">修改</el-button>
@@ -19,7 +89,7 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="--" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="&#45;&#45;" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
@@ -44,8 +114,8 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.realname" readonly></td>
               <th></th>
               <td></td>
-            </tr>
-            <!--<tr>
+            </tr>&ndash;&gt;
+            &lt;!&ndash;<tr>
               <th style="text-align: right">推荐人编号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
@@ -60,13 +130,138 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYq1" readonly></td>
               <th style="text-align: right"></th>
               <td></td>
-            </tr>-->
+            </tr>&ndash;&gt;
             </tbody></table>
-        </div>
+        </div>-->
       </div>
       <div class="box box-primary">
-        <p class="lead">商户认证信息</p>
-        <div class="table-responsive">
+        <span class="lead">商户认证信息</span>
+        <el-button type="text" @click="isChange = true" v-if="isInput == false">修改</el-button>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
+          <el-col :span="5">
+            <div class="label">商户名称（全称）：
+              <span v-if="!isChange">{{$msg.name}}</span>
+              <el-input size="small" v-model="$msg.name" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">商铺简称：
+              <span v-if="!isChange">{{$msg.shortName}}</span>
+              <el-input size="small" v-model="$msg.shortName" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">经营种类：
+              <span v-if="!isChange">{{$msg.industryCode}}</span>
+              <el-select v-model="$msg.industryCode" placeholder="请选择" v-else size="small">
+                <el-option label="餐饮" value="餐饮"></el-option>
+                <el-option label="商超" value="商超"></el-option>
+                <el-option label="生活服务" value="生活服务"></el-option>
+                <el-option label="购物" value="购物"></el-option>
+                <el-option label="丽人" value="丽人"></el-option>
+                <el-option label="健身" value="健身"></el-option>
+                <el-option label="酒店" value="酒店"></el-option>
+              </el-select>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">商户营业执照号：
+              <span v-if="!isChange">{{$msg.licenceNo}}</span>
+              <el-input size="small" v-model="$msg.licenceNo" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">营业执照有效期：
+              <span v-if="!isChange">{{$msg.startEndDate}}</span>
+              <el-input size="small" v-model="$msg.startEndDate" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">店主（法人）实名：
+              <span v-if="!isChange">{{$msg.realnames}}</span>
+              <el-input size="small" v-model="$msg.realnames" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">店主（法人）身份证号：
+              <span v-if="!isChange">{{$msg.idcardNO}}</span>
+              <el-input size="small" v-model="$msg.idcardNO" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">联系人姓名:
+              <span v-if="!isChange">{{$msg.contactName}}</span>
+              <el-input size="small" v-model="$msg.contactName" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">联系人手机号：
+              <span v-if="!isChange">{{$msg.contactCellphone}}</span>
+              <el-input size="small" v-model="$msg.contactCellphone" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">省市区:
+              <span v-if="!isChange">{{$msg.districtCode}}</span>
+              <!--<el-input size="small" v-model="$msg.districtCode" v-else></el-input>-->
+              <div v-else class="select" id="select" @click="open" style="display: inline-block;vertical-align: middle;"><span style="display: inline-block;vertical-align: middle;">{{$msg.districtCode}}</span>
+                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
+              </div>
+              <ul class="isShow" v-if="isOpen">
+                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.name)" @click="select(province.code,province.name)">{{province.name}}
+                </li>
+              </ul>
+              <ul class="isShow1" v-if="isOpen1">
+                <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
+              </ul>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">商户详细地址：
+              <span v-if="!isChange">{{$msg.address}}</span>
+              <el-input size="small" v-model="$msg.address" v-else></el-input>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="padding-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">资料提交时间：{{$msg.updateTime|changeTime}}<span></span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">资料审核状态：<span>{{$msg.stat}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-button type="primary" size="small" v-if="isChange" @click="identChange" :disabled="auditClick">保存</el-button>
+        <el-button type="primary" size="small" v-if="isChange" @click="identNoChange">取消</el-button>
+        <!--<div class="table-responsive">
           <table class="table">
             <tbody>
             <tr>
@@ -74,8 +269,8 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
               <th style="text-align: right">商铺简称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.shortName" readonly></td>
-              <!--<th style="text-align: right">商户营业执照号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>-->
+              &lt;!&ndash;<th style="text-align: right">商户营业执照号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>&ndash;&gt;
               <th style="text-align: right"></th>
               <td></td>
             </tr>
@@ -104,7 +299,7 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.stat" readonly></td>
             </tr>
             </tbody></table>
-        </div>
+        </div>-->
       </div>
       <div class="box box-primary">
         <span class="lead">商户认证资料</span>
@@ -117,7 +312,7 @@
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
               <th class="col-md-3" style="text-align: center;">结算卡正面:</th>
               <th class="col-md-3" style="text-align: center;">签约合同照:</th>
-              <th class="col-md-3" style="text-align: center;" v-if="msg.isPublic==1">营业执照:</th>
+              <th class="col-md-3" style="text-align: center;">营业执照:</th>
               <th class="col-md-3" style="text-align: center;">店面照片:</th>
               <th class="col-md-3" style="text-align: center;">收银台:</th>
               <th class="col-md-3" style="text-align: center;">室内照片:</th>
@@ -168,63 +363,21 @@
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.contractId" alt="" v-if="$msg.contractId!=null&&$msg.contractId!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.contractId!=null&&$msg.contractId!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('8')">点击更换</el-button>
               </td>
-              <td class="col-md-3" style="text-align: center;border: none;" v-if="msg.isPublic==1">
+              <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.licenceID" alt="" v-if="$msg.licenceID!=null&&$msg.licenceID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('3')">点击更换</el-button>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.storefrontID" alt="" v-if="$msg.storefrontID!=null&&$msg.storefrontID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.storefrontID==null&&$msg.storefrontID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:4}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.counterID" alt="" v-if="$msg.counterID!=null&&$msg.counterID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('5')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.counterID==null&&$msg.counterID==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:5}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.indoorID" alt="" v-if="$msg.indoorID!=null&&$msg.indoorID!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('6')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.indoorID==null&&$msg.indoorID==''&&$msg.status!=1||$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:6}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
               </td>
             </tr>
             </tbody>
@@ -234,16 +387,58 @@
       <div class="box box-primary">
         <span class="lead">商户结算信息</span>
         <el-button type="text" @click="bankChange">修改结算卡信息</el-button>
-        <div class="table-responsive">
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
+          <el-col :span="5">
+            <div class="label">结算卡类型：
+              <span v-if="$msg.isPublic==1">对公</span>
+              <span v-if="$msg.isPublic==0">对私</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">结算卡开户名：<span>{{$msg.cardAccountName}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">商户结算卡号:<span>{{$msg.cardNO}}</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">结算卡所属银行：<span>{{$msg.cardBank}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="padding-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">支行信息:
+              <span>{{$msg.bankAddress}}</span>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">联行号：
+              <span>{{$msg.branchCode}}</span>
+              <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)" style="padding: 0">补填</el-button>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">
+              <span></span>
+            </div>
+          </el-col>
+        </el-row>
+        <!--<div class="table-responsive">
           <table class="table">
             <tbody>
             <tr>
               <th style="text-align: right">结算卡类型:</th>
               <td>
-                <el-radio-group v-model="msg.isPublic">
-                  <el-radio :label="1" disabled >对公</el-radio>
-                  <el-radio :label="0" disabled >对私</el-radio>
-                </el-radio-group>
+                <input type="text" style="background:#efecec;padding-left:5px;" value="对公" readonly v-if="$msg.isPublic==1">
+                <input type="text" style="background:#efecec;padding-left:5px;" value="对私" readonly v-if="$msg.isPublic==0">
               </td>
               <th style="text-align: right">结算卡开户名:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardAccountName" readonly></td>
@@ -275,7 +470,7 @@
               <td></td>
             </tr>
             </tbody></table>
-        </div>
+        </div>-->
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
@@ -329,12 +524,10 @@
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户通道</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
-        <!--<el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>-->
-        <!--<el-button type="text" @click="isModify = true" v-if="status==1">修改信息</el-button>-->
         <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
-            <el-button type="primary" size="small" @click="channelChange">修改</el-button>
+            <el-button type="text" size="small" @click="channelChange" style="margin-left: 15px;font-size: 14px">修改</el-button>
           </div>
           <template>
             <el-table :data="$channelList" border style="width: 100%;margin-top: 15px;">
@@ -487,21 +680,6 @@
             <el-button type="primary" @click="reenter" :disabled="reenterClick">确 定</el-button>
           </span>
       </el-dialog>
-      <el-dialog title="修改信息" v-model="isModify" size="tiny">
-        <p style="text-align: center;font-weight: 700">确认修改信息吗？？</p>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="isModify = false">取 消</el-button>
-            <el-button type="primary" @click="modify" :disabled="modifyClick">确 定</el-button>
-          </span>
-      </el-dialog>
-      <!--<el-dialog title="驳回重填" v-model="isReject" size="tiny">
-          <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
-          <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="isReject = false">取 消</el-button>
-            <el-button type="primary" @click="reject" :disabled="rejectClick">确 定</el-button>
-          </span>
-        </el-dialog>-->
       <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -663,7 +841,6 @@
         msg:{},
         auditClick:false,
         isReenter:false,
-        isReject:false,
         isWad: false,
         reason:'',
         isShow:true,
@@ -671,6 +848,7 @@
         reenterClick:false,
         rejectClick:false,
         modifyClick:false,
+        isChange: false,
         res: [],
         tableData:[{
           name:'支付宝',
@@ -735,16 +913,25 @@
           appId:"",
           subAppId:'',
           appSecret:''
-        }
+        },
+        provinces:[],//所有省份
+        province: '',
+        citys:[],
+        city:'',
+        isOpen:false,
+        isOpen1:false,
+        select1:'',
+        select2:'',
       }
     },
     created: function () {
       this.id = this.$route.query.id;
-      this.status = this.$route.query.status;
-      if(this.$route.query.status !=2){
+//      this.status = this.$route.query.status;
+      this.getData();
+      if(this.status !=2){
         this.isShow = false;
       }
-      this.getData();
+//      this.getData();
       var $box=$("#imgBox");
       $box.on("mousedown",function(e){
         var disX= e.clientX-$(this).offset().left;
@@ -786,8 +973,56 @@
             type: 'error'
           });
         });
+      this.$http.post('/admin/district/findAllDistrict')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        });
     },
     methods: {
+      selectCity: function (valCol,val) {
+        this.$data.province = val;
+        this.$http.post('/admin/district/findAllCities',{code:valCol})
+          .then(function (res) {
+            this.$data.citys = res.data;
+            this.$data.isOpen1 = true;
+          }, function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      open:function () {
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = false;
+        document.getElementById('select').style.borderColor = '#20a0ff';
+      },
+      select:function (valCode,val) {
+//        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+//        var oCon = document.getElementById('selectCol');
+        this.selectCon = val;
+//        oCon.innerHTML = val;
+//        oCon.style.color = '#1f2d3d';
+        this.$data.$msg.districtCode = valCode;
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = !this.$data.isOpen1;
+      },
+      // 修改认证信息
+      identChange: function () {
+//        this.$http.post('/admin/hsyMerchantList/modifyInfo')
+      },
+      identNoChange: function () {
+        this.isChange = false;
+        this.getData();
+      },
       getNetLogData: function(){
         this.netLogQuery.userId = this.msg.uid;
          this.$http.post('/admin/hsyMerchantAudit/netLogList',this.netLogQuery)
@@ -1265,6 +1500,7 @@
         this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.id})
           .then(function (res) {
             this.msg = res.data.res;
+            this.status = res.data.res.status;
             this.res = res.data.list;
             this.rateData = res.data.rateList;
             this.channelList = res.data.channelList;
@@ -1365,55 +1601,6 @@
           })
         })
       },
-      // 驳回
-      reject:function () {
-        this.rejectClick = true;
-        this.$http.post('/admin/hsyMerchantAudit/reject', {
-          id: this.id,
-          uid: this.msg.uid,
-        }).then(function (res) {
-          this.isReject = false;
-          this.rejectClick = false;
-          this.$message({
-            showClose: true,
-            message: '驳回重填成功',
-            type: 'success'
-          })
-        }, function (err) {
-          this.isReject = false;
-          this.rejectClick = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
-      },
-      // 修改信息
-      modify:function () {
-        this.modifyClick = true;
-        this.$http.post('/admin/hsyMerchantAudit/modify', {
-          shopId: this.id,//店铺编码
-          userId: this.msg.uid,//商户编码
-        }).then(function (res) {
-          this.isModify = false;
-          this.modifyClick = false;
-          this.getData();
-          this.$message({
-            showClose: true,
-            message: '修改成功',
-            type: 'success'
-          })
-        }, function (err) {
-          this.isModify = false;
-          this.modifyClick = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
-      },
       test:function(num) {
         num = num.toString();
         num = num.toUpperCase();
@@ -1475,16 +1662,6 @@
         return false;
       },
       audit: function (event) {
-//        if(this.msg.isPublic==0){
-//          if(!this.luhmCheck(this.msg.cardNO)){
-//            this.$message({
-//              showClose: true,
-//              message: '银行卡号不正确',
-//              type: 'error'
-//            })
-//            return
-//          }
-//        }
         if(this.msg.idcardNO==''||this.msg.idcardNO==null){
           this.$message({
             showClose: true,
@@ -1589,6 +1766,15 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+  .label {
+    color: #333;
+    span, a,div, input {
+      font-weight: normal;
+    }
+  }
+  .lead{
+    margin: 0 10px 0 15px;
+  }
   .mask{
     background: rgba(0,0,0,0.3);
     z-index: 1100;
@@ -1618,6 +1804,73 @@
     display: inherit;
     /*height: 100%;*/
     margin: 0 auto;
+  }
+  }
+  .select{
+    width: 100%;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #bfcbd9;
+    color: #bfcbd9;
+    display: block;
+    font-size: 12px;
+    line-height: 30px;
+    padding: 0px 10px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    overflow: hidden;
+    position: relative;
+  }
+  .select:hover{
+    border-color: #8391a5;
+  }
+  .isShow{
+    position: absolute;
+    left:10%;
+    width: 19%;
+    border-radius: 2px;
+    z-index: 1000;
+    max-height: 250px;
+    overflow: auto;
+    border: 1px solid #d1dbe5;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    margin: 5px 0;
+    padding:5px;
+  li{
+    list-style: none;
+    height: 25px;
+    padding: 0 5px;
+    line-height: 25px;
+  &:hover{
+     background: #1c8de0;
+   }
+  }
+  }
+
+  .isShow1{
+    border: 1px solid #d1dbe5;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    margin: 5px 0;
+    position: absolute;
+    left: 26%;
+    top: 0100%;
+    width: 16%;
+    padding: 5px;
+    z-index: 1000;
+    max-height: 285px;
+    overflow: auto;
+  li{
+    list-style: none;
+    padding: 0 5px;
+    line-height: 25px;
+  &:hover{
+     background: #1c8de0;
+   }
   }
   }
 </style>
