@@ -248,6 +248,7 @@
             c.`STATUS`,
             d.UID,
             d.SID,
+            b.REALNAME AS realnames,
             b.IDCARD,
             b.WEIXINRATE,
             b.ALIPAYRATE,

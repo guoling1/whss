@@ -63,7 +63,9 @@ public class HsyMerchantAuditRequest {
     private Long accountID;//账户ID
     private Date createTime;
     private Date updateTime;
-
+    private String licenceNo;//营业执照号
+    private Date licenceStartDate;//营业执照起期
+    private Date licenceEndDate;//营业执照止期
     private String cellphone;//注册手机号
 
     /**
