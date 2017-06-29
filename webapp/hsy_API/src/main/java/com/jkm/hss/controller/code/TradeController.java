@@ -250,14 +250,4 @@ public class TradeController extends BaseController {
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 
-    /**
-     * url支付
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "test")
-    public void test(final HttpServletRequest httpServletRequest) {
-        hsyCmbcService.merchantBindChannel(106,99);
-    }
 }
