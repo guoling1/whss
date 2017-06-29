@@ -72,6 +72,7 @@ public class AppAuUser {
 
     private String passwordOrigin;//原始密码
     private String auCellphone;//销售电话
+    private Integer isNeededAltingPassword;
 
     public Long getId() {
         return id;

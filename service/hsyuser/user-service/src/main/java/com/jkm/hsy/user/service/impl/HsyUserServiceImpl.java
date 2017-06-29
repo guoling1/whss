@@ -159,6 +159,8 @@ public class HsyUserServiceImpl implements HsyUserService {
                         hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
                 }
             }
+
+            hsyUserDao.updateAppAuUserTokenStatusByTIDExceptUID(tokenList.get(0).getId(),appAuUser.getId());
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -285,6 +287,9 @@ public class HsyUserServiceImpl implements HsyUserService {
                         hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
                 }
             }
+
+            hsyUserDao.updateAppAuUserTokenStatusByTIDExceptUID(tokenList.get(0).getId(),appAuUserFind.getId());
+
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -390,17 +395,22 @@ public class HsyUserServiceImpl implements HsyUserService {
                 }
             }
         }else{
-            if(appAuUser.getAlipayRate()==null)
-                appAuUser.setAlipayRate(BigDecimal.ZERO);
-            if(appAuUser.getWeixinRate()==null)
-                appAuUser.setWeixinRate(BigDecimal.ZERO);
+            if(appAuUserFind.getAlipayRate()==null)
+                appAuUserFind.setAlipayRate(BigDecimal.ZERO);
+            if(appAuUserFind.getWeixinRate()==null)
+                appAuUserFind.setWeixinRate(BigDecimal.ZERO);
         }
+
+        if(appAuUserFind.getPassword().equals("888888"))
+            appAuUserFind.setIsNeededAltingPassword(1);
+        else
+            appAuUserFind.setIsNeededAltingPassword(0);
 
         List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
         if(adminUserList!=null&&adminUserList.size()!=0)
             if(adminUserList.get(0).getMobile()!=null)
-                appAuUserFind.setAuCellphone(adminUserList.get(0).getUsername());
-//                appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
+//                appAuUserFind.setAuCellphone(adminUserList.get(0).getUsername());
+                appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
@@ -488,6 +498,8 @@ public class HsyUserServiceImpl implements HsyUserService {
                         hsyUserDao.updateAppAuUserTokenStatusByTID(token.getId());
                 }
             }
+
+            hsyUserDao.updateAppAuUserTokenStatusByTIDExceptUID(tokenList.get(0).getId(),appAuUserFind.getId());
 //            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
 
             AppAuUserToken appAuUserToken=new AppAuUserToken();
@@ -1162,17 +1174,22 @@ public class HsyUserServiceImpl implements HsyUserService {
                 }
             }
         }else{
-            if(appAuUser.getAlipayRate()==null)
-                appAuUser.setAlipayRate(BigDecimal.ZERO);
-            if(appAuUser.getWeixinRate()==null)
-                appAuUser.setWeixinRate(BigDecimal.ZERO);
+            if(appAuUserFind.getAlipayRate()==null)
+                appAuUserFind.setAlipayRate(BigDecimal.ZERO);
+            if(appAuUserFind.getWeixinRate()==null)
+                appAuUserFind.setWeixinRate(BigDecimal.ZERO);
         }
+
+        if(appAuUserFind.getPassword().equals("888888"))
+            appAuUserFind.setIsNeededAltingPassword(1);
+        else
+            appAuUserFind.setIsNeededAltingPassword(0);
 
         List<AdminUser> adminUserList=hsyUserDao.findAdminUserByUID(appAuUserFind.getId());
         if(adminUserList!=null&&adminUserList.size()!=0)
             if(adminUserList.get(0).getMobile()!=null)
-                appAuUserFind.setAuCellphone(adminUserList.get(0).getUsername());
-//                appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
+//                appAuUserFind.setAuCellphone(adminUserList.get(0).getUsername());
+                appAuUserFind.setAuCellphone(AdminUserSupporter.decryptMobile(0,adminUserList.get(0).getMobile()));
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {

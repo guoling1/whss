@@ -157,8 +157,12 @@
         update app_au_user_token set status=2 where TID=${tid} and status=1
     </update>
 
+    <update id="updateAppAuUserTokenStatusByTIDExceptUID" parameterType="String">
+        update app_au_user_token set status=2 where TID=${tid} and uid!=#{uid} and status=1
+    </update>
+
     <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hsy.user.entity.AppAuUserToken" resultType="com.jkm.hsy.user.entity.AppAuUserToken">
-        select UID,TID,STATUS,LOGINTIME
+        select UID,TID,STATUS,LOGINTIME,OUTTIME
         from app_au_user_token
         where 1=1
         <if test="uid!=null and uid!=''">and UID=#{uid}</if>
