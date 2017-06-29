@@ -538,7 +538,8 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public String companyAmount(CompanyPrifitRequest req) {
         CompanyPrifitRequest request =selectTime(req);
-        return this.allProfitDao.companyAmount(request);
+        final String s = this.allProfitDao.companyAmount(request);
+        return s;
     }
 
     @Override

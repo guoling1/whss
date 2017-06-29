@@ -6,42 +6,39 @@
 
 	<!-- 查询公司分润 -->
 	<select id="selectCompanyProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT x.splitDates,x.business_type,x.splitAmount FROM (SELECT a.`business_type`,
-		sum(a.split_amount) AS splitAmount,
-		#{splitDates} splitDates
+		SELECT  #{splitDates} splitDates,a.`business_type`,
+		SUM(a.`split_amount`)  split_amount
 		FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id= b.id
-		WHERE b.id IN(
-		SELECT DISTINCT account_id
-		FROM `tb_basic_channel`)
-		OR b.`id` IN(1, 2, 11, 49)
-		and a.`split_date` <![CDATA[ >= ]]>#{begin}
+		WHERE a.`split_date` <![CDATA[ >= ]]>#{begin}
 		and a.`split_date` <![CDATA[ <= ]]>#{end}
+		and a.`split_amount` >0
+
+		and (b.id IN(SELECT DISTINCT account_id FROM `tb_basic_channel`) OR b.`id` IN(1, 2, 11, 49))
+
+
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 		GROUP BY a.`business_type`
-		ORDER BY
-		a.`split_date` DESC
-		) x WHERE 1=1
-	<if test="businessType != null and businessType != ''">
-		AND x.business_type = #{businessType}
-	</if>
-	  LIMIT #{offset},#{pageSize}
+	  	LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询公司分润统计 -->
 	<select id="companyAmount" resultType="java.lang.String">
-		SELECT SUM(x.splitAmount) FROM (SELECT a.`business_type`,
-			sum(a.split_amount) AS splitAmount
+		SELECT SUM(x.split_amount) FROM (SELECT  a.business_type,a.split_date,
+		SUM(a.`split_amount`)  split_amount
 		FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id= b.id
-		WHERE b.id IN(
-		SELECT DISTINCT account_id
-		FROM `tb_basic_channel`)
-		OR b.`id` IN(1, 2, 11, 49)
-		and a.`split_date` <![CDATA[ >= ]]>#{begin}
+		WHERE a.`split_date` <![CDATA[ >= ]]>#{begin}
 		and a.`split_date` <![CDATA[ <= ]]>#{end}
-		GROUP BY
-		a.business_type) x
-		WHERE 1=1
+		and a.`split_amount` >0
+
+		and (b.id IN(SELECT DISTINCT account_id FROM `tb_basic_channel`) OR b.`id` IN(1, 2, 11, 49))
+
+		GROUP BY a.`business_type` ) x
+		WHERE x.`split_date`  <![CDATA[ >= ]]>#{begin}
+		and x.`split_date`  <![CDATA[ <= ]]>#{end}
 		<if test="businessType != null and businessType != ''">
 			AND x.business_type = #{businessType}
 		</if>
@@ -71,24 +68,21 @@
 
 	<!-- 查询公司分润总数 -->
 	<select id="selectCompanyProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT x.splitDates,x.business_type,x.splitAmount FROM (SELECT a.`business_type`,
-		sum(a.split_amount) AS splitAmount,
-		#{splitDates} splitDates
+		SELECT  #{splitDates} splitDates,a.`business_type`,
+		SUM(a.`split_amount`)  split_amount
 		FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id= b.id
-		WHERE b.id IN(
-		SELECT DISTINCT account_id
-		FROM `tb_basic_channel`)
-		OR b.`id` IN(1, 2, 11, 49)
-		and a.`split_date` <![CDATA[ >= ]]>#{begin}
+		WHERE a.`split_date` <![CDATA[ >= ]]>#{begin}
 		and a.`split_date` <![CDATA[ <= ]]>#{end}
-		GROUP BY a.`business_type`
-		ORDER BY
-		a.`split_date` DESC
-		) x WHERE 1=1
+		and a.`split_amount` >0
+
+		and (b.id IN(SELECT DISTINCT account_id FROM `tb_basic_channel`) OR b.`id` IN(1, 2, 11, 49))
+
+
 		<if test="businessType != null and businessType != ''">
-			AND x.business_type = #{businessType}
+			AND a.business_type = #{businessType}
 		</if>
+		GROUP BY a.`business_type`
 	</select>
 
 
@@ -423,78 +417,84 @@
 
 	<!-- 查询公司分润详情 -->
 	<select id="selectCompanyProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.*,
+		SELECT x.*,x.accId,x.settle_type1 FROM (SELECT a.*,
 		b.id AS accId,
-		c.settle_type
+		c.settle_type AS settle_type1
 		FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id= b.id
 		LEFT JOIN tb_order c ON c.order_no= a.order_no
 		WHERE b.id in(SELECT DISTINCT account_id FROM `tb_basic_channel`)
 		or b.id in(1,2,11,49)
-		and a.`split_date` <![CDATA[ >= ]]>#{begin}
-		and a.`split_date` <![CDATA[ <= ]]>#{end}
-		AND a.business_type= #{businessType}
-		and a.`split_amount`> 0
-	<if test="orderNo != null and orderNo != ''">
-		AND a.order_no = #{orderNo}
-	</if>
-	<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
-		AND a.receipt_money_user_name = #{receiptMoneyUserName}
-	</if>
-	<if test="businessType != null and businessType != ''">
-		AND a.business_type = #{businessType}
-	</if>
-		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+
+		AND a.business_type= "hssPay"
+		and a.`split_amount`> 0 ORDER BY a.split_date DESC) x
+		WHERE  x.`split_date` <![CDATA[ >= ]]>#{begin}
+		and x.`split_date` <![CDATA[ <= ]]>#{end}
+		<if test="orderNo != null and orderNo != ''">
+		AND x.order_no = #{orderNo}
+		</if>
+		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+			AND x.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND x.business_type = #{businessType}
+		</if>
+		 LIMIT #{offset},#{pageSize}
 	</select>
 
     <!-- 查询公司分润详情统计 -->
     <select id="ProfitDetailAmount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-        SELECT
-            SUM(a.split_total_amount) AS split_total_amount,
-            SUM(a.split_amount) AS split_amount
+      	SELECT
+		SUM(x.split_total_amount) AS split_total_amount,
+		SUM(x.split_amount) AS split_amount
+		FROM (SELECT a.*,
+		b.id AS accId,
+		c.settle_type AS settle_type1
 		FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id= b.id
 		LEFT JOIN tb_order c ON c.order_no= a.order_no
 		WHERE b.id in(SELECT DISTINCT account_id FROM `tb_basic_channel`)
 		or b.id in(1,2,11,49)
-		and a.`split_date` <![CDATA[ >= ]]>#{begin}
-		and a.`split_date` <![CDATA[ <= ]]>#{end}
-		AND a.business_type= #{businessType}
-		and a.`split_amount`> 0
+
+		AND a.business_type= "hssPay"
+		and a.`split_amount`> 0 ORDER BY a.split_date DESC) x
+		WHERE  x.`split_date` <![CDATA[ >= ]]>#{begin}
+		and x.`split_date` <![CDATA[ <= ]]>#{end}
         <if test="orderNo != null and orderNo != ''">
-            AND a.order_no = #{orderNo}
+            AND x.order_no = #{orderNo}
         </if>
         <if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
-            AND a.receipt_money_user_name = #{receiptMoneyUserName}
+            AND x.receipt_money_user_name = #{receiptMoneyUserName}
         </if>
         <if test="businessType != null and businessType != ''">
-            AND a.business_type = #{businessType}
+            AND x.business_type = #{businessType}
         </if>
     </select>
 
 	<!-- 查询公司分润详情总数 -->
 	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
-		SELECT
-		COUNT(a.`id`)
+		SELECT COUNT(*) FROM (SELECT a.*,
+		b.id AS accId,
+		c.settle_type AS settle_type1
 		FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id= b.id
 		LEFT JOIN tb_order c ON c.order_no= a.order_no
 		WHERE b.id in(SELECT DISTINCT account_id FROM `tb_basic_channel`)
 		or b.id in(1,2,11,49)
-		and a.`split_date` <![CDATA[ >= ]]>#{begin}
-		and a.`split_date` <![CDATA[ <= ]]>#{end}
-		AND a.business_type= #{businessType}
-		and a.`split_amount`> 0
+
+		AND a.business_type= "hssPay"
+		and a.`split_amount`> 0 ORDER BY a.split_date DESC) x
+		WHERE  x.`split_date` <![CDATA[ >= ]]>#{begin}
+		and x.`split_date` <![CDATA[ <= ]]>#{end}
 		<if test="orderNo != null and orderNo != ''">
-			AND a.order_no = #{orderNo}
+			AND x.order_no = #{orderNo}
 		</if>
 		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
-			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+			AND x.receipt_money_user_name = #{receiptMoneyUserName}
 		</if>
 		<if test="businessType != null and businessType != ''">
-			AND a.business_type = #{businessType}
+			AND x.business_type = #{businessType}
 		</if>
-		ORDER BY a.split_date DESC
 	</select>
 
 	<!-- 查询一级代理商分润详情 -->

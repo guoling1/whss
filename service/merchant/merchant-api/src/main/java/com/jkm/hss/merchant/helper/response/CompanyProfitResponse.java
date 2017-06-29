@@ -18,7 +18,7 @@ public class CompanyProfitResponse {
     /**
      * 结算周期
      */
-    private String settleType;
+    private String settleType1;
 
     /**
      * 一级代理商id
