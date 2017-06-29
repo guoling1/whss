@@ -955,7 +955,7 @@ public class DealerServiceImpl implements DealerService {
 
     //按照通道计算通道成本
     private BigDecimal calculateChannelFee(BigDecimal basicTrade, int channelSign) {
-
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
         BigDecimal basicMoney;
         final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
         switch (upperChannel){
@@ -1005,8 +1005,15 @@ public class DealerServiceImpl implements DealerService {
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;
             case HJ_PAY:
-                //最低一分 ，mo ling
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_DOWN);
+                if (channelSign == 1005){
+                    if (new BigDecimal("0.1").compareTo(basicTrade) == 1){
+                        basicMoney = new BigDecimal("0.1");
+                    }else{
+                        basicMoney = basicTrade.setScale(2,BigDecimal.ROUND_HALF_UP);
+                    }
+                }else{
+                    basicMoney = basicTrade.setScale(2,BigDecimal.ROUND_HALF_UP);
+                }
                 return basicMoney;
             default:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -1086,6 +1093,19 @@ public class DealerServiceImpl implements DealerService {
                 return waitMoney;
             case XMMS_BANK:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
+                return waitMoney;
+            case HJ_PAY:
+                if (basicChannel.getChannelTypeSign() == 1005){
+                    if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
+                        //手续费不足两毛 , 按2毛收
+                        waitMoney = basicChannel.getLowestFee();
+                    }else{
+                        //收手续费,进一位,保留两位有效数字
+                        waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    }
+                }else{
+                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                }
                 return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
