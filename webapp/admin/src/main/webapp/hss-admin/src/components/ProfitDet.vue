@@ -35,7 +35,9 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions" size="small" :clearable="false" :editable="false">
+                :picker-options="pickerOptions" size="small"
+                :clearable="false"
+                :editable="false" @change="datetimeSelect">
               </el-date-picker>
             </li>
             <li class="same">
@@ -54,7 +56,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderNo" label="交易订单号" width="218"></el-table-column>
-            <el-table-column prop="settleType" label="结算周期"></el-table-column>
+            <el-table-column prop="settleType1" label="结算周期"></el-table-column>
             <el-table-column label="分润总额" align="right" min-width="90">
               <template scope="scope">
                 <span>{{scope.row.splitTotalAmount|toFix}}</span>
@@ -104,13 +106,18 @@
     data(){
       return {
         pickerOptions: {
-          onPick:function({ maxDate, minDate }){
-            if(maxDate==''||maxDate==null){
-              this.disabledDate=function(maxDate) {
-                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+          disabledDate: function (time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          },
+          onPick: function ({maxDate, minDate}) {
+            if (maxDate == '' || maxDate == null) {
+              this.disabledDate = function (maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate || maxDate > new Date().setTime(new Date().getTime()-24*60*60*1000) || minDate > new Date().setTime(new Date().getTime()-24*60*60*1000);
               }
-            }else{
-              this.disabledDate=function(){}
+            } else {
+              this.disabledDate= function (time) {
+                return time.getTime() > Date.now() - 8.64e7;
+              }
             }
           }
         },
@@ -141,6 +148,7 @@
       }
     },
     created: function () {
+      this.currentDate();
       if(this.$route.path=="/admin/record/profitDet"){
         this.$data.path = '/admin/queryProfit/profitDetails';
         this.$data.totalUrl = '/admin/queryProfit/profitAmount'
@@ -151,6 +159,9 @@
         this.$data.query.accId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
+        this.query.startTime = this.$route.query.time.slice(0,10);
+        this.query.endTime = this.$route.query.time.slice(11);
+        delete this.query.splitDate;
         this.isShow =false
       }else if(this.$route.path=="/admin/details/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
@@ -167,13 +178,23 @@
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }
-      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      datetimeSelect: function (val) {
+        if (val == undefined) {
+          this.query.startTime = '';
+          this.query.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
+        }
+      },
       currentDate: function () {
         let time = new Date();
+        time.setTime(time.getTime()-24*60*60*1000);
         this.date = [time,time];
         for (var j = 0; j < this.date.length; j++) {
           var str = this.date[j];
@@ -269,7 +290,7 @@
         this.getData()
       },
     },
-    watch: {
+    /*watch: {
       date: function (val, oldVal) {
         if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
@@ -292,7 +313,7 @@
           this.query.endTime = '';
         }
       }
-    }
+    }*/
   }
 </script>
 <style scoped lang="less">

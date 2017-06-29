@@ -29,6 +29,10 @@ public class PlaceOrderParams {
      * 用户在微信公众号的openId或则在支付宝的唯一标识
      */
     private String memberId;
+    /**
+     * 主扫时的用户的code码
+     */
+    private String authCode;
 
     /**
      * 子商户公众账号ID（服务商）

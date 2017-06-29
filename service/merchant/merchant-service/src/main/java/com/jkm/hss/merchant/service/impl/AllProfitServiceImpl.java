@@ -246,20 +246,20 @@ public class AllProfitServiceImpl implements AllProfitService {
 //        rightNow.add(Calendar.DATE, 1);
 //        req.setSplitDate1(rightNow.getTime());
 //        req.setSplitDate(dt);
-        final CompanyPrifitRequest request =getTime(req);
-        if (request.getBusinessType().equals("好收收- 收款")){
-            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+//        final CompanyPrifitRequest request =getTime(req);
+        if (req.getBusinessType().equals("好收收- 收款")){
+            req.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
         }
-        if (request.getBusinessType().equals("好收收-提现")){
-            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        if (req.getBusinessType().equals("好收收-提现")){
+            req.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
         }
-        if (request.getBusinessType().equals("好收收-升级费")){
-            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        if (req.getBusinessType().equals("好收收-升级费")){
+            req.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
         }
-        if (request.getBusinessType().equals("好收银-收款")){
-            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        if (req.getBusinessType().equals("好收银-收款")){
+            req.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
         }
-        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(request);
+        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getLevel()==2){
@@ -410,8 +410,8 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public int selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
-        final CompanyPrifitRequest request =getTime(req);
-        return allProfitDao.selectCompanyProfitDetailsCount(request);
+//        final CompanyPrifitRequest request =getTime(req);
+        return allProfitDao.selectCompanyProfitDetailsCount(req);
 
     }
 
@@ -538,7 +538,8 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public String companyAmount(CompanyPrifitRequest req) {
         CompanyPrifitRequest request =selectTime(req);
-        return this.allProfitDao.companyAmount(request);
+        final String s = this.allProfitDao.companyAmount(request);
+        return s;
     }
 
     @Override
@@ -555,20 +556,20 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest req) {
-        final CompanyPrifitRequest request =getTime(req);
-        if (request.getBusinessType().equals("好收收- 收款")){
-            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+//        final CompanyPrifitRequest request =getTime(req);
+        if (req.getBusinessType().equals("好收收- 收款")){
+            req.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
         }
-        if (request.getBusinessType().equals("好收收-提现")){
-            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        if (req.getBusinessType().equals("好收收-提现")){
+            req.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
         }
-        if (request.getBusinessType().equals("好收收-升级费")){
-            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        if (req.getBusinessType().equals("好收收-升级费")){
+            req.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
         }
-        if (request.getBusinessType().equals("好收银-收款")){
-            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        if (req.getBusinessType().equals("好收银-收款")){
+            req.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
         }
-        CompanyProfitResponse res = this.allProfitDao.ProfitDetailAmount(request);
+        CompanyProfitResponse res = this.allProfitDao.ProfitDetailAmount(req);
         return res;
     }
 
@@ -643,14 +644,15 @@ public class AllProfitServiceImpl implements AllProfitService {
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
-                if (list.get(i).getSplitDate()!= null && !"".equals(list.get(i).getSplitDate())){
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    String st = df.format(list.get(i).getSplitDate());
-                    columns.add(st);
-
-                }else {
-                    columns.add("");
-                }
+//                if (list.get(i).getSplitDate()!= null && !"".equals(list.get(i).getSplitDate())){
+//                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//                    String st = df.format(list.get(i).getSplitDate());
+//                    columns.add(st);
+//
+//                }else {
+//                    columns.add("");
+//                }
+                columns.add(list.get(i).getSplitDates());
                 columns.add(list.get(i).getBusinessType());
                 columns.add(String.valueOf(list.get(i).getSplitAmount()));
 

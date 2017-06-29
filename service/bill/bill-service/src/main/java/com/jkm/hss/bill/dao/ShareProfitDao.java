@@ -43,4 +43,20 @@ public interface ShareProfitDao {
      */
     int selectAccountDetailsCount(ProfitDetailsRequest req);
 
+    Account getChannel();
+
+    /**
+     * 通道账户明细
+     * @param req
+     * @return
+     */
+    List<AccountDetailsResponse> selectChannelDetails(ProfitDetailsRequest req);
+
+    /**
+     * 通道账户明细
+     * @param req
+     * @return
+     */
+    int selectChannelDetailsCount(ProfitDetailsRequest req);
+
 }

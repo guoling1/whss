@@ -68,6 +68,11 @@ public class PaymentSdkPlaceOrderRequest {
     private String memberId;
 
     /**
+     * 主扫时的用户的code码
+     */
+    private String authCode;
+
+    /**
      * 子商户公众账号ID
      */
     private String subAppId;
