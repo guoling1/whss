@@ -223,6 +223,7 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrderReturn.setOrderno(hsyOrder.getOrderno());
         hsyOrderReturn.setOrderstatus(hsyOrder.getOrderstatus());
         hsyOrderReturn.setPaysuccesstime(hsyOrder.getPaysuccesstime());
+        hsyOrderReturn.setRemark(hsyOrder.getRemark());
 
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
             public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
