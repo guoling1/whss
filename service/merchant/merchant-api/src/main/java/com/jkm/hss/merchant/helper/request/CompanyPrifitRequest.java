@@ -10,10 +10,18 @@ import java.util.Date;
 @Data
 public class CompanyPrifitRequest {
 
+    private Date begin;//开始时间
+    private Date end;//结束时间
+
     /**
      * 分账日期
      */
     private Date splitDate;
+
+    /**
+     * 分账日期
+     */
+    private String splitDates;
 
     /**
      * 分账日期

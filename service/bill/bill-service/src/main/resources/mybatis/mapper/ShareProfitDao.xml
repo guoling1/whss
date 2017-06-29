@@ -4,8 +4,17 @@
 
 
     <select id="selectAccountList" resultType="com.jkm.hss.account.entity.Account">
-        SELECT * FROM tb_account WHERE id in (1,2,11,48,49)
+        SELECT * FROM tb_account WHERE id in (1,2,11,49)
         limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="getChannel" resultType="com.jkm.hss.account.entity.Account">
+        SELECT `id` ,`user_name`,
+       SUM(`total_amount`) AS total_amount,
+       SUM(`available`) AS available,
+       SUM(`frozen_amount`) AS `frozen_amount`,
+       SUM(`due_settle_amount`) AS `due_settle_amount` FROM tb_account WHERE id in (SELECT DISTINCT account_id
+        FROM `tb_basic_channel`)
     </select>
 
     <select id="selectAccountListCount"  resultType="java.lang.Integer">
@@ -17,6 +26,12 @@
         SELECT COUNT(a.id) FROM tb_account_flow a
         LEFT JOIN tb_account b ON a.account_id=b.id
         WHERE b.id=#{id}
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
     </select>
 
     <!-- 金开门公司账户明细 -->
@@ -32,6 +47,35 @@
         </if>
         ORDER BY create_time DESC
         limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 金开门公司通道账户明细 -->
+    <select id="selectChannelDetails"  resultType="com.jkm.hss.bill.entity.AccountDetailsResponse">
+        SELECT a.* FROM tb_account_flow a
+        LEFT JOIN tb_account b ON a.account_id=b.id
+        WHERE b.id in (SELECT DISTINCT account_id
+        FROM `tb_basic_channel`)
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        ORDER BY create_time DESC
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectChannelDetailsCount"  resultType="java.lang.Integer">
+        SELECT COUNT(a.id) FROM tb_account_flow a
+        LEFT JOIN tb_account b ON a.account_id=b.id
+        WHERE b.id in (SELECT DISTINCT account_id
+        FROM `tb_basic_channel`)
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
     </select>
 
 

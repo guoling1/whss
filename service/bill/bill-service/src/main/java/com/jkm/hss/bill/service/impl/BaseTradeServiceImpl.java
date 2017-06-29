@@ -111,6 +111,9 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         placeOrderRequest.setWxAppId(placeOrderParams.getWxAppId());
         placeOrderRequest.setMemberId(order.getPayAccount());
         placeOrderRequest.setAuthCode(placeOrderParams.getAuthCode());
+        placeOrderRequest.setSubAppId(placeOrderParams.getSubAppId());
+        placeOrderRequest.setSubMerchantId(placeOrderParams.getSubMerchantId());
+        placeOrderRequest.setSubMemberId(placeOrderParams.getSubMemberId());
 
         placeOrderRequest.setSettleNotifyUrl(placeOrderParams.getSettleNotifyUrl());
         placeOrderRequest.setBankCode(placeOrderParams.getBankBranchCode());

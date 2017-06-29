@@ -74,6 +74,18 @@ public class PayParams {
      */
     private String memberId;
     /**
+     * 子商户公众账号ID（服务商）
+     */
+    private String subAppId;
+    /**
+     * 子商户号（服务商）
+     */
+    private String subMerchantId;
+    /**
+     * 用户子标识（服务商）
+     */
+    private String subMemberId;
+    /**
      * 商户号
      */
     private String merchantNo;

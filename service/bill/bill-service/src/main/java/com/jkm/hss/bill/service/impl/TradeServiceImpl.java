@@ -176,6 +176,9 @@ public class TradeServiceImpl implements TradeService {
                     .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
                     .wxAppId(payParams.getWxAppId())
                     .memberId(payParams.getMemberId())
+                    .subAppId(payParams.getSubAppId())
+                    .subMerchantId(payParams.getSubMerchantId())
+                    .subMemberId(payParams.getSubMemberId())
                     .authCode(payParams.getAuthCode())
                     .bankBranchCode(payParams.getBankBranchCode())
                     .bankCardNo(payParams.getBankCardNo())
@@ -197,7 +200,7 @@ public class TradeServiceImpl implements TradeService {
     @Override
     @Transactional
     public void handlePayOrRechargeCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
-        log.info("交易单[{}], 处理支付回调");
+        log.info("交易单[{}], 处理支付回调", paymentSdkPayCallbackResponse.getOrderNo());
         final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
         Preconditions.checkState(orderOptional.isPresent(), "交易订单[{}]不存在", orderNo);
