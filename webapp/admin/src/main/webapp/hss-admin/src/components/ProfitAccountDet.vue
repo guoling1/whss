@@ -94,7 +94,6 @@
     created: function () {
       this.query.id = this.$route.query.id;
       this.currentDate();
-      this.$data.query.id = this.$route.query.id;
       if(this.$route.query.type=='filiale'){
         this.url = '/admin/branchAccount/branchDetail'
       }else {
@@ -103,54 +102,16 @@
       this.getData();
     },
     methods: {
-      //格式化时间
-      changeTime: function (row, column) {
-        var val=row.changeTime;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+      datetimeSelect: function (val) {
+        if (val == undefined) {
+          this.query.startTime = '';
+          this.query.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
         }
       },
-      getData: function () {
-        this.loading = true;
-        this.$http.post(this.url, this.query)
-          .then(function (res) {
-            this.records = res.data.records;
-            this.count = res.data.count;
-            this.loading = false;
-          }, function (err) {
-            this.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },
-      datetimeSelect: function (val) {
-              if (val == undefined) {
-                this.query.startTime = '';
-                this.query.endTime = '';
-              } else {
-                let format = val.split(' - ');
-                this.query.startTime = format[0];
-                this.query.endTime = format[1];
-              }
-            },
       search(){
         this.query.pageNo = 1;
         this.getData()
@@ -164,53 +125,6 @@
       handleCurrentChange(val) {
         this.query.pageNo = val;
         this.getData()
-      },
-      currentDate: function () {
-              let time = new Date();
-              time.setTime(time.getTime()-24*60*60*1000);
-              this.date = [time, time];
-              for (var j = 0; j < this.date.length; j++) {
-                var str = this.date[j];
-                var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-                for (var i = 0, len = ary.length; i < len; i++) {
-                  if (ary[i] < 10) {
-                    ary[i] = '0' + ary[i];
-                  }
-                }
-                str = ary[0] + '-' + ary[1] + '-' + ary[2];
-                if (j == 0) {
-                  this.query.startTime = str;
-                } else {
-                  this.query.endTime = str;
-                }
-              }
-    },
-    watch:{
-      date:function (val,oldVal) {
-        if(val!=undefined&&val[0]!=null){
-          for(var j=0;j<val.length;j++){
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for(var i = 0, len = ary.length; i < len; i ++) {
-              if(ary[i] < 10) {
-                ary[i] = '0' + ary[i];
-              }
-            }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if(j==0){
-              this.$data.query.startTime = str;
-            }else {
-              this.$data.query.endTime = str;
-            }
-      datetimeSelect: function (val) {
-        if (val == undefined) {
-          this.query.startTime = '';
-          this.query.endTime = '';
-        } else {
-          let format = val.split(' - ');
-          this.query.startTime = format[0];
-          this.query.endTime = format[1];
-        }
       },
       currentDate: function () {
         let time = new Date();
@@ -230,22 +144,7 @@
           } else {
             this.query.endTime = str;
           }
-        }else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
         }
-      },
-      search(){
-          this.currentPage = 1;
-        this.query.pageNo = 1;
-        this.loading = true;
-        this.getData();
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.query.pageNo = val;
-        this.loading = true;
-        this.getData();
       },
     }
   }
