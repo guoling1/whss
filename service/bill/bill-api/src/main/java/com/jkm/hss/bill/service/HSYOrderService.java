@@ -6,6 +6,8 @@ import com.jkm.hsy.user.entity.AppParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wayne on 17/5/17.
@@ -79,4 +81,14 @@ public interface HSYOrderService {
      * @return
      */
     String appOrderDetail(String dataParam, AppParam appParam);
+
+    /**
+     * 按商户编号和时间查询订单
+     *
+     * @param merchantNo
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<HsyOrder> getByMerchantNoAndTime(String merchantNo, Date startTime, Date endTime);
 }

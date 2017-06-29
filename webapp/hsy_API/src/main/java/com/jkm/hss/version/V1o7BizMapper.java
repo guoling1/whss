@@ -90,6 +90,23 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001055", new String[]{"hsyMembershipService","updateMemshipCard"});
         /**更改协议查看状态*/
         bizMapper.put("HSY001056", new String[]{"hsyUserService","updateProtocolSeenStatus"});
+        /**主扫创建订单*/
+        bizMapper.put("HSY001057", new String[]{"hsyOrderScanService","insertHsyOrder"});
+        /**更新订单并支付*/
+        bizMapper.put("HSY001058", new String[]{"hsyOrderScanService","updateHsyOrderPay"});
+        /**查找订单信息*/
+        bizMapper.put("HSY001059", new String[]{"hsyOrderScanService","findHsyOrderRelateInfo"});
+
+
+        bizMapper.put("HSY001060", new String[]{"hsyBalanceAccountEmailService","updateAutoSendBalanceAccountEmail"});
+        bizMapper.put("HSY001061", new String[]{"hsyBalanceAccountEmailService","sendBalanceAccountEmail"});
+        bizMapper.put("HSY001062", new String[]{"hsyBalanceAccountEmailService","checkAutoSendBalanceAccountEmail"});
+        /**修改密码*/
+        bizMapper.put("HSY001063", new String[]{"hsyUserService","updatePassword"});
+        /**发送语音验证码*/
+        bizMapper.put("HSY001064", new String[]{"hsyUserService","insertAndSendVoiceVerificationCode"});
+        /**开启停用提示音*/
+        bizMapper.put("HSY001065", new String[]{"hsyUserService","updateIsAvoidingTone"});
 
     }
 }

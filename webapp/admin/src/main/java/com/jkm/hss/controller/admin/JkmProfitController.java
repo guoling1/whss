@@ -50,6 +50,8 @@ public class JkmProfitController extends BaseController{
         req.setOffset(pageModel.getFirstIndex());
 
         List<Account> orderList =  shareProfitService.selectAccountList(req);
+        Account result = this.shareProfitService.getChannel();
+        orderList.add(result);
         int count = shareProfitService.selectAccountListCount(req);
         if (orderList.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
@@ -78,10 +80,17 @@ public class JkmProfitController extends BaseController{
             rightNow.add(Calendar.DATE, 1);
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
-        List<AccountDetailsResponse> orderList =  shareProfitService.selectAccountDetails(req);
-        if (orderList==null){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+        if (req.getId()==48){
+            List<AccountDetailsResponse> orderList =  shareProfitService.selectChannelDetails(req);
+            if (orderList==null){
+                return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+            }
+            int count = shareProfitService.selectChannelDetailsCount(req);
+            pageModel.setCount(count);
+            pageModel.setRecords(orderList);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
+        List<AccountDetailsResponse> orderList =  shareProfitService.selectAccountDetails(req);
         int count = shareProfitService.selectAccountDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);

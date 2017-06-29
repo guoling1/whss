@@ -12,6 +12,7 @@ import com.jkm.hsy.user.Enum.*;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.help.requestparam.CmbcProductResponse;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.help.requestparam.XmmsResponse;
 import com.jkm.hsy.user.service.*;
@@ -300,12 +301,12 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
      * @return
      */
     @Override
-    public CmbcResponse merchantBindChannel(long userId,long shopId) {
+    public CmbcProductResponse merchantBindChannel(long userId, long shopId) {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
         AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         Optional<UserTradeRate> wxUt = userTradeRateService.selectByUserIdAndPolicyType(userId,EnumPolicyType.WECHAT.getId());
         Optional<UserTradeRate> zfbUt = userTradeRateService.selectByUserIdAndPolicyType(userId,EnumPolicyType.ALIPAY.getId());
-        CmbcResponse cmbcResponse = new CmbcResponse();
+        CmbcProductResponse cmbcResponse = new CmbcProductResponse();
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", appAuUser.getGlobalID());
         paramsMap.put("wxOnlineRate", wxUt.get().getTradeRateT1().toString());
@@ -319,7 +320,17 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             log.info("收银家开通产品结果为："+jo.toString());
             cmbcResponse.setCode(jo.getInt("code"));
             cmbcResponse.setMsg(jo.getString("msg"));
-            cmbcResponse.setResult(jo.getString("result"));
+            if(jo.getInt("code")==1){
+                JSONObject jr = jo.getJSONObject("result");
+                CmbcProductResponse.ProductResponse productResponse = new CmbcProductResponse.ProductResponse();
+                productResponse.setAliRespCode(jr.getString("aliRespCode"));
+                productResponse.setWxRespCode(jr.getString("wxRespCode"));
+                productResponse.setAliRespMsg(jr.getString("aliRespMsg"));
+                productResponse.setWxRespMsg(jr.getString("wxRespMsg"));
+                productResponse.setSmId(jr.getString("smId"));
+                productResponse.setWxSmId(jr.getString("wxSmId"));
+                cmbcResponse.setResult(productResponse);
+            }
         } else {
             cmbcResponse.setCode(-1);
             cmbcResponse.setMsg("请求超时");

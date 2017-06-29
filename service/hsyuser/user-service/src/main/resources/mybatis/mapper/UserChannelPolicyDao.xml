@@ -65,6 +65,26 @@
         WHERE user_id = #{userId} and channel_type_sign in(801,802)
     </update>
 
+    <update id="updateHxOpenWxProduct">
+        UPDATE app_user_channel_policy
+        <set>
+            <if test="openProductStatus!=null and openProductStatus!=''">open_product_status = #{openProductStatus},</if>
+            <if test="openProductMarks!=null and openProductMarks!=''">open_product_marks = #{openProductMarks},</if>
+            <if test="exchannelEventCode!=null and exchannelEventCode!=''">exchannel_event_code = #{exchannelEventCode}</if>
+        </set>
+        WHERE user_id = #{userId} and channel_type_sign =801
+    </update>
+
+    <update id="updateHxOpenAlipayProduct">
+        UPDATE app_user_channel_policy
+        <set>
+            <if test="openProductStatus!=null and openProductStatus!=''">open_product_status = #{openProductStatus},</if>
+            <if test="openProductMarks!=null and openProductMarks!=''">open_product_marks = #{openProductMarks},</if>
+            <if test="exchannelEventCode!=null and exchannelEventCode!=''">exchannel_event_code = #{exchannelEventCode}</if>
+        </set>
+        WHERE user_id = #{userId} and channel_type_sign =802
+    </update>
+
     <select id="getUserChannelList" resultType="com.jkm.hsy.user.help.requestparam.UserChannelPolicyResponse">
         SELECT c.channel_name,c.settle_type,c.net_status,c.net_marks,
         c.open_product_status,c.open_product_marks,c.exchannel_code,c.app_id,c.sub_app_id,c.exchannel_event_code,

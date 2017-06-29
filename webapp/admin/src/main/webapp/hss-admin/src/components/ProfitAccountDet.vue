@@ -16,7 +16,10 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions" size="small">
+                :picker-options="pickerOptions"
+                :clearable="false"
+                @change="datetimeSelect"
+                :editable="false" size="small">
               </el-date-picker>
             </li>
             <li class="same">
@@ -26,11 +29,13 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column prop="orderNo" label="流水号"></el-table-column>
-            <el-table-column prop="changeTime" :formatter="changeTime" label="时间"></el-table-column>
-            <el-table-column prop="beforeAmount" label="发生前余额（元）"></el-table-column>
-            <el-table-column prop="incomeAmount" label="收入金额（元）"></el-table-column>
-            <el-table-column prop="outAmount" label="支出金额（元）"></el-table-column>
-            <el-table-column prop="afterAmount" label="发生后余额（元）"></el-table-column>
+            <el-table-column prop="changeTime" label="时间">
+              <template scope="scope">{{scope.row.changeTime|changeTime}}</template>
+            </el-table-column>
+            <el-table-column prop="beforeAmount" label="发生前余额（元）" align="right"></el-table-column>
+            <el-table-column prop="incomeAmount" label="收入金额（元）" align="right"></el-table-column>
+            <el-table-column prop="outAmount" label="支出金额（元）" align="right"></el-table-column>
+            <el-table-column prop="afterAmount" label="发生后余额（元）" align="right"></el-table-column>
             <el-table-column label="业务类型">
               <template scope="scope">
                 <span v-if="records[scope.$index].appId=='hss'">好收收</span>
@@ -41,13 +46,7 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="query.pageNo"
-                           :page-sizes="[10, 20, 50]"
-                           :page-size="query.pageSize"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="count">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
         </div>
@@ -61,31 +60,20 @@
     data(){
       return {
         pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
+          disabledDate: function (time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          },
+          onPick: function ({maxDate, minDate}) {
+            if (maxDate == '' || maxDate == null) {
+              this.disabledDate = function (maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate || maxDate > new Date().setTime(new Date().getTime()-24*60*60*1000) || minDate > new Date().setTime(new Date().getTime()-24*60*60*1000);
+              }
+            } else {
+              this.disabledDate= function (time) {
+                return time.getTime() > Date.now() - 8.64e7;
+              }
             }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+          }
         },
         date:'',
         query:{
@@ -97,7 +85,6 @@
         },
         records: [],
         count: 0,
-        total: 0,
         currentPage: 1,
         loading: false,
         index: '',
@@ -105,25 +92,9 @@
       }
     },
     created: function () {
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.startTime = str;
-        } else {
-          this.$data.query.endTime = str;
-        }
-      }
+      this.query.id = this.$route.query.id;
+      this.currentDate();
       this.$data.query.id = this.$route.query.id;
-      console.log(this.$route.query.type)
       if(this.$route.query.type=='filiale'){
         this.url = '/admin/branchAccount/branchDetail'
       }else {
@@ -170,6 +141,16 @@
             })
           })
       },
+      datetimeSelect: function (val) {
+              if (val == undefined) {
+                this.query.startTime = '';
+                this.query.endTime = '';
+              } else {
+                let format = val.split(' - ');
+                this.query.startTime = format[0];
+                this.query.endTime = format[1];
+              }
+            },
       search(){
         this.query.pageNo = 1;
         this.getData()
@@ -183,7 +164,26 @@
       handleCurrentChange(val) {
         this.query.pageNo = val;
         this.getData()
-      }
+      },
+      currentDate: function () {
+              let time = new Date();
+              time.setTime(time.getTime()-24*60*60*1000);
+              this.date = [time, time];
+              for (var j = 0; j < this.date.length; j++) {
+                var str = this.date[j];
+                var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+                for (var i = 0, len = ary.length; i < len; i++) {
+                  if (ary[i] < 10) {
+                    ary[i] = '0' + ary[i];
+                  }
+                }
+                str = ary[0] + '-' + ary[1] + '-' + ary[2];
+                if (j == 0) {
+                  this.query.startTime = str;
+                } else {
+                  this.query.endTime = str;
+                }
+              }
     },
     watch:{
       date:function (val,oldVal) {
@@ -202,12 +202,51 @@
             }else {
               this.$data.query.endTime = str;
             }
+      datetimeSelect: function (val) {
+        if (val == undefined) {
+          this.query.startTime = '';
+          this.query.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
+        }
+      },
+      currentDate: function () {
+        let time = new Date();
+        time.setTime(time.getTime()-24*60*60*1000);
+        this.date = [time, time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.query.startTime = str;
+          } else {
+            this.query.endTime = str;
           }
         }else {
           this.$data.query.startTime = '';
           this.$data.query.endTime = '';
         }
-      }
+      },
+      search(){
+          this.currentPage = 1;
+        this.query.pageNo = 1;
+        this.loading = true;
+        this.getData();
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.query.pageNo = val;
+        this.loading = true;
+        this.getData();
+      },
     }
   }
 </script>
