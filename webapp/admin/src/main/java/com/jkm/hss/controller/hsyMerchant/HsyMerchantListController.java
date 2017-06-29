@@ -432,9 +432,20 @@ public class HsyMerchantListController extends BaseController {
         return CommonResponse.objectResponse(1,"SUCCESS",list1);
     }
 
+    /**
+     * 修改商户认证信息
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/modifyInfo",method = RequestMethod.POST)
     public CommonResponse modifyInfo(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
-        return null;
+        try {
+            this.hsyMerchantAuditService.updateModifyInfo(hsyMerchantAuditRequest);
+            return CommonResponse.simpleResponse(1,"SUCCESS");
+        }catch (Exception e){
+            log.debug("修改失败");
+            throw e;
+        }
     }
 }

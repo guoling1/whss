@@ -571,6 +571,11 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         this.hsyMerchantAuditDao.updatePhone(changePhone,uid);
     }
 
+    @Override
+    public void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        this.hsyMerchantAuditDao.updateModifyInfo(hsyMerchantAuditRequest);
+    }
+
     /**
      * 获取临时路径
      *
