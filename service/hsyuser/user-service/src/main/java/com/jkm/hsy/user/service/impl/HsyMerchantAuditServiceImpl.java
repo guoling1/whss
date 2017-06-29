@@ -99,6 +99,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
+        if (res.getLicenceStartDate()!=null&&res.getLicenceEndDate()!=null){
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            final String start = format.format(res.getLicenceStartDate());
+            final String end = format.format(res.getLicenceEndDate());
+            res.setStartEndDate(start+"--"+end);
+        }
         if(res.getHxbStatus()==null||"".equals(res.getHxbStatus())){
             res.setHxbStatus(0);
         }else{

@@ -431,4 +431,10 @@ public class HsyMerchantListController extends BaseController {
         list1.add(jsonObject);
         return CommonResponse.objectResponse(1,"SUCCESS",list1);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/modifyInfo",method = RequestMethod.POST)
+    public CommonResponse modifyInfo(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        return null;
+    }
 }
