@@ -88,12 +88,4 @@ public interface HsyOrderDao {
      * @return
      */
     List<HsyOrder> selectByMerchantNoAndTime(@Param("merchantNo") String merchantNo, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
-
-    List<Long> selectTest();
-
-    int updateTest(@Param("shopId") long shopId, @Param("globalID") String globalID);
-
-    List<Long> selectTestId();
-
-    void updateTest2(@Param("orderId") long orderId, @Param("poundage") BigDecimal poundage);
 }

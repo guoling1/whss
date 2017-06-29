@@ -277,26 +277,4 @@ public class SettleController extends BaseController {
         result.setRecords(responses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
-
-    /**
-     * //同步商户号
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "test1")
-    public void test1() {
-        this.hsyOrderService.test1();
-    }
-
-    /**
-     * //同步费率
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "test2")
-    public void test2() {
-        this.hsyOrderService.test2();
-    }
 }
