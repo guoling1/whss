@@ -10,6 +10,7 @@ import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
+import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.BatchSettleRequest;
@@ -47,6 +48,8 @@ public class SettleController extends BaseController {
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
 
     @ResponseBody
     @RequestMapping(value = "settleTest")
@@ -273,5 +276,27 @@ public class SettleController extends BaseController {
         result.setCount(page.getCount());
         result.setRecords(responses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+    }
+
+    /**
+     * //同步商户号
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "test1")
+    public void test1() {
+        this.hsyOrderService.test1();
+    }
+
+    /**
+     * //同步费率
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "test2")
+    public void test2() {
+        this.hsyOrderService.test2();
     }
 }

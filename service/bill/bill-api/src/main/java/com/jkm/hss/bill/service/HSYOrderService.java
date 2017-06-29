@@ -91,4 +91,9 @@ public interface HSYOrderService {
      * @return
      */
     List<HsyOrder> getByMerchantNoAndTime(String merchantNo, Date startTime, Date endTime);
+
+    void test1();
+
+
+    void test2();
 }
