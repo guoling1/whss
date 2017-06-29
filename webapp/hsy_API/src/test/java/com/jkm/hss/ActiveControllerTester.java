@@ -272,7 +272,7 @@ public class ActiveControllerTester {
         p.setV(v);
         /*role 值：2店长，3店员  sid可选 parentID当前登录用户的id*/
 //        String param="{\"role\":3,\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
-        String param="{\"role\":2,\"cellphone\":\"13301129906\",\"realname\":\"张斌\",\"parentID\":18}";
+        String param="{\"role\":2,\"cellphone\":\"13301129906\",\"realname\":\"张斌\",\"parentID\":370}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

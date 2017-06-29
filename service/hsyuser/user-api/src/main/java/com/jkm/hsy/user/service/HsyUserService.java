@@ -25,6 +25,7 @@ public interface HsyUserService {
 
     public String updatePassword(String dataParam,AppParam appParam)throws ApiHandleException;
     public String insertAndSendVoiceVerificationCode(String dataParam,AppParam appParam)throws ApiHandleException;
+    public String updateIsAvoidingTone(String dataParam,AppParam appParam)throws ApiHandleException;
 
     /**
      * 更新email

@@ -75,4 +75,17 @@ public class ActiveScanControllerTester {
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
+
+    @Test
+    public void testUpdateIsAvoidingTone()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001065");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"isAvoidingTone\":0}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
 }
