@@ -105,6 +105,8 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001063", new String[]{"hsyUserService","updatePassword"});
         /**发送语音验证码*/
         bizMapper.put("HSY001064", new String[]{"hsyUserService","insertAndSendVoiceVerificationCode"});
+        /**开启停用提示音*/
+        bizMapper.put("HSY001065", new String[]{"hsyUserService","updateIsAvoidingTone"});
 
     }
 }

@@ -110,7 +110,7 @@
     </update>
 
     <insert id="insertAppAuToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuToken">
-        insert into app_au_token(ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME) values(#{accessToken},#{encryptKey},#{deviceid},#{clientid},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{createTime},#{updateTime})
+        insert into app_au_token(ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,ISAVOIDINGTONE,CREATETIME,UPDATETIME) values(#{accessToken},#{encryptKey},#{deviceid},#{clientid},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{isAvoidingTone},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateAppAuToken" parameterType="com.jkm.hsy.user.entity.AppAuToken">
@@ -126,6 +126,7 @@
             <if test="appCode!=null and appCode!=''">APPCODE=#{appCode},</if>
             <if test="appVersion!=null and appVersion!=''">APPVERSION=#{appVersion},</if>
             <if test="appChannel!=null and appChannel!=''">APPCHANNEL=#{appChannel},</if>
+            <if test="isAvoidingTone!=null">ISAVOIDINGTONE=#{isAvoidingTone},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -133,7 +134,7 @@
 
     <select id="findAppAuTokenByAccessToken" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
         select
-        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,ISAVOIDINGTONE,CREATETIME,UPDATETIME
         from app_au_token
         where 1=1
         <if test="accessToken!=null and accessToken!=''">and ACCESSTOKEN=#{accessToken}</if>
@@ -142,7 +143,7 @@
 
     <select id="findAppAuTokenByClientid" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
         select
-        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,ISAVOIDINGTONE,CREATETIME,UPDATETIME
         from app_au_token token left join app_au_user_token ut on token.ID=ut.TID
         where ut.status=1
         <if test="clientid!=null and clientid!=''">and token.CLIENTID=#{clientid}</if>

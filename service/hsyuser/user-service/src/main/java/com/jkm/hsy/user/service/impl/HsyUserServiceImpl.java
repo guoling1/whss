@@ -679,6 +679,7 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         appAuToken.setAppType(appParam.getAppType());
         Date date=new Date();
+        appAuToken.setIsAvoidingTone(0);
         appAuToken.setCreateTime(date);
         appAuToken.setUpdateTime(date);
         hsyUserDao.insertAppAuToken(appAuToken);
@@ -795,6 +796,10 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         appAuUser.setPassword(password);
         appAuUser.setAuStep("0");
+        List<AppAuUser> parentList = hsyUserDao.findAppAuUserByID(appAuUser.getParentID());
+        if(parentList!=null&&parentList.size()!=0)
+            if(parentList.get(0).getRole()==2)
+                appAuUser.setParentID(parentList.get(0).getParentID());
         hsyUserDao.insert(appAuUser);
 
         AppAuUser appAuUserUp=new AppAuUser();
@@ -992,6 +997,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         }else{
             appAuUser.setRoleTemp(appAuUser.getRole());
         }
+        List<AppAuUser> parentList = hsyUserDao.findAppAuUserByID(appAuUser.getParentID());
+        if(parentList!=null&&parentList.size()!=0)
+            if(parentList.get(0).getRole()==2)
+                appAuUser.setParentID(parentList.get(0).getParentID());
         appAuUser.setUpdateTime(date);
         hsyUserDao.updateByID(appAuUser);
         return "";
@@ -1479,6 +1488,38 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuVerification.setCode(code);
         hsyVerificationDao.insert(appAuVerification);
         return "{\"sn\":\""+sn+"\"}";
+    }
+
+    /**HSY001065 开启停用提示音*/
+    public String updateIsAvoidingTone(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuToken appAuToken=null;
+        try{
+            appAuToken=gson.fromJson(dataParam, AppAuToken.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuToken.getIsAvoidingTone()!=null&&!appAuToken.getIsAvoidingTone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"是否消除提示音");
+        if(!(appAuToken.getIsAvoidingTone()==0||appAuToken.getIsAvoidingTone()==1))
+            throw new ApiHandleException(ResultCode.STATUS_NOT_EXSIT);
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            AppAuToken appAuTokenUpdate=tokenList.get(0);
+            appAuTokenUpdate.setIsAvoidingTone(appAuToken.getIsAvoidingTone());
+            appAuTokenUpdate.setUpdateTime(new Date());
+            hsyUserDao.updateAppAuToken(appAuTokenUpdate);
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+        return "";
     }
 
     /**
