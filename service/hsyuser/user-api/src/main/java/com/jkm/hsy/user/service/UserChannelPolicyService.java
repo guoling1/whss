@@ -38,6 +38,16 @@ public interface UserChannelPolicyService {
      * @param userChannelPolicy
      */
     void updateHxOpenProduct(UserChannelPolicy userChannelPolicy);
+    /**
+     * 修改华夏开通微信产品信息
+     * @param userChannelPolicy
+     */
+    void updateHxOpenWxProduct(UserChannelPolicy userChannelPolicy);
+    /**
+     * 修改华夏开通支付宝产品信息
+     * @param userChannelPolicy
+     */
+    void updateHxOpenAlipayProduct(UserChannelPolicy userChannelPolicy);
 
     /**
      * 用户通道列表

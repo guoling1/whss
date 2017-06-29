@@ -252,7 +252,6 @@ public class TradeController extends BaseController {
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
-
     /**
      * url支付
      *
