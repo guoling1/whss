@@ -249,6 +249,7 @@
             d.UID,
             d.SID,
             b.REALNAME AS realnames,
+            b.GLOBALID,
             b.IDCARD,
             b.WEIXINRATE,
             b.ALIPAYRATE,
