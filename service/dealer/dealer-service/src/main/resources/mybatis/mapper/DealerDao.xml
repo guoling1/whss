@@ -1010,4 +1010,13 @@
             AND d.oem_id = #{oemId}
         </if>
     </select>
+
+    <!-- 查询分公司下的所有商户 -->
+    <select id="branchCompany" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
+        SELECT * FROM tb_merchant_info WHERE oem_id=
+    </select>
+    <!-- 查询分公司下的所有商户总数 -->
+    <select id="branchCompanyCount" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
+        SELECT COUNT (*) FROM tb_merchant_info WHERE oem_id=
+    </select>
 </mapper>
