@@ -78,61 +78,6 @@
             </div>
           </el-col>
         </el-row>
-        <!--<div class="table-responsive">
-          <table class="table">
-            <tbody>
-            &lt;!&ndash;<tr>
-              <th style="text-align: right">注册手机:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cellphone" readonly>
-                <el-button type="text" @click="isPhone = true">修改</el-button>
-              </td>
-              <th style="text-align: right">注册时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
-              <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="&#45;&#45;" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode==0?'':msg.markCode" readonly></td>
-              <th style="text-align: right">一级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
-              <th></th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode1==0?'':msg.markCode1" readonly></td>
-              <th style="text-align: right">二级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
-              <th></th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">报单员:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.username" readonly></td>
-              <th style="text-align: right">姓名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.realname" readonly></td>
-              <th></th>
-              <td></td>
-            </tr>&ndash;&gt;
-            &lt;!&ndash;<tr>
-              <th style="text-align: right">推荐人编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-              <th style="text-align: right">推荐人名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-              <th style="text-align: right">推荐人注册手机号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">推荐所属一级代理名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYq" readonly></td>
-              <th style="text-align: right">推荐所属二级代理名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYq1" readonly></td>
-              <th style="text-align: right"></th>
-              <td></td>
-            </tr>&ndash;&gt;
-            </tbody></table>
-        </div>-->
       </div>
       <div class="box box-primary">
         <span class="lead">商户认证信息</span>
@@ -175,7 +120,6 @@
           <el-col :span="5">
             <div class="label">营业执照有效期：
               <span v-if="!isChange">{{$msg.startEndDate}}</span>
-              <!--<el-input size="small" v-model="$msg.startEndDate" v-else></el-input>-->
               <el-date-picker
                 v-else
                 v-model="date"
@@ -199,8 +143,8 @@
           </el-col>
           <el-col :span="5">
             <div class="label">店主（法人）身份证号：
-              <span v-if="!isChange">{{$msg.idcardNO}}</span>
-              <el-input size="small" v-model="$msg.idcardNO" v-else></el-input>
+              <span v-if="!isChange">{{$msg.idcard}}</span>
+              <el-input size="small" v-model="$msg.idcard" v-else></el-input>
             </div>
           </el-col>
           <el-col :span="5">
@@ -263,47 +207,8 @@
             <div class="label"><span></span></div>
           </el-col>
         </el-row>
-        <el-button type="primary" size="small" v-if="isChange" @click="identChange" :disabled="auditClick" style="margin: 0 0 15px 15px">保存</el-button>
+        <el-button type="primary" size="small" v-if="isChange" @click="identChange" :loading="auditClick" style="margin: 0 0 15px 15px">保存</el-button>
         <el-button type="primary" size="small" v-if="isChange" @click="identNoChange">取消</el-button>
-        <!--<div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">商铺名称（全称）:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
-              <th style="text-align: right">商铺简称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.shortName" readonly></td>
-              &lt;!&ndash;<th style="text-align: right">商户营业执照号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>&ndash;&gt;
-              <th style="text-align: right"></th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">店主（法人）实名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.contactName"  readonly></td>
-              <th style="text-align: right">店主身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly></td>
-              <th style="text-align: right"></th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">商铺上报名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
-              <th style="text-align: right">经营种类:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly></td>
-              <th style="text-align: right">省市区:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.districtCode" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">商铺详细地址:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
-              <th style="text-align: right">资料提交时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.updateTime|changeTime" readonly></td>
-              <th style="text-align: right">资料审核状态:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.stat" readonly></td>
-            </tr>
-            </tbody></table>
-        </div>-->
       </div>
       <div class="box box-primary">
         <span class="lead">商户认证资料</span>
@@ -323,43 +228,14 @@
             </tr>
             <tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
-                <!--<img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardf" alt="" v-if="$msg.idcardf!=null&&$msg.idcardf!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('1')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.idcardf==null&&$msg.idcardf==''&&$msg.status!=1&&$msg.status!==2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:1}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardb" alt="" v-if="$msg.idcardb!=null&&$msg.idcardb!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.status==1||$msg.status==2" type="text" @click="changePhoto('2')">点击更换</el-button>
-                <!--<el-upload v-if="$msg.idcardb==null&&$msg.idcardb==''&&$msg.status!=1&&$msg.status!=2" id="upload" style="position: relative" action="/admin/photoChange/hsySavePhotoChang"
-                           type="drag" :thumbnail-mode="true"
-                           name="photo"
-                           :data={sid:id,hsyType:2}
-                           :on-preview="handlePreview"
-                           :on-success="handleSuccess"
-                           :on-error="handleErr"
-                           :default-file-list="fileList">
-                  <i class="el-icon-upload"></i>
-                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </el-upload>-->
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <!--<img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>-->
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.idcardc" alt="" v-if="$msg.idcardc!=null&&$msg.idcardc!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.idcardc!=null&&$msg.idcardc!=''&&$msg.status==1||$msg.status==2" type="text" @click="changePhoto('7')">点击更换</el-button>
               </td>
@@ -435,46 +311,6 @@
             </div>
           </el-col>
         </el-row>
-        <!--<div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">结算卡类型:</th>
-              <td>
-                <input type="text" style="background:#efecec;padding-left:5px;" value="对公" readonly v-if="$msg.isPublic==1">
-                <input type="text" style="background:#efecec;padding-left:5px;" value="对私" readonly v-if="$msg.isPublic==0">
-              </td>
-              <th style="text-align: right">结算卡开户名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardAccountName" readonly></td>
-              <th style="text-align: right" v-show="msg.isPublic==0">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly v-show="msg.isPublic==0"></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">商户结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardNO" readonly></td>
-              <th style="text-align: right">结算卡所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.cardBank" readonly></td>
-              <th style="text-align: right">支行信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.bankAddress" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">结算方式:</th>
-              <td>
-                <el-radio-group>
-                  <el-radio :label="3">T1结算到卡</el-radio>
-                  <el-radio :label="4">T1结算到账户余额</el-radio>
-                </el-radio-group>
-              </td>
-              <th style="text-align: right">联行号:</th>
-              <td>
-                <input type="text" style="background:#efecec;padding-left:5px;" :value="$msg.branchCode" readonly>
-                <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)">补填联行号</el-button>
-              </td>
-              <th style="text-align: right"></th>
-              <td></td>
-            </tr>
-            </tbody></table>
-        </div>-->
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
@@ -520,7 +356,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-button type="primary" size="small" v-if="isInput" @click="rateChange" :disabled="auditClick">保存</el-button>
+            <el-button type="primary" size="small" v-if="isInput" @click="rateChange"  :loading="auditClick">保存</el-button>
             <el-button type="primary" size="small" v-if="isInput" @click="rateNoChange">取消</el-button>
           </template>
         </div>
@@ -639,7 +475,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="isBank = false">取 消</el-button>
-          <el-button type="primary" @click="bankSubmit">确 定</el-button>
+          <el-button type="primary" @click="bankSubmit" :loading="auditClick">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="选择支行" :visible.sync="isWad">
@@ -821,7 +657,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="isWxChannel = false" style="position: relative;top: -20px;">取 消</el-button>
-          <el-button @click="submitWxChannel" type="primary" style="position: relative;top: -20px;" :disabled="auditClick">确 定</el-button>
+          <el-button @click="submitWxChannel" type="primary" style="position: relative;top: -20px;" :loading="auditClick">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -933,11 +769,7 @@
     },
     created: function () {
       this.id = this.$route.query.id;
-//      this.status = this.$route.query.status;
       this.getData();
-      console.log(this.status)
-
-//      this.getData();
       var $box=$("#imgBox");
       $box.on("mousedown",function(e){
         var disX= e.clientX-$(this).offset().left;
@@ -1043,14 +875,13 @@
       },
       // 修改认证信息
       identChange: function () {
-        console.log(this.date)
         let query = {
           name:this.msg.name,
           shortName:this.msg.shortName,
           industryCode:this.msg.industryCode,
           licenceNo:this.msg.licenceNo,
           realnames:this.msg.realnames,
-          idcardNO:this.msg.idcardNO,
+          idcardNO:this.msg.idcard,
           contactName:this.msg.contactName,
           contactCellphone:this.msg.contactCellphone,
           districtCode:this.msg.districtCodes,
@@ -1088,9 +919,11 @@
           })
           return;
         }else{
+          this.auditClick = true;
           this.$http.post('/admin/hsyMerchantList/modifyInfo',query)
             .then(res=>{
               this.isChange = false;
+              this.auditClick = false;
               this.$message({
                 showClose: true,
                 message: '修改成功',
@@ -1099,6 +932,7 @@
               this.getData();
             })
             .catch(err=>{
+              this.auditClick = false;
               this.$message({
                 showClose: true,
                 message: err.statusMessage,
@@ -1250,16 +1084,7 @@
       },
       bankSubmit: function () {
         this.bankForm.id = this.id;
-//        if(this.msg.isPublic==0){
-//          if(!this.luhmCheck(this.bankForm.cardNo)){
-//            this.$message({
-//              showClose: true,
-//              message: '银行卡号不正确',
-//              type: 'error'
-//            })
-//            return
-//          }
-//        }
+        this.auditClick = true;
         this.$http.post('/admin/hsyMerchantList/changeSettlementCard',this.bankForm)
           .then(res =>{
             this.$message({
@@ -1268,9 +1093,11 @@
               type: 'success'
             });
             this.isBank = false;
+            this.auditClick = false;
             this.getData()
           })
           .catch(err=>{
+            this.auditClick = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -1762,13 +1589,13 @@
         return false;
       },
       audit: function (event) {
-        if(this.msg.idcardNO==''||this.msg.idcardNO==null){
+        if(this.msg.idcard==''||this.msg.idcard==null){
           this.$message({
             showClose: true,
             message: '身份证号不正确',
             type: 'error'
           })
-        }else if(!this.test(this.msg.idcardNO)){
+        }else if(!this.test(this.msg.idcard)){
           this.$message({
             showClose: true,
             message: '身份证号不正确',
