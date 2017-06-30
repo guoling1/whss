@@ -955,7 +955,6 @@ public class DealerServiceImpl implements DealerService {
 
     //按照通道计算通道成本
     private BigDecimal calculateChannelFee(BigDecimal basicTrade, int channelSign) {
-        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
         BigDecimal basicMoney;
         final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
         switch (upperChannel){
