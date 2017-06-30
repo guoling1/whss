@@ -130,6 +130,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         }
         String districtCode = res.getDistrictCode();
+        res.setDistrictCodes(res.getDistrictCode());
         if (!"".equals(districtCode)&&districtCode!=null){
             HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
             if (!("0").equals(ret.getParentCode())){
@@ -574,6 +575,11 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
         this.hsyMerchantAuditDao.updateModifyInfo(hsyMerchantAuditRequest);
+    }
+
+    @Override
+    public int getStatuts(Long id) {
+        return this.hsyMerchantAuditDao.getStatuts(id);
     }
 
     /**

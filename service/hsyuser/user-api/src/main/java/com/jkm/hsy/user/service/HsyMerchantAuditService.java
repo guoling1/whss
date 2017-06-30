@@ -143,4 +143,11 @@ public interface HsyMerchantAuditService {
      * @param hsyMerchantAuditRequest
      */
     void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 查询审核状态
+     * @param id
+     * @return
+     */
+    int getStatuts(Long id);
 }

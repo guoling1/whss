@@ -168,4 +168,11 @@ public interface HsyMerchantAuditDao {
      * @param hsyMerchantAuditRequest
      */
     void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 查询审核状态
+     * @param id
+     * @return
+     */
+    int getStatuts(@Param("id") Long id);
 }

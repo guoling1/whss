@@ -56,6 +56,7 @@ public class HsyMerchantAuditResponse {
     private String shortName;//店铺简称
     private String industryCode;//行业代码
     private String districtCode;//行政区代码
+    private String districtCodes;//行政区代码
     private String address;//地址
     private String licenceID;//营业执照id
     private String storefrontID;//店面照片id

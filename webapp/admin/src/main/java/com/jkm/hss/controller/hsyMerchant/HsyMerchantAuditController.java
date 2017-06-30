@@ -100,6 +100,10 @@ public class HsyMerchantAuditController extends BaseController {
 //        if (acct!=null){
 //            accountService.delAcct(acct.getAccountID());
 //        }
+        int tat = this.hsyMerchantAuditService.getStatuts(hsyMerchantAuditRequest.getId());
+        if (tat!=2){
+            return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
+        }
         final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
         hsyMerchantAuditRequest.setAccountID(accountId);
         hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());

@@ -609,4 +609,9 @@
         </set>
         WHERE c.ID=#{id}
     </update>
+
+    <!-- 查询详情 -->
+    <select id="getStatuts" resultType="java.lang.Integer">
+        SELECT `STATUS` FROM app_biz_shop WHERE ID=#{id}
+    </select>
 </mapper>
