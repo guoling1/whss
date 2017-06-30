@@ -222,17 +222,12 @@
           <el-col :span="5">
             <div class="label">省市区:
               <span v-if="!isChange">{{$msg.districtCode}}</span>
-              <!--<el-input size="small" v-model="$msg.districtCode" v-else></el-input>-->
-              <div v-else class="select" id="select" @click="open" style="display: inline-block;vertical-align: middle;"><span style="display: inline-block;vertical-align: middle;">{{$msg.districtCode}}</span>
-                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
-              </div>
-              <ul class="isShow" v-if="isOpen">
-                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.name)" @click="select(province.code,province.name)">{{province.name}}
-                </li>
-              </ul>
-              <ul class="isShow1" v-if="isOpen1">
-                <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
-              </ul>
+              <el-cascader
+                :options="options2"
+                v-model="cityCode"
+                @active-item-change="handleItemChange"
+                :props="props"
+              ></el-cascader>
             </div>
           </el-col>
           <el-col :span="5">
@@ -249,7 +244,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="padding-bottom: 15px">
           <el-col :span="5">
-            <div class="label">资料提交时间：{{$msg.updateTime|changeTime}}<span></span>
+            <div class="label">资料提交时间：<span>{{$msg.updateTime|changeTime}}</span>
             </div>
           </el-col>
           <el-col :span="5">
@@ -259,7 +254,7 @@
             <div class="label"><span></span></div>
           </el-col>
         </el-row>
-        <el-button type="primary" size="small" v-if="isChange" @click="identChange" :disabled="auditClick">保存</el-button>
+        <el-button type="primary" size="small" v-if="isChange" @click="identChange" :disabled="auditClick" style="margin: 0 0 15px 15px">保存</el-button>
         <el-button type="primary" size="small" v-if="isChange" @click="identNoChange">取消</el-button>
         <!--<div class="table-responsive">
           <table class="table">
@@ -914,14 +909,12 @@
           subAppId:'',
           appSecret:''
         },
-        provinces:[],//所有省份
-        province: '',
-        citys:[],
-        city:'',
-        isOpen:false,
-        isOpen1:false,
-        select1:'',
-        select2:'',
+        options2:[],
+        props:{
+          value: 'value',
+          children: 'cities'
+        },
+        cityCode:''
       }
     },
     created: function () {
@@ -973,9 +966,14 @@
             type: 'error'
           });
         });
-      this.$http.post('/admin/district/findAllDistrict')
+      this.$http.post('/join/selectProvinces')
         .then(function (res) {
-          this.$data.provinces = res.data;
+          for(let i=0;i<res.data.length;i++){
+            res.data[i].value = res.data[i].code;
+            res.data[i].label = res.data[i].aname;
+            res.data[i].cities = [];
+          }
+          this.options2 = res.data;
         })
         .catch(function (err) {
           this.$message({
@@ -986,6 +984,41 @@
         });
     },
     methods: {
+      handleItemChange: function (val) {
+        console.log(val)
+        if(val.length==1){
+          this.$http.post('/join/selectCities',{code:val[0]})
+            .then(res=>{
+              for(let i=0;i<this.options2.length;i++){
+                if(this.options2[i].value==val[0]){
+                  for(let j=0;j<res.data.length;j++){
+                    res.data[j].value = res.data[j].code;
+                    res.data[j].label = res.data[j].aname;
+                    res.data[j].cities = [];
+                  }
+                  this.options2[i].cities = res.data;
+                }
+              }
+            })
+        }else if(val.length==2){
+          this.$http.post('/join/selectDistrict',{code:val[1]})
+            .then(res=>{
+              for(let i=0;i<this.options2.length;i++){
+                if(this.options2[i].value==val[0]){
+                  for(let k=0;k<this.options2[i].cities.length;k++){
+                    if(this.options2[i].cities[k].value==val[1]){
+                      for(let j=0;j<res.data.length;j++){
+                        res.data[j].value = res.data[j].code;
+                        res.data[j].label = res.data[j].aname;
+                      }
+                      this.options2[i].cities[k].cities = res.data;
+                    }
+                  }
+                }
+              }
+            })
+        }
+      },
       selectCity: function (valCol,val) {
         this.$data.province = val;
         this.$http.post('/admin/district/findAllCities',{code:valCol})
@@ -1011,7 +1044,7 @@
         this.selectCon = val;
 //        oCon.innerHTML = val;
 //        oCon.style.color = '#1f2d3d';
-        this.$data.$msg.districtCode = valCode;
+        this.$data.msg.districtCode = valCode;
         this.$data.isOpen = !this.$data.isOpen;
         this.$data.isOpen1 = !this.$data.isOpen1;
       },
