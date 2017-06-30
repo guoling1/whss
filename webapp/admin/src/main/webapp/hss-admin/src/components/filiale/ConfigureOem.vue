@@ -78,11 +78,12 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">标识码</div>
+                <div class="alignRight">标识码:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input type="text" size="small" v-model="query.oemNo" placeholder="请输入内容" disabled></el-input>
+                  <span>{{query.oemNo}}</span>
+                  <!--<el-input type="text" size="small" v-model="query.oemNo" placeholder="请输入内容" disabled></el-input>-->
                 </div>
               </el-col>
               <el-col :span="8">
