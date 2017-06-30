@@ -1013,10 +1013,26 @@
 
     <!-- 查询分公司下的所有商户 -->
     <select id="branchCompany" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
-        SELECT * FROM tb_merchant_info WHERE oem_id=
+        SELECT * FROM tb_merchant_info WHERE oem_id=#{dealerId}
+        <if test="markCode!=null and markCode!=''">
+            AND mark_code = #{markCode}
+        </if>
+
+        <if test="merchantName!=null and merchantName!=''">
+            AND merchant_name = #{merchantName}
+        </if>
+        ORDER BY
+        `create_time` DESC LIMIT #{offset},#{pageSize}
     </select>
     <!-- 查询分公司下的所有商户总数 -->
     <select id="branchCompanyCount" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
-        SELECT COUNT (*) FROM tb_merchant_info WHERE oem_id=
+        SELECT COUNT (*) FROM tb_merchant_info WHERE oem_id=#{dealerId}
+        <if test="markCode!=null and markCode!=''">
+            AND mark_code = #{markCode}
+        </if>
+
+        <if test="merchantName!=null and merchantName!=''">
+            AND merchant_name = #{merchantName}
+        </if>
     </select>
 </mapper>
