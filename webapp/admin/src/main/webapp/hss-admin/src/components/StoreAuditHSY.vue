@@ -136,7 +136,7 @@
       </div>
       <div class="box box-primary">
         <span class="lead">商户认证信息</span>
-        <el-button type="text" @click="isChange = true" v-if="isInput == false">修改</el-button>
+        <el-button type="text" @click="isChange = true" v-if="isChange == false||isShow">修改</el-button>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
           <el-col :span="5">
             <div class="label">商户名称（全称）：
@@ -934,8 +934,11 @@
       this.id = this.$route.query.id;
 //      this.status = this.$route.query.status;
       this.getData();
+      console.log(this.status)
       if(this.status !=2){
         this.isShow = false;
+      }else {
+        this.isShow = true;
       }
 //      this.getData();
       var $box=$("#imgBox");
@@ -1053,16 +1056,50 @@
           idcardNO:this.msg.idcardNO,
           contactName:this.msg.contactName,
           contactCellphone:this.msg.contactCellphone,
-          districtCode:this.msg.districtCode,
+          districtCode:this.msg.districtCodes,
           address:this.msg.address
         }
         if(this.cityCode.length!=0){
           query.districtCode = this.cityCode[2];
         }
+        if(this.msg.industryCode=='餐饮'){
+          query.industryCode = '1000';
+        }else if(this.msg.industryCode=='商超'){
+          query.industryCode = '1001';
+        }else if(this.msg.industryCode=='生活服务'){
+          query.industryCode = '1002';
+        }else if(this.msg.industryCode=='购物'){
+          query.industryCode = '1003';
+        }else if(this.msg.industryCode=='丽人'){
+          query.industryCode = '1004';
+        }else if(this.msg.industryCode=='健身'){
+          query.industryCode = '1005';
+        }else if(this.msg.industryCode=='健身'){
+          query.industryCode = '1006';
+        }
+        if(this.msg.industryCode=='丽人'){
+          query.industryCode = '1004';
+        }else
         query.startTime = this.startTime;
         query.endTime = this.endTime;
         console.log(query)
-//        this.$http.post('/admin/hsyMerchantList/modifyInfo')
+        this.$http.post('/admin/hsyMerchantList/modifyInfo',query)
+          .then(res=>{
+            this.isChange = false;
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            })
+            this.getData();
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       identNoChange: function () {
         this.isChange = false;
@@ -1550,6 +1587,12 @@
             this.rateData = res.data.rateList;
             this.channelList = res.data.channelList;
             this.placeCity = res.data.res.districtCode;
+            if(res.data.res.startEndDate!=null){
+              let format = res.data.res.startEndDate.split(' - ');
+              this.date = [new Date(format[0]),new Date(format[1])]
+              this.startTime = format[0];
+              this.endTime = format[1];
+            }
             if(res.data.userChannelList==null){
               this.userChannelList={
                 wechatChannelTypeSign:'',
