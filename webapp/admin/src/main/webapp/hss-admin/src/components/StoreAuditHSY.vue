@@ -222,7 +222,8 @@
           <el-col :span="5">
             <div class="label">省市区:
               <span v-if="!isChange">{{$msg.districtCode}}</span>
-              <el-cascader
+              <el-cascader v-else
+                           :placeholder="placeCity"
                 :options="options2"
                 v-model="cityCode"
                 @active-item-change="handleItemChange"
@@ -914,7 +915,8 @@
           value: 'value',
           children: 'cities'
         },
-        cityCode:''
+        placeCity:'',
+        cityCode:[]
       }
     },
     created: function () {
@@ -1019,37 +1021,21 @@
             })
         }
       },
-      selectCity: function (valCol,val) {
-        this.$data.province = val;
-        this.$http.post('/admin/district/findAllCities',{code:valCol})
-          .then(function (res) {
-            this.$data.citys = res.data;
-            this.$data.isOpen1 = true;
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      open:function () {
-        this.$data.isOpen = !this.$data.isOpen;
-        this.$data.isOpen1 = false;
-        document.getElementById('select').style.borderColor = '#20a0ff';
-      },
-      select:function (valCode,val) {
-//        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-//        var oCon = document.getElementById('selectCol');
-        this.selectCon = val;
-//        oCon.innerHTML = val;
-//        oCon.style.color = '#1f2d3d';
-        this.$data.msg.districtCode = valCode;
-        this.$data.isOpen = !this.$data.isOpen;
-        this.$data.isOpen1 = !this.$data.isOpen1;
-      },
       // 修改认证信息
       identChange: function () {
+        let query = {
+          name:this.msg.name,
+          shortName:this.msg.shortName,
+          industryCode:this.msg.industryCode,
+          licenceNo:this.msg.licenceNo,
+          startEndDate:this.msg.startEndDate,
+          realnames:this.msg.realnames,
+          idcardNO:this.msg.idcardNO,
+          contactName:this.msg.contactName,
+          contactCellphone:this.msg.contactCellphone,
+          districtCode:this.msg.districtCode,
+          address:this.msg.address
+        }
 //        this.$http.post('/admin/hsyMerchantList/modifyInfo')
       },
       identNoChange: function () {
@@ -1537,6 +1523,7 @@
             this.res = res.data.list;
             this.rateData = res.data.rateList;
             this.channelList = res.data.channelList;
+            this.placeCity = res.data.res.districtCode;
             if(res.data.userChannelList==null){
               this.userChannelList={
                 wechatChannelTypeSign:'',
@@ -1837,73 +1824,6 @@
     display: inherit;
     /*height: 100%;*/
     margin: 0 auto;
-  }
-  }
-  .select{
-    width: 100%;
-    height: 30px;
-    background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid #bfcbd9;
-    color: #bfcbd9;
-    display: block;
-    font-size: 12px;
-    line-height: 30px;
-    padding: 0px 10px;
-    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    overflow: hidden;
-    position: relative;
-  }
-  .select:hover{
-    border-color: #8391a5;
-  }
-  .isShow{
-    position: absolute;
-    left:10%;
-    width: 19%;
-    border-radius: 2px;
-    z-index: 1000;
-    max-height: 250px;
-    overflow: auto;
-    border: 1px solid #d1dbe5;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
-    box-sizing: border-box;
-    margin: 5px 0;
-    padding:5px;
-  li{
-    list-style: none;
-    height: 25px;
-    padding: 0 5px;
-    line-height: 25px;
-  &:hover{
-     background: #1c8de0;
-   }
-  }
-  }
-
-  .isShow1{
-    border: 1px solid #d1dbe5;
-    border-radius: 2px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
-    box-sizing: border-box;
-    margin: 5px 0;
-    position: absolute;
-    left: 26%;
-    top: 0100%;
-    width: 16%;
-    padding: 5px;
-    z-index: 1000;
-    max-height: 285px;
-    overflow: auto;
-  li{
-    list-style: none;
-    padding: 0 5px;
-    line-height: 25px;
-  &:hover{
-     background: #1c8de0;
-   }
   }
   }
 </style>
