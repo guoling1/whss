@@ -74,6 +74,24 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
     }
 
     /**
+     * 修改华夏开通微信产品信息
+     *
+     * @param userChannelPolicy
+     */
+    @Override
+    public void updateHxOpenWxProduct(UserChannelPolicy userChannelPolicy) {
+        userChannelPolicyDao.updateHxOpenWxProduct(userChannelPolicy);
+    }
+    /**
+     * 修改华夏开通支付宝产品信息
+     *
+     * @param userChannelPolicy
+     */
+    @Override
+    public void updateHxOpenAlipayProduct(UserChannelPolicy userChannelPolicy) {
+        userChannelPolicyDao.updateHxOpenAlipayProduct(userChannelPolicy);
+    }
+    /**
      * 用户通道列表
      *
      * @param userId
