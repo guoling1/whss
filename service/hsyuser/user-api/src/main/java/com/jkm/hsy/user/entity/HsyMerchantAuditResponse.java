@@ -49,7 +49,7 @@ public class HsyMerchantAuditResponse {
     private String idcardb;//身份证背面照
     private String idcardc;//银行卡照片
     private String contractId;//签约合同照
-    private String idcardNO;//身份证号
+    private String idcardNO;//法人身份证号
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称

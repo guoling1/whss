@@ -562,4 +562,51 @@
     <update id="updatePhone">
         UPDATE app_au_user SET CELLPHONE=#{changePhone} WHERE ID=#{uid}
     </update>
+
+    <!-- 修改hsy商户认证信息 -->
+    <update id="updateModifyInfo">
+        UPDATE app_au_user a
+        LEFT JOIN app_biz_shop_user_role b ON b.UID=a.ID
+        LEFT JOIN app_biz_shop c ON c.ID=b.SID
+        <set>
+            <if test="name!=null and name!=''">
+                c.`NAME`= #{name}
+            </if>
+            <if test="shortName!=null and shortName!=''">
+                c.SHORTNAME=#{shortName}
+            </if>
+
+            <if test="licenceNo!=null and licenceNo!=''">
+                c.LICENCENO = #{licenceNo}
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                c.LICENCESTARTDATE=#{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                c.LICENCEENDDATE = #{endTime}
+            </if>
+            <if test="realnames!=null and realnames!=''">
+                a.REALNAME=#{realnames},
+            </if>
+            <if test="idcardNO!=null and idcardNO!=''">
+                a.IDCARD = #{idcardNO},
+            </if>
+            <if test="contactName!=null and contactName!=''">
+                c.CONTACTNAME=#{contactName}
+            </if>
+            <if test="contactCellphone!=null and contactCellphone!=''">
+                c.CONTACTCELLPHONE=#{contactCellphone}
+            </if>
+            <if test="industryCode!=null and industryCode!=''">
+                c.INDUSTRYCODE=#{industryCode}
+            </if>
+            <if test="districtCode!=null and districtCode!=''">
+                c.DISTRICTCODE=#{districtCode}
+            </if>
+            <if test="address!=null and address!=''">
+                c.ADDRESS=#{address}
+            </if>
+        </set>
+        WHERE c.ID=#{id}
+    </update>
 </mapper>

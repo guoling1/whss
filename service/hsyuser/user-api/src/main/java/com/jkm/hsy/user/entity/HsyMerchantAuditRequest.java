@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class HsyMerchantAuditRequest {
 
+
     private String changePhone;//更改后的手机号
     private String branchCode;//联行号
     private String bankName;//银行名称
@@ -42,7 +43,7 @@ public class HsyMerchantAuditRequest {
     private String commitTime;//提交开始时间
 
     private String commitTime1;//提交结束时间
-
+    private String idcardNO;//法人身份证号
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称
