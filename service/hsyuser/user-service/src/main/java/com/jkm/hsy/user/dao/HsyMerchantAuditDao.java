@@ -162,4 +162,10 @@ public interface HsyMerchantAuditDao {
      * @param uid
      */
     void updatePhone(@Param("changePhone") String changePhone,@Param("uid") Long uid);
+
+    /**
+     * 修改认证商户信息
+     * @param hsyMerchantAuditRequest
+     */
+    void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }
