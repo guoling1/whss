@@ -10,6 +10,7 @@ import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
+import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.BatchSettleRequest;
@@ -47,6 +48,8 @@ public class SettleController extends BaseController {
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
 
     @ResponseBody
     @RequestMapping(value = "settleTest")
@@ -60,7 +63,7 @@ public class SettleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "markSettledTest")
-    public CommonResponse marksettledTest(final String date) {
+    public CommonResponse markSettledTest(final String date) {
         log.info("更新结算审核记录--start--test");
         final Date settleDate = DateFormatUtil.parse(date , DateFormatUtil.yyyy_MM_dd);
         this.accountSettleAuditRecordService.handleSettleAuditRecordTask(settleDate);

@@ -199,7 +199,7 @@ public class HsyMerchantAuditController extends BaseController {
         if(userChannelPolicyOptional.isPresent()){
             if(userChannelPolicyOptional.get().getNetStatus()!=null&&userChannelPolicyOptional.get().getNetStatus()==EnumNetStatus.SUCCESS.getId()){
                 if(userChannelPolicyOptional.get().getOpenProductStatus()==null||userChannelPolicyOptional.get().getOpenProductStatus()!=EnumOpenProductStatus.PASS.getId()){
-                    CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                    CmbcProductResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
                     NetLog netLog = new NetLog();
                     netLog.setAdminId(adminId);
                     netLog.setUserId(appUserAndShopRequest.getUserId());
@@ -210,18 +210,41 @@ public class HsyMerchantAuditController extends BaseController {
                     netLog.setStatus(EnumStatus.NORMAL.getId());
                     netLogService.insert(netLog);
                     if(cmbcResponse1.getCode()==1){
-                        UserChannelPolicy openProduct = new UserChannelPolicy();
-                        openProduct.setUserId(appUserAndShopRequest.getUserId());
-                        openProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
-                        openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
-                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
-                        userChannelPolicyService.updateHxOpenProduct(openProduct);
+                        if("000000".equals(cmbcResponse1.getResult().getWxRespCode())){
+                            UserChannelPolicy openWxProduct = new UserChannelPolicy();
+                            openWxProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openWxProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                            openWxProduct.setOpenProductMarks(cmbcResponse1.getResult().getWxRespMsg());
+                            openWxProduct.setExchannelEventCode(cmbcResponse1.getResult().getWxSmId());
+                            userChannelPolicyService.updateHxOpenWxProduct(openWxProduct);
+                        }else{
+                            UserChannelPolicy openWxProduct = new UserChannelPolicy();
+                            openWxProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openWxProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                            openWxProduct.setOpenProductMarks(cmbcResponse1.getResult().getWxRespMsg());
+                            openWxProduct.setExchannelEventCode(cmbcResponse1.getResult().getWxSmId());
+                            userChannelPolicyService.updateHxOpenWxProduct(openWxProduct);
+                        }
+                        if("000000".equals(cmbcResponse1.getResult().getAliRespCode())){
+                            UserChannelPolicy openZfbProduct = new UserChannelPolicy();
+                            openZfbProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openZfbProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                            openZfbProduct.setOpenProductMarks(cmbcResponse1.getResult().getAliRespMsg());
+                            openZfbProduct.setExchannelEventCode(cmbcResponse1.getResult().getSmId());
+                            userChannelPolicyService.updateHxOpenAlipayProduct(openZfbProduct);
+                        }else{
+                            UserChannelPolicy openZfbProduct = new UserChannelPolicy();
+                            openZfbProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openZfbProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                            openZfbProduct.setOpenProductMarks(cmbcResponse1.getResult().getAliRespMsg());
+                            openZfbProduct.setExchannelEventCode(cmbcResponse1.getResult().getSmId());
+                            userChannelPolicyService.updateHxOpenAlipayProduct(openZfbProduct);
+                        }
                     }else{
                         UserChannelPolicy openProduct = new UserChannelPolicy();
                         openProduct.setUserId(appUserAndShopRequest.getUserId());
                         openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
                         openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
-                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
                         userChannelPolicyService.updateHxOpenProduct(openProduct);
                     }
                 }
@@ -243,7 +266,7 @@ public class HsyMerchantAuditController extends BaseController {
                     netInfo.setNetMarks(cmbcResponse.getMsg());
                     netInfo.setExchannelCode(cmbcResponse.getResult());
                     userChannelPolicyService.updateHxNetInfo(netInfo);
-                    CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
+                    CmbcProductResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
                     NetLog netLog1 = new NetLog();
                     netLog1.setAdminId(adminId);
                     netLog1.setUserId(appUserAndShopRequest.getUserId());
@@ -254,18 +277,41 @@ public class HsyMerchantAuditController extends BaseController {
                     netLog1.setStatus(EnumStatus.NORMAL.getId());
                     netLogService.insert(netLog1);
                     if(cmbcResponse1.getCode()==1){
-                        UserChannelPolicy openProduct = new UserChannelPolicy();
-                        openProduct.setUserId(appUserAndShopRequest.getUserId());
-                        openProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
-                        openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
-                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
-                        userChannelPolicyService.updateHxOpenProduct(openProduct);
+                        if("000000".equals(cmbcResponse1.getResult().getWxRespCode())){
+                            UserChannelPolicy openWxProduct = new UserChannelPolicy();
+                            openWxProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openWxProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                            openWxProduct.setOpenProductMarks(cmbcResponse1.getResult().getWxRespMsg());
+                            openWxProduct.setExchannelEventCode(cmbcResponse1.getResult().getWxSmId());
+                            userChannelPolicyService.updateHxOpenWxProduct(openWxProduct);
+                        }else{
+                            UserChannelPolicy openWxProduct = new UserChannelPolicy();
+                            openWxProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openWxProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                            openWxProduct.setOpenProductMarks(cmbcResponse1.getResult().getWxRespMsg());
+                            openWxProduct.setExchannelEventCode(cmbcResponse1.getResult().getWxSmId());
+                            userChannelPolicyService.updateHxOpenWxProduct(openWxProduct);
+                        }
+                        if("000000".equals(cmbcResponse1.getResult().getAliRespCode())){
+                            UserChannelPolicy openZfbProduct = new UserChannelPolicy();
+                            openZfbProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openZfbProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                            openZfbProduct.setOpenProductMarks(cmbcResponse1.getResult().getAliRespMsg());
+                            openZfbProduct.setExchannelEventCode(cmbcResponse1.getResult().getSmId());
+                            userChannelPolicyService.updateHxOpenAlipayProduct(openZfbProduct);
+                        }else{
+                            UserChannelPolicy openZfbProduct = new UserChannelPolicy();
+                            openZfbProduct.setUserId(appUserAndShopRequest.getUserId());
+                            openZfbProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                            openZfbProduct.setOpenProductMarks(cmbcResponse1.getResult().getAliRespMsg());
+                            openZfbProduct.setExchannelEventCode(cmbcResponse1.getResult().getSmId());
+                            userChannelPolicyService.updateHxOpenAlipayProduct(openZfbProduct);
+                        }
                     }else{
                         UserChannelPolicy openProduct = new UserChannelPolicy();
                         openProduct.setUserId(appUserAndShopRequest.getUserId());
                         openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
                         openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
-                        openProduct.setExchannelEventCode(cmbcResponse1.getResult());
                         userChannelPolicyService.updateHxOpenProduct(openProduct);
                     }
                 }else{
@@ -363,7 +409,7 @@ public class HsyMerchantAuditController extends BaseController {
             netInfo.setNetMarks(cmbcResponse.getMsg());
             netInfo.setExchannelCode(cmbcResponse.getResult());
             userChannelPolicyService.updateHxNetInfo(netInfo);
-            CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(userId,shopId);
+            CmbcProductResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(userId,shopId);
             NetLog netLog1 = new NetLog();
             netLog1.setAdminId(adminId);
             netLog1.setUserId(userId);
@@ -375,18 +421,42 @@ public class HsyMerchantAuditController extends BaseController {
             netLogService.insert(netLog1);
 
             if(cmbcResponse1.getCode()==1){//开通产品成功
-                UserChannelPolicy openProduct = new UserChannelPolicy();
-                openProduct.setUserId(userId);
-                openProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
-                openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
-                openProduct.setExchannelEventCode(cmbcResponse1.getResult());
-                userChannelPolicyService.updateHxOpenProduct(openProduct);
+                if("000000".equals(cmbcResponse1.getResult().getWxRespCode())){
+                    UserChannelPolicy openWxProduct = new UserChannelPolicy();
+                    openWxProduct.setUserId(userId);
+                    openWxProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                    openWxProduct.setOpenProductMarks(cmbcResponse1.getResult().getWxRespMsg());
+                    openWxProduct.setExchannelEventCode(cmbcResponse1.getResult().getWxSmId());
+                    userChannelPolicyService.updateHxOpenWxProduct(openWxProduct);
+                }else{
+                    UserChannelPolicy openWxProduct = new UserChannelPolicy();
+                    openWxProduct.setUserId(userId);
+                    openWxProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                    openWxProduct.setOpenProductMarks(cmbcResponse1.getResult().getWxRespMsg());
+                    openWxProduct.setExchannelEventCode(cmbcResponse1.getResult().getWxSmId());
+                    userChannelPolicyService.updateHxOpenWxProduct(openWxProduct);
+                }
+                if("000000".equals(cmbcResponse1.getResult().getAliRespCode())){
+                    UserChannelPolicy openZfbProduct = new UserChannelPolicy();
+                    openZfbProduct.setUserId(userId);
+                    openZfbProduct.setOpenProductStatus(EnumOpenProductStatus.PASS.getId());
+                    openZfbProduct.setOpenProductMarks(cmbcResponse1.getResult().getAliRespMsg());
+                    openZfbProduct.setExchannelEventCode(cmbcResponse1.getResult().getSmId());
+                    userChannelPolicyService.updateHxOpenAlipayProduct(openZfbProduct);
+                }else{
+                    UserChannelPolicy openZfbProduct = new UserChannelPolicy();
+                    openZfbProduct.setUserId(userId);
+                    openZfbProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
+                    openZfbProduct.setOpenProductMarks(cmbcResponse1.getResult().getAliRespMsg());
+                    openZfbProduct.setExchannelEventCode(cmbcResponse1.getResult().getSmId());
+                    userChannelPolicyService.updateHxOpenAlipayProduct(openZfbProduct);
+                }
+
             }else{//开通产品失败
                 UserChannelPolicy openProduct = new UserChannelPolicy();
                 openProduct.setUserId(userId);
                 openProduct.setOpenProductStatus(EnumOpenProductStatus.UNPASS.getId());
                 openProduct.setOpenProductMarks(cmbcResponse1.getMsg());
-                openProduct.setExchannelEventCode(cmbcResponse1.getResult());
                 userChannelPolicyService.updateHxOpenProduct(openProduct);
             }
 

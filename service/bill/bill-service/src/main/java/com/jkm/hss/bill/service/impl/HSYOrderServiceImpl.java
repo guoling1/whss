@@ -8,7 +8,9 @@ import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
+import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
@@ -18,6 +20,9 @@ import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +44,10 @@ public class HSYOrderServiceImpl implements HSYOrderService {
 
     @Autowired
     private HsyOrderDao hsyOrderDao;
+    @Autowired
+    private HsyShopDao hsyShopDao;
+    @Autowired
+    private OrderDao orderDao;
 
     @Override
     @Transactional
@@ -291,5 +300,18 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         hsyTradeListResponse.setSourceTypeName(EnumHsySourceType.of(hsyOrder.getSourcetype()).getValue());
         //return gson.toJson(hsyTradeListResponse);
         return JSON.toJSONString(hsyTradeListResponse);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantNo
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<HsyOrder> getByMerchantNoAndTime(final String merchantNo, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.selectByMerchantNoAndTime(merchantNo, startTime, endTime);
     }
 }

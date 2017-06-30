@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+import com.jkm.hsy.user.help.requestparam.CmbcProductResponse;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.help.requestparam.XmmsResponse;
 
@@ -33,7 +34,7 @@ public interface HsyCmbcService {
      * 收银家开通产品
      * @return
      */
-    CmbcResponse merchantBindChannel(long userId,long shopId);
+    CmbcProductResponse merchantBindChannel(long userId, long shopId);
     /**
      * 民生银行商户支付修改通道绑定
      * @return

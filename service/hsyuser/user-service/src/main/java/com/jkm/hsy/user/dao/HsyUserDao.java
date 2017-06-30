@@ -1,9 +1,6 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.entity.AppAuToken;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppAuUserToken;
-import com.jkm.hsy.user.entity.AppBizShopUserRole;
+import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +19,7 @@ public interface HsyUserDao {
     public List<AppAuToken> findAppAuTokenByClientid(@Param("clientid")String clientid);
     public void updateAppAuUserTokenStatus(@Param("uid")Long uid);
     public void updateAppAuUserTokenStatusByTID(@Param("tid")Long tid);
+    public void updateAppAuUserTokenStatusByTIDExceptUID(@Param("tid")Long tid,@Param("uid") Long uid);
     public List<AppAuUserToken> findAppAuUserTokenByParam(AppAuUserToken appAuUserToken);
     public void insertAppAuUserToken(AppAuUserToken appAuUserToken);
     public void updateAppAuUserTokenByUidAndTid(AppAuUserToken appAuUserToken);
@@ -33,6 +31,37 @@ public interface HsyUserDao {
     public void updateHxbsStatus(@Param("status")Integer status,@Param("remarks")String remarks,@Param("uid")Long uid);
     public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
     public AppBizShopUserRole findAppAuUserRole(AppAuUser appAuUser);
+    public List<AdminUser> findAdminUserByUID(@Param("uid")Long uid);
 
+    /**
+     * 查找所有法人
+     *
+     * @return
+     */
+    List<AppAuUser> selectAllCorporationUser();
 
+    /**
+     * 更新email
+     *
+     * @param email
+     * @param id
+     * @return
+     */
+    int updateEmailById(@Param("email") String email, @Param("id") long id);
+
+    /**
+     * 启用自动发送邮件
+     *
+     * @param id
+     * @return
+     */
+    int enableAutoSendBalanceAccountEmail(@Param("id") long id);
+
+    /**
+     * 禁用自动发送邮件
+     *
+     * @param id
+     * @return
+     */
+    int disableAutoSendBalanceAccountEmail(@Param("id") long id);
 }
