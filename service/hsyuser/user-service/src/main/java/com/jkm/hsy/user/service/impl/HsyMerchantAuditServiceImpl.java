@@ -103,7 +103,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             final String start = format.format(res.getLicenceStartDate());
             final String end = format.format(res.getLicenceEndDate());
-            res.setStartEndDate(start+"--"+end);
+            res.setStartEndDate(start+" "+"-"+" "+end);
         }
         if(res.getHxbStatus()==null||"".equals(res.getHxbStatus())){
             res.setHxbStatus(0);
