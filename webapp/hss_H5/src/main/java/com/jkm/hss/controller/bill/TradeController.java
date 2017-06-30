@@ -406,13 +406,21 @@ public class TradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
+
+        String oemNo = "";
+        if(merchantInfo.getOemId()>0){
+            OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfo.getOemId());
+            Preconditions.checkState(oemDetailResponse!=null, "O单配置有误");
+            oemNo = oemDetailResponse.getOemNo();
+        }
+
         if (creditBankCount <= 0) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
+                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId()+"&oemNo="+oemNo)
                     .build();
         }
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
+                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId()+"&oemNo="+oemNo)
                 .build();
     }
 

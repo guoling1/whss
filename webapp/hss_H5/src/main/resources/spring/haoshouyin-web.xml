@@ -95,6 +95,7 @@
             <mvc:mapping path="/trade/againUnionPayPage"/>
             <mvc:mapping path="/account/toWithdraw"/>
             <mvc:mapping path="/account/toHssAccount"/>
+            <mvc:mapping path="/channel/toListJsp"/>
             <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
                 <property name="oemInfoService" ref="oemInfoServiceImpl"/>
                 <property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>
