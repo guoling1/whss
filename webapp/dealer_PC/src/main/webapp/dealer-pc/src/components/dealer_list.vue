@@ -245,28 +245,16 @@
         this.$router.push({path: '/daili/app/dealer_modify', query: {dealerId: id, dealerType: 2}});
       },
       openHss: function (id, productId) {
-        this.$router.push({
-          path: '/daili/app/product_add',
-          query: {product: 'hss', dealerId: id, productId: productId}
-        });
+        this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId, dealerType: 2}});
       },
       openHsy: function (id, productId) {
-        this.$router.push({
-          path: '/daili/app/product_add',
-          query: {product: 'hsy', dealerId: id, productId: productId}
-        });
+        this.$router.push({path: '/daili/app/product_add_hsy', query: {product: 'hsy', dealerId: id, productId: productId, type: 'open', dealerType: 2}});
       },
       checkHss: function (id, productId) {
-        this.$router.push({
-          path: '/daili/app/product_add',
-          query: {product: 'hss', dealerId: id, productId: productId}
-        });
+        this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId, dealerType: 2}});
       },
       checkHsy: function (id, productId) {
-        this.$router.push({
-          path: '/daili/app/product_add',
-          query: {product: 'hsy', dealerId: id, productId: productId}
-        });
+        this.$router.push({path: '/daili/app/product_add_hsy', query: {product: 'hsy', dealerId: id, productId: productId, type: 'check', dealerType: 2}});
       },
       handleSizeChange(val) {
         this.pageSize = val;
