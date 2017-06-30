@@ -570,20 +570,20 @@
         LEFT JOIN app_biz_shop c ON c.ID=b.SID
         <set>
             <if test="name!=null and name!=''">
-                c.`NAME`= #{name}
+                c.`NAME`= #{name},
             </if>
             <if test="shortName!=null and shortName!=''">
-                c.SHORTNAME=#{shortName}
+                c.SHORTNAME=#{shortName},
             </if>
 
             <if test="licenceNo!=null and licenceNo!=''">
-                c.LICENCENO = #{licenceNo}
+                c.LICENCENO = #{licenceNo},
             </if>
             <if test="startTime!=null and startTime!=''">
-                c.LICENCESTARTDATE=#{startTime}
+                c.LICENCESTARTDATE=#{startTime},
             </if>
             <if test="endTime!=null and endTime!=''">
-                c.LICENCEENDDATE = #{endTime}
+                c.LICENCEENDDATE = #{endTime},
             </if>
             <if test="realnames!=null and realnames!=''">
                 a.REALNAME=#{realnames},
@@ -592,16 +592,16 @@
                 a.IDCARD = #{idcardNO},
             </if>
             <if test="contactName!=null and contactName!=''">
-                c.CONTACTNAME=#{contactName}
+                c.CONTACTNAME=#{contactName},
             </if>
             <if test="contactCellphone!=null and contactCellphone!=''">
-                c.CONTACTCELLPHONE=#{contactCellphone}
+                c.CONTACTCELLPHONE=#{contactCellphone},
             </if>
             <if test="industryCode!=null and industryCode!=''">
-                c.INDUSTRYCODE=#{industryCode}
+                c.INDUSTRYCODE=#{industryCode},
             </if>
             <if test="districtCode!=null and districtCode!=''">
-                c.DISTRICTCODE=#{districtCode}
+                c.DISTRICTCODE=#{districtCode},
             </if>
             <if test="address!=null and address!=''">
                 c.ADDRESS=#{address}
