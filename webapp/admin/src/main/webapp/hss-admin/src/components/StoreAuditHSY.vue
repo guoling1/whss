@@ -175,7 +175,15 @@
           <el-col :span="5">
             <div class="label">营业执照有效期：
               <span v-if="!isChange">{{$msg.startEndDate}}</span>
-              <el-input size="small" v-model="$msg.startEndDate" v-else></el-input>
+              <!--<el-input size="small" v-model="$msg.startEndDate" v-else></el-input>-->
+              <el-date-picker
+                v-else
+                v-model="date"
+                @change="datetimeSelect"
+                type="daterange"
+                size="small"
+                placeholder="选择日期范围">
+              </el-date-picker>
             </div>
           </el-col>
           <el-col :span="5">
@@ -916,7 +924,10 @@
           children: 'cities'
         },
         placeCity:'',
-        cityCode:[]
+        cityCode:[],
+        date:'',
+        startTime:'',
+        endTime:''
       }
     },
     created: function () {
@@ -986,8 +997,17 @@
         });
     },
     methods: {
+      datetimeSelect: function (val) {
+        if (val == undefined) {
+          this.startTime = '';
+          this.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.startTime = format[0];
+          this.endTime = format[1];
+        }
+      },
       handleItemChange: function (val) {
-        console.log(val)
         if(val.length==1){
           this.$http.post('/join/selectCities',{code:val[0]})
             .then(res=>{
@@ -1023,12 +1043,12 @@
       },
       // 修改认证信息
       identChange: function () {
+        console.log(this.date)
         let query = {
           name:this.msg.name,
           shortName:this.msg.shortName,
           industryCode:this.msg.industryCode,
           licenceNo:this.msg.licenceNo,
-          startEndDate:this.msg.startEndDate,
           realnames:this.msg.realnames,
           idcardNO:this.msg.idcardNO,
           contactName:this.msg.contactName,
@@ -1036,6 +1056,12 @@
           districtCode:this.msg.districtCode,
           address:this.msg.address
         }
+        if(this.cityCode.length!=0){
+          query.districtCode = this.cityCode[2];
+        }
+        query.startTime = this.startTime;
+        query.endTime = this.endTime;
+        console.log(query)
 //        this.$http.post('/admin/hsyMerchantList/modifyInfo')
       },
       identNoChange: function () {
