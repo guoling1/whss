@@ -136,7 +136,7 @@
       </div>
       <div class="box box-primary">
         <span class="lead">商户认证信息</span>
-        <el-button type="text" @click="isChange = true" v-if="isChange == false||isShow">修改</el-button>
+        <el-button type="text" @click="isChange = true" v-if="isChange == false&&isShow">修改</el-button>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
           <el-col :span="5">
             <div class="label">商户名称（全称）：
@@ -927,7 +927,8 @@
         cityCode:[],
         date:'',
         startTime:'',
-        endTime:''
+        endTime:'',
+        status:''
       }
     },
     created: function () {
@@ -935,11 +936,7 @@
 //      this.status = this.$route.query.status;
       this.getData();
       console.log(this.status)
-      if(this.status !=2){
-        this.isShow = false;
-      }else {
-        this.isShow = true;
-      }
+
 //      this.getData();
       var $box=$("#imgBox");
       $box.on("mousedown",function(e){
@@ -1057,7 +1054,8 @@
           contactName:this.msg.contactName,
           contactCellphone:this.msg.contactCellphone,
           districtCode:this.msg.districtCodes,
-          address:this.msg.address
+          address:this.msg.address,
+          id: this.id
         }
         if(this.cityCode.length!=0){
           query.districtCode = this.cityCode[2];
@@ -1082,24 +1080,32 @@
         }else
         query.startTime = this.startTime;
         query.endTime = this.endTime;
-        console.log(query)
-        this.$http.post('/admin/hsyMerchantList/modifyInfo',query)
-          .then(res=>{
-            this.isChange = false;
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            })
-            this.getData();
+        if(!this.test(query.idcardNO)){
+          this.$message({
+            showClose: true,
+            message: '身份证号不正确',
+            type: 'error'
           })
-          .catch(err=>{
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
+          return;
+        }else{
+          this.$http.post('/admin/hsyMerchantList/modifyInfo',query)
+            .then(res=>{
+              this.isChange = false;
+              this.$message({
+                showClose: true,
+                message: '修改成功',
+                type: 'success'
+              })
+              this.getData();
             })
-          })
+            .catch(err=>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
       },
       identNoChange: function () {
         this.isChange = false;
@@ -1583,6 +1589,11 @@
           .then(function (res) {
             this.msg = res.data.res;
             this.status = res.data.res.status;
+            if(this.status !=2){
+              this.isShow = false;
+            }else {
+              this.isShow = true;
+            }
             this.res = res.data.list;
             this.rateData = res.data.rateList;
             this.channelList = res.data.channelList;
