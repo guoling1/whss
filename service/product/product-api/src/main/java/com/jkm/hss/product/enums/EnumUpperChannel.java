@@ -42,12 +42,12 @@ public enum EnumUpperChannel {
     /**
      * 厦门民生银行
      */
-    XMMS_BANK(7, "XMMS","厦门民生银行"),
+    XMMS_BANK(7, "XMMS","厦门民生"),
 
     /**
-     * 收银家
+     * 收银家。
      */
-    SYJ(8, "SYJ", "收银家"),
+    SYJ(8, "SYJ", "厦门华夏"),
 
     /**
      * 合利宝
