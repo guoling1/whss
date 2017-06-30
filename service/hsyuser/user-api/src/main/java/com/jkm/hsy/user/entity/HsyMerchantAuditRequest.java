@@ -30,6 +30,7 @@ public class HsyMerchantAuditRequest {
     private String username;//报单员
 
     private String realname;//姓名
+    private String realnames;//法人姓名
     /**
      * 审核时间
      */
