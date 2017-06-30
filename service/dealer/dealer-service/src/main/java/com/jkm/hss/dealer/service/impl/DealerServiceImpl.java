@@ -46,7 +46,6 @@ import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.*;
@@ -2947,6 +2946,58 @@ public class DealerServiceImpl implements DealerService {
     public List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
         return this.dealerDao.selectListOfOem(dealerOfFirstDealerRequest);
     }
+
+    @Override
+    public List<QueryMerchantResponse> branchCompany(QueryMerchantRequest req) {
+        List<QueryMerchantResponse> list = this.dealerDao.branchCompany(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getAuthenticationTime()!=null){
+                    String dates = sdf.format(list.get(i).getAuthenticationTime());
+                    list.get(i).setAuthenticationTimes(dates);
+                }
+                if (list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                }
+                if (list.get(i).getSource()==0){
+                    list.get(i).setRegistered(EnumSource.SCAN.getValue());
+                }
+                if (list.get(i).getSource()==1){
+                    list.get(i).setRegistered(EnumSource.RECOMMEND.getValue());
+                }
+                if (list.get(i).getSource()==2){
+                    list.get(i).setRegistered(EnumSource.DEALERRECOMMEND.getValue());
+                }
+                if(list.get(i).getStatus()==0){
+                    list.get(i).setStatusValue(EnumMerchantStatus.INIT.getName());
+                }
+                if(list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumMerchantStatus.ONESTEP.getName());
+                }
+                if(list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumMerchantStatus.REVIEW.getName());
+                }
+                if(list.get(i).getStatus()==3||list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumMerchantStatus.PASSED.getName());
+                }
+                if(list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumMerchantStatus.UNPASSED.getName());
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int branchCompanyCount(QueryMerchantRequest req) {
+        return this.dealerDao.branchCompanyCount(req);
+    }
+
     //判断所属通道是否属于升级网关通道
     private boolean isBelongPartnerRulesSetting(int channelSign){
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();

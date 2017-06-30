@@ -26,6 +26,7 @@ import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -62,8 +63,9 @@ public class ChannelGatewayController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/toListJsp", method = RequestMethod.GET)
-    public String toJsp(HttpServletRequest request){
-
+    public String toJsp(HttpServletRequest request, Model model){
+        String oemNo = request.getParameter("oemNo");
+        model.addAttribute("oemNo",oemNo);
         return "/channelList";
     }
 

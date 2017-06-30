@@ -79,7 +79,7 @@ http.post('/channel/list', {}, function (list) {
                   payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
-                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payType=" + data.payType + "&payChannel=" + list[i].channelSign);
+                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payType=" + data.payType + "&payChannel=" + list[i].channelSign + '&oemNo=' + oemNo);
                 });
                 break;
             }

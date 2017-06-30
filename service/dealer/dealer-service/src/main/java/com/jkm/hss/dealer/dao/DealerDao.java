@@ -434,4 +434,18 @@ public interface DealerDao {
      * @return
      */
     List<DealerOfFirstDealerResponse> selectListOfOem(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
+
+    /**
+     * 分公司商户
+     * @param req
+     * @return
+     */
+    List<QueryMerchantResponse> branchCompany(QueryMerchantRequest req);
+
+    /**
+     * 分公司商户总数
+     * @param req
+     * @return
+     */
+    int branchCompanyCount(QueryMerchantRequest req);
 }
