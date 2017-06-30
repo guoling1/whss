@@ -222,8 +222,6 @@ public class AccountController extends BaseController{
             channelRateRequest.setChannelTypeSign(EnumPayChannelSign.YG_WECHAT.getId());
             channelRateRequest.setProductId(merchantInfo.getProductId());
             channelRateRequest.setMerchantId(merchantInfo.getId());
-            final MerchantChannelRate merchantChannelRate =
-                    this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(channelRateRequest).get();
 
             final Account account = this.accountService.getById(merchantInfo.getAccountId()).get();
             final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
@@ -231,7 +229,7 @@ public class AccountController extends BaseController{
             response.setTotalAmount(account.getTotalAmount());
             response.setAvailable(account.getAvailable());
             response.setBankName(accountBank.getBankName());
-            response.setWithdrawFee(merchantChannelRate.getMerchantWithdrawFee());
+            response.setWithdrawFee(new BigDecimal("2"));
             response.setSettleAmount(account.getDueSettleAmount());
 
             final String bankNo = accountBank.getBankNo();
@@ -316,9 +314,7 @@ public class AccountController extends BaseController{
             channelRateRequest.setChannelTypeSign(EnumPayChannelSign.YG_WECHAT.getId());
             channelRateRequest.setProductId(merchantInfo.getProductId());
             channelRateRequest.setMerchantId(merchantInfo.getId());
-            final MerchantChannelRate merchantChannelRate =
-                    this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(channelRateRequest).get();
-            final BigDecimal merchantWithdrawFee = merchantChannelRate.getMerchantWithdrawFee();
+            final BigDecimal merchantWithdrawFee = new BigDecimal("2");
 
             if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo(merchantWithdrawFee) == -1)){
                 return CommonResponse.simpleResponse(-1, "提现金额不得小于手续费");
