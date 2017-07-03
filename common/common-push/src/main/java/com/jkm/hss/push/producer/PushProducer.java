@@ -228,7 +228,7 @@ public class PushProducer {
         //ios透传需要设置的内容
         APNPayload payload = new APNPayload();
         payload.setContentAvailable(0);
-        payload.setSound("suc1.wav");
+//        payload.setSound("suc1.wav");
         payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
 //        payload.setCategory(content);
         payload.addCustomMsg("date",content);
