@@ -112,6 +112,9 @@ public interface PushService {
      */
     public String pushCashOutMsg(Long uid,  String payBank,Double amount, String cardNo );
 
-//    String pushReferrals();
+    /**
+     * 更改密码发送下线通知
+     */
+    public String pushReferrals(Long uid,String accessToken);
 
 }

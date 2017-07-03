@@ -423,6 +423,26 @@ public class PushServiceImpl implements PushService {
 //
 //        impl.pushTransmissionMsgTask(1,"测试","2","86a8bca1f74ab42d9a7d119943bcdc1b",null);
     }
+
+    @Override
+    public String pushReferrals(Long uid,String accessToken) {
+        List<Map>  list=pushDao.selectUserByUid(uid.toString(),accessToken);
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            String clientid = map.get("CLIENTID").toString();
+            clients.add(clientid);
+        }
+        final SmsTemplate messageTemplate;
+        AppResult appResult = new AppResult();
+        messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.PUSH_REFERRALS.getId());
+        appResult.setResultCode(300);
+
+        String newContent =messageTemplate.getMessageTemplate();
+        appResult.setResultMessage(newContent);
+        String ret = this.pushTransmissionMsg1(2, JSON.toJSONString(appResult), "2", null, clients);
+        return ret;
+    }
+
 }
 
 
