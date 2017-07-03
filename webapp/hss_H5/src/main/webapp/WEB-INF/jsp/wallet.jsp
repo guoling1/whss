@@ -112,7 +112,8 @@
 </body>
 <script>
   var pageData = {
-    showRecommend: '${showRecommend}'//1显示升级 2不显示升级
+    showRecommend: '${showRecommend}',//1显示升级 2不显示升级
+    oemNo: '${oemNo}'
   };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>

@@ -15,11 +15,9 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
-import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.response.CurrentRulesResponse;
 import com.jkm.hss.merchant.entity.AccountBank;
-import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
@@ -31,12 +29,14 @@ import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRules;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpgrade;
 import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
-import com.jkm.hss.product.servcie.*;
+import com.jkm.hss.product.servcie.PartnerRuleSettingService;
+import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.UpgradePayRecordService;
+import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +141,7 @@ public class LoginController extends BaseController {
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
             if(oemNo!=null&&!"".equals(oemNo)){//分公司
-                log.info("omeNo:"+oemNo);
+                log.info("oemNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
                     log.info("有分公司");
@@ -205,7 +205,7 @@ public class LoginController extends BaseController {
                             url = "/sqb/prompt";
                             isRedirect= true;
                         }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                            model.addAttribute("message","您的微信已经绑定了好收收账号\n" +
+                            model.addAttribute("message","您的微信已经绑定了账号\n" +
                                     "请使用其他微信账号扫码");
                             url = "/message";
                         }else{
@@ -302,7 +302,7 @@ public class LoginController extends BaseController {
 
     }
     /**
-     * 填写用户基本信息
+     * 上传照片
      * @param request
      * @param response
      * @param model
@@ -333,27 +333,6 @@ public class LoginController extends BaseController {
         Map<String, String> res = WxPubUtil.sign(requestUrl,appId,appSecret);
         model.addAttribute("config",res);
         return  "/upload";
-    }
-
-    /**
-     * 扫码支付用户扫未审核通过的商户二维码页面
-     * @param request
-     * @param response
-     * @param model
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = "/unFinishedPrompt",method = RequestMethod.GET)
-    public String notLoggedPrompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)throws IOException {
-        String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
-        model.addAttribute("oemNo",oemNo);
-        return "/unFinishedPrompt";
     }
 
     /**
@@ -400,8 +379,12 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/repeatAddInfo/{id}", method = RequestMethod.GET)
     public String repeatAddInfo(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
         String oemNo = request.getParameter("oemNo");
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
         if(oemNo!=null&&!"".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            appId=oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
             model.addAttribute("oemName","好收收");
@@ -414,7 +397,7 @@ public class LoginController extends BaseController {
         }else{
             requestUrl = request.getRequestURL()+"?"+request.getQueryString();
         }
-        Map<String, String> res = WxPubUtil.sign(requestUrl);
+        Map<String, String> res = WxPubUtil.sign(requestUrl,appId,appSecret);
         model.addAttribute("config",res);
         return "/material";
     }
@@ -815,7 +798,6 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.GET)
     public String creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
-        boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
         if(oemNo!=null&&!"".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);

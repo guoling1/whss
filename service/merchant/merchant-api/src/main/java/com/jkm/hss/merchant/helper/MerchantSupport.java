@@ -169,7 +169,7 @@ public class MerchantSupport {
     }
     public static void main(String[] args ){
         //System.out.println(decryptMobile("B3sItZYv_xR2FGOBZqzPpg"));
-       System.out.println(decryptBankCard("eLppigUWOpNWI7KY7xyPbbZPtNYlr2m7tg9AINyJ9ts"));
+       System.out.println(decryptBankCard("UI0zwGFqacS-F0JTa4YBp0-XIgl6ix3Qhuw7WeTfnCw"));
  //       System.out.println(decryptIdentity(""));
 //        System.out.println("=============================================");
 //        String mobile = encryptMobile("13597634925");

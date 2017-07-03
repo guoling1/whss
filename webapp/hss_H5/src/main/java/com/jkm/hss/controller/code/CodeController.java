@@ -2,6 +2,7 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumAdminType;
@@ -13,6 +14,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -54,9 +56,6 @@ public class CodeController extends BaseController {
     private AdminUserService adminUserService;
 
     @Autowired
-    private DealerService dealerService;
-
-    @Autowired
     private OemInfoService oemInfoService;
 
     /**
@@ -94,27 +93,24 @@ public class CodeController extends BaseController {
         log.info("User-Agent is [{}]",agent);
         String url = "";
         if (qrCode.isActivate()) {//已激活
+            log.info("code[{}] is activate", code);
             Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantId);
             Preconditions.checkState(userInfoOptional.isPresent(), "用户不存在");
             String openIdTemp = userInfoOptional.get().getOpenId();
-            log.info("openIdTemp{}",openIdTemp);
-            log.info("code[{}] is activate", code);
             final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
             Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
             final MerchantInfo merchantInfo = merchantInfoOptional.get();
             model.addAttribute("merchantId", merchantId);
-            if (EnumMerchantStatus.INIT.getId() == merchantInfo.getStatus()) { // 初始化-->填资料
-                if (agent.indexOf("micromessenger") > -1) {//weixin
+            if (EnumMerchantStatus.INIT.getId() == merchantInfo.getStatus()) {
+                if (agent.indexOf("micromessenger") > -1) {
                     log.info("初始化-->填资料,扫码openId{}",openId);
-                    //如何没有openId跳授权页面
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
-                        log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                             return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
@@ -142,9 +138,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
@@ -176,9 +172,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
@@ -209,9 +205,9 @@ public class CodeController extends BaseController {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
                         log.info("跳转地址是{}",requestUrl);
                         try {
@@ -236,50 +232,43 @@ public class CodeController extends BaseController {
                     return "/message";
                 }
             } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
-                model.addAttribute("name", merchantInfo.getMerchantName());
-                log.info("设备标示{}",agent.indexOf("micromessenger"));
-                if (agent.indexOf("micromessenger") > -1) {//weixin
+                if (agent.indexOf("micromessenger") > -1) {
                     if(openId==null||"".equals(openId)){
                         String requestUrl = "";
                         if(request.getQueryString() == null){
-                            requestUrl = "oemNo="+oemId;
+                            requestUrl = "oemId="+oemId;
                         }else{
-                            requestUrl = request.getQueryString()+"&oemNo="+oemId;
+                            requestUrl = request.getQueryString()+"&oemId="+oemId;
                         }
-                        log.info("跳转地址是{}",requestUrl);
                         try {
                             String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                             return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoMerchantSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
-//                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }else{
                         if(openId.equals(openIdTemp)){
-//                            model.addAttribute("isSelf",1);
-//                            url = "/sqb/paymentWx";
-                            url = "/sqb/collection";
+                            url = "/sqb/wallet";
                         }else{
-//                            model.addAttribute("isSelf",2);
-//                            url = "/sqb/paymentWx";
                             model.addAttribute("message", "该二维码已被注册");
                             return "/message";
                         }
                     }
                 }
-                if (agent.indexOf("aliapp") > -1) {// AliApp
+                if (agent.indexOf("aliapp") > -1) {
                     model.addAttribute("message", "该二维码已被注册");
                     return "/message";
-//                    url = "/sqb/paymentZfb";
                 }
-            }else if (EnumMerchantStatus.LOGIN.getId() == merchantInfo.getStatus()) {//注册
+            }else if (EnumMerchantStatus.LOGIN.getId() == merchantInfo.getStatus()) {
                 model.addAttribute("code", code);
                 url =  "/sqb/reg";
             } else {
                 log.error("code[{}] is activate, but merchant[{}] is disabled", code, merchantId);
             }
-        } else {//注册
+        } else {
+            log.info("code[{}] is not active", code);
             if(agent.indexOf("micromessenger") > -1){
+                CookieUtil.deleteCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 model.addAttribute("code", code);
                 url =  "/sqb/reg";
             }else{

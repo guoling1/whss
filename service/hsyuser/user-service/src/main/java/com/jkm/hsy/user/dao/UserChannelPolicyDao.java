@@ -48,6 +48,16 @@ public interface UserChannelPolicyDao {
      */
     void updateHxOpenProduct(UserChannelPolicy userChannelPolicy);
     /**
+     * 修改华夏微信开通产品信息
+     * @param userChannelPolicy
+     */
+    void updateHxOpenWxProduct(UserChannelPolicy userChannelPolicy);
+    /**
+     * 修改华夏支付宝开通产品信息
+     * @param userChannelPolicy
+     */
+    void updateHxOpenAlipayProduct(UserChannelPolicy userChannelPolicy);
+    /**
      * 用户通道列表
      * @param userId
      * @return

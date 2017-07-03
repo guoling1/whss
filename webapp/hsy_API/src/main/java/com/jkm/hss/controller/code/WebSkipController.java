@@ -121,13 +121,15 @@ public class WebSkipController extends BaseController {
             }
         }
         Preconditions.checkState(appId!=null&&!"".equals(appId), "微信授权失败");
-        String appSecret = userChannelPolicyService.selectAppSecretByAppId(appId);
+        String appSecret =WxConstants.APP_HSY_SECRET;
+        if(!(WxConstants.APP_HSY_ID).equals(appId)){
+            appSecret = userChannelPolicyService.selectAppSecretByAppId(appId);
+        }
+        Preconditions.checkState(appSecret!=null&&!"".equals(appSecret), "微信授权失败");
         Map<String,String> ret = WxPubUtil.getOpenid(code, appId,appSecret);
         Preconditions.checkState(ret.get("openid")!=null&&!"".equals(ret.get("openid")), "微信授权失败");
         model.addAttribute("openId", ret.get("openid"));
-        log.info("openid是：{}",ret.get("openid"));
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
-        log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
     }
 

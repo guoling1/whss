@@ -13,6 +13,7 @@ import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.UserChannelPolicy;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
@@ -89,7 +90,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
         payParams.setMerchantNo(hsyOrder.getMerchantNo());
         payParams.setMerchantName(hsyOrder.getMerchantname());
         if (EnumPayChannelSign.isWechatOfficialPay(hsyOrder.getPaychannelsign())) {//微信官方支付
-            final long uid = this.hsyShopDao.findsurByRoleTypeSid(shop.getId()).get(0).getUid();
+            final long uid = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0).getId();
             final UserChannelPolicy userChannelPolicy = this.userChannelPolicyService.selectByUserIdAndChannelTypeSign(uid,
                     hsyOrder.getPaychannelsign()).get();
             payParams.setWxAppId(userChannelPolicy.getAppId());
@@ -97,6 +98,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
             if (StringUtils.isEmpty(userChannelPolicy.getSubAppId())) {
                 payParams.setMemberId(hsyOrder.getMemberId());
             } else {
+                payParams.setMemberId("");
                 payParams.setSubAppId(userChannelPolicy.getSubAppId());
                 payParams.setSubMemberId(hsyOrder.getMemberId());
             }

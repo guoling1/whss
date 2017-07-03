@@ -217,7 +217,11 @@
                 message: '保存成功',
                 type: 'success'
               });
-              this.$router.push('/daili/app/dealer_list');
+              if (this.$route.query.dealerType == 2) {
+                this.$router.push('/daili/app/dealer_list');
+              } else {
+                this.$router.push('/daili/app/first_dealer_list');
+              }
             }
           });
         } else {

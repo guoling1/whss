@@ -33,7 +33,7 @@ const bankText = document.getElementById('bankText');
 const skip = document.getElementById('skip');
 
 skip.addEventListener('click', function () {
-  window.location.href = '/sqb/wallet';
+  window.location.href = '/sqb/wallet?oemNo=' + pageData.oemNo;
 });
 
 let world = document.getElementById('world');
@@ -219,7 +219,7 @@ submit.addEventListener('click', function () {
       countyCode: countyCode,
       countyName: countyName
     }, function () {
-      window.location.replace("/sqb/addNext");
+      window.location.replace("/sqb/addNext?oemNo=" + pageData.oemNo);
     })
   }
 });

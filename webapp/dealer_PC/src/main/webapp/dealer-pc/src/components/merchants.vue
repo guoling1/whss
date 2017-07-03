@@ -61,7 +61,7 @@
                     </el-pagination>
                   </div>
                 </el-tab-pane>
-                <el-tab-pane label="好收银" name="second">
+                <el-tab-pane label="好收银" name="second" v-if="isDealer">
                   <div class="box-body screen-top">
                     <div class="screen-item">
                       <span class="screen-title">商户编号</span>
@@ -131,6 +131,7 @@
   </div>
 </template>
 <script lang="babel">
+  import store from '../store'
   export default {
     name: 'app',
     data() {
@@ -154,7 +155,24 @@
           username: '',
           realname: '',
         },
+        isDealer: true
       }
+    },
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            vm.dealerInfo = data.dealerInfo;
+            if (data.dealerLeavel == 1) {
+              vm.isDealer = true
+            } else if (data.dealerLeavel == 2) {
+              vm.isDealer = true
+            } else {
+              vm.isDealer = false
+            }
+          }
+        });
+      });
     },
     created() {
       this.getData();

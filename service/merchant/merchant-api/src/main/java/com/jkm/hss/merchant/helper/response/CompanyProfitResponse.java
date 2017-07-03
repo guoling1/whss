@@ -10,11 +10,15 @@ import java.util.Date;
  */
 @Data
 public class CompanyProfitResponse {
+    /**
+     * 分账日期
+     */
+    private String splitDates;
 
     /**
      * 结算周期
      */
-    private String settleType;
+    private String settleType1;
 
     /**
      * 一级代理商id

@@ -75,18 +75,18 @@
     </select>
 
     <select id="selectByUsernameAndType" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username}  and status=1
+        SELECT * FROM tb_admin_user WHERE username = #{username}
     </select>
 
     <select id="selectDealerLoginNameByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and status=1
+        SELECT * FROM tb_admin_user WHERE username = #{username}
     </select>
 
     <select id="getAdminUserByNameAndTypeUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username}  and status=1 and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
+        SELECT * FROM tb_admin_user WHERE username = #{username}  and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
     </select>
     <select id="getAdminDealerUserByNameUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and status=1 and id not in (select id from tb_admin_user where  is_master=1 and dealer_id=#{dealerId})
+        SELECT * FROM tb_admin_user WHERE username = #{username}  and id not in (select id from tb_admin_user where  is_master=1 and dealer_id=#{dealerId})
     </select>
     <update id="updatePwd">
         UPDATE tb_admin_user

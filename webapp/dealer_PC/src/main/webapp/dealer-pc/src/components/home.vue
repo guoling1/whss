@@ -88,7 +88,7 @@
     </section>
     <section class="content" v-if="!isDealer">
       <h4 class="text-center top">
-        您好，{{userName}}
+        您好，{{dealerInfo}}
       </h4>
       <h2 class="text-center bottom">
         welcome
@@ -134,7 +134,8 @@
           ydaycheckMerNumberSub: 0
         },
         accountData: '',
-        isDealer: false
+        isDealer: false,
+        dealerInfo:''
       }
     },
     beforeRouteEnter (to, from, next){

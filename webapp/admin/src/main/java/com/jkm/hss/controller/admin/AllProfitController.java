@@ -4,6 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.request.CompanyPrifitRequest;
@@ -52,13 +53,15 @@ public class AllProfitController extends BaseController {
     public CommonResponse getCompanyProfit(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
-        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date dt = sdf.parse(req.getEndTime());
-            Calendar rightNow = Calendar.getInstance();
-            rightNow.setTime(dt);
-            rightNow.add(Calendar.DATE, 1);
-            req.setEndTime(sdf.format(rightNow.getTime()));
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime() !=null && req.getEndTime()!=null && req.getStartTime()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime() + "~" + req.getEndTime();
+            req.setSplitDates(s);
+            req.setBegin(begin);
+            req.setEnd(end);
         }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfit(req);
         List<CompanyProfitResponse> count = allProfitService.selectCompanyProfitCount(req);
@@ -78,13 +81,15 @@ public class AllProfitController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/companyAmount", method = RequestMethod.POST)
     public CommonResponse companyAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
-        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date dt = sdf.parse(req.getEndTime());
-            Calendar rightNow = Calendar.getInstance();
-            rightNow.setTime(dt);
-            rightNow.add(Calendar.DATE, 1);
-            req.setEndTime(sdf.format(rightNow.getTime()));
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime() !=null && req.getEndTime()!=null && req.getStartTime()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime() + "~" + req.getEndTime();
+            req.setSplitDates(s);
+            req.setBegin(begin);
+            req.setEnd(end);
         }
         String result = allProfitService.companyAmount(req);
 //        BigDecimal x = new BigDecimal("0.0");
@@ -132,6 +137,16 @@ public class AllProfitController extends BaseController {
     public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime() !=null && req.getEndTime()!=null && req.getStartTime()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime() + "~" + req.getEndTime();
+            req.setSplitDates(s);
+            req.setBegin(begin);
+            req.setEnd(end);
+        }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
         int count = allProfitService.selectCompanyProfitDetailsCount(req);
         pageModel.setCount(count);
@@ -148,6 +163,16 @@ public class AllProfitController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/ProfitDetailAmount", method = RequestMethod.POST)
     public CommonResponse ProfitDetailAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        Date begin =null;
+        Date end =null;
+        if (req.getStartTime() !=null && req.getEndTime()!=null && req.getStartTime()!="" && req.getEndTime()!=""){
+            begin = DateFormatUtil.parse(req.getStartTime()+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            end  = DateFormatUtil.parse(req.getEndTime() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            String s = req.getStartTime() + "~" + req.getEndTime();
+            req.setSplitDates(s);
+            req.setBegin(begin);
+            req.setEnd(end);
+        }
         CompanyProfitResponse result = allProfitService.ProfitDetailAmount(req);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
     }

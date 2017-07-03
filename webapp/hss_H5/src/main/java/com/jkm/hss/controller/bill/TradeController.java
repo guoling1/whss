@@ -21,6 +21,7 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.helper.response.OemDetailResponse;
 import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
@@ -174,10 +175,17 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getOrderId(),
                 payRequest.getPayChannel(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
+            String oemNo = "";
+            if(merchantInfo.getOemId()>0){
+                OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfo.getOemId());
+                Preconditions.checkState(oemDetailResponse!=null, "O单配置有误");
+                oemNo = oemDetailResponse.getOemNo();
+            }
             final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payRequest.getPayChannel());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", merchantInfo.getMerchantName())
+                    .addParam("oemNo", oemNo)
                     .addParam("amount", businessOrderOptional.get().getTradeAmount())
                     .addParam("payType", payChannelSign.getPaymentChannel().getId()).build();
         }
@@ -398,13 +406,21 @@ public class TradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
+
+        String oemNo = "";
+        if(merchantInfo.getOemId()>0){
+            OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfo.getOemId());
+            Preconditions.checkState(oemDetailResponse!=null, "O单配置有误");
+            oemNo = oemDetailResponse.getOemNo();
+        }
+
         if (creditBankCount <= 0) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
+                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId()+"&oemNo="+oemNo)
                     .build();
         }
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
+                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId()+"&oemNo="+oemNo)
                 .build();
     }
 

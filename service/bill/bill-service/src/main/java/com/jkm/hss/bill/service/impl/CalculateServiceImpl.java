@@ -272,6 +272,19 @@ public class CalculateServiceImpl implements CalculateService {
             case XMMS_BANK:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
                 return  waitMoney;
+            case HJ_PAY:
+                if (basicChannel.getChannelTypeSign() == 1005){
+                    if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
+                        //手续费不足两毛 , 按2毛收
+                        waitMoney = basicChannel.getLowestFee();
+                    }else{
+                        //收手续费,进一位,保留两位有效数字
+                        waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    }
+                }else{
+                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                }
+                return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;

@@ -9,7 +9,7 @@
         </div>
         <div class="box-body">
           <label class="form-label">项目类型:</label>
-          <el-select style="width: 20%" v-model="query.type" clearable placeholder="请选择" size="small">
+          <el-select style="width: 20%" v-model="query.type" disabled placeholder="请选择" size="small">
             <el-option label="好收收" value="hss">好收收</el-option>
             <el-option label="好收银" value="hsy">好收银</el-option>
           </el-select>

@@ -38,7 +38,7 @@
                 <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
                 <el-table-column label="收益日期">
                   <template scope="scope">
-                    <span>{{scope.row.splitDate|changeDate}}</span>
+                    <span>{{scope.row.splitDates}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="businessType" label="收益类型"></el-table-column>
@@ -49,7 +49,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDate}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
+                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:recordsCom[scope.$index].businessType,time:recordsCom[scope.$index].splitDates}}" v-if="recordsCom[scope.$index].splitAmount!=0" type="text" size="small">明细</router-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -256,13 +256,18 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         pickerOptions: {
-          onPick:function({ maxDate, minDate }){
-            if(maxDate==''||maxDate==null){
-              this.disabledDate=function(maxDate) {
-                return minDate < maxDate.getTime() - 8.64e7*30||minDate.getTime() > maxDate;
+          disabledDate: function (time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          },
+          onPick: function ({maxDate, minDate}) {
+            if (maxDate == '' || maxDate == null) {
+              this.disabledDate = function (maxDate) {
+                return minDate < maxDate.getTime() - 8.64e7 * 30 || minDate.getTime() > maxDate || maxDate > new Date().setTime(new Date().getTime()-24*60*60*1000) || minDate > new Date().setTime(new Date().getTime()-24*60*60*1000);
               }
-            }else{
-              this.disabledDate=function(){}
+            } else {
+              this.disabledDate= function (time) {
+                return time.getTime() > Date.now() - 8.64e7;
+              }
             }
           }
         },
@@ -337,6 +342,7 @@
     },
     created: function () {
       let time = new Date();
+      time.setTime(time.getTime()-24*60*60*1000);
       this.date = [time,time];
       this.date1 = [time,time];
       this.date2 = [time,time];

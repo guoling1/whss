@@ -177,7 +177,7 @@ for (let i = 0; i < li.length; i++) {
     let variable = this.getAttribute('y-variable');
     payVariable[variable]['status'] = !payVariable[variable]['status'];
     // 处理变量唯一性
-    if (!payVariable.paySuccess.status && !payVariable.payError.status && !payVariable.payError.status) {
+    if (!payVariable.paySuccess.status && !payVariable.payError.status && !payVariable.payWait.status) {
       message.prompt_show('至少选择一种支付状态');
       payVariable[variable]['status'] = !payVariable[variable]['status'];
       return;

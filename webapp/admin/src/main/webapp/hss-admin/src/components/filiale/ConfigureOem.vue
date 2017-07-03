@@ -76,6 +76,20 @@
                 <div class="grid-content bg-purple-light"></div>
               </el-col>
             </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">标识码:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <span style="line-height: 30px">{{query.oemNo}}</span>
+                  <!--<el-input type="text" size="small" v-model="query.oemNo" placeholder="请输入内容" disabled></el-input>-->
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
           </div>
         </div>
         <div>
@@ -84,22 +98,22 @@
           </div>
           <div class="table-responsive">
             <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
+              <el-col :span="2">
                 <div class="alignRight"></div>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="10">
                 <div class="grid-content bg-purple-light">
                   <el-table :data="query.templateInfos" style="width: 100%">
-                    <el-table-column prop="templateName" label="消息名称"></el-table-column>
+                    <el-table-column prop="templateName" label="消息名称" width="200"></el-table-column>
                     <el-table-column label="模板ID">
                       <template scope="scope">
-                        <input v-model="scope.row.templateId" type="text" style="border: none;border-bottom: 1px solid #D1D1D1">
+                        <input v-model="scope.row.templateId" type="text" style="border: none;border-bottom: 1px solid #D1D1D1;width: 90%">
                       </template>
                     </el-table-column>
                   </el-table>
                 </div>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="6">
                 <div class="grid-content bg-purple-light"></div>
               </el-col>
             </el-row>

@@ -9,7 +9,9 @@ public enum EnumMerchantPayType {
 
     MERCHANT_CODE("code", "扫码支付"),
 
-    MERCHANT_JSAPI("jsapi", "公众号支付");
+    MERCHANT_JSAPI("jsapi", "公众号支付"),
+
+    MERCHANT_BAR("bar", "主扫");
 
     @Getter
     private String id;

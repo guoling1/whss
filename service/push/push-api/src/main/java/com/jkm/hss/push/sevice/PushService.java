@@ -112,4 +112,6 @@ public interface PushService {
      */
     public String pushCashOutMsg(Long uid,  String payBank,Double amount, String cardNo );
 
+//    String pushReferrals();
+
 }

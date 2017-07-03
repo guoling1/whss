@@ -61,6 +61,19 @@ public class AppAuUser {
     //扩展
     private Integer utype;//类型1主店 2分店
 
+    /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 是否自动发送对账邮件
+     */
+    private int autoSendBalanceAccountEmail;
+
+    private String passwordOrigin;//原始密码
+    private String auCellphone;//销售电话
+    private Integer isNeededAltingPassword;
+
     public Long getId() {
         return id;
     }

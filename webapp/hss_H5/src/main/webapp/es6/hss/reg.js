@@ -54,7 +54,7 @@ cancel.addEventListener('click', function () {
 });
 
 login.addEventListener('click', function () {
-  window.location.href = '/sqb/login?phone=' + mobile.value + "?oemNo=" + pageData.oemNo;
+  window.location.href = '/sqb/login?phone=' + mobile.value + "&oemNo=" + pageData.oemNo;
 });
 
 // 注册

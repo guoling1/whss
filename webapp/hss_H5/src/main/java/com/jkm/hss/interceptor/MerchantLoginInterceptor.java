@@ -73,9 +73,9 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                     Preconditions.checkState(oemInfoOptional.isPresent(), "参数不合法");
                     if(merchantInfoOptional.get().getOemId()>0){
-                        if(oemInfoOptional.get().getId()!=merchantInfoOptional.get().getOemId()){
+                        if(oemInfoOptional.get().getDealerId()!=merchantInfoOptional.get().getOemId()){//不是同一个分公司的商户
                             CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            response.sendRedirect(request.getAttribute(ApplicationConsts.REQUEST_URL).toString());
+                            response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                             return false;
                         }
                     }else{//由金开门切到分公司
@@ -91,7 +91,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     }
                 }
                 if (merchantInfoOptional.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                    response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg");
+                    response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                     return false;
                 }else if(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.INIT.getId()){
                     String appId = WxConstants.APP_ID;
@@ -146,7 +146,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg");
+                response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                 return false;
             }
         }

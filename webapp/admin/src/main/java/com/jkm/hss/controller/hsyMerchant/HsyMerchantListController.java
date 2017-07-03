@@ -105,6 +105,14 @@ public class HsyMerchantListController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/downLoadHsyMerchant",method = RequestMethod.POST)
     private CommonResponse downLoadHsyMerchant(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
+        SimpleDateFormat sdfs = new SimpleDateFormat("yyyy-MM-dd");
+        if(hsyMerchantAuditRequest.getEndTime()!=null&&!"".equals(hsyMerchantAuditRequest.getEndTime())){
+            Date dt = sdfs.parse(hsyMerchantAuditRequest.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            hsyMerchantAuditRequest.setEndTime(sdfs.format(rightNow.getTime()));
+        }
         final String fileZip = this.hsyMerchantAuditService.downLoadHsyMerchant(hsyMerchantAuditRequest, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();

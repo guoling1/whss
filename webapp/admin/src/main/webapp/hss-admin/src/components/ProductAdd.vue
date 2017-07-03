@@ -15,7 +15,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.type" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.type" disabled placeholder="请选择" size="small">
                     <el-option label="好收收" value="hss">好收收</el-option>
                     <el-option label="好收银" value="hsy">好收银</el-option>
                   </el-select>

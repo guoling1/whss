@@ -67,7 +67,7 @@ public interface MerchantInfoCheckRecordDao {
      * @param touser
      * @return
      */
-    String seleTemplateId(@Param("touser") String touser);
+    String seleTemplateId(@Param("touser") String touser,@Param("signCode") int signCode);
 
     /**
      * 查询是否是分公司

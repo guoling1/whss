@@ -113,6 +113,7 @@ public class TradeServiceImpl implements TradeService {
                 .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
                 .wxAppId(rechargeParams.getAppId())
                 .memberId(rechargeParams.getMemberId())
+                .authCode(rechargeParams.getAuthCode())
                 .build();
         final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
         return this.baseTradeService.handlePlaceOrderResult(paymentSdkPlaceOrderResponse, rechargeParams.getMerchantPayType(), order);
@@ -130,6 +131,7 @@ public class TradeServiceImpl implements TradeService {
         log.info("业务方[{}],通过渠道[{}]进行支付[{}],实付金额[{}]", payParams.getAppId(), payParams.getChannel(), payParams.getTradeAmount(), payParams.getRealPayAmount());
         final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(payParams.getBusinessOrderNo());
         if (orderOptional.isPresent()) {
+            log.info("业务订单号重复【{}】", payParams.getBusinessOrderNo());
             final PayResponse payResponse = new PayResponse();
             payResponse.setBusinessOrderNo(payParams.getBusinessOrderNo());
             payResponse.setCode(EnumBasicStatus.FAIL.getId());
@@ -177,6 +179,7 @@ public class TradeServiceImpl implements TradeService {
                     .subAppId(payParams.getSubAppId())
                     .subMerchantId(payParams.getSubMerchantId())
                     .subMemberId(payParams.getSubMemberId())
+                    .authCode(payParams.getAuthCode())
                     .bankBranchCode(payParams.getBankBranchCode())
                     .bankCardNo(payParams.getBankCardNo())
                     .realName(payParams.getRealName())
