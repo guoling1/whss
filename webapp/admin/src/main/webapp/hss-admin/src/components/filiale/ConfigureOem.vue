@@ -82,7 +82,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <span>{{query.oemNo}}</span>
+                  <span style="line-height: 30px">{{query.oemNo}}</span>
                   <!--<el-input type="text" size="small" v-model="query.oemNo" placeholder="请输入内容" disabled></el-input>-->
                 </div>
               </el-col>
