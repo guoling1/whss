@@ -1004,7 +1004,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //分公司分润
-            final BigDecimal oemMoney = totalFee.multiply(merchantRate.subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            final BigDecimal oemMoney = totalFee.multiply(merchantRate.subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //产品分润
             final BigDecimal productMoney = waitMoney.subtract(channelMoney).subtract(basicMoney).subtract(oemMoney);
             //记录通道, 产品分润明细
@@ -1050,9 +1050,9 @@ public class DealerServiceImpl implements DealerService {
             //一级
             //一级分润
             BigDecimal firstMoney = totalFee.multiply(merchantRate.
-                    subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+                    subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //分公司分润
-            final BigDecimal oemMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate()));
+            final BigDecimal oemMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //通道成本
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
             final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
@@ -1060,7 +1060,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //产品分润
-            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(channelMoney).subtract(basicMoney);
+            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(channelMoney).subtract(basicMoney).subtract(oemMoney);
             //记录分润明细
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
             shallProfitDetail.setProductType(EnumProductType.HSS.getId());
@@ -1100,12 +1100,12 @@ public class DealerServiceImpl implements DealerService {
                     this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
             //一级分润
             BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
-                    subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+                    subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //分公司分润
-            final BigDecimal oemMoney = totalFee.multiply(firstDealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate()));
+            final BigDecimal oemMoney = totalFee.multiply(firstDealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //二级分润
             BigDecimal secondMoney = totalFee.multiply(merchantRate.
-                    subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+                    subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -1113,7 +1113,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
             final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
             //产品分润
-            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(secondMoney).subtract(channelMoney).subtract(basicMoney);
+            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(secondMoney).subtract(channelMoney).subtract(basicMoney).setScale(2,BigDecimal.ROUND_HALF_UP);
             //记录分润明细
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
             shallProfitDetail.setProductType(EnumProductType.HSS.getId());
