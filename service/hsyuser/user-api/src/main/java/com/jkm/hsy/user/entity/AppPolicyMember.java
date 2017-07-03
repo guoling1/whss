@@ -25,6 +25,7 @@ public class AppPolicyMember {
     private String membershipName;//会员卡名称
     private String membershipShopName;//会员卡上显示的店铺名称
     private BigDecimal discount;//会员卡折扣(折)
+    private Integer isDeposited;//是否储值0不储值 1储值
     private BigDecimal depositAmount;//开卡储值金额
     private Integer isPresentedViaActivate;//是否开卡赠送0否 1是
     private BigDecimal presentAmount;//赠送金额
@@ -216,5 +217,13 @@ public class AppPolicyMember {
 
     public void setCanRecharge(Integer canRecharge) {
         this.canRecharge = canRecharge;
+    }
+
+    public Integer getIsDeposited() {
+        return isDeposited;
+    }
+
+    public void setIsDeposited(Integer isDeposited) {
+        this.isDeposited = isDeposited;
     }
 }

@@ -21,6 +21,7 @@ import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hss.product.dao.BasicChannelDao;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.Enum.EnumNetStatus;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
@@ -74,6 +75,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private HsyChannelDao hsyChannelDao;
     @Autowired
     private UserTradeRateDao userTradeRateDao;
+    @Autowired
+    private PushService pushService;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -1399,7 +1402,7 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.ORIGINAL_PASSWORD_NOT_MATCH);
 
         hsyUserDao.updateByID(appAuUser);
-
+        pushService.pushReferrals(appAuUser.getId(),appParam.getAccessToken());
         return "";
     }
 

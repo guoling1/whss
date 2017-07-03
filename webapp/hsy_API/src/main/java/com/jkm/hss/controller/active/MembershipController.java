@@ -169,62 +169,74 @@ public class MembershipController {
             return "/tips";
         }
 
-        if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
-            Long uid;
-            try {
-                String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
-                String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
-                uid = Long.parseLong(uidAES.trim());
-            } catch (Exception e) {
-                log.info("http转义失败");
-                model.addAttribute("tips", "请稍后再试！");
-                return "/tips";
-            }
+        Long uid;
+        try {
+            String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
+            String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
+            uid = Long.parseLong(uidAES.trim());
+        } catch (Exception e) {
+            log.info("http转义失败");
+            model.addAttribute("tips", "请稍后再试！");
+            return "/tips";
+        }
 
-            List<AppPolicyMembershipCard> cardList = hsyMembershipService.findMemberCardByUID(uid);
-            if (cardList == null || cardList.size() == 0) {
-                model.addAttribute("tips", "该店铺没有会员卡！");
-                return "/tips";
-            }
+        List<AppPolicyMembershipCard> cardList = hsyMembershipService.findMemberCardByUID(uid);
+        if (cardList == null || cardList.size() == 0) {
+            model.addAttribute("tips", "该店铺没有会员卡！");
+            return "/tips";
+        }
 
-            model.addAttribute("cardList", cardList);
-
-            AppPolicyConsumer appPolicyConsumer = null;
-            if (authInfo.getSource().equals("WX")) {
-                appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
-                if (appPolicyConsumer == null) {
-                    model.addAttribute("authInfo", authInfo);
-                    return "/createMember";
-                }
-            } else if (authInfo.getSource().equals("ZFB")) {
-                appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
-                if (appPolicyConsumer == null) {
-                    model.addAttribute("authInfo", authInfo);
-                    return "/createMember";
-                }
-            } else {
-                model.addAttribute("tips", "请使用微信或支付宝");
-                return "/tips";
-            }
-
-            AppPolicyMember appPolicyMember = hsyMembershipService.findMemberByCIDAndUID(appPolicyConsumer.getId(), uid);
-            if (appPolicyMember == null) {
+        AppPolicyConsumer appPolicyConsumer = null;
+        if (authInfo.getSource().equals("WX")) {
+            appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
+            if (appPolicyConsumer == null) {
                 model.addAttribute("authInfo", authInfo);
-                model.addAttribute("appPolicyConsumer", appPolicyConsumer);
                 return "/createMember";
             }
-
-            if (appPolicyMember.getStatus() == 2) {
-                model.addAttribute("mid", appPolicyMember.getId());
-                model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
-                model.addAttribute("source", authInfo.getSource());
-                return "/needRecharge";
+        } else if (authInfo.getSource().equals("ZFB")) {
+            appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
+            if (appPolicyConsumer == null) {
+                model.addAttribute("authInfo", authInfo);
+                return "/createMember";
             }
+        } else {
+            model.addAttribute("tips", "请使用微信或支付宝");
+            return "/tips";
+        }
 
+        AppPolicyMember appPolicyMember = hsyMembershipService.findMemberByCIDAndUID(appPolicyConsumer.getId(), uid);
+        if (appPolicyMember == null) {
+            model.addAttribute("authInfo", authInfo);
+            model.addAttribute("appPolicyConsumer", appPolicyConsumer);
+            return "/createMember";
+        }
+
+        if (appPolicyMember.getStatus() == 2) {
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
+            model.addAttribute("source", authInfo.getSource());
+            return "/needRecharge";
+        }
+
+        if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
+            model.addAttribute("cardList", cardList);
             model.addAttribute("mid", appPolicyMember.getId());
             return "redirect:/membership/createMemberSuccess";
         }else if(OperateType.RECHARGE.key.equals(authInfo.getOperate())){
-            return "";
+            if(appPolicyMember.getIsDeposited()==0){
+                model.addAttribute("tips", "该会员卡没有储值功能");
+                return "/tips";
+            }
+
+            if(appPolicyMember.getCanRecharge()==0){
+                model.addAttribute("tips", "该会员卡无法继续储值");
+                return "/tips";
+            }
+
+            model.addAttribute("appPolicyMember",appPolicyMember);
+            model.addAttribute("type", RechargeValidType.RECHARGE.key);
+            model.addAttribute("source", authInfo.getSource());
+            return "/toRecharge";
         }
         else{
             model.addAttribute("tips","找不到该操作！");
@@ -331,9 +343,11 @@ public class MembershipController {
     }
 
     @RequestMapping("toRecharge")
-    public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+    public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         model.addAttribute("appPolicyMember",appPolicyMember);
+        model.addAttribute("type", RechargeValidType.RECHARGE.key);
+        model.addAttribute("source", source);
         return "/toRecharge";
     }
 

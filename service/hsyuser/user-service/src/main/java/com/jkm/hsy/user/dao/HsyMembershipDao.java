@@ -34,4 +34,5 @@ public interface HsyMembershipDao {
     public List<AppPolicyMembershipCard> findMemberCardByID(@Param("id") Long id);
     public Integer findMemberCardCountByMCID(@Param("mcid")Long mcid);
     public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid);
+    public List<BasicChannel> findChannelAccountID(@Param("channelTypeSign")Integer channelTypeSign);
 }

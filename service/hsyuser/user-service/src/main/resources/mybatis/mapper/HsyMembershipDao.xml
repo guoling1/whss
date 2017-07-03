@@ -66,7 +66,8 @@
     </select>
 
     <select id="findMemberCascadeByParam" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
-        select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME
+        select member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
         from app_policy_member member left join app_policy_membership_card card on member.MCID=card.ID
         where member.status!=3 and card.status=1
         <if test="cid!=null and cid!=''">and member.CID=#{cid}</if>
@@ -119,7 +120,7 @@
 
     <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
         select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
-        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
@@ -194,6 +195,11 @@
         select count(1) from app_policy_member member
         left join app_policy_membership_card card on member.mcid=card.id
         where card.UID=#{uid}
+    </select>
+
+    <select id="findChannelAccountID" resultType="com.jkm.hsy.user.entity.BasicChannel">
+        select id,account_id accountid,channel_type_sign channelTypeSign from tb_basic_channel
+        where channel_type_sign=#{channelTypeSign}
     </select>
 
 </mapper>

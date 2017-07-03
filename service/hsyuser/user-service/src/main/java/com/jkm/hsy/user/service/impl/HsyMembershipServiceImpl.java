@@ -1,10 +1,13 @@
 package com.jkm.hsy.user.service.impl;
 
 import com.google.gson.*;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.dao.HsyVerificationDao;
+import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -31,6 +34,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     private HsyVerificationDao hsyVerificationDao;
     @Autowired
     private HsyUserDao hsyUserDao;
+    @Autowired
+    private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
 
     /**HSY001047 创建会员卡*/
     public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
@@ -435,21 +440,42 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
                 marketingAmount=appPolicyMember.getPresentAmount();
             } else
                 appPolicyRechargeOrder.setTradeAmount(appPolicyMember.getDepositAmount());
-            appPolicyRechargeOrder.setGoodsName(RechargeValidType.ACTIVATE.value);
+            appPolicyRechargeOrder.setGoodsName(appPolicyMember.getMembershipShopName());
             appPolicyRechargeOrder.setGoodsDescribe(describe);
             appPolicyRechargeOrder.setType(orderType);
             appPolicyRechargeOrder.setMarketingAmount(marketingAmount);
-        }else if(type.equals(RechargeValidType.ACTIVATE.value)){
-
+        }else if(type.equals(RechargeValidType.RECHARGE.key)){
+            String describe=RechargeValidType.RECHARGE.value + "-充值金额为:" + amount;
+            int orderType= OrderType.RECHARGE.key;
+            appPolicyRechargeOrder.setRealPayAmount(amount);
+            BigDecimal marketingAmount=BigDecimal.ZERO;
+            if (appPolicyMember.getIsPresentedViaRecharge() == 1) {
+                int presentCount=amount.divide(appPolicyMember.getRechargeLimitAmount()).intValue();
+                marketingAmount=appPolicyMember.getRechargePresentAmount().multiply(new BigDecimal(presentCount));
+                appPolicyRechargeOrder.setTradeAmount(amount.add(marketingAmount));
+                describe+="-赠送金额为:"+marketingAmount;
+                orderType= OrderType.RECHARGE_PRESENT.key;
+            } else
+                appPolicyRechargeOrder.setTradeAmount(amount);
+            appPolicyRechargeOrder.setGoodsName(appPolicyMember.getMembershipShopName());
+            appPolicyRechargeOrder.setGoodsDescribe(describe);
+            appPolicyRechargeOrder.setType(orderType);
+            appPolicyRechargeOrder.setMarketingAmount(marketingAmount);
         }
-        //通道需要做一下
-        System.out.println(source);
-        appPolicyRechargeOrder.setPayeeAccountID(748L);
-        appPolicyRechargeOrder.setPayChannelSign(801);
-        if(source.equals("ZFB"))
+
+        UserCurrentChannelPolicy userCurrentChannelPolicy=userCurrentChannelPolicyDao.selectByUserId(appPolicyMember.getUid());
+
+        if(source.equals("ZFB")) {
+            appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getAlipayChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getUserID());
-        else
+            List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
+            appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
+        }else {
+            appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getWechatChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getOpenID());
+            List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
+            appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
+        }
         appPolicyRechargeOrder.setMemberID(appPolicyMember.getId());
         appPolicyRechargeOrder.setMemberAccountID(appPolicyMember.getAccountID());
         appPolicyRechargeOrder.setMerchantReceiveAccountID(appPolicyMember.getReceiptAccountID());
