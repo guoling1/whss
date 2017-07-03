@@ -20,7 +20,7 @@
     <div class="useAmount">待结算金额: ¥<span id="settleAmount"></span></div>
     <div class="useAmount">可提现金额: ¥<span id="available"></span></div>
     <a class="btn" href="/account/toWithdraw?oemNo=${oemNo}">提现</a>
-    <a class="check" href="/account/toHssAccountFlow"><span></span>查看余额明细</a>
+    <a class="check" href="/account/toHssAccountFlow?oemNo=${oemNo}"><span></span>查看余额明细</a>
   </div>
   <div class="qa">
     <div class="qa-title"><span></span>常见问题</div>
