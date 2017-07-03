@@ -1112,7 +1112,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
             final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
             //产品分润
-            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(secondMoney).subtract(channelMoney).subtract(basicMoney).setScale(2,BigDecimal.ROUND_HALF_UP);
+            final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(secondMoney).subtract(channelMoney).subtract(basicMoney).subtract(oemMoney);
             //记录分润明细
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
             shallProfitDetail.setProductType(EnumProductType.HSS.getId());
