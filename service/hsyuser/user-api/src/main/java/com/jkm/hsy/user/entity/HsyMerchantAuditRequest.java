@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class HsyMerchantAuditRequest {
 
+
     private String changePhone;//更改后的手机号
     private String branchCode;//联行号
     private String bankName;//银行名称
@@ -29,6 +30,7 @@ public class HsyMerchantAuditRequest {
     private String username;//报单员
 
     private String realname;//姓名
+    private String realnames;//法人姓名
     /**
      * 审核时间
      */
@@ -42,7 +44,7 @@ public class HsyMerchantAuditRequest {
     private String commitTime;//提交开始时间
 
     private String commitTime1;//提交结束时间
-
+    private String idcardNO;//法人身份证号
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称
@@ -63,7 +65,9 @@ public class HsyMerchantAuditRequest {
     private Long accountID;//账户ID
     private Date createTime;
     private Date updateTime;
-
+    private String licenceNo;//营业执照号
+    private Date licenceStartDate;//营业执照起期
+    private Date licenceEndDate;//营业执照止期
     private String cellphone;//注册手机号
 
     /**

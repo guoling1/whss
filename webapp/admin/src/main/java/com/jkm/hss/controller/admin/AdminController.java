@@ -148,6 +148,9 @@ public class AdminController extends BaseController {
             Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(userOptional.get().getRoleId());
             roleName = adminRoleOptional.get().getRoleName();
         }
+        if(loginMenu.isEmpty()){
+            return CommonResponse.simpleResponse(-1, "权限不足");
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, roleName,loginMenu);
     }
 
