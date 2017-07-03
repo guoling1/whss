@@ -46,6 +46,23 @@ public class AccountSettleAuditRecord extends BaseEntity {
     private Date tradeDate;
 
     /**
+     * 结算开始的交易时间
+     */
+    private Date balanceStartTime;
+
+    /**
+     * 结算结束的交易时间
+     */
+    private Date balanceEndTime;
+
+    /**
+     * 渠道方
+     *
+     * {@link com.jkm.hss.product.enums.EnumUpperChannel}
+     */
+    private int upperChannel;
+
+    /**
      * 交易笔数
      */
     private int tradeNumber;

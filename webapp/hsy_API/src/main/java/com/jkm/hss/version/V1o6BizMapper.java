@@ -69,7 +69,7 @@ public class V1o6BizMapper {
         /**交易详情*/
         bizMapper.put("HSY001045", new String[]{"HsyOrderService", "appOrderDetail"});
         /**交易记录-version1.5*/
-        bizMapper.put("HSY001046", new String[]{"HsyOrderService", "orderListst"});
+        bizMapper.put("HSY001046", new String[]{"HsyOrderService", "orderList"});
         /**创建会员卡*/
         bizMapper.put("HSY001047", new String[]{"hsyMembershipService", "insertMemshipCard"});
         /**刷新登录*/
