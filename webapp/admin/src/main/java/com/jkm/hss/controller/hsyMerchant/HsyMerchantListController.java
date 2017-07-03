@@ -199,11 +199,13 @@ public class HsyMerchantListController extends BaseController {
 
         }
         List<HsyMerchantInfoCheckRecord> list = hsyMerchantAuditService.getLog(hsyMerchantAuditRequest.getId());
+        List<ShopInfoResponse> shopInfo = hsyMerchantAuditService.getShopInfo(hsyMerchantAuditRequest.getId());
         jsonObject.put("code",1);
         jsonObject.put("msg","success");
         JSONObject jo = new JSONObject();
         jo.put("list",list);
         jo.put("res",res);
+        jo.put("shopInfo",shopInfo);
         List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(res.getUid());
         jo.put("rateList",userTradeRateListResponses);
         Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(res.getUid());

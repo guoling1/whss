@@ -6,7 +6,6 @@ import com.jkm.base.common.util.CreateImageCodeUtil;
 import com.jkm.hss.admin.helper.requestparam.AppBizDistrictRequest;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.admin.service.AppBizDistrictService;
-import com.jkm.hss.merchant.entity.Join;
 import com.jkm.hss.merchant.entity.JoinRequest;
 import com.jkm.hss.merchant.service.WebsiteService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -39,7 +40,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping(value = "/join")
-public class JoinController {
+public class JoinController extends HttpServlet {
     @Autowired
     private AppBizDistrictService appBizDistrictService;
 
@@ -183,17 +184,17 @@ public class JoinController {
      */
     @ResponseBody
     @RequestMapping(value = "/phoneNo",method = RequestMethod.POST)
-    public CommonResponse phoneNo(@RequestBody final Join join, HttpServletResponse httpServletResponse) {
+    public CommonResponse phoneNo(HttpServletRequest request, HttpServletResponse httpServletResponse) {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-
-        if (("").equals(join.getMobile())){
+        String mobile = request.getParameter("mobile");
+        if ("".equals(mobile)&&mobile==null){
             return CommonResponse.simpleResponse(-1,"手机号不能为空！");
         }
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(join.getMobile(), EnumVerificationCodeType.OFFICIAL_WEBSITE);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.OFFICIAL_WEBSITE);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
-                    .mobile(join.getMobile())
+                    .mobile(mobile)
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
                     .noticeType(EnumNoticeType.OFFICIAL_WEBSITE)

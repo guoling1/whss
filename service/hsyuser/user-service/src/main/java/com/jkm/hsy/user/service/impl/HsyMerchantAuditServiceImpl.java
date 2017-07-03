@@ -582,6 +582,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return this.hsyMerchantAuditDao.getStatuts(id);
     }
 
+    @Override
+    public List<ShopInfoResponse> getShopInfo(Long id) {
+        List<ShopInfoResponse> list = this.hsyMerchantAuditDao.getShopInfo(id);
+        return list;
+    }
+
     /**
      * 获取临时路径
      *
