@@ -2,6 +2,7 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumAdminType;
@@ -13,6 +14,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -266,6 +268,7 @@ public class CodeController extends BaseController {
         } else {
             log.info("code[{}] is not active", code);
             if(agent.indexOf("micromessenger") > -1){
+                CookieUtil.deleteCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 model.addAttribute("code", code);
                 url =  "/sqb/reg";
             }else{

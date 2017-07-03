@@ -205,7 +205,7 @@ public class LoginController extends BaseController {
                             url = "/sqb/prompt";
                             isRedirect= true;
                         }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                            model.addAttribute("message","您的微信已经绑定了好收收账号\n" +
+                            model.addAttribute("message","您的微信已经绑定了账号\n" +
                                     "请使用其他微信账号扫码");
                             url = "/message";
                         }else{

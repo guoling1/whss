@@ -191,6 +191,9 @@ public class AccountController extends BaseController{
     public CommonResponse flowDetails(@RequestBody MerchantFlowRequest flowRequest, HttpServletRequest request){
 
         try{
+            if(!super.isLogin(request)){
+                return CommonResponse.simpleResponse(-2, "未登录");
+            }
             UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
             //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwcIteXav-vgB9l6p3d0B5VA").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
