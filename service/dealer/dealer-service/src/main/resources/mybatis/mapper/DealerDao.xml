@@ -1025,8 +1025,8 @@
         `create_time` DESC LIMIT #{offset},#{pageSize}
     </select>
     <!-- 查询分公司下的所有商户总数 -->
-    <select id="branchCompanyCount" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
-        SELECT COUNT (*) FROM tb_merchant_info WHERE oem_id=#{dealerId}
+    <select id="branchCompanyCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_merchant_info WHERE oem_id=#{dealerId}
         <if test="markCode!=null and markCode!=''">
             AND mark_code = #{markCode}
         </if>
