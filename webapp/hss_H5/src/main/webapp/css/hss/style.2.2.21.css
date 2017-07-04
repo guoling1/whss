@@ -3604,7 +3604,7 @@ input:focus {
 }
 #bankList .group .top .info {
   float: left;
-  width: calc(100% - 62px);
+  width: calc(38%);
 }
 #bankList .group .top .info .name {
   text-align: left;
@@ -3693,7 +3693,7 @@ input:focus {
   height: 49px;
   line-height: 49px;
   font-size: 15px;
-  width: calc(100% - 100px);
+  width: calc(0%);
 }
 #branchInfo .branch .list .layer {
   position: absolute;

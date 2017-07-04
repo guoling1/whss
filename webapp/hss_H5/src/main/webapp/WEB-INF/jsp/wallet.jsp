@@ -16,8 +16,57 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <link rel="stylesheet" href="">
+  <script>
+      function aysnLoadCss(url,cburl) {
+          var link = document.createElement('link');
+          link.href = url;
+          link.rel = "stylesheet";
+          document.head.appendChild(link);
+          link.onerror = function () {
+              var link = document.createElement('link');
+              link.href = cburl;
+              link.rel = "stylesheet";
+              document.head.appendChild(link);
+          }
+      }
+      function aysnLoadcb () {
+          var script = document.createElement('script');
+          script.src = "http://static.jinkaimen.cn/hss/2.2.30/wallet.min.js";
+          script.type = "text/javascript";
+          document.head.appendChild(script);
+          script.onerror = function () {
+              var script = document.createElement('script');
+              script.src = '/js/hss/2.2.30/wallet.min.js';
+              script.type = "text/javascript";
+              document.head.appendChild(script);
+          }
+      }
+      function aysnLoad(url,cburl) {
+          var script = document.createElement('script');
+          script.src = url;
+          script.type = "text/javascript";
+          document.head.appendChild(script);
+          script.onload = function () {
+              aysnLoadcb()
+          }
+          script.onerror = function () {
+              var script = document.createElement('script');
+              script.src = cburl;
+              script.type = "text/javascript";
+              document.head.appendChild(script);
+              script.onload = function () {
+                  aysnLoadcb()
+              }
+          }
+      }
+      window.onload = function () {
+        aysnLoad('http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js','/js/hss/vendor.1.0.9.7.min.js');
+        aysnLoadCss('http://static.jinkaimen.cn/hss/css/style.2.2.21.css','/css/hss/style.2.2.21.css');
+      };
+  </script>
 </head>
 <body>
 
@@ -115,6 +164,7 @@
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.30/wallet.min.js"></script>
+
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.30/wallet.min.js"></script>--%>
 </html>
