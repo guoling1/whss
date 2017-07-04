@@ -217,7 +217,7 @@ public class PushServiceImpl implements PushService {
         List<String>  clients= new ArrayList<>();
         for (int i=0;i<list.size();i++){
             final String isavoidingtone = list.get(i).get("ISAVOIDINGTONE").toString();
-            if (isavoidingtone.equals("1")){
+            if (isavoidingtone!=null&&isavoidingtone.equals("1")){
                 final String clientid = list.get(i).get("CLIENTID").toString();
                 if (!"".equals(clientid)&&clientid!=null){
                     clients.add(clientid);
