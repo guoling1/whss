@@ -1014,10 +1014,10 @@
     <!-- 查询分公司下的所有商户 -->
     <select id="branchCompany" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
         SELECT
-            *,
+            a.*,
             (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
-        FROM tb_merchant_info WHERE oem_id=#{dealerId}
+        FROM tb_merchant_info a WHERE a.oem_id=#{dealerId}
         <if test="markCode!=null and markCode!=''">
             AND mark_code = #{markCode}
         </if>
