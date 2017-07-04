@@ -75,33 +75,20 @@
 </div>
 
 </body>
+<!--<script src="../js/hss/vendor.1.0.9.7.min.js"></script>-->
 <script>
   window.onload = function () {
       var script = document.createElement('script');
-      script.src = "http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js";
+      script.src = "http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js";
       script.type = "text/javascript";
-      if(script.readyState){
-          script.onreadystatechange = function(){
-              console.log(1)
-              if(script.readyState=="loaded"||script.readyState=="complete"){
-                  console.log(2)
-//                  script.onreadystatechange=null;
-//                  callback();
-              }
-          }
-      }else{
-          console.log(3)
-          script.onload = function(){
-//              callback();
-          }
-          script.onerror = function(){
-//              callback();
-          }
-      }
       document.body.appendChild(script);
+      script.onerror = function(){
+          var script = document.createElement('script');
+          script.src = "../js/hss/vendor.1.0.9.7.min.js";
+          script.type = "text/javascript";
+          document.body.appendChild(script);
+      };
   }
-
-
 </script>
 
 <!--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>-->
