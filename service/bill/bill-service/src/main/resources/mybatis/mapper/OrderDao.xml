@@ -251,7 +251,7 @@
     </update>
 
     <update id="markOrder2SettlementSuccess">
-        UPDATE tb_order SET settle_status = #{settleStatus} WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
+        UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.Order">
