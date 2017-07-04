@@ -50,6 +50,15 @@ public interface HsyOrderDao {
     HsyOrder selectById(@Param("id") long id);
 
     /**
+     * 更新订单号
+     *
+     * @param id
+     * @param orderNumber
+     * @return
+     */
+    int updateOrderNumber(@Param("id") long id, @Param("orderNumber") String orderNumber);
+
+    /**
      * 加锁按id查询
      *
      * @param id

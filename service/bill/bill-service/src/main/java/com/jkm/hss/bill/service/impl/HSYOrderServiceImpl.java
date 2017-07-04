@@ -67,7 +67,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         }
         hsyOrder.setOrdernumber(DateFormatUtil.format(new Date(),"yyyyMMdd")+idStr);
 //        hsyOrder.setValidationcode(hsyOrder.getOrdernumber().substring(hsyOrder.getOrdernumber().length()-4));
-        hsyOrderDao.update(hsyOrder);
+        hsyOrderDao.updateOrderNumber(hsyOrder.getId(), hsyOrder.getOrdernumber());
     }
     private String getFixLenthString(int strLength) {
 

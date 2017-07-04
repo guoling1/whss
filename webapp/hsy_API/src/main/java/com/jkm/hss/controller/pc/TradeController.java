@@ -11,4 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/pc/trade")
 public class TradeController {
+
+
+
 }
