@@ -650,6 +650,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         Date date=new Date();
         appAuUser.setUpdateTime(date);
         hsyUserDao.update(appAuUser);
+        pushService.pushReferrals(appAuUser.getId(),appParam.getAccessToken());
         return "";
     }
 
