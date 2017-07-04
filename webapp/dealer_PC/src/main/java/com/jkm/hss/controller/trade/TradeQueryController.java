@@ -9,6 +9,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,15 @@ public class TradeQueryController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         req.setDealerId(dealerId);
+        if(super.getDealer().get().getOemType()== EnumOemType.OEM.getId()){
+            List<MerchantTradeResponse> list = orderService.getBranch(req);
+            int count = orderService.getBranchCount(req);
+            pageModel.setCount(count);
+            pageModel.setRecords(list);
+            String downLoadHsyMerchant = downLoadHsyMerchant(req);
+            pageModel.setExt(downLoadHsyMerchant);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+        }
         if (level==2){
             List<MerchantTradeResponse> list = orderService.getTrade(req);
             int count = orderService.listCount(req);

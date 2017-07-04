@@ -580,4 +580,20 @@ public interface OrderDao {
      * @return
      */
     MerchantTradeResponse selectOrderListHsy(String orderNo);
+
+    /**
+     * 分公司hss交易
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getBranch(OrderTradeRequest req);
+
+    /**
+     * 分公司hsy交易
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getBranchHsy(OrderTradeRequest req);
+
+    int getBranchCount(OrderTradeRequest req);
 }

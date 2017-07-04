@@ -1320,6 +1320,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public int getBranchCount(OrderTradeRequest req) {
+        if("hss".equals(req.getAppId())){
+            return this.orderDao.getBranchCount(req);
+        }
+//        if("hsy".equals(req.getAppId())){
+//            return this.orderDao.listHsyCount(req);
+//        }
+        return 0;
+    }
+
+    @Override
     public int listFirstCount(OrderTradeRequest req) {
         if("hss".equals(req.getAppId())){
             return this.orderDao.listFirstCount(req);
@@ -1697,6 +1708,56 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return "";
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getBranch(OrderTradeRequest req) {
+        List<MerchantTradeResponse> list = new ArrayList<MerchantTradeResponse>();
+        if("hss".equals(req.getAppId())){
+            list = this.orderDao.getBranch(req);
+        }
+        if("hsy".equals(req.getAppId())){
+            list = this.orderDao.getBranchHsy(req);
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+
+                list.get(i).setSettleStat(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
+
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
+                }
+                list.get(i).setStatusValue(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
+
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+//                if (list.get(i).getPayChannelSign()!=0) {
+//                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+//                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                    }
+
+                }
+            }
+        }
+        return list;
     }
 
     /**

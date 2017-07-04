@@ -578,6 +578,15 @@ public interface OrderService {
     String downloadDaiLiAchievement(QueryOrderRequest req, String baseUrl);
 
     /**
+     * 分公司交易
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getBranch(OrderTradeRequest req);
+
+    int getBranchCount(OrderTradeRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return
