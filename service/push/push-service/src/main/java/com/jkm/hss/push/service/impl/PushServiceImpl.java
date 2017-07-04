@@ -236,15 +236,6 @@ public class PushServiceImpl implements PushService {
                 }
             }
         }
-
-//        for (int i=0;i<list.size();i++) {
-//            if (list.get(i).get("ISAVOIDINGTONE") == null || list.get(i).get("ISAVOIDINGTONE").toString().equals("0")) {
-//                if(list.get(i).get("CLIENTID")!=null){
-//                    String clientid=list.get(i).get("CLIENTID").toString();
-//                    clients.add(clientid);
-//                }
-//            }
-//        }
         List<String>  clients1= new ArrayList<>();
         for(Map map: list){
             if (map.get("ISAVOIDINGTONE") == null || map.get("ISAVOIDINGTONE").toString().equals("0")) {
@@ -256,7 +247,6 @@ public class PushServiceImpl implements PushService {
 
         }
         SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
-
         Map  data= new HashMap();
         data.put("code", code);
         data.put("payChannel",payChannel );
