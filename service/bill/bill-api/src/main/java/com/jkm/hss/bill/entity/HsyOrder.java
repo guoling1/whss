@@ -62,7 +62,7 @@ public class HsyOrder{
      */
     private String paysn;
     private String paytype;
-    private Integer paychannelsign;
+    private int paychannelsign;
     private Date paysuccesstime;
     private BigDecimal refundamount;
     private Integer refundstatus;
@@ -87,11 +87,18 @@ public class HsyOrder{
     private BigDecimal realAmount;//实际交易金额
 
     /**
+     * 上游渠道方
+     *
+     * {@link com.jkm.hss.product.enums.EnumUpperChannel}
+     */
+    private int upperChannel;
+
+    /**
      * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      *
      * 支付渠道
      */
-    private Integer paymentChannel;
+    private int paymentChannel;
 
     /**
      * 结算类型

@@ -92,6 +92,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setPaytype(channelCode);
         hsyOrder.setMemberId(memberId);
         hsyOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+        hsyOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         hsyOrder.setGoodsname(shop.getShortName());
         hsyOrder.setGoodsdescribe(shop.getShortName());
         hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());

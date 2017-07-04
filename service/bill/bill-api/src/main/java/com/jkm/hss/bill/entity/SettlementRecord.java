@@ -51,6 +51,24 @@ public class SettlementRecord extends BaseEntity {
      */
     private String userName;
 
+
+    /**
+     * 结算开始的交易时间
+     */
+    private Date balanceStartTime;
+
+    /**
+     * 结算结束的交易时间
+     */
+    private Date balanceEndTime;
+
+    /**
+     * 渠道方
+     *
+     * {@link com.jkm.hss.product.enums.EnumUpperChannel}
+     */
+    private int upperChannel;
+
     /**
      * 业务线（hss,hsy）
      */
@@ -65,6 +83,11 @@ public class SettlementRecord extends BaseEntity {
      * 结算笔数
      */
     private int tradeNumber;
+
+    /**
+     * 交易总金额
+     */
+    private BigDecimal tradeAmount;
 
     /**
      * 结算金额

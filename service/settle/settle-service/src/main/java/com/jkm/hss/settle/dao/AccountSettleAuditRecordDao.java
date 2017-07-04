@@ -22,6 +22,14 @@ public interface AccountSettleAuditRecordDao {
     void insert(AccountSettleAuditRecord record);
 
     /**
+     * 更新
+     *
+     * @param record
+     * @return
+     */
+    int update(AccountSettleAuditRecord record);
+
+    /**
      * 更新对账状态
      *
      * @param id

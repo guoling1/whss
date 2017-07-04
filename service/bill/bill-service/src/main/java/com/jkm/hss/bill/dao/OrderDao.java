@@ -3,6 +3,7 @@ package com.jkm.hss.bill.dao;
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
+import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
@@ -88,6 +89,30 @@ public interface OrderDao {
      * @return
      */
     int updateRefundInfo(@Param("id") long id, @Param("refundAmount") String refundAmount, @Param("refundStatus") int refundStatus);
+
+
+    /**
+     * T1 生成商户结算单后，将结算单id标记到交易中，并将交易标记为结算中
+     *
+     * @param settleDate
+     * @param accountId
+     * @param settlementRecordId
+     * @param settleStatus
+     * @return
+     */
+    int markOrder2SettlementIng(@Param("settleDate") Date settleDate, @Param("accountId") long accountId,
+                                @Param("settlementRecordId") long settlementRecordId,
+                                @Param("settleStatus") int settleStatus,
+                                @Param("upperChannel") int upperChannel);
+
+    /**
+     * 按结算单批量更新结算状态
+     *
+     * @param settlementRecordId
+     * @param settleStatus
+     * @return
+     */
+    int markOrder2SettlementSuccess(@Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus, @Param("oriSettleStatus") int oriSettleStatus);
 
     /**
      * 按id查询
@@ -483,6 +508,14 @@ public interface OrderDao {
     int selectCountByBusinessOrder(@Param("businessOrderNo") String businessOrderNo);
 
     /**
+     * 统计指定结算日期的交易
+     *
+     * @param settleDate
+     * @return
+     */
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate);
+
+    /**
      * 统计订单金额
      * @param req
      * @return
@@ -580,4 +613,32 @@ public interface OrderDao {
      * @return
      */
     MerchantTradeResponse selectOrderListHsy(String orderNo);
+
+    /**
+     * 按结算单查询个数
+     *
+     * @param settlementRecordId
+     * @return
+     */
+    int selectCountBySettlementReocrdId(@Param("settlementRecordId") long settlementRecordId);
+
+    /**
+     * 按结算单查询列表
+     *
+     * @param settlementRecordId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> selectBySettlementReocrdId(@Param("settlementRecordId") long settlementRecordId, @Param("offset") int offset, @Param("count") int count);
+
+
+    /**
+     * Test
+     *
+     * @param orderNos
+     * @param id
+     * @return
+     */
+    int updateSettlementRecordIdByOrderNos(@Param("orderNos") List<String> orderNos, @Param("id") long id);
 }

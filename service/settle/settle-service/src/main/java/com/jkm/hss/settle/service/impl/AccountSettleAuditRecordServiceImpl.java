@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
@@ -25,6 +24,7 @@ import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.enums.EnumSettleDestinationType;
 import com.jkm.hss.bill.enums.EnumSettleModeType;
 import com.jkm.hss.bill.enums.EnumSettlementRecordStatus;
+import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -36,6 +36,7 @@ import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
@@ -44,6 +45,7 @@ import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hss.settle.helper.responseparam.AppSettleRecordDetailResponse;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -170,22 +172,23 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final int pageSize = paramJo.getIntValue("pageSize");
         final long accountId = paramJo.getLongValue("accountId");
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
-        final long count = this.accountSettleAuditRecordDao.selectCountByAccountId(accountId);
-        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId, pageModel.getFirstIndex(), pageSize);
-        pageModel.setCount(count);
-        if (!CollectionUtils.isEmpty(records)) {
-            final List<JSONObject> recordList = new ArrayList<>();
-            pageModel.setRecords(recordList);
-            for (AccountSettleAuditRecord record : records) {
-                final JSONObject jo = new JSONObject();
-                recordList.add(jo);
-                jo.put("recordId", record.getId());
-                jo.put("settleDate", record.getSettleDate());
-                jo.put("number", record.getTradeNumber());
-                jo.put("settleAmount", record.getSettleAmount().toPlainString());
-            }
-        } else {
+        final PageModel<SettlementRecord> settlementRecordPageModel = this.settlementRecordService.listSettlementRecordByAccountId(accountId, pageNo, pageSize);
+        if (CollectionUtils.isEmpty(settlementRecordPageModel.getRecords())) {
+            pageModel.setCount(0);
             pageModel.setRecords(Collections.<JSONObject>emptyList());
+            return JSON.toJSONString(pageModel);
+        }
+        final List<JSONObject> recordList = new ArrayList<>();
+        pageModel.setRecords(recordList);
+        for (SettlementRecord record : settlementRecordPageModel.getRecords()) {
+            final JSONObject jo = new JSONObject();
+            recordList.add(jo);
+            jo.put("recordId", record.getId());
+            jo.put("settleDate", record.getSettleDate());
+            jo.put("number", record.getTradeNumber());
+            jo.put("settleAmount", record.getSettleAmount().toPlainString());
+            jo.put("settleStatus", record.getSettleStatus());
+            jo.put("settleStatusValue", EnumSettleStatus.of(record.getSettleStatus()));
         }
         return JSON.toJSONString(pageModel);
     }
@@ -201,16 +204,17 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     public String appSettleRecordDetail(final String dataParam, final AppParam appParam) {
         final JSONObject paramJo = JSONObject.parseObject(dataParam);
         final long recordId = paramJo.getLongValue("recordId");
-        final AccountSettleAuditRecord accountSettleAuditRecord = this.getById(recordId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getById(recordId).get();
         final AppSettleRecordDetailResponse appSettleRecordDetailResponse = new AppSettleRecordDetailResponse();
-        appSettleRecordDetailResponse.setSettleAmount(accountSettleAuditRecord.getSettleAmount().toPlainString());
-        appSettleRecordDetailResponse.setNumber(accountSettleAuditRecord.getTradeNumber());
         appSettleRecordDetailResponse.setRecordId(recordId);
-        appSettleRecordDetailResponse.setSettleDate(accountSettleAuditRecord.getSettleDate());
-        final List<String> orderNos = this.settleAccountFlowService.getOrderNoByAuditRecordId(recordId);
-        final Map<String, BigDecimal> tradeAmountMap = this.orderService.getTradeAmountAndFeeByOrderNoList(orderNos);
-        appSettleRecordDetailResponse.setTradeAmount(tradeAmountMap.get("tradeAmount").toPlainString());
-        appSettleRecordDetailResponse.setFeeAmount(tradeAmountMap.get("poundage").toPlainString());
+        appSettleRecordDetailResponse.setSettleAmount(settlementRecord.getSettleAmount().toPlainString());
+        appSettleRecordDetailResponse.setNumber(settlementRecord.getTradeNumber());
+        appSettleRecordDetailResponse.setTradeAmount(settlementRecord.getTradeAmount().toPlainString());
+        appSettleRecordDetailResponse.setFeeAmount(settlementRecord.getSettlePoundage().toPlainString());
+        appSettleRecordDetailResponse.setTradeDate(settlementRecord.getBalanceEndTime());
+        appSettleRecordDetailResponse.setTradeStartDate(settlementRecord.getBalanceStartTime());
+        appSettleRecordDetailResponse.setTradeEndDate(settlementRecord.getBalanceEndTime());
+        appSettleRecordDetailResponse.setSettleDate(settlementRecord.getSettleDate());
         return JSON.toJSONString(appSettleRecordDetailResponse);
     }
 
@@ -227,16 +231,21 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final int pageNo = paramJo.getIntValue("pageNo");
         final int pageSize = paramJo.getIntValue("pageSize");
         final long recordId = paramJo.getLongValue("recordId");
-        final List<String> orderNos = this.settleAccountFlowService.getOrderNoByAuditRecordId(recordId);
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
-        final List<Order> orders = this.orderService.getOrderByOrderNos(orderNos, pageModel.getFirstIndex(), pageSize);
-        pageModel.setCount(orderNos.size());
-        final List<JSONObject> jsonObjects = Lists.transform(orders, new Function<Order, JSONObject>() {
+        final int count = this.orderService.getOrderCountBySettlementRecordId(recordId);
+        final List<Order> records = this.orderService.getOrderBySettlementRecordId(recordId, pageModel.getFirstIndex(), pageSize);
+        if (CollectionUtils.isEmpty(records)) {
+            pageModel.setCount(0);
+            pageModel.setRecords(Collections.<JSONObject>emptyList());
+            return JSON.toJSONString(pageModel);
+        }
+        pageModel.setCount(count);
+        final List<JSONObject> jsonObjects = Lists.transform(records, new Function<Order, JSONObject>() {
             @Override
             public JSONObject apply(Order order) {
                 final JSONObject jo = new JSONObject();
                 jo.put("tradeAmount", order.getTradeAmount().toPlainString());
-                jo.put("tradeDate", order.getCreateTime());
+                jo.put("tradeDate", order.getPaySuccessTime());
                 jo.put("feeAmount", order.getPoundage());
                 final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
                 jo.put("type", payChannelSign.getPaymentChannel().getId());
@@ -259,34 +268,68 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         if (null == settleDate) {
             settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         }
-        final int count = this.accountSettleAuditRecordDao.selectCountBySettleDate(settleDate);
-        if (count > 0) {
-            log.error("###############今日记录已经生成，不可以重复生成#################");
-            return Pair.of(-1, "今日记录已经生成，不可以重复生成");
+
+        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate);
+        log.info("今日[{}]商户生成结算审核记录,个数[{}]", settleDate, merchantOrderBalanceStatistics.size());
+        final ArrayList<SettlementRecord> merchantSettlementRecords = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(merchantOrderBalanceStatistics)) {
+            for (OrderBalanceStatistics merchantStatistics : merchantOrderBalanceStatistics) {
+                final AccountSettleAuditRecord accountSettleAuditRecord = new AccountSettleAuditRecord();
+                final SettlementRecord settlementRecord = new SettlementRecord();
+                final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(merchantStatistics.getAccountId()).get(0);
+                accountSettleAuditRecord.setUserNo(shop.getGlobalID());
+                accountSettleAuditRecord.setUserName(shop.getShortName());
+                accountSettleAuditRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
+                accountSettleAuditRecord.setAccountId(merchantStatistics.getAccountId());
+                accountSettleAuditRecord.setTradeDate(merchantStatistics.getTradeEndTime());
+                accountSettleAuditRecord.setBalanceStartTime(merchantStatistics.getTradeStartTime());
+                accountSettleAuditRecord.setBalanceEndTime(merchantStatistics.getTradeEndTime());
+                accountSettleAuditRecord.setUpperChannel(merchantStatistics.getUpperChannel());
+                accountSettleAuditRecord.setTradeNumber(merchantStatistics.getCount());
+                accountSettleAuditRecord.setSettleAmount(merchantStatistics.getAmount().subtract(merchantStatistics.getPoundage()));
+                accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
+                accountSettleAuditRecord.setSettleDate(settleDate);
+                accountSettleAuditRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+                this.add(accountSettleAuditRecord);
+
+                //生成结算单
+                settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
+                settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
+                settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(settlementRecord.getAccountUserType(), settlementRecord.getSettleDestination()));
+                settlementRecord.setSettleAuditRecordId(accountSettleAuditRecord.getId());
+                settlementRecord.setAccountId(merchantStatistics.getAccountId());
+                settlementRecord.setUserNo(accountSettleAuditRecord.getUserNo());
+                settlementRecord.setUserName(accountSettleAuditRecord.getUserName());
+                settlementRecord.setAppId(EnumAppType.HSY.getId());
+                settlementRecord.setSettleDate(accountSettleAuditRecord.getSettleDate());
+                settlementRecord.setTradeNumber(accountSettleAuditRecord.getTradeNumber());
+                settlementRecord.setTradeAmount(merchantStatistics.getAmount());
+                settlementRecord.setSettleAmount(merchantStatistics.getAmount().subtract(merchantStatistics.getPoundage()));
+                settlementRecord.setSettlePoundage(merchantStatistics.getPoundage());
+                settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+                settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
+                settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+                settlementRecord.setUpperChannel(accountSettleAuditRecord.getUpperChannel());
+                settlementRecord.setBalanceStartTime(accountSettleAuditRecord.getBalanceStartTime());
+                settlementRecord.setBalanceEndTime(accountSettleAuditRecord.getBalanceEndTime());
+                final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
+                merchantSettlementRecords.add(settlementRecord);
+                final int updateCount = this.orderService.markOrder2SettlementIng(settleDate, merchantStatistics.getAccountId(),
+                        settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), merchantStatistics.getUpperChannel());
+                Preconditions.checkState(updateCount == merchantStatistics.getCount(), "将结算单id更新到交易中，个数不一致");
+                log.info("账户[{}], 生成结算单后，将其id[{}]保存到交易中,更新记录数[{}]", merchantStatistics.getAccountId(), settlementRecordId, updateCount);
+            }
         }
-        final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
-        log.info("今日[{}]的待结算流水-生成结算审核记录,个数[{}]", settleDate, settleAccountFlowStatisticses.size());
+        //代理商，公司账户生成结算审核记录
+        final List<SettleAccountFlowStatistics> settleAccountFlowStatistics = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
+        log.info("今日[{}]的待结算流水-生成（代理商/公司）结算审核记录,个数[{}]", settleDate, settleAccountFlowStatistics.size());
         final ArrayList<Long> dealerAccountIds = new ArrayList<>();
-        final ArrayList<Long> shopAccountIds = new ArrayList<>();
-        final ArrayList<SettlementRecord> settlementRecords = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(settleAccountFlowStatisticses)) {
-            for (SettleAccountFlowStatistics statistics : settleAccountFlowStatisticses) {
+        if (!CollectionUtils.isEmpty(settleAccountFlowStatistics)) {
+            for (SettleAccountFlowStatistics statistics : settleAccountFlowStatistics) {
                 if (EnumAccountUserType.DEALER.getId() == statistics.getAccountUserType()) {
                     dealerAccountIds.add(statistics.getAccountId());
                 }
-                if (EnumAccountUserType.MERCHANT.getId() == statistics.getAccountUserType()) {
-                    shopAccountIds.add(statistics.getAccountId());
-                }
             }
-            final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(shopAccountIds);
-            Preconditions.checkState(shopAccountIds.size() == shopList.size(), "通过账户查询店铺出现异常，数量不一致");
-            //accountId--shop(主)
-            final Map<Long, AppBizShop> shopMap = Maps.uniqueIndex(shopList, new Function<AppBizShop, Long>() {
-                @Override
-                public Long apply(AppBizShop input) {
-                    return input.getAccountID();
-                }
-            });
             final List<Dealer> dealers = this.dealerService.getByAccountIds(dealerAccountIds);
             final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
                 @Override
@@ -294,7 +337,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                     return input.getAccountId();
                 }
             });
-            for (SettleAccountFlowStatistics statistics : settleAccountFlowStatisticses) {
+            for (SettleAccountFlowStatistics statistics : settleAccountFlowStatistics) {
                 final EnumAccountUserType accountUserType = EnumAccountUserType.of(statistics.getAccountUserType());
                 final AccountSettleAuditRecord accountSettleAuditRecord = new AccountSettleAuditRecord();
                 final SettlementRecord settlementRecord = new SettlementRecord();
@@ -303,19 +346,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                         final Account account = this.accountService.getById(statistics.getAccountId()).get();
                         accountSettleAuditRecord.setUserNo("");
                         accountSettleAuditRecord.setUserName(account.getUserName());
-                        settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_ACCOUNT.getId());
                         break;
                     case DEALER:
                         final Dealer dealer = dealerMap.get(statistics.getAccountId());
                         accountSettleAuditRecord.setUserNo(dealer.getMarkCode());
                         accountSettleAuditRecord.setUserName(dealer.getProxyName());
-                        settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_ACCOUNT.getId());
-                        break;
-                    case MERCHANT:
-                        final AppBizShop shop = shopMap.get(statistics.getAccountId());
-                        accountSettleAuditRecord.setUserNo(shop.getGlobalID());
-                        accountSettleAuditRecord.setUserName(shop.getShortName());
-                        settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
                         break;
                     default:
                         log.error("账户[{}]，生成结算审核记录时，出现未知流水", statistics.getAccountId());
@@ -323,7 +358,9 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 }
                 accountSettleAuditRecord.setAccountUserType(accountUserType.getId());
                 accountSettleAuditRecord.setAccountId(statistics.getAccountId());
-                accountSettleAuditRecord.setTradeDate(statistics.getTradeDate());
+                accountSettleAuditRecord.setTradeDate(statistics.getTradeEndDate());
+                accountSettleAuditRecord.setBalanceStartTime(statistics.getTradeStartDate());
+                accountSettleAuditRecord.setBalanceEndTime(statistics.getTradeEndDate());
                 accountSettleAuditRecord.setTradeNumber(statistics.getCount());
                 accountSettleAuditRecord.setSettleAmount(statistics.getAmount());
                 accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
@@ -337,35 +374,37 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                         accountSettleAuditRecord.getId(), updateCount);
 
                 //生成结算单
-                settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(accountUserType.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
+                settlementRecord.setAccountUserType(accountUserType.getId());
+                settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_ACCOUNT.getId());
+                settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(settlementRecord.getAccountUserType(), settlementRecord.getSettleDestination()));
                 settlementRecord.setSettleAuditRecordId(accountSettleAuditRecord.getId());
                 settlementRecord.setAccountId(statistics.getAccountId());
                 settlementRecord.setUserNo(accountSettleAuditRecord.getUserNo());
                 settlementRecord.setUserName(accountSettleAuditRecord.getUserName());
-                settlementRecord.setAccountUserType(accountUserType.getId());
                 settlementRecord.setAppId(EnumAppType.HSY.getId());
                 settlementRecord.setSettleDate(accountSettleAuditRecord.getSettleDate());
                 settlementRecord.setTradeNumber(accountSettleAuditRecord.getTradeNumber());
+                settlementRecord.setTradeAmount(new BigDecimal("0.00"));
                 settlementRecord.setSettleAmount(accountSettleAuditRecord.getSettleAmount());
+                settlementRecord.setSettlePoundage(new BigDecimal("0.00"));
                 settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
                 settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+                settlementRecord.setBalanceStartTime(accountSettleAuditRecord.getBalanceStartTime());
+                settlementRecord.setBalanceEndTime(accountSettleAuditRecord.getBalanceEndTime());
                 final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
-                settlementRecords.add(settlementRecord);
                 final int updateCount2 = this.settleAccountFlowService.updateSettlementRecordIdBySettleAuditRecordId(accountSettleAuditRecord.getId(), settlementRecordId);
                 Preconditions.checkState(updateCount == updateCount2, "将结算单id更新到结算流水，个数异常");
             }
-            this.generateSettlementAuditRecordSendMsg(settlementRecords);
         }
+        this.generateSettlementAuditRecordSendMsg(merchantSettlementRecords);
+
         return Pair.of(0, "success");
     }
 
     private void generateSettlementAuditRecordSendMsg(final ArrayList<SettlementRecord> settlementRecords) {
         for (SettlementRecord settlementRecord : settlementRecords) {
             try {
-                if (EnumAccountUserType.COMPANY.getId() == settlementRecord.getAccountUserType()) {
-                    continue;
-                }
                 final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(settlementRecord.getAccountId()).get(0);
                 final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByAccountID(settlementRecord.getAccountId()).get(0);
                 final AppBizCard appBizCard = new AppBizCard();
@@ -555,49 +594,31 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         final AccountSettleAuditRecord accountSettleAuditRecord = this.accountSettleAuditRecordDao.selectByIdWithLock(recordId);
+        final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(accountSettleAuditRecord.getId()).get();
         if (!accountSettleAuditRecord.isDueSettle()) {
             log.info("结算审核记录[{}],状态不是待结算，不可以进行结算", recordId);
             return;
         }
-        final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
-        if (!CollectionUtils.isEmpty(flows)) {
-            final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(flows);
-            Preconditions.checkState(0 == checkResult.getLeft(), checkResult.getRight());
-            for (SettleAccountFlow settleAccountFlow : flows) {
-                final Optional<SettleAccountFlow> optional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(settleAccountFlow.getOrderNo(),
-                        settleAccountFlow.getAccountId(), EnumAccountFlowType.DECREASE.getId());
-                Preconditions.checkState(!optional.isPresent(), "账户[{}],结算流水[{}],已结算,结算异常", settleAccountFlow.getAccountId(), settleAccountFlow.getFlowNo());
-                final Account account = this.accountService.getByIdWithLock(settleAccountFlow.getAccountId()).get();
-                final SettleAccountFlow increaseSettleAccountFlow =
-                        this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(settleAccountFlow.getOrderNo(), settleAccountFlow.getAccountId(),
-                                EnumAccountFlowType.INCREASE.getId()).get();
-                //待结算金额减少
-                Preconditions.checkState(account.getDueSettleAmount().compareTo(increaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
-                this.accountService.decreaseSettleAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
-                final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), increaseSettleAccountFlow.getIncomeAmount(),
-                        increaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, increaseSettleAccountFlow.getAppId(), increaseSettleAccountFlow.getTradeDate(),
-                        increaseSettleAccountFlow.getSettleDate(), increaseSettleAccountFlow.getAccountUserType());
-                this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, increaseSettleAccountFlow.getSettlementRecordId());
-                this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, increaseSettleAccountFlow.getSettleAuditRecordId());
-                this.settleAccountFlowService.updateStatus(increaseSettleAccountFlow.getId(), EnumBoolean.TRUE.getCode());
-                //可用余额流水增加
-                if (EnumAccountUserType.MERCHANT.getId() != settleAccountFlow.getAccountUserType()) {
-                    this.accountService.increaseAvailableAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
-                    this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), increaseSettleAccountFlow.getIncomeAmount(),
-                            "支付结算", EnumAccountFlowType.INCREASE);
-                } else {
-                    this.accountService.decreaseTotalAmount(account.getId(), increaseSettleAccountFlow.getIncomeAmount());
-                    final Optional<Order> orderOptional = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo());
-                    Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", settleAccountFlow.getOrderNo());
-                    if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
-                        this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED_ALL.getId());
-                    }
-                }
-            }
-            this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
-            final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleAuditRecordId(recordId).get();
-            this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
+        final Account account = this.accountService.getByIdWithLock(accountSettleAuditRecord.getAccountId()).get();
+        //待结算金额减少
+        Preconditions.checkState(account.getDueSettleAmount().compareTo(accountSettleAuditRecord.getSettleAmount()) >= 0,
+                "账户的待结算总金额不可以小于单笔结算审核记录[{}]的结算金额", recordId);
+        this.accountService.decreaseSettleAmount(account.getId(), accountSettleAuditRecord.getSettleAmount());
+        this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settlementRecord.getSettleNo(), accountSettleAuditRecord.getSettleAmount(),
+                "T1结算出款", EnumAccountFlowType.DECREASE, settlementRecord.getAppId(), settlementRecord.getBalanceEndTime(),
+                settlementRecord.getSettleDate(), settlementRecord.getAccountUserType());
+        if (EnumAccountUserType.MERCHANT.getId() != settlementRecord.getAccountUserType()) {
+            this.accountService.increaseAvailableAmount(account.getId(), accountSettleAuditRecord.getSettleAmount());
+            this.accountFlowService.addAccountFlow(account.getId(), settlementRecord.getSettleNo(), accountSettleAuditRecord.getSettleAmount(),
+                    "T1结算入款", EnumAccountFlowType.INCREASE);
+        } else {
+            this.accountService.decreaseTotalAmount(account.getId(), accountSettleAuditRecord.getSettleAmount());
+            final int updateCount = this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId(), EnumSettleStatus.SETTLE_ING.getId());
+            Preconditions.checkState(updateCount == settlementRecord.getTradeNumber(),
+                    "对结算审核记录[{}]-更新交易结算状态，数目不一致[{}]--[{}]", recordId, settlementRecord.getTradeNumber(), updateCount);
         }
+        this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
+        this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED_ALL.getId());
         stopWatch.stop();
         log.info("结算审核记录[{}],结算结束，用时[{}]", recordId, stopWatch.getTime());
     }
@@ -619,4 +640,68 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         result.setRecords(records);
         return result;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void synchronousDataTest() {
+        final List<SettlementRecord> settlementRecords = this.settlementRecordService.getAll();
+        log.info("同步数据个数[{}]", settlementRecords.size());
+        for (SettlementRecord settlementRecord : settlementRecords) {
+            log.info("同步结算单[{}]-开始", settlementRecord.getId());
+            final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getBySettlementRecordId(settlementRecord.getId());
+            final Set<String> orderNos = new HashSet<>();
+            for (SettleAccountFlow settleAccountFlow : settleAccountFlows) {
+                orderNos.add(settleAccountFlow.getOrderNo());
+            }
+            if (CollectionUtils.isEmpty(orderNos)) {
+                log.error("!!!结算单[{}],对应的交易不存在", settlementRecord.getId());
+                continue;
+            }
+            final List<Order> orders = this.orderService.getByOrderNos(new ArrayList<>(orderNos));
+            if (orders.size() != orderNos.size()) {
+                log.error("!!!结算单[{}],查询交易数量不一致[{}]--[{}]", settlementRecord.getId(), orderNos.size(), orders.size());
+                continue;
+            }
+            BigDecimal tradeAmount = new BigDecimal("0.00");
+            BigDecimal poundage = new BigDecimal("0.00");
+            Date startDate = orders.get(0).getPaySuccessTime();
+            Date endDate = orders.get(0).getPaySuccessTime();;
+            for (Order order : orders) {
+                if (startDate.after(order.getPaySuccessTime())) {
+                    startDate = order.getPaySuccessTime();
+                }
+                if (endDate.before(order.getPaySuccessTime())) {
+                    endDate = order.getPaySuccessTime();
+                }
+                tradeAmount = tradeAmount.add(order.getTradeAmount());
+                poundage = poundage.add(order.getPoundage());
+            }
+            if (tradeAmount.compareTo(settlementRecord.getSettleAmount().add(poundage)) != 0) {
+                log.error("!!!结算单[{}], 交易总额 ！= 结算总额 + 手续费", settlementRecord.getId());
+            }
+            settlementRecord.setBalanceStartTime(startDate);
+            settlementRecord.setBalanceEndTime(endDate);
+            settlementRecord.setTradeAmount(tradeAmount);
+            settlementRecord.setSettlePoundage(poundage);
+            settlementRecord.setUpperChannel(8);
+            this.settlementRecordService.update(settlementRecord);
+
+            final AccountSettleAuditRecord accountSettleAuditRecord = this.accountSettleAuditRecordDao.selectById(settlementRecord.getSettleAuditRecordId());
+            accountSettleAuditRecord.setBalanceStartTime(startDate);
+            accountSettleAuditRecord.setBalanceEndTime(endDate);
+            accountSettleAuditRecord.setUpperChannel(8);
+            this.accountSettleAuditRecordDao.update(accountSettleAuditRecord);
+
+            final int count = this.orderService.updateSettlementRecordIdByOrderNos(new ArrayList<>(orderNos), settlementRecord.getId());
+            if (count != settlementRecord.getTradeNumber()) {
+                log.error("!!!结算单[{}],同步交易数量不一致[{}]--[{}]", settlementRecord.getId(), settlementRecord.getTradeNumber(), count);
+            }
+            log.info("同步结算单[{}]-结束", settlementRecord.getId());
+        }
+    }
+
+
 }

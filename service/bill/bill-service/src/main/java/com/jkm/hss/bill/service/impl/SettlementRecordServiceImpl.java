@@ -8,11 +8,12 @@ import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.helper.requestparam.QuerySettlementRecordParams;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -162,5 +163,34 @@ public class SettlementRecordServiceImpl implements SettlementRecordService {
         result.setCount(count);
         result.setRecords(records);
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageModel<SettlementRecord> listSettlementRecordByAccountId(final long accountId, final int pageNo, final int pageSize) {
+        final PageModel<SettlementRecord> result = new PageModel<>(pageNo, pageSize);
+        final long recordCount = this.settlementRecordDao.selectSettlementRecordCountByAccountId(accountId);
+        final List<SettlementRecord> settlementRecords = this.settlementRecordDao.selectSettlementRecordsByAccountId(accountId, result.getFirstIndex(), pageSize);
+        if (CollectionUtils.isEmpty(settlementRecords)) {
+            result.setCount(0);
+            result.setRecords(Collections.<SettlementRecord>emptyList());
+            return result;
+        }
+        result.setCount(recordCount);
+        result.setRecords(settlementRecords);
+        return result;
+    }
+
+
+    @Override
+    public List<SettlementRecord> getAll() {
+        return this.settlementRecordDao.selectAll();
     }
 }

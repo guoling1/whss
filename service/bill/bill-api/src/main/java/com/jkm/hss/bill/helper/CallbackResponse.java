@@ -13,6 +13,7 @@ import java.util.Date;
 @Data
 public class CallbackResponse {
 
+    private int channel;
     /**
      * 业务订单号
      */

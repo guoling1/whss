@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
-import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
@@ -23,7 +22,6 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.service.AccountBankService;
-import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.*;
@@ -47,9 +45,6 @@ import java.util.Date;
 @Slf4j
 @Service
 public class BaseTradeServiceImpl implements BaseTradeService {
-
-    @Autowired
-    private MerchantInfoService merchantInfoService;
 
     @Autowired
     private OrderService orderService;
@@ -349,6 +344,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         updateOrder.setPayChannelSign(enumPayChannelSign.getId());
+        updateOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+        updateOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order.getAppId(), updateOrder.getPaySuccessTime(), order.getSettleType(), enumPayChannelSign.getUpperChannel()));
         //TODO  hss-hsy
         if (EnumServiceType.APPRECIATION_PAY.getId() != order.getServiceType()) {
@@ -437,6 +434,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setStatus(EnumOrderStatus.RECHARGE_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         updateOrder.setPayChannelSign(enumPayChannelSign.getId());
+        updateOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+        updateOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         //TODO  hss-hsy
         final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());

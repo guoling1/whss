@@ -102,4 +102,30 @@ public interface SettlementRecordDao {
      * @return
      */
     List<SettlementRecord> selectByParam(QuerySettlementRecordParams querySettlementRecordParams);
+
+    /**
+     * 按账户查询列表-个数
+     *
+     * @param accountId
+     * @return
+     */
+    long selectSettlementRecordCountByAccountId(@Param("accountId") long accountId);
+
+    /**
+     * 按账户查询列表-记录
+     *
+     * @param accountId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<SettlementRecord> selectSettlementRecordsByAccountId(@Param("accountId") long accountId, @Param("offset") int offset, @Param("count") int count);
+
+
+    /**
+     * Test
+     *
+     * @return
+     */
+    List<SettlementRecord> selectAll();
 }

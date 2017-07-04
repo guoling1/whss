@@ -26,10 +26,23 @@ public class AppSettleRecordDetailResponse {
      * 手续费金额
      */
     private String feeAmount;
+
     /**
      * 结算日期
      */
     private Date settleDate;
+    /**
+     * 交易日期
+     */
+    private Date tradeDate;
+    /**
+     * 结算范围-交易开始日期
+     */
+    private Date tradeStartDate;
+    /**
+     * 结算范围-交易开始日期
+     */
+    private Date tradeEndDate;
     /**
      * 交易笔数
      */
