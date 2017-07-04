@@ -216,21 +216,23 @@ public class PushServiceImpl implements PushService {
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
         for (int i=0;i<list.size();i++){
-            final String isavoidingtone = list.get(i).get("ISAVOIDINGTONE").toString();
-            if (isavoidingtone!=null&&isavoidingtone.equals("1")){
-                final String clientid = list.get(i).get("CLIENTID").toString();
-                if (!"".equals(clientid)&&clientid!=null){
-                    clients.add(clientid);
-                    SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
-                    Map  data= new HashMap();
-                    data.put("code", code);
-                    data.put("payChannel",payChannel );
-                    data.put("amount", amount);
-                    String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
-                    AppResult   appResult=new AppResult() ;
-                    appResult.setResultCode(200);
-                    appResult.setResultMessage(content);
-                    Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
+            if (list.get(i).get("ISAVOIDINGTONE")!=null) {
+                final String isavoidingtone = list.get(i).get("ISAVOIDINGTONE").toString();
+                if (isavoidingtone != null && isavoidingtone.equals("1")) {
+                    final String clientid = list.get(i).get("CLIENTID").toString();
+                    if (!"".equals(clientid) && clientid != null) {
+                        clients.add(clientid);
+                        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+                        Map data = new HashMap();
+                        data.put("code", code);
+                        data.put("payChannel", payChannel);
+                        data.put("amount", amount);
+                        String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+                        AppResult appResult = new AppResult();
+                        appResult.setResultCode(200);
+                        appResult.setResultMessage(content);
+                        Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
+                    }
                 }
             }
         }
