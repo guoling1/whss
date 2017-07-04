@@ -371,6 +371,26 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return gson.toJson(pageAll);
     }
 
+    /**HSY001067 查找会员详情*/
+    public String findMemberInfo(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMember appPolicyMember=null;
+        try{
+            appPolicyMember=gson.fromJson(dataParam, AppPolicyMember.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMember.getId()!=null&&!appPolicyMember.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"会员ID");
+        hsyMembershipDao.findMemberInfoByID(appPolicyMember.getId());
+
+
+        return "";
+    }
+
     public AppPolicyConsumer findConsumerByOpenID(String openID){
         AppPolicyConsumer appPolicyConsumer=new AppPolicyConsumer();
         appPolicyConsumer.setOpenID(openID);
