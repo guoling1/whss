@@ -13,8 +13,26 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
+  <script>
+      function aysnLoadCss(url,cburl) {
+          var link = document.createElement('link');
+          link.href = url;
+          link.rel = "stylesheet";
+          document.head.appendChild(link);
+          link.onerror = function () {
+              var link = document.createElement('link');
+              link.href = cburl;
+              link.rel = "stylesheet";
+              document.head.appendChild(link);
+          }
+      }
+      window.onload = function () {
+          aysnLoadCss('http://static.jinkaimen.cn/hss/css/style.2.2.21.css','/css/hss/style.2.2.21.css');
+          aysnLoadCss('http://static.jinkaimen.cn/weui/weui.css','/css/hss/weui.css');
+      };
+  </script>
 </head>
 <body>
 

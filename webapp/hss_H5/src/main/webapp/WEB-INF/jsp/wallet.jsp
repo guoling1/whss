@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <link rel="stylesheet" href="">
   <script>
       function aysnLoadCss(url,cburl) {
@@ -65,6 +65,7 @@
       window.onload = function () {
         aysnLoad('http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js','/js/hss/vendor.1.0.9.7.min.js');
         aysnLoadCss('http://static.jinkaimen.cn/hss/css/style.2.2.21.css','/css/hss/style.2.2.21.css');
+        aysnLoadCss('http://static.jinkaimen.cn/weui/weui.css','/css/hss/weui.css');
       };
   </script>
 </head>

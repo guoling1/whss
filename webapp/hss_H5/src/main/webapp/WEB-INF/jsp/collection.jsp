@@ -14,7 +14,7 @@
   <meta name="format-detection" content="telephone=no"/>
   <title>收款</title>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <script>
       function aysnLoadCss(url,cburl) {
           var link = document.createElement('link');
@@ -61,6 +61,7 @@
       window.onload = function () {
           aysnLoad('http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js','/js/hss/vendor.1.0.9.7.min.js');
           aysnLoadCss('http://static.jinkaimen.cn/hss/css/style.2.2.21.css','/css/hss/style.2.2.21.css');
+          aysnLoadCss('http://static.jinkaimen.cn/weui/weui.css','/css/hss/weui.css');
       };
   </script>
 </head>
