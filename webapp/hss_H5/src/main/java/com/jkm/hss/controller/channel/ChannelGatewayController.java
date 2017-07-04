@@ -110,16 +110,19 @@ public class ChannelGatewayController extends BaseController {
         for (ProductChannelGateway productChannelGateway : productChannelGatewayList){
 
             final int channelSign = productChannelGateway.getChannelSign();
+            final MerchantChannelRate merchantChannelRate = merchantChannelRateMap.get(channelSign);
+            if (merchantChannelRate == null){
+                continue;
+            }
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getValue());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
-            log.info( channelSign + ">>>>>>>>>>>>>>>>>>>>>>" + merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
-            merchantChannelResponse.setChannelRate(merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
-            merchantChannelResponse.setFee(merchantChannelRateMap.get(channelSign).getMerchantWithdrawFee().toString());
+            merchantChannelResponse.setChannelRate(merchantChannelRate.getMerchantPayRate().toString());
+            merchantChannelResponse.setFee(merchantChannelRate.getMerchantWithdrawFee().toString());
             merchantChannelResponse.setChannelSign(channelSign);
             merchantChannelResponse.setLimitAmount(basicChannel.getLimitAmount().toString());
-            merchantChannelResponse.setSettleType(merchantChannelRateMap.get(channelSign).getMerchantBalanceType());
+            merchantChannelResponse.setSettleType(merchantChannelRate.getMerchantBalanceType());
             merchantChannelResponse.setRecommend(productChannelGateway.getRecommend());
             merchantChannelResponseList.add(merchantChannelResponse);
         }
