@@ -616,6 +616,16 @@
 
     <!-- 店铺详情 -->
     <select id="getShopInfo" resultType="com.jkm.hsy.user.entity.ShopInfoResponse">
-
+        SELECT
+            a.SHORTNAME,
+            a.CONTACTCELLPHONE,
+            a.ADDRESS,
+            a.DISTRICTCODE,
+            b.TYPE
+        FROM
+            app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON b.SID = a.ID
+        WHERE
+            a.ID = #{id}
     </select>
 </mapper>
