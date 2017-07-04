@@ -245,11 +245,12 @@ public class PushServiceImpl implements PushService {
 //                }
 //            }
 //        }
+        List<String>  clients1= new ArrayList<>();
         for(Map map: list){
             if (map.get("ISAVOIDINGTONE") == null || map.get("ISAVOIDINGTONE").toString().equals("0")) {
                 if(map.get("CLIENTID")!=null){
                     String clientid=map.get("CLIENTID").toString();
-                    clients.add(clientid);
+                    clients1.add(clientid);
                 }
             }
 
@@ -268,7 +269,7 @@ public class PushServiceImpl implements PushService {
 
 
 //        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
-        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
+        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
         return ret;
     }
 

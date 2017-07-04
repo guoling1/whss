@@ -221,7 +221,6 @@ public class PushProducer {
         // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
         template.setTransmissionType(type);
         template.setTransmissionContent(content);
-
         JSONObject jsonObject = JSONObject.parseObject(content);
         String resultMessage = jsonObject.getString("resultMessage");
 
