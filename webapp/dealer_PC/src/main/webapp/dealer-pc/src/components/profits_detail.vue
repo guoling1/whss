@@ -40,12 +40,12 @@
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
-            <div class="box-body">统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</div>
+            <div class="box-body">统计总额 {{allTotal | filter_toFix}}元 当页总额 {{pageTotal | filter_toFix}}元</div>
             <div class="box-body">
               <el-table :data="tableData" border
                         v-loading="tableLoading"
                         element-loading-text="数据加载中">
-                <el-table-column type="index" label="序号"></el-table-column>
+                <el-table-column type="index" label="序号" width="62"></el-table-column>
                 <el-table-column prop="splitOrderNo" label="分润流水号"></el-table-column>
                 <el-table-column label="业务类型">
                   <template scope="scope">
@@ -54,7 +54,7 @@
                 </el-table-column>
                 <el-table-column label="分润时间" width="180">
                   <template scope="scope">
-                    {{ scope.row.splitCreateTime | datetime }}
+                    {{ scope.row.splitDate | datetime }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
@@ -64,7 +64,7 @@
                 <!--{{ scope.row.settleTime | datetime }}-->
                 <!--</template>-->
                 <!--</el-table-column>-->
-                <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
+                <!--<el-table-column prop="dealerName" label="代理商名称"></el-table-column>-->
                 <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
                 <el-table-column prop="remark" label="备注信息"></el-table-column>
               </el-table>
@@ -156,13 +156,13 @@
     },
     created() {
       let query = this.$route.query;
-      if (query.businessType == '好收收-收款') {
+      if (query.businessType == '好收收- 收款') {
         this.businessType = 'hssPay';
-      } else if (query.businessType == '好收收-提现') {
+      } else if (query.businessType == '好收收- 提现') {
         this.businessType = 'hssWithdraw';
-      } else if (query.businessType == '好收收-升级费') {
+      } else if (query.businessType == '好收收- 升级费') {
         this.businessType = 'hssPromote';
-      } else if (query.businessType == '好收银-收款') {
+      } else if (query.businessType == '好收银- 收款') {
         this.businessType = 'hsyPay';
       }
       this.datetime = query.splitDates + ' - ' + query.splitDates;
@@ -171,14 +171,14 @@
       this.getData();
       this.getTotal();
     },
-    filters: {
-      fix(v = 0){
+    /*filters: {
+      fix(v){
         if (v) {
           return v.toFixed(2);
         }
         return '0.00';
       }
-    },
+    },*/
     methods: {
       datetimeSelect: function (val) {
         let format = val.split(' - ');
