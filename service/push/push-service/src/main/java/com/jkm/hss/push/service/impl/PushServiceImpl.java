@@ -215,6 +215,7 @@ public class PushServiceImpl implements PushService {
         }
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
+        System.out.print(list);
         for(Map map: list){
             if(map.get("CLIENTID")!=null){
                 String clientid=map.get("CLIENTID").toString();
