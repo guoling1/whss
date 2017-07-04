@@ -118,7 +118,7 @@ public class ProfitController extends BaseController{
             final Dealer dealer = this.getDealer().get();
             final long accountId = dealer.getAccountId();
             String splitAmount = this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
-                    request.getBusinessType(), request.getBeginDate(), request.getEndDate());
+                    request.getBusinessType(), request.getStartTime(), request.getEndTime());
             if(splitAmount==null&&"".equals(splitAmount)){
                 splitAmount="0";
             }
