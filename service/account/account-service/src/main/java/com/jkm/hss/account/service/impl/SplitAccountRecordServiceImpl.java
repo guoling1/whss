@@ -206,7 +206,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     }
 
     @Override
-    public BigDecimal selectStatisticsByParam(long accountId, String orderNo, String businessType, String beginDate, String endDate){
+    public String selectStatisticsByParam(long accountId, String orderNo, String businessType, String beginDate, String endDate){
         Date beginTime = null;
         Date endTime = null;
         if (beginDate != null && !beginDate.equals("")){

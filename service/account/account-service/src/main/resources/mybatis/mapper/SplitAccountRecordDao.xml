@@ -79,7 +79,7 @@
         ORDER BY id DESC LIMIT #{firstIndex},#{pageSize}
     </select>
     <!--分润统计-->
-    <select id="selectStatisticsByParam" resultType="java.math.BigDecimal">
+    <select id="selectStatisticsByParam" resultType="java.lang.String">
         SELECT sum(split_amount) as splitamount FROM tb_split_account_record
         WHERE receipt_money_account_id = #{accountId}
         AND split_amount &gt; 0.00
@@ -147,7 +147,7 @@
         LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
         WHERE
             a.receipt_money_account_id = #{accountId}
-        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        AND split_amount &gt; 0.00
     <if test="startTime!=null and startTime!=''">
         AND a.split_date <![CDATA[ >= ]]> #{startTime}
     </if>
@@ -171,8 +171,8 @@
         LEFT JOIN tb_order c ON c.order_no = a.order_no
         WHERE
         a.receipt_money_account_id = #{accountId}
-        AND a.business_type=#{businessType}
-        AND split_amount &gt; 0.00 AND a.split_date between #{splitDate} and #{splitDate1}
+
+        AND split_amount &gt; 0.00
         <if test="startTime!=null and startTime!=''">
             AND a.split_date <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -196,7 +196,7 @@
         LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
         WHERE
         a.receipt_money_account_id = #{accountId}
-        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        AND split_amount &gt; 0.00
         <if test="startTime!=null and startTime!=''">
             AND a.split_date <![CDATA[ >= ]]> #{startTime}
         </if>
