@@ -20,6 +20,9 @@ public class AppPolicyRechargeOrder {
     private String ouid;//微信支付宝ID
     private Long memberID;//会员id
     private Long memberAccountID;//会员账户id
+    private Long cid;//消费者ID
+    private Long mcid;//卡ID
+    private Long uid;//主店ID
     private Long merchantReceiveAccountID;//商户收款账户id
     private String goodsName;//商品名称
     private String goodsDescribe;//商品描述
@@ -215,5 +218,29 @@ public class AppPolicyRechargeOrder {
 
     public void setOuid(String ouid) {
         this.ouid = ouid;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
+    }
+
+    public Long getMcid() {
+        return mcid;
+    }
+
+    public void setMcid(Long mcid) {
+        this.mcid = mcid;
+    }
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 }

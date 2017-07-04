@@ -12,12 +12,13 @@ import java.util.List;
  */
 public interface HsyMembershipService {
     /**app*/
-    public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String findMemshipCards(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String insertMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMembershipCards(String dataParam, AppParam appParam)throws ApiHandleException;
     public String findMemberQr(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String findMemshipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String updateMemshipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String updateMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMembershipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String updateMembershipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String updateMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMemberList(String dataParam, AppParam appParam)throws ApiHandleException;
     /**web*/
     public AppPolicyConsumer findConsumerByOpenID(String openID);
     public AppPolicyConsumer findConsumerByUserID(String userID);

@@ -34,6 +34,9 @@ public class AppPolicyMember {
     private BigDecimal rechargeLimitAmount;//单笔充值限额
     private BigDecimal rechargePresentAmount;//单笔充值赠送金额
 
+    private String param;//搜索条件
+    private Integer currentPage;//当前页数
+
     public Long getId() {
         return id;
     }
@@ -225,5 +228,22 @@ public class AppPolicyMember {
 
     public void setIsDeposited(Integer isDeposited) {
         this.isDeposited = isDeposited;
+    }
+
+    public String getParam() {
+        return param;
+    }
+
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
+
     }
 }
