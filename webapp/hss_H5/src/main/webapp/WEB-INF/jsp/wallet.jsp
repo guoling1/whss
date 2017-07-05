@@ -47,7 +47,7 @@
     <a href="/sqb/tradeRecord?oemNo=${oemNo}" class="group touch_gr"><span class="record"></span>收款记录</a>
     <a href="/sqb/bank?oemNo=${oemNo}" class="group touch_gr"><span class="bank"></span>银行卡</a>
     <a href="/sqb/authentication?oemNo=${oemNo}" class="group touch_gr"><span class="user"></span>用户认证</a>
-    <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group touch_gr"><span class="help"></span>使用帮助</a>
+    <a href="/merchantInfo/toHelp" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
   <div>
     <div class="advertisement">
