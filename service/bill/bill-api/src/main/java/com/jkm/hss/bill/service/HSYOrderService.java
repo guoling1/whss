@@ -2,8 +2,8 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hsy.user.entity.AppParam;
-import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -120,4 +120,14 @@ public interface HSYOrderService {
      * @return
      */
     List<HsyOrder> getByMerchantNoAndTime(String merchantNo, Date startTime, Date endTime);
+
+    /**
+     * pc统计
+     *
+     * @param shopId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<PcStatisticsOrder> pcStatisticsOrder(long shopId, Date startTime, Date endTime);
 }

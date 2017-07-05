@@ -339,4 +339,12 @@
             </if>
         </where>
     </select>
+
+    <select id="pcStatisticsOrder" resultType="com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder">
+        SELECT payment_channel, orderstatus, COUNT(id), SUM(amount), SUM(realAmount) SUM(poundage) FROM tb_hsy_order
+        where shopid = #{shopId}
+        AND orderstatus in (2,6)
+        AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        GROUP BY payment_channel, orderstatus
+    </select>
 </mapper>

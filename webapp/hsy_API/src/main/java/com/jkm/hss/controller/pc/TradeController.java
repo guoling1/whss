@@ -6,6 +6,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
+import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hss.bill.helper.util.VerifyAuthCodeUtil;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HSYTransactionService;
@@ -14,6 +15,7 @@ import com.jkm.hss.helper.request.PcGenerateOrderRequest;
 import com.jkm.hss.helper.request.PcOrderListRequest;
 import com.jkm.hss.helper.request.PcPayRequest;
 import com.jkm.hss.helper.request.PcStatisticsOrderRequest;
+import com.jkm.hss.helper.response.PcStatisticsOrderResponse;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -176,10 +178,51 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "statisticsOrder", method = RequestMethod.POST)
     public CommonResponse statisticsOrder(@RequestBody PcStatisticsOrderRequest statisticsOrderRequest) {
+        final Date startTime = DateFormatUtil.parse(statisticsOrderRequest.getStartDate() + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endTime = DateFormatUtil.parse(statisticsOrderRequest.getEndDate() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final List<PcStatisticsOrder> statisticsOrderList = this.hsyOrderService.pcStatisticsOrder(statisticsOrderRequest.getShopId(), startTime, endTime);
+        final JSONObject result = new JSONObject();
+        final PcStatisticsOrderResponse statisticsOrderResponse = new PcStatisticsOrderResponse();
+        if (CollectionUtils.isEmpty(statisticsOrderList)) {
+            statisticsOrderResponse.setPayNumber(0);
+            statisticsOrderResponse.setPayAmount(new BigDecimal("0.00"));
+            statisticsOrderResponse.setRefundNumber(0);
+            statisticsOrderResponse.setRefundAmount(new BigDecimal("0.00"));
+            statisticsOrderResponse.setProfit(new BigDecimal("0.00"));
+        } else {
+//            final List<JSONObject> details = new ArrayList<>(statisticsOrderResponseList.size());
+//            final ArrayList<Integer> paymentChannels = new ArrayList<>();
+//            for (PcStatisticsOrder statisticsOrderResponse : statisticsOrderResponseList) {
+//                if (statisticsOrderResponse.getPaymentChannel() > 0 ) {
+//                    paymentChannels.add(statisticsOrderResponse.getPaymentChannel());
+//                }
+//            }
+//            for (int i = 0; i < paymentChannels.size(); i++) {
+////                paymentChannels
+//            }
+//            for (PcStatisticsOrder statisticsOrder : statisticsOrderResponseList) {
+//                if (statisticsOrderResponse.getPaymentChannel() <= 0) {
+//                    continue;
+//                }
+//                final JSONObject detail = new JSONObject();
+////                if (EnumHsyOrderStatus.PAY_SUCCESS.getId() == statisticsOrderResponse.getOrderStatus()) {
+////                    detail.put("payChannel", statisticsOrderResponse.getPaymentChannel());
+////                    detail.put("payChannelValue", EnumPaymentChannel.of(statisticsOrderResponse.getPaymentChannel()));
+////                    detail.put("payNumber", statisticsOrderResponse.getNumber());
+////                    detail.put("status")
+////                }
+////                if (EnumHsyOrderStatus.REFUND_SUCCESS.getId() == statisticsOrderResponse.getOrderStatus()) {
+////                    detail.put("payChannel", statisticsOrderResponse.getPaymentChannel());
+////                    detail.put("payChannelValue", EnumPaymentChannel.of(statisticsOrderResponse.getPaymentChannel()));
+////                    detail.put("payNumber", statisticsOrderResponse.getNumber());
+////                    detail.put("status")
+////                }
+//
+//            }
 
 
-
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", null);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", statisticsOrderResponse);
     }
 
 

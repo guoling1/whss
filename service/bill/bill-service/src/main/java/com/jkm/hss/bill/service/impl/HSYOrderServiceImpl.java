@@ -14,6 +14,7 @@ import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
 import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
+import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -343,5 +344,18 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     public List<HsyOrder> getByMerchantNoAndTime(final String merchantNo, final Date startTime, final Date endTime) {
         return this.hsyOrderDao.selectByMerchantNoAndTime(merchantNo, startTime, endTime);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param shopId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<PcStatisticsOrder> pcStatisticsOrder(final long shopId, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.pcStatisticsOrder(shopId, startTime, endTime);
     }
 }
