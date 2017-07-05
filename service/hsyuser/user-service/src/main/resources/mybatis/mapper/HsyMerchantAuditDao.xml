@@ -99,7 +99,7 @@
             AND e.realname =#{realname}
         </if>
         <if test="source==1">
-            AND c.DEALERID = 0 AND c.`DEALERID` = ""
+            AND c.DEALERID = 0
         </if>
         <if test="source==2">
             AND c.DEALERID <![CDATA[ > ]]> 0
@@ -633,6 +633,6 @@
             app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON b.SID = a.ID
         WHERE
-            a.ID = #{id}
+           b.`UID`in (SELECT `UID` FROM `app_biz_shop_user_role` WHERE `SID` = #{id} AND `ROLE` =1 and `TYPE` =1 )
     </select>
 </mapper>
