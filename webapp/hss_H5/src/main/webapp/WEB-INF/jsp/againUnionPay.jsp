@@ -109,7 +109,8 @@
     status: '${status}',
     canPay: false,
     showExpireDate: '${showExpireDate}',
-    showCvv: '${showCvv}'
+    showCvv: '${showCvv}',
+    oemNo: '${oemNo}'
   }
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
