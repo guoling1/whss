@@ -1253,6 +1253,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 qrMap.put("shortName",shopQR.getShortName());
                 qrMap.put("name",shopQR.getName());
                 qrMap.put("type",shopQR.getType());
+                qrMap.put("id",shopQR.getId());
                 if(qrList!=null&&qrList.size()!=0)
                     qrMap.put("qrList",qrList);
                 shopQRList.add(qrMap);

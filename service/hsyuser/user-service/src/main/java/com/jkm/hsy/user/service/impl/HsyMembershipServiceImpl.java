@@ -385,8 +385,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         /**参数验证*/
         if(!(appPolicyMember.getId()!=null&&!appPolicyMember.getId().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"会员ID");
-        hsyMembershipDao.findMemberInfoByID(appPolicyMember.getId());
-
+        List<AppPolicyMember> memberList=hsyMembershipDao.findMemberInfoByID(appPolicyMember.getId());
+        appPolicyMember=memberList.get(0);
 
         return "";
     }
