@@ -9,6 +9,9 @@
           account_id,
           account_user_type,
           trade_date,
+          balance_start_time,
+          balance_end_time,
+          upper_channel,
           trade_number,
           settle_amount,
           account_check_status,
@@ -23,6 +26,9 @@
           #{accountId},
           #{accountUserType},
           #{tradeDate},
+          #{balanceStartTime},
+          #{balanceEndTime},
+          #{upperChannel},
           #{tradeNumber},
           #{settleAmount},
           #{accountCheckStatus},
@@ -31,6 +37,22 @@
           #{status}
           );
     </insert>
+
+    <update id="update">
+        UPDATE tb_account_settle_audit_record
+        <set>
+            <if test="balanceStartTime != null">
+                balance_start_time = #{balanceStartTime},
+            </if>
+            <if test="balanceEndTime != null">
+                balance_end_time = #{balanceEndTime},
+            </if>
+            <if test="upperChannel > 0">
+                upper_channel = #{upperChannel},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
     <update id="updateAccountCheckStatus">
         UPDATE tb_account_settle_audit_record SET account_check_status = #{status} WHERE id = #{id}

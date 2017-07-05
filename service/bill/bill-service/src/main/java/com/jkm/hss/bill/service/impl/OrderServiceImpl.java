@@ -26,6 +26,7 @@ import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.helper.WithdrawParams;
+import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryPayOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.PaymentSdkQueryRefundOrderByOrderNoRequest;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -469,6 +470,18 @@ public class OrderServiceImpl implements OrderService {
         return Optional.fromNullable(this.orderDao.selectByPayOrderId(payOrderId));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleDate
+     * @return
+     */
+    @Override
+    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate) {
+        return this.orderDao.statisticsPendingBalanceOrder(settleDate);
+    }
+
+
     @Override
     public List<MerchantTradeResponse> selectOrderListByPage(OrderTradeRequest req) {
         Map<String,Object> map = new HashMap<String,Object>();
@@ -497,6 +510,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyNameHsy",req.getProxyNameHsy());
         map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
+        map.put("source",req.getSource());
         List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1504,6 +1518,30 @@ public class OrderServiceImpl implements OrderService {
     /**
      * {@inheritDoc}
      *
+     * @param settlementRecordId
+     * @return
+     */
+    @Override
+    public int getOrderCountBySettlementRecordId(final long settlementRecordId) {
+        return this.orderDao.selectCountBySettlementReocrdId(settlementRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settlementRecordId
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<Order> getOrderBySettlementRecordId(final long settlementRecordId, final int offset, final int count) {
+        return this.orderDao.selectBySettlementReocrdId(settlementRecordId, offset, count);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param accountId
      * @param appId
      * @param payChannelSigns
@@ -1552,6 +1590,34 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public int getCountByBusinessOrder(final String businessOrderNo) {
         return this.orderDao.selectCountByBusinessOrder(businessOrderNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleDate
+     * @param accountId
+     * @param settlementRecordId
+     * @param settleStatus
+     * @param upperChannel
+     * @return
+     */
+    @Override
+    public int markOrder2SettlementIng(final Date settleDate, final long accountId, final long settlementRecordId, final int settleStatus, final int upperChannel) {
+        return this.orderDao.markOrder2SettlementIng(settleDate, accountId, settlementRecordId, settleStatus, upperChannel);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settlementRecordId
+     * @param settleStatus
+     * @param oriSettleStatus
+     * @return
+     */
+    @Override
+    public int markOrder2SettlementSuccess(final long settlementRecordId, final int settleStatus, final int oriSettleStatus) {
+        return this.orderDao.markOrder2SettlementSuccess(settlementRecordId, settleStatus, oriSettleStatus);
     }
 
     @Override
@@ -1748,6 +1814,11 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return "";
+    }
+
+    @Override
+    public int updateSettlementRecordIdByOrderNos(List<String> orderNos, long id) {
+        return this.orderDao.updateSettlementRecordIdByOrderNos(orderNos, id);
     }
 
     @Override
@@ -2421,6 +2492,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyNameHsy",req.getProxyNameHsy());
         map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
+        map.put("source",req.getSource());
         return orderDao.selectOrderListCount(map);
     }
 

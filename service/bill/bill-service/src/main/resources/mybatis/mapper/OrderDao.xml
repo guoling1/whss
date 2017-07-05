@@ -60,6 +60,8 @@
         settle_type,
         success_settle_time,
         pay_channel_sign,
+        payment_channel,
+        upper_channel,
         pay_bank_card,
         bank_expire_date,
         cvv,
@@ -103,6 +105,8 @@
         #{settleType},
         #{successSettleTime},
         #{payChannelSign},
+        #{paymentChannel},
+        #{upperChannel},
         #{payBankCard},
         #{bankExpireDate},
         #{cvv},
@@ -173,6 +177,12 @@
             <if test="payChannelSign > 0">
                 pay_channel_sign = #{payChannelSign},
             </if>
+            <if test="paymentChannel > 0">
+                payment_channel = #{paymentChannel},
+            </if>
+            <if test="upperChannel > 0">
+                upper_channel = #{upperChannel},
+            </if>
             <if test="bankTradeNo != null and bankTradeNo != ''">
                 bank_trade_no = #{bankTradeNo},
             </if>
@@ -228,12 +238,45 @@
         UPDATE tb_order SET refund_amount = #{refundAmount}, refund_status = #{refundStatus} WHERE id = #{id}
     </update>
 
+    <update id="markOrder2SettlementIng">
+        UPDATE tb_order SET settlement_record_id = #{settlementRecordId}, settle_status = #{settleStatus}
+        WHERE
+        app_id = 'hsy'
+        AND status IN (4, 7)
+        AND settle_status = 1
+        AND refund_status = 0
+        AND settle_time = #{settleDate}
+        AND payee = #{accountId}
+        AND upper_channel = #{upperChannel}
+    </update>
+
+    <update id="markOrder2SettlementSuccess">
+        UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
+    </update>
+
     <select id="selectById" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE id = #{id}
     </select>
 
     <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="statisticsPendingBalanceOrder" resultType="com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics">
+        SELECT payee as account_id,
+        COUNT(id) as count,
+        SUM(trade_amount) as amount,
+        SUM(poundage) as poundage,
+        MIN(pay_success_time) as trade_start_time,
+        MAX(pay_success_time) as trade_end_time,
+        upper_channel
+        FROM tb_order
+        WHERE app_id = 'hsy'
+        AND status IN (4, 7)
+        AND settle_status = 1
+        AND refund_status = 0
+        AND settle_time = #{settleDate}
+        GROUP BY account_id, upper_channel
     </select>
 
     <!-- 提现列表 -->
@@ -493,6 +536,12 @@
           a.trade_type = 1
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="source==1">
+            AND z.`DEALERID`=0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
         </if>
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
@@ -1433,6 +1482,12 @@
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
+        <if test="source==1">
+            AND z.`DEALERID` <![CDATA[ = ]]> 0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
+        </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
@@ -1716,6 +1771,12 @@
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
+        <if test="source==1">
+            AND z.`DEALERID`=0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
+        </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
@@ -1793,6 +1854,12 @@
         </if>
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="source==1">
+            AND z.`DEALERID`<![CDATA[ = ]]>0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
         </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
@@ -2912,7 +2979,24 @@
             AND x.username = #{username}
         </if>
     </select>
+    <select id="selectCountBySettlementReocrdId" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_order
+        WHERE settlement_record_id = #{settlementRecordId}
+    </select>
 
+    <select id="selectBySettlementReocrdId" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order
+        WHERE settlement_record_id = #{settlementRecordId}
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
+    <update id="updateSettlementRecordIdByOrderNos">
+        UPDATE tb_order SET settlement_record_id = #{id}
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
     <select id="getBranch" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,

@@ -82,7 +82,7 @@ public interface AccountSettleAuditRecordService {
     String appSettleRecordDetail(String dataParam, AppParam appParam);
 
     /**
-     * 按结算审核记录查询交易
+     * 按结算记录查询交易
      *
      * @param dataParam
      * @param appParam
@@ -92,6 +92,10 @@ public interface AccountSettleAuditRecordService {
 
     /**
      * 处理 T1 结算审核, 生成记录
+     *
+     * 商户统计交易  生成结算单后，将交易改为结算中
+     *
+     * 代理商等统计流水 生成结算单后，将流水的status->1
      */
     Pair<Integer, String> generateHsySettleAuditRecordTask(Date settleDate);
 
@@ -147,4 +151,9 @@ public interface AccountSettleAuditRecordService {
      * @return
      */
     PageModel<AccountSettleAuditRecord> listByParam(ListSettleAuditRecordRequest settleAuditRecordRequest);
+
+    /**
+     * 同步数据 - 结算
+     */
+    void synchronousDataTest();
 }

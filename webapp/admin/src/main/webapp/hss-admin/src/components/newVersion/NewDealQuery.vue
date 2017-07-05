@@ -30,6 +30,14 @@
               </el-select>
             </li>
             <li class="same">
+              <label>交易来源:</label>
+              <el-select style="width: 193px" v-model="query.source" clearable placeholder="业务方为好收银时可选择" size="small" :disabled="appId!='好收银'">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="直销" value="1">直销</el-option>
+                <el-option label="渠道" value="2">渠道</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>收款商户编号:</label>
               <el-input style="width: 193px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
@@ -167,7 +175,7 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/details/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text" target="_blank">详情
+                <router-link :to="{path:'/admin/details/newDealDet',query:{orderNo:scope.row.orderNo,appId:scope.row.appId}}" type="text" target="_blank">详情
                 </router-link>
               </template>
             </el-table-column>
@@ -249,7 +257,8 @@
           loadUrl1: '',
           payChannelSign:'',
           appId:'',
-          branchCompany:''
+          branchCompany:'',
+          source:''
         },
         appId:'',
         merchantName: '',
@@ -491,6 +500,9 @@
           this.merchantName='';
           this.proxyName='';
           this.proxyName1='';
+          this.query.source='';
+        }else if(val == "好收收"){
+          this.query.source='';
         }
       }
     },

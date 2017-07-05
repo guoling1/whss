@@ -95,10 +95,28 @@ public interface SettlementRecordService {
     String getSettleNo(int settleObject, int settleDestination);
 
     /**
-     * 结算单列表
+     * 结算单列表(BOSS)
      *
      * @param querySettlementRecordParams
      * @return
      */
     PageModel<SettlementRecord> listSettlementRecordByParam(QuerySettlementRecordParams querySettlementRecordParams);
+
+    /**
+     * 按账户id查询列表（app）
+     *
+     * @param accountId
+     * @param offset
+     * @param count
+     * @return
+     */
+    PageModel<SettlementRecord> listSettlementRecordByAccountId(long accountId, int offset, int count);
+
+
+    /**
+     * test
+     *
+     * @return
+     */
+    List<SettlementRecord> getAll();
 }

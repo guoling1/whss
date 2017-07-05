@@ -68,11 +68,12 @@ public interface HSYOrderService {
 
     /**
      * 订单列表及统计
+     *
      * @param dataParam
      * @param appParam
      * @return
      */
-    String orderListst(String dataParam, AppParam appParam);
+    String orderList(String dataParam, AppParam appParam);
 
     /**
      * 订单详情

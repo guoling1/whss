@@ -13,6 +13,10 @@ public class HsyMerchantAuditResponse {
 
 //    private long firstLevelDealerId;//一级代理商id
 //    private int level; //代理商级别
+    private String licenceNo;//营业执照号
+    private Date licenceStartDate;//营业执照起期
+    private Date licenceEndDate;//营业执照止期
+    private String startEndDate;//营业执照起止期
     private String shopNo; //店铺数量
     private String mobile;//报单员手机号
     private String changePhone;//更改后的手机号
@@ -20,6 +24,7 @@ public class HsyMerchantAuditResponse {
     private String markCode1;   //二级级代理商编码
     private String proxyNames; //所属代理商
     private Date commitTime;//提交时间
+    private String realnames;//法人名
     private String realname;//报单员
     private String username;//报单员真实姓名
     private String createTimes;
@@ -44,13 +49,14 @@ public class HsyMerchantAuditResponse {
     private String idcardb;//身份证背面照
     private String idcardc;//银行卡照片
     private String contractId;//签约合同照
-    private String idcardNO;//身份证号
+    private String idcardNO;//法人身份证号
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称
     private String shortName;//店铺简称
     private String industryCode;//行业代码
     private String districtCode;//行政区代码
+    private String districtCodes;//行政区代码
     private String address;//地址
     private String licenceID;//营业执照id
     private String storefrontID;//店面照片id

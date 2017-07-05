@@ -199,11 +199,13 @@ public class HsyMerchantListController extends BaseController {
 
         }
         List<HsyMerchantInfoCheckRecord> list = hsyMerchantAuditService.getLog(hsyMerchantAuditRequest.getId());
+        List<ShopInfoResponse> shopInfo = hsyMerchantAuditService.getShopInfo(hsyMerchantAuditRequest.getId());
         jsonObject.put("code",1);
         jsonObject.put("msg","success");
         JSONObject jo = new JSONObject();
         jo.put("list",list);
         jo.put("res",res);
+        jo.put("shopInfo",shopInfo);
         List<UserTradeRateListResponse> userTradeRateListResponses = userTradeRateService.getUserRate(res.getUid());
         jo.put("rateList",userTradeRateListResponses);
         Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(res.getUid());
@@ -430,5 +432,22 @@ public class HsyMerchantListController extends BaseController {
         List list1 = new ArrayList();
         list1.add(jsonObject);
         return CommonResponse.objectResponse(1,"SUCCESS",list1);
+    }
+
+    /**
+     * 修改商户认证信息
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/modifyInfo",method = RequestMethod.POST)
+    public CommonResponse modifyInfo(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        try {
+            this.hsyMerchantAuditService.updateModifyInfo(hsyMerchantAuditRequest);
+            return CommonResponse.simpleResponse(1,"SUCCESS");
+        }catch (Exception e){
+            log.debug("修改失败");
+            throw e;
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.WithdrawParams;
+import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoResponse;
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
@@ -169,6 +170,14 @@ public interface OrderService {
      * @return
      */
     Optional<Order> getByPayOrderId(long payOrderId);
+
+    /**
+     * 统计指定结算日期的交易
+     *
+     * @param settleDate
+     * @return
+     */
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate);
 
     /**
      * 查询交易列表
@@ -429,6 +438,25 @@ public interface OrderService {
    List<Order> getOrderByOrderNos(List<String> orderNos, int offset, int pageSize);
 
     /**
+     * 按结算单 查询交易（app）- 个数
+     *
+     * @param settlementRecordId
+     * @return
+     */
+   int getOrderCountBySettlementRecordId(long settlementRecordId);
+
+    /**
+     * 按结算单 查询交易（app）- 记录
+     *
+     * @param settlementRecordId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> getOrderBySettlementRecordId(long settlementRecordId, int offset, int count);
+
+
+    /**
      * 保存推送回调信息
      * @param geTuiResponse
      */
@@ -474,6 +502,28 @@ public interface OrderService {
      * @return
      */
     int getCountByBusinessOrder(String businessOrderNo);
+
+    /**
+     * T1 生成商户结算单后，将结算单id标记到交易中，并将交易标记为结算中
+     *
+     * @param settleDate
+     * @param accountId
+     * @param settlementRecordId
+     * @param settleStatus
+     * @param upperChannel
+     * @return
+     */
+    int markOrder2SettlementIng(Date settleDate, long accountId, long settlementRecordId, int settleStatus, int upperChannel);
+
+    /**
+     * 按结算单批量更新结算状态
+     *
+     * @param settlementRecordId
+     * @param settleStatus
+     * @param oriSettleStatus
+     * @return
+     */
+    int markOrder2SettlementSuccess(long settlementRecordId, int settleStatus, int oriSettleStatus);
 
     /**
      * 查询hss订单（订单查询）
@@ -576,6 +626,15 @@ public interface OrderService {
      * @return
      */
     String downloadDaiLiAchievement(QueryOrderRequest req, String baseUrl);
+
+
+    /**
+     * Test
+     *
+     * @param strings
+     * @param id
+     */
+    int updateSettlementRecordIdByOrderNos(List<String> strings, long id);
 
     /**
      * 分公司交易

@@ -85,6 +85,10 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        int tat = this.hsyMerchantAuditService.getStatuts(hsyMerchantAuditRequest.getId());
+        if (tat==1||tat==3){
+            return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
+        }
         final HsyMerchantAuditResponse hsyMerchantAudit = this.hsyMerchantAuditService.selectById(hsyMerchantAuditRequest.getId());
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
@@ -100,6 +104,7 @@ public class HsyMerchantAuditController extends BaseController {
 //        if (acct!=null){
 //            accountService.delAcct(acct.getAccountID());
 //        }
+
         final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
         hsyMerchantAuditRequest.setAccountID(accountId);
         hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());
@@ -126,8 +131,13 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/rejectToExamine",method = RequestMethod.POST)
     public CommonResponse rejectToExamine(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+
         if (hsyMerchantAuditRequest.getCheckErrorInfo()==null||hsyMerchantAuditRequest.getCheckErrorInfo().equals("")){
             return CommonResponse.simpleResponse(-1,"请填写错误信息");
+        }
+        int tat = this.hsyMerchantAuditService.getStatuts(hsyMerchantAuditRequest.getId());
+        if (tat==1||tat==3){
+            return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
         }
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
         hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);

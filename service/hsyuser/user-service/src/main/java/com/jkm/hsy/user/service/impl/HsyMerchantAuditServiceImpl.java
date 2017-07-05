@@ -99,6 +99,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
+        if (res.getLicenceStartDate()!=null&&res.getLicenceEndDate()!=null){
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            final String start = format.format(res.getLicenceStartDate());
+            final String end = format.format(res.getLicenceEndDate());
+            res.setStartEndDate(start+" "+"-"+" "+end);
+        }
         if(res.getHxbStatus()==null||"".equals(res.getHxbStatus())){
             res.setHxbStatus(0);
         }else{
@@ -124,6 +130,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         }
         String districtCode = res.getDistrictCode();
+        res.setDistrictCodes(res.getDistrictCode());
         if (!"".equals(districtCode)&&districtCode!=null){
             HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
             if (!("0").equals(ret.getParentCode())){
@@ -563,6 +570,44 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public void updatePhone(String changePhone, Long uid) {
         this.hsyMerchantAuditDao.updatePhone(changePhone,uid);
+    }
+
+    @Override
+    public void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        this.hsyMerchantAuditDao.updateModifyInfo(hsyMerchantAuditRequest);
+    }
+
+    @Override
+    public int getStatuts(Long id) {
+        return this.hsyMerchantAuditDao.getStatuts(id);
+    }
+
+    @Override
+    public List<ShopInfoResponse> getShopInfo(Long id) {
+        List<ShopInfoResponse> list = this.hsyMerchantAuditDao.getShopInfo(id);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++) {
+                String districtCode = list.get(i).getDistrictCode();
+                if (districtCode != null && !districtCode.equals("")) {
+                    HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+
+                    if (!ret.getParentCode().equals("0")) {
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                        if (!reu.getParentCode().equals("0")) {
+                            HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                            list.get(i).setDistrictCode(reu1.getAName() + reu.getAName() + ret.getAName());
+                        } else {
+                            list.get(i).setDistrictCode(reu.getAName() + ret.getAName());
+                        }
+                    }
+                    if (ret.getParentCode().equals("0")) {
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCityOnly(ret.getCode());
+                        list.get(i).setDistrictCode(reu.getAName());
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     /**

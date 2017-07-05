@@ -163,5 +163,23 @@ public interface HsyMerchantAuditDao {
      */
     void updatePhone(@Param("changePhone") String changePhone,@Param("uid") Long uid);
 
+    /**
+     * 修改认证商户信息
+     * @param hsyMerchantAuditRequest
+     */
+    void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
+    /**
+     * 查询审核状态
+     * @param id
+     * @return
+     */
+    int getStatuts(@Param("id") Long id);
+
+    /**
+     * 店铺信息
+     * @param id
+     * @return
+     */
+    List<ShopInfoResponse> getShopInfo(@Param("id") Long id);
 }

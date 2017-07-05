@@ -187,6 +187,7 @@ public class PayServiceImpl implements PayService {
             return Pair.of(-1, "请重新输入金额下单");
         }
         log.info("商户[{}] 通过动态扫码， 支付一笔资金[{}]", businessOrder.getMerchantId(), businessOrder.getTradeAmount());
+        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final MerchantInfo merchant = this.merchantInfoService.selectById(businessOrder.getMerchantId()).get();
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, isDynamicCode ? EnumMerchantPayType.MERCHANT_CODE : EnumMerchantPayType.MERCHANT_JSAPI);
         final Order order = new Order();
@@ -203,6 +204,8 @@ public class PayServiceImpl implements PayService {
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(channelCode);
         order.setPayChannelSign(channel);
+        order.setPaymentChannel(payChannelSign.getPaymentChannel().getId());
+        order.setUpperChannel(payChannelSign.getUpperChannel().getId());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleTime(new Date());
         order.setSettleType(EnumBalanceTimeType.D0.getType());
@@ -301,6 +304,8 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         order.setPayChannelSign(enumPayChannelSign.getId());
+        order.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+        order.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         order.setSettleTime(this.getHssSettleDate(order, enumPayChannelSign));
         log.info("返回的通道是[{}]", order.getPayType());
         //处理商户升级的支付单(此时商户自己付款给金开门)
@@ -365,6 +370,8 @@ public class PayServiceImpl implements PayService {
                 updateBusinessOrder.setPayRate(order.getPayRate());
                 updateBusinessOrder.setRemark(order.getRemark());
                 updateBusinessOrder.setPayChannelSign(order.getPayChannelSign());
+                updateBusinessOrder.setPaymentChannel(order.getPaymentChannel());
+                updateBusinessOrder.setUpperChannel(order.getUpperChannel());
                 updateBusinessOrder.setPoundage(order.getPoundage());
                 updateBusinessOrder.setStatus(EnumBusinessOrderStatus.PAY_SUCCESS.getId());
                 this.businessOrderService.update(updateBusinessOrder);
@@ -468,6 +475,9 @@ public class PayServiceImpl implements PayService {
             settlementRecord.setTradeNumber(1);
             settlementRecord.setSettleAmount(order.getTradeAmount().subtract(order.getPoundage()));
             settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+            settlementRecord.setUpperChannel(payChannelSign.getUpperChannel().getId());
+            settlementRecord.setTradeAmount(order.getTradeAmount());
+            settlementRecord.setSettlePoundage(order.getPoundage());
             if (payChannelSign.getAutoSettle()) {
                 settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
                 settlementRecord.setSettleDestination(EnumSettleDestinationType.CHANNEL_SETTLE.getId());

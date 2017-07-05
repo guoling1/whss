@@ -138,4 +138,24 @@ public interface HsyMerchantAuditService {
      */
     void updatePhone(String changePhone, Long uid);
 
+
+    /**
+     * 修改商户认证信息
+     * @param hsyMerchantAuditRequest
+     */
+    void updateModifyInfo(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 查询审核状态
+     * @param id
+     * @return
+     */
+    int getStatuts(Long id);
+
+    /**
+     * 店铺信息
+     * @param id
+     * @return
+     */
+    List<ShopInfoResponse> getShopInfo(Long id);
 }
