@@ -586,6 +586,22 @@ public interface OrderService {
 
     int getBranchCount(OrderTradeRequest req);
 
+    String downLoadBranch(OrderTradeRequest req, String baseUrl);
+
+    /**
+     * 分公司统计
+     * @param req
+     * @return
+     */
+    String getAmountCountBranch(OrderTradeRequest req);
+
+    /**
+     * 分公司统计
+     * @param req
+     * @return
+     */
+    String getAmountCountBranch1(OrderTradeRequest req);
+
     /**
      * 查询交易详情
      * @param orderRecord

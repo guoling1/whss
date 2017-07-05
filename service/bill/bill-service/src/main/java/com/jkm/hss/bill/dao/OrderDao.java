@@ -596,4 +596,10 @@ public interface OrderDao {
     List<MerchantTradeResponse> getBranchHsy(OrderTradeRequest req);
 
     int getBranchCount(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> downLoadHssBranch(OrderTradeRequest req);
+
+    String getAmountCountBranch(OrderTradeRequest req);
+
+    String getAmountCountBranch1(OrderTradeRequest req);
 }

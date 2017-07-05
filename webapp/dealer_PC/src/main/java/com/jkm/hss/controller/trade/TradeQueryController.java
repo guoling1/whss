@@ -111,6 +111,14 @@ public class TradeQueryController extends BaseController {
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
         req.setDealerId(dealerId);
+        if(super.getDealer().get().getOemType()== EnumOemType.OEM.getId()){
+            String totalPayment = this.orderService.getAmountCountBranch(req);
+            String totalPoundage = this.orderService.getAmountCountBranch1(req);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("totalPayment",totalPayment);
+            jsonObject.put("totalPoundage",totalPoundage);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
+        }
         if (level==2){
             String totalPayment = this.orderService.getAmountCount(req);
             String totalPoundage = this.orderService.getAmountCount1(req);
@@ -146,6 +154,26 @@ public class TradeQueryController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         req.setDealerId(dealerId);
+        if(super.getDealer().get().getOemType()== EnumOemType.OEM.getId()){
+            final String fileZip = this.orderService.downLoadBranch(req, ApplicationConsts.getApplicationConfig().ossBucke());
+
+            final ObjectMetadata meta = new ObjectMetadata();
+            meta.setCacheControl("public, max-age=31536000");
+            meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+            meta.setContentType("application/x-xls");
+            SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+            String nowDate = sdf.format(new Date());
+            String fileName = "hss/"+  nowDate + "/" + "trade.xls";
+            final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+            URL url = null;
+            try {
+                ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+                url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+                return url.getHost() + url.getFile();
+            } catch (IOException e) {
+                log.error("上传文件失败", e);
+            }
+        }
         if (level==2){
             final String fileZip = this.orderService.downLoadHsyMerchantTrade(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
