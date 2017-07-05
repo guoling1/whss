@@ -42,15 +42,6 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
     @Autowired
     private HsyUserDao hsyUserDao;
 
-    @Autowired
-    private DealerChannelRateService dealerChannelRateService;
-
-    @Autowired
-    private HsyCmbcService hsyCmbcService;
-
-    @Autowired
-    private HsyCmbcDao hsyCmbcDao;
-
     /**
      * 绑定二维码
      *
@@ -71,7 +62,7 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         }
         /**参数验证*/
         if(!(appBindShop.getCode()!=null&&!appBindShop.getCode().equals("")))
-            throw new ApiHandleException(ResultCode.PARAM_LACK,"二维码不能为空");
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"二维码");
         if(!(appBindShop.getUserId()!=null&&!appBindShop.getUserId().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"用户编码");
         if(!(appBindShop.getShopId()!=null&&!appBindShop.getShopId().equals("")))
@@ -79,35 +70,34 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         /**数据验证*/
         Optional<QRCode> qrCodeOptional =  qrCodeService.getByCode(appBindShop.getCode(), EnumQRCodeSysType.HSY.getId());
         if(!qrCodeOptional.isPresent())
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码不存在");
+            throw new ApiHandleException(ResultCode.QECODE_NOT_EXIST);
         AppBizShop appBizShop = new AppBizShop();
         appBizShop.setId(appBindShop.getShopId());
         List<AppBizShop> shops =  hsyShopDao.findShopDetail(appBizShop);
         if(shops==null||shops.size()==0)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"该店铺不存在");
+            throw new ApiHandleException(ResultCode.SHOP_NOT_EXSIT);
         List<AppAuUser> appAuUsers = hsyUserDao.findAppAuUserByID(appBindShop.getUserId());
         if(appAuUsers==null||appAuUsers.size()==0)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"该用户不存在");
+            throw new ApiHandleException(ResultCode.USER_CAN_NOT_BE_FOUND);
         if(shops.get(0).getStatus()!=1)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"该店铺未审核通过");
+            throw new ApiHandleException(ResultCode.USER_NO_CEHCK);
         if(qrCodeOptional.get().getMerchantId()==appBindShop.getShopId()&&appBindShop.getShopId()!=0&&qrCodeOptional.get().getActivateStatus()== EnumQRCodeActivateStatus.ACTIVATE.getCode()){//如果是商户自己的
-            log.info("同一商户");
             return appBindShop.getCode();
         }
         if(qrCodeOptional.get().getActivateStatus()== EnumQRCodeActivateStatus.ACTIVATE.getCode())
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"该二维码已经被激活，不能再次绑定");
+            throw new ApiHandleException(ResultCode.QECODE_HAS_ACTIVATE);
         //是否在同一代理商下，是否在同一产品下
         Triple<Long, Long, Long> triple = qrCodeService.getCurrentAndFirstAndSecondByCode(appBindShop.getCode());
         long currentDealerId = triple.getLeft();
         long productId = qrCodeOptional.get().getProductId();
         List<AppAuUser> list = hsyShopDao.findCorporateUserByShopID(appBindShop.getShopId());
         if(list==null||list.size()==0)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户信息不存在");
+            throw new ApiHandleException(ResultCode.USER_CAN_NOT_BE_FOUND);
 
         if(list.get(0).getDealerID()!=null&&currentDealerId!=list.get(0).getDealerID())
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
+            throw new ApiHandleException(ResultCode.QECODE_SAME_DEALER);
         if(list.get(0).getProductID()!=null&&productId!=list.get(0).getProductID())
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一产品下");
+            throw new ApiHandleException(ResultCode.QECODE_SAME_PRODUCT);
         if(list.get(0).getDealerID()==null){
             AppAuUser saveAppAuUser = new AppAuUser();
             saveAppAuUser.setId(list.get(0).getId());
