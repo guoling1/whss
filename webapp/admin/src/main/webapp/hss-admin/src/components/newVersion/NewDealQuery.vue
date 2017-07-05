@@ -30,6 +30,14 @@
               </el-select>
             </li>
             <li class="same">
+              <label>交易来源:</label>
+              <el-select style="width: 193px" v-model="query.source" clearable placeholder="业务方为好收收时可选择" size="small" :disabled="appId!='好收收'">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="直销" value="1">直销</el-option>
+                <el-option label="渠道" value="2">渠道</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>收款商户编号:</label>
               <el-input style="width: 193px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
@@ -243,7 +251,8 @@
           loadUrl: '',
           loadUrl1: '',
           payChannelSign:'',
-          appId:''
+          appId:'',
+          source:''
         },
         appId:'',
         merchantName: '',
@@ -485,6 +494,9 @@
           this.merchantName='';
           this.proxyName='';
           this.proxyName1='';
+          this.query.source='';
+        }else if(val == "好收银"){
+          this.query.source='';
         }
       }
     },
