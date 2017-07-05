@@ -150,4 +150,11 @@ public interface HsyMerchantAuditService {
      * @return
      */
     int getStatuts(Long id);
+
+    /**
+     * 店铺信息
+     * @param id
+     * @return
+     */
+    List<ShopInfoResponse> getShopInfo(Long id);
 }

@@ -34,7 +34,12 @@ public class SettleAccountFlowStatistics {
     private BigDecimal amount;
 
     /**
-     * 交易日期
+     * 交易开始日期
      */
-    private Date tradeDate;
+    private Date tradeStartDate;
+
+    /**
+     * 交易结束日期
+     */
+    private Date tradeEndDate;
 }

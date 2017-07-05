@@ -582,6 +582,34 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return this.hsyMerchantAuditDao.getStatuts(id);
     }
 
+    @Override
+    public List<ShopInfoResponse> getShopInfo(Long id) {
+        List<ShopInfoResponse> list = this.hsyMerchantAuditDao.getShopInfo(id);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++) {
+                String districtCode = list.get(i).getDistrictCode();
+                if (districtCode != null && !districtCode.equals("")) {
+                    HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+
+                    if (!ret.getParentCode().equals("0")) {
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                        if (!reu.getParentCode().equals("0")) {
+                            HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                            list.get(i).setDistrictCode(reu1.getAName() + reu.getAName() + ret.getAName());
+                        } else {
+                            list.get(i).setDistrictCode(reu.getAName() + ret.getAName());
+                        }
+                    }
+                    if (ret.getParentCode().equals("0")) {
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCityOnly(ret.getCode());
+                        list.get(i).setDistrictCode(reu.getAName());
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
     /**
      * 获取临时路径
      *

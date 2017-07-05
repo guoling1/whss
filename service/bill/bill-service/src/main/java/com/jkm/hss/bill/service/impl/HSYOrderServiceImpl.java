@@ -8,19 +8,16 @@ import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
-import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
-import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
 import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
@@ -47,7 +44,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Autowired
     private HsyShopDao hsyShopDao;
     @Autowired
-    private OrderDao orderDao;
+    private HsyUserDao hsyUserDao;
 
     @Override
     @Transactional
@@ -133,31 +130,34 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         return Optional.fromNullable(null);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
     @Override
-    public String orderListst(final String dataParam, final AppParam appParam) {
-        Gson gson=new GsonBuilder().setDateFormat(DateFormat.LONG).create();//.setDateFormat(AppConstant.DATE_FORMAT)
-        /**参数转化*/
-        TradeListRequestParam requestParam=null;
-        requestParam=gson.fromJson(dataParam, TradeListRequestParam.class);
-        if(requestParam.getPaymentChannels()==null){
-            requestParam.setPaymentChannels(requestParam.getChannel().split(","));
-        }
-        Map<String,Object> resultMap=new HashMap<>();
-
+    public String orderList(final String dataParam, final AppParam appParam) {
+        final Gson gson=new GsonBuilder().setDateFormat(DateFormat.LONG).create();
+        final TradeListRequestParam requestParam = gson.fromJson(dataParam, TradeListRequestParam.class);
+        final String[] paymentChannelArray = requestParam.getChannel().split(",");
+        final Map<String,Object> resultMap=new HashMap<>();
         final PageModel<HsyTradeListResponse> pageModel = new PageModel<>(requestParam.getPageNo(),
                 requestParam.getPageSize());
-        if (requestParam.getPaymentChannels().length == 0) {
+        if (paymentChannelArray.length == 0) {
             pageModel.setCount(0);
             pageModel.setRecords(Collections.<HsyTradeListResponse>emptyList());
-            resultMap.put("amount",0);
-            resultMap.put("number",0);
+            resultMap.put("amount", 0);
+            resultMap.put("number", 0);
             resultMap.put("pageModel",pageModel);
             return JSON.toJSONString(pageModel);
         }
-        final ArrayList<Integer> payChannelSigns = new ArrayList<>();
-        for (int i = 0; i < requestParam.getPaymentChannels().length; i++) {
-            payChannelSigns.addAll(EnumPayChannelSign.getIdListByPaymentChannel(Integer.valueOf(requestParam.getPaymentChannels()[i])));
+        final List<Integer> paymentChannels = new ArrayList<>();
+        for (int i = 0; i < paymentChannelArray.length; i++) {
+            paymentChannels.add(Integer.valueOf(paymentChannelArray[i]));
         }
+        requestParam.setPaymentChannels(paymentChannels);
         Date startTime = null;
         Date endTime = null;
         if (!StringUtils.isEmpty(requestParam.getStartTime())) {
@@ -166,102 +166,94 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         if (!StringUtils.isEmpty(requestParam.getEndTime())) {
             endTime = DateFormatUtil.parse(requestParam.getEndTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
-        final long count=hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(),payChannelSigns,startTime,endTime);
-        final List<HsyOrder> hsyOrders=hsyOrderDao.selectOrdersByParam( requestParam.getShopId(),
-                                                                        pageModel.getFirstIndex(),
-                                                                        requestParam.getPageSize(),
-                                                                        payChannelSigns,
-                                                                        startTime,endTime);
+        String merchantNo = null;
+        if (requestParam.getAll() == 1) {
+            final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByID(requestParam.getShopId()).get(0);
+            final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(appBizShop.getUid()).get(0);
+            merchantNo = appAuUser.getGlobalID();
+        }
+        final long count = this.hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels, startTime, endTime);
+        final List<HsyOrder> hsyOrders = this.hsyOrderDao.selectOrdersByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels,
+                startTime, endTime, pageModel.getFirstIndex(), requestParam.getPageSize());
+        if (CollectionUtils.isEmpty(hsyOrders)) {
+            resultMap.put("amount", 0);
+            resultMap.put("number", 0);
+            pageModel.setCount(0);
+            pageModel.setRecords(Collections.<HsyTradeListResponse>emptyList());
+            resultMap.put("pageModel", pageModel);
+            return JSON.toJSONString(pageModel);
+        }
+
+        final HashSet<Date> dateHashSet = new HashSet<>();
+        for (HsyOrder order: hsyOrders) {
+            dateHashSet.add(DateFormatUtil.parse(DateFormatUtil.format(order.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd));
+        }
+        final Iterator<Date> iterator = dateHashSet.iterator();
+        final HashMap<Date, AppStatisticsOrder> statisticsOrderHashMap = new HashMap<>();
+        while (iterator.hasNext()) {
+            final Date nextDate = iterator.next();
+            final String formatDate = DateFormatUtil.format(nextDate, DateFormatUtil.yyyy_MM_dd);
+            final Date sDate = DateFormatUtil.parse(formatDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            final Date eDate = DateFormatUtil.parse(formatDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            final AppStatisticsOrder statisticsOrder = this.hsyOrderDao.statisticsOrdersByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels,
+                    sDate, eDate);
+            statisticsOrderHashMap.put(nextDate, statisticsOrder);
+        }
+        final List<HsyTradeListResponse> hsyTradeListResponseList=new ArrayList<>();
+        for(HsyOrder hsyOrder : hsyOrders){
+            Date payDate = null;
+            if(hsyOrder.getPaysuccesstime()!=null){
+                payDate=DateFormatUtil.parse(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+            }
+            final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+            final Date curD = DateFormatUtil.parse(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd),  DateFormatUtil.yyyy_MM_dd);
+            final HsyTradeListResponse hsyTradeListResponse = new HsyTradeListResponse();
+            if(hsyOrder.isRefund() && refundDate.compareTo(payDate) == 0){
+                hsyTradeListResponse.setCanRefund(1);
+            } else {
+                hsyTradeListResponse.setCanRefund(0);
+            }
+            AppStatisticsOrder curstorder = statisticsOrderHashMap.get(curD);
+            if (curstorder==null) {curstorder = new AppStatisticsOrder();}
+            hsyTradeListResponse.setTotalAmount(curstorder.getAmount());
+            hsyTradeListResponse.setNumber(curstorder.getNumber());
+            hsyTradeListResponse.setAmount(hsyOrder.getAmount());
+            hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+            hsyTradeListResponse.setOrderstatus(hsyOrder.getOrderstatus());
+            hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
+            hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
+            hsyTradeListResponse.setChannel(hsyOrder.getPaymentChannel());
+            hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
+            hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
+            hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
+            hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
+            hsyTradeListResponse.setId(hsyOrder.getId());
+            hsyTradeListResponse.setOrderNo(hsyOrder.getOrderno());
+            hsyTradeListResponse.setShopName(hsyOrder.getShopname());
+            hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
+            hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
+            hsyTradeListResponse.setSourceTypeName(EnumHsySourceType.of(hsyOrder.getSourcetype()).getValue());
+            hsyTradeListResponseList.add(hsyTradeListResponse);
+        }
         pageModel.setCount(count);
-
-        List<HsyTradeListResponse> hsyTradeListResponseList=new ArrayList<HsyTradeListResponse>();
-        if (!CollectionUtils.isEmpty(hsyOrders)) {
-            final HashMap<String, AppStatisticsOrder> statisticsOrderHashMap = new HashMap<>();
-            AppStatisticsOrder appStatisticsOrder=null;
-            String readedTime="";
-            String readingTime="";
-            for(HsyOrder hsyOrder:hsyOrders){
-                if(hsyOrder.getOrderstatus()==EnumHsyOrderStatus.PAY_SUCCESS.getId()) {
-                    readingTime = DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
-                    if (readedTime.equals(readingTime)) {
-                        appStatisticsOrder.setAmount(appStatisticsOrder.getAmount().add(hsyOrder.getAmount()));
-                        appStatisticsOrder.setNumber(appStatisticsOrder.getNumber() + 1);
-                    } else {
-                        if (appStatisticsOrder != null) {
-                            statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
-                        }
-                        readedTime = readingTime;
-                        appStatisticsOrder = new AppStatisticsOrder();
-                        appStatisticsOrder.setNumber(1);
-                        appStatisticsOrder.setAmount(hsyOrder.getAmount());
-
-                    }
-                }
-            }
-            if(appStatisticsOrder!=null) {
-                statisticsOrderHashMap.put(readedTime, appStatisticsOrder);
-            }
-            if(!readingTime.equals("")){
-                Date dayStartTime=DateFormatUtil.parse(readingTime+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-                Date dayEndTime=DateFormatUtil.parse(readingTime+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-                HsyOrderSTResponse hsyDayOrderSTResponse=hsyOrderDao.selectDayOrderStByParm(requestParam.getShopId(),payChannelSigns,dayStartTime,dayEndTime);
-                appStatisticsOrder = new AppStatisticsOrder();
-                appStatisticsOrder.setNumber(hsyDayOrderSTResponse.getNumber());
-                appStatisticsOrder.setAmount(hsyDayOrderSTResponse.getTotalAmount());
-                statisticsOrderHashMap.put(readingTime,appStatisticsOrder);
-            }
-            
-            HsyTradeListResponse hsyTradeListResponse=null;
-            for(HsyOrder hsyOrder:hsyOrders){
-                Date payDate = null;
-                if(hsyOrder.getPaysuccesstime()!=null){
-                    payDate=DateFormatUtil.parse(DateFormatUtil.format(hsyOrder.getPaysuccesstime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
-                }
-                Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
-                String curD=DateFormatUtil.format(hsyOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
-                hsyTradeListResponse=new HsyTradeListResponse();
-                if(hsyOrder.isRefund()&&payDate.compareTo(refundDate) == 0){
-                        hsyTradeListResponse.setCanRefund(1);
-                }
-                else{
-                    hsyTradeListResponse.setCanRefund(0);
-                }
-                AppStatisticsOrder curstorder=statisticsOrderHashMap.get(curD);
-                if(curstorder==null){curstorder=new AppStatisticsOrder();}
-
-                hsyTradeListResponse.setTotalAmount(curstorder.getAmount());
-                hsyTradeListResponse.setNumber(curstorder.getNumber());
-                hsyTradeListResponse.setAmount(hsyOrder.getAmount());
-                hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
-                hsyTradeListResponse.setOrderstatus(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getId());
-                hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
-                hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
-                hsyTradeListResponse.setChannel(EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign()).getPaymentChannel().getId());
-                hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
-                hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
-                hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
-                hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
-                hsyTradeListResponse.setId(hsyOrder.getId());
-                hsyTradeListResponse.setOrderNo(hsyOrder.getOrderno());
-                hsyTradeListResponse.setShopName(hsyOrder.getShopname());
-                hsyTradeListResponse.setMerchantName(hsyOrder.getMerchantname());
-                hsyTradeListResponse.setSourceType(hsyOrder.getSourcetype());
-                hsyTradeListResponse.setSourceTypeName(EnumHsySourceType.of(hsyOrder.getSourcetype()).getValue());
-                hsyTradeListResponseList.add(hsyTradeListResponse);
-            }
-        }
         pageModel.setRecords(hsyTradeListResponseList);
-        if(requestParam.getStType()==1){
-            Date nowd=new Date();
-            startTime=DateFormatUtil.parse(DateFormatUtil.format(nowd,DateFormatUtil.yyyy_MM_dd)+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-            endTime=DateFormatUtil.parse(DateFormatUtil.format(nowd,DateFormatUtil.yyyy_MM_dd)+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        resultMap.put("pageModel", pageModel);
+        if(requestParam.getStType() == 1){
+            final Date nowDate = new Date();
+            final Date now = DateFormatUtil.parse(DateFormatUtil.format(nowDate, DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
+            final AppStatisticsOrder statisticsOrder = statisticsOrderHashMap.get(now);
+            if (null != statisticsOrder) {
+                resultMap.put("amount", statisticsOrder.getAmount());
+                resultMap.put("number", statisticsOrder.getNumber());
+                return JSON.toJSONString(resultMap);
+            }
+            startTime = DateFormatUtil.parse(DateFormatUtil.format(nowDate, DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatUtil.parse(DateFormatUtil.format(nowDate, DateFormatUtil.yyyy_MM_dd) + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
-        HsyOrderSTResponse hsyOrderSTResponse=hsyOrderDao.selectOrderStByParm(requestParam.getShopId(),payChannelSigns,startTime,endTime);
-
-        resultMap.put("amount",hsyOrderSTResponse.getTotalAmount());
-        resultMap.put("number",hsyOrderSTResponse.getNumber());
-        resultMap.put("pageModel",pageModel);
-        //return gson.toJson(resultMap);
+        final AppStatisticsOrder statisticsOrder = this.hsyOrderDao.statisticsOrdersByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels,
+                startTime, endTime);
+        resultMap.put("amount", statisticsOrder.getAmount());
+        resultMap.put("number", statisticsOrder.getNumber());
         return JSON.toJSONString(resultMap);
     }
 

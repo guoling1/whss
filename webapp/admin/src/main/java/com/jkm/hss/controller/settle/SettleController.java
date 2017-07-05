@@ -277,4 +277,12 @@ public class SettleController extends BaseController {
         result.setRecords(responses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "synchronousDataTest")
+    public String synchronousDataTest() {
+        this.accountSettleAuditRecordService.synchronousDataTest();
+        return "SUCCESS";
+    }
+
 }

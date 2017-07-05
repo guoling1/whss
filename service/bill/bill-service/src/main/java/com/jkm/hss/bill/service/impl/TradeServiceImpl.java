@@ -158,6 +158,8 @@ public class TradeServiceImpl implements TradeService {
         order.setGoodsDescribe(payParams.getGoodsDescribe());
         order.setPayType(payParams.getMemberCardPay() ? payChannelSign.getCode() : channelCode);
         order.setPayChannelSign(payParams.getChannel());
+        order.setPaymentChannel(payChannelSign.getPaymentChannel().getId());
+        order.setUpperChannel(payChannelSign.getUpperChannel().getId());
         order.setPayAccountType(payChannelSign.getPaymentChannel().getId());
         order.setPayAccount(payParams.getMemberId());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());

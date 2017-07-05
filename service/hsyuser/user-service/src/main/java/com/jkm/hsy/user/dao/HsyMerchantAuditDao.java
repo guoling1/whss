@@ -175,4 +175,11 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     int getStatuts(@Param("id") Long id);
+
+    /**
+     * 店铺信息
+     * @param id
+     * @return
+     */
+    List<ShopInfoResponse> getShopInfo(@Param("id") Long id);
 }

@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -56,18 +57,44 @@ public interface HsyOrderDao {
      */
     HsyOrder selectByIdWithLock(@Param("id") long id);
 
-
-   List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
-                                      @Param("offset") int offset,
-                                      @Param("count") int count,
-                                      @Param("payChannelSigns") List<Integer> payChannelSigns,
-                                      @Param("startTime") Date startTime,
-                                      @Param("endTime") Date endTime);
-
+    /**
+     * 订单列表-个数
+     *
+     * @param shopId
+     * @param paymentChannels
+     * @param merchantNo
+     * @param selectAll
+     * @param startTime
+     * @param endTime
+     * @return
+     */
    long selectOrderCountByParam(@Param("shopId") long shopId,
-                                @Param("payChannelSigns") List<Integer> payChannelSigns,
+                                @Param("merchantNo") String merchantNo,
+                                @Param("selectAll") int selectAll,
+                                @Param("paymentChannels") List<Integer> paymentChannels,
                                 @Param("startTime") Date startTime,
                                 @Param("endTime") Date endTime);
+
+    /**
+     * 订单列表-记录
+     *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
+                                       @Param("merchantNo") String merchantNo,
+                                       @Param("selectAll") int selectAll,
+                                       @Param("paymentChannels") List<Integer> paymentChannels,
+                                       @Param("startTime") Date startTime,
+                                       @Param("endTime") Date endTime,
+                                       @Param("offset") int offset,
+                                       @Param("count") int count);
+
 
     HsyOrderSTResponse selectDayOrderStByParm(@Param("shopId") long shopId,
                                            @Param("payChannelSigns") List<Integer> payChannelSigns,
@@ -88,4 +115,22 @@ public interface HsyOrderDao {
      * @return
      */
     List<HsyOrder> selectByMerchantNoAndTime(@Param("merchantNo") String merchantNo, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    /**
+     * 统计交易额度
+     *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    AppStatisticsOrder statisticsOrdersByParam(@Param("shopId") long shopId,
+                                               @Param("merchantNo") String merchantNo,
+                                               @Param("selectAll") int selectAll,
+                                               @Param("paymentChannels") List<Integer> paymentChannels,
+                                               @Param("startTime") Date startTime,
+                                               @Param("endTime") Date endTime);
 }

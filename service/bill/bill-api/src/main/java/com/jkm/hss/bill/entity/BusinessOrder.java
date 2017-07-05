@@ -102,6 +102,20 @@ public class BusinessOrder extends BaseEntity {
     private int payChannelSign;
 
     /**
+     * 上游渠道方
+     *
+     * {@link com.jkm.hss.product.enums.EnumUpperChannel}
+     */
+    private int upperChannel;
+
+    /**
+     * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
+     *
+     * 支付渠道
+     */
+    private int paymentChannel;
+
+    /**
      * 银行名字
      */
     private String bankName;
