@@ -31,7 +31,7 @@
             </li>
             <li class="same">
               <label>交易来源:</label>
-              <el-select style="width: 193px" v-model="query.source" clearable placeholder="业务方为好收收时可选择" size="small" :disabled="appId!='好收收'">
+              <el-select style="width: 193px" v-model="query.source" clearable placeholder="业务方为好收银时可选择" size="small" :disabled="appId!='好收银'">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="直销" value="1">直销</el-option>
                 <el-option label="渠道" value="2">渠道</el-option>
@@ -495,7 +495,7 @@
           this.proxyName='';
           this.proxyName1='';
           this.query.source='';
-        }else if(val == "好收银"){
+        }else if(val == "好收收"){
           this.query.source='';
         }
       }
