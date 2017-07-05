@@ -535,6 +535,12 @@
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
+        <if test="source==1">
+            AND z.`DEALERID`=0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
+        </if>
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
@@ -1463,6 +1469,12 @@
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
+        <if test="source==1">
+            AND z.`DEALERID` <![CDATA[ = ]]> 0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
+        </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
@@ -1740,6 +1752,12 @@
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
+        <if test="source==1">
+            AND z.`DEALERID`=0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
+        </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
@@ -1814,6 +1832,12 @@
         </if>
         <if test="endTime!=null and endTime!=''">
             AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="source==1">
+            AND z.`DEALERID`<![CDATA[ = ]]>0
+        </if>
+        <if test="source==2">
+            AND z.`DEALERID` <![CDATA[ > ]]> 0
         </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
