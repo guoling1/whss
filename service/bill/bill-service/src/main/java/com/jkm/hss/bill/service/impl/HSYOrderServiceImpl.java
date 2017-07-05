@@ -169,7 +169,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         String merchantNo = null;
         if (requestParam.getAll() == 1) {
             final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByID(requestParam.getShopId()).get(0);
-            final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(appBizShop.getUid()).get(0);
+            final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(appBizShop.getAccountID()).get(0);
             merchantNo = appAuUser.getGlobalID();
         }
         final long count = this.hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels, startTime, endTime);

@@ -7,6 +7,7 @@ import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.CallbackResponse;
 import com.jkm.hss.bill.helper.SplitProfitParams;
 import com.jkm.hss.bill.service.HSYOrderService;
@@ -72,7 +73,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
      * @return
      */
     @Override
-    @Transactional
     public long createOrder(final int channel, final long shopId, final String memberId, final String code) {
         log.info("用户[{}]在店铺[{}]扫静态码创建订单，通道[{}]", memberId, shopId, channel);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
@@ -96,6 +96,45 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setGoodsname(shop.getShortName());
         hsyOrder.setGoodsdescribe(shop.getShortName());
         hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
+        this.hsyOrderService.insert(hsyOrder);
+        return hsyOrder.getId();
+    }
+
+    /**
+     * 创建订单
+     *
+     * @param shopId
+     * @param amount
+     * @return
+     */
+    @Override
+    public long createOrder2(long shopId, BigDecimal amount) {
+        log.info("用户-在店铺[{}]通过被扫创建订单，金额[{}]", shopId, amount);
+        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
+        final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setShopid(shopId);
+        hsyOrder.setShopname(shop.getShortName());
+        hsyOrder.setMerchantNo(appAuUser.getGlobalID());
+        hsyOrder.setMerchantname(shop.getName());
+        hsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+        hsyOrder.setSourcetype(EnumHsySourceType.SCAN.getId());
+        hsyOrder.setValidationcode("");
+        hsyOrder.setQrcode("");
+        hsyOrder.setPaychannelsign(0);
+        hsyOrder.setPaytype("");
+        hsyOrder.setMemberId("");
+        hsyOrder.setPaymentChannel(0);
+        hsyOrder.setUpperChannel(0);
+        hsyOrder.setGoodsname(shop.getShortName());
+        hsyOrder.setGoodsdescribe(shop.getShortName());
+        hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }

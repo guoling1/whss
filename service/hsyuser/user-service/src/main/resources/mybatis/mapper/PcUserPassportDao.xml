@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.PcUserPassportDao">
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `tb_app_pc_user_passport`
+        (
+            uid,
+            token,
+            expire_time,
+            last_login_date,
+            login_status,
+            status
+        )
+        VALUES
+        (
+            #{uid},
+            #{token},
+            #{expireTime},
+            #{lastLoginDate},
+            #{loginStatus},
+            #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `tb_app_pc_user_passport`
+        SET
+            uid = #{uid},
+            token = #{token},
+            expire_time = #{expireTime},
+            last_login_date = #{lastLoginDate},
+            login_status = #{loginStatus},
+            status = #{status}
+        WHERE auid = #{auid}
+    </update>
+
+    <update id="updateExpireTime">
+        UPDATE `tb_app_pc_user_passport` SET expire_time = #{expireTime} WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE `tb_app_pc_user_passport` SET status = #{status} WHERE uid = #{uid}
+    </update>
+
+    <update id="updateLastLoginDate">
+         UPDATE `tb_app_pc_user_passport` SET last_login_date = #{date} WHERE id = #{id}
+    </update>
+
+    <update id="markLogout">
+        UPDATE `tb_app_pc_user_passport` SET login_status = #{status} WHERE id = #{id}
+    </update>
+
+    <select id="selectByUid" resultType="com.jkm.hsy.user.entity.PcUserPassport">
+        SELECT * FROM `tb_app_pc_user_passport` WHERE uid = #{uid}
+    </select>
+
+    <select id="selectByToken" resultType="com.jkm.hsy.user.entity.PcUserPassport">
+        SELECT * FROM `tb_app_pc_user_passport` WHERE token = #{token};
+    </select>
+</mapper>
