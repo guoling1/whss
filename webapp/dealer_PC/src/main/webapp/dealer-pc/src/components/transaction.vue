@@ -28,7 +28,7 @@
                 <span class="screen-title">收款商户名称</span>
                 <el-input v-model="query.merchantName" placeholder="收款商户名称" size="small" style="width:220px"></el-input>
               </div>
-              <div class="screen-item">
+              <!--<div class="screen-item">
                 <span class="screen-title">业务方</span>
                 <el-select v-model="query.appId" size="small" placeholder="请选择" style="width: 220px">
                   <el-option v-for="item in item_appId"
@@ -36,7 +36,7 @@
                              :value="item.value">
                   </el-option>
                 </el-select>
-              </div>
+              </div>-->
               <div class="screen-item">
                 <span class="screen-title">交易状态</span>
                 <el-select v-model="query.status" size="small" clearable placeholder="请选择" style="width: 220px">
@@ -91,7 +91,7 @@
             <div class="box-body">
               <el-table v-loading.body="tableLoading" style="font-size: 12px;margin:15px 0" :data="records" border>
                 <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-                <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
+                <!--<el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>-->
                 <el-table-column label="交易订单号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
