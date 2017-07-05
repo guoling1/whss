@@ -28,7 +28,7 @@
                 <el-form-item label="分配对象">
                   <el-radio-group v-model="form.isSelf" @change="isSelfChange">
                     <el-radio :label="0">下级代理</el-radio>
-                    <el-radio :label="1">分配给自己</el-radio>
+                    <el-radio :label="1" :disabled="isDealer">分配给自己</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="代理名称" v-show="label.isSelf">
@@ -92,8 +92,24 @@
   </div>
 </template>
 <script lang="babel">
+  import store from '../store'
   export default {
     name: 'app',
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            if (data.dealerLeavel == 1) {
+              vm.isDealer = true
+            } else if (data.dealerLeavel == 2) {
+              vm.isDealer = true
+            } else {
+              vm.isDealer = false
+            }
+          }
+        });
+      });
+    },
     created(){
       this.$http.post('/daili/qrCode/proxyProduct').then(res => {
         this.product.proxyHss = res.data.proxyHss;
@@ -108,6 +124,7 @@
     },
     data() {
       return {
+        isDealer: true,
         product: {
           proxyHss: 0,
           proxyHsy: 0
