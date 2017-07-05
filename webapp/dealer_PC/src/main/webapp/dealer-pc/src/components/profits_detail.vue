@@ -23,7 +23,7 @@
                   </el-option>
                 </el-select>
               </div>
-              <div class="screen-item">
+              <div class="screen-item" v-if="isShow">
                 <span class="screen-title">分润日期</span>
                 <el-date-picker size="small"
                                 v-model="datetime"
@@ -151,11 +151,15 @@
           }]
         },
         pageTotal: 0,
-        allTotal: 0
+        allTotal: 0,
+        isShow: true
       }
     },
     created() {
       let query = this.$route.query;
+      if(query.businessType){
+        this.isShow = false;
+      }
       if (query.businessType == '好收收- 收款') {
         this.businessType = 'hssPay';
       } else if (query.businessType == '好收收- 提现') {
@@ -193,8 +197,8 @@
         this.$http.post('/daili/profit/profitAmount', {
           orderNo: this.orderNo,
           businessType: this.businessType,
-          beginDate: this.beginDate,
-          endDate: this.endDate
+          startTime: this.startTime,
+          endTime: this.endTime
         }).then(res => {
           this.allTotal = res.data;
         }, err => {
