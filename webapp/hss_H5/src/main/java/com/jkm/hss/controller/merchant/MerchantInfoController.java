@@ -417,4 +417,14 @@ public class MerchantInfoController extends BaseController {
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",bankCardBinOptional.get().getShorthand().trim());
     }
+
+    /**
+     * 跳到帮助页面
+     * @return
+     */
+    @RequestMapping(value = "/toHelp", method = RequestMethod.GET)
+    public String toHssAccountFlow(HttpServletRequest request){
+
+        return "/help";
+    }
 }
