@@ -67,6 +67,34 @@ public interface HSYOrderService {
     Optional<HsyOrder> selectByOrderId(long orderId);
 
     /**
+     * 订单列表-个数
+     *
+     * @param shopId
+     * @param paymentChannels
+     * @param merchantNo
+     * @param selectAll
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    long getOrderCountByParam(long shopId, String merchantNo, int selectAll, List<Integer> paymentChannels,
+                                 Date startTime, Date endTime);
+
+    /**
+     * 订单列表-记录
+     *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<HsyOrder> getOrdersByParam(long shopId, String merchantNo, int selectAll, List<Integer> paymentChannels,
+                                       Date startTime, Date endTime, int offset, int count);
+
+    /**
      * 订单列表及统计
      *
      * @param dataParam

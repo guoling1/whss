@@ -55,7 +55,7 @@ public class HsyOrder{
     private BigDecimal amount;
     private BigDecimal poundage;
     private String qrcode;
-    private Integer cashierid;
+    private long cashierid;
     private String cashiername;
     /**
      * 第三方交易流水号

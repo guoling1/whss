@@ -154,6 +154,7 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrder.setPaytype(channelCode);
         EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(hsyOrder.getPaychannelsign());
         hsyOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+        hsyOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         hsyOrderDao.update(hsyOrder);
 
         PayParams payParams=new PayParams();

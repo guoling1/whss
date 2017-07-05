@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.helper.CallbackResponse;
 import com.jkm.hsy.user.entity.AppParam;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public interface HSYTransactionService {
      * @param amount
      * @return
      */
-    long createOrder2(long shopId, BigDecimal amount);
+    long createOrder2(long shopId, long currentUid, BigDecimal amount);
 
     /**
      * 好收银扫码下单
@@ -62,4 +63,13 @@ public interface HSYTransactionService {
      * @return
      */
     String refund(String paramData, AppParam appParam);
+
+    /**
+     * 授权码支付
+     *
+     * @param orderId
+     * @param authCode
+     * @return
+     */
+    Pair<Integer,String> authCodePay(long orderId, String authCode);
 }

@@ -133,6 +133,44 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     /**
      * {@inheritDoc}
      *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public long getOrderCountByParam(final long shopId, final String merchantNo, final int selectAll,
+                                        final List<Integer> paymentChannels, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.selectOrderCountByParam(shopId, merchantNo, selectAll, paymentChannels, startTime, endTime);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<HsyOrder> getOrdersByParam(final long shopId, final String merchantNo, final int selectAll, final List<Integer> paymentChannels,
+                                              final Date startTime, final Date endTime, final int offset, final int count) {
+        return this.hsyOrderDao.selectOrdersByParam(shopId, merchantNo, selectAll, paymentChannels,
+                startTime, endTime, offset, count);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param dataParam
      * @param appParam
      * @return
