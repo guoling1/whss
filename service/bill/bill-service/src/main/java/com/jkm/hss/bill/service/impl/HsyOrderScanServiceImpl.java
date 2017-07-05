@@ -223,6 +223,10 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrderReturn.setOrderno(hsyOrder.getOrderno());
         hsyOrderReturn.setOrderstatus(hsyOrder.getOrderstatus());
         hsyOrderReturn.setPaysuccesstime(hsyOrder.getPaysuccesstime());
+        if(hsyOrder.getPaytype().contains("wechat"))
+            hsyOrderReturn.setPaytype("微信");
+        else
+            hsyOrderReturn.setPaytype("支付宝");
         hsyOrderReturn.setRemark(hsyOrder.getRemark());
 
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {

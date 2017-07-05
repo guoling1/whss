@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.dao;
 
+import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -35,4 +36,7 @@ public interface HsyMembershipDao {
     public Integer findMemberCardCountByMCID(@Param("mcid")Long mcid);
     public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid);
     public List<BasicChannel> findChannelAccountID(@Param("channelTypeSign")Integer channelTypeSign);
+    public List<AppBizShop> findSuitShopByMCID(@Param("mcid")Long mcid);
+    public List<AppPolicyMember> findMemberListByPage(Page<AppPolicyMember> entity);
+    public Integer findMemberListByPageCount(AppPolicyMember entity);
 }

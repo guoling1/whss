@@ -1,6 +1,9 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Optional;
 import com.google.gson.*;
+import com.jkm.hss.account.entity.MemberAccount;
+import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
@@ -36,9 +39,11 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     private HsyUserDao hsyUserDao;
     @Autowired
     private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
+    @Autowired
+    private MemberAccountService memberAccountService;
 
     /**HSY001047 创建会员卡*/
-    public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
+    public String insertMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
         AppPolicyMembershipCard appPolicyMembershipCard=null;
@@ -127,7 +132,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     }
 
     /**HSY001051 查询会员卡列表和统计值*/
-    public String findMemshipCards(String dataParam, AppParam appParam)throws ApiHandleException{
+    public String findMembershipCards(String dataParam, AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
         AppPolicyMembershipCard appPolicyMembershipCard=null;
@@ -141,7 +146,6 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         if(!(appPolicyMembershipCard.getUid()!=null&&!appPolicyMembershipCard.getUid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"法人ID");
         List<AppPolicyMembershipCard> cardList=hsyMembershipDao.findMemberCardList(appPolicyMembershipCard);
-        Integer memberCount=hsyMembershipDao.findMemberCountOfUserByUID(appPolicyMembershipCard.getUid());
 
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
@@ -161,7 +165,6 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         }).create();
         Map map=new HashMap();
         map.put("cardList",cardList);
-        map.put("memberCount",memberCount);
         return gson.toJson(map);
     }
 
@@ -204,8 +207,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     }
 
     /**HSY001053 查询会员卡详细信息和统计值*/
-    public String findMemshipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException{
-        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+    public String findMembershipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().create();
         /**参数转化*/
         AppPolicyMembershipCard appPolicyMembershipCard=null;
         try{
@@ -221,20 +224,35 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         List<AppPolicyMembershipCard> list= hsyMembershipDao.findMemberCardByID(appPolicyMembershipCard.getId());
         Integer cardCount=hsyMembershipDao.findMemberCardCountByMCID(appPolicyMembershipCard.getId());
         Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid());
+        List<AppBizShop> shopList=hsyMembershipDao.findSuitShopByMCID(appPolicyMembershipCard.getId());
 
         BigDecimal proportion=new BigDecimal(cardCount/cardTotalCount);
         BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         Map result=new HashMap();
         result.put("appPolicyMembershipCard",list.get(0));
+        result.put("shopList",shopList);
         result.put("cardCount",cardCount);
         result.put("cardTotalCount",cardTotalCount);
         result.put("proportion",proportionEx+"%");
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
         return gson.toJson(result);
     }
 
     /**HSY001054 停止(启用)开通会员卡*/
-    public String updateMemshipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException{
+    public String updateMembershipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
         AppPolicyMembershipCard appPolicyMembershipCard=null;
@@ -256,7 +274,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     }
 
     /**HSY001055 修改会员卡*/
-    public String updateMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException {
+    public String updateMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
         AppPolicyMembershipCard appPolicyMembershipCard=null;
@@ -299,6 +317,102 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         }
         hsyMembershipDao.updateMembershipCard(appPolicyMembershipCard);
         return "";
+    }
+
+    /**HSY001066 查找会员列表*/
+    public String findMemberList(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMember appPolicyMember=null;
+        try{
+            appPolicyMember=gson.fromJson(dataParam, AppPolicyMember.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMember.getUid()!=null&&!appPolicyMember.getUid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户法人ID");
+        if(!(appPolicyMember.getParam()!=null&&!appPolicyMember.getParam().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"搜索条件");
+        if(!(appPolicyMember.getCurrentPage()!=null&&!appPolicyMember.getCurrentPage().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前页数");
+        if(appPolicyMember.getCurrentPage()<=0)
+            throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
+
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(appPolicyMember.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<AppPolicyMember> pageAll=new Page<AppPolicyMember>();
+        pageAll.setObjectT(appPolicyMember);
+        pageAll.setPage(page);
+        pageAll.getPage().setTotalRecord(hsyMembershipDao.findMemberListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyMembershipDao.findMemberListByPage(pageAll));
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                boolean flag=false;
+                if(f.getName().contains("objectT"))
+                    return true;
+                if(f.getName().contains("viewpagecount"))
+                    return true;
+                if(f.getName().contains("startPageIndex"))
+                    return true;
+                if(f.getName().contains("endPageIndex"))
+                    return true;
+                return flag;
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(pageAll);
+    }
+
+    /**HSY001067 查找会员详情*/
+    public String findMemberInfo(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMember appPolicyMember=null;
+        try{
+            appPolicyMember=gson.fromJson(dataParam, AppPolicyMember.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMember.getId()!=null&&!appPolicyMember.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"会员ID");
+        List<AppPolicyMember> memberList=hsyMembershipDao.findMemberInfoByID(appPolicyMember.getId());
+        appPolicyMember=memberList.get(0);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+
+        Map result=new HashMap();
+        result.put("appPolicyMember",appPolicyMember);
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(result);
     }
 
     public AppPolicyConsumer findConsumerByOpenID(String openID){
@@ -478,6 +592,9 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         }
         appPolicyRechargeOrder.setMemberID(appPolicyMember.getId());
         appPolicyRechargeOrder.setMemberAccountID(appPolicyMember.getAccountID());
+        appPolicyRechargeOrder.setCid(appPolicyMember.getCid());
+        appPolicyRechargeOrder.setMcid(appPolicyMember.getMcid());
+        appPolicyRechargeOrder.setUid(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantReceiveAccountID(appPolicyMember.getReceiptAccountID());
         List<AppAuUser> userList=hsyMembershipDao.findShopNameAndGlobalID(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantName(userList.get(0).getShopName());

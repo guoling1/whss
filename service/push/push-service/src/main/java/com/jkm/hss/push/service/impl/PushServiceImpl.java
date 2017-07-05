@@ -207,42 +207,51 @@ public class PushServiceImpl implements PushService {
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Map pushCashMsg(Long sid, String payChannel, Double amount, String code, String transactionNumber) {
-//        final int count = this.pushDao.getTransactionNumber(transactionNumber);
-//        if (count > 0){
-//            Map map = new HashMap();
-//            map.put("result","已经推送过，不可重复推送");
-//            return map;
-//        }
+        final int count = this.pushDao.getTransactionNumber(transactionNumber);
+        if (count > 0){
+            Map map = new HashMap();
+            map.put("result","已经推送过，不可重复推送");
+            return map;
+        }
         List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
         List<String>  clients= new ArrayList<>();
-        for (int i=0;i<list.size();i++){
-            final String isavoidingtone = list.get(i).get("ISAVOIDINGTONE").toString();
-            if (isavoidingtone.equals("1")){
-                final String clientid = list.get(i).get("CLIENTID").toString();
-                if (!"".equals(clientid)&&clientid!=null){
+//        for (int i=0;i<list.size();i++){
+//            if (list.get(i).get("ISAVOIDINGTONE")!=null) {
+//                final String isavoidingtone = list.get(i).get("ISAVOIDINGTONE").toString();
+//                if (isavoidingtone != null && isavoidingtone.equals("1")) {
+//                    final String clientid = list.get(i).get("CLIENTID").toString();
+//                    if (!"".equals(clientid) && clientid != null) {
+//                        clients.add(clientid);
+//                        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+//                        Map data = new HashMap();
+//                        data.put("code", code);
+//                        data.put("payChannel", payChannel);
+//                        data.put("amount", amount);
+//                        String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+//                        AppResult appResult = new AppResult();
+//                        appResult.setResultCode(200);
+//                        appResult.setResultMessage(content);
+//                        Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
+//                    }
+//                }
+//            }
+//        }
+        List<String>  clients1= new ArrayList<>();
+        for(Map map: list){
+            if (map.get("ISAVOIDINGTONE") == null || map.get("ISAVOIDINGTONE").toString().equals("0")) {
+                if(map.get("CLIENTID")!=null){
+                    String clientid=map.get("CLIENTID").toString();
+                    clients1.add(clientid);
+                }
+            }else {
+                final String clientid = map.get("CLIENTID").toString();
+                if (!"".equals(clientid) && clientid != null) {
                     clients.add(clientid);
-                    SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
-                    Map  data= new HashMap();
-                    data.put("code", code);
-                    data.put("payChannel",payChannel );
-                    data.put("amount", amount);
-                    String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
-                    AppResult   appResult=new AppResult() ;
-                    appResult.setResultCode(200);
-                    appResult.setResultMessage(content);
-                    Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
                 }
             }
-        }
 
-        for(Map map: list){
-            if(map.get("CLIENTID")!=null){
-                String clientid=map.get("CLIENTID").toString();
-                clients.add(clientid);
-            }
         }
         SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
-
         Map  data= new HashMap();
         data.put("code", code);
         data.put("payChannel",payChannel );
@@ -253,9 +262,10 @@ public class PushServiceImpl implements PushService {
         appResult.setResultCode(200);
         appResult.setResultMessage(content);
 
+        this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
 
 //        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
-        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
+        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
         return ret;
     }
 

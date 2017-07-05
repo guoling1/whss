@@ -28,7 +28,7 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
-    public void findMemshipCards()throws Exception{
+    public void findMembershipCards()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001051");
         p.setAccessToken(ActiveControllerTester.accessToken);
@@ -54,7 +54,7 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
-    public void findMemshipCardsInfo()throws Exception{
+    public void findMembershipCardsInfo()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001053");
         p.setAccessToken(ActiveControllerTester.accessToken);
@@ -67,7 +67,7 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
-    public void updateMemshipCardsStatus()throws Exception{
+    public void updateMembershipCardsStatus()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001054");
         p.setAccessToken(ActiveControllerTester.accessToken);
@@ -80,7 +80,7 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
-    public void updateMemshipCard()throws Exception{
+    public void updateMembershipCard()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001055");
         p.setAccessToken(ActiveControllerTester.accessToken);
@@ -88,6 +88,32 @@ public class ActiveMemberControllerTester {
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
         String param="{\"id\":20,\"membershipName\": \"会员卡修改后的记录\",\"membershipShopName\":\"修改后卡上显示的店铺姓名\",\"sids\":\"211,234\",\"depositAmount\":0.01,\"isPresentedViaActivate\":1,\"presentAmount\":10,\"isPresentedViaRecharge\":1,\"rechargeLimitAmount\":0.01,\"rechargePresentAmount\":20}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void findMemberList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001066");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"uid\":215,\"param\":\"13521691431\",\"currentPage\":1}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindMemberInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001067");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"id\":32}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

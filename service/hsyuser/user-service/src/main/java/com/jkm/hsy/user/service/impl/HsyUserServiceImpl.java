@@ -442,6 +442,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 qrMap.put("shortName",shopQR.getShortName());
                 qrMap.put("name",shopQR.getName());
                 qrMap.put("type",shopQR.getType());
+                qrMap.put("id",shopQR.getId());
                 if(qrList!=null&&qrList.size()!=0)
                     qrMap.put("qrList",qrList);
                 shopQRList.add(qrMap);
@@ -650,6 +651,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         Date date=new Date();
         appAuUser.setUpdateTime(date);
         hsyUserDao.update(appAuUser);
+        pushService.pushReferrals(appAuUser.getId(),appParam.getAccessToken());
         return "";
     }
 
@@ -1251,6 +1253,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 qrMap.put("shortName",shopQR.getShortName());
                 qrMap.put("name",shopQR.getName());
                 qrMap.put("type",shopQR.getType());
+                qrMap.put("id",shopQR.getId());
                 if(qrList!=null&&qrList.size()!=0)
                     qrMap.put("qrList",qrList);
                 shopQRList.add(qrMap);
