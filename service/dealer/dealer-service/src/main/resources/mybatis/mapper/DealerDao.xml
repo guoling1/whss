@@ -534,19 +534,24 @@
         d.id,
         d.mobile,
         d.proxy_name,
-        (SELECT DISTINCT
-        (product_id)
-        FROM
-        tb_dealer_channel_rate
-        WHERE
-        dealer_id = d.id
-        AND product_id IN (
-        SELECT
-        id
-        FROM
-        tb_product
-        WHERE
-        type = #{sysType})) as isDistribute
+        <if test="sysType!=null and sysType!='' and sysType=='hss'">
+            (SELECT DISTINCT
+            (product_id)
+            FROM
+            tb_dealer_channel_rate
+            WHERE
+            dealer_id = d.id
+            AND product_id IN (
+            SELECT
+            id
+            FROM
+            tb_product
+            WHERE
+            type = #{sysType})) as isDistribute
+        </if>
+        <if test="sysType!=null and sysType!='' and sysType=='hsy'">
+            (select distinct(dealer_id) from app_dealer_rate_policy where dealer_id = d.id and status=1) as isDistribute
+        </if>
         FROM tb_dealer as d
         WHERE
         d.level = 2
