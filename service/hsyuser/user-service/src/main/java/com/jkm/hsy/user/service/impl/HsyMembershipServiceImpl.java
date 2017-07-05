@@ -1,6 +1,9 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Optional;
 import com.google.gson.*;
+import com.jkm.hss.account.entity.MemberAccount;
+import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
@@ -36,6 +39,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     private HsyUserDao hsyUserDao;
     @Autowired
     private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
+    @Autowired
+    private MemberAccountService memberAccountService;
 
     /**HSY001047 创建会员卡*/
     public String insertMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException {
@@ -387,8 +392,27 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"会员ID");
         List<AppPolicyMember> memberList=hsyMembershipDao.findMemberInfoByID(appPolicyMember.getId());
         appPolicyMember=memberList.get(0);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
 
-        return "";
+        Map result=new HashMap();
+        result.put("appPolicyMember",appPolicyMember);
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(result);
     }
 
     public AppPolicyConsumer findConsumerByOpenID(String openID){

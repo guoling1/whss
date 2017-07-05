@@ -36,6 +36,9 @@ public class AppPolicyMember {
 
     private String param;//搜索条件
     private Integer currentPage;//当前页数
+    private BigDecimal remainingSum;//余额
+    private BigDecimal rechargeTotalAmount;//充值总金额
+    private BigDecimal consumeTotalAmount;//累计消费总金额
 
     public Long getId() {
         return id;
@@ -244,6 +247,29 @@ public class AppPolicyMember {
 
     public void setParam(String param) {
         this.param = param;
+    }
 
+    public BigDecimal getRemainingSum() {
+        return remainingSum;
+    }
+
+    public void setRemainingSum(BigDecimal remainingSum) {
+        this.remainingSum = remainingSum;
+    }
+
+    public BigDecimal getRechargeTotalAmount() {
+        return rechargeTotalAmount;
+    }
+
+    public void setRechargeTotalAmount(BigDecimal rechargeTotalAmount) {
+        this.rechargeTotalAmount = rechargeTotalAmount;
+    }
+
+    public BigDecimal getConsumeTotalAmount() {
+        return consumeTotalAmount;
+    }
+
+    public void setConsumeTotalAmount(BigDecimal consumeTotalAmount) {
+        this.consumeTotalAmount = consumeTotalAmount;
     }
 }

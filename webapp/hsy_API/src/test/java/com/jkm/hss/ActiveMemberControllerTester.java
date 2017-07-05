@@ -106,6 +106,19 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
+    public void testFindMemberInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001067");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"id\":32}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void testEnAndDe()throws Exception{
         String data="215";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");

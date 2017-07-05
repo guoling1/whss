@@ -109,7 +109,8 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001065", new String[]{"hsyUserService","updateIsAvoidingTone"});
         /**查找会员列表*/
         bizMapper.put("HSY001066", new String[]{"hsyMembershipService","findMemberList"});
-
+        /**查找会员详情*/
+        bizMapper.put("HSY001067", new String[]{"hsyMembershipService","findMemberInfo"});
 
     }
 }
