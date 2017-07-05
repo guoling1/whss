@@ -3208,12 +3208,12 @@
         tb_order a
         LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
         WHERE
-        a.trade_type = 1 AND b.dealer_id=#{dealerId} and a.app_id='hss'
+        a.trade_type = 1 AND b.oem_id=#{dealerId} and a.app_id='hss'
         <if test="startTime!=null and startTime!=''">
-            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+            AND a.create_time <![CDATA[ >= ]]> #{begin}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+            AND a.create_time <![CDATA[ <= ]]> #{end}
         </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
@@ -3258,12 +3258,12 @@
         tb_order a
         LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
         WHERE
-        a.trade_type = 1 AND b.dealer_id=#{dealerId} and a.app_id='hss'
+        a.trade_type = 1 AND b.oem_id=#{dealerId} and a.app_id='hss'
         <if test="startTime!=null and startTime!=''">
-            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+            AND a.create_time <![CDATA[ >= ]]> #{begin}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+            AND a.create_time <![CDATA[ <= ]]> #{end}
         </if>
         <if test="orderNo != null and orderNo!=''">
             AND a.order_no LIKE CONCAT('%',#{orderNo})
