@@ -35,6 +35,10 @@ public class PcStatisticsOrder {
      */
     private BigDecimal realAmount;
     /**
+     * 退款金额
+     */
+    private BigDecimal refundAmount;
+    /**
      * 手续费
      */
     private BigDecimal poundage;

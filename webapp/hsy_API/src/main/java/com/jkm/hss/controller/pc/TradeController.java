@@ -181,46 +181,11 @@ public class TradeController extends BaseController {
         final Date startTime = DateFormatUtil.parse(statisticsOrderRequest.getStartDate() + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date endTime = DateFormatUtil.parse(statisticsOrderRequest.getEndDate() + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final List<PcStatisticsOrder> statisticsOrderList = this.hsyOrderService.pcStatisticsOrder(statisticsOrderRequest.getShopId(), startTime, endTime);
-        final JSONObject result = new JSONObject();
         final PcStatisticsOrderResponse statisticsOrderResponse = new PcStatisticsOrderResponse();
-        if (CollectionUtils.isEmpty(statisticsOrderList)) {
-            statisticsOrderResponse.setPayNumber(0);
-            statisticsOrderResponse.setPayAmount(new BigDecimal("0.00"));
-            statisticsOrderResponse.setRefundNumber(0);
-            statisticsOrderResponse.setRefundAmount(new BigDecimal("0.00"));
-            statisticsOrderResponse.setProfit(new BigDecimal("0.00"));
-        } else {
-//            final List<JSONObject> details = new ArrayList<>(statisticsOrderResponseList.size());
-//            final ArrayList<Integer> paymentChannels = new ArrayList<>();
-//            for (PcStatisticsOrder statisticsOrderResponse : statisticsOrderResponseList) {
-//                if (statisticsOrderResponse.getPaymentChannel() > 0 ) {
-//                    paymentChannels.add(statisticsOrderResponse.getPaymentChannel());
-//                }
-//            }
-//            for (int i = 0; i < paymentChannels.size(); i++) {
-////                paymentChannels
-//            }
-//            for (PcStatisticsOrder statisticsOrder : statisticsOrderResponseList) {
-//                if (statisticsOrderResponse.getPaymentChannel() <= 0) {
-//                    continue;
-//                }
-//                final JSONObject detail = new JSONObject();
-////                if (EnumHsyOrderStatus.PAY_SUCCESS.getId() == statisticsOrderResponse.getOrderStatus()) {
-////                    detail.put("payChannel", statisticsOrderResponse.getPaymentChannel());
-////                    detail.put("payChannelValue", EnumPaymentChannel.of(statisticsOrderResponse.getPaymentChannel()));
-////                    detail.put("payNumber", statisticsOrderResponse.getNumber());
-////                    detail.put("status")
-////                }
-////                if (EnumHsyOrderStatus.REFUND_SUCCESS.getId() == statisticsOrderResponse.getOrderStatus()) {
-////                    detail.put("payChannel", statisticsOrderResponse.getPaymentChannel());
-////                    detail.put("payChannelValue", EnumPaymentChannel.of(statisticsOrderResponse.getPaymentChannel()));
-////                    detail.put("payNumber", statisticsOrderResponse.getNumber());
-////                    detail.put("status")
-////                }
-//
-//            }
-
-
+        if (!CollectionUtils.isEmpty(statisticsOrderList)) {
+            for (PcStatisticsOrder statisticsOrder : statisticsOrderList) {
+                statisticsOrderResponse.addDetails(statisticsOrder);
+            }
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", statisticsOrderResponse);
     }
