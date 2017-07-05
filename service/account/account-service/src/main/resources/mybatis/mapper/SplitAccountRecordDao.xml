@@ -123,7 +123,7 @@
         LEFT JOIN tb_dealer b ON b.account_id = a.receipt_money_account_id
         WHERE
             a.receipt_money_account_id = #{accountId}
-        AND split_amount &gt; 0.00 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        AND split_amount &gt; 0.00
     <if test="startTime!=null and startTime!=''">
         AND a.split_date <![CDATA[ >= ]]> #{startTime}
     </if>
