@@ -423,7 +423,7 @@ public class MerchantInfoController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/toHelp", method = RequestMethod.GET)
-    public String toHssAccountFlow(HttpServletRequest request){
+    public String toHelp(HttpServletRequest request){
 
         return "/help";
     }
