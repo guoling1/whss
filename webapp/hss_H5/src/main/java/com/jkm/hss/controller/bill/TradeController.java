@@ -406,21 +406,13 @@ public class TradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
-
-        String oemNo = "";
-        if(merchantInfo.getOemId()>0){
-            OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfo.getOemId());
-            Preconditions.checkState(oemDetailResponse!=null, "O单配置有误");
-            oemNo = oemDetailResponse.getOemNo();
-        }
-
         if (creditBankCount <= 0) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId()+"&oemNo="+oemNo)
+                    .addParam("url", "/trade/firstUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString()+ "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
                     .build();
         }
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId()+"&oemNo="+oemNo)
+                .addParam("url", "/trade/againUnionPayPage?amount=" + businessOrder.getTradeAmount().toPlainString() + "&channel=" + unionPayRequest.getPayChannel() + "&orderId=" + businessOrder.getId())
                 .build();
     }
 
@@ -433,7 +425,6 @@ public class TradeController extends BaseController {
     public String firstUnionPayPage(final HttpServletRequest httpServletRequest,final HttpServletResponse httpServletResponse,
                                     final Model model) throws UnsupportedEncodingException {
         String oemNo = httpServletRequest.getParameter("oemNo");
-        model.addAttribute("oemNo", oemNo);
         final String amountStr = httpServletRequest.getParameter("amount");
         final String channelStr = httpServletRequest.getParameter("channel");
         final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
@@ -451,6 +442,7 @@ public class TradeController extends BaseController {
             model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
             model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
         }
+        model.addAttribute("oemNo", oemNo);
         model.addAttribute("amount", amountStr);
         model.addAttribute("merchantName", merchantInfo.getMerchantName());
         final String identity = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
@@ -469,6 +461,13 @@ public class TradeController extends BaseController {
                                 final Model model) {
             final String amountStr = httpServletRequest.getParameter("amount");
             final String channelStr = httpServletRequest.getParameter("channel");
+            final  String oemNo = httpServletRequest.getParameter("oemNo");
+            if(oemNo!=null&&!"".equals(oemNo)){
+                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            }else{
+                model.addAttribute("oemName","好收收");
+            }
             final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
             final Integer channelSign = Integer.valueOf(channelStr);
@@ -508,6 +507,7 @@ public class TradeController extends BaseController {
                 model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
                 model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
             }
+            model.addAttribute("oemNo", oemNo);
             model.addAttribute("creditCardId", accountBank.getId());
             model.addAttribute("bankName", accountBank.getBankName());
             model.addAttribute("shortNo", bankNo.substring(bankNo.length() - 4));
