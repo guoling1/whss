@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -19,6 +20,7 @@ import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.push.sevice.PushService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +37,7 @@ import java.util.List;
 /**
  * Created by zhangbin on 2016/12/2.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/QueryMerchantInfoRecord")
 public class QueryMerchantInfoRecordController extends BaseController {
@@ -188,6 +191,23 @@ public class QueryMerchantInfoRecordController extends BaseController {
         jsonObject.put("code",-1);
         jsonObject.put("msg","没有查到符合条件的数据");
         return jsonObject;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/saveNo",method = RequestMethod.POST)
+    public CommonResponse saveNo(@RequestBody SaveLineNoRequest req) {
+        try {
+            if (req.getStatus()==2) {
+                this.queryMerchantInfoRecordService.saveNo(req);
+            }else {
+                this.queryMerchantInfoRecordService.saveNo1(req);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            log.debug("操作异常");
+        }
+        return CommonResponse.simpleResponse(1,"保存成功");
+
     }
 
 }
