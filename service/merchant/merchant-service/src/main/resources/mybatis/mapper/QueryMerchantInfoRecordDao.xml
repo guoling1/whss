@@ -163,4 +163,9 @@
 	    id = (SELECT recommend_merchant_id FROM tb_recommend WHERE merchant_id=#{id} AND type=1);
     </select>
 
+    <!-- 补填联行号 -->
+    <update id="saveNo">
+        UPDATE tb_merchant_info SET title = #{title},text = #{text} WHERE id = #{id}
+    </update>
+
 </mapper>
