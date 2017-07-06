@@ -35,7 +35,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
         log.info("请求地址：{}",StringUtils.isNotBlank(request.getQueryString()) ?
                 request.getRequestURL() + "?" + request.getQueryString() : request.getRequestURL().toString());
         String oemNo = request.getParameter("oemNo");
-        if(oemNo==null){
+        if(oemNo!=null&&"null".equals(oemNo)){
             oemNo = "";
         }
         if(oemNo!=null&&!"".equals(oemNo)){

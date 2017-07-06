@@ -50,7 +50,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
         requestUrlParam.setRequestUrl(tempUrl);
         requestUrlParamService.insert(requestUrlParam);
         String oemNo = request.getParameter("oemNo");
-        if(oemNo==null){
+        if(oemNo!=null&&"null".equals(oemNo)){
             oemNo = "";
         }
         request.setAttribute("oemNo",oemNo);

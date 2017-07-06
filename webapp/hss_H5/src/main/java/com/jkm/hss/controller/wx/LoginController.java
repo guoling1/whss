@@ -347,7 +347,7 @@ public class LoginController extends BaseController {
     public String prompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -581,7 +581,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/collection", method = RequestMethod.GET)
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
