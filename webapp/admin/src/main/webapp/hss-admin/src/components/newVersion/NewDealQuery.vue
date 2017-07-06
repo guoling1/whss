@@ -30,12 +30,24 @@
               </el-select>
             </li>
             <li class="same">
+              <label>交易来源:</label>
+              <el-select style="width: 193px" v-model="query.source" clearable placeholder="业务方为好收银时可选择" size="small" :disabled="appId!='好收银'">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="直销" value="1">直销</el-option>
+                <el-option label="渠道" value="2">渠道</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>收款商户编号:</label>
               <el-input style="width: 193px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
               <el-input style="width: 193px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
+            </li>
+            <li class="same">
+              <label>所属分公司:</label>
+              <el-input style="width: 188px" v-model="query.branchCompany" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
@@ -133,6 +145,7 @@
             </el-table-column>
             <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
             <el-table-column prop="markCode" label="收款商户编号" min-width="120"></el-table-column>
+            <el-table-column prop="branchCompany" label="所属分公司"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90">
               <template scope="scope">
                 <span v-if="scope.row.appId=='好收收'">{{scope.row.proxyName}}</span>
@@ -243,7 +256,9 @@
           loadUrl: '',
           loadUrl1: '',
           payChannelSign:'',
-          appId:''
+          appId:'',
+          branchCompany:'',
+          source:''
         },
         appId:'',
         merchantName: '',
@@ -485,6 +500,9 @@
           this.merchantName='';
           this.proxyName='';
           this.proxyName1='';
+          this.query.source='';
+        }else if(val == "好收收"){
+          this.query.source='';
         }
       }
     },

@@ -56,14 +56,14 @@ public interface DistributeQRCodeRecordService {
      * @param firstLevelDealerId
      * @return
      */
-    int selectDistributeCountByContions(long firstLevelDealerId,String markCode,String name);
+    int selectDistributeCountByContions(long firstLevelDealerId,String markCode,String name,int dtype);
     /**
      * 查询分配给二级代理商的二维码记录
      *
      * @param firstLevelDealerId
      * @return
      */
-    List<DistributeQRCodeRecord> selectDistributeRecordsByContions(long firstLevelDealerId,String markCode,String name,int offset,int count);
+    List<DistributeQRCodeRecord> selectDistributeRecordsByContions(long firstLevelDealerId,String markCode,String name,int offset,int count,int dtype);
     /**
      * boss后台查询分配二维码记录条数
      *

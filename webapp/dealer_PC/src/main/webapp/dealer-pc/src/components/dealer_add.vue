@@ -6,7 +6,7 @@
         <div class="col-xs-13">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">添加代理商</h3>
+              <h3 class="box-title">添加二级代理商</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">

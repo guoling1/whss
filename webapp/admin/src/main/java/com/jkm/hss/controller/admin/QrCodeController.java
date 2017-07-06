@@ -23,8 +23,6 @@ import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.admin.service.RevokeQrCodeRecordService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
-import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.ProductionQrCodeRequest;
 import com.jkm.hss.helper.request.RevokeQrCodeRequest;

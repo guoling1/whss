@@ -3,6 +3,7 @@ package com.jkm.hss.admin.service.impl;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.dao.ProductionQrCodeRecordDao;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
+import com.jkm.hss.admin.helper.requestparam.OemProductionRequest;
 import com.jkm.hss.admin.helper.requestparam.ProductionRequest;
 import com.jkm.hss.admin.helper.responseparam.ProductionListResponse;
 import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
@@ -42,6 +43,23 @@ public class ProductionQrCodeRecordServiceImpl implements ProductionQrCodeRecord
         productionRequest.setCount(pageModel.getPageSize());
         final Long count = this.productionQrCodeRecordDao.selectCount(productionRequest);
         final List<ProductionListResponse> productionQrCodeRecords = this.productionQrCodeRecordDao.selectList(productionRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(productionQrCodeRecords);
+        return pageModel;
+    }
+
+    /**
+     * 分公司按条件查询列表
+     *
+     * @param oemProductionRequest
+     */
+    @Override
+    public PageModel<ProductionListResponse> selectOemList(OemProductionRequest oemProductionRequest) {
+        final PageModel<ProductionListResponse> pageModel = new PageModel<>(oemProductionRequest.getPageNo(), oemProductionRequest.getPageSize());
+        oemProductionRequest.setOffset(pageModel.getFirstIndex());
+        oemProductionRequest.setCount(pageModel.getPageSize());
+        final Long count = this.productionQrCodeRecordDao.selectOemCount(oemProductionRequest);
+        final List<ProductionListResponse> productionQrCodeRecords = this.productionQrCodeRecordDao.selectOemList(oemProductionRequest);
         pageModel.setCount(count);
         pageModel.setRecords(productionQrCodeRecords);
         return pageModel;

@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.helper.requestparam;
 
+import com.jkm.hss.dealer.enums.EnumOemType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -83,5 +84,15 @@ public class FirstLevelDealerAdd2Request {
      * 身份证号
      */
     private String idCard;
+    /**
+     * 分公司标示 0代理商 1分公司
+     *{@link EnumOemType}
+     */
+    private Integer oemType;
+
+    /**
+     * 分公司编码
+     */
+    private long oemId;
 
 }

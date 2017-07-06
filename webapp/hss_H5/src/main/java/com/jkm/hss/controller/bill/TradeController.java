@@ -20,6 +20,9 @@ import com.jkm.hss.bill.service.BusinessOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.helper.response.OemDetailResponse;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
 import com.jkm.hss.helper.response.QueryMerchantPayOrdersResponse;
@@ -61,6 +64,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -92,7 +96,8 @@ public class TradeController extends BaseController {
     private BasicChannelService basicChannelService;
     @Autowired
     private BusinessOrderService businessOrderService;
-
+    @Autowired
+    private OemInfoService oemInfoService;
 
     /**
      * 生成订单
@@ -170,10 +175,17 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getOrderId(),
                 payRequest.getPayChannel(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
+            String oemNo = "";
+            if(merchantInfo.getOemId()>0){
+                OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(merchantInfo.getOemId());
+                Preconditions.checkState(oemDetailResponse!=null, "O单配置有误");
+                oemNo = oemDetailResponse.getOemNo();
+            }
             final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payRequest.getPayChannel());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", merchantInfo.getMerchantName())
+                    .addParam("oemNo", oemNo)
                     .addParam("amount", businessOrderOptional.get().getTradeAmount())
                     .addParam("payType", payChannelSign.getPaymentChannel().getId()).build();
         }
@@ -411,73 +423,32 @@ public class TradeController extends BaseController {
      */
     @RequestMapping(value = "firstUnionPayPage")
     public String firstUnionPayPage(final HttpServletRequest httpServletRequest,final HttpServletResponse httpServletResponse,
-                                    final Model model) {
-        boolean isRedirect = false;
-        if(!super.isLogin(httpServletRequest)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+httpServletRequest.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else{
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                        final String amountStr = httpServletRequest.getParameter("amount");
-                        final String channelStr = httpServletRequest.getParameter("channel");
-                        final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
-                        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
-                        final Integer channelSign = Integer.valueOf(channelStr);
-                        Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
-                        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
-                        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
-                            model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
-                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
-                        } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
-                            model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
-                            model.addAttribute("showCvv", EnumBoolean.TRUE.getCode());
-                        } else {
-                            model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
-                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
-                        }
-                        model.addAttribute("amount", amountStr);
-                        model.addAttribute("merchantName", merchantInfo.getMerchantName());
-                        final String identity = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
-                        model.addAttribute("bankAccountName", merchantInfo.getName());
-                        model.addAttribute("idCard", identity.substring(0, 3) + "************" + identity.substring(identity.length() - 3, identity.length()));
-                        url = "/firstUnionPay";
-                    }
-                }else{
-                    CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
+                                    final Model model) throws UnsupportedEncodingException {
+        String oemNo = httpServletRequest.getParameter("oemNo");
+        final String amountStr = httpServletRequest.getParameter("amount");
+        final String channelStr = httpServletRequest.getParameter("channel");
+        final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
+        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
+        final Integer channelSign = Integer.valueOf(channelStr);
+        Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+            model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+        } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+            model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+            model.addAttribute("showCvv", EnumBoolean.TRUE.getCode());
+        } else {
+            model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
         }
-
+        model.addAttribute("oemNo", oemNo);
+        model.addAttribute("amount", amountStr);
+        model.addAttribute("merchantName", merchantInfo.getMerchantName());
+        final String identity = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
+        model.addAttribute("bankAccountName", merchantInfo.getName());
+        model.addAttribute("idCard", identity.substring(0, 3) + "************" + identity.substring(identity.length() - 3, identity.length()));
+        return "/firstUnionPay";
     }
 
     /**
@@ -488,94 +459,61 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "againUnionPayPage")
     public String againUnionPayPage(final HttpServletRequest httpServletRequest,final HttpServletResponse httpServletResponse,
                                 final Model model) {
-        boolean isRedirect = false;
-        if(!super.isLogin(httpServletRequest)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+httpServletRequest.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else{
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                        final String amountStr = httpServletRequest.getParameter("amount");
-                        final String channelStr = httpServletRequest.getParameter("channel");
-                        final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
-                        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
-                        final Integer channelSign = Integer.valueOf(channelStr);
-                        Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
-                        model.addAttribute("amount", amountStr);
-                        model.addAttribute("merchantName", merchantInfo.getMerchantName());
-                        final AccountBank accountBank = this.accountBankService.getDefaultCreditCard(merchantInfo.getAccountId());
-                        final boolean exist = this.channelSupportCreditBankService.
-                                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(channelSign).getUpperChannel().getId(), accountBank.getBankBin());
-                        final String bankNo = accountBank.getBankNo();
-                        final String mobile = accountBank.getReserveMobile();
-                        if (exist) {
-                            model.addAttribute("status", EnumBoolean.TRUE.getCode());
-                        } else {
-                            model.addAttribute("status", EnumBoolean.FALSE.getCode());
-                        }
-                        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
-                        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
-                            if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
-                                model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
-                            } else {
-                                model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
-                            }
-                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
-                        } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
-                            if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
-                                model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
-                            } else {
-                                model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
-                            }
-                            if (this.accountBankService.isHasCvv(accountBank.getId())) {
-                                model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
-                            } else {
-                                model.addAttribute("showCvv", EnumBoolean.TRUE.getCode());
-                            }
-                        } else {
-                            model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
-                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
-                        }
-                        model.addAttribute("creditCardId", accountBank.getId());
-                        model.addAttribute("bankName", accountBank.getBankName());
-                        model.addAttribute("shortNo", bankNo.substring(bankNo.length() - 4));
-                        model.addAttribute("mobile", mobile.substring(0, 2) + "**** ***" + mobile.substring(mobile.length() - 2));
-                        url = "/againUnionPay";
-                    }
-                }else{
-                    CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    url = "/sqb/reg";
-                    isRedirect= true;
+            final String amountStr = httpServletRequest.getParameter("amount");
+            final String channelStr = httpServletRequest.getParameter("channel");
+            final  String oemNo = httpServletRequest.getParameter("oemNo");
+            if(oemNo!=null&&!"".equals(oemNo)){
+                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            }else{
+                model.addAttribute("oemName","好收收");
+            }
+            final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
+            final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
+            final Integer channelSign = Integer.valueOf(channelStr);
+            Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
+            model.addAttribute("amount", amountStr);
+            model.addAttribute("merchantName", merchantInfo.getMerchantName());
+            final AccountBank accountBank = this.accountBankService.getDefaultCreditCard(merchantInfo.getAccountId());
+            final boolean exist = this.channelSupportCreditBankService.
+                    isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(channelSign).getUpperChannel().getId(), accountBank.getBankBin());
+            final String bankNo = accountBank.getBankNo();
+            final String mobile = accountBank.getReserveMobile();
+            if (exist) {
+                model.addAttribute("status", EnumBoolean.TRUE.getCode());
+            } else {
+                model.addAttribute("status", EnumBoolean.FALSE.getCode());
+            }
+            final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+            if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+                if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
+                    model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                } else {
+                    model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
                 }
-            }else{
-                CookieUtil.deleteCookie(httpServletResponse,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
+                model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+            } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+                if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
+                    model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                } else {
+                    model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+                }
+                if (this.accountBankService.isHasCvv(accountBank.getId())) {
+                    model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+                } else {
+                    model.addAttribute("showCvv", EnumBoolean.TRUE.getCode());
+                }
+            } else {
+                model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
             }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
-        }
+            model.addAttribute("oemNo", oemNo);
+            model.addAttribute("creditCardId", accountBank.getId());
+            model.addAttribute("bankName", accountBank.getBankName());
+            model.addAttribute("shortNo", bankNo.substring(bankNo.length() - 4));
+            model.addAttribute("mobile", mobile.substring(0, 2) + "**** ***" + mobile.substring(mobile.length() - 2));
+            return "/againUnionPay";
+
     }
 
     /**

@@ -15,7 +15,11 @@ public enum EnumQRCodeDistributeType2 {
     /**
      * 代理商后台
      */
-    DEALER(2);
+    DEALER(2),
+    /**
+     * 分公司
+     */
+    OEM(3);
 
     private static final ImmutableMap<Integer, EnumQRCodeDistributeType2> STATUS_IMMUTABLE_MAP;
 

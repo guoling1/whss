@@ -23,4 +23,8 @@ public class MerchantLoginRequest {
      * 邀请码（邀请码或二维码至少与一个不为空）
      */
     private String inviteCode;
+    /**
+     * 分公司编码
+     */
+    private String oemNo;
 }

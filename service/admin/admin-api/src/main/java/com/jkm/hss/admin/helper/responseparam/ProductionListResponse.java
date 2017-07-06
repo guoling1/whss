@@ -46,4 +46,8 @@ public class ProductionListResponse{
      * 操作人编码
      */
     private String operatorName;
+    /**
+     * 产码公司
+     */
+    private String subCompanyName;
 }

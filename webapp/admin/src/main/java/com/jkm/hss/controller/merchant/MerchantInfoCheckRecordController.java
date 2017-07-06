@@ -83,6 +83,10 @@ public class MerchantInfoCheckRecordController extends BaseController {
         merchant.setCheckedTime(new Date());
         this.merchantInfoService.addAccountId(accountId, EnumMerchantStatus.PASSED.getId(), merchant.getId(),merchant.getCheckedTime());
         //插入银行卡账户表
+        int count = accountBankService.isHasAccountBank(accountId);
+        if(count>0){
+            CommonResponse.simpleResponse(-1,"账户已存在");
+        }
         accountBankService.initAccountBank(merchant.getId(),accountId);
         Optional<UserInfo> toUer = userInfoService.selectByMerchantId(requestMerchantInfo.getMerchantId());
         String toUsers = toUer.get().getOpenId();

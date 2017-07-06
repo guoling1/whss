@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收收-登录</title>
+  <title>${oemName}-登录</title>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <script>
@@ -63,9 +63,9 @@
 <body>
 
 <div id='login'>
-  <h1>好收收-商户</h1>
+  <h1>${oemName}-商户</h1>
 
-  <h2>HAOSHOUSHOU</h2>
+  <h2>${wechatCode}</h2>
   <ul>
     <li class="top flexBox">
       <div class="logo phone"></div>
@@ -84,6 +84,11 @@
 </div>
 
 </body>
-<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>--%>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.30/login.min.js"></script>--%>
+<script>
+  var pageData = {
+    oemNo: '${oemNo}'
+  }
+</script>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.31/login.min.js"></script>--%>
 </html>

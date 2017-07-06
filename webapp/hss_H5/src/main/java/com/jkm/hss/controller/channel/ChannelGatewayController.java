@@ -26,6 +26,7 @@ import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -62,8 +63,9 @@ public class ChannelGatewayController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/toListJsp", method = RequestMethod.GET)
-    public String toJsp(HttpServletRequest request){
-
+    public String toJsp(HttpServletRequest request, Model model){
+        String oemNo = request.getParameter("oemNo");
+        model.addAttribute("oemNo",oemNo);
         return "/channelList";
     }
 
@@ -93,7 +95,8 @@ public class ChannelGatewayController extends BaseController {
         //获取该商户对应的产品通道网关
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final List<ProductChannelGateway> productChannelGatewayList =
-                this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductId(EnumProductType.HSS, EnumGatewayType.PRODUCT, product.getId());
+                this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductIdAndDealerId(
+                        EnumProductType.HSS, EnumGatewayType.PRODUCT, product.getId(), merchantInfo.getOemId());
 
         final List<MerchantChannelRate> merchantChannelRateList = this.merchantChannelRateService.selectByMerchantId(merchantInfo.getId());
         Map<Integer, MerchantChannelRate> merchantChannelRateMap = Maps.uniqueIndex(merchantChannelRateList, new Function<MerchantChannelRate, Integer>() {
@@ -107,16 +110,19 @@ public class ChannelGatewayController extends BaseController {
         for (ProductChannelGateway productChannelGateway : productChannelGatewayList){
 
             final int channelSign = productChannelGateway.getChannelSign();
+            final MerchantChannelRate merchantChannelRate = merchantChannelRateMap.get(channelSign);
+            if (merchantChannelRate == null){
+                continue;
+            }
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getValue());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
-            log.info( channelSign + ">>>>>>>>>>>>>>>>>>>>>>" + merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
-            merchantChannelResponse.setChannelRate(merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
-            merchantChannelResponse.setFee(merchantChannelRateMap.get(channelSign).getMerchantWithdrawFee().toString());
+            merchantChannelResponse.setChannelRate(merchantChannelRate.getMerchantPayRate().toString());
+            merchantChannelResponse.setFee(merchantChannelRate.getMerchantWithdrawFee().toString());
             merchantChannelResponse.setChannelSign(channelSign);
             merchantChannelResponse.setLimitAmount(basicChannel.getLimitAmount().toString());
-            merchantChannelResponse.setSettleType(merchantChannelRateMap.get(channelSign).getMerchantBalanceType());
+            merchantChannelResponse.setSettleType(merchantChannelRate.getMerchantBalanceType());
             merchantChannelResponse.setRecommend(productChannelGateway.getRecommend());
             merchantChannelResponseList.add(merchantChannelResponse);
         }

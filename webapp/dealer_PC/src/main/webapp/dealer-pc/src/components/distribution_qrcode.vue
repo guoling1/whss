@@ -7,6 +7,7 @@
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">分配二维码</h3>
+              <el-button class="right" type="text" @click="toRecord">分配记录</el-button>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -27,13 +28,14 @@
                 <el-form-item label="分配对象">
                   <el-radio-group v-model="form.isSelf" @change="isSelfChange">
                     <el-radio :label="0">下级代理</el-radio>
-                    <el-radio :label="1">分配给自己</el-radio>
+                    <el-radio :label="1" :disabled="isDealer">分配给自己</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="代理名称" v-show="label.isSelf">
                   <el-popover placement="top" title="提示" width="200" trigger="hover">
                     <span>匹配结果中不可选择的代理商表示未开通该产品</span>
-                    <el-select slot="reference" v-model="form.dealerId" size="small" filterable remote style="width:100%"
+                    <el-select slot="reference" v-model="form.dealerId" size="small" filterable remote
+                               style="width:100%"
                                @change="selectDealer"
                                placeholder="请输入代理商名称或手机号"
                                :remote-method="remoteMethod"
@@ -74,7 +76,8 @@
                   <el-input v-model="form.count" size="small"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" size="small" @click="_$power(onSubmit,'dealer_qr_code_distribute')">分配二维码</el-button>
+                  <el-button type="primary" size="small" @click="_$power(onSubmit,'dealer_qr_code_distribute')">分配二维码
+                  </el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -89,8 +92,24 @@
   </div>
 </template>
 <script lang="babel">
+  import store from '../store'
   export default {
     name: 'app',
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            if (data.dealerLeavel == 1) {
+              vm.isDealer = true
+            } else if (data.dealerLeavel == 2) {
+              vm.isDealer = true
+            } else {
+              vm.isDealer = false
+            }
+          }
+        });
+      });
+    },
     created(){
       this.$http.post('/daili/qrCode/proxyProduct').then(res => {
         this.product.proxyHss = res.data.proxyHss;
@@ -105,6 +124,7 @@
     },
     data() {
       return {
+        isDealer: true,
         product: {
           proxyHss: 0,
           proxyHsy: 0
@@ -176,11 +196,11 @@
       onSubmit: function () {
         this.$http.post('/daili/qrCode/distributeQrCodeToDealer', this.form).then(res => {
           this.$message({
-          showClose: true,
-          message: '二维码分配成功成功',
-          type: 'success'
-        });
-        this.$router.push('/daili/app/qrcode_distribution');
+            showClose: true,
+            message: '二维码分配成功成功',
+            type: 'success'
+          });
+          this.$router.push('/daili/app/qrcode_distribution');
         }, err => {
           this.$message({
             showClose: true,
@@ -188,11 +208,18 @@
             type: 'error'
           });
         })
+      },
+      toRecord: function () {
+        this.$router.push('/daili/app/qrcode_distribution');
       }
     }
   }
 </script>
 <style scoped lang="less">
+  .right {
+    float: right;
+  }
+
   .form-label {
     margin-bottom: 15px;
   }

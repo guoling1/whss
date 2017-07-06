@@ -99,7 +99,18 @@ public class QRCodeServiceImpl implements QRCodeService {
         Preconditions.checkState(!CollectionUtils.isEmpty(codeIds), "codeIds can not be empty");
         return this.qrCodeDao.markCodeToDealer(firstLevelDealerId, codeIds);
     }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @param firstLevelDealerId
+     * @param codeIds
+     * @return
+     */
+    @Override
+    public int markCodeToOemSelf(final long firstLevelDealerId, final List<Long> codeIds) {
+        Preconditions.checkState(!CollectionUtils.isEmpty(codeIds), "codeIds can not be empty");
+        return this.qrCodeDao.markCodeToOemSelf(firstLevelDealerId, codeIds);
+    }
     /**
      * {@inheritDoc}
      *
@@ -822,7 +833,19 @@ public class QRCodeServiceImpl implements QRCodeService {
     public List<QRCode> getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(long dealerId, String startCode, String endCode,String sysType) {
         return this.qrCodeDao.selectUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
     }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByOemIdAndRangeCodeAndSysType(long dealerId, String startCode, String endCode,String sysType) {
+        return this.qrCodeDao.getUnDistributeCodeByOemIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+    }
     /**
      * 按产品类型查询某个代理商下的所有二维码
      *
@@ -834,7 +857,17 @@ public class QRCodeServiceImpl implements QRCodeService {
     public List<QRCode> getUnDistributeCodeByDealerIdAndSysType(long dealerId, String sysType) {
         return this.qrCodeDao.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
     }
-
+    /**
+     * 按产品类型查询某个代理商下的所有二维码
+     *
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByOemIdAndSysType(long dealerId, String sysType) {
+        return this.qrCodeDao.getUnDistributeCodeByOemIdAndSysType(dealerId,sysType);
+    }
     /**
      * admin查询所有未分配的二维码L列表
      *
@@ -857,7 +890,7 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     /**
-     * 根据码段和产品类型
+     * boss后台分配二维码时根据码段和产品类型查询未分配二维码集合
      *
      * @param startCode
      * @param endCode
@@ -937,9 +970,13 @@ public class QRCodeServiceImpl implements QRCodeService {
         long count = 0l;
         List<QrCodeListResponse> qrCodeList = null;
         if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeListRequest.getSysType())){
+            List<Integer> tempStatus = getMerchantStatus(qrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+            qrCodeListRequest.setMerchantStatusList(tempStatus);
             count=qrCodeDao.getHSSQrCodeCount(qrCodeListRequest);
             qrCodeList=qrCodeDao.getHSSQrCodeList(qrCodeListRequest);
         }else{
+            List<Integer> tempStatus = getMerchantStatus(qrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSY.getId());
+            qrCodeListRequest.setMerchantStatusList(tempStatus);
             count=qrCodeDao.getHSYQrCodeCount(qrCodeListRequest);
             qrCodeList=qrCodeDao.getHSYQrCodeList(qrCodeListRequest);
         }
@@ -1151,6 +1188,71 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Override
     public long getRevokeTotalCount(String sysType, String startCode, String endCode) {
         return this.qrCodeDao.getRevokeTotalCount(sysType, startCode, endCode);
+    }
+
+
+    /**
+     * 所有二维码[分公司]
+     *
+     * @param myQrCodeListRequest
+     * @return
+     */
+    @Override
+    public PageModel<MyQrCodeListResponse> selectOemQrCodeList(MyQrCodeListRequest myQrCodeListRequest) {
+        final PageModel<MyQrCodeListResponse> pageModel = new PageModel<>(myQrCodeListRequest.getPageNo(), myQrCodeListRequest.getPageSize());
+        myQrCodeListRequest.setOffset(pageModel.getFirstIndex());
+        myQrCodeListRequest.setCount(pageModel.getPageSize());
+        List<MyQrCodeListResponse> qrCodeList = null;
+        List<Integer> tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+        myQrCodeListRequest.setMerchantStatusList(tempStatus);
+        long count=qrCodeDao.getOemHSSQrCodeCount(myQrCodeListRequest);
+        qrCodeList=qrCodeDao.getOemHSSQrCodeList(myQrCodeListRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(qrCodeList);
+        return pageModel;
+    }
+    /**
+     * 未分配个数【分公司】
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getResidueCount(long dealerId,String sysType) {
+        return qrCodeDao.getResidueCount(dealerId,sysType);
+    }
+
+    /**
+     * 已分配个数【分公司】
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getDistributeCount(long dealerId,String sysType) {
+        return qrCodeDao.getDistributeCount(dealerId,sysType);
+    }
+
+    /**
+     * 未激活个数【分公司】
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getUnActivateCount(long dealerId,String sysType) {
+        return qrCodeDao.getUnActivateCount(dealerId,sysType);
+    }
+
+    /**
+     * 已激活个数【分公司】
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getActivateCount(long dealerId,String sysType) {
+        return qrCodeDao.getActivateCount(dealerId,sysType);
     }
 
 }

@@ -22,12 +22,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 /**
  * Created by yuxiang on 2017-02-13.
  */
@@ -119,10 +117,10 @@ public class ProfitController extends BaseController{
         try {
             final Dealer dealer = this.getDealer().get();
             final long accountId = dealer.getAccountId();
-            BigDecimal splitAmount = this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
-                    request.getBusinessType(), request.getBeginDate(), request.getEndDate());
-            if(splitAmount==null){
-                splitAmount=new BigDecimal(0);
+            String splitAmount = this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
+                    request.getBusinessType(), request.getStartTime(), request.getEndTime());
+            if(splitAmount==null&&"".equals(splitAmount)){
+                splitAmount="0";
             }
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", splitAmount);
 

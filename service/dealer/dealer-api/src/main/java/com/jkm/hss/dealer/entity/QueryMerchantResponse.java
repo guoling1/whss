@@ -11,6 +11,16 @@ import java.util.Date;
 public class QueryMerchantResponse {
 
     /**
+     * 分公司
+     */
+    private String branchCompany;
+
+    /**
+     * 分公司id
+     */
+    private long oemId;
+
+    /**
      * 商户编号
      */
     private String markCode;

@@ -2,6 +2,7 @@ package com.jkm.hss.dealer.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.dealer.enums.EnumLoginStatus;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -150,6 +151,18 @@ public class Dealer extends BaseEntity {
      * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
      */
     private int inviteBtn;
+
+    /**
+     * 分公司标示 0代理商 1分公司
+     *{@link EnumOemType}
+     */
+    private Integer oemType;
+
+    /**
+     * 分公司编码
+     */
+    private Long oemId;
+
 
 
 

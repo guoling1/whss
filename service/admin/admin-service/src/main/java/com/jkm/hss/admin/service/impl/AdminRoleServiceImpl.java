@@ -108,6 +108,28 @@ public class AdminRoleServiceImpl implements AdminRoleService{
     }
 
     /**
+     * 根据分页查询角色个数
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public long selectAdminOemRoleCountByPageParams(AdminRoleListRequest adminRoleListRequest) {
+        return adminRoleDao.selectAdminOemRoleCountByPageParams(adminRoleListRequest);
+    }
+
+    /**
+     * 分页查询角色列表
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public List<AdminRoleListPageResponse> selectAdminOemRoleListByPageParams(AdminRoleListRequest adminRoleListRequest) {
+        return adminRoleDao.selectAdminOemRoleListByPageParams(adminRoleListRequest);
+    }
+
+    /**
      * 分类查询角色列表
      *
      * @param type
@@ -400,7 +422,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
     }
 
     /**
-     * 角色列表
+     * 代理商角色列表
      *
      * @param adminRoleListRequest
      * @return
@@ -412,6 +434,24 @@ public class AdminRoleServiceImpl implements AdminRoleService{
         adminRoleListRequest.setCount(pageModel.getPageSize());
         long total = this.selectAdminDealerRoleCountByPageParams(adminRoleListRequest);
         List<AdminRoleListPageResponse> adminRoleListPageResponses = this.selectAdminDealerRoleListByPageParams(adminRoleListRequest);
+        pageModel.setCount(total);
+        pageModel.setRecords(adminRoleListPageResponses);
+        return pageModel;
+    }
+
+    /**
+     * 分公司角色列表
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public PageModel<AdminRoleListPageResponse> roleOemListByPage(AdminRoleListRequest adminRoleListRequest) {
+        PageModel<AdminRoleListPageResponse> pageModel = new PageModel<>(adminRoleListRequest.getPageNo(),adminRoleListRequest.getPageSize());
+        adminRoleListRequest.setOffset(pageModel.getFirstIndex());
+        adminRoleListRequest.setCount(pageModel.getPageSize());
+        long total = this.selectAdminOemRoleCountByPageParams(adminRoleListRequest);
+        List<AdminRoleListPageResponse> adminRoleListPageResponses = this.selectAdminOemRoleListByPageParams(adminRoleListRequest);
         pageModel.setCount(total);
         pageModel.setRecords(adminRoleListPageResponses);
         return pageModel;

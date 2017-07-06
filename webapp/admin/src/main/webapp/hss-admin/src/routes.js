@@ -93,6 +93,15 @@ const Login = r => require.ensure([], () => r(require('components/Login')), 'gro
 
 const CodeRevoke = r => require.ensure([], () => r(require('components/CodeRevoke')), 'group-record');
 const Crumbs = r => require.ensure([], () => r(require('./Crumbs')), 'group-record');
+//分公司
+const FilialeManage = r => require.ensure([], () => r(require('components/filiale/FilialeManage')), 'group-record');
+const FilialeAccount = r => require.ensure([], () => r(require('components/filiale/FilialeAccount')), 'group-record');
+const FilialeEmployee = r => require.ensure([], () => r(require('components/filiale/FilialeEmployee')), 'group-record');
+const FilialeAdd = r => require.ensure([], () => r(require('components/filiale/FilialeAdd')), 'group-record');
+const FilialePro = r => require.ensure([], () => r(require('components/filiale/FilialePro')), 'group-record');
+const FilialeRole = r => require.ensure([], () => r(require('components/filiale/FilialeRole')), 'group-record');
+const FilialeRoleAdd = r => require.ensure([], () => r(require('components/filiale/FilialeRoleAdd')), 'group-record');
+const ConfigureOem = r => require.ensure([], () => r(require('components/filiale/ConfigureOem')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
   {path: '/admin/login', component: Login},
@@ -103,6 +112,14 @@ let routes = [
       {path: 'achievement', name: 'Achievement', component: Achievement},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'unionLine', name: 'UnionLine', component: UnionLine},
+      {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
+      {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
+      {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
+      {path: 'filialeAdd', name: 'FilialeAdd', component: FilialeAdd},
+      {path: 'filialePro', name: 'FilialePro', component: FilialePro},
+      {path: 'filialeRole', name: 'FilialeRole', component: FilialeRole},
+      {path: 'filialeRoleAdd', name: 'FilialeRoleAdd', component: FilialeRoleAdd},
+      {path: 'configureOem', name: 'ConfigureOem', component: ConfigureOem},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
@@ -182,6 +199,9 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
+      {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
+      {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
       {path: 'achievement', name: 'Achievement', component: Achievement},
       {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},

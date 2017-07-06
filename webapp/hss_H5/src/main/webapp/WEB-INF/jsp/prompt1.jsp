@@ -8,7 +8,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收收</title>
+  <title>${oemName}</title>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <script>
@@ -68,9 +68,9 @@
   <p>您的账户正在审核</p>
 
   <p>请耐心等待</p>
-  <a href="/sqb/wallet" class="btn">返回首页</a>
+  <a href="/sqb/wallet?oemNo=${oemNo}" class="btn">返回首页</a>
 </div>
 </body>
-<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>--%>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.30/common.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.31/common.min.js"></script>--%>
 </html>

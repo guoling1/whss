@@ -40,7 +40,7 @@ function getQueryString(name) {
 }
 
 function getLocationString() {
-  let path = window.location.href;
+  let path = window.location.pathname;
   let index = path.lastIndexOf("\/");
   return path.substring(index + 1, path.length);
 }
@@ -80,11 +80,11 @@ submit.onclick = function () {
       countyName: pageData.countyName
     }, function () {
       if (getQueryString('card')) {
-        window.location.href = '/sqb/creditCardAuthen?card=true';
+        window.location.href = '/sqb/creditCardAuthen?card=true&oemNo=' + pageData.oemNo;
       } else if (getQueryString('branch')) {
         layer.style.display = 'block';
       } else {
-        window.location.href = '/sqb/bank';
+        window.location.href = '/sqb/bank?oemNo=' + pageData.oemNo;
       }
     })
   }

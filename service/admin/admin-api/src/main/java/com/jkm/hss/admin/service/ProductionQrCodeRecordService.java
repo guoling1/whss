@@ -2,6 +2,7 @@ package com.jkm.hss.admin.service;
 
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
+import com.jkm.hss.admin.helper.requestparam.OemProductionRequest;
 import com.jkm.hss.admin.helper.requestparam.ProductionRequest;
 import com.jkm.hss.admin.helper.responseparam.ProductionListResponse;
 
@@ -22,6 +23,12 @@ public interface ProductionQrCodeRecordService {
      * @param productionRequest
      */
     PageModel<ProductionListResponse> selectList(ProductionRequest productionRequest);
+    /**
+     * 分公司按条件查询列表
+     *
+     * @param oemProductionRequest
+     */
+    PageModel<ProductionListResponse> selectOemList(OemProductionRequest oemProductionRequest);
 
     /**
      * 更改下载url

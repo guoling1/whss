@@ -5,6 +5,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.QueryMerchantRequest;
 import com.jkm.hss.dealer.entity.QueryMerchantResponse;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,21 +57,28 @@ public class QueryMerchantController extends BaseController {
         if (req.getMobile()!=null&&!req.getMobile().equals("")){
             req.setMobile(MerchantSupport.encryptMobile(req.getMobile()));
         }
-        if(level==1){
-            List<QueryMerchantResponse> list = dealerService.dealerMerchantList(req);
-            int count = dealerService.dealerMerchantCount(req);
+        if(super.getDealer().get().getOemType()== EnumOemType.OEM.getId()){
+            List<QueryMerchantResponse> list = dealerService.branchCompany(req);
+            int count = dealerService.branchCompanyCount(req);
             pageModel.setCount(count);
             pageModel.setRecords(list);
-            return CommonResponse.objectResponse(1,"success",pageModel);
+            return CommonResponse.objectResponse(1, "success", pageModel);
+        }else {
+            if (level == 1) {
+                List<QueryMerchantResponse> list = dealerService.dealerMerchantList(req);
+                int count = dealerService.dealerMerchantCount(req);
+                pageModel.setCount(count);
+                pageModel.setRecords(list);
+                return CommonResponse.objectResponse(1, "success", pageModel);
+            }
+            if (level == 2) {
+                List<QueryMerchantResponse> list = dealerService.dealerMerchantSecondList(req);
+                int count = dealerService.dealerMerchantSecondCount(req);
+                pageModel.setCount(count);
+                pageModel.setRecords(list);
+                return CommonResponse.objectResponse(1, "success", pageModel);
+            }
         }
-        if(level==2){
-            List<QueryMerchantResponse> list = dealerService.dealerMerchantSecondList(req);
-            int count = dealerService.dealerMerchantSecondCount(req);
-            pageModel.setCount(count);
-            pageModel.setRecords(list);
-            return CommonResponse.objectResponse(1,"success",pageModel);
-        }
-
 
         return CommonResponse.simpleResponse(-1, "查询异常");
     }

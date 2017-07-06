@@ -1,8 +1,9 @@
 package com.jkm.hss.dealer.helper.requestparam;
+
 import lombok.Data;
 
 /**
- * Created by xingliujie on 2017/5/24.
+ * Created by yulong.zhang on 2016/12/9.
  */
 @Data
 public class DealerNewPwdRequest {
@@ -23,4 +24,5 @@ public class DealerNewPwdRequest {
      * 重复新密码
      */
     private String repeatNewPwd;
+
 }

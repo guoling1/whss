@@ -6,7 +6,8 @@ package com.jkm.base.common.enums;
 public enum EnumGlobalAdminUserLevel {
     BOSS(100),
     FIRSTDEALER(110),
-    SECONDDEALER(120);
+    SECONDDEALER(120),
+    OEM(130);
 
     private final int value;
     EnumGlobalAdminUserLevel(int value) {

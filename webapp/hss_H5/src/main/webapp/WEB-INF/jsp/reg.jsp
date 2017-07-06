@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收收-注册</title>
+  <title>${oemName}-注册</title>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <script>
@@ -63,9 +63,9 @@
 <body>
 
 <div id='reg'>
-  <h1>好收收-商户</h1>
+  <h1>${oemName}-商户</h1>
 
-  <h2>HAOSHOUSHOU</h2>
+  <h2>${wechatCode}</h2>
   <ul>
     <li class="top fly_wing_item">
       <div class="main">
@@ -91,7 +91,7 @@
   <div class="reg">
     <button class="reg-btn" id="submit">注册</button>
   </div>
-  <a class="login" href="/sqb/login">已有账号，直接登录</a>
+  <a class="login" href="/sqb/login?oemNo=${oemNo}">已有账号，直接登录</a>
 
   <div class="message-space" id="layer">
     <div class="message-box">
@@ -116,9 +116,10 @@
 <script>
   var pageData = {
     qrCode: '${qrCode}',
-    inviteCode: '${inviteCode}'
+    inviteCode: '${inviteCode}',
+    oemNo: '${oemNo}'
   }
 </script>
-<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>--%>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.30/reg.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.31/reg.min.js"></script>--%>
 </html>

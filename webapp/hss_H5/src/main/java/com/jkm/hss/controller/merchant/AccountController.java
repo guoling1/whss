@@ -16,7 +16,9 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.bill.service.MerchantWithdrawService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.helper.DealerSupport;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.MerchantWithdrawRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
@@ -43,11 +45,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
@@ -80,57 +85,24 @@ public class AccountController extends BaseController{
     private MerchantWithdrawService merchantWithdrawService;
     @Autowired
     private AccountBankService accountBankService;
+    @Autowired
+    private OemInfoService oemInfoService;
 
     /**
      * 跳到提现页面
      * @return
      */
     @RequestMapping(value = "/toWithdraw", method = RequestMethod.GET)
-    public String toWithdrawJsp(final HttpServletRequest request, final HttpServletResponse response){
-        boolean isRedirect = false;
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-
-                        url = "/withdraw";
-                    }
-                }else{
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
+    public String toWithdrawJsp(final HttpServletRequest request, final HttpServletResponse response,Model model) throws UnsupportedEncodingException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
         }
-
+        model.addAttribute("oemNo",oemNo);
+        return "/withdraw";
     }
 
     /**
@@ -138,51 +110,16 @@ public class AccountController extends BaseController{
      * @return
      */
     @RequestMapping(value = "/toHssAccount", method = RequestMethod.GET)
-    public String toHssAccount(final HttpServletRequest request, final HttpServletResponse response){
-        boolean isRedirect = false;
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-
-                        url = "/hssAccount";
-                    }
-                }else{
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
+    public String toHssAccount(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws UnsupportedEncodingException {
+        String oemNo = request.getParameter("oemNo");
+        if(oemNo!=null&&!"".equals(oemNo)){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+        }else{
+            model.addAttribute("oemName","好收收");
         }
-
+        model.addAttribute("oemNo",oemNo);
+        return "/hssAccount";
     }
 
     /**
@@ -254,6 +191,9 @@ public class AccountController extends BaseController{
     public CommonResponse flowDetails(@RequestBody MerchantFlowRequest flowRequest, HttpServletRequest request){
 
         try{
+            if(!super.isLogin(request)){
+                return CommonResponse.simpleResponse(-2, "未登录");
+            }
             UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
             //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwcIteXav-vgB9l6p3d0B5VA").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();

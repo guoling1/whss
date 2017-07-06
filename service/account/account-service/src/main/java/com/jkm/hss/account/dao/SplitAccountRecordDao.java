@@ -1,10 +1,12 @@
 package com.jkm.hss.account.dao;
 
+import com.jkm.hss.account.entity.ProfitCountRequest;
+import com.jkm.hss.account.entity.ProfitCountRespons;
+import com.jkm.hss.account.entity.ProfitDetailCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +54,7 @@ public interface SplitAccountRecordDao {
      * @param endDate
      * @return
      */
-    BigDecimal selectStatisticsByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo,
+    String selectStatisticsByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo,
                                        @Param("businessType") String businessType, @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
 
     /**
@@ -70,4 +72,32 @@ public interface SplitAccountRecordDao {
      * @return
      */
     List<SplitAccountRecord> selectByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * dealer_pc 分润统计
+     * @param request
+     * @return
+     */
+    List<ProfitCountRespons> getProfit(ProfitCountRequest request);
+
+    /**
+     * dealer_pc 分润统计
+     * @param request
+     * @return
+     */
+    int getProfitCount(ProfitCountRequest request);
+
+    /**
+     * dealer_pc 分润明细
+     * @param req
+     * @return
+     */
+    List<ProfitDetailCountRespons> getCountDetails(ProfitCountRequest req);
+
+    /**
+     * dealer_pc 分润明细总数
+     * @param req
+     * @return
+     */
+    int getCountDetailsNo(ProfitCountRequest req);
 }
