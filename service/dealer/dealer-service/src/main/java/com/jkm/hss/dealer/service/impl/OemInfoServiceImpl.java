@@ -9,6 +9,7 @@ import com.jkm.hss.dealer.enums.EnumDealerStatus;
 import com.jkm.hss.dealer.helper.requestparam.AddOrUpdateOemRequest;
 import com.jkm.hss.dealer.helper.response.OemDetailResponse;
 import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.merchant.helper.WxConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,6 +85,9 @@ public class OemInfoServiceImpl implements OemInfoService {
                 }
             }
         }else{
+            oemDetailResponse.setId(0);
+            oemDetailResponse.setAppId(WxConstants.APP_ID);
+            oemDetailResponse.setAppSecret(WxConstants.APP_KEY);
             List<TemplateInfo> templateInfoList = templateInfoDao.selectByOemId(0);
             for(int i=0;i<templateInfoList.size();i++){
                 OemDetailResponse.TemplateInfo templateInfo = new OemDetailResponse.TemplateInfo();

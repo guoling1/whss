@@ -862,6 +862,14 @@ public class LoginController extends BaseController {
                             model.addAttribute("message","推荐商户未审核通过");
                             url = "/message";
                         }else{
+                            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(merchantInfoOptional.get().getOemId());
+                            if(oemInfoOptional.isPresent()){
+                                model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+                                model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
+                            }else{
+                                model.addAttribute("oemName","好收收");
+                                model.addAttribute("wechatCode","HAOSHOUSHOU");
+                            }
                             model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
                             url = "/reg";
                         }
