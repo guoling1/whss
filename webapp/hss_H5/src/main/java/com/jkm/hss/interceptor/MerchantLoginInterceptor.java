@@ -50,6 +50,9 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
         requestUrlParam.setRequestUrl(tempUrl);
         requestUrlParamService.insert(requestUrlParam);
         String oemNo = request.getParameter("oemNo");
+        if(oemNo==null){
+            oemNo = "";
+        }
         request.setAttribute("oemNo",oemNo);
         if ("".equals(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY))) {
             if(oemNo!=null&&!"".equals(oemNo)){
