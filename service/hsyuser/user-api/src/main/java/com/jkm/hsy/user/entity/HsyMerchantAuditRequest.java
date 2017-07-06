@@ -23,10 +23,7 @@ public class HsyMerchantAuditRequest {
     private int channel;//渠道参数
 
 
-    /**
-     * 注册手机号
-     */
-    private String cellphone;
+
 
     /**
      * 状态
