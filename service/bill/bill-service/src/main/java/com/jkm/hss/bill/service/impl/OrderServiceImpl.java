@@ -565,6 +565,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyNameHsy",req.getProxyNameHsy());
         map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
+        map.put("source",req.getSource());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
