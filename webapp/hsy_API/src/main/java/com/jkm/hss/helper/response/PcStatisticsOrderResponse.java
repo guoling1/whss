@@ -38,19 +38,19 @@ public class PcStatisticsOrderResponse {
      */
     private BigDecimal profit = new BigDecimal("0.00");
 
-    private Map<Integer, Detail> details = new HashMap<>();
+    private List<Detail> details = new ArrayList<>();
 
 
-    public void addDetails(final PcStatisticsOrder statisticsOrder) {
+    public void addDetails(final Map<Integer, Detail> detailMap, final PcStatisticsOrder statisticsOrder) {
         if (statisticsOrder.getPaymentChannel() <= 0) {
             return;
         }
-        Detail detail = details.get(statisticsOrder.getPaymentChannel());
+        Detail detail = detailMap.get(statisticsOrder.getPaymentChannel());
         if (null == detail) {
             detail = new Detail();
             detail.setPayChannel(statisticsOrder.getPaymentChannel());
             detail.setPayChannelValue(EnumPaymentChannel.of(statisticsOrder.getPaymentChannel()).getValue());
-            details.put(statisticsOrder.getPaymentChannel(), detail);
+            detailMap.put(statisticsOrder.getPaymentChannel(), detail);
         }
         if (EnumHsyOrderStatus.PAY_SUCCESS.getId() == statisticsOrder.getOrderStatus()) {
             this.payNumber = this.payNumber + statisticsOrder.getNumber();

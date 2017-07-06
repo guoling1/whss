@@ -26,10 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2017/7/4.
@@ -183,9 +180,11 @@ public class TradeController extends BaseController {
         final List<PcStatisticsOrder> statisticsOrderList = this.hsyOrderService.pcStatisticsOrder(statisticsOrderRequest.getShopId(), startTime, endTime);
         final PcStatisticsOrderResponse statisticsOrderResponse = new PcStatisticsOrderResponse();
         if (!CollectionUtils.isEmpty(statisticsOrderList)) {
+            final HashMap<Integer, PcStatisticsOrderResponse.Detail> detailMap = new HashMap<>();
             for (PcStatisticsOrder statisticsOrder : statisticsOrderList) {
-                statisticsOrderResponse.addDetails(statisticsOrder);
+                statisticsOrderResponse.addDetails(detailMap, statisticsOrder);
             }
+            statisticsOrderResponse.getDetails().addAll(detailMap.values());
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", statisticsOrderResponse);
     }
