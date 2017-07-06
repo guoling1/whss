@@ -662,4 +662,12 @@ public interface OrderDao {
     String getAmountCountBranch(OrderTradeRequest req);
 
     String getAmountCountBranch1(OrderTradeRequest req);
+
+    String getAmountCountHss(OrderTradeRequest req);
+
+    String getAmountCountsHsy(OrderTradeRequest req);
+
+    String getAmountCountHss1(OrderTradeRequest req);
+
+    String getAmountCountsHsy1(OrderTradeRequest req);
 }
