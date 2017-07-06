@@ -1220,7 +1220,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+            AND (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -1297,7 +1297,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+            AND (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -1399,7 +1399,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+            AND (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -2430,7 +2430,7 @@
         tb_order a
         LEFT JOIN app_au_user b ON a.payee = b.ACCOUNTID
         WHERE
-        a.trade_type = 1 AND b.DEALERID=#{dealerId} and a.app_id='hsy'
+        a.trade_type = 1 AND b.DEALERID in (select id from tb_dealer where id=#{dealerId} and level=1 union select id from tb_dealer where first_level_dealer_id=#{dealerId} and level=2 ) and a.app_id='hsy'
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{begin}
         </if>
@@ -2441,7 +2441,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+            AND (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -2532,7 +2532,7 @@
         tb_order a
         LEFT JOIN app_au_user b ON a.payee = b.ACCOUNTID
         WHERE
-        a.trade_type = 1 AND b.DEALERID=#{dealerId} and a.app_id='hsy'
+        a.trade_type = 1 AND b.DEALERID in (select id from tb_dealer where id=#{dealerId} and level=1 union select id from tb_dealer where first_level_dealer_id=#{dealerId} and level=2 ) and a.app_id='hsy'
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -2543,7 +2543,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.REALNAME LIKE CONCAT('%',#{merchantName},'%')
+            AND (SELECT SHORTNAME from `app_biz_shop` WHERE `ID` =(SELECT SID from `app_biz_shop_user_role` WHERE UID=b.`ID` AND TYPE=1)) LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.DEALERID in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
