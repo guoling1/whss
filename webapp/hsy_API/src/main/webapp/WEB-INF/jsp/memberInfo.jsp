@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="/WEB-INF/jsp/path.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -12,6 +13,13 @@
         手机号:${appPolicyMember.consumerCellphone}<br>
         会员卡号:${appPolicyMember.memberCardNO}<br>
         会员卡折扣(折):${appPolicyMember.discount}<br>
+        余额：${appPolicyMember.remainingSum}<br>
+        累计消费：${appPolicyMember.consumeTotalAmount}<br>
+        累计充值：${appPolicyMember.rechargeTotalAmount}<br>
+
+
+        <a href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
+
         <c:choose>
             <c:when test="${appPolicyMember.userID!=null&&appPolicyMember.userID!=''}">
                 支付宝已绑定

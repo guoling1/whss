@@ -1,10 +1,12 @@
 package com.jkm.hss.controller.active;
 
+import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
@@ -221,6 +223,7 @@ public class MembershipController {
         if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
             model.addAttribute("cardList", cardList);
             model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("source", authInfo.getSource());
             return "redirect:/membership/createMemberSuccess";
         }else if(OperateType.RECHARGE.key.equals(authInfo.getOperate())){
             if(appPolicyMember.getIsDeposited()==0){
@@ -322,15 +325,21 @@ public class MembershipController {
     }
 
     @RequestMapping("createMemberSuccess")
-    public String createMemberSuccess(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+    public String createMemberSuccess(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         model.addAttribute("mid",mid);
+        model.addAttribute("source",source);
         return "/createMemberSuccess";
     }
 
     @RequestMapping("memberInfo")
-    public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+    public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
         model.addAttribute("appPolicyMember",appPolicyMember);
+        model.addAttribute("source",source);
         return "/memberInfo";
     }
 
@@ -377,6 +386,11 @@ public class MembershipController {
         map.put("payResponse",payResponse);
         writeJsonToRrsponse(map,response,pw);
         return;
+    }
+
+    @RequestMapping("toConsumeList")
+    public String toConsumeList(HttpServletRequest request, HttpServletResponse response, Long mid){
+        return "consumeList";
     }
 
     @RequestMapping("sendVcode")

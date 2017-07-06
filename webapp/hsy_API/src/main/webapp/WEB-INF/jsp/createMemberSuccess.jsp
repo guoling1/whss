@@ -7,7 +7,7 @@
 <body>
 <h1 style="font-size: 40px;">
     您已成功开通会员卡啦
-    <a href="<%=basePath%>membership/memberInfo?mid=${mid}">会员详情</a>
+    <a href="<%=basePath%>membership/memberInfo?mid=${mid}&source=${source}">会员详情</a>
     </h1>
 </body>
 </html>

@@ -655,6 +655,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setUpdateTime(date);
         hsyUserDao.update(appAuUser);
         pushService.pushReferrals(list.get(0).getId(),appParam.getAccessToken());
+        hsyUserDao.updateAppAuUserTokenStatusForRemove(list.get(0).getId(),appParam.getAccessToken());
         return "";
     }
 
@@ -1088,6 +1089,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         Date date=new Date();
         appAuUser.setUpdateTime(date);
         hsyUserDao.updateByID(appAuUser);
+        hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
         return "";
     }
 
@@ -1409,6 +1411,7 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         hsyUserDao.updateByID(appAuUser);
         pushService.pushReferrals(appAuUser.getId(),appParam.getAccessToken());
+        hsyUserDao.updateAppAuUserTokenStatusForRemove(appAuUser.getId(),appParam.getAccessToken());
         return "";
     }
 
