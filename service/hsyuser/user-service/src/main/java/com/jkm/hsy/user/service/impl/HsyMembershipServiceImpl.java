@@ -760,11 +760,13 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             appPolicyRechargeOrder.setOuid(appPolicyMember.getUserID());
             List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
             appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
+            appPolicyRechargeOrder.setSource("alipay");
         }else {
             appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getWechatChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getOpenID());
             List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
             appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
+            appPolicyRechargeOrder.setSource("wechat");
         }
         appPolicyRechargeOrder.setMemberID(appPolicyMember.getId());
         appPolicyRechargeOrder.setMemberAccountID(appPolicyMember.getAccountID());

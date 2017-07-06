@@ -279,6 +279,24 @@ public class HsyUserServiceImpl implements HsyUserService {
         if(appAuUserFind.getStatus().equals(AppConstant.USER_STATUS_FORBID))
             throw new ApiHandleException(ResultCode.USER_FORBID);
 
+        AppBizShop appBizShop=new AppBizShop();
+        appBizShop.setUid(appAuUserFind.getId());
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
+            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        else
+        {
+            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
+            if(parentList!=null&&parentList.size()!=0) {
+                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+                appAuUserFind.setDealerID(parentList.get(0).getDealerID());
+            }
+        }
+        List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
+        if(shopList!=null&&shopList.size()!=0)
+            appBizShop=shopList.get(0);
+        if(appBizShop.getStatus()==3||appBizShop.getStatus()==4)
+            throw new ApiHandleException(ResultCode.NOT_ALLOW_LOGIN);
+
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
@@ -319,21 +337,6 @@ public class HsyUserServiceImpl implements HsyUserService {
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
 
-        AppBizShop appBizShop=new AppBizShop();
-        appBizShop.setUid(appAuUserFind.getId());
-        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
-            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
-        else
-        {
-            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
-            if(parentList!=null&&parentList.size()!=0) {
-                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
-                appAuUserFind.setDealerID(parentList.get(0).getDealerID());
-            }
-        }
-        List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
-        if(shopList!=null&&shopList.size()!=0)
-            appBizShop=shopList.get(0);
 //        if(AppConstant.USER_STATUS_NORMAL!=appAuUserFind.getStatus())
 //            throw new ApiHandleException(ResultCode.USER_NO_CEHCK);
         if(appBizShop.getCheckErrorInfo()==null)

@@ -33,6 +33,7 @@ public class AppPolicyRechargeOrder {
     private Date paySuccessTime;//支付完成时间
     private Integer status;//状态 0待充值 1充值成功 2充值失败
     private Integer type;//类型 1开卡充值 2开卡送 3 充值 4充值送
+    private String source;//来源wechat alipay
     private Date createTime;
     private Date updateTime;
 
@@ -261,5 +262,13 @@ public class AppPolicyRechargeOrder {
 
     public void setCurrentPage(Integer currentPage) {
         this.currentPage = currentPage;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

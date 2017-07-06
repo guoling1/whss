@@ -62,6 +62,7 @@ public enum ResultCode {
 	QECODE_HAS_ACTIVATE(2056,"该二维码已经被激活，不能再次绑定"),
 	QECODE_SAME_DEALER(2057,"二维码必须绑定在同一代理商下"),
 	QECODE_SAME_PRODUCT(2058,"二维码必须绑定在同一产品下"),
+	NOT_ALLOW_LOGIN(2059,"正在注册中，请勿登录"),
 	;
 
 	public int resultCode;

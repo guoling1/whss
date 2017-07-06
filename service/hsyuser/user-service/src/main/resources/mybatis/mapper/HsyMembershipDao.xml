@@ -152,8 +152,8 @@
     </select>
 
     <insert id="insertRechargeOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
-        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,CREATETIME,UPDATETIME)
-        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{cid},#{mcid},#{uid},#{merchantReceiveAccountID},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{createTime},#{updateTime})
+        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,CREATETIME,UPDATETIME)
+        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{cid},#{mcid},#{uid},#{merchantReceiveAccountID},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{source},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateRechargeOrder" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
@@ -182,6 +182,7 @@
             <if test="paySuccessTime!=null">PAYSUCCESSTIME=#{paySuccessTime},</if>
             <if test="status!=null">STATUS=#{status},</if>
             <if test="type!=null">TYPE=#{type},</if>
+            <if test="source!=null">SOURCE=#{source},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -248,7 +249,7 @@
 
     <select id="findRechargeOrderListByPage" parameterType="page" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
         select
-          rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,
+          rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,rorder.SOURCE,
         (case when rorder.TYPE=1 then '开卡充值'
         when rorder.TYPE=2 then '开卡送'
         when rorder.TYPE=3 then '充值'
@@ -266,7 +267,7 @@
 
     <select id="findRechargeOrderListByPageCount" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder" resultType="java.lang.Integer">
         select count(1) from (select
-        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
+        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,rorder.SOURCE,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
         from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
         where status=1
         <if test="memberID!=null and memberID!=''">
