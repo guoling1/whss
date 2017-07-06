@@ -197,12 +197,16 @@ public class QueryMerchantInfoRecordController extends BaseController {
     @RequestMapping(value = "/saveNo",method = RequestMethod.POST)
     public CommonResponse saveNo(@RequestBody SaveLineNoRequest req) {
         try {
-//            this.queryMerchantInfoRecordService.saveNo(req);
-            return CommonResponse.simpleResponse(1,"保存成功");
+            if (req.getStatus()==2) {
+                this.queryMerchantInfoRecordService.saveNo(req);
+            }else {
+                this.queryMerchantInfoRecordService.saveNo1(req);
+            }
         }catch (Exception e){
-            throw e;
-//            log.debug("操作异常");
+            e.printStackTrace();
+            log.debug("操作异常");
         }
+        return CommonResponse.simpleResponse(1,"保存成功");
 
     }
 

@@ -1,9 +1,6 @@
 package com.jkm.hss.merchant.dao;
 
-import com.jkm.hss.merchant.entity.LogResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
-import com.jkm.hss.merchant.entity.ReferralResponse;
-import com.jkm.hss.merchant.entity.SettleResponse;
+import com.jkm.hss.merchant.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -77,4 +74,16 @@ public interface QueryMerchantInfoRecordDao {
      * @return
      */
     MerchantInfoResponse selectProxyNameTJ1(@Param("secondDealerId") long secondDealerId);
+
+    /**
+     * hss补填联行号
+     * @param req
+     */
+    void saveNo(SaveLineNoRequest req);
+
+    /**
+     * hss补填联行号（除审核通过之外）
+     * @param req
+     */
+    void saveNo1(SaveLineNoRequest req);
 }

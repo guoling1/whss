@@ -8,7 +8,13 @@ import lombok.Data;
 @Data
 public class SaveLineNoRequest {
 
+    private long id; //hss商户id
+
+    private long accountId; //账户id
+
     private String branchCode; //支行号
+
+    private int status; //审核状态
 
     private String bankName; //支行名称
 
