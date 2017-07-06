@@ -219,6 +219,44 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
+            <div class="label">联行号：<span>{{$msg.branchCode}}</span>
+              <el-button type="text" @click="wad" style="padding: 0">补填</el-button>
+            </div>
+          </el-col>
+          <el-col :span="5">
+          </el-col>
+          <el-col :span="5">
+          </el-col>
+        </el-row>
+        <el-dialog title="选择支行" :visible.sync="isWad">
+          <el-form :model="form">
+            <el-form-item label="银行名称" label-width="120px">
+              {{$msg.bankName}}
+            </el-form-item>
+            <el-form-item label="省/市/区" label-width="120px">
+              <el-cascader :placeholder="请选择"
+                           style="width: 100%"
+                           :options="options2"
+                           v-model="cityCode"
+                           size="small"
+                           @active-item-change="handleItemChange"
+                           :props="props"
+              ></el-cascader>
+            </el-form-item>
+            <el-form-item label="支行" label-width="120px">
+              <el-autocomplete v-model="autobankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:100%"></el-autocomplete>
+            </el-form-item>
+            <el-form-item label="联行号" label-width="120px">
+              <el-input v-model="form.branchCode" size="small" style="width: 100%" disabled></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="isWad = false">取 消</el-button>
+            <el-button type="primary" @click="submit" :loading="btnLoad">确 定</el-button>
+          </div>
+        </el-dialog>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
             <div class="label">认证状态：<span>{{$msg.isAuthen}}</span></div>
           </el-col>
           <el-col :span="5">
@@ -384,9 +422,11 @@
     name: 'storeAudit',
     data () {
       return {
+        btnLoad:false,
         auditClick:false,
         loading: true,
         dealerMask: false,
+        isWad: false,
         id: '',
         msg: {
           id: '',
@@ -430,7 +470,23 @@
         src:'',
         current:0,
         height:0,
-        width:0
+        width:0,
+        options2:[],
+        props:{
+          value: 'value',
+          children: 'cities'
+        },
+        form:{
+          branchProvince_name:'',
+          branchProvince_code:'',
+          branchCityCode:'',
+          branchCityName:'',
+          branchCountyCode:'',
+          branchCountyName:'',
+          bankName:'',
+          branchCode:''
+        },
+        autobankName:''
       }
     },
     created: function () {
@@ -471,8 +527,155 @@
         $box[0].setCapture&&$box[0].setCapture();
         return false;
       })
+      this.$http.post('/join/selectProvinces')
+        .then(function (res) {
+          for(let i=0;i<res.data.length;i++){
+            res.data[i].value = res.data[i].code;
+            res.data[i].label = res.data[i].aname;
+            res.data[i].cities = [];
+          }
+          this.options2 = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        });
     },
     methods: {
+      wad:function () {
+        this.form = {
+          branchProvince_name:'',
+          branchProvince_code:'',
+          branchCityCode:'',
+          branchCityName:'',
+          branchCountyCode:'',
+          branchCountyName:'',
+          bankName:'',
+          branchCode:''
+        }
+        this.isWad = true;
+      },
+      handleItemChange: function (val) {
+        if(val.length==1){
+          this.$http.post('/join/selectCities',{code:val[0]})
+            .then(res=>{
+            for(let i=0;i<this.options2.length;i++){
+            if(this.options2[i].value==val[0]){
+              this.form.branchProvince_name = this.options2[i].aname;
+              this.form.branchProvince_code = this.options2[i].value;
+                for(let j=0;j<res.data.length;j++){
+                  res.data[j].value = res.data[j].code;
+                  res.data[j].label = res.data[j].aname;
+                  res.data[j].cities = [];
+                }
+                this.options2[i].cities = res.data;
+              }
+            }
+          })
+        }else if(val.length==2){
+          this.$http.post('/join/selectDistrict',{code:val[1]})
+            .then(res=>{
+            this.citys = res.data;
+            for(let i=0;i<this.options2.length;i++){
+              if(this.options2[i].value==val[0]){
+                for(let k=0;k<this.options2[i].cities.length;k++){
+                  if(this.options2[i].cities[k].value==val[1]){
+                    this.form.branchCityCode = this.options2[i].cities[k].value;
+                    this.form.branchCityName = this.options2[i].cities[k].aname;
+                    for(let j=0;j<res.data.length;j++){
+                      res.data[j].value = res.data[j].code;
+                      res.data[j].label = res.data[j].aname;
+                    }
+                    this.options2[i].cities[k].cities = res.data;
+                  }
+                }
+              }
+            }
+          })
+        }
+      },
+      querySearchAsync(queryString, cb) {
+        var results=[],districtCode='',cardBank = '';
+        //查支行
+        districtCode=this.form.branchCityCode;
+        cardBank=this.msg.bankName;
+        this.form.branchCode=''
+        this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:cardBank,districtCode:districtCode})
+          .then(res=>{
+          for(let i=0; i<res.data.length; i++){
+            res.data[i].value = res.data[i].branchName;
+          }
+          results = res.data;
+        })
+        //        this.$http.post('/admin/unionNumber/bankName',{bankName:queryString})
+        //          .then(res=>{
+        //          for(let i=0; i<res.data.length; i++){
+        //            res.data[i].value = res.data[i].bankName;
+        //          }
+        //          results = res.data;
+        //        })
+      .catch(err=>{
+
+        });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
+      handleSelect(item) {
+        console.log(item);
+        this.form.branchCode = item.branchCode;
+      },
+      submit: function () {
+        for(let i=0; i<this.citys.length;i++){
+            if(this.citys[i].value == this.cityCode[2]){
+              this.form.branchCountyCode = this.citys[i].aname;
+              this.form.branchCountyName = this.citys[i].value;
+            }
+        }
+        this.form.id = this.id;
+        this.form.accountId = this.msg.accountId;
+        this.form.bankName = this.autobankName;
+        var flag=false;
+        for(let k in this.form){
+            if(this.form[k]==''){
+                flag = true;
+                break;
+            }
+        }
+        console.log(flag)
+        if(flag){
+          this.$message({
+            showClose: true,
+            message: '请补全信息',
+            type: 'success'
+          });
+        }else{
+          this.btnLoad = true;
+          this.$http.post('/admin/wad/updateBranch',this.form)
+            .then(res=>{
+              this.$message({
+                showClose: true,
+                message: '补填成功',
+                type: 'success'
+              });
+              this.btnLoad = false;
+              this.isWad = false;
+              this.getData()
+            })
+            .catch(err=>{
+              this.btnLoad = false;
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
+      },
       move:function (e) {
         var oBox=document.getElementById("imgBox");
         e=e||window.event;
@@ -913,7 +1116,7 @@
           return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
         }
       },
-      changeDeal: function (val) {
+      filterDealer: function (val) {
         return val = val ? val : '无'
       }
     },
