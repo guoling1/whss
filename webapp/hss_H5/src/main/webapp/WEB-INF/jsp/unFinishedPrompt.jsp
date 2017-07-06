@@ -25,12 +25,12 @@
         }
         function aysnLoadcb () {
             var script = document.createElement('script');
-            script.src = "http://static.jinkaimen.cn/hss/2.2.30/common.min.js";
+            script.src = "http://static.jinkaimen.cn/hss/2.2.31/common.min.js";
             script.type = "text/javascript";
             document.head.appendChild(script);
             script.onerror = function () {
                 var script = document.createElement('script');
-                script.src = '/js/hss/2.2.30/common.min.js';
+                script.src = '/js/hss/2.2.31/common.min.js';
                 script.type = "text/javascript";
                 document.head.appendChild(script);
             }
@@ -54,7 +54,7 @@
             }
         }
         window.onload = function () {
-            aysnLoad('http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js','/js/hss/vendor.1.0.9.7.min.js');
+            aysnLoad('http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js','/js/hss/vendor.1.0.9.7.min.js');
             aysnLoadCss('http://static.jinkaimen.cn/hss/css/style.2.2.21.css','/css/hss/style.2.2.21.css');
             aysnLoadCss('http://static.jinkaimen.cn/weui/weui.css','/css/hss/weui.css');
         };
