@@ -35,6 +35,9 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
         log.info("请求地址：{}",StringUtils.isNotBlank(request.getQueryString()) ?
                 request.getRequestURL() + "?" + request.getQueryString() : request.getRequestURL().toString());
         String oemNo = request.getParameter("oemNo");
+        if(oemNo==null){
+            oemNo = "";
+        }
         if(oemNo!=null&&!"".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             Preconditions.checkState(oemInfoOptional.isPresent(), "O单参数有误");
