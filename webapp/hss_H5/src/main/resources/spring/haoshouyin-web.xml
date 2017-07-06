@@ -86,7 +86,6 @@
             <mvc:mapping path="/sqb/collection"/>
             <mvc:mapping path="/sqb/tradeRecord"/>
             <mvc:mapping path="/sqb/bank"/>
-            <mvc:mapping path="/sqb/login"/>
             <mvc:mapping path="/sqb/creditCardAuthen"/>
             <mvc:mapping path="/sqb/myRecommend"/>
             <mvc:mapping path="/sqb/upgradeMax"/>
