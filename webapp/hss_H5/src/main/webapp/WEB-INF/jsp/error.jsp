@@ -23,7 +23,7 @@
     <div class="title">很遗憾，支付失败</div>
     <div class="text">${errorMsg}</div>
     <div class="btn-box">
-      <a href="/sqb/collection" class="btn">重新收款</a>
+      <a href="/sqb/collection?oemNo=${oemNo}" class="btn">重新收款</a>
     </div>
   </div>
   <div class="qa">

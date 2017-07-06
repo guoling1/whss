@@ -20,6 +20,7 @@ import com.jkm.hss.bill.service.BusinessOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.dao.OemInfoDao;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.helper.response.OemDetailResponse;
 import com.jkm.hss.dealer.service.OemInfoService;
@@ -98,6 +99,8 @@ public class TradeController extends BaseController {
     private BusinessOrderService businessOrderService;
     @Autowired
     private OemInfoService oemInfoService;
+    @Autowired
+    private OemInfoDao oemInfoDao;
 
     /**
      * 生成订单
@@ -766,6 +769,13 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "unionPay2Error/{orderId}")
     public String unionPay2Error(@PathVariable final long orderId, final Model model) {
         final Order order = this.orderService.getById(orderId).get();
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.getByAccountId(order.getPayee());
+        OemInfo oemInfo = oemInfoDao.selectByDealerId(merchantInfoOptional.get().getOemId());
+        if(oemInfo!=null){
+            model.addAttribute("oemNo", oemInfo.getOemNo());
+        }else{
+            model.addAttribute("oemNo", "");
+        }
         model.addAttribute("errorMsg", order.getRemark());
         return "/error";
     }
