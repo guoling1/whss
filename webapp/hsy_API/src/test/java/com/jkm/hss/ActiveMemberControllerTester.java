@@ -119,6 +119,71 @@ public class ActiveMemberControllerTester {
     }
 
     @Test
+    public void testFindConsumeOrderList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001068");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"mcid\":18,\"currentPage\":1,\"mid\":32}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindConsumeOrderInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001069");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"id\":1555}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindRechargeOrderList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001070");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"mcid\":18,\"currentPage\":1,\"mid\":32}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindRechargeOrderInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001071");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"id\":27}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindMemberStatistic()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001072");
+        p.setAccessToken(ActiveControllerTester.accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(ActiveControllerTester.v);
+        String param="{\"uid\":215}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void testEnAndDe()throws Exception{
         String data="215";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");

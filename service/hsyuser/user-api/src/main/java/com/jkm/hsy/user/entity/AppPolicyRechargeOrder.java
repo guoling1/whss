@@ -36,6 +36,9 @@ public class AppPolicyRechargeOrder {
     private Date createTime;
     private Date updateTime;
 
+    private Integer currentPage;
+    private String typeName;//类型名称
+
     public Long getId() {
         return id;
     }
@@ -106,6 +109,14 @@ public class AppPolicyRechargeOrder {
 
     public void setMemberAccountID(Long memberAccountID) {
         this.memberAccountID = memberAccountID;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public Long getMerchantReceiveAccountID() {
@@ -242,5 +253,13 @@ public class AppPolicyRechargeOrder {
 
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
     }
 }

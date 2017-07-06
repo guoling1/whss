@@ -19,6 +19,8 @@ import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.constant.Page;
+import com.jkm.hsy.user.constant.PageUtils;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
@@ -245,6 +247,106 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
 
         Map map=new HashMap();
         map.put("hsyOrder",hsyOrderReturn);
+        return gson.toJson(map);
+    }
+
+    /**HSY001068 查找消费列表*/
+    public String findConsumeOrderList(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        HsyOrder hsyOrder=null;
+        try{
+            hsyOrder=gson.fromJson(dataParam, HsyOrder.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(hsyOrder.getMcid()!=null&&!hsyOrder.getMcid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"会员卡ID");
+        if(!(hsyOrder.getCurrentPage()!=null&&!hsyOrder.getCurrentPage().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前页数");
+        if(hsyOrder.getCurrentPage()<=0)
+            throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
+
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(hsyOrder.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<HsyOrder> pageAll=new Page<HsyOrder>();
+        pageAll.setObjectT(hsyOrder);
+        pageAll.setPage(page);
+        pageAll.getPage().setTotalRecord(hsyOrderDao.findConsumeOrderListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyOrderDao.findConsumeOrderListByPage(pageAll));
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                boolean flag=false;
+                if(f.getName().contains("objectT"))
+                    return true;
+                if(f.getName().contains("viewpagecount"))
+                    return true;
+                if(f.getName().contains("startPageIndex"))
+                    return true;
+                if(f.getName().contains("endPageIndex"))
+                    return true;
+                return flag;
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(pageAll);
+    }
+
+    /**HSY001069 查找消费具体信息*/
+    public String findConsumeOrderInfo(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        HsyOrder hsyOrder=null;
+        try{
+            hsyOrder=gson.fromJson(dataParam, HsyOrder.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(hsyOrder.getId()!=null&&!hsyOrder.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"订单ID");
+
+        List<HsyOrder> orderList=hsyOrderDao.findConsumeOrderInfo(hsyOrder.getId());
+        hsyOrder=orderList.get(0);
+        if(hsyOrder.getPaytype().contains("wechat"))
+            hsyOrder.setPaytype("微信");
+        else
+            hsyOrder.setPaytype("支付宝");
+
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+
+        Map map=new HashMap();
+        map.put("hsyorder",hsyOrder);
         return gson.toJson(map);
     }
 

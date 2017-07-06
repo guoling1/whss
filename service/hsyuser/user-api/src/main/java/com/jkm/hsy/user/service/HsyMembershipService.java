@@ -20,6 +20,9 @@ public interface HsyMembershipService {
     public String updateMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException;
     public String findMemberList(String dataParam, AppParam appParam)throws ApiHandleException;
     public String findMemberInfo(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findRechargeOrderList(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findRechargeOrderInfo(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMemberStatistic(String dataParam, AppParam appParam)throws ApiHandleException;
     /**web*/
     public AppPolicyConsumer findConsumerByOpenID(String openID);
     public AppPolicyConsumer findConsumerByUserID(String userID);

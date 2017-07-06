@@ -223,7 +223,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
 
         List<AppPolicyMembershipCard> list= hsyMembershipDao.findMemberCardByID(appPolicyMembershipCard.getId());
         Integer cardCount=hsyMembershipDao.findMemberCardCountByMCID(appPolicyMembershipCard.getId());
-        Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid());
+        Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid(),null,null);
         List<AppBizShop> shopList=hsyMembershipDao.findSuitShopByMCID(appPolicyMembershipCard.getId());
 
         BigDecimal proportion=new BigDecimal(cardCount/cardTotalCount);
@@ -396,6 +396,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        if(account.get().getUpdateTime().compareTo(account.get().getCreateTime())!=0)
+            appPolicyMember.setLastConsumeTime(account.get().getUpdateTime());
 
         Map result=new HashMap();
         result.put("appPolicyMember",appPolicyMember);
@@ -413,6 +415,180 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             }
         }).create();
         return gson.toJson(result);
+    }
+
+    /**HSY001070 查找充值记录*/
+    public String findRechargeOrderList(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyRechargeOrder appPolicyRechargeOrder=null;
+        try{
+            appPolicyRechargeOrder=gson.fromJson(dataParam, AppPolicyRechargeOrder.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyRechargeOrder.getMcid()!=null&&!appPolicyRechargeOrder.getMcid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"会员卡ID");
+        if(!(appPolicyRechargeOrder.getCurrentPage()!=null&&!appPolicyRechargeOrder.getCurrentPage().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前页数");
+        if(appPolicyRechargeOrder.getCurrentPage()<=0)
+            throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
+
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<AppPolicyRechargeOrder> pageAll=new Page<AppPolicyRechargeOrder>();
+        pageAll.setObjectT(appPolicyRechargeOrder);
+        pageAll.setPage(page);
+        pageAll.getPage().setTotalRecord(hsyMembershipDao.findRechargeOrderListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyMembershipDao.findRechargeOrderListByPage(pageAll));
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                boolean flag=false;
+                if(f.getName().contains("objectT"))
+                    return true;
+                if(f.getName().contains("viewpagecount"))
+                    return true;
+                if(f.getName().contains("startPageIndex"))
+                    return true;
+                if(f.getName().contains("endPageIndex"))
+                    return true;
+                return flag;
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(pageAll);
+    }
+
+    /**HSY001071 查找充值记录详情*/
+    public String findRechargeOrderInfo(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyRechargeOrder appPolicyRechargeOrder=null;
+        try{
+            appPolicyRechargeOrder=gson.fromJson(dataParam, AppPolicyRechargeOrder.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyRechargeOrder.getId()!=null&&!appPolicyRechargeOrder.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"充值订单ID");
+
+        List<AppPolicyRechargeOrder> appPolicyRechargeOrderList=hsyMembershipDao.findRechargeOrderInfo(appPolicyRechargeOrder.getId());
+        appPolicyRechargeOrder=appPolicyRechargeOrderList.get(0);
+
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+
+        Map map=new HashMap();
+        map.put("appPolicyRechargeOrder",appPolicyRechargeOrder);
+        return gson.toJson(map);
+    }
+
+    /**HSY001072 查找统计值*/
+    public String findMemberStatistic(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppPolicyMembershipCard appPolicyMembershipCard=null;
+        try{
+            appPolicyMembershipCard=gson.fromJson(dataParam, AppPolicyMembershipCard.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appPolicyMembershipCard.getUid()!=null&&!appPolicyMembershipCard.getUid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"法人ID");
+
+        Date date=new Date();
+        Date yesterday=AppDateUtil.changeDate(date,Calendar.DAY_OF_MONTH,-1);
+        Date startTimeYesterday=AppDateUtil.parseDate(AppDateUtil.formatDate(yesterday,AppDateUtil.DATE_FORMAT_NORMAL)+" 00:00:00");
+        Date endTimeYesterday=AppDateUtil.parseDate(AppDateUtil.formatDate(yesterday,AppDateUtil.DATE_FORMAT_NORMAL)+" 23:59:59");
+        Integer cardYesterdayCount=hsyMembershipDao.findMemberCardCascadeCountByUID(appPolicyMembershipCard.getUid(),startTimeYesterday,endTimeYesterday);
+        AppPolicyMemberStatistic appPolicyMemberStatisticYesterday=hsyMembershipDao.findMemberConsumeStatistic(appPolicyMembershipCard.getUid(),startTimeYesterday,endTimeYesterday);
+        appPolicyMemberStatisticYesterday.setCardCount(cardYesterdayCount);
+
+        Date startTimeMonth=AppDateUtil.parseDate(AppDateUtil.formatDate(date,"yyyy-MM")+"-01 00:00:00");
+        Date endTimeMonth=AppDateUtil.parseDate(AppDateUtil.formatDate(AppDateUtil.changeDate(date,Calendar.MONTH,1),"yyyy-MM")+"-01 00:00:00");
+        Integer cardMonthCount=hsyMembershipDao.findMemberCardCascadeCountByUID(appPolicyMembershipCard.getUid(),startTimeMonth,endTimeMonth);
+        AppPolicyMemberStatistic appPolicyMemberStatisticMonth=hsyMembershipDao.findMemberConsumeStatistic(appPolicyMembershipCard.getUid(),startTimeMonth,endTimeMonth);
+        appPolicyMemberStatisticMonth.setCardCount(cardMonthCount);
+
+        List<AppPolicyMembershipCard> appPolicyMembershipCardList=hsyMembershipDao.findMemberCardAndStatistic(appPolicyMembershipCard.getUid());
+        Integer totalCount=0;
+        for(AppPolicyMembershipCard card:appPolicyMembershipCardList)
+            totalCount+=card.getMemberCount();
+        for(AppPolicyMembershipCard card:appPolicyMembershipCardList){
+            BigDecimal proportion=new BigDecimal(card.getMemberCount()/totalCount);
+            BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+            card.setProportion(proportionEx+"%");
+        }
+
+        List<AppPolicyMemberStatistic> appPolicyMemberStatistic12Month=new ArrayList<AppPolicyMemberStatistic>();
+        appPolicyMemberStatisticMonth.setYear(AppDateUtil.formatDate(startTimeMonth,"yyyy"));
+        appPolicyMemberStatisticMonth.setMonth(AppDateUtil.formatDate(startTimeMonth,"MM"));
+        appPolicyMemberStatistic12Month.add(appPolicyMemberStatisticMonth);
+        Date startTimeMonthX=startTimeMonth;
+        Date endTimeMonthX=endTimeMonth;
+        for(int i=0;i<11;i++){
+            endTimeMonthX=startTimeMonthX;
+            startTimeMonthX=AppDateUtil.changeDate(startTimeMonthX,Calendar.MONTH,-1);
+            AppPolicyMemberStatistic appPolicyMemberStatisticTempMonth=hsyMembershipDao.findMemberConsumeStatistic(appPolicyMembershipCard.getUid(),startTimeMonthX,endTimeMonthX);
+            Integer cardTempMonthCount=hsyMembershipDao.findMemberCardCascadeCountByUID(appPolicyMembershipCard.getUid(),startTimeMonthX,endTimeMonthX);
+            appPolicyMemberStatisticTempMonth.setCardCount(cardTempMonthCount);
+            appPolicyMemberStatisticTempMonth.setYear(AppDateUtil.formatDate(startTimeMonthX,"yyyy"));
+            appPolicyMemberStatisticTempMonth.setMonth(AppDateUtil.formatDate(startTimeMonthX,"MM"));
+            appPolicyMemberStatistic12Month.add(appPolicyMemberStatisticTempMonth);
+        }
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+
+        Map map=new HashMap();
+        map.put("appPolicyMemberStatisticYesterday",appPolicyMemberStatisticYesterday);
+        map.put("appPolicyMemberStatisticMonth",appPolicyMemberStatisticMonth);
+        map.put("appPolicyMembershipCardList",appPolicyMembershipCardList);
+        map.put("totalCount",totalCount);
+        map.put("appPolicyMemberStatistic12Month",appPolicyMemberStatistic12Month);
+        return gson.toJson(map);
     }
 
     public AppPolicyConsumer findConsumerByOpenID(String openID){

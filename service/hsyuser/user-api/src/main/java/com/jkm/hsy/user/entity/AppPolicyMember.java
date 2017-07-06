@@ -39,6 +39,7 @@ public class AppPolicyMember {
     private BigDecimal remainingSum;//余额
     private BigDecimal rechargeTotalAmount;//充值总金额
     private BigDecimal consumeTotalAmount;//累计消费总金额
+    private Date lastConsumeTime;
 
     public Long getId() {
         return id;
@@ -271,5 +272,13 @@ public class AppPolicyMember {
 
     public void setConsumeTotalAmount(BigDecimal consumeTotalAmount) {
         this.consumeTotalAmount = consumeTotalAmount;
+    }
+
+    public Date getLastConsumeTime() {
+        return lastConsumeTime;
+    }
+
+    public void setLastConsumeTime(Date lastConsumeTime) {
+        this.lastConsumeTime = lastConsumeTime;
     }
 }

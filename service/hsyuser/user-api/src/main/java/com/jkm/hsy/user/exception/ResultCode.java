@@ -58,7 +58,6 @@ public enum ResultCode {
 	ORDER_HAS_FAILED(2052,"下单已经失败"),
 	ORIGINAL_PASSWORD_NOT_MATCH(2053,"原密码输入错误"),
 	STATUS_NOT_EXSIT(2054,"状态不存在"),
-	RESULT_FAILE(2100,"返回结果错误"),
 	QECODE_NOT_EXIST(2055,"二维码不存在"),
 	QECODE_HAS_ACTIVATE(2056,"该二维码已经被激活，不能再次绑定"),
 	QECODE_SAME_DEALER(2057,"二维码必须绑定在同一代理商下"),

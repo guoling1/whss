@@ -31,6 +31,7 @@ public class AppPolicyMembershipCard {
     private Integer memberCount;//会员卡数量
     private BigDecimal rechargeSum;//充值总额
     private BigDecimal consumeSum;//消费总值
+    private String proportion;//比例
 
     public Long getId() {
         return id;
@@ -198,5 +199,13 @@ public class AppPolicyMembershipCard {
 
     public void setConsumeSum(BigDecimal consumeSum) {
         this.consumeSum = consumeSum;
+    }
+
+    public String getProportion() {
+        return proportion;
+    }
+
+    public void setProportion(String proportion) {
+        this.proportion = proportion;
     }
 }

@@ -135,7 +135,7 @@
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME,
         (select count(*) from app_policy_member member where mcid=card.ID) memberCount,
         (select COALESCE(sum(TRADEAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
-        (select COALESCE(sum(realAmount),0) from tb_hsy_order where mcid=card.ID and orderstatus=2) consumeSum
+        (select COALESCE(sum(realAmount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3) consumeSum
         from app_policy_membership_card card where UID=#{uid}
     </select>
 
@@ -201,6 +201,12 @@
         select count(1) from app_policy_member member
         left join app_policy_membership_card card on member.mcid=card.id
         where card.UID=#{uid}
+        <if test="startTime!=null">
+            AND member.CREATETIME >=#{startTime}
+        </if>
+        <if test="endTime!=null">
+            <![CDATA[AND member.CREATETIME <=#{endTime}]]>
+        </if>
     </select>
 
     <select id="findChannelAccountID" resultType="com.jkm.hsy.user.entity.BasicChannel">
@@ -239,5 +245,64 @@
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{param},'%'))
         </if>) x
     </select>
+
+    <select id="findRechargeOrderListByPage" parameterType="page" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+          rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,
+        (case when rorder.TYPE=1 then '开卡充值'
+        when rorder.TYPE=2 then '开卡送'
+        when rorder.TYPE=3 then '充值'
+        when rorder.TYPE=4 then '充值送' else '' end) TYPENAME,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
+        from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
+        where status=1
+        <if test="objectT.memberID!=null and objectT.memberID!=''">
+            AND MEMBERID=#{objectT.memberID}
+        </if>
+        <if test="objectT.mcid!=null and objectT.mcid!=''">
+            AND MCID=#{objectT.mcid}
+        </if>
+        order by rorder.UPDATETIME desc
+    </select>
+
+    <select id="findRechargeOrderListByPageCount" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder" resultType="java.lang.Integer">
+        select count(1) from (select
+        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
+        from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
+        where status=1
+        <if test="memberID!=null and memberID!=''">
+            AND MEMBERID=#{memberID}
+        </if>
+        <if test="mcid!=null and mcid!=''">
+            AND MCID=#{mcid}
+        </if>) x
+    </select>
+
+    <select id="findRechargeOrderInfo"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+          rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,
+        (case when rorder.TYPE=1 then '开卡充值'
+        when rorder.TYPE=2 then '开卡送'
+        when rorder.TYPE=3 then '充值'
+        when rorder.TYPE=4 then '充值送' else '' end) TYPENAME,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
+        from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
+        where rorder.id=#{id}
+    </select>
+
+    <select id="findMemberConsumeStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMemberStatistic">
+        select count(1) consumeCount,COALESCE(sum(realAmount),0) consumeSum from tb_hsy_order
+        where uid=#{uid} and mcid is not null and orderstatus!=1 and orderstatus!=3
+        <if test="startTime!=null">
+            AND pay_success_time >=#{startTime}
+        </if>
+        <if test="endTime!=null">
+            <![CDATA[AND pay_success_time <=#{endTime}]]>
+        </if>
+    </select>
+
+    <select id="findMemberCardAndStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
+        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID) memberCount
+        from app_policy_membership_card card where uid=#{uid}
+    </select>
+
 
 </mapper>

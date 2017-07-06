@@ -111,6 +111,16 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001066", new String[]{"hsyMembershipService","findMemberList"});
         /**查找会员详情*/
         bizMapper.put("HSY001067", new String[]{"hsyMembershipService","findMemberInfo"});
+        /**查找消费列表*/
+        bizMapper.put("HSY001068", new String[]{"hsyOrderScanService","findConsumeOrderList"});
+        /**查找消费具体信息*/
+        bizMapper.put("HSY001069", new String[]{"hsyOrderScanService","findConsumeOrderInfo"});
+        /**查找充值记录*/
+        bizMapper.put("HSY001070", new String[]{"hsyMembershipService","findRechargeOrderList"});
+        /**查找充值记录详情*/
+        bizMapper.put("HSY001071", new String[]{"hsyMembershipService","findRechargeOrderInfo"});
+        /**查找统计值*/
+        bizMapper.put("HSY001072", new String[]{"hsyMembershipService","findMemberStatistic"});
 
     }
 }
