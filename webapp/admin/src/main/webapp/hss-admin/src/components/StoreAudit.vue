@@ -991,7 +991,8 @@
         }else{
           this.auditClick = true;
           this.$http.post('/admin/merchantInfoCheckRecord/record', {
-            merchantId: this.$data.id
+            merchantId: this.$data.id,
+            branchCode: this.msg.branchCode
           }).then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '操作成功'
