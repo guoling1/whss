@@ -1,17 +1,18 @@
 package com.jkm.hss.controller.active;
 
 import com.google.common.base.Optional;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
+import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.RechargeParams;
+import com.jkm.hss.bill.service.HsyOrderScanService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.entity.AuthParam;
@@ -41,6 +42,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -71,6 +73,8 @@ public class MembershipController {
     private ReceiptMemberMoneyAccountService receiptMemberMoneyAccountService;
     @Autowired
     private TradeService tradeService;
+    @Autowired
+    private HsyOrderScanService hsyOrderScanService;
 
     @RequestMapping("getAuth/{operate}/{uidEncode}")
     public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode,@PathVariable String operate){
@@ -254,21 +258,21 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","手机号不能为空！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if (!ValidateUtils.isMobile(appPolicyConsumer.getConsumerCellphone()))
         {
             map.put("flag","fail");
             map.put("result","请填写正确的手机号！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if(!(vcode!=null&&!vcode.equals("")))
         {
             map.put("flag","fail");
             map.put("result","验证码不能为空！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         AppAuVerification verification=hsyMembershipService.findRightVcode(appPolicyConsumer.getConsumerCellphone());
@@ -276,14 +280,14 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","验证码未发送或已失效！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if(!verification.getCode().equals(vcode))
         {
             map.put("flag","fail");
             map.put("result","验证码错误！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
 
@@ -309,7 +313,7 @@ public class MembershipController {
                 }
                 map.put("flag","success");
                 map.put("mid",appPolicyMember.getId()+"");
-                writeJsonToRrsponse(map,response,pw);
+                writeJsonToResponse(map,response,pw);
                 return;
             }
         }
@@ -320,7 +324,7 @@ public class MembershipController {
         map.put("flag","success");
         map.put("mid",appPolicyMember.getId()+"");
         map.put("status",status+"");
-        writeJsonToRrsponse(map,response,pw);
+        writeJsonToResponse(map,response,pw);
         return;
     }
 
@@ -335,11 +339,13 @@ public class MembershipController {
     public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
         model.addAttribute("appPolicyMember",appPolicyMember);
         model.addAttribute("source",source);
+        model.addAttribute("appBizShopList",appBizShopList);
         return "/memberInfo";
     }
 
@@ -368,7 +374,7 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","查不到该会员");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
@@ -379,18 +385,39 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result",payResponse.getMessage());
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         map.put("flag","success");
         map.put("payResponse",payResponse);
-        writeJsonToRrsponse(map,response,pw);
+        writeJsonToResponse(map,response,pw);
         return;
     }
 
-    @RequestMapping("toConsumeList")
-    public String toConsumeList(HttpServletRequest request, HttpServletResponse response, Long mid){
-        return "consumeList";
+    @RequestMapping("consumeListByPage")
+    public void consumeListByPage(HttpServletRequest request, HttpServletResponse response, PrintWriter pw, HsyOrder hsyOrder){
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(hsyOrder.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<HsyOrder> pageAll=new Page<HsyOrder>();
+        pageAll.setObjectT(hsyOrder);
+        pageAll.setPage(page);
+        pageAll= hsyOrderScanService.findConsumeOrderListByPage(pageAll);
+        writeJsonToResponse(pageAll,response,pw);
+        return;
+    }
+
+    @RequestMapping("rechargeListByPage")
+    public void rechargeListByPage(HttpServletRequest request, HttpServletResponse response, PrintWriter pw, AppPolicyRechargeOrder appPolicyRechargeOrder){
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<AppPolicyRechargeOrder> pageAll=new Page<AppPolicyRechargeOrder>();
+        pageAll.setObjectT(appPolicyRechargeOrder);
+        pageAll.setPage(page);
+        pageAll= hsyMembershipService.findRechargeOrderListByPage(pageAll);
+        writeJsonToResponse(pageAll,response,pw);
+        return;
     }
 
     @RequestMapping("sendVcode")
@@ -400,14 +427,14 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","手机号不能为空！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if (!ValidateUtils.isMobile(cellphone))
         {
             map.put("flag","fail");
             map.put("result","请填写正确的手机号！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
 
@@ -431,7 +458,7 @@ public class MembershipController {
         }catch(Exception e){
             map.put("flag","fail");
             map.put("result","发送验证码失败，请稍后再试！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
 
@@ -446,7 +473,7 @@ public class MembershipController {
         hsyMembershipService.insertVcode(sn,code,cellphone, VerificationCodeType.MEMBER_REGISTER.verificationCodeKey);
         map.put("flag","success");
         map.put("result","发送成功！");
-        writeJsonToRrsponse(map,response,pw);
+        writeJsonToResponse(map,response,pw);
     }
 
     public RechargeParams createRechargeParams(AppPolicyRechargeOrder appPolicyRechargeOrder){
@@ -469,9 +496,21 @@ public class MembershipController {
         return rechargeParams;
     }
 
-    public void writeJsonToRrsponse(Object obj,HttpServletResponse response,PrintWriter pw){
+    public void writeJsonToResponse(Object obj,HttpServletResponse response,PrintWriter pw){
         response.setContentType("application/json;charset=utf-8");
-        Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(AppDateUtil.formatDate(date,"yyyy-MM-dd HH:mm:ss"));
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return AppDateUtil.parseDate(json.getAsJsonPrimitive().getAsString());
+            }
+        }).create();
         String json=gson.toJson(obj);
         pw.write(json);
     }

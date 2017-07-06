@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 
@@ -37,4 +38,6 @@ public interface HsyMembershipService {
     public AppPolicyMember findMemberInfoByID(Long mid);
     public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember, String type,String source,BigDecimal amount);
     public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID);
+    public List<AppBizShop> findSuitShopByMCID(Long mcid);
+    public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
 }

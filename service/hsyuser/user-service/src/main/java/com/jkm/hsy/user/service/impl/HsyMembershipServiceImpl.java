@@ -800,4 +800,14 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyRechargeOrder.setTradeID(tradeID);
     }
 
+    public List<AppBizShop> findSuitShopByMCID(Long mcid) {
+        return hsyMembershipDao.findSuitShopByMCID(mcid);
+    }
+
+    public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll){
+        pageAll.getPage().setTotalRecord(hsyMembershipDao.findRechargeOrderListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyMembershipDao.findRechargeOrderListByPage(pageAll));
+        return pageAll;
+    }
+
 }

@@ -363,4 +363,10 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
 
         return null;
     }
+
+    public Page<HsyOrder> findConsumeOrderListByPage(Page<HsyOrder> pageAll){
+        pageAll.getPage().setTotalRecord(hsyOrderDao.findConsumeOrderListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyOrderDao.findConsumeOrderListByPage(pageAll));
+        return pageAll;
+    }
 }
