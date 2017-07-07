@@ -465,7 +465,7 @@ public class TradeController extends BaseController {
             final String amountStr = httpServletRequest.getParameter("amount");
             final String channelStr = httpServletRequest.getParameter("channel");
             final  String oemNo = httpServletRequest.getParameter("oemNo");
-            if(oemNo!=null&&!"".equals(oemNo)){
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             }else{
