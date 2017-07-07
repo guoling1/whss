@@ -26,12 +26,11 @@
         UPDATE `tb_app_pc_user_passport`
         SET
             uid = #{uid},
-            token = #{token},
             expire_time = #{expireTime},
             last_login_date = #{lastLoginDate},
             login_status = #{loginStatus},
             status = #{status}
-        WHERE auid = #{auid}
+        WHERE uid = #{uid}
     </update>
 
     <update id="updateExpireTime">

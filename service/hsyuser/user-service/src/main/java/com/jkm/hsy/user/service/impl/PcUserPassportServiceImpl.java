@@ -6,6 +6,7 @@ import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.helper.AdminConsts;
 import com.jkm.hsy.user.dao.PcUserPassportDao;
 import com.jkm.hsy.user.entity.PcUserPassport;
+import com.jkm.hsy.user.help.PcTokenHelper;
 import com.jkm.hsy.user.service.PcUserPassportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,17 +30,20 @@ public class PcUserPassportServiceImpl implements PcUserPassportService {
      */
     @Override
     public PcUserPassport generateToken(final long uid) {
-        final PcUserPassport tokenInDB = this.pcUserPassportDao.selectByUid(uid);
-        if (null != tokenInDB) {
-            return tokenInDB;
-        }
         final PcUserPassport pcUserPassport = new PcUserPassport();
         pcUserPassport.setUid(uid);
         pcUserPassport.setExpireTime(System.currentTimeMillis() + AdminConsts.TOKEN_EXPIRE_MILLIS);
         pcUserPassport.setStatus(EnumAdminUserStatus.NORMAL.getCode());
         pcUserPassport.setLoginStatus(EnumBoolean.TRUE.getCode());
         pcUserPassport.setLastLoginDate(new Date());
-        this.pcUserPassportDao.add(pcUserPassport);
+        final PcUserPassport tokenInDB = this.pcUserPassportDao.selectByUid(uid);
+        if (null != tokenInDB) {
+            pcUserPassport.setToken(tokenInDB.getToken());
+            this.pcUserPassportDao.update(pcUserPassport);
+        } else {
+            pcUserPassport.setToken(PcTokenHelper.generateToken(uid));
+            this.pcUserPassportDao.add(pcUserPassport);
+        }
         return pcUserPassport;
     }
 

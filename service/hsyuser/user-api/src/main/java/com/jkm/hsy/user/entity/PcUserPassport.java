@@ -38,11 +38,6 @@ public class PcUserPassport extends BaseEntity {
      */
     private int loginStatus;
 
-    public void setUid(long uid) {
-        this.uid = uid;
-        this.token = PcTokenHelper.generateToken(uid);
-    }
-
     /**
      * 判断token是否已过期
      *

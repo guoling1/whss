@@ -476,10 +476,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         return result.toJSONString();
     }
 
+
+
     @Override
     @Transactional
     public String appRefund1o6(String paramData, AppParam appParam) {
-        final JSONObject result = new JSONObject();
         final JSONObject paramJo = JSONObject.parseObject(paramData);
         final long payOrderId = paramJo.getLongValue("payOrderId");
         final String password = paramJo.getString("password");
@@ -494,21 +495,27 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //            return result.toJSONString();
 //        }
         final String tokenpwd=this.hsyUserDao.findpwdByToken(accessToken);
-        if(tokenpwd==null){
+        final JSONObject result = this.refund(tokenpwd, password, payOrder);
+        return result.toJSONString();
+    }
+
+    private JSONObject refund (final String dbPassword, final String password, final Order payOrder) {
+        final JSONObject result = new JSONObject();
+        if(dbPassword==null){
             result.put("code", -2);
             result.put("msg", "token无效");
-            return result.toJSONString();
+            return result;
         }
-        if(StringUtils.isEmpty(password)||!tokenpwd.equals(password)){
+        if(StringUtils.isEmpty(password) || !dbPassword.equals(password)){
             result.put("code", -2);
             result.put("msg", "密码错误");
-            return result.toJSONString();
+            return result;
         }
 
         if (payOrder.isRefundSuccess()) {
             result.put("code", -1);
             result.put("msg", "已退款");
-            return result.toJSONString();
+            return result;
         }
 //        final BigDecimal refundedAmount = this.refundOrderService.getRefundedAmount(payOrderId);
 //        if (payOrder.getRealPayAmount().subtract(refundedAmount).compareTo(refundAmount) < 0) {
@@ -521,13 +528,13 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
             result.put("code", -1);
             result.put("msg", "只可以退当日订单");
-            return result.toJSONString();
+            return result;
         }
-        final List<RefundOrder> refundOrders = this.refundOrderService.getByPayOrderId(payOrderId);
+        final List<RefundOrder> refundOrders = this.refundOrderService.getByPayOrderId(payOrder.getId());
         if (!CollectionUtils.isEmpty(refundOrders)) {
             result.put("code", -1);
             result.put("msg", "退款异常.");
-            return result.toJSONString();
+            return result;
         }
         final RefundOrder refundOrder = new RefundOrder();
         refundOrder.setBatchNo("");
@@ -568,16 +575,33 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final Pair<Integer, String> resultPair = this.refundImpl(refundOrder, payOrder,hsyRefundOrder,newhsyorder);
         if (0 == resultPair.getLeft()) {
             result.put("code", 0);
-            result.put("orderstatus",EnumHsyOrderStatus.REFUND_SUCCESS.getId());
-            result.put("orderstatusName",EnumHsyOrderStatus.REFUND_SUCCESS.getValue());
-            result.put("refundAmount",refundOrder.getRefundAmount());
+            result.put("orderstatus", EnumHsyOrderStatus.REFUND_SUCCESS.getId());
+            result.put("orderstatusName", EnumHsyOrderStatus.REFUND_SUCCESS.getValue());
+            result.put("refundAmount", refundOrder.getRefundAmount());
             result.put("msg", "退款成功");
             result.put("refundTime", this.refundOrderService.getById(refundOrder.getId()).get().getFinishTime());
         } else {
             result.put("code", -1);
             result.put("msg", "退款失败");
         }
-        return result.toJSONString();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param payOrderId
+     * @param uid
+     * @param password
+     * @return
+     */
+    @Override
+    @Transactional
+    public JSONObject pcAppRefund(final long payOrderId, final long uid, final String password) {
+        final Order payOrder = this.orderService.getByIdWithLock(payOrderId).get();
+        final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
+        final JSONObject result = this.refund(appAuUser.getPassword(), password, payOrder);
+        return result;
     }
 
     /**

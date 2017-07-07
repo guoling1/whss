@@ -14,11 +14,6 @@ public class PcGenerateOrderRequest {
     private long shopId;
 
     /**
-     * 登录用户id
-     */
-    private long uid;
-
-    /**
      * 交易金额
      */
     private String amount;

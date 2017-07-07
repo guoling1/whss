@@ -40,7 +40,10 @@ public class PcUserLoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        final String token = CookieUtil.getCookie(request, ApplicationConsts.ADMIN_COOKIE_KEY);
+        if ("OPTIONS".equals(request.getMethod())) {
+            return true;
+        }
+        final String token = CookieUtil.getCookie(request, ApplicationConsts.APP_USER_PC_COOKIE_KEY);
 
         if (StringUtils.isEmpty(token)) {
             ResponseWriter.writeJsonResponse(response, CommonResponse.simpleResponse(-100, "请先登录系统"));

@@ -344,7 +344,8 @@
         SELECT payment_channel, orderstatus, COUNT(id) as `count`, SUM(amount) as total_amount,
         SUM(realAmount) as real_amount, SUM(refund_amount) as refund_amount, SUM(poundage) as poundage FROM tb_hsy_order
         where shopid = #{shopId}
-        AND orderstatus in (2,6)
+        AND orderstatus in (2, 6)
+        AND payment_channel IN (1, 2)
         AND pay_success_time BETWEEN #{startTime} AND #{endTime}
         GROUP BY payment_channel, orderstatus
     </select>

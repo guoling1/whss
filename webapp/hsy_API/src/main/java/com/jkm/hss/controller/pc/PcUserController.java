@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.pc;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.controller.BaseController;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +44,11 @@ public class PcUserController extends BaseController {
     @Autowired
     private HsyShopDao hsyShopDao;
 
+
+    @RequestMapping(value = "/login", method = RequestMethod.OPTIONS)
+    public void login() {
+
+    }
     /**
      * 登录
      *
@@ -51,9 +58,12 @@ public class PcUserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public CommonResponse login(@RequestBody final PcUserLoginRequest pcUserLoginRequest, final HttpServletResponse response) {
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
         final String _username = StringUtils.trimToEmpty(pcUserLoginRequest.getUsername());
         final String _password = StringUtils.trimToEmpty(pcUserLoginRequest.getPassword());
-        if (StringUtils.isNumeric(_username)) {
+        if (!StringUtils.isNumeric(_username)) {
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
         if (StringUtils.isEmpty(_password)) {
@@ -72,7 +82,7 @@ public class PcUserController extends BaseController {
         if(appAuUserFind.getStatus().equals(AppConstant.USER_STATUS_FORBID)) {
             return CommonResponse.simpleResponse(-1, "您已被禁止登陆");
         }
-        final PcUserPassport pcUserPassport = pcUserPassportService.generateToken(appAuUser.getId());
+        final PcUserPassport pcUserPassport = pcUserPassportService.generateToken(appAuUserFind.getId());
         CookieUtil.setSessionCookie(response, ApplicationConsts.APP_USER_PC_COOKIE_KEY, pcUserPassport.getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(PcUserConsts.TOKEN_EXPIRE_MILLIS / 1000));
         AppBizShop appBizShop=new AppBizShop();
@@ -81,11 +91,15 @@ public class PcUserController extends BaseController {
         appBizShop = shopList.get(0);
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                 .addParam("shopId", appBizShop.getId())
-                .addParam("accountId", appAuUser.getAccountID())
-                .addParam("uid", appAuUser.getId())
+                .addParam("accountId", appAuUserFind.getAccountID())
+                .addParam("uid", appAuUserFind.getId())
                 .build();
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.OPTIONS)
+    public void logout() {
+
+    }
     /**
      * 登出
      *
@@ -95,9 +109,47 @@ public class PcUserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/logout")
     public CommonResponse logout(final HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
         this.pcUserPassportService.logout(getPcUserPassport().getId());
         CookieUtil.deleteCookie(response, ApplicationConsts.APP_USER_PC_COOKIE_KEY, ApplicationConsts.getApplicationConfig().domain());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登出成功");
+    }
+
+
+    @RequestMapping(value = "/listShop", method = RequestMethod.OPTIONS)
+    public void listShop(final long l) {
+
+    }
+
+    /**
+     * 店铺列表
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/listShop")
+    public CommonResponse listShop(final HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        final long uid = getPcUserPassport().getUid();
+        final AppBizShop appBizShop = new AppBizShop();
+        appBizShop.setUid(uid);
+        final List<AppBizShop> shopList=hsyShopDao.findShopList(appBizShop);
+        final List<JSONObject> shops = new ArrayList<>(shopList.size());
+        for (AppBizShop shop : shopList) {
+            final JSONObject jo = new JSONObject();
+            shops.add(jo);
+            jo.put("shopId", shop.getId());
+            jo.put("shopName", shop.getName());
+        }
+        final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
+        final JSONObject result = new JSONObject();
+        result.put("shops", shops);
+        result.put("uid", appAuUser.getId());
+        result.put("username", appAuUser.getRealname());
+        result.put("roleName", appAuUser.getRoleName());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
 
 }

@@ -369,7 +369,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                     updateHsyOrder.setPaychannelsign(userCurrentChannelPolicy.getAlipayChannelTypeSign());
                     break;
                 case WECHAT:
-                    updateHsyOrder.setPaychannelsign(userCurrentChannelPolicy.getAlipayChannelTypeSign());
+                    updateHsyOrder.setPaychannelsign(userCurrentChannelPolicy.getWechatChannelTypeSign());
                     break;
             }
             final UserChannelPolicy userChannelPolicy =
