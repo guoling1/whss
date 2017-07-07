@@ -55,4 +55,11 @@ public interface PushDao {
      * @return
      */
     List<Map> selectUserByUid(@Param("uid") String uid,@Param("accessToken") String accessToken);
+
+    /**
+     * 禁用推送
+     * @param uid
+     * @return
+     */
+    List<Map> selectCid(@Param("uid") String uid);
 }

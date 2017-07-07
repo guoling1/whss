@@ -117,4 +117,11 @@ public interface PushService {
      */
     public String pushReferrals(Long uid,String accessToken);
 
+    /**
+     * 禁用推送（被禁用的uid）
+     * @param uid
+     * @return
+     */
+    public String pushDisable(Long uid);
+
 }

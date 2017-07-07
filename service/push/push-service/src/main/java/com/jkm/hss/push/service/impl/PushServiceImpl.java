@@ -506,6 +506,27 @@ public class PushServiceImpl implements PushService {
         return ret;
     }
 
+    @Override
+    public String pushDisable(Long uid) {
+        List<Map>  list=pushDao.selectCid(uid.toString());
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            if (map.get("CLIENTID")!=null) {
+                String clientid = map.get("CLIENTID").toString();
+                clients.add(clientid);
+            }
+        }
+        final SmsTemplate messageTemplate;
+        AppResult appResult = new AppResult();
+        messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.PUSH_DISABLE.getId());
+        appResult.setResultCode(300);
+
+        String newContent =messageTemplate.getMessageTemplate();
+        appResult.setResultMessage(newContent);
+        String ret = this.pushTransmissionMsg1(2, JSON.toJSONString(appResult), "2", null, clients);
+        return ret;
+    }
+
 }
 
 
