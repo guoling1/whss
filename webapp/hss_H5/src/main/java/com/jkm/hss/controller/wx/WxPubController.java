@@ -1214,10 +1214,6 @@ public class WxPubController extends BaseController {
         if(accountBank==null){
             return CommonResponse.simpleResponse(-1, "您暂未设置默认银行卡");
         }
-//        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
-//                &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
-//            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
-//        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1277,10 +1273,6 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
-//        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
-//                &&merchantInfo.get().getCreditCard()!=null&&!"".equals(merchantInfo.get().getCreditCard())){
-//            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
-//        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 

@@ -1221,5 +1221,47 @@ public class LoginController extends BaseController {
         return "/buySuccess";
     }
 
+    /**
+     * 地区选择
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/districtSelect", method = RequestMethod.GET)
+    public String districtSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "bankName", required = false) String bankName) throws IOException {
+        model.addAttribute("bankName", bankName);
+        return  "/district";
+    }
 
+    /**
+     * 支行选择
+     * @param request
+     * @param response
+     * @param model
+     * @param bankName
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/branchSelect", method = RequestMethod.GET)
+    public String branchSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "bankName", required = false) String bankName,@RequestParam(value = "districtCode", required = false) String districtCode) throws IOException {
+        model.addAttribute("districtCode", districtCode);
+        model.addAttribute("bankName", bankName);
+        return  "/branch";
+    }
+    /**
+     * 添加支行
+     * @param request
+     * @param response
+     * @param model
+     * @param source
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/addBranch", method = RequestMethod.GET)
+    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "source", required = false) Integer source) throws IOException {
+        model.addAttribute("source", source);
+        return  "/addBranch";
+    }
 }

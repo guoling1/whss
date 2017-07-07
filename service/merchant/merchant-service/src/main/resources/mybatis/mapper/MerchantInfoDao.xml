@@ -31,8 +31,9 @@
         city_code=#{cityCode},
         city_name=#{cityName},
         county_code=#{countyCode},
-        county_name=#{countyName}
-
+        county_name=#{countyName},
+        branch_code=#{branchCode},
+        branch_name=#{branchName}
         WHERE id = #{id}
     </update>
 
