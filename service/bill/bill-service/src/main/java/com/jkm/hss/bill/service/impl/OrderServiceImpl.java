@@ -1607,6 +1607,11 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public int markOrder2SettlementIng(final Date settleDate, final long accountId, final long settlementRecordId, final int settleStatus, final int upperChannel) {
+        //根据结算单更新 需要判断 通道  民生 2个结算单
+        if (EnumUpperChannel.XMMS_BANK.getId() == upperChannel){
+            final SettlementRecord settlementRecord = this.settlementRecordService.getById(settlementRecordId).get();
+            return this.orderDao.markOrder2SettlementIngBySettleChannel(settleDate, accountId, settlementRecordId, settleStatus, upperChannel, settlementRecord.getSettleChannel());
+        }
         return this.orderDao.markOrder2SettlementIng(settleDate, accountId, settlementRecordId, settleStatus, upperChannel);
     }
 

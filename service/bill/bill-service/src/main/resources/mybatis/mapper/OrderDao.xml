@@ -2998,6 +2998,18 @@
             #{item}
         </foreach>
     </update>
+    <update id="markOrder2SettlementIngBySettleChannel">
+        UPDATE tb_order SET settlement_record_id = #{settlementRecordId}, settle_status = #{settleStatus}
+        WHERE
+        app_id = 'hsy'
+        AND status IN (4, 7)
+        AND settle_status = 1
+        AND refund_status = 0
+        AND settle_time = #{settleDate}
+        AND payee = #{accountId}
+        AND upper_channel = #{upperChannel}
+        AND settle_channel = #{settleChannel}
+    </update>
     <select id="getBranch" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,
