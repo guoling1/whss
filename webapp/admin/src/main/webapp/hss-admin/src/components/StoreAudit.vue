@@ -220,7 +220,8 @@
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">联行号：<span>{{$msg.branchCode}}</span>
-              <el-button type="text" @click="wad" style="padding: 0">补填</el-button>
+              <el-button type="text" size="small" @click="wad" style="padding: 0;font-weight: normal;" v-if="msg.branchCode==''||msg.branchCode==null">补填</el-button>
+              <el-button type="text" size="small" @click="wad" style="padding: 0;font-weight: normal;" v-else>修改</el-button>
             </div>
           </el-col>
           <el-col :span="5">
