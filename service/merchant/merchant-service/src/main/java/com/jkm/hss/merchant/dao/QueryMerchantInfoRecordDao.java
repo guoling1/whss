@@ -93,4 +93,11 @@ public interface QueryMerchantInfoRecordDao {
      * @return
      */
     int getStatus(@Param("id") long id);
+
+    /**
+     * 查询账户id
+     * @param id
+     * @return
+     */
+    int getAccountId(@Param("id") long id);
 }

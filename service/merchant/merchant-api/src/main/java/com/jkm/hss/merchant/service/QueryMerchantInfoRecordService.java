@@ -66,4 +66,11 @@ public interface QueryMerchantInfoRecordService {
      * @return
      */
     int getStatus(long id);
+
+    /**
+     * 查找账户id
+     * @param id
+     * @return
+     */
+    int getAccountId(long id);
 }

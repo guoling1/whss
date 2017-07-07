@@ -149,4 +149,9 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
     public int getStatus(long id) {
         return this.queryMerchantInfoRecordDao.getStatus(id);
     }
+
+    @Override
+    public int getAccountId(long id) {
+        return this.queryMerchantInfoRecordDao.getAccountId(id);
+    }
 }

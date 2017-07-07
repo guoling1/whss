@@ -64,7 +64,9 @@ public class QueryMerchantInfoRecordController extends BaseController {
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
         JSONObject jsonObject = new JSONObject();
         int status = this.queryMerchantInfoRecordService.getStatus(merchantInfo.getId());
+        int accountId = this.queryMerchantInfoRecordService.getAccountId(merchantInfo.getId());
         merchantInfo.setStatus(status);
+        merchantInfo.setAccountId(accountId);
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
         MerchantInfoResponse response = this.queryMerchantInfoRecordService.getrecommenderInfo(merchantInfo.getId());
 
