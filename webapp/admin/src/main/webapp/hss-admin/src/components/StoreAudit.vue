@@ -652,7 +652,7 @@
           });
         }else{
           this.btnLoad = true;
-          this.$http.post('/admin/wad/updateBranch',this.form)
+          this.$http.post('/admin/QueryMerchantInfoRecord/saveNo',this.form)
             .then(res=>{
               this.$message({
                 showClose: true,
