@@ -175,6 +175,11 @@ public class MembershipController {
             return "/tips";
         }
 
+        if(OperateType.VIEW.key.equals(authInfo.getOperate())){
+            model.addAttribute("tips","会员卡列表");
+            return "/tips";
+        }
+
         Long uid;
         try {
             String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);

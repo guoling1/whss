@@ -185,7 +185,7 @@ public class ActiveMemberControllerTester {
 
     @Test
     public void testEnAndDe()throws Exception{
-        String data="215";
+        String data="1";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");
         String base65D= AppAesUtil.decryptCBC_NoPaddingFromBase64String(base64E, "utf-8", "61243d4fa76d5a64", "1234567812345678");
         String httpEncode= URLEncoder.encode(base64E,"utf-8");

@@ -1090,6 +1090,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setUpdateTime(date);
         hsyUserDao.updateByID(appAuUser);
         hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
+        pushService.pushDisable(appAuUser.getId());
         return "";
     }
 
