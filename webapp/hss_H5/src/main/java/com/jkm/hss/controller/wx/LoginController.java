@@ -151,7 +151,7 @@ public class LoginController extends BaseController {
                     return "/message";
                 }
             }else{//总公司
-                return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                return "redirect:"+ WxConstants.WEIXIN_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
             }
         }else {
             String url = "";

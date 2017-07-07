@@ -46,7 +46,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         }
         Integer status = req.getStatus();
         if (status!=null) {
-            if (status == 3) {
+            if (status == 2) {
                 List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
                 if (list.size() > 0) {
                     for (int i = 0; i < list.size(); i++) {
@@ -112,7 +112,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     public int getCount(MerchantInfoRequest req) {
         Integer status = req.getStatus();
         if (status!=null){
-            if (status==3){
+            if (status==2){
                 int count = merchantInfoQueryDao.getCount(req);
                 return count;
             }
