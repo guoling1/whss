@@ -17,6 +17,10 @@ public class PcOrderListRequest extends PageQueryParams {
      */
     private long shopId;
     /**
+     * 交易单号
+     */
+    private String tradeOrderNo;
+    /**
      * 开始时间
      */
     private String startTime;

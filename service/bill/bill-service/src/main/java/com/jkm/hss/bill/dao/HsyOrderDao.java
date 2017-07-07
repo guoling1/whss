@@ -80,10 +80,12 @@ public interface HsyOrderDao {
      */
    long selectOrderCountByParam(@Param("shopId") long shopId,
                                 @Param("merchantNo") String merchantNo,
+                                @Param("tradeOrderNo") String tradeOrderNo,
                                 @Param("selectAll") int selectAll,
                                 @Param("paymentChannels") List<Integer> paymentChannels,
                                 @Param("startTime") Date startTime,
                                 @Param("endTime") Date endTime);
+
 
     /**
      * 订单列表-记录
@@ -98,6 +100,7 @@ public interface HsyOrderDao {
      */
     List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
                                        @Param("merchantNo") String merchantNo,
+                                       @Param("tradeOrderNo") String tradeOrderNo,
                                        @Param("selectAll") int selectAll,
                                        @Param("paymentChannels") List<Integer> paymentChannels,
                                        @Param("startTime") Date startTime,

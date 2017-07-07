@@ -156,9 +156,9 @@ public class PcTradeController extends BaseController {
             endTime = DateFormatUtil.parse(pcOrderListRequest.getEndTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
         final PageModel<JSONObject> pageModel = new PageModel<>(pcOrderListRequest.getPageNo(), pcOrderListRequest.getPageSize());
-        final long count = this.hsyOrderService.getOrderCountByParam(pcOrderListRequest.getShopId(), "",
+        final long count = this.hsyOrderService.getOrderCountByParam(pcOrderListRequest.getShopId(), "", pcOrderListRequest.getTradeOrderNo(),
                 pcOrderListRequest.getAll(), pcOrderListRequest.getPaymentChannels(), startTime, endTime);
-        final List<HsyOrder> hsyOrders = this.hsyOrderService.getOrdersByParam(pcOrderListRequest.getShopId(), "",
+        final List<HsyOrder> hsyOrders = this.hsyOrderService.getOrdersByParam(pcOrderListRequest.getShopId(), "", pcOrderListRequest.getTradeOrderNo(),
                 pcOrderListRequest.getAll(), pcOrderListRequest.getPaymentChannels(),
                 startTime, endTime, pageModel.getFirstIndex(), pageModel.getPageSize());
         if (CollectionUtils.isEmpty(hsyOrders)) {

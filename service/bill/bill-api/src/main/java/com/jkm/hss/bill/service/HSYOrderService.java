@@ -72,12 +72,13 @@ public interface HSYOrderService {
      * @param shopId
      * @param paymentChannels
      * @param merchantNo
+     * @param tradeOrderNo
      * @param selectAll
      * @param startTime
      * @param endTime
      * @return
      */
-    long getOrderCountByParam(long shopId, String merchantNo, int selectAll, List<Integer> paymentChannels,
+    long getOrderCountByParam(long shopId, String merchantNo, String tradeOrderNo, int selectAll, List<Integer> paymentChannels,
                                  Date startTime, Date endTime);
 
     /**
@@ -85,13 +86,14 @@ public interface HSYOrderService {
      *
      * @param shopId
      * @param merchantNo
+     * @param tradeOrderNo
      * @param selectAll
      * @param paymentChannels
      * @param startTime
      * @param endTime
      * @return
      */
-    List<HsyOrder> getOrdersByParam(long shopId, String merchantNo, int selectAll, List<Integer> paymentChannels,
+    List<HsyOrder> getOrdersByParam(long shopId, String merchantNo, String tradeOrderNo, int selectAll, List<Integer> paymentChannels,
                                        Date startTime, Date endTime, int offset, int count);
 
     /**

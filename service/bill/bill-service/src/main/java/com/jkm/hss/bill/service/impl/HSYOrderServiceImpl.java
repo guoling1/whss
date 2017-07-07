@@ -143,11 +143,10 @@ public class HSYOrderServiceImpl implements HSYOrderService {
      * @return
      */
     @Override
-    public long getOrderCountByParam(final long shopId, final String merchantNo, final int selectAll,
-                                        final List<Integer> paymentChannels, final Date startTime, final Date endTime) {
-        return this.hsyOrderDao.selectOrderCountByParam(shopId, merchantNo, selectAll, paymentChannels, startTime, endTime);
+    public long getOrderCountByParam(final long shopId, final String merchantNo, final String tradeOrderNo,
+                                     final int selectAll, final List<Integer> paymentChannels, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.selectOrderCountByParam(shopId, merchantNo, tradeOrderNo, selectAll, paymentChannels, startTime, endTime);
     }
-
 
     /**
      * {@inheritDoc}
@@ -163,9 +162,9 @@ public class HSYOrderServiceImpl implements HSYOrderService {
      * @return
      */
     @Override
-    public List<HsyOrder> getOrdersByParam(final long shopId, final String merchantNo, final int selectAll, final List<Integer> paymentChannels,
+    public List<HsyOrder> getOrdersByParam(final long shopId, final String merchantNo, final String tradeOrderNo, final int selectAll, final List<Integer> paymentChannels,
                                               final Date startTime, final Date endTime, final int offset, final int count) {
-        return this.hsyOrderDao.selectOrdersByParam(shopId, merchantNo, selectAll, paymentChannels,
+        return this.hsyOrderDao.selectOrdersByParam(shopId, merchantNo, tradeOrderNo, selectAll, paymentChannels,
                 startTime, endTime, offset, count);
     }
 
@@ -211,8 +210,8 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(appBizShop.getAccountID()).get(0);
             merchantNo = appAuUser.getGlobalID();
         }
-        final long count = this.hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels, startTime, endTime);
-        final List<HsyOrder> hsyOrders = this.hsyOrderDao.selectOrdersByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels,
+        final long count = this.hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(), merchantNo, "", requestParam.getAll(), paymentChannels, startTime, endTime);
+        final List<HsyOrder> hsyOrders = this.hsyOrderDao.selectOrdersByParam(requestParam.getShopId(), merchantNo, "", requestParam.getAll(), paymentChannels,
                 startTime, endTime, pageModel.getFirstIndex(), requestParam.getPageSize());
         if (CollectionUtils.isEmpty(hsyOrders)) {
             resultMap.put("amount", 0);
