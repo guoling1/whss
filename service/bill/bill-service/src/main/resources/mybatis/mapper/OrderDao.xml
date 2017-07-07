@@ -3008,7 +3008,7 @@
         AND settle_time = #{settleDate}
         AND payee = #{accountId}
         AND upper_channel = #{upperChannel}
-        AND settle_channel = #{settleChannel}
+        AND payment_channel = #{settleChannel}
     </update>
     <select id="getBranch" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
