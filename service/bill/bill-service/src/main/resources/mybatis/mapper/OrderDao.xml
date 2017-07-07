@@ -278,10 +278,12 @@
         AND refund_status = 0
         AND settle_time = #{settleDate}
         <choose>
-            <when test="upper_channel == 7">
+            <when test="upperChannel == 7">
+                AND upper_channel = 7
                 GROUP BY account_id, upper_channel,payment_channel
             </when>
             <otherwise>
+                AND upper_channel = #{upperChannel}
                 GROUP BY account_id, upper_channel
             </otherwise>
         </choose>
@@ -1923,7 +1925,6 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
-
         <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
@@ -1962,14 +1963,6 @@
         id = #{dealerId}
     </select>
 
-    <select id="getProxyName" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
-        SELECT
-        proxy_name
-        FROM
-        tb_dealer
-        WHERE
-        id = #{firstLevelDealerId}
-    </select>
 
     <select id="getProxyName1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT

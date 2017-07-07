@@ -45,6 +45,7 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -478,7 +479,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate) {
-        return this.orderDao.statisticsPendingBalanceOrder(settleDate);
+        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId());
+        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId());
+        return list.addAll(list1) == true ? list : Collections.EMPTY_LIST;
     }
 
 
