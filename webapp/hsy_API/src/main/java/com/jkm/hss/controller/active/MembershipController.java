@@ -204,12 +204,14 @@ public class MembershipController {
             appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
             if (appPolicyConsumer == null) {
                 model.addAttribute("authInfo", authInfo);
+                model.addAttribute("cardList", cardList);
                 return "/createMember";
             }
         } else if (authInfo.getSource().equals("ZFB")) {
             appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
             if (appPolicyConsumer == null) {
                 model.addAttribute("authInfo", authInfo);
+                model.addAttribute("cardList", cardList);
                 return "/createMember";
             }
         } else {
@@ -221,6 +223,7 @@ public class MembershipController {
         if (appPolicyMember == null) {
             model.addAttribute("authInfo", authInfo);
             model.addAttribute("appPolicyConsumer", appPolicyConsumer);
+            model.addAttribute("cardList", cardList);
             return "/createMember";
         }
 
