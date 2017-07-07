@@ -269,14 +269,22 @@
         SUM(poundage) as poundage,
         MIN(pay_success_time) as trade_start_time,
         MAX(pay_success_time) as trade_end_time,
-        upper_channel
+        upper_channel,
+        payment_channel as settle_channel
         FROM tb_order
         WHERE app_id = 'hsy'
         AND status IN (4, 7)
         AND settle_status = 1
         AND refund_status = 0
         AND settle_time = #{settleDate}
-        GROUP BY account_id, upper_channel
+        <choose>
+            <when test="upper_channel == 7">
+                GROUP BY account_id, upper_channel,payment_channel
+            </when>
+            <otherwise>
+                GROUP BY account_id, upper_channel
+            </otherwise>
+        </choose>
     </select>
 
     <!-- 提现列表 -->

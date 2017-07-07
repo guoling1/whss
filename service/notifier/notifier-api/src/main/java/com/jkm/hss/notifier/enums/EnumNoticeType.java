@@ -118,7 +118,17 @@ public enum EnumNoticeType {
     /**
      * hsy结算完成
      */
-    SETTLEMENT_SUCCESS(1101, "hsy结算完成");
+    SETTLEMENT_SUCCESS(1101, "hsy结算完成"),
+
+    /**
+     * hsy结算完成
+     */
+    SETTLEMENT_SUCCESS_ZFB(1102, "hsy结算完成_支付宝"),
+
+    /**
+     * hsy结算完成
+     */
+    SETTLEMENT_SUCCESS_WX(1103, "hsy结算完成_微信");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();
