@@ -86,4 +86,11 @@ public interface QueryMerchantInfoRecordDao {
      * @param req
      */
     void saveNo1(SaveLineNoRequest req);
+
+    /**
+     * 查询商户审核状态
+     * @param id
+     * @return
+     */
+    int getStatus(@Param("id") long id);
 }

@@ -59,4 +59,11 @@ public interface QueryMerchantInfoRecordService {
      * @param req
      */
     void saveNo1(SaveLineNoRequest req);
+
+    /**
+     * 查状态
+     * @param id
+     * @return
+     */
+    int getStatus(long id);
 }

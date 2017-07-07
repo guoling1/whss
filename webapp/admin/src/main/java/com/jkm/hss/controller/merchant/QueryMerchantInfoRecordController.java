@@ -63,6 +63,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
         JSONObject jsonObject = new JSONObject();
+        int status = this.queryMerchantInfoRecordService.getStatus(merchantInfo.getId());
+        merchantInfo.setStatus(status);
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
         MerchantInfoResponse response = this.queryMerchantInfoRecordService.getrecommenderInfo(merchantInfo.getId());
 
@@ -199,7 +201,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
         try {
             if (req.getStatus()==2) {
                 this.queryMerchantInfoRecordService.saveNo(req);
-            }else {
+            }
+            if (req.getStatus()==3||req.getStatus()==6) {
                 this.queryMerchantInfoRecordService.saveNo1(req);
             }
         }catch (Exception e){

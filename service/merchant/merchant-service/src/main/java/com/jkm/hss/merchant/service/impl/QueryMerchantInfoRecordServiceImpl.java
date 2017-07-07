@@ -144,4 +144,9 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
     public void saveNo1(SaveLineNoRequest req) {
         this.queryMerchantInfoRecordDao.saveNo1(req);
     }
+
+    @Override
+    public int getStatus(long id) {
+        return this.queryMerchantInfoRecordDao.getStatus(id);
+    }
 }

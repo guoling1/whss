@@ -31,7 +31,14 @@
             a.checked_time,
             a.second_merchant_id,
             a.account_id,
+            <if test="status=2">
+            a.branch_code,
             a.branch_name,
+            </if>
+            <if test="status=3||status=6">
+                (SELECT branch_code FROM tb_account_bank WHERE account_id=#{accountId} AND is_default=1) AS branchCode,
+                (SELECT branch_name FROM tb_account_bank WHERE account_id=#{accountId} AND is_default=1) AS branchName,
+            </if>
             (
                 SELECT
                     proxy_name
@@ -165,7 +172,32 @@
 
     <!-- 补填联行号 -->
     <update id="saveNo">
-        UPDATE tb_merchant_info SET title = #{title},text = #{text} WHERE id = #{id}
+        UPDATE tb_merchant_info
+        SET  branch_code = #{branchCode},
+             branch_name = #{bankName},
+             province_code = #{branchProvinceCode},
+             province_name = #{branchProvinceName},
+             city_code = #{branchCityCode},
+             city_name = #{branchCityName},
+             county_code = #{branchCountyCode},
+             county_name = #{branchCountyName}
+        WHERE id=#{id}
     </update>
 
+    <!-- 补填联行号 -->
+    <update id="saveNo1">
+        UPDATE tb_account_bank
+        SET  branch_code = #{branchCode},
+             branch_name = #{bankName},
+             branch_province_code = #{branchProvinceCode},
+             branch_province_name = #{branchProvinceName},
+             branch_city_code = #{branchCityCode},
+             branch_city_name = #{branchCityName},
+             branch_county_code = #{branchCountyCode},
+             branch_county_name = #{branchCountyName}
+        WHERE account_id=#{accountId} AND is_default=1
+    </update>
+    <select id="getStatus" resultType="java.lang.Integer">
+        SELECT status FROM tb_merchant_info WHERE id = #{id}
+    </select>
 </mapper>
