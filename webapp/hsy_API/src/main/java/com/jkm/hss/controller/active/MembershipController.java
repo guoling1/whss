@@ -176,8 +176,10 @@ public class MembershipController {
         }
 
         if(OperateType.VIEW.key.equals(authInfo.getOperate())){
-            model.addAttribute("tips","会员卡列表");
-            return "/tips";
+            model.addAttribute("openID",authInfo.getOpenID());
+            model.addAttribute("userID",authInfo.getUserID());
+            model.addAttribute("source",authInfo.getSource());
+            return "redirect:/membership/toMemberList";
         }
 
         Long uid;
@@ -337,6 +339,10 @@ public class MembershipController {
     public String createMemberSuccess(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         model.addAttribute("mid",mid);
         model.addAttribute("source",source);
+        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        model.addAttribute("appPolicyMember",appPolicyMember);
         return "/createMemberSuccess";
     }
 
@@ -423,6 +429,17 @@ public class MembershipController {
         pageAll= hsyMembershipService.findRechargeOrderListByPage(pageAll);
         writeJsonToResponse(pageAll,response,pw);
         return;
+    }
+
+    @RequestMapping("toMemberList")
+    public String toMembershipCardList(HttpServletRequest request, HttpServletResponse response, Model model, String userID,String openID,String source){
+        AppPolicyConsumer appPolicyConsumer=new AppPolicyConsumer();
+        appPolicyConsumer.setOpenID(openID);
+        appPolicyConsumer.setUserID(userID);
+        List<AppPolicyMember> memberList=hsyMembershipService.findMemberListByOUID(appPolicyConsumer);
+        model.addAttribute("memberList",memberList);
+        model.addAttribute("source",source);
+        return "/memberList";
     }
 
     @RequestMapping("sendVcode")

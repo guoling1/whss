@@ -40,4 +40,5 @@ public interface HsyMembershipService {
     public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID);
     public List<AppBizShop> findSuitShopByMCID(Long mcid);
     public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
+    public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
 }

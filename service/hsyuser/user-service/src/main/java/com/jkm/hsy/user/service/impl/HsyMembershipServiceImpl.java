@@ -810,4 +810,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return pageAll;
     }
 
+    public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer){
+        return hsyMembershipDao.findMemberListByOUID(appPolicyConsumer);
+    }
+
 }
