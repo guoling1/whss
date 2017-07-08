@@ -1783,13 +1783,49 @@ input:focus {
   text-align: left;
 }
 #memberList {
+  overflow: hidden;
   background: #333;
+  color: #fff;
 }
 #memberList .navbar {
   width: 100%;
   height: 44px;
   border-top: 1px solid #f4f5f8;
+  font-size: 16px;
 }
 #memberList .navbar div {
-  width: 50%;
+  width: 49%;
+  display: inline-block;
+}
+#memberList .navbar div span {
+  display: inline-block;
+  height: 100%;
+  line-height: 44px;
+}
+#memberList .navbar div span.active {
+  color: #f49530;
+  border-bottom: 1px solid #f49530;
+}
+#memberList ul li {
+  position: relative;
+  margin: 20px auto;
+  padding: 16px;
+  width: 285px;
+  height: 149px;
+  background: url("../assets/member/cardbg.png") no-repeat center;
+  background-size: 100% 100%;
+  box-shadow: 0px -4px 20px #2b2b2b;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+}
+#memberList ul li .type {
+  color: #b36112;
+  position: absolute;
+  bottom: 16px;
+}
+#memberList ul li .discount {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
 }
