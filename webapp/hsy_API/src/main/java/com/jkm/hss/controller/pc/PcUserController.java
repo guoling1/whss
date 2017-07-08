@@ -148,6 +148,7 @@ public class PcUserController extends BaseController {
         result.put("shops", shops);
         result.put("uid", appAuUser.getId());
         result.put("username", appAuUser.getRealname());
+        result.put("role", appAuUser.getRole());
         result.put("roleName", appAuUser.getRoleName());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
