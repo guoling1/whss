@@ -93,12 +93,12 @@ public interface HSYTradeService {
     /**
      * pc收银退款
      *
-     * @param payOrderId
+     * @param orderId
      * @param uid
      * @param password
      * @return
      */
-    JSONObject pcAppRefund(long payOrderId, long uid, String password);
+    JSONObject pcAppRefund(long orderId, long uid, String password);
 
     /**
      * 退款实现

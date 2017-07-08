@@ -590,14 +590,15 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     /**
      * {@inheritDoc}
      *
-     * @param payOrderId
+     * @param orderId
      * @param uid
      * @param password
      * @return
      */
     @Override
     @Transactional
-    public JSONObject pcAppRefund(final long payOrderId, final long uid, final String password) {
+    public JSONObject pcAppRefund(final long orderId, final long uid, final String password) {
+        final Long payOrderId = this.hsyOrderService.getById(orderId).get().getOrderid();
         final Order payOrder = this.orderService.getByIdWithLock(payOrderId).get();
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
         final JSONObject result = this.refund(appAuUser.getPassword(), password, payOrder);

@@ -242,7 +242,7 @@ public class PcTradeController extends BaseController {
 
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        final JSONObject result = this.hsyTradeService.pcAppRefund(refundRequest.getPayOrderId(), getPcUserPassport().getUid(), refundRequest.getPassword());
+        final JSONObject result = this.hsyTradeService.pcAppRefund(refundRequest.getOrderId(), getPcUserPassport().getUid(), refundRequest.getPassword());
         final int code = result.getIntValue("code");
         if (0 == code) {
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);

@@ -11,7 +11,7 @@ public class PcRefundRequest {
     /**
      * 交易id
      */
-    private long payOrderId;
+    private long orderId;
 
     private String password;
 }
