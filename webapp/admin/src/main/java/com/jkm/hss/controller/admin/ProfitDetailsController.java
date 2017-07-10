@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -118,13 +117,13 @@ public class ProfitDetailsController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         JkmProfitDetailsResponse profitAmount =  profitService.profitAmount(req);
-        BigDecimal x = new BigDecimal("0.0");
-        JkmProfitDetailsResponse res = new JkmProfitDetailsResponse();
-        if (profitAmount==null){
-            res.setSplitAmount(x);
-            res.setSplitTotalAmount(x);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
-        }
+//        BigDecimal x = new BigDecimal("0.0");
+//        JkmProfitDetailsResponse res = new JkmProfitDetailsResponse();
+//        if (profitAmount==null){
+//            res.setSplitAmount(x);
+//            res.setSplitTotalAmount(x);
+//            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+//        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", profitAmount);
     }
 
@@ -140,7 +139,7 @@ public class ProfitDetailsController extends BaseController{
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");
         meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-        meta.setContentType("application/x-xls");
+        meta.setContentType("application/csv;charset=gb18030");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
         String fileName = "hss/"+  nowDate + "/" + "profitDetail.csv";
