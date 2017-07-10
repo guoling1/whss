@@ -464,6 +464,13 @@ public class MembershipController {
         return "/memberList";
     }
 
+    @RequestMapping("toShopList")
+    public String toShopList(HttpServletRequest request, HttpServletResponse response,Model model,Long mcid){
+        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(mcid);
+        model.addAttribute("appBizShopList",appBizShopList);
+        return "/store";
+    }
+
     @RequestMapping("sendVcode")
     public void sendVcode(HttpServletRequest request, HttpServletResponse response, String cellphone, PrintWriter pw){
         Map<String,String> map=new HashMap<String,String>();

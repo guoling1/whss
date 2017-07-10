@@ -824,7 +824,16 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     }
 
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer){
-        return hsyMembershipDao.findMemberListByOUID(appPolicyConsumer);
+        List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUID(appPolicyConsumer);
+        for(AppPolicyMember member:list){
+            DecimalFormat a=new DecimalFormat("0.0");
+            String discountStr=a.format(member.getDiscount());
+            String discountInt=discountStr.split("\\.")[0];
+            String discountFloat=discountStr.split("\\.")[1];
+            member.setDiscountInt(discountInt);
+            member.setDiscountFloat(discountFloat);
+        }
+        return list;
     }
 
 }

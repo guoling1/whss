@@ -46,9 +46,8 @@
             <div class="weui-cell__bd">
                 <p>商家信息</p>
             </div>
-            <div class="weui-cell__ft">查看全部</div>
+            <a class="weui-cell__ft" href="<%=basePath%>membership/toShopList?mcid=${appPolicyMember.mcid}">查看全部</a>
         </a>
-
     </div>
 
     <div class="bottom">
@@ -93,10 +92,6 @@
             <a href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1">累计充值：${appPolicyMember.rechargeTotalAmount}</a><br>
             <a href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a><br>
         </c:if>
-
-        <c:forEach items="${appBizShopList}" var="shop">
-            <c:out value="${shop.shortName}"></c:out><br>
-        </c:forEach>
     </h1>--%>
 </body>
 </html>
