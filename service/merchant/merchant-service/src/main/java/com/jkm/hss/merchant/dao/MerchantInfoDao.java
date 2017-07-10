@@ -199,4 +199,9 @@ public interface MerchantInfoDao {
      */
     int updateKmNetStatus(@Param("id") long id, @Param("kmNetStatus") int kmNetStatus);
 
+    /**
+     * 根据卡盟修改状态查询
+     * @return
+     */
+    List<MerchantInfo> selectByKmNetStatus();
 }
