@@ -163,7 +163,8 @@
         addTotal:0,
         addTotal1:0,
         isDet:true,
-        loadUrl:''
+        loadUrl:'',
+        isMask: false
       }
     },
     created: function () {
