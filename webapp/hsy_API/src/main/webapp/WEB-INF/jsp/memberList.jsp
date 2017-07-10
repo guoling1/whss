@@ -16,57 +16,17 @@
         <div class="left"><span class="active" id="left">会员卡</span></div>
         <div class="right"><span id="right">体验卡</span></div>
     </div>
-    <ul class="leftList">
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
+    <ul class="leftList" id="leftList">
         <li>
             <span class="name">江湖味道总店</span>
             <span class="type">尊贵金卡</span>
             <span class="discount"><span>8</span>.0折</span>
         </li>
     </ul>
-    <ul class="rightList hide">
+    <ul class="rightList hide" id="rightList">
         <li>
             <span class="name">江湖味道总店</span>
             <span class="type">体验卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </li>
-        <li>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
             <span class="discount"><span>8</span>.0折</span>
         </li>
     </ul>
@@ -77,4 +37,6 @@
 </c:forEach>
 </h1>
 </body>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
+<script src="../../js/2.0.1.1/memberList.min.js"></script>
 </html>

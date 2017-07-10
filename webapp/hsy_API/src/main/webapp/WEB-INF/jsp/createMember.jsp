@@ -3,7 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no"/>
     <title>会员卡</title>
+    <link rel="stylesheet" href="../../css/style.1.0.0.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+    <link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">
     <script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>
     <script>
         $(function(){
@@ -75,6 +81,54 @@
     </script>
 </head>
 <body>
+<div id="createMem">
+    <div class="swiper-container top">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <div class="card">
+                    <span class="name">江湖味道总店</span>
+                    <span class="type">尊贵金卡</span>
+                    <span class="discount"><span>8</span>.0折</span>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="card">
+                    <span class="name">江湖味道总店</span>
+                    <span class="type">尊贵金卡</span>
+                    <span class="discount"><span>8</span>.0折</span>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="card">
+                    <span class="name">江湖味道总店</span>
+                    <span class="type">尊贵金卡</span>
+                    <span class="discount"><span>8</span>.0折</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号">
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_vcode">
+            <div class="weui-cell__hd">
+                <label class="weui-label">验证码</label>
+            </div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="tel" placeholder="请输入短信验证码">
+            </div>
+            <div class="weui-cell__ft">
+                <button class="weui-btn weui-btn_plain-primary btnCode">获取验证码</button>
+            </div>
+        </div>
+    </div>
+    <p>开通会员卡需要支付1元</p>
+    <div class="weui-btn weui-btn_primary open">开通</div>
+</div>
     <h1 style="font-size: 40px;">
         <c:forEach items="${cardList }" var="entity" varStatus="status">
         <input type="radio" isDeposited="${entity.isDeposited}" depositAmount="${entity.depositAmount}" name="mcid" value="${entity.id}" <c:if test="${status.index==0 }">checked</c:if>/><label>${entity.membershipName}</label>
@@ -93,4 +147,21 @@
         <button id="createMember">开通</button>
         <button id="sendVcode">发送验证码</button>
 </body>
+<script src="../../js/swiper-3.4.2.min.js"></script>
+<script>
+    var mySwiper = new Swiper('.swiper-container', {
+        effect : 'coverflow',
+        slidesPerView: 1.25,
+        centeredSlides: true,
+        coverflow: {
+            rotate: 30,
+            stretch: 10,
+            depth: 60,
+            modifier: 2,
+            slideShadows : false
+        }
+
+    })
+
+</script>
 </html>
