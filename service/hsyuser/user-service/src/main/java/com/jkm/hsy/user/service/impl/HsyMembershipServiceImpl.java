@@ -650,7 +650,16 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     public List findMemberCardByUID(Long uid){
         AppPolicyMembershipCard appPolicyMembershipCard=new AppPolicyMembershipCard();
         appPolicyMembershipCard.setUid(uid);
-        return hsyMembershipDao.findMemberCardByParam(appPolicyMembershipCard);
+        List<AppPolicyMembershipCard> list=hsyMembershipDao.findMemberCardByParam(appPolicyMembershipCard);
+        for(AppPolicyMembershipCard card:list){
+            DecimalFormat a=new DecimalFormat("0.0");
+            String discountStr=a.format(card.getDiscount());
+            String discountInt=discountStr.split("\\.")[0];
+            String discountFloat=discountStr.split("\\.")[1];
+            card.setDiscountInt(discountInt);
+            card.setDiscountFloat(discountFloat);
+        }
+        return list;
     }
 
     public AppPolicyConsumer insertOrUpdateConsumer(AppPolicyConsumer appPolicyConsumer){

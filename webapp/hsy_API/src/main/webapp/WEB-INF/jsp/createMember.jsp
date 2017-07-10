@@ -129,10 +129,10 @@
     <input type="hidden" id="source" name="source" value="${authInfo.source}"/>
     <input type="hidden" id="cid" name="cid" value="${appPolicyConsumer.id}">
 
-    <br>
-</h1>
-<button id="createMember">开通</button>
-<button id="sendVcode">发送验证码</button>
+        <br>
+    </h1>
+        <button id="createMember">开通</button>
+        <button id="sendVcode">发送验证码</button>
 </body>
 <script src="../../js/swiper-3.4.2.min.js"></script>
 <script>

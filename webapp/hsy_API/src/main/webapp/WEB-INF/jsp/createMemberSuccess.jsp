@@ -13,20 +13,11 @@
 <body>
 <div id="createMemberSuccess">
     <img src="../assets/member/success.png" alt="">
-    <!--<img src="../assets/member/fail.png" alt="">-->
     <p class="result">您已成功开通会员卡啦</p>
     <c:if test="${appPolicyMember.isDeposited==1}">
     <a href="javascript:;" class="toRecord">会员卡余额:￥${appPolicyMember.remainingSum}</a>
     </c:if>
-    <%--<a href="javascript:;" class="toRecord">会员卡余额:￥0.05</a>--%>
     <a class="weui-btn weui-btn_plain-primary back" href="<%=basePath%>membership/memberInfo?mid=${mid}&source=${source}">会员卡详情</a>
 </div>
-<%--<h1 style="font-size: 40px;">
-    您已成功开通会员卡啦
-    <c:if test="${appPolicyMember.isDeposited==1}">
-        余额${appPolicyMember.remainingSum}
-    </c:if>
-    <a href="<%=basePath%>membership/memberInfo?mid=${mid}&source=${source}">会员详情</a>
-    </h1>--%>
 </body>
 </html>
