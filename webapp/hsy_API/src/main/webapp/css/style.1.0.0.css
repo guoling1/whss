@@ -2091,3 +2091,38 @@ input:focus {
   height: 29px;
   line-height: 29px;
 }
+#record {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  text-align: left;
+}
+#record .weui-cells {
+  margin-top: 0;
+}
+#record .weui-cells .weui-cell {
+  padding: 12px 15px;
+  height: 60px;
+}
+#record .weui-cells .weui-cell .weui-cell__bd {
+  position: relative;
+}
+#record .weui-cells .weui-cell .weui-cell__bd p {
+  font-size: 15px;
+}
+#record .weui-cells .weui-cell .weui-cell__bd .time {
+  margin-top: 9px;
+  font-size: 13px;
+  color: #999;
+}
+#record .weui-cells .weui-cell .weui-cell__ft {
+  font-size: 16px;
+  color: #191c1a;
+}
+#record .weui-cells .weui-cell .weui-cell__ft img {
+  width: 25px;
+  height: 25px;
+}
+#record .weui-cells .weui-cell .weui-cell__ft .price {
+  font-size: 18px;
+}
