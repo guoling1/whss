@@ -13,14 +13,61 @@
 <body>
 <div id="memberList">
     <div class="navbar">
-        <div class="left"><span class="active">会员卡</span></div>
-        <div class="right"><span>体验卡</span></div>
+        <div class="left"><span class="active" id="left">会员卡</span></div>
+        <div class="right"><span id="right">体验卡</span></div>
     </div>
-    <ul>
+    <ul class="leftList">
         <li>
             <span class="name">江湖味道总店</span>
             <span class="type">尊贵金卡</span>
-            <span class="discount">8.0折</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+    </ul>
+    <ul class="rightList hide">
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">体验卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
+        </li>
+        <li>
+            <span class="name">江湖味道总店</span>
+            <span class="type">尊贵金卡</span>
+            <span class="discount"><span>8</span>.0折</span>
         </li>
     </ul>
 </div>
