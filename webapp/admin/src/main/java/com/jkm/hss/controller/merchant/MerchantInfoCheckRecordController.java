@@ -72,9 +72,9 @@ public class MerchantInfoCheckRecordController extends BaseController {
         if (!merchantInfoOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
-        if (merchantInfoOptional.get().getBranchCode()==null||"".equals(merchantInfoOptional.get().getBranchCode())) {
-            return CommonResponse.simpleResponse(-1, "联行号未填写");
-        }
+//        if (merchantInfoOptional.get().getBranchCode()==null||"".equals(merchantInfoOptional.get().getBranchCode())) {
+//            return CommonResponse.simpleResponse(-1, "联行号未填写");
+//        }
         MerchantInfo merchantInfo = merchantInfoOptional.get();
         requestMerchantInfo.setStatus(EnumMerchantStatus.PASSED.getId());
         requestMerchantInfo.setName(super.getAdminUser().getUsername());
