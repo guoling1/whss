@@ -576,4 +576,13 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         qrCodeService.updateDealerInfo(code,changeDealerRequest.getFirstDealerId(),changeDealerRequest.getSecondDealerId());
     }
 
+    /**
+     * 处理卡盟修改入网信息
+     */
+    @Override
+    public void handleKmUpdateStatus() {
+
+
+    }
+
 }

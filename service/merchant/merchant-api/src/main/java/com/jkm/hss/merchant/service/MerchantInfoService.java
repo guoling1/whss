@@ -207,4 +207,9 @@ public interface MerchantInfoService {
      */
     void changeDealer(String code,ChangeDealerRequest changeDealerRequest);
 
+    /**
+     * 处理卡盟修改入网信息
+     */
+    void handleKmUpdateStatus();
+
 }

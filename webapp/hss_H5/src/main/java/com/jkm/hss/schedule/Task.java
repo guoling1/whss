@@ -1,6 +1,7 @@
 package com.jkm.hss.schedule;
 
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class Task {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     /**
      * T1 结算到卡定时任务
@@ -48,5 +51,15 @@ public class Task {
         channelList.add(EnumPayChannelSign.EL_UNIONPAY.getId());
         this.orderService.handleT1UnSettlePayOrder(channelList);
         log.info("hss-T1-易联快捷- 结算到卡定时任务定时任务--end");
+    }
+
+    /**
+     * 卡盟 修改入网信息定时任务
+     */
+    @Scheduled(cron = "0 5 14,15 * * ?")
+    public void handleKmUpdateNetTask() {
+        log.info("修改入网信息定时任务定时任务--start");
+        this.merchantInfoService.handleKmUpdateStatus();
+        log.info("修改入网信息定时任务定时任务--end");
     }
 }

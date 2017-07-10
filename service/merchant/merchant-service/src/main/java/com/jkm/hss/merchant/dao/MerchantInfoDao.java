@@ -198,4 +198,5 @@ public interface MerchantInfoDao {
      * @return
      */
     int updateKmNetStatus(@Param("id") long id, @Param("kmNetStatus") int kmNetStatus);
+
 }
