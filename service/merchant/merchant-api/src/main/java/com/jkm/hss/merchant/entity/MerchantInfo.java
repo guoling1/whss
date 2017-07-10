@@ -227,6 +227,10 @@ public class MerchantInfo extends BaseEntity{
      * 支行地区编码
      */
     private String districtCode;
+    /**
+     * 卡盟修改结果
+     */
+    private Integer kmNetStatus;
 
     public String getPlainBankMobile(String phone){
         return phone.substring(0,3) + "****" + phone.substring(7,11);

@@ -340,14 +340,13 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
         MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
-        paramsMap.put("bankNo", MerchantSupport.encryptBankCard(accountBank.getBankNo()));
-        paramsMap.put("oriBankNo", MerchantSupport.encryptBankCard(accountBank.getBankNo()));
+        paramsMap.put("bankNo", accountBank.getBankNo());
+        paramsMap.put("oriBankNo", accountBank.getBankNo());
         paramsMap.put("bankBranch", accountBank.getBranchName());
         paramsMap.put("bankCode", accountBank.getBranchCode());
         paramsMap.put("bankName", accountBank.getBankName());
-        paramsMap.put("bankProv", accountBank.getBranchProvinceName());
-        paramsMap.put("bankCity", accountBank.getBranchCityName());
-        paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
+        paramsMap.put("prov", accountBank.getBranchProvinceName());
+        paramsMap.put("city", accountBank.getBranchCityName());
         log.info("修改商户入网参数为："+JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdate(), paramsMap);
         if (result != null && !"".equals(result)) {

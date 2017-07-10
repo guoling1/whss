@@ -1270,7 +1270,9 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
-        merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
+        if(merchantInfo.get().getKmNetStatus()!=EnumKmNetStatus.SUCCESS.getId()){
+            merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1459,9 +1461,9 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
-        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
-            return CommonResponse.simpleResponse(-3, "支行信息不完善");
-        }
+//        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
+//            return CommonResponse.simpleResponse(-3, "支行信息不完善");
+//        }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
         merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());

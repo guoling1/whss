@@ -116,7 +116,7 @@
         UPDATE app_biz_card SET BANKADDRESS=#{branchName},BRANCHCODE=#{branchCode} ,BRANCHDISTRICTCODE=#{districtCode} WHERE SID=#{sid}
     </update>
 
-    <select id="findBankBranchListByPage"  resultType="com.sora.module.api.entity.AppBizBankBranch">
+    <select id="findBankBranchListByPage"  resultType="com.jkm.hss.merchant.entity.AppBizBankBranch">
         select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
         where AVAILABLE=1
         <if test="bankName!=null and bankName!=''">
