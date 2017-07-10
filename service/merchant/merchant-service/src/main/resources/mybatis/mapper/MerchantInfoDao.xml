@@ -7,8 +7,8 @@
         id,mobile,md_mobile,bank_no_short,	identity_face_pic,	identity_opposite_pic,	identity_hand_pic,	bank_hand_pic,bank_pic,
         	reserve_mobile,	merchant_name,	address,	name,	identity,	bank_bin,	bank_name,	bank_no,dealer_id,code,account_id,
         	checked_time,authentication_time,status,	create_time,	update_time,first_dealer_id,second_dealer_id,first_merchant_id,
-        	second_merchant_id,mark_code,level,weixin_rate,alipay_rate,fast_rate,hierarchy,product_id,source,is_upgrade,branch_code,branch_name,
-        	province_code,province_name,city_code,city_name,county_code,county_name,credit_card,credit_card_name,credit_card_short,is_authen,oem_id
+        	second_merchant_id,mark_code,level,weixin_rate,alipay_rate,fast_rate,hierarchy,product_id,source,is_upgrade,branch_code,branch_name,district_code,
+        	province_code,province_name,city_code,city_name,county_code,county_name,credit_card,credit_card_name,credit_card_short,is_authen,oem_id,km_net_status
     </sql>
 
     <update id="update" parameterType="com.jkm.hss.merchant.entity.MerchantInfo">
@@ -33,7 +33,8 @@
         county_code=#{countyCode},
         county_name=#{countyName},
         branch_code=#{branchCode},
-        branch_name=#{branchName}
+        branch_name=#{branchName},
+        district_code=#{districtCode}
         WHERE id = #{id}
     </update>
 
@@ -472,12 +473,7 @@
         SET
         branch_code = #{branchCode},
         branch_name=#{branchName},
-        province_code=#{provinceCode},
-        province_name = #{provinceName},
-        city_code=#{cityCode},
-        city_name=#{cityName},
-        county_code=#{countyCode},
-        county_name=#{countyName}
+        district_code=#{countyCode}
         WHERE id = #{id}
     </update>
 
@@ -500,4 +496,11 @@
     <select id="selectByMobileAndOemId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
         SELECT * from tb_merchant_info where mobile=#{mobile} and oem_id=#{oemId}
     </select>
+
+    <update id="updateKmNetStatus">
+        UPDATE tb_merchant_info
+        SET
+        km_net_status=#{kmNetStatus}
+        WHERE id = #{id}
+    </update>
 </mapper>

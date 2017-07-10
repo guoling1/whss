@@ -1243,9 +1243,6 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(continueBankInfoRequest.getCountyName())){
             return CommonResponse.simpleResponse(-1, "请选择县");
         }
-        if(StringUtils.isBlank(continueBankInfoRequest.getBranchCode())){
-            return CommonResponse.simpleResponse(-1, "请选择支行");
-        }
         if(StringUtils.isBlank(continueBankInfoRequest.getBranchName())){
             return CommonResponse.simpleResponse(-1, "请选择支行");
         }
@@ -1273,6 +1270,7 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
+        merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1460,6 +1458,10 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
+        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
+        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
+            return CommonResponse.simpleResponse(-3, "支行信息不完善");
+        }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
         merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());
@@ -1475,7 +1477,6 @@ public class WxPubController extends BaseController {
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
         //hlb通道结算卡拦截
         if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
-            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
             final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
             if (!channelSupportDebitCardOptional.isPresent()){
                 //通道结算卡不可用

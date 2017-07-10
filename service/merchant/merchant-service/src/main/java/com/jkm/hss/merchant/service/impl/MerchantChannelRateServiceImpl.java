@@ -7,6 +7,7 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
+import com.jkm.hss.merchant.enums.EnumKmNetStatus;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
@@ -325,5 +326,40 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             resultJo.put("msg","商户通道信息有误");
         }
         return resultJo;
+    }
+
+    /**
+     * 修改商户入网
+     *
+     * @param accountId
+     * @param merchantId
+     */
+    @Override
+    public void updateInterNet(long accountId,long merchantId) {
+        AccountBank accountBank = accountBankService.getDefault(accountId);
+        MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("merchantNo", merchantInfo.getMarkCode());
+        paramsMap.put("bankNo", MerchantSupport.encryptBankCard(accountBank.getBankNo()));
+        paramsMap.put("oriBankNo", MerchantSupport.encryptBankCard(accountBank.getBankNo()));
+        paramsMap.put("bankBranch", accountBank.getBranchName());
+        paramsMap.put("bankCode", accountBank.getBranchCode());
+        paramsMap.put("bankName", accountBank.getBankName());
+        paramsMap.put("bankProv", accountBank.getBranchProvinceName());
+        paramsMap.put("bankCity", accountBank.getBranchCityName());
+        paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
+        log.info("修改商户入网参数为："+JSONObject.fromObject(paramsMap).toString());
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdate(), paramsMap);
+        if (result != null && !"".equals(result)) {
+            JSONObject jo = JSONObject.fromObject(result);
+            log.info("修改商户入网返回参数为："+jo.toString());
+            if (jo.getInt("code") == 1) {
+                merchantInfoDao.updateKmNetStatus(merchantId, EnumKmNetStatus.SUCCESS.getId());
+            } else {
+                merchantInfoDao.updateKmNetStatus(merchantId,EnumKmNetStatus.FAIL.getId());
+            }
+        } else {
+            merchantInfoDao.updateKmNetStatus(merchantId,EnumKmNetStatus.FAIL.getId());
+        }
     }
 }

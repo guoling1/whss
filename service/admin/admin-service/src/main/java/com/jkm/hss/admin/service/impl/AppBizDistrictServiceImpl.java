@@ -3,8 +3,10 @@ package com.jkm.hss.admin.service.impl;
 import com.jkm.hss.admin.dao.AppBizDistrictDao;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictListResponse;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2;
 import com.jkm.hss.admin.service.AppBizDistrictService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,5 +87,14 @@ public class AppBizDistrictServiceImpl implements AppBizDistrictService{
     public List<AppBizDistrictResponse> findByCode(String code) {
         List<AppBizDistrictResponse> appBizDistrictResponseList = appBizDistrictDao.findByCode(code);
         return appBizDistrictResponseList;
+    }
+
+    /**
+     * @param code
+     * @return
+     */
+    @Override
+    public AppBizDistrictResponse2 getByCode(String code) {
+        return appBizDistrictDao.getByCode(code);
     }
 }

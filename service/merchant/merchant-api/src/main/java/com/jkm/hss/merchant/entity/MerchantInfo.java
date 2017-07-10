@@ -223,6 +223,10 @@ public class MerchantInfo extends BaseEntity{
     private String isAuthen;
 
     private Long oemId;
+    /**
+     * 支行地区编码
+     */
+    private String districtCode;
 
     public String getPlainBankMobile(String phone){
         return phone.substring(0,3) + "****" + phone.substring(7,11);

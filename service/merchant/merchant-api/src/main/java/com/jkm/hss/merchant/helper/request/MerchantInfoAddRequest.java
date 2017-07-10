@@ -144,6 +144,10 @@ public class MerchantInfoAddRequest {
      * 支行信息
      */
     private String branchName;
+    /**
+     *支行地区编码
+     */
+    private String districtCode;
 
 
 
