@@ -217,7 +217,7 @@
           <el-col :span="5">
           </el-col>
         </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+        <!--<el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">联行号：<span>{{$msg.branchCode}}</span>
               <el-button type="text" size="small" @click="wad" style="padding: 0;font-weight: normal;" v-if="msg.branchCode==''||msg.branchCode==null">补填</el-button>
@@ -228,7 +228,7 @@
           </el-col>
           <el-col :span="5">
           </el-col>
-        </el-row>
+        </el-row>-->
         <el-dialog title="选择支行" :visible.sync="isWad">
           <el-form :model="form">
             <el-form-item label="银行名称" label-width="120px">
