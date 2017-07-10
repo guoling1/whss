@@ -333,8 +333,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         /**参数验证*/
         if(!(appPolicyMember.getUid()!=null&&!appPolicyMember.getUid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"用户法人ID");
-        if(!(appPolicyMember.getParam()!=null&&!appPolicyMember.getParam().equals("")))
-            throw new ApiHandleException(ResultCode.PARAM_LACK,"搜索条件");
+//        if(!(appPolicyMember.getParam()!=null&&!appPolicyMember.getParam().equals("")))
+//            throw new ApiHandleException(ResultCode.PARAM_LACK,"搜索条件");
         if(!(appPolicyMember.getCurrentPage()!=null&&!appPolicyMember.getCurrentPage().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"当前页数");
         if(appPolicyMember.getCurrentPage()<=0)
