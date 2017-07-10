@@ -93,9 +93,9 @@ public class HsyMerchantAuditController extends BaseController {
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
-//        if ("".equals(hsyMerchantAuditRequest.getBranchCode())||hsyMerchantAuditRequest.getBranchCode()==null){
-//            return CommonResponse.simpleResponse(-1, "联行号不能为空");
-//        }
+        if ("".equals(hsyMerchantAuditRequest.getBranchCode())||hsyMerchantAuditRequest.getBranchCode()==null){
+            return CommonResponse.simpleResponse(-1, "联行号不能为空");
+        }
         List<UserTradeRate> userTradeRateList =  userTradeRateService.selectAllByUserId(hsyMerchantAuditRequest.getUid());
         if(userTradeRateList.size()==0){
             return CommonResponse.simpleResponse(-1, "商户费率为空");
