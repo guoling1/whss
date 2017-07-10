@@ -547,9 +547,13 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         for(AppPolicyMembershipCard card:appPolicyMembershipCardList)
             totalCount+=card.getMemberCount();
         for(AppPolicyMembershipCard card:appPolicyMembershipCardList){
-            BigDecimal proportion=new BigDecimal(card.getMemberCount()/totalCount);
-            BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-            card.setProportion(proportionEx+"%");
+            if(totalCount==0){
+                card.setProportion("0%");
+            }else {
+                BigDecimal proportion = new BigDecimal(card.getMemberCount() / totalCount);
+                BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                card.setProportion(proportionEx + "%");
+            }
         }
 
         List<AppPolicyMemberStatistic> appPolicyMemberStatistic12Month=new ArrayList<AppPolicyMemberStatistic>();
