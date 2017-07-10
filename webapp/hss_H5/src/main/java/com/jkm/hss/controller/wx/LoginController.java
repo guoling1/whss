@@ -129,7 +129,7 @@ public class LoginController extends BaseController {
     public String reg(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
@@ -140,7 +140,7 @@ public class LoginController extends BaseController {
         model.addAttribute("oemNo",oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-            if(oemNo!=null&&!"".equals(oemNo)){//分公司
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//分公司
                 log.info("oemNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
@@ -162,7 +162,7 @@ public class LoginController extends BaseController {
                     if (merchantId != null && merchantId != 0){
                         Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
 
-                        if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
                             if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
                                 Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
                                 if(oemInfoOptional.isPresent()){
@@ -278,7 +278,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -315,7 +315,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -381,7 +381,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -415,7 +415,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -456,7 +456,7 @@ public class LoginController extends BaseController {
                          @RequestParam(value = "name", required = true) String name,
                          @RequestParam(value = "money", required = true) String money) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -479,7 +479,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/wallet", method = RequestMethod.GET)
     public String wallet(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -488,7 +488,7 @@ public class LoginController extends BaseController {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
             model.addAttribute("oemNo", oemNo);
-            if(oemNo!=null&&!"".equals(oemNo)){
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                 model.addAttribute("showRecommend", 2);
             }else{
                 model.addAttribute("showRecommend", 1);
@@ -499,7 +499,7 @@ public class LoginController extends BaseController {
                 if(userInfoOptional.get().getMerchantId()!=0){
                     Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
 
-                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                    if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
                         if(merchantInfo.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
                             Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
                             if(oemInfoOptional.isPresent()){
@@ -541,7 +541,7 @@ public class LoginController extends BaseController {
                             model.addAttribute("showRecommend", 2);//不显示升级
                         }
                     }else{
-                        if(oemNo!=null&&!"".equals(oemNo)){
+                        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                             model.addAttribute("showRecommend", 2);
                         }else{
                             model.addAttribute("showRecommend", 1);
@@ -549,7 +549,7 @@ public class LoginController extends BaseController {
                         model.addAttribute("avaliable", "0.00");
                     }
                 }else{
-                    if(oemNo!=null&&!"".equals(oemNo)){
+                    if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                         model.addAttribute("showRecommend", 2);
                     }else{
                         model.addAttribute("showRecommend", 1);
@@ -558,7 +558,7 @@ public class LoginController extends BaseController {
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                if(oemNo!=null&&!"".equals(oemNo)){
+                if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                     model.addAttribute("showRecommend", 2);
                 }else{
                     model.addAttribute("showRecommend", 1);
@@ -638,7 +638,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
     public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "isSelf") int isSelf) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -664,7 +664,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
     public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -699,7 +699,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/tradeRecord", method = RequestMethod.GET)
     public String tradRecord(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -720,7 +720,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/bank", method = RequestMethod.GET)
     public String bank(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -758,7 +758,7 @@ public class LoginController extends BaseController {
                 model.addAttribute("mobile","");
             }
             String oemNo = request.getParameter("oemNo");
-            if(oemNo!=null&&!"".equals(oemNo)){
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             }else{
@@ -799,7 +799,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.GET)
     public String creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -820,7 +820,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "mobile", required = false) String mobile) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
@@ -1061,7 +1061,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/authentication", method = RequestMethod.GET)
     public String authentication(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{

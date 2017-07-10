@@ -205,6 +205,9 @@
         <if test="cellphone!=null and cellphone!=''">
             AND c.CELLPHONE=#{cellphone}
         </if>
+        <if test="status!=null and status!=''">
+            AND a.`STATUS` = #{status}
+        </if>
         ORDER BY
         a.CREATETIME DESC
     </select>
