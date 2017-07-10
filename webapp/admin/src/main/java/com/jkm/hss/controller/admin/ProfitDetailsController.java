@@ -88,9 +88,9 @@ public class ProfitDetailsController extends BaseController{
 
             }
         }
-        if (orderList==null){
-            return  CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
+//        if (orderList.size()==0){
+//            return  CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
         int count = profitService.selectProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
@@ -117,13 +117,13 @@ public class ProfitDetailsController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         JkmProfitDetailsResponse profitAmount =  profitService.profitAmount(req);
-//        BigDecimal x = new BigDecimal("0.0");
-//        JkmProfitDetailsResponse res = new JkmProfitDetailsResponse();
-//        if (profitAmount==null){
-//            res.setSplitAmount(x);
-//            res.setSplitTotalAmount(x);
-//            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
-//        }
+
+        JkmProfitDetailsResponse res = new JkmProfitDetailsResponse();
+        if (profitAmount==null){
+            res.setSplitAmount("0");
+            res.setSplitTotalAmount("0");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", profitAmount);
     }
 
@@ -134,12 +134,20 @@ public class ProfitDetailsController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
     private CommonResponse downLoad(@RequestBody ProfitDetailsRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         final String fileZip = this.profitService.downloadExcel(req, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");
         meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-        meta.setContentType("application/csv;charset=gb18030");
+        meta.setContentType("application/csv;charset=utf-8");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
         String fileName = "hss/"+  nowDate + "/" + "profitDetail.csv";
