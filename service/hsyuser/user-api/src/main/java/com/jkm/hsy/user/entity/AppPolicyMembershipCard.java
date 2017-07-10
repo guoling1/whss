@@ -32,6 +32,8 @@ public class AppPolicyMembershipCard {
     private BigDecimal rechargeSum;//充值总额
     private BigDecimal consumeSum;//消费总值
     private String proportion;//比例
+    private String discountInt;
+    private String discountFloat;
 
     public Long getId() {
         return id;
@@ -207,5 +209,21 @@ public class AppPolicyMembershipCard {
 
     public void setProportion(String proportion) {
         this.proportion = proportion;
+    }
+
+    public String getDiscountInt() {
+        return discountInt;
+    }
+
+    public void setDiscountInt(String discountInt) {
+        this.discountInt = discountInt;
+    }
+
+    public String getDiscountFloat() {
+        return discountFloat;
+    }
+
+    public void setDiscountFloat(String discountFloat) {
+        this.discountFloat = discountFloat;
     }
 }

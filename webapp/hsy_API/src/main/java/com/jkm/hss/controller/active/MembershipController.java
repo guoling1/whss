@@ -46,6 +46,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -353,13 +354,21 @@ public class MembershipController {
     public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
-        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
+//        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+
+        DecimalFormat a=new DecimalFormat("0.0");
+        String discountStr=a.format(appPolicyMember.getDiscount());
+        String discountInt=discountStr.split("\\.")[0];
+        String discountFloat=discountStr.split("\\.")[1];
+
         model.addAttribute("appPolicyMember",appPolicyMember);
         model.addAttribute("source",source);
-        model.addAttribute("appBizShopList",appBizShopList);
+        model.addAttribute("discountInt",discountInt);
+        model.addAttribute("discountFloat",discountFloat);
+//        model.addAttribute("appBizShopList",appBizShopList);
         return "/memberInfo";
     }
 
@@ -374,8 +383,18 @@ public class MembershipController {
     @RequestMapping("toRecharge")
     public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        DecimalFormat a=new DecimalFormat("0.0");
+        String discountStr=a.format(appPolicyMember.getDiscount());
+        String discountInt=discountStr.split("\\.")[0];
+        String discountFloat=discountStr.split("\\.")[1];
         model.addAttribute("appPolicyMember",appPolicyMember);
         model.addAttribute("type", RechargeValidType.RECHARGE.key);
+        model.addAttribute("discountInt",discountInt);
+        model.addAttribute("discountFloat",discountFloat);
         model.addAttribute("source", source);
         return "/toRecharge";
     }

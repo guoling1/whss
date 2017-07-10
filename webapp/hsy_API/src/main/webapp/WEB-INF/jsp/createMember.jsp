@@ -84,27 +84,15 @@
 <div id="createMem">
     <div class="swiper-container top">
         <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <div class="card">
-                    <span class="name">江湖味道总店</span>
-                    <span class="type">尊贵金卡</span>
-                    <span class="discount"><span>8</span>.0折</span>
+            <c:forEach items="${cardList }" var="entity" varStatus="status">
+                <div class="swiper-slide">
+                    <div class="card">
+                        <span class="name">${entity.membershipName}</span>
+                        <span class="type">${entity.membershipName}</span>
+                        <span class="discount"><span><c:out value="${entity.discountInt}"/></span>.${entity.discountFloat}折</span>
+                    </div>
                 </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="card">
-                    <span class="name">江湖味道总店</span>
-                    <span class="type">尊贵金卡</span>
-                    <span class="discount"><span>8</span>.0折</span>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="card">
-                    <span class="name">江湖味道总店</span>
-                    <span class="type">尊贵金卡</span>
-                    <span class="discount"><span>8</span>.0折</span>
-                </div>
-            </div>
+            </c:forEach>
         </div>
     </div>
     <div class="weui-cells weui-cells_form">
@@ -126,7 +114,7 @@
             </div>
         </div>
     </div>
-    <p>开通会员卡需要支付1元</p>
+    <p>开通会员卡需要支付<a id="depositAmount"></a>元</p>
     <div class="weui-btn weui-btn_primary open">开通</div>
 </div>
     <h1 style="font-size: 40px;">
@@ -142,7 +130,6 @@
         <input type="hidden" id="cid" name="cid" value="${appPolicyConsumer.id}">
 
         <br>
-        <label>开通会员卡需要支付<a id="depositAmount"></a>元</label>
     </h1>
         <button id="createMember">开通</button>
         <button id="sendVcode">发送验证码</button>

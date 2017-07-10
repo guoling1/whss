@@ -14,13 +14,13 @@
 <div id="toRecharge">
     <div class="top">
         <div class="card">
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
+            <span class="name">${appPolicyMember.membershipShopName}</span>
+            <span class="type">${appPolicyMember.membershipName}</span>
+            <span class="discount"><span>${discountInt}</span>.${discountFloat}折</span>
         </div>
-        <div class="phone">手机号：13833212332</div>
+        <div class="phone">手机号：${appPolicyMember.consumerCellphone}</div>
         <div class="title">余额：</div>
-        <div class="price">￥<span>566.00</span></div>
+        <div class="price">￥<span>${appPolicyMember.remainingSum}</span></div>
     </div>
     <div class="weui-cells weui-cells_form">
         <div class="weui-cell">
