@@ -471,6 +471,18 @@ public class MembershipController {
         return "/store";
     }
 
+    @RequestMapping("toConsumeList")
+    public String toConsumeList(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+        model.addAttribute("mid",mid);
+        return "/consumeList";
+    }
+
+    @RequestMapping("toRechargeList")
+    public String toRechargeList(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+        model.addAttribute("mid",mid);
+        return "/rechargeList";
+    }
+
     @RequestMapping("sendVcode")
     public void sendVcode(HttpServletRequest request, HttpServletResponse response, String cellphone, PrintWriter pw){
         Map<String,String> map=new HashMap<String,String>();
