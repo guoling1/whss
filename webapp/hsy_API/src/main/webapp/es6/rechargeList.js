@@ -34,7 +34,7 @@ let getData = function (e, page) {
     }
     $.ajax({
         type: "get",
-        url: '/membership/consumeListByPage?mid='+query.mid+'&currentPage='+nowPage,
+        url: '/membership/rechargeListByPage?mid='+query.mid+'&currentPage='+nowPage,
         dataType: "json",
         error: function () {
             alert("请求失败")
