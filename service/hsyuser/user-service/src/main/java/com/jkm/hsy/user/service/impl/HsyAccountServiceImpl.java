@@ -74,14 +74,16 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
             if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
                     userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()){
-
+                result.put("canWithdraw", );
+                result.put("cardNo",cardNO.substring(cardNO.length() - 4 , cardNO.length()));
+                result.put("bankName", cardBank);
+                result.put("avaWithdraw",);
+                result.put("fee", );
+                result.put("receiveAmount",);
+            }else{
+                result.put("canWithdraw", );
             }
-            /*result.put("canWithdraw", );
-            result.put("cardNo",cardNO.substring(cardNO.length() - 4 , cardNO.length()));
-            result.put("bankName", cardBank);
-            result.put("avaWithdraw",);
-            result.put("fee", );
-            result.put("receiveAmount",);*/
+
         }
         return result.toJSONString();
     }
