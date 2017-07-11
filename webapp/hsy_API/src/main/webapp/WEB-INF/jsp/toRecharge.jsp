@@ -36,7 +36,7 @@
     </c:if>
 
     <div class="weui-btn weui-btn_primary" style="margin: 30px 15px 0">充值</div>
-    <a href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1" class="toRecord">点击查看充值记录</a>
+    <a href="<%=basePath%>membership/toRechargeList?mid=${appPolicyMember.id}" class="toRecord">点击查看充值记录</a>
 </div>
     <h1 style="font-size: 40px;">
         会员卡页面<br>

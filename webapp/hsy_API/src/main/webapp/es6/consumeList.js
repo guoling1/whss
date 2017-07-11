@@ -49,7 +49,7 @@ let getData = function (e, page) {
                 left_title.innerHTML = data.list[i].shopname;
                 let left_date = document.createElement('p');
                 left_date.className = 'time';
-                left_date.innerHTML = data.list[i].updateTime;
+                left_date.innerHTML = data.list[i].createTime;
                 div_list_left.appendChild(left_title);
                 div_list_left.appendChild(left_date);
                 let div_list_right = document.createElement('div');
@@ -57,7 +57,7 @@ let getData = function (e, page) {
                 let span = document.createElement('span');
                 span.innerHTML="￥";
                 let span1 = document.createElement('span');
-                span1.innerHTML=data.list[i].amount;
+                span1.innerHTML=data.list[i].realAmount;
                 div_list_right.appendChild(span)
                 div_list_right.appendChild(span1)
                 div_list.appendChild(div_list_left);

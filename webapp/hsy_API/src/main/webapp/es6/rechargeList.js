@@ -46,7 +46,7 @@ let getData = function (e, page) {
                 let div_list_left = document.createElement('div');
                 div_list_left.className = 'weui-cell__bd';
                 let left_title = document.createElement('p');
-                left_title.innerHTML = data.list[i].shopname;
+                left_title.innerHTML = data.list[i].typeName;
                 let left_date = document.createElement('p');
                 left_date.className = 'time';
                 left_date.innerHTML = data.list[i].updateTime;
@@ -55,9 +55,9 @@ let getData = function (e, page) {
                 let div_list_right = document.createElement('div');
                 div_list_right.className = 'weui-cell__ft';
                 let span = document.createElement('span');
-                span.innerHTML="￥";
+                span.innerHTML = "￥";
                 let span1 = document.createElement('span');
-                span1.innerHTML=data.list[i].amount;
+                span1.innerHTML = data.list[i].tradeAmount;
                 div_list_right.appendChild(span)
                 div_list_right.appendChild(span1)
                 div_list.appendChild(div_list_left);
