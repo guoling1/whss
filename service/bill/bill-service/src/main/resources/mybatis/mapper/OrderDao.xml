@@ -521,7 +521,7 @@
             (select proxy_name from tb_dealer where id=z.`DEALERID` AND `level` =1) as proxyNameHsy,
             (select proxy_name from tb_dealer where id=b.second_dealer_id AND `level` =2) as proxyNameHsy1,
             x.SHORTNAME AS merchantName,
-            x.GLOBALID AS markCode,
+            z.GLOBALID AS markCode,
             (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
             n.`channel_short_name` AS payChannelSigns,
             b.oem_id
@@ -1465,7 +1465,7 @@
             (select proxy_name from tb_dealer where id=b.oem_id) as branchCompany,
             (SELECT dealer_belong FROM tb_dealer WHERE id = b.first_dealer_id) AS dealerBelong,
             x.SHORTNAME AS merchantName,
-            x.GLOBALID AS markCode,
+            z.GLOBALID AS markCode,
             n.`channel_short_name` AS payChannelSigns
         FROM
             tb_order a

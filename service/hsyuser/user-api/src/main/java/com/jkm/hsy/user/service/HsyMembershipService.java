@@ -4,7 +4,6 @@ import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,4 +31,25 @@ public interface HsyMembershipService {
     public AppPolicyMember findMemberInfoByID(Long mid);
     public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember, String type,String source,BigDecimal amount);
     public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID);
+
+    /**
+     * 会员列表
+     * @param request
+     * @return
+     */
+    List<MemberResponse> getMemberList(MemberRequest request);
+
+    /**
+     * 会员总数
+     * @param request
+     * @return
+     */
+    int getMemberListCount(MemberRequest request);
+
+    /**
+     * 会员详情
+     * @param request
+     * @return
+     */
+    MemberResponse getMemberDetails(MemberRequest request);
 }

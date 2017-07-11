@@ -34,4 +34,25 @@ public interface HsyMembershipDao {
     public List<AppPolicyMembershipCard> findMemberCardByID(@Param("id") Long id);
     public Integer findMemberCardCountByMCID(@Param("mcid")Long mcid);
     public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid);
+
+    /**
+     * 会员列表
+     * @param request
+     * @return
+     */
+    List<MemberResponse> getMemberList(MemberRequest request);
+
+    /**
+     * 会员总数
+     * @param request
+     * @return
+     */
+    int getMemberListCount(MemberRequest request);
+
+    /**
+     * 会员详情
+     * @param request
+     * @return
+     */
+    MemberResponse getMemberDetails(MemberRequest request);
 }
