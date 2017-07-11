@@ -11,10 +11,11 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.HsyAccountService;
+import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,7 +40,8 @@ public class HsyAccountServiceImpl implements HsyAccountService {
     private SmsAuthService smsAuthService;
     @Autowired
     private SendMessageService sendMessageService;
-
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
     /**
      * {@inheritDoc}
      *
@@ -55,6 +57,13 @@ public class HsyAccountServiceImpl implements HsyAccountService {
         final long accountId = dataJo.getLongValue("accountId");
         final Optional<Account> accountOptional = this.accountService.getById(accountId);
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
+        final AppBizShop priShop = this.hsyShopDao.findPrimaryAppBizShopByAccountID(accountId).get(0);
+        final AppBizCard appBizCard = new AppBizCard();
+        appBizCard.setSid(priShop.getId());
+        final AppBizCard card = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final String cardNO = card.getCardNO();
+        final String cardBank = card.getCardBank();
+        final UserCurrentChannelPolicy userCurrentChannelPolicy = this.userCurrentChannelPolicyService.selectByUserId(appAuUser.getId()).get();
         if (accountOptional.isPresent()) {
             final Account account = accountOptional.get();
             result.put("accountId", account.getId());
@@ -63,6 +72,16 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
             result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
+            if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
+                    userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()){
+
+            }
+            /*result.put("canWithdraw", );
+            result.put("cardNo",cardNO.substring(cardNO.length() - 4 , cardNO.length()));
+            result.put("bankName", cardBank);
+            result.put("avaWithdraw",);
+            result.put("fee", );
+            result.put("receiveAmount",);*/
         }
         return result.toJSONString();
     }
