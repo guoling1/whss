@@ -226,7 +226,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid(),null,null);
         List<AppBizShop> shopList=hsyMembershipDao.findSuitShopByMCID(appPolicyMembershipCard.getId());
 
-        BigDecimal proportion=new BigDecimal(cardCount/cardTotalCount);
+        BigDecimal proportion = new BigDecimal(cardCount).divide(new BigDecimal(cardTotalCount),4,BigDecimal.ROUND_HALF_UP);
         BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         Map result=new HashMap();
@@ -550,7 +550,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             if(totalCount==0){
                 card.setProportion("0%");
             }else {
-                BigDecimal proportion = new BigDecimal(card.getMemberCount() / totalCount);
+                BigDecimal proportion = new BigDecimal(card.getMemberCount()).divide(new BigDecimal(totalCount),4,BigDecimal.ROUND_HALF_UP);
                 BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
                 card.setProportion(proportionEx + "%");
             }
