@@ -8,6 +8,7 @@ import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -1467,6 +1468,10 @@ public class WxPubController extends BaseController {
         }
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        if(checkMerchantInfoRequest.getChannelTypeSign()==EnumPayChannelSign.MB_UNIONPAY_DO.getId()){
+            boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
+            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在9:00至22:25使用");
         }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
