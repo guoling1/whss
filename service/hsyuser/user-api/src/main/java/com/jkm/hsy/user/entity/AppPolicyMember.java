@@ -41,6 +41,9 @@ public class AppPolicyMember {
     private BigDecimal consumeTotalAmount;//累计消费总金额
     private Date lastConsumeTime;
 
+    private String discountInt;
+    private String discountFloat;
+
     public Long getId() {
         return id;
     }
@@ -280,5 +283,21 @@ public class AppPolicyMember {
 
     public void setLastConsumeTime(Date lastConsumeTime) {
         this.lastConsumeTime = lastConsumeTime;
+    }
+
+    public String getDiscountInt() {
+        return discountInt;
+    }
+
+    public void setDiscountInt(String discountInt) {
+        this.discountInt = discountInt;
+    }
+
+    public String getDiscountFloat() {
+        return discountFloat;
+    }
+
+    public void setDiscountFloat(String discountFloat) {
+        this.discountFloat = discountFloat;
     }
 }

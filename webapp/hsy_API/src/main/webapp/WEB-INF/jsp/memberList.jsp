@@ -14,28 +14,21 @@
 <div id="memberList">
     <div class="navbar">
         <div class="left"><span class="active" id="left">会员卡</span></div>
-        <div class="right"><span id="right">体验卡</span></div>
+        <%--<div class="right"><span id="right">体验卡</span></div>--%>
     </div>
-    <ul class="leftList" id="leftList">
-        <a>
-            <span class="name">江湖味道总店</span>
-            <span class="type">尊贵金卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </a>
-    </ul>
-    <ul class="rightList hide" id="rightList">
-        <a>
-            <span class="name">江湖味道总店</span>
-            <span class="type">体验卡</span>
-            <span class="discount"><span>8</span>.0折</span>
-        </a>
-    </ul>
+    <c:forEach items="${memberList}" var="member">
+        <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">会员卡名称<c:out value="${member.membershipName}"></c:out></a>
+        <ul class="leftList" id="leftList">
+            <li>
+                <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">
+                <span class="name"><c:out value="${member.membershipShopName}"></c:out></span>
+                <span class="type"><c:out value="${member.membershipName}"></c:out></span>
+                <span class="discount"><span>${member.discountInt}</span>.${member.discountFloat}折</span>
+                </a>
+            </li>
+        </ul>
+    </c:forEach>
 </div>
-<h1 style="font-size: 40px;">
-<c:forEach items="${memberList}" var="member">
-    <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">会员卡名称<c:out value="${member.membershipName}"></c:out></a>
-</c:forEach>
-</h1>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
 <script src="../../js/2.0.1.1/memberList.min.js"></script>

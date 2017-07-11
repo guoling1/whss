@@ -46,9 +46,8 @@
             <div class="weui-cell__bd">
                 <p>商家信息</p>
             </div>
-            <div class="weui-cell__ft">查看全部</div>
+            <a class="weui-cell__ft" href="<%=basePath%>membership/toShopList?mcid=${appPolicyMember.mcid}">查看全部</a>
         </a>
-
     </div>
 
     <div class="bottom">
@@ -86,7 +85,7 @@
         </div>
     </div>
 </div>
-    <h1 style="font-size: 40px;">
+   <%-- <h1 style="font-size: 40px;">
         会员卡页面<br>
         会员卡名称:${appPolicyMember.membershipName}<br>
         会员卡上显示的店铺名称:${appPolicyMember.membershipShopName}<br>
@@ -103,6 +102,6 @@
         <c:forEach items="${appBizShopList}" var="shop">
             <c:out value="${shop.shortName}"></c:out><br>
         </c:forEach>
-    </h1>
+    </h1>--%>
 </body>
 </html>

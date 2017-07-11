@@ -216,7 +216,7 @@
     </select>
 
     <select id="findSuitShopByMCID" resultType="com.jkm.hsy.user.entity.AppBizShop">
-        select shop.NAME,shop.SHORTNAME from app_biz_shop shop
+        select shop.NAME,shop.SHORTNAME,shop.ADDRESS,shop.CONTACTCELLPHONE from app_biz_shop shop
         left join app_policy_membership_card_shop mcs on mcs.sid=shop.id
         where mcs.MCID=${mcid}
     </select>
