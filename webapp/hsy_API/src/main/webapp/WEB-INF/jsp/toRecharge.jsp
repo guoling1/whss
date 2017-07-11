@@ -30,7 +30,13 @@
             </div>
         </div>
     </div>
+
+    <c:if test="${appPolicyMember.isPresentedViaRecharge==1}">
+        <p>会员卡充值每满<span>${appPolicyMember.rechargeLimitAmount}</span>元送<span>${appPolicyMember.rechargePresentAmount}</span>元</p>
+    </c:if>
+
     <div class="weui-btn weui-btn_primary" style="margin: 30px 15px 0">充值</div>
+    <a href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1" class="toRecord">点击查看充值记录</a>
 </div>
     <h1 style="font-size: 40px;">
         会员卡页面<br>

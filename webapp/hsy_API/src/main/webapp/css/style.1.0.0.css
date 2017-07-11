@@ -1818,8 +1818,7 @@ input:focus {
   overflow: auto;
   padding-top: 46px;
 }
-#memberList ul a {
-  display: inline-block;
+#memberList ul li {
   position: relative;
   margin: 20px auto;
   padding: 16px;
@@ -1832,19 +1831,22 @@ input:focus {
   font-weight: bold;
   text-align: left;
 }
-#memberList ul a .type {
+#memberList ul li a {
+  color: #fff;
+}
+#memberList ul li .type {
   color: #b36112;
   position: absolute;
   bottom: 16px;
   left: 16px;
 }
-#memberList ul a .discount {
+#memberList ul li .discount {
   position: absolute;
   right: 16px;
   bottom: 16px;
   font-size: 36px;
 }
-#memberList ul a .discount span {
+#memberList ul li .discount span {
   font-size: 50px;
 }
 #memberInfo {
@@ -1987,6 +1989,21 @@ input:focus {
 }
 #toRecharge .weui-cells .weui-cell_access {
   height: 50px;
+}
+#toRecharge p {
+  padding: 10px 15px 0;
+  margin-bottom: -5px;
+  font-size: 14px;
+  text-align: left;
+}
+#toRecharge p span {
+  color: #f49530;
+}
+#toRecharge .toRecord {
+  display: inline-block;
+  padding-top: 20px;
+  font-size: 14px;
+  color: #1a9a48;
 }
 #createMem {
   background: #f4f5f8;

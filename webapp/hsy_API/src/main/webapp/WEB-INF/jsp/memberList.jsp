@@ -16,9 +16,9 @@
         <div class="left"><span class="active" id="left">会员卡</span></div>
         <%--<div class="right"><span id="right">体验卡</span></div>--%>
     </div>
-    <c:forEach items="${memberList}" var="member">
-        <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">会员卡名称<c:out value="${member.membershipName}"></c:out></a>
+        <%--<a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">会员卡名称<c:out value="${member.membershipName}"></c:out></a>--%>
         <ul class="leftList" id="leftList">
+            <c:forEach items="${memberList}" var="member">
             <li>
                 <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">
                 <span class="name"><c:out value="${member.membershipShopName}"></c:out></span>
@@ -26,8 +26,8 @@
                 <span class="discount"><span>${member.discountInt}</span>.${member.discountFloat}折</span>
                 </a>
             </li>
+            </c:forEach>
         </ul>
-    </c:forEach>
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
