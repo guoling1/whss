@@ -52,7 +52,7 @@ public class Task {
     /**
      * 卡盟 修改入网信息定时任务
      */
-    @Scheduled(cron = "0 49 18,19 * * ?")
+    @Scheduled(cron = "0 5 14,15 * * ?")
     public void handleKmUpdateNetTask() {
         log.info("修改入网信息定时任务定时任务--start");
         this.merchantInfoService.handleKmUpdateStatus();
