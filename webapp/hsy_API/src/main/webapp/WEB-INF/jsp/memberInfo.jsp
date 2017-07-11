@@ -26,13 +26,15 @@
     </div>
     <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
     <div class="weui-cells">
-        <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">
+        <%--<a class="weui-cell weui-cell_access" href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">--%>
+        <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/toConsumeList?mid=${appPolicyMember.id}">
             <div class="weui-cell__bd">
                 <p>消费记录</p>
             </div>
             <div class="weui-cell__ft">${appPolicyMember.consumeTotalAmount}</div>
         </a>
-        <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1">
+        <%--<a class="weui-cell weui-cell_access" href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1">--%>
+        <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/toRechargeList?mid=${appPolicyMember.id}">
             <div class="weui-cell__bd">
                 <p>充值记录</p>
             </div>
