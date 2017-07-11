@@ -39,6 +39,7 @@ public class AppPolicyRechargeOrder {
 
     private Integer currentPage;
     private String typeName;//类型名称
+    private String consumerCellphone;//消费者手机号
 
     public Long getId() {
         return id;
@@ -270,5 +271,13 @@ public class AppPolicyRechargeOrder {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getConsumerCellphone() {
+        return consumerCellphone;
+    }
+
+    public void setConsumerCellphone(String consumerCellphone) {
+        this.consumerCellphone = consumerCellphone;
     }
 }
