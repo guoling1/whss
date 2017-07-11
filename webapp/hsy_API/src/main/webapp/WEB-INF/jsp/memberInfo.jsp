@@ -53,34 +53,40 @@
 
     <div class="bottom">
         <div>
-        <span style="display: inline-block;position: relative;">
-          <img src="../assets/member/wx.png" alt="" class="icon">
-        </span>
             <c:choose>
                 <c:when test="${appPolicyMember.openID!=null&&appPolicyMember.openID!=''}">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="../assets/member/wx.png" alt="" class="icon">
+                    </span>
                     <p class="type">已绑定</p>
                 </c:when>
                 <c:otherwise>
+                    <span style="display: inline-block;position: relative;">
+                        <img src="../assets/member/wxno.png" alt="" class="icon">
+                    </span>
                     <p class="type">未绑定</p>
                 </c:otherwise>
             </c:choose>
         </div>
         <div>
-        <span style="display: inline-block;position: relative;">
-          <img src="../assets/member/zfb.png" alt="" class="icon">
-        </span>
             <c:choose>
                 <c:when test="${appPolicyMember.userID!=null&&appPolicyMember.userID!=''}">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="../assets/member/zfb.png" alt="" class="icon">
+                    </span>
                     <p class="type">已绑定</p>
                 </c:when>
                 <c:otherwise>
+                    <span style="display: inline-block;position: relative;">
+                        <img src="../assets/member/zfbno.png" alt="" class="icon">
+                    </span>
                     <p class="type">未绑定</p>
                 </c:otherwise>
             </c:choose>
         </div>
     </div>
 </div>
-   <%-- <h1 style="font-size: 40px;">
+    <h1 style="font-size: 40px;">
         会员卡页面<br>
         会员卡名称:${appPolicyMember.membershipName}<br>
         会员卡上显示的店铺名称:${appPolicyMember.membershipShopName}<br>
@@ -97,6 +103,6 @@
         <c:forEach items="${appBizShopList}" var="shop">
             <c:out value="${shop.shortName}"></c:out><br>
         </c:forEach>
-    </h1>--%>
+    </h1>
 </body>
 </html>

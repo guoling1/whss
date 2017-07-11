@@ -14,76 +14,109 @@ const mobile = document.getElementById('mobile');
 const sendCode = document.getElementById('sendCode');
 const code = document.getElementById('code');
 const submit = document.getElementById('submit');
-const invite = document.getElementById('invite');
-const inviteCode = document.getElementById('inviteCode');
 const layer = document.getElementById('layer');
 const cancel = document.getElementById('cancel');
-const login = document.getElementById('login');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
 
-/*if (!pageData.qrCode || pageData.qrCode == '') {
-    invite.style.display = 'block';
-}
-
-if (!pageData.inviteCode || pageData.inviteCode == '') {
-    inviteCode.readonly = false;
-}*/
+var mcid,isDeposited;
+var mySwiper = new Swiper('.swiper-container', {
+    effect : 'coverflow',
+    slidesPerView: 1.25,
+    centeredSlides: true,
+    coverflow: {
+        rotate: 30,
+        stretch: 10,
+        depth: 60,
+        modifier: 2,
+        slideShadows : false
+    },
+    onInit: function(swiper){
+        var prompt = document.getElementById('prompt').getElementsByTagName('p');
+        var swip = document.getElementsByClassName('swiperInp');
+        for(var i=0;i<prompt.length;i++){
+            if(i==swiper.activeIndex){
+                prompt[i].style.display='block';
+                mcid = swip[i].value;
+                isDeposited = swip[i].getAttribute('isDeposited');
+                console.log(mcid,isDeposited)
+            }else {
+                prompt[i].style.display='none'
+            }
+        }
+    },
+    onSlideChangeStart:function(swiper){ console.log(swiper.activeIndex);
+        var prompt = document.getElementById('prompt').getElementsByTagName('p');
+        var swip = document.getElementsByClassName('swiperInp');
+        for(var i=0;i<prompt.length;i++){
+            if(i==swiper.activeIndex){
+                prompt[i].style.display='block';
+                mcid = swip[i].value;
+                isDeposited = swip[i].getAttribute('isDeposited');
+                console.log(mcid,isDeposited)
+            }else {
+                prompt[i].style.display='none'
+            }
+        }
+    }
+})
 
 sendCode.addEventListener('click', function () {
     if (validate.phone(mobile.value)) {
         if (countdown.check()) {
-            // http.post('/wx/getCode', {
-            //     mobile: mobile.value
-            // }, function (data) {
-            //     if (data === false) {
-            //         layer.style.display = 'block';
-            //         return;
-            //     }
-                message.prompt_show('验证码发送成功');
-                countdown.submit_start();
-            // })
+            $.ajax({
+                type: "post",
+                url: "/membership/sendVcode",
+                dataType: "json",
+                data: {
+                    "cellphone"          :   mobile.value
+                },
+                error: function () {
+                    alert("请求失败")
+                },
+                success: function (data) {
+                    message.prompt_show('验证码发送成功');
+                    countdown.submit_start();
+                }
+            });
         }
     }
 });
 
-// cancel.addEventListener('click', function () {
-//     layer.style.display = 'none';
-// });
-//
-// login.addEventListener('click', function () {
-//     window.location.href = '/sqb/login?phone=' + mobile.value;
-// });
-//
-// // 注册
-// submit.addEventListener('click', ()=> {
-//     if (!pageData.qrCode || pageData.qrCode == '') {
-//         if (validate.joint({
-//                 phone: mobile.value,
-//                 code: code.value
-//             })) {
-//             http.post('/wx/login', {
-//                 mobile: mobile.value,
-//                 code: code.value,
-//                 inviteCode: inviteCode.value
-//             }, ()=> {
-//                 window.location.replace("/sqb/addInfo");
-//             })
-//         }
-//     } else {
-//         if (validate.joint({
-//                 phone: mobile.value,
-//                 code: code.value
-//             })) {
-//             http.post('/wx/login', {
-//                 mobile: mobile.value,
-//                 code: code.value,
-//                 qrCode: pageData.qrCode,
-//                 inviteCode: inviteCode.value
-//             }, ()=> {
-//                 window.location.replace("/sqb/addInfo");
-//             })
-//         }
-//     }
-// });
+submit.addEventListener('click', ()=> {
+        if (validate.joint({
+                phone: mobile.value,
+                code: code.value
+            })) {
+            $.ajax({
+                type: "post",
+                url: "/membership/createMember",
+                dataType: "json",
+                data: {
+                    "consumerCellphone" : mobile.value,
+                    "vcode" : code.value,
+                    "openID" : $("#openID").val(),
+                    "userID" : $("#userID").val(),
+                    "source" : $("#source").val(),
+                    "cid" : $("#cid").val(),
+                    "mcid" : mcid,
+                    "isDeposited" : isDeposited
+                },
+                error: function () {
+                    alert("请求失败")
+                },
+                success: function (data) {
+                    if(data.flag=="success")
+                    {
+                        if(data.status==1)
+                            location.href="/membership/createMemberSuccess?mid="+data.mid;
+                        else
+                            location.href="/membership/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
+                    }
+                    else
+                        alert(data.result);
+                }
+            });
+        }
+});

@@ -17,18 +17,18 @@
         <div class="right"><span id="right">体验卡</span></div>
     </div>
     <ul class="leftList" id="leftList">
-        <li>
+        <a>
             <span class="name">江湖味道总店</span>
             <span class="type">尊贵金卡</span>
             <span class="discount"><span>8</span>.0折</span>
-        </li>
+        </a>
     </ul>
     <ul class="rightList hide" id="rightList">
-        <li>
+        <a>
             <span class="name">江湖味道总店</span>
             <span class="type">体验卡</span>
             <span class="discount"><span>8</span>.0折</span>
-        </li>
+        </a>
     </ul>
 </div>
 <h1 style="font-size: 40px;">

@@ -1818,7 +1818,8 @@ input:focus {
   overflow: auto;
   padding-top: 46px;
 }
-#memberList ul li {
+#memberList ul a {
+  display: inline-block;
   position: relative;
   margin: 20px auto;
   padding: 16px;
@@ -1831,19 +1832,19 @@ input:focus {
   font-weight: bold;
   text-align: left;
 }
-#memberList ul li .type {
+#memberList ul a .type {
   color: #b36112;
   position: absolute;
   bottom: 16px;
   left: 16px;
 }
-#memberList ul li .discount {
+#memberList ul a .discount {
   position: absolute;
   right: 16px;
   bottom: 16px;
   font-size: 36px;
 }
-#memberList ul li .discount span {
+#memberList ul a .discount span {
   font-size: 50px;
 }
 #memberInfo {
@@ -1911,6 +1912,7 @@ input:focus {
 #memberInfo .bottom {
   padding: 26px 0 20px;
   color: #333;
+  height: 130px;
 }
 #memberInfo .bottom div {
   display: inline-block;

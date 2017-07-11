@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
     <link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">
     <script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>
-    <script>
+    <%--<script>
         $(function(){
             $(":radio").click(function(){
                 var isDeposited=$(this).attr("isDeposited");
@@ -78,11 +78,11 @@
                 });
             });
         });
-    </script>
+    </script>--%>
 </head>
 <body>
 <div id="createMem">
-    <div class="swiper-container top">
+    <div class="swiper-container top" id="swiper">
         <div class="swiper-wrapper">
             <c:forEach items="${cardList }" var="entity" varStatus="status">
                 <div class="swiper-slide">
@@ -91,6 +91,7 @@
                         <span class="type">${entity.membershipName}</span>
                         <span class="discount"><span><c:out value="${entity.discountInt}"/></span>.${entity.discountFloat}折</span>
                     </div>
+                    <input type="hidden" isDeposited="${entity.isDeposited}" depositAmount="${entity.depositAmount}" name="mcid" value="${entity.id}" class="swiperInp"/>
                 </div>
             </c:forEach>
         </div>
@@ -99,7 +100,7 @@
         <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号" />
+                <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入手机号" id="mobile"/>
             </div>
         </div>
         <div class="weui-cell weui-cell_vcode">
@@ -107,17 +108,25 @@
                 <label class="weui-label">验证码</label>
             </div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="tel" placeholder="请输入短信验证码" />
+                <input class="weui-input" type="tel" placeholder="请输入短信验证码" id="code"/>
             </div>
             <div class="weui-cell__ft">
-                <button class="weui-btn weui-btn_plain-primary btnCode">获取验证码</button>
+                <button class="weui-btn weui-btn_plain-primary btnCode" id="sendCode">获取验证码</button>
             </div>
         </div>
     </div>
-    <p>开通会员卡需要支付<a id="depositAmount"></a>元</p>
-    <div class="weui-btn weui-btn_primary open">开通</div>
+    <div class="prompt" id="prompt">
+        <c:forEach items="${cardList }" var="entity" varStatus="status" >
+            <p>开通会员卡需要支付${entity.depositAmount}元</p>
+        </c:forEach>
+    </div>
+    <div class="weui-btn weui-btn_primary open" id="submit">开通</div>
+    <input type="hidden" id="openID" name="openID" value="${authInfo.openID}"/>
+    <input type="hidden" id="userID" name="userID" value="${authInfo.userID}"/>
+    <input type="hidden" id="source" name="source" value="${authInfo.source}"/>
+    <input type="hidden" id="cid" name="cid" value="${appPolicyConsumer.id}">
 </div>
-<h1 style="font-size: 40px;">
+<%--<h1 style="font-size: 40px;">
     <c:forEach items="${cardList }" var="entity" varStatus="status">
         <input type="radio" isDeposited="${entity.isDeposited}" depositAmount="${entity.depositAmount}" name="mcid" value="${entity.id}" <c:if test="${status.index==0 }">checked</c:if>/><label>${entity.membershipName}</label>
     </c:forEach>
@@ -132,23 +141,9 @@
         <br>
     </h1>
         <button id="createMember">开通</button>
-        <button id="sendVcode">发送验证码</button>
+        <button id="sendVcode">发送验证码</button>--%>
 </body>
 <script src="../../js/swiper-3.4.2.min.js"></script>
-<script>
-    var mySwiper = new Swiper('.swiper-container', {
-        effect : 'coverflow',
-        slidesPerView: 1.25,
-        centeredSlides: true,
-        coverflow: {
-            rotate: 30,
-            stretch: 10,
-            depth: 60,
-            modifier: 2,
-            slideShadows : false
-        }
-
-    })
-
-</script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
+<script src="../../js/2.0.1.1/createMember.min.js"></script>
 </html>

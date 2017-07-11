@@ -19,7 +19,7 @@
             <span class="discount"><span>${discountInt}</span>.${discountFloat}折</span>
         </div>
         <div class="phone">手机号：${appPolicyMember.consumerCellphone}</div>
-        <div class="title">余额：</div>
+        <div class="title">余额</div>
         <div class="price">￥<span>${appPolicyMember.remainingSum}</span></div>
     </div>
     <div class="weui-cells weui-cells_form">
