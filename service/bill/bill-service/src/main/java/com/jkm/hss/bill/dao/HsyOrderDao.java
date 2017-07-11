@@ -3,6 +3,7 @@ package com.jkm.hss.bill.dao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
+import com.jkm.hsy.user.constant.Page;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -133,4 +134,8 @@ public interface HsyOrderDao {
                                                @Param("paymentChannels") List<Integer> paymentChannels,
                                                @Param("startTime") Date startTime,
                                                @Param("endTime") Date endTime);
+
+    public List<HsyOrder> findConsumeOrderListByPage(Page<HsyOrder> entity);
+    public Integer findConsumeOrderListByPageCount(HsyOrder entity);
+    public List<HsyOrder> findConsumeOrderInfo(@Param("id")Long id);
 }

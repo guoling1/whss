@@ -110,9 +110,14 @@ public class HsyOrder{
     private Long uid;
     private Long accountid;
     private Long dealerid;
+    private Long mcid;
+    private Long mid;
 
     private Date createTime;
     private Date updateTime;
+
+    private Integer currentPage;
+    private String consumerCellphone;
 
     /**
      * 是否是 已经退款成功
