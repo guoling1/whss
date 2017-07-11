@@ -13,6 +13,8 @@ import java.util.Date;
 @Data
 public class JkmProfitDetailsResponse {
 
+    private int payChannelSign;
+
     /**
      * 结算周期
      */
@@ -63,7 +65,7 @@ public class JkmProfitDetailsResponse {
     /**
      * 分账总额
      */
-    private BigDecimal splitTotalAmount;
+    private String splitTotalAmount;
 
     /**
      * 分账流水号（唯一）
@@ -93,7 +95,7 @@ public class JkmProfitDetailsResponse {
     /**
      * 分账所得金额
      */
-    private BigDecimal splitAmount;
+    private String splitAmount;
 
     /**
      * 分账费率
@@ -109,4 +111,6 @@ public class JkmProfitDetailsResponse {
      * 分账日期
      */
     private Date splitDate;
+
+    private String splitDates;
 }

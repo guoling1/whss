@@ -77,9 +77,9 @@ public class SendMsgServiceImpl implements SendMsgService {
                 jsonParam.put("touser",touser);
                 if (oemId==0) {
                     jsonParam.put("template_id", "JW4HPfr8xrm0iQ7lqcWzHQKASHh79y69NMgMWOi41bE");
+                }else{
+                    jsonParam.put("template_id", templateId);
                 }
-                jsonParam.put("template_id", templateId);
-
                 jsonParam.put("data",jo);
                 String tt  = jsonParam.toString();
                 method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
@@ -192,8 +192,10 @@ public class SendMsgServiceImpl implements SendMsgService {
             jsonParam.put("touser", toUser);
             if (oemId==0) {
                 jsonParam.put("template_id", "2dIyIc91CjMLiWaFFF7-RAlxv-bjGCjXL2c049TPPtQ");
+            }else{
+                jsonParam.put("template_id", templateId);
             }
-            jsonParam.put("template_id", templateId);
+
 
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
@@ -305,9 +307,9 @@ public class SendMsgServiceImpl implements SendMsgService {
             jsonParam.put("touser", touser);
             if (oemId==0) {
                 jsonParam.put("template_id", "ATdpk_M-d_PVbSE3IFIA5qso4L7z03S_45ewPNHBcFI");
+            }else{
+                jsonParam.put("template_id", templateId);
             }
-            jsonParam.put("template_id", templateId);
-
             jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/collection?oemNo="+oemDetailResponse.getOemNo());
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
@@ -363,8 +365,10 @@ public class SendMsgServiceImpl implements SendMsgService {
             jsonParam.put("touser", touser);
             if (oemId==0) {
                 jsonParam.put("template_id", "gr-Nr_ADa5yo0bLAPyn6wteVJnWNcVHNeIK-gvfI75Y");
+            }else{
+                jsonParam.put("template_id", templateId);
             }
-            jsonParam.put("template_id", templateId);
+
 
             jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/prompt?oemNo="+oemDetailResponse.getOemNo());
             jsonParam.put("data", jo);

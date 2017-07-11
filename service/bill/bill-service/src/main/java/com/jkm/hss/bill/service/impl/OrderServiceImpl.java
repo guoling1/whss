@@ -565,6 +565,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyNameHsy",req.getProxyNameHsy());
         map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
+        map.put("source",req.getSource());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1382,6 +1383,36 @@ public class OrderServiceImpl implements OrderService {
     public String getAmountCountBranch1(OrderTradeRequest req) {
         String list = this.orderDao.getAmountCountBranch1(req);
         return list;
+    }
+
+    @Override
+    public String getAmountCounts(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountHss(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountsHsy(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAmountCounts1(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountHss1(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountsHsy1(req);
+            return list;
+        }
+
+        return null;
     }
 
     @Override

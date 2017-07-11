@@ -167,10 +167,10 @@ public class DealerController extends BaseController {
             if(!ValidateUtils.isMobile(secondLevelDealerAdd2Request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
             }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(secondLevelDealerAdd2Request.getMobile());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-            }
+//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(secondLevelDealerAdd2Request.getMobile());
+//            if (dealerOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+//            }
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }
@@ -267,10 +267,10 @@ public class DealerController extends BaseController {
             if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "手机号格式错误");
             }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "手机号已经注册");
-            }
+//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
+//            if (dealerOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "手机号已经注册");
+//            }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getName())) {
                 return CommonResponse.simpleResponse(-1, "名称不能为空");
             }
@@ -429,10 +429,10 @@ public class DealerController extends BaseController {
             if(!ValidateUtils.isMobile(request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
             }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-            }
+//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+//            if (dealerOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+//            }
             if(StringUtils.isBlank(request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }
@@ -514,10 +514,10 @@ public class DealerController extends BaseController {
             if(!ValidateUtils.isMobile(request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
             }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-            }
+//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+//            if (dealerOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+//            }
             if(StringUtils.isBlank(request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }

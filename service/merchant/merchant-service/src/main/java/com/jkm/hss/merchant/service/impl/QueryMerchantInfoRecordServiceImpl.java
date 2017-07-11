@@ -1,10 +1,7 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.QueryMerchantInfoRecordDao;
-import com.jkm.hss.merchant.entity.LogResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
-import com.jkm.hss.merchant.entity.ReferralResponse;
-import com.jkm.hss.merchant.entity.SettleResponse;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
@@ -136,5 +133,25 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
     public MerchantInfoResponse getrecommenderInfo(long id) {
         MerchantInfoResponse response = this.queryMerchantInfoRecordDao.getrecommenderInfo(id);
         return response;
+    }
+
+    @Override
+    public void saveNo(SaveLineNoRequest req) {
+        this.queryMerchantInfoRecordDao.saveNo(req);
+    }
+
+    @Override
+    public void saveNo1(SaveLineNoRequest req) {
+        this.queryMerchantInfoRecordDao.saveNo1(req);
+    }
+
+    @Override
+    public int getStatus(long id) {
+        return this.queryMerchantInfoRecordDao.getStatus(id);
+    }
+
+    @Override
+    public int getAccountId(long id) {
+        return this.queryMerchantInfoRecordDao.getAccountId(id);
     }
 }

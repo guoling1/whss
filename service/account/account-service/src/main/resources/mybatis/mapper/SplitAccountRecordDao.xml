@@ -173,6 +173,7 @@
         a.receipt_money_account_id = #{accountId}
 
         AND split_amount &gt; 0.00
+
         <if test="startTime!=null and startTime!=''">
             AND a.split_date <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -183,6 +184,9 @@
 
         <if test="businessType!=null and businessType!=''">
             AND a.business_type = #{businessType}
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            AND a.order_no = #{orderNo}
         </if>
         ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
     </select>
@@ -207,6 +211,9 @@
 
         <if test="businessType!=null and businessType!=''">
             AND a.business_type = #{businessType}
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            AND a.order_no = #{orderNo}
         </if>
     </select>
 
