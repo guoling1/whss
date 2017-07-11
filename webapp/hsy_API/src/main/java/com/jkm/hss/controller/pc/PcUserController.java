@@ -141,7 +141,7 @@ public class PcUserController extends BaseController {
             final JSONObject jo = new JSONObject();
             shops.add(jo);
             jo.put("shopId", shop.getId());
-            jo.put("shopName", shop.getName());
+            jo.put("shopName", shop.getShortName());
         }
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
         final JSONObject result = new JSONObject();
