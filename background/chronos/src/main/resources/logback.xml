@@ -12,9 +12,9 @@
 
     <appender name="FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <Encoding>UTF-8</Encoding>
-        <File>${log.dir}/hss.log</File>
+        <File>${log.dir}/task.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.dir}/bak/hss.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+            <FileNamePattern>${log.dir}/bak/task.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>${normal-pattern}</Pattern>
