@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Preconditions;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.bill.dao.HsyOrderDao;
@@ -94,6 +95,9 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setShopname(shop.getShortName());
         hsyOrder.setMerchantNo(appAuUser.getGlobalID());
         hsyOrder.setMerchantname(shop.getName());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
         hsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
         hsyOrder.setSourcetype(EnumHsySourceType.QRCODE.getId());
         hsyOrder.setValidationcode("");
@@ -262,20 +266,41 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         stopWatch.start();
         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = this.sendMqMsgService.getByIdWithLock(consumeMsgSplitProfitRecordId).get();
         if (consumeMsgSplitProfitRecord.isPendingSend()) {
-            final HsyOrder hsyOrder = this.hsyOrderService.getById(consumeMsgSplitProfitRecord.getHsyOrderId()).get();
+            Preconditions.checkState(consumeMsgSplitProfitRecord.getHsyOrderId() > 0 || consumeMsgSplitProfitRecord.getHsyRechargeOrderId() > 0);
+            String orderNo = "";
+            BigDecimal amount = new BigDecimal("0.00");
+            int payChannelSign = 0;
+            long uid = 0;
+            String settleType = "";
+            if (consumeMsgSplitProfitRecord.getHsyOrderId() > 0) {
+                final HsyOrder hsyOrder = this.hsyOrderService.getById(consumeMsgSplitProfitRecord.getHsyOrderId()).get();
+                orderNo = hsyOrder.getOrderno();
+                amount = hsyOrder.getAmount();
+                payChannelSign = hsyOrder.getPaychannelsign();
+                uid = hsyOrder.getUid();
+                settleType = hsyOrder.getSettleType();
+            }
+            if (consumeMsgSplitProfitRecord.getHsyRechargeOrderId() > 0) {
+                final AppPolicyRechargeOrder appPolicyRechargeOrder = this.hsyOrderDao.findRechargeOrderInfoByID(consumeMsgSplitProfitRecord.getHsyRechargeOrderId()).get(0);
+                orderNo = appPolicyRechargeOrder.getOrderNO();
+                amount = appPolicyRechargeOrder.getRealPayAmount();
+                payChannelSign = appPolicyRechargeOrder.getPayChannelSign();
+                uid = appPolicyRechargeOrder.getUid();
+                settleType = "T1";
+            }
             final SplitProfitParams splitProfitParams = new SplitProfitParams();
-            final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSY, hsyOrder.getOrderno(),
-                    hsyOrder.getAmount(), hsyOrder.getPaychannelsign(), hsyOrder.getShopid());
+            final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSY, orderNo,
+                    amount, payChannelSign, uid);
             if (!shallProfitMap.isEmpty()) {
                 final Triple<Long, BigDecimal, BigDecimal> basicMoneyTriple = shallProfitMap.get("basicMoney");
                 final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
                 final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
                 final Triple<Long, BigDecimal, BigDecimal> firstMoneyTriple = shallProfitMap.get("firstMoney");
                 final Triple<Long, BigDecimal, BigDecimal> secondMoneyTriple = shallProfitMap.get("secondMoney");
-                splitProfitParams.setOrderNo(hsyOrder.getOrderno());
+                splitProfitParams.setOrderNo(orderNo);
                 splitProfitParams.setSplitType(EnumSplitBusinessType.HSYPAY.getId());
                 splitProfitParams.setCost(basicMoneyTriple.getMiddle());
-                splitProfitParams.setSettleType(hsyOrder.getSettleType());
+                splitProfitParams.setSettleType(settleType);
                 final ArrayList<SplitProfitParams.SplitProfitDetail> splitProfitDetails = new ArrayList<>(5);
                 splitProfitParams.setSplitProfitDetails(splitProfitDetails);
                 if (null != channelMoneyTriple) {
