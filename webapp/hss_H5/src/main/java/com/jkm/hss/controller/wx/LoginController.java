@@ -854,9 +854,11 @@ public class LoginController extends BaseController {
         if(oemInfoOptional.isPresent()){
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
         }else{
             model.addAttribute("oemName","好收收");
             model.addAttribute("wechatCode","HAOSHOUSHOU");
+            model.addAttribute("oemNo","");
         }
         model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
         return "/reg";
@@ -877,6 +879,12 @@ public class LoginController extends BaseController {
         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
         model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
         model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
+        }
         return "/myRecommend";
 
     }
@@ -915,6 +923,9 @@ public class LoginController extends BaseController {
         if(oemInfoOptional.isPresent()){
             appId = oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
         }
         Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId(),appId,appSecret);
         if(map==null){
@@ -950,6 +961,9 @@ public class LoginController extends BaseController {
         if(oemInfoOptional.isPresent()){
             appId = oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
         }
         Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId(),appId,appSecret);
         if(map==null){
@@ -1017,6 +1031,12 @@ public class LoginController extends BaseController {
         model.addAttribute("upgradeRules",list);
         model.addAttribute("merchantId",result.get().getId());
         model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
+        }
         return "/toUpgerde";
     }
 
@@ -1119,6 +1139,12 @@ public class LoginController extends BaseController {
         upgradePayRecord.setNote("充值升级");
         upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
         upgradePayRecordService.insert(upgradePayRecord);
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
+        }
         String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
         Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
         if(pair.getLeft()==0){
