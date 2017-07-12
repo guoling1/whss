@@ -44,7 +44,7 @@ public class DealerUpgerdeRate extends BaseEntity {
      */
     private BigDecimal bossDealerShareRate;
     /**
-     *金开门分润比例
+     * 分公司分润比例
      */
     private BigDecimal oemShareRate;
 }
