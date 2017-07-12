@@ -92,6 +92,8 @@ public class PcTradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "授权码错误");
         }
         final Pair<Integer, String> result = this.hsyTransactionService.authCodePay(pcPayRequest.getOrderId(), pcPayRequest.getAuthCode());
+        final HsyOrder hsyOrder = this.hsyOrderService.getById(pcPayRequest.getOrderId()).get();
+        log.info("1--[{}]", hsyOrder);
         if (0 !=result.getLeft()) {
             return CommonResponse.simpleResponse(-1, result.getRight());
         }
@@ -118,6 +120,7 @@ public class PcTradeController extends BaseController {
         response.setHeader("Access-Control-Allow-Origin", "*");
 
         final HsyOrder hsyOrder = this.hsyOrderService.getById(orderId).get();
+        log.info("2--[{}]", hsyOrder);
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                 .addParam("orderNo", hsyOrder.getOrdernumber())
                 .addParam("tradeOrderNo", hsyOrder.getOrderno())
