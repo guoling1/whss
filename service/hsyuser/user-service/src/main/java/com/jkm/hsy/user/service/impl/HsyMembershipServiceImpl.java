@@ -9,10 +9,7 @@ import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
-import com.jkm.hsy.user.dao.HsyMembershipDao;
-import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.dao.HsyVerificationDao;
-import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
+import com.jkm.hsy.user.dao.*;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -43,6 +40,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
     @Autowired
     private MemberAccountService memberAccountService;
+    @Autowired
+    private UserChannelPolicyDao userChannelPolicyDao;
 
     /**HSY001047 创建会员卡*/
     public String insertMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException {
@@ -783,6 +782,9 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
             appPolicyRechargeOrder.setSource("wechat");
         }
+
+        UserChannelPolicy userChannelPolicy=userChannelPolicyDao.selectByUserIdAndChannelTypeSign(appPolicyMember.getUid(),appPolicyRechargeOrder.getPayChannelSign());
+        appPolicyRechargeOrder.setSettleType(userChannelPolicy.getSettleType());
         appPolicyRechargeOrder.setMemberID(appPolicyMember.getId());
         appPolicyRechargeOrder.setMemberAccountID(appPolicyMember.getAccountID());
         appPolicyRechargeOrder.setCid(appPolicyMember.getCid());
