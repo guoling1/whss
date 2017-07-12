@@ -123,7 +123,7 @@
           <div class="wrap" id="wrap">
               <p>请输入您开卡手机号后六位数字</p>
               <div class="inputBoxContainer" id="inputBoxContainer">
-                <input type="number" class="realInput"/>
+                <input type="number" class="realInput" maxlength="6" style="margin-left: -100%"/>
                 <div class="bogusInput">
                   <input type="password" maxlength="6" disabled/>
                   <input type="password" maxlength="6" disabled/>
