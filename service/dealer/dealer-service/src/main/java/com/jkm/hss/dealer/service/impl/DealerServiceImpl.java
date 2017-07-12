@@ -50,6 +50,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +100,8 @@ public class DealerServiceImpl implements DealerService {
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private HsyUserDao hsyUserDao;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
@@ -238,7 +241,7 @@ public class DealerServiceImpl implements DealerService {
             return new HashMap<>();
         }
         //根据代理商id查询代理商信息
-        final List<AppAuUser> appAuUsers = hsyShopDao.findCorporateUserByShopID(merchantId);
+        final List<AppAuUser> appAuUsers = hsyUserDao.findAppAuUserByID(merchantId);
         final AppAuUser appAuUser = appAuUsers.get(0);
         //待分润金额
         final BigDecimal totalFee = tradeAmount;
