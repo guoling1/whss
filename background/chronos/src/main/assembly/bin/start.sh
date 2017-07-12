@@ -1,4 +1,5 @@
 #!/bin/sh
+JAVA_HOME=${java_home}
 
 BASE_PATH=$(cd `dirname $0`; pwd)
 
@@ -22,7 +23,7 @@ JAVA_OPTIONS="$JAVA_OPTIONS -XX:+UseParallelGC -XX:+HeapDumpOnOutOfMemoryError -
 # main class
 JAVA_OPTIONS="$JAVA_OPTIONS com.jkm.chronos.Startup"
 
-nohup java -classpath $CLASS_PATH $JAVA_OPTIONS > $LOGDIR/chronos.out 2>&1 &
+nohup $JAVA_HOME/bin/java -classpath $CLASS_PATH $JAVA_OPTIONS > $LOGDIR/chronos.out 2>&1 &
 
 # get latested process pid
 echo $! > pid
