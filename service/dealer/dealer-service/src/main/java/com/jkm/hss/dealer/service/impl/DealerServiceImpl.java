@@ -390,8 +390,9 @@ public class DealerServiceImpl implements DealerService {
 
         //通道分润
         final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
-        final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
+        BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
                 subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+        channelMoney = channelMoney.compareTo(new BigDecimal("0")) == -1 ? new BigDecimal("0") : channelMoney;
         //判断是否是公司直属商户发展的商户
         if (merchantInfo.getFirstDealerId() == 0){
             map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
@@ -496,9 +497,6 @@ public class DealerServiceImpl implements DealerService {
             }
 
         }
-
-
-
         //一级代理
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
@@ -804,8 +802,9 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
 
             //通道分润
-            final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
+            BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            channelMoney = channelMoney.compareTo(new BigDecimal("0")) == -1 ? new BigDecimal("0") : channelMoney;
             //产品分润
             final BigDecimal productMoney;
             if (new BigDecimal("0.01").compareTo(totalFee) == 0){
@@ -864,8 +863,9 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
             final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
             //通道分润
-            final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
+            BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            channelMoney = channelMoney.compareTo(new BigDecimal("0")) == -1 ? new BigDecimal("0") : channelMoney;
             //产品分润
             final BigDecimal productMoney;
             if (new BigDecimal("0.01").compareTo(totalFee) == 0){
@@ -917,8 +917,9 @@ public class DealerServiceImpl implements DealerService {
              BigDecimal secondMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //通道分润
-            final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
+            BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+            channelMoney = channelMoney.compareTo(new BigDecimal("0")) == -1 ? new BigDecimal("0") : channelMoney;
             //通道成本
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
             final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
