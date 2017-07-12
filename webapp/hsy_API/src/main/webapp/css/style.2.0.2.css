@@ -1036,6 +1036,28 @@ input:focus {
   animation-iteration-count: infinite;
   -webkit-animation-iteration-count: infinite;
 }
+#collection .space .sale,
+#payment-wx .space .sale,
+#payment-zfb .space .sale {
+  padding-top: 12px;
+  height: 32px;
+  line-height: 32px;
+  text-align: left;
+}
+#collection .space .sale img,
+#payment-wx .space .sale img,
+#payment-zfb .space .sale img {
+  margin-right: 12px;
+  vertical-align: text-bottom;
+  width: 70px;
+  height: 20px;
+}
+#collection .space .sale .right,
+#payment-wx .space .sale .right,
+#payment-zfb .space .sale .right {
+  float: right;
+  color: #f94949;
+}
 #collection .space .remark,
 #payment-wx .space .remark,
 #payment-zfb .space .remark {
@@ -1050,37 +1072,73 @@ input:focus {
 #payment-wx .keyboard,
 #payment-zfb .keyboard {
   width: 100%;
-  height: 310px;
+  height: 332px;
   position: fixed;
   left: 0;
   bottom: 0;
+  /*.copyright {
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 15px;
+      border-bottom: 1px solid #e8eaf3;
+      .word {
+        display: inline-block;
+        font-size: 12px;
+        color: #a6abc3;
+        padding: 0 15px;
+      }
+      .line {
+        display: inline-block;
+        .flexItem(1);
+        height: 1px;
+        margin-top: 14px;
+        background-color: #dddfe8;
+      }
+    }*/
 }
 #collection .keyboard .copyright,
 #payment-wx .keyboard .copyright,
 #payment-zfb .keyboard .copyright {
   width: 100%;
-  height: 30px;
-  line-height: 30px;
-  padding: 0 15px;
+  height: 52px;
+  line-height: 21px;
+  padding: 15px;
   border-bottom: 1px solid #e8eaf3;
+}
+#collection .keyboard .copyright span,
+#payment-wx .keyboard .copyright span,
+#payment-zfb .keyboard .copyright span {
+  display: inline-block;
+}
+#collection .keyboard .copyright img,
+#payment-wx .keyboard .copyright img,
+#payment-zfb .keyboard .copyright img {
+  display: inline-block;
+  vertical-align: middle;
+  width: 29px;
+  height: 14px;
+  box-shadow: 0px 2px 5px #dbc6b5;
 }
 #collection .keyboard .copyright .word,
 #payment-wx .keyboard .copyright .word,
 #payment-zfb .keyboard .copyright .word {
-  display: inline-block;
-  font-size: 12px;
-  color: #a6abc3;
-  padding: 0 15px;
+  font-size: 14px;
+  /*margin-right: 12px;*/
+}
+#collection .keyboard .copyright .weui-btn,
+#payment-wx .keyboard .copyright .weui-btn,
+#payment-zfb .keyboard .copyright .weui-btn {
+  overflow: inherit;
+  margin-left: 27px;
+  padding: 0 12px;
+  line-height: 21px;
+  /*margin:0;*/
 }
 #collection .keyboard .copyright .line,
 #payment-wx .keyboard .copyright .line,
 #payment-zfb .keyboard .copyright .line {
   display: inline-block;
-  box-flex: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
   height: 1px;
   margin-top: 14px;
   background-color: #dddfe8;
@@ -1198,11 +1256,16 @@ input:focus {
 #collection .keyboard .keys .wx .pay,
 #payment-wx .keyboard .keys .wx .pay,
 #payment-zfb .keyboard .keys .wx .pay {
+  padding-top: 77px;
   height: 210px;
-  line-height: 210px;
   font-size: 16px;
   color: #FFF;
-  background-color: #5fd68c;
+  background-color: #29ad5c;
+}
+#collection .keyboard .keys .wx .pay p span,
+#payment-wx .keyboard .keys .wx .pay p span,
+#payment-zfb .keyboard .keys .wx .pay p span {
+  font-size: 24px;
 }
 #collection .keyboard .keys .zfb,
 #payment-wx .keyboard .keys .zfb,
@@ -1218,6 +1281,204 @@ input:focus {
   font-size: 16px;
   color: #FFF;
   background-color: #4e9bf9;
+}
+#collection .js_dialog .weui-dialog,
+#payment-wx .js_dialog .weui-dialog,
+#payment-zfb .js_dialog .weui-dialog {
+  border-radius: 10px;
+}
+#collection .js_dialog .weui-dialog__hd,
+#payment-wx .js_dialog .weui-dialog__hd,
+#payment-zfb .js_dialog .weui-dialog__hd {
+  position: relative;
+}
+#collection .js_dialog .weui-dialog__hd img,
+#payment-wx .js_dialog .weui-dialog__hd img,
+#payment-zfb .js_dialog .weui-dialog__hd img {
+  position: absolute;
+  left: 15px;
+  top: 25px;
+  width: 8px;
+  height: 15px;
+}
+#collection .js_dialog .weui-dialog__bd,
+#payment-wx .js_dialog .weui-dialog__bd,
+#payment-zfb .js_dialog .weui-dialog__bd {
+  padding: 0;
+}
+#collection .js_dialog .weui-dialog__bd .weui-cells,
+#payment-wx .js_dialog .weui-dialog__bd .weui-cells,
+#payment-zfb .js_dialog .weui-dialog__bd .weui-cells {
+  margin-top: 0;
+  text-align: left;
+  font-size: 16px;
+  color: #333;
+}
+#collection .js_dialog .weui-dialog__bd .weui-cells .weui-cell,
+#payment-wx .js_dialog .weui-dialog__bd .weui-cells .weui-cell,
+#payment-zfb .js_dialog .weui-dialog__bd .weui-cells .weui-cell {
+  height: 60px;
+}
+#collection .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd,
+#payment-wx .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd,
+#payment-zfb .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd {
+  width: 43px;
+}
+#collection .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd img,
+#payment-wx .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd img,
+#payment-zfb .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd img {
+  width: 29px;
+  height: 15px;
+  box-shadow: 0px 2px 5px #dbc6b5;
+}
+#collection .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd img.wx,
+#payment-wx .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd img.wx,
+#payment-zfb .js_dialog .weui-dialog__bd .weui-cells .weui-cell .weui-cell__hd img.wx {
+  width: 19px;
+  height: 18px;
+  box-shadow: 0 0 0;
+}
+#collection .js_dialog2 .weui-dialog,
+#payment-wx .js_dialog2 .weui-dialog,
+#payment-zfb .js_dialog2 .weui-dialog {
+  border-radius: 10px;
+}
+#collection .js_dialog2 .weui-dialog__hd,
+#payment-wx .js_dialog2 .weui-dialog__hd,
+#payment-zfb .js_dialog2 .weui-dialog__hd {
+  position: relative;
+  border-bottom: 1px solid #abd6ad;
+}
+#collection .js_dialog2 .weui-dialog__hd img,
+#payment-wx .js_dialog2 .weui-dialog__hd img,
+#payment-zfb .js_dialog2 .weui-dialog__hd img {
+  position: absolute;
+  left: 15px;
+  top: 28px;
+  width: 12px;
+  height: 12px;
+}
+#collection .js_dialog2 .weui-dialog__price,
+#payment-wx .js_dialog2 .weui-dialog__price,
+#payment-zfb .js_dialog2 .weui-dialog__price {
+  height: 80px;
+  line-height: 80px;
+  font-size: 32px;
+}
+#collection .js_dialog2 .weui-dialog__bd,
+#payment-wx .js_dialog2 .weui-dialog__bd,
+#payment-zfb .js_dialog2 .weui-dialog__bd {
+  margin-bottom: 17px;
+}
+#collection .js_dialog2 .weui-dialog__bd .weui-cells,
+#payment-wx .js_dialog2 .weui-dialog__bd .weui-cells,
+#payment-zfb .js_dialog2 .weui-dialog__bd .weui-cells {
+  margin-top: 0;
+  font-size: 18px;
+  color: #333;
+}
+#collection .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell,
+#payment-wx .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell,
+#payment-zfb .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell {
+  height: 43px;
+}
+#collection .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__bd,
+#payment-wx .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__bd,
+#payment-zfb .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__bd {
+  width: 43px;
+}
+#collection .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__bd img,
+#payment-wx .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__bd img,
+#payment-zfb .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__bd img {
+  display: inline-block;
+  margin-right: 8px;
+  width: 28px;
+  height: 14px;
+  box-shadow: 0px 2px 5px #dbc6b5;
+}
+#collection .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__ft,
+#payment-wx .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__ft,
+#payment-zfb .js_dialog2 .weui-dialog__bd .weui-cells .weui-cell .weui-cell__ft {
+  color: #333;
+}
+#collection .js_dialog2 .wrap p,
+#payment-wx .js_dialog2 .wrap p,
+#payment-zfb .js_dialog2 .wrap p {
+  padding: 13px 0 12px;
+  font-size: 13px;
+  color: #999;
+}
+#collection .js_dialog2 .wrap .inputBoxContainer,
+#payment-wx .js_dialog2 .wrap .inputBoxContainer,
+#payment-zfb .js_dialog2 .wrap .inputBoxContainer {
+  width: 250px;
+  height: 42px;
+  margin: 0 auto;
+  position: relative;
+}
+#collection .js_dialog2 .wrap .inputBoxContainer .bogusInput,
+#payment-wx .js_dialog2 .wrap .inputBoxContainer .bogusInput,
+#payment-zfb .js_dialog2 .wrap .inputBoxContainer .bogusInput {
+  width: 100%;
+  height: 100%;
+  border: #eaeaea 1px solid;
+  overflow: hidden;
+  position: absolute;
+  z-index: 0;
+}
+#collection .js_dialog2 .wrap .inputBoxContainer .bogusInput input,
+#payment-wx .js_dialog2 .wrap .inputBoxContainer .bogusInput input,
+#payment-zfb .js_dialog2 .wrap .inputBoxContainer .bogusInput input {
+  padding: 0;
+  width: 16.6%;
+  height: 100%;
+  float: left;
+  border-radius: 0;
+  background: #ffffff;
+  text-align: center;
+  font-size: 20px;
+  border: none;
+  border-right: #eaeaea 2px solid;
+}
+#collection .js_dialog2 .wrap .inputBoxContainer .bogusInput input:last-child,
+#payment-wx .js_dialog2 .wrap .inputBoxContainer .bogusInput input:last-child,
+#payment-zfb .js_dialog2 .wrap .inputBoxContainer .bogusInput input:last-child {
+  border: none;
+}
+#collection .js_dialog2 .wrap .inputBoxContainer .realInput,
+#payment-wx .js_dialog2 .wrap .inputBoxContainer .realInput,
+#payment-zfb .js_dialog2 .wrap .inputBoxContainer .realInput {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  filter: alpha(opacity=0);
+  -moz-opacity: 0;
+  opacity: 0;
+}
+#collection .js_dialog2 .wrap .confirmButton,
+#payment-wx .js_dialog2 .wrap .confirmButton,
+#payment-zfb .js_dialog2 .wrap .confirmButton {
+  width: 240px;
+  height: 45px;
+  background: #f4f4f4;
+  border: #d5d5d5 1px solid;
+  display: block;
+  font-size: 16px;
+  margin: 30px auto;
+  margin-bottom: 20px;
+}
+#collection .js_dialog2 .wrap .showValue,
+#payment-wx .js_dialog2 .wrap .showValue,
+#payment-zfb .js_dialog2 .wrap .showValue {
+  width: 240px;
+  height: 22px;
+  line-height: 22px;
+  font-size: 16px;
+  text-align: center;
+  margin: 0 auto;
 }
 #collection .safe,
 #payment-wx .safe,

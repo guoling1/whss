@@ -8,7 +8,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡列表</title>
-    <link rel="stylesheet" href="../../css/style.1.0.0.css">
+    <link rel="stylesheet" href="../../css/style.2.0.2.css">
 </head>
 <body>
 <div id="memberList">
@@ -30,6 +30,6 @@
         </ul>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="../../js/2.0.1.1/memberList.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
+<script src="../../js/2.0.2/memberList.min.js"></script>
 </html>

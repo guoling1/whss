@@ -26,10 +26,10 @@ var mySwiper = new Swiper('.swiper-container', {
     slidesPerView: 1.25,
     centeredSlides: true,
     coverflow: {
-        rotate: 30,
-        stretch: 10,
-        depth: 60,
-        modifier: 2,
+        rotate: 0,
+        stretch: -40,
+        depth: 200,
+        modifier: 1,
         slideShadows : false
     },
     onInit: function(swiper){

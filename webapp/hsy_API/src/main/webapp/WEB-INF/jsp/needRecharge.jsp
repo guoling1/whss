@@ -12,7 +12,19 @@
         <br>
 
         <%--临时写的应该用ajax--%>
-        <a style="color:red;" href="<%=basePath%>membership/recharge?mid=${mid}&type=activate&source=${source}">继续开卡</a>
+        <a style="color:red;" id="recharge">继续开卡</a>
+        <%--<a style="color:red;" href="<%=basePath%>membership/recharge?mid=${mid}&type=activate&source=${source}">继续开卡</a>--%>
     </h1>
 </body>
+<script>
+    var pageData = {
+        type : 'activate',
+        source : '${source}',
+        mid　: '${appPolicyMember.id}'
+    }
+</script>
+<script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
+<script src="../../js/2.0.2/needRecharge.min.js"></script>
 </html>
