@@ -450,8 +450,17 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         this.record(order.getId());
         //会员账户增加
         this.memberAccountIncrease(order);
-        //TODO
-        //通知业务
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setSn(updateOrder.getSn());
+        callbackResponse.setSuccessTime(updateOrder.getPaySuccessTime());
+        callbackResponse.setTradeAmount(order.getTradeAmount());
+        callbackResponse.setPoundage(updateOrder.getPoundage());
+        callbackResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+        callbackResponse.setMessage(updateOrder.getRemark());
+        this.hsyTransactionService.handleRechargeCallbackMsg(callbackResponse);
     }
 
     /**
@@ -503,8 +512,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setStatus(EnumOrderStatus.RECHARGE_FAIL.getId());
         updateOrder.setRemark(paymentSdkPayCallbackResponse.getMessage());
         this.orderService.update(updateOrder);
-        //TODO
-        //通知业务
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setSn(updateOrder.getSn());
+        callbackResponse.setCode(EnumBasicStatus.FAIL.getId());
+        callbackResponse.setMessage(updateOrder.getRemark());
+        this.hsyTransactionService.handleRechargeCallbackMsg(callbackResponse);
     }
 
     /**
@@ -536,6 +551,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Transactional
     public void markRechargeHandling(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         this.orderService.updateRemark(order.getId(), paymentSdkPayCallbackResponse.getMessage());
+
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setCode(EnumBasicStatus.HANDLING.getId());
+        callbackResponse.setMessage("处理中");
+        this.hsyTransactionService.handleRechargeCallbackMsg(callbackResponse);
     }
 
     /**

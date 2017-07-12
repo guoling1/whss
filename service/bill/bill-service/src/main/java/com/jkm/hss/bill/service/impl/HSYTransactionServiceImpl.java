@@ -286,7 +286,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 amount = appPolicyRechargeOrder.getRealPayAmount();
                 payChannelSign = appPolicyRechargeOrder.getPayChannelSign();
                 uid = appPolicyRechargeOrder.getUid();
-                settleType = "T1";
+                settleType = appPolicyRechargeOrder.getSettleType();
             }
             final SplitProfitParams splitProfitParams = new SplitProfitParams();
             final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSY, orderNo,
