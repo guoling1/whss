@@ -161,7 +161,7 @@
       if(this.$route.query.level==2){
         this.$data.level = 2;
       }
-      this.$http.get('/admin/dealer/oem/'+'/'+this.$route.query.dealerId+'/'+this.$route.query.productId)
+      this.$http.get('/admin/dealer/oem/'+this.$route.query.dealerId+'/'+this.$route.query.productId)
         .then(function (res) {
           this.records = res.data;
           this.channels = res.data.product.channels;
