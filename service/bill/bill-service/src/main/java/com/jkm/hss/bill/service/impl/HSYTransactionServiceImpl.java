@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
+import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
@@ -22,10 +23,12 @@ import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
+import com.jkm.hsy.user.constant.OrderStatus;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.entity.AppPolicyRechargeOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +51,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
 
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private HsyOrderDao hsyOrderDao;
     @Autowired
     private PushService pushService;
     @Autowired
@@ -184,6 +190,28 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         log.error("交易回调业务，返回状态码[{}]异常", callbackResponse.getCode());
                         break;
                 }
+            }
+        }
+    }
+
+    @Transactional
+    public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse) {
+        List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getTradeOrderNo());
+        AppPolicyRechargeOrder appPolicyRechargeOrder=rechargeOrderList.get(0);
+        if(appPolicyRechargeOrder.getStatus()== OrderStatus.NEED_RECHARGE.key)
+        {
+            EnumBasicStatus status = EnumBasicStatus.of(callbackResponse.getCode());
+            AppPolicyRechargeOrder appPolicyRechargeOrderUpdate=new AppPolicyRechargeOrder();
+            switch (status) {
+                case SUCCESS:
+                    break;
+                case FAIL:
+                    break;
+                case HANDLING:
+                    break;
+                default:
+                    log.error("交易回调业务，返回状态码[{}]异常", callbackResponse.getCode());
+                    break;
             }
         }
     }
