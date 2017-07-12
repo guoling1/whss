@@ -20,7 +20,7 @@ JAVA_OPTIONS="-server -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Xms512m -X
 JAVA_OPTIONS="$JAVA_OPTIONS -XX:+UseParallelGC -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC"
 
 # main class
-JAVA_OPTIONS="$JAVA_OPTIONS com.jkm.xjd.chronos.Startup"
+JAVA_OPTIONS="$JAVA_OPTIONS com.jkm.chronos.Startup"
 
 nohup java -classpath $CLASS_PATH $JAVA_OPTIONS > $LOGDIR/chronos.out 2>&1 &
 
