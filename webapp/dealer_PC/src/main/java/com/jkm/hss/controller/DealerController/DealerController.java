@@ -784,13 +784,13 @@ public class DealerController extends BaseController {
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
                 channel.setSettleType(dealerChannelRateOptional.get().getDealerBalanceType());
                 channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMaxPaymentSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                 channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerTradeRate().toPlainString());
-                channel.setMaxWithdrawSettleFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
                 channel.setMinMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+                Optional<ProductChannelDetail> productChannelDetailOptional = productChannelDetailService.selectRateByProductIdAndChannelTypeSign(product.getId(),dealerChannelRate.getChannelTypeSign());
+                channel.setMaxMerchantSettleRate((productChannelDetailOptional.get().getProductMerchantPayRate().add(product.getLimitPayFeeRate())).multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMaxMerchantWithdrawFee((productChannelDetailOptional.get().getProductMerchantPayRate().add(product.getLimitWithdrawFeeRate())).toPlainString());
 
-                channel.setMaxMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-//                channel.setMaxMerchantWithdrawFee(dealerChannelRate.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate()).toPlainString());
                 channels.add(channel);
             }
             firstDealerProductDetailResponse.setProduct(productResponse);
@@ -823,8 +823,11 @@ public class DealerController extends BaseController {
                 channel.setSettleType(dealerChannelDetail.getDealerBalanceType());
                 channel.setMinPaymentSettleRate(dealerChannelDetail.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                 channel.setMinWithdrawSettleFee(dealerChannelDetail.getDealerWithdrawFee().toPlainString());
-                channel.setMaxMerchantSettleRate(dealerChannelDetail.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMaxMerchantWithdrawFee(dealerChannelDetail.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMinMerchantSettleRate(dealerChannelDetail.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                Optional<ProductChannelDetail> productChannelDetailOptional = productChannelDetailService.selectRateByProductIdAndChannelTypeSign(product.getId(),dealerChannelDetail.getChannelTypeSign());
+                channel.setMaxMerchantSettleRate((productChannelDetailOptional.get().getProductMerchantPayRate().add(product.getLimitPayFeeRate())).multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinMerchantWithdrawFee(dealerChannelDetail.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMaxMerchantWithdrawFee((productChannelDetailOptional.get().getProductMerchantPayRate().add(product.getLimitWithdrawFeeRate())).toPlainString());
                 channels.add(channel);
             }
             firstDealerProductDetailResponse.setProduct(productResponse);
@@ -900,7 +903,7 @@ public class DealerController extends BaseController {
     }
 
     /**
-     * 新增或添加分公司好收收配置
+     * 新增或添加分公司一级代理商
      *
      * @param request
      * @return
@@ -920,11 +923,11 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "产品不存在");
             }
             final Product product = productOptional.get();
-            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
-            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
-                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),product.getId());
+            final Map<Integer, DealerChannelRate> integerProductChannelDetailImmutableMap =
+                    Maps.uniqueIndex(channelRates, new Function<DealerChannelRate, Integer>() {
                         @Override
-                        public Integer apply(ProductChannelDetail input) {
+                        public Integer apply(DealerChannelRate input) {
                             return input.getChannelTypeSign();
                         }
                     });
@@ -935,7 +938,20 @@ public class DealerController extends BaseController {
                     return commonResponse;
                 }
             }
-            this.dealerService.addOrUpdateHssOem(request);
+
+            if(dealerOptional.get().getLevel()==1&&request.getRecommendBtn()==EnumRecommendBtn.ON.getId()){
+                List<OemAddOrUpdateRequest.DealerUpgradeRate> dealerUpgradeRateParams = request.getDealerUpgerdeRates();
+                for (OemAddOrUpdateRequest.DealerUpgradeRate dealerUpgradeRateParam : dealerUpgradeRateParams) {
+                    final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgradeRateParam);
+                    if (1 != commonResponse.getCode()) {
+                        return commonResponse;
+                    }
+                }
+                if(request.getRecommendBtn()!= EnumRecommendBtn.ON.getId()&&request.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
+                    return CommonResponse.simpleResponse(-1, "推荐人开关参数有误");
+                }
+            }
+            this.dealerService.addOrUpdateOemFirstDealer(request);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "操作成功")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){
@@ -943,9 +959,31 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
     }
-
+    private CommonResponse checkDealerUpgerdeRate(final OemAddOrUpdateRequest.DealerUpgradeRate dealerUpgerdeRateParam) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
+            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getOemShareRate())) {
+            return CommonResponse.simpleResponse(-1, "分公司分润比例不能为空");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
+            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
+        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
+            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
+        }
+        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
+        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
+        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
+        BigDecimal b4 = new BigDecimal(dealerUpgerdeRateParam.getOemShareRate());
+        BigDecimal b = b1.add(b2).add(b3).add(b4);
+        if (b.compareTo(new BigDecimal("1"))!=0) {
+            return CommonResponse.simpleResponse(-1, "金开门，分公司，一级代理，二级代理的比例之和必须等于100%");
+        }
+        return CommonResponse.simpleResponse(1, "");
+    }
     private CommonResponse checkChannel(final OemAddOrUpdateRequest.Channel paramChannel,
-                                        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
+                                        final Map<Integer, DealerChannelRate> integerProductChannelDetailImmutableMap,
                                         final Product product) {
         if (org.apache.commons.lang3.StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
             return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
@@ -959,30 +997,33 @@ public class DealerController extends BaseController {
         if (org.apache.commons.lang3.StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
             return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
         }
-        final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(paramChannel.getChannelType());
-        final BigDecimal merchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+        final DealerChannelRate dealerChannelRate = integerProductChannelDetailImmutableMap.get(paramChannel.getChannelType());
         Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(paramChannel.getChannelType());
         if(!basicChannelOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "没有"+paramChannel.getChannelType()+"通道基础配置");
         }
-        if (merchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-        }
-        final BigDecimal merchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-        if (merchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-        }
         final BigDecimal paymentSettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
                 .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-        if (paymentSettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                || paymentSettleRate.compareTo(merchantSettleRate) > 0) {
-            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+        if (paymentSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) < 0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的支付结算费率：一级代理商的必须大于等于分公司的");
         }
         final BigDecimal withdrawSettleFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-        if (withdrawSettleFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                || withdrawSettleFee.compareTo(merchantWithdrawFee) > 0) {
-            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+        if (withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) < 0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的提现结算费用：一级代理商的必须大于等于分公司的");
+        }
+        final BigDecimal merchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+
+        Optional<ProductChannelDetail> productChannelDetailOptional = productChannelDetailService.selectRateByProductIdAndChannelTypeSign(product.getId(),paramChannel.getChannelType());
+        if (merchantSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) < 0||
+                merchantSettleRate.compareTo(productChannelDetailOptional.get().getProductMerchantPayRate().add(product.getLimitPayFeeRate()))>0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的商户支付结算费率：一级代理商的必须大于等于分公司的小于【产品的支付手续费鱼加价限额的和】");
+        }
+
+        final BigDecimal merchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+        if (merchantWithdrawFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee())<0||
+                merchantWithdrawFee.compareTo(productChannelDetailOptional.get().getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate()))>0) {
+            return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
         }
         return CommonResponse.simpleResponse(1, "");
     }

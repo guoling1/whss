@@ -54,16 +54,10 @@ public class FirstDealerProductDetailResponse {
          * 通道名称
          */
         private String channelName;
-
-
         /**
          * 最小支付结算手续费
          */
         private String minPaymentSettleRate;
-        /**
-         * 最大支付结算手续费
-         */
-        private String maxPaymentSettleRate;
         /**
          * 支付结算手续费
          */
@@ -79,10 +73,6 @@ public class FirstDealerProductDetailResponse {
          * 最小提现结算费
          */
         private String minWithdrawSettleFee;
-        /**
-         * 最大提现结算费
-         */
-        private String maxWithdrawSettleFee;
         /**
          * 提现结算费
          */
@@ -108,5 +98,9 @@ public class FirstDealerProductDetailResponse {
          * 最大商户提现手续费
          */
         private String maxMerchantWithdrawFee;
+        /**
+         * 最小商户提现手续费
+         */
+        private String minMerchantWithdrawFee;
     }
 }

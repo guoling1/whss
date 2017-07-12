@@ -2232,9 +2232,34 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     @Transactional
-    public void addOrUpdateHssOem(final OemAddOrUpdateRequest request) {
+    public void addOrUpdateOemFirstDealer(final OemAddOrUpdateRequest request) {
         final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
         final Dealer dealer = dealerOptional.get();
+        dealer.setRecommendBtn(request.getRecommendBtn());
+        dealer.setInviteBtn(EnumRecommendBtn.OFF.getId());
+        for(int i=0;i<request.getDealerProfits().size();i++){
+            Optional<DealerProfit> dealerProfitOptional = dealerProfitService.selectByDealerIdAndProductIdAndChannelTypeSign(request.getDealerId(),
+                    request.getProduct().getProductId(),request.getDealerProfits().get(i).getChannelTypeSign());
+            if(dealerProfitOptional.isPresent()){
+                DealerProfit dealerProfit = dealerProfitOptional.get();
+                if(dealerProfit.getProfitSpace()!=null){
+                    dealerProfit.setProfitSpace((request.getDealerProfits().get(i).getProfitSpace()).divide(new BigDecimal("100")));
+                }
+                dealerProfit.setStatus(EnumDealerStatus.NORMAL.getId());
+                dealerProfitService.update(dealerProfit);
+            }else{
+                DealerProfit dealerProfit = new DealerProfit();
+                if(request.getDealerProfits().get(i).getProfitSpace()!=null){
+                    dealerProfit.setProfitSpace(request.getDealerProfits().get(i).getProfitSpace().divide(new BigDecimal("100")));
+                }
+                dealerProfit.setChannelTypeSign(request.getDealerProfits().get(i).getChannelTypeSign());
+                dealerProfit.setDealerId(request.getDealerId());
+                dealerProfit.setProductId(request.getProduct().getProductId());
+                dealerProfit.setStatus(EnumDealerStatus.NORMAL.getId());
+                dealerProfitService.insert(dealerProfit);
+            }
+        }
+        this.updateRecommendBtn(dealer);
         final OemAddOrUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
         final List<OemAddOrUpdateRequest.Channel> channels = product.getChannels();
@@ -2264,6 +2289,36 @@ public class DealerServiceImpl implements DealerService {
             }
 
         }
+        final List<OemAddOrUpdateRequest.DealerUpgradeRate> dealerUpgradeRates =request.getDealerUpgerdeRates();
+        if(dealerUpgradeRates.size()>0){
+            for(OemAddOrUpdateRequest.DealerUpgradeRate dealerUpgradeRate:dealerUpgradeRates){
+                if(dealerUpgradeRate.getId()>0){//修改
+                    DealerUpgerdeRate du = new DealerUpgerdeRate();
+                    du.setId(dealerUpgradeRate.getId());
+                    du.setProductId(productId);
+                    du.setType(dealerUpgradeRate.getType());
+                    du.setDealerId(dealerUpgradeRate.getDealerId());
+                    du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getFirstDealerShareProfitRate()));
+                    du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getSecondDealerShareProfitRate()));
+                    du.setBossDealerShareRate(new BigDecimal(dealerUpgradeRate.getBossDealerShareRate()));
+                    du.setOemShareRate(new BigDecimal(dealerUpgradeRate.getOemShareRate()));
+                    du.setStatus(EnumDealerStatus.NORMAL.getId());
+                    this.dealerUpgerdeRateService.update(du);
+                }else{//新增
+                    DealerUpgerdeRate du = new DealerUpgerdeRate();
+                    du.setProductId(productId);
+                    du.setType(dealerUpgradeRate.getType());
+                    du.setDealerId(dealerUpgradeRate.getDealerId());
+                    du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getFirstDealerShareProfitRate()));
+                    du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getSecondDealerShareProfitRate()));
+                    du.setBossDealerShareRate(new BigDecimal(dealerUpgradeRate.getBossDealerShareRate()));
+                    du.setOemShareRate(new BigDecimal(dealerUpgradeRate.getOemShareRate()));
+                    du.setStatus(EnumDealerStatus.NORMAL.getId());
+                    this.dealerUpgerdeRateService.insert(du);
+                }
+            }
+        }
+
 
     }
 
