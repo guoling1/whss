@@ -142,42 +142,7 @@
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT id,
-        ordernumber,
-        shopid,
-        shopname,
-        merchant_no,
-        merchantname,
-        order_no,
-        order_id,
-        orderstatus,
-        sourcetype,
-        validationcode,
-        amount,
-        poundage,
-        qrcode,
-        cashierid,
-        cashiername,
-        pay_sn,
-        pay_type,
-        pay_channel_sign,
-        pay_success_time,
-        refund_amount,
-        refund_status,
-        refund_time,
-        goods_name,
-        goods_describe,
-        authCode,
-        realAmount,
-        uid,
-        accountid,
-        dealerid,
-        remark,
-        create_time,
-        update_time
-        FROM tb_hsy_order
-        WHERE id = #{id}
-        ;
+        SELECT * FROM tb_hsy_order WHERE id = #{id}
     </select>
 
     <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.HsyOrder">
