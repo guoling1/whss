@@ -1,10 +1,13 @@
 package com.jkm.hss.bill.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.WithdrawParams;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
@@ -16,6 +19,7 @@ import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,7 +37,7 @@ public interface OrderService {
      *
      * @param order
      */
-    void add(Order order);
+    long add(Order order);
 
     /**
      * 创建提现单
@@ -660,6 +664,28 @@ public interface OrderService {
      * @return
      */
     String getAmountCountBranch1(OrderTradeRequest req);
+
+    /**
+     * 获取支付成功
+     * @param count
+     * @param status
+     * @return
+     */
+    List<Order> selectOrderListByCount(long accountId, int count, EnumOrderStatus status, String payTime);
+
+    /**
+     * D0提现
+     * @param account
+     * @return
+     */
+    JSONObject d0WithDrawImpl(Account account, long userId);
+
+    /**
+     * 确认提现
+     * @param withDrawOrderId
+     * @return
+     */
+    Pair<Integer, String> confirmWithdraw(long withDrawOrderId);
 
     /**
      * 查询交易详情

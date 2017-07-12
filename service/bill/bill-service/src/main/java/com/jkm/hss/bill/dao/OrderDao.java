@@ -2,6 +2,7 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -27,7 +28,7 @@ public interface OrderDao {
      *
      * @param order
      */
-    void insert(Order order);
+    long insert(Order order);
 
     /**
      * 更新
@@ -666,4 +667,7 @@ public interface OrderDao {
     int markOrder2SettlementIngBySettleChannel(@Param("settleDate") Date settleDate, @Param("accountId") long accountId,
                                                @Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus,
                                                @Param("upperChannel") int upperChannel, @Param("settleChannel") int settleChannel);
+
+    List<Order> selectOrderListByCount(@Param("accountId") long accountId, @Param("count") int count,
+                                       @Param("status") int status, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
 }
