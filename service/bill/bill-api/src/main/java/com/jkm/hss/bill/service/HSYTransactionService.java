@@ -46,6 +46,11 @@ public interface HSYTransactionService {
     void paySplitProfit(long consumeMsgSplitProfitRecordId);
 
     /**
+     * 对于
+     */
+    void handleRetrySplitProfitTask();
+
+    /**
      * 退款
      *
      * @param paramData

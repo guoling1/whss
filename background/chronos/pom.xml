@@ -76,6 +76,14 @@
             <artifactId>hss-common-util-spring</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-notifier-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-notifier-service</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

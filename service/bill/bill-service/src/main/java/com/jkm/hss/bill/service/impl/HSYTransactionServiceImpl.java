@@ -275,6 +275,11 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         }
     }
 
+    @Override
+    public void handleRetrySplitProfitTask() {
+
+    }
+
     /**
      * {@inheritDoc}
      *
