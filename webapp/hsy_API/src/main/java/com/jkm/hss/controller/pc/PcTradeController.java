@@ -178,6 +178,7 @@ public class PcTradeController extends BaseController {
                 jo.put("canRefund", 0);
             }
             jo.put("tradeAmount", hsyOrder.getAmount());
+            jo.put("totalAmount", hsyOrder.getRealAmount());
             jo.put("validationCode", hsyOrder.getValidationcode());
             jo.put("orderStatus", hsyOrder.getOrderstatus());
             jo.put("orderStatusValue", EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
@@ -185,11 +186,13 @@ public class PcTradeController extends BaseController {
             jo.put("payChannel", hsyOrder.getPaymentChannel());
             jo.put("payChannelValue", EnumPaymentChannel.of(hsyOrder.getPaymentChannel()));
             jo.put("createTime", hsyOrder.getCreateTime());
+            jo.put("paySuccessTime", hsyOrder.getPaysuccesstime());
             jo.put("orderNo", hsyOrder.getOrdernumber());
             jo.put("tradeOrderNo", hsyOrder.getOrderno());
             jo.put("orderId", hsyOrder.getId());
             jo.put("shopName", hsyOrder.getShopname());
             jo.put("cashierName", hsyOrder.getCashiername());
+            jo.put("discountAmount", "0.00");
         }
         pageModel.setCount(count);
         pageModel.setRecords(records);
