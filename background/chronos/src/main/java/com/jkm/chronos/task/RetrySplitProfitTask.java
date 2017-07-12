@@ -1,6 +1,6 @@
 package com.jkm.chronos.task;
 
-import com.jkm.hss.notifier.service.SendMqMsgService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class RetrySplitProfitTask extends AbstractTask {
 
     @Autowired
-    private SendMqMsgService sendMqMsgService;
+    private HSYTransactionService hsyTransactionService;
 
     public RetrySplitProfitTask() {
         setName("重发分润任务");
@@ -22,8 +22,8 @@ public class RetrySplitProfitTask extends AbstractTask {
 
 
     @Override
-    protected void run() {
-
+    protected void run() throws InterruptedException {
+        this.hsyTransactionService.handleRetrySplitProfitTask();
     }
 
     /**
