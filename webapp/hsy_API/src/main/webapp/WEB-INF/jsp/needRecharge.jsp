@@ -20,7 +20,7 @@
     var pageData = {
         type : 'activate',
         source : '${source}',
-        mid　: '${appPolicyMember.id}'
+        mid　: '${mid}'
     }
 </script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>

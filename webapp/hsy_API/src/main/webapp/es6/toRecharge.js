@@ -37,10 +37,11 @@ let onAlipayJSBridge = function (jsonData) {
         });
 };
 recharge.addEventListener('click',function () {
+
     let keyCtrl = pageData.source;
     if ( keyCtrl ) {
         switch ( keyCtrl ) {
-            case 'wx':
+            case 'WX':
                 if(price.value > 0){
                     message.load_show('正在支付');
                     http.post_form('/membership/recharge',{
@@ -58,7 +59,7 @@ recharge.addEventListener('click',function () {
                     message.prompt_show('请输入正确的支付金额');
                 }
                 break;
-            case 'zfb':
+            case 'ZFB':
                 if(price.value > 0){
                     message.load_show('正在支付');
                     http.post_form('/membership/recharge',{
