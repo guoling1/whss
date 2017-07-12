@@ -1470,8 +1470,8 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         if(checkMerchantInfoRequest.getChannelTypeSign()==EnumPayChannelSign.MB_UNIONPAY_DO.getId()){
-            boolean b = DateUtil.isInDate(new Date(),"13:30:00","22:25:00");
-            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在13:30至22:25使用");
+            boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
+            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在09:00至22:25使用");
         }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
