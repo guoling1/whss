@@ -91,7 +91,7 @@ public class OemHssResponse {
     /**
      * 合伙人推荐分润
      */
-    private List<OemHssResponse.DealerUpgerdeRate> dealerUpgerdeRates;
+    private List<DealerUpgerdeRate> dealerUpgerdeRates;
     @Data
     public  class DealerUpgerdeRate {
         /**
