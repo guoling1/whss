@@ -1,6 +1,6 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.constant.Page;
+import com.jkm.base.common.util.Page;
 import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

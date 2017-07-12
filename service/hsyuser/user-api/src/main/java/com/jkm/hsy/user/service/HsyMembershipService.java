@@ -1,6 +1,6 @@
 package com.jkm.hsy.user.service;
 
-import com.jkm.hsy.user.constant.Page;
+import com.jkm.base.common.util.Page;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 

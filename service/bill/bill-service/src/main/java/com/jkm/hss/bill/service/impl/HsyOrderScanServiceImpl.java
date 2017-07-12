@@ -1,6 +1,8 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.google.gson.*;
+import com.jkm.base.common.util.Page;
+import com.jkm.base.common.util.PageUtils;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
@@ -19,8 +21,6 @@ import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
-import com.jkm.hsy.user.constant.Page;
-import com.jkm.hsy.user.constant.PageUtils;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
