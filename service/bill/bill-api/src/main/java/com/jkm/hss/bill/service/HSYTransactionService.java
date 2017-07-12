@@ -48,7 +48,7 @@ public interface HSYTransactionService {
     /**
      * 对于
      */
-    void handleRetrySplitProfitTask() throws InterruptedException;
+    void handleRetrySplitProfitTask();
 
     /**
      * 退款

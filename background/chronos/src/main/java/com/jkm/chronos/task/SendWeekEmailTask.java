@@ -23,7 +23,7 @@ public class SendWeekEmailTask extends AbstractTask {
 
 
     @Override
-    protected void run() throws InterruptedException {
+    protected void run() {
         this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
     }
 

@@ -281,14 +281,18 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
      * {@inheritDoc}
      */
     @Override
-    public void handleRetrySplitProfitTask() throws InterruptedException {
+    public void handleRetrySplitProfitTask() {
         final List<ConsumeMsgSplitProfitRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
         log.info("处理重发分润任务，个数[{}]", records.size());
         if (!CollectionUtils.isEmpty(records)) {
             for (int i = 0; i < records.size(); i++) {
                 this.paySplitProfit(records.get(i).getId());
 
-                Thread.sleep(5000);
+                try {
+                    Thread.sleep(5000);
+                } catch (final Throwable e) {
+                    log.error("处理重发分润任务异常", e);
+                }
             }
         }
     }

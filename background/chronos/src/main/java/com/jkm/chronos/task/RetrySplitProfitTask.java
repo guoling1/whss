@@ -22,7 +22,7 @@ public class RetrySplitProfitTask extends AbstractTask {
 
 
     @Override
-    protected void run() throws InterruptedException {
+    protected void run() {
         this.hsyTransactionService.handleRetrySplitProfitTask();
     }
 
