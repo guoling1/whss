@@ -226,6 +226,7 @@ public class PcTradeController extends BaseController {
             }
             statisticsOrderResponse.getDetails().addAll(detailMap.values());
         }
+        log.info("[{}]", statisticsOrderResponse);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", statisticsOrderResponse);
     }
 
