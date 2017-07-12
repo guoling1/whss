@@ -140,4 +140,5 @@ public interface HsyOrderDao {
     public Integer findConsumeOrderListByPageCount(HsyOrder entity);
     public List<HsyOrder> findConsumeOrderInfo(@Param("id")Long id);
     public List<AppPolicyRechargeOrder> findRechargeOrderInfoByOrderNO(@Param("orderNO")String orderNO);
+    public List<AppPolicyRechargeOrder> findRechargeOrderInfoByID(@Param("id")Long id);
 }

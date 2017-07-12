@@ -373,13 +373,20 @@
 
     <select id="findRechargeOrderInfoByOrderNO"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
         select
-        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.TYPE,
+        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEID,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.PAYEEACCOUNTID,rorder.OUID,rorder.MEMBERID,rorder.MEMBERACCOUNTID,rorder.CID,rorder.MCID,rorder.UID,rorder.MERCHANTRECEIVEACCOUNTID,rorder.GOODSNAME,rorder.GOODSDESCRIBE,rorder.MERCHANTNAME,rorder.MERCHANTNO,rorder.PAYSN,rorder.PAYCHANNELSIGN,rorder.PAYSUCCESSTIME,rorder.STATUS,rorder.TYPE,rorder.SOURCE,rorder.POUNDAGE,rorder.REMARK,
         (case when rorder.TYPE=1 then '开卡充值'
         when rorder.TYPE=2 then '开卡送'
         when rorder.TYPE=3 then '充值'
         when rorder.TYPE=4 then '充值送' else '' end) TYPENAME,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
         from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
         where rorder.ORDERNO=#{orderNO}
+    </select>
+
+    <select id="findRechargeOrderInfoByID"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+          ID,ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,POUNDAGE,REMARK,SETTLETYPE,CREATETIME,UPDATETIME
+        from app_policy_recharge_order
+        where ID=#{id}
     </select>
 
 </mapper>

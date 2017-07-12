@@ -37,6 +37,12 @@ public interface HSYTransactionService {
      * @param callbackResponse
      */
     void handlePayCallbackMsg(CallbackResponse callbackResponse);
+    /**
+     * 充值回调
+     *
+     * @param callbackResponse
+     */
+    public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse);
 
     /**
      * 支付消息分润

@@ -5,6 +5,7 @@
         insert into tb_consume_msg_split_profit_record
         (
         hsy_order_id,
+        hsy_recharge_order_id,
         request_param,
         tag,
         status
@@ -12,6 +13,7 @@
         values
         (
         #{hsyOrderId},
+        #{hsyRechargeOrderId},
         #{requestParam},
         #{tag},
         #{status}
