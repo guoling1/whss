@@ -1471,7 +1471,7 @@ public class WxPubController extends BaseController {
         }
         if(checkMerchantInfoRequest.getChannelTypeSign()==EnumPayChannelSign.MB_UNIONPAY_DO.getId()){
             boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
-            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在9:00至22:25使用");
+            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在09:00至22:25使用");
         }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
