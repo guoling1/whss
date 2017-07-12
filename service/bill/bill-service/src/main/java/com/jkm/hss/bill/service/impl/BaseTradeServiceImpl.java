@@ -219,7 +219,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             memberAccountFlow.setRemark("消费减少");
             this.memberAccountFlowService.add(memberAccountFlow);
             //商户收会员款账户增加
-            this.receiptMemberMoneyAccountService.increaseIncomeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount().subtract(order.getPoundage()));
+            this.receiptMemberMoneyAccountService.increaseIncomeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount());
             //商户收会员款账户增加-添加流水
             final ReceiptMemberMoneyAccountFlow receiptMemberMoneyAccountFlow = new ReceiptMemberMoneyAccountFlow();
             receiptMemberMoneyAccountFlow.setAccountId(receiptMemberMoneyAccount.getId());
