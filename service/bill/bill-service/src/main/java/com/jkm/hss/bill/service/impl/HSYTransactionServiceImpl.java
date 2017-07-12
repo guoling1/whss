@@ -24,6 +24,7 @@ import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.OrderStatus;
+import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +55,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private HsyOrderDao hsyOrderDao;
+    @Autowired
+    private HsyMembershipDao hsyMembershipDao;
     @Autowired
     private PushService pushService;
     @Autowired
@@ -202,12 +206,41 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         {
             EnumBasicStatus status = EnumBasicStatus.of(callbackResponse.getCode());
             AppPolicyRechargeOrder appPolicyRechargeOrderUpdate=new AppPolicyRechargeOrder();
+            Date date=new Date();
             switch (status) {
                 case SUCCESS:
+                    appPolicyRechargeOrderUpdate.setId(appPolicyRechargeOrder.getId());
+                    appPolicyRechargeOrderUpdate.setStatus(OrderStatus.RECHARGE_SUCCESS.key);
+                    appPolicyRechargeOrderUpdate.setPoundage(callbackResponse.getPoundage());
+                    appPolicyRechargeOrderUpdate.setPaySN(callbackResponse.getSn());
+                    appPolicyRechargeOrderUpdate.setPaySuccessTime(callbackResponse.getSuccessTime());
+                    appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
+                    appPolicyRechargeOrderUpdate.setUpdateTime(date);
+                    hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
+//                    //生成分润消息记录
+//                    final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
+//                    consumeMsgSplitProfitRecord.setHsyOrderId(appPolicyRechargeOrder.getId());
+//                    consumeMsgSplitProfitRecord.setRequestParam("");
+//                    consumeMsgSplitProfitRecord.setTag(MqConfig.SPLIT_PROFIT);
+//                    consumeMsgSplitProfitRecord.setStatus(EnumConsumeMsgSplitProfitRecordStatus.PENDING_SEND.getId());
+//                    final long consumeMsgSplitProfitRecordId = this.sendMqMsgService.add(consumeMsgSplitProfitRecord);
+//                    //发消息分润
+//                    final JSONObject requestJsonObject = new JSONObject();
+//                    requestJsonObject.put("consumeMsgSplitProfitRecordId", consumeMsgSplitProfitRecordId);
+//                    MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 20000);
                     break;
                 case FAIL:
+                    appPolicyRechargeOrderUpdate.setId(appPolicyRechargeOrder.getId());
+                    appPolicyRechargeOrderUpdate.setStatus(OrderStatus.RECHARGE_FAIL.key);
+                    appPolicyRechargeOrderUpdate.setPaySN(callbackResponse.getSn());
+                    appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
+                    appPolicyRechargeOrderUpdate.setUpdateTime(date);
+                    hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
                     break;
                 case HANDLING:
+                    appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
+                    appPolicyRechargeOrderUpdate.setUpdateTime(date);
+                    hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
                     break;
                 default:
                     log.error("交易回调业务，返回状态码[{}]异常", callbackResponse.getCode());

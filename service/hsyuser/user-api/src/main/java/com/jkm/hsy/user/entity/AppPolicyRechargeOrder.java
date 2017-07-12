@@ -31,6 +31,8 @@ public class AppPolicyRechargeOrder {
     private String paySN;//流水号
     private Integer payChannelSign;//支付渠道标识
     private Date paySuccessTime;//支付完成时间
+    private BigDecimal poundage;//手续费
+    private String remark;//提示
     private Integer status;//状态 0待充值 1充值成功 2充值失败
     private Integer type;//类型 1开卡充值 2开卡送 3 充值 4充值送
     private String source;//来源wechat alipay
@@ -279,5 +281,21 @@ public class AppPolicyRechargeOrder {
 
     public void setConsumerCellphone(String consumerCellphone) {
         this.consumerCellphone = consumerCellphone;
+    }
+
+    public BigDecimal getPoundage() {
+        return poundage;
+    }
+
+    public void setPoundage(BigDecimal poundage) {
+        this.poundage = poundage;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
