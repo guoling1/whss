@@ -32,5 +32,5 @@ public abstract class AbstractTask extends AbstractSimpleElasticJob {
     /**
      * 定时器任务
      */
-    protected abstract void run();
+    protected abstract void run() throws InterruptedException;
 }
