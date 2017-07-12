@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-		 id,	product_id,type,dealer_id,	first_dealer_share_profit_rate,	second_dealer_share_profit_rate,	boss_dealer_share_rate,	status,	create_time,	update_time
+		 id,	product_id,type,dealer_id,	first_dealer_share_profit_rate,	second_dealer_share_profit_rate,	boss_dealer_share_rate,oem_share_rate,	status,	create_time,	update_time
 	</sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -29,6 +29,9 @@
             <if test="bossDealerShareRate != null">
                 boss_dealer_share_rate,
             </if>
+            <if test="oemShareRate != null">
+                oem_share_rate,
+            </if>
             <if test="status != null">
                 status,
             </if>
@@ -51,6 +54,9 @@
             </if>
             <if test="bossDealerShareRate!=null">
                 #{bossDealerShareRate},
+            </if>
+            <if test="oemShareRate!=null">
+                #{oemShareRate},
             </if>
             <if test="status!=null">
                 #{status},
@@ -79,6 +85,9 @@
             </if>
             <if test="bossDealerShareRate != null">
                 boss_dealer_share_rate = #{bossDealerShareRate},
+            </if>
+            <if test="oemShareRate != null">
+                oem_share_rate = #{oemShareRate},
             </if>
             <if test="status != null">
                 status = #{status},
@@ -112,7 +121,7 @@
         WHERE status = 1 and dealer_id = #{dealerId} and product_id = #{productId};
     </select>
     <select id="selectByDealerIdAndTypeAndProductId" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
-        SELECT * FROM tb_dealer_upgrade_rate WHERE  status = 1 and dealer_id = #{dealerId} and product_id = #{productId} AND type = #{type};
+        SELECT <include refid="Base_Column_List" /> FROM tb_dealer_upgrade_rate WHERE  status = 1 and dealer_id = #{dealerId} and product_id = #{productId} AND type = #{type};
     </select>
 
 </mapper>

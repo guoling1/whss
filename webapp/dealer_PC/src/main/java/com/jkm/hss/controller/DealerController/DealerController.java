@@ -755,7 +755,6 @@ public class DealerController extends BaseController {
         if (!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
-        final Dealer dealer = dealerOptional.get();
         final FirstDealerProductDetailResponse firstDealerProductDetailResponse = new FirstDealerProductDetailResponse();
         if(request.getProductId()>0){//修改
             Optional<Product> productOptional = this.productService.selectById(request.getProductId());
@@ -763,7 +762,8 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "产品不存在");
             }
             final Product product = productOptional.get();
-            final List<ProductChannelDetail> channelRates = this.productChannelDetailService.selectByProductId(product.getId());
+            //根据产品查找产品详情
+            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),product.getId());
             if(channelRates.size()==0){
                 return CommonResponse.simpleResponse(-1, "您的产品信息尚未完善");
             }
@@ -772,22 +772,25 @@ public class DealerController extends BaseController {
             productResponse.setProductName(productOptional.get().getProductName());
             final List<FirstDealerProductDetailResponse.Channel> channels = new ArrayList<>();
             productResponse.setChannels(channels);
-            for (ProductChannelDetail productChannelDetail:channelRates) {
+            for (DealerChannelRate dealerChannelRate:channelRates) {
                 final FirstDealerProductDetailResponse.Channel channel = new FirstDealerProductDetailResponse.Channel();
-                Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(request.getDealerId(),product.getId(),productChannelDetail.getChannelTypeSign());
+                Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(request.getDealerId(),product.getId(),dealerChannelRate.getChannelTypeSign());
                 channel.setPaymentSettleRate(dealerChannelRateOptional.get().getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                 channel.setWithdrawSettleFee(dealerChannelRateOptional.get().getDealerWithdrawFee().toPlainString());
                 channel.setMerchantSettleRate(dealerChannelRateOptional.get().getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                 channel.setMerchantWithdrawFee(dealerChannelRateOptional.get().getDealerMerchantWithdrawFee().toPlainString());
-                channel.setChannelType(productChannelDetail.getChannelTypeSign());
-                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
+                channel.setChannelType(dealerChannelRateOptional.get().getChannelTypeSign());
+                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
-                channel.setSettleType(productChannelDetail.getProductBalanceType());
-                channel.setMinPaymentSettleRate(productChannelDetail.getProductTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMinWithdrawSettleFee(productChannelDetail.getProductWithdrawFee().toPlainString());
-                channel.setMaxMerchantSettleRate(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate()).multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMaxMerchantWithdrawFee(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate()).toPlainString());
+                channel.setSettleType(dealerChannelRateOptional.get().getDealerBalanceType());
+                channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMaxPaymentSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerTradeRate().toPlainString());
+                channel.setMaxWithdrawSettleFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMinMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
 
+                channel.setMaxMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+//                channel.setMaxMerchantWithdrawFee(dealerChannelRate.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate()).toPlainString());
                 channels.add(channel);
             }
             firstDealerProductDetailResponse.setProduct(productResponse);
@@ -796,8 +799,6 @@ public class DealerController extends BaseController {
                 tempTypeName = "好收银";
             }
             firstDealerProductDetailResponse.setProductName(tempTypeName);
-//            firstDealerProductDetailResponse.setInviteCode(dealer.getInviteCode());
-//            firstDealerProductDetailResponse.setInviteBtn(dealer.getInviteBtn());
         }else{//新增
             Optional<Product> productOptional = this.productService.selectByType(request.getSysType());
             if(!productOptional.isPresent()){
@@ -805,7 +806,7 @@ public class DealerController extends BaseController {
             }
             final Product product = productOptional.get();
             //根据产品查找产品详情
-            final List<ProductChannelDetail> channelRates = this.productChannelDetailService.selectByProductId(product.getId());
+            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),product.getId());
             if(channelRates.size()==0){
                 return CommonResponse.simpleResponse(-1, "您的产品信息尚未完善");
             }
@@ -814,16 +815,16 @@ public class DealerController extends BaseController {
             productResponse.setProductName(product.getProductName());
             final List<FirstDealerProductDetailResponse.Channel> channels = new ArrayList<>();
             productResponse.setChannels(channels);
-            for (ProductChannelDetail productChannelDetail : channelRates) {
+            for (DealerChannelRate dealerChannelDetail : channelRates) {
                 final FirstDealerProductDetailResponse.Channel channel = new FirstDealerProductDetailResponse.Channel();
-                channel.setChannelType(productChannelDetail.getChannelTypeSign());
-                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
+                channel.setChannelType(dealerChannelDetail.getChannelTypeSign());
+                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelDetail.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
-                channel.setSettleType(productChannelDetail.getProductBalanceType());
-                channel.setMinPaymentSettleRate(productChannelDetail.getProductTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMinWithdrawSettleFee(productChannelDetail.getProductWithdrawFee().toPlainString());
-                channel.setMaxMerchantSettleRate(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate()).multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                channel.setMaxMerchantWithdrawFee(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate()).toPlainString());
+                channel.setSettleType(dealerChannelDetail.getDealerBalanceType());
+                channel.setMinPaymentSettleRate(dealerChannelDetail.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinWithdrawSettleFee(dealerChannelDetail.getDealerWithdrawFee().toPlainString());
+                channel.setMaxMerchantSettleRate(dealerChannelDetail.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMaxMerchantWithdrawFee(dealerChannelDetail.getDealerMerchantWithdrawFee().toPlainString());
                 channels.add(channel);
             }
             firstDealerProductDetailResponse.setProduct(productResponse);
@@ -832,8 +833,6 @@ public class DealerController extends BaseController {
                 tempTypeName = "好收银";
             }
             firstDealerProductDetailResponse.setProductName(tempTypeName);
-//            firstDealerProductDetailResponse.setInviteCode(dealer.getInviteCode());
-//            firstDealerProductDetailResponse.setInviteBtn(dealer.getInviteBtn());
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", firstDealerProductDetailResponse);
     }

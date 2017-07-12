@@ -15,17 +15,6 @@ public class FirstDealerProductDetailResponse {
     private String productName;
 
     /**
-     * 邀请码
-     */
-    private String inviteCode;
-
-    /**
-     * 推广功能
-     * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
-     */
-    private int inviteBtn;
-
-    /**
      * 产品列表
      */
     private Product product;
@@ -72,6 +61,10 @@ public class FirstDealerProductDetailResponse {
          */
         private String minPaymentSettleRate;
         /**
+         * 最大支付结算手续费
+         */
+        private String maxPaymentSettleRate;
+        /**
          * 支付结算手续费
          */
         private String paymentSettleRate;
@@ -87,6 +80,10 @@ public class FirstDealerProductDetailResponse {
          */
         private String minWithdrawSettleFee;
         /**
+         * 最大提现结算费
+         */
+        private String maxWithdrawSettleFee;
+        /**
          * 提现结算费
          */
         private String withdrawSettleFee;
@@ -99,7 +96,10 @@ public class FirstDealerProductDetailResponse {
          * 最大商户结算手续费
          */
         private String maxMerchantSettleRate;
-
+        /**
+         * 最小商户结算手续费
+         */
+        private String minMerchantSettleRate;
         /**
          * 商户提现手续费
          */
