@@ -637,6 +637,45 @@ public interface OrderService {
     int updateSettlementRecordIdByOrderNos(List<String> strings, long id);
 
     /**
+     * 分公司交易
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getBranch(OrderTradeRequest req);
+
+    int getBranchCount(OrderTradeRequest req);
+
+    String downLoadBranch(OrderTradeRequest req, String baseUrl);
+
+    /**
+     * 分公司统计
+     * @param req
+     * @return
+     */
+    String getAmountCountBranch(OrderTradeRequest req);
+
+    /**
+     * 分公司统计
+     * @param req
+     * @return
+     */
+    String getAmountCountBranch1(OrderTradeRequest req);
+
+    /**
+     * 二级代理商交易统计
+     * @param req
+     * @return
+     */
+    String getAmountCounts(OrderTradeRequest req);
+
+    /**
+     * 二级代理商交易统计
+     * @param req
+     * @return
+     */
+    String getAmountCounts1(OrderTradeRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

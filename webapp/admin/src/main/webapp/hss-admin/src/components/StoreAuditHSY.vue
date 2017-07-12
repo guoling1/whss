@@ -210,6 +210,26 @@
         <el-button type="primary" size="small" v-if="isChange" @click="identChange" :loading="auditClick" style="margin: 0 0 15px 15px">保存</el-button>
         <el-button type="primary" size="small" v-if="isChange" @click="identNoChange">取消</el-button>
       </div>
+      <div class="box box-primary" style="overflow: hidden">
+        <span class="lead">店铺信息</span>
+        <div style="width: 70%;margin: 0 0 15px 15px;">
+          <template>
+            <el-table :data="shopInfo" border style="width: 100%;margin: 15px 0;font-size: 12px">
+              <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
+              <el-table-column label="店铺类型">
+                <template scope="scope">
+                  <span v-if="scope.row.type==1">主店</span>
+                  <span v-if="scope.row.type==2">分店</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="shortName" label="店铺名称"></el-table-column>
+              <el-table-column prop="districtCode" label="所在地"></el-table-column>
+              <el-table-column prop="address" label="地址"></el-table-column>
+              <el-table-column prop="contactCellphone" label="联系电话"></el-table-column>
+            </el-table>
+          </template>
+        </div>
+      </div>
       <div class="box box-primary">
         <span class="lead">商户认证资料</span>
         <el-button type="text" @click="toDet">认证资料历史</el-button>
@@ -677,6 +697,7 @@
           pageSize:10
         },
         netLogList:[],
+        shopInfo:[],
         count:0,
         msg:{},
         auditClick:false,
@@ -1424,6 +1445,7 @@
             this.res = res.data.list;
             this.rateData = res.data.rateList;
             this.channelList = res.data.channelList;
+            this.shopInfo = res.data.shopInfo;
             this.placeCity = res.data.res.districtCode;
             if(res.data.res.startEndDate!=null){
               let format = res.data.res.startEndDate.split(' - ');

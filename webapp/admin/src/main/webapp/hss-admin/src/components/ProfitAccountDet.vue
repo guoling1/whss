@@ -88,29 +88,20 @@
         currentPage: 1,
         loading: false,
         index: '',
+        url:''
       }
     },
     created: function () {
       this.query.id = this.$route.query.id;
       this.currentDate();
+      if(this.$route.query.type=='filiale'){
+        this.url = '/admin/branchAccount/branchDetail'
+      }else {
+        this.url = '/admin/queryJkmProfit/accountDetails'
+      }
       this.getData();
     },
     methods: {
-      getData: function () {
-        this.$http.post('/admin/queryJkmProfit/accountDetails', this.query)
-          .then(function (res) {
-            this.records = res.data.records;
-            this.count = res.data.count;
-            this.loading = false;
-          }, function (err) {
-            this.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },
       datetimeSelect: function (val) {
         if (val == undefined) {
           this.query.startTime = '';
@@ -120,6 +111,20 @@
           this.query.startTime = format[0];
           this.query.endTime = format[1];
         }
+      },
+      search(){
+        this.query.pageNo = 1;
+        this.getData()
+      },
+      handleSizeChange(val) {
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
+        this.getData();
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.query.pageNo = val;
+        this.getData()
       },
       currentDate: function () {
         let time = new Date();
@@ -140,18 +145,6 @@
             this.query.endTime = str;
           }
         }
-      },
-      search(){
-          this.currentPage = 1;
-        this.query.pageNo = 1;
-        this.loading = true;
-        this.getData();
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.query.pageNo = val;
-        this.loading = true;
-        this.getData();
       },
     }
   }

@@ -42,4 +42,11 @@ public interface ProfitDao {
      * @return
      */
     List<ProfitResponse> getInfo(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
+     * 导出分润明细
+     * @param req
+     * @return
+     */
+    List<JkmProfitDetailsResponse> getProfitDetails(ProfitDetailsRequest req);
 }

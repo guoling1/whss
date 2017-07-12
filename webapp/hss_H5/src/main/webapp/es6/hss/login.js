@@ -35,16 +35,17 @@ sendCode.addEventListener('click', function () {
 });
 
 // 登录
-submit.addEventListener('click', ()=> {
+submit.addEventListener('click', () => {
   if (validate.joint({
       phone: mobile.value,
       code: code.value
     })) {
     http.post('/wx/directLogin', {
       mobile: mobile.value,
-      code: code.value
-    }, ()=> {
-      window.location.replace("/sqb/wallet");
+      code: code.value,
+      oemNo: pageData.oemNo
+    }, () => {
+      window.location.replace("/sqb/wallet?oemNo=" + pageData.oemNo);
     })
   }
 });

@@ -1,10 +1,13 @@
 package com.jkm.hss.product.servcie.impl;
 
 import com.jkm.hss.product.dao.ProductChannelGatewayDao;
+import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelGateway;
 import com.jkm.hss.product.enums.EnumGatewayType;
+import com.jkm.hss.product.enums.EnumProductChannelGatewayStatus;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductChannelGatewayService;
+import com.jkm.hss.product.servcie.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +21,8 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
 
     @Autowired
     private ProductChannelGatewayDao productChannelGatewayDao;
-
-
+    @Autowired
+    private ProductService productService;
     /**
      * {@inheritDoc}
      * @param productChannelGateway
@@ -37,16 +40,8 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
      * @return
      */
     @Override
-    public List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductId(EnumProductType enumProductType, EnumGatewayType enumGatewayType, long productId) {
-        List<ProductChannelGateway> list = this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductId(enumProductType.getId(), enumGatewayType.getId(),productId);
-        if (list.size()>0){
-            for (int i=0;i<list.size();i++){
-                if (("").equals(list.get(i).getRecommend())){
-                    list.get(i).setRecommend(0);
-                }
-            }
-        }
-        return list;
+    public List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductIdAndDealerId(EnumProductType enumProductType, EnumGatewayType enumGatewayType, long productId, long dealerId) {
+        return this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductIdAndDealerId(enumProductType.getId(), enumGatewayType.getId(),productId,dealerId);
     }
 
     /**
@@ -63,6 +58,31 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
     @Override
     public void recommend(ProductChannelGateway request) {
         this.productChannelGatewayDao.recommend(request);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealerId
+     */
+    @Override
+    public void initOemGateway(long dealerId) {
+
+        final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
+        final List<ProductChannelGateway> list = this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductIdAndDealerId(EnumProductType.HSS.getId(),
+                EnumGatewayType.PRODUCT.getId(), product.getId(), 0);
+        for (ProductChannelGateway gateway : list){
+            gateway.setDealerId(dealerId);
+            this.productChannelGatewayDao.addNew(gateway);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param id
+     */
+    @Override
+    public void deleteGateway(long id) {
+        this.productChannelGatewayDao.deleteGateway(id, EnumProductChannelGatewayStatus.DELETE.getId());
     }
 
 }

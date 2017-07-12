@@ -97,9 +97,10 @@
 </body>
 <script>
   var pageData = {
-    bankId: '${bankId}'
+    bankId: '${bankId}',
+    oemNo: '${oemNo}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.30/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.31/collection.min.js"></script>
 </html>

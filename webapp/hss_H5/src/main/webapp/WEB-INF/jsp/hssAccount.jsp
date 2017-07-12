@@ -19,8 +19,8 @@
     <div class="amount"><span class="s">¥</span><span id="amount"></span></div>
     <div class="useAmount">待结算金额: ¥<span id="settleAmount"></span></div>
     <div class="useAmount">可提现金额: ¥<span id="available"></span></div>
-    <a class="btn" href="/account/toWithdraw">提现</a>
-    <a class="check" href="/account/toHssAccountFlow"><span></span>查看余额明细</a>
+    <a class="btn" href="/account/toWithdraw?oemNo=${oemNo}">提现</a>
+    <a class="check" href="/account/toHssAccountFlow?oemNo=${oemNo}"><span></span>查看余额明细</a>
   </div>
   <div class="qa">
     <div class="qa-title"><span></span>常见问题</div>
@@ -44,6 +44,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.30/hasAccount.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.31/hasAccount.min.js"></script>
 </html>

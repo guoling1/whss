@@ -89,7 +89,7 @@ submit.addEventListener('click', function () {
       code: code.value
     }, function () {
       message.load_hide();
-      window.location.replace('/account/toHssWithdrawSuccess?toFee=' + toFee + '&toBank=' + encodeURIComponent(toBank) + '&toAmount=' + toAmount + '&toCome=' + toCome);
+      window.location.replace('/account/toHssWithdrawSuccess?toFee=' + toFee + '&toBank=' + encodeURIComponent(toBank) + '&toAmount=' + toAmount + '&toCome=' + toCome + '&oemNo=' + pageData.oemNo);
     })
   }
 });

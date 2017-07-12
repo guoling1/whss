@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface WxConfigDao{
 
 	WxConfig selectTop1();
+	WxConfig selectTop1ByAppId(@Param("appId") String appId);
 	/**
 	 * 
 	 * 查询（根据主键ID查询）

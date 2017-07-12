@@ -641,4 +641,33 @@ public interface OrderDao {
      * @return
      */
     int updateSettlementRecordIdByOrderNos(@Param("orderNos") List<String> orderNos, @Param("id") long id);
+    /**
+     * 分公司hss交易
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getBranch(OrderTradeRequest req);
+
+    /**
+     * 分公司hsy交易
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getBranchHsy(OrderTradeRequest req);
+
+    int getBranchCount(OrderTradeRequest req);
+
+    List<MerchantTradeResponse> downLoadHssBranch(OrderTradeRequest req);
+
+    String getAmountCountBranch(OrderTradeRequest req);
+
+    String getAmountCountBranch1(OrderTradeRequest req);
+
+    String getAmountCountHss(OrderTradeRequest req);
+
+    String getAmountCountsHsy(OrderTradeRequest req);
+
+    String getAmountCountHss1(OrderTradeRequest req);
+
+    String getAmountCountsHsy1(OrderTradeRequest req);
 }

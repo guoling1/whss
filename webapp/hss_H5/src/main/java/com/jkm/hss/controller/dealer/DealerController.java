@@ -16,6 +16,7 @@ import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.service.WithdrawService;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.helper.request.*;
 import com.jkm.hss.helper.response.*;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
@@ -422,7 +423,7 @@ public class DealerController extends BaseController {
         if (!ValidateUtils.isMobile(bankReserveMobile)) {
             return CommonResponse.simpleResponse(-1, "银行预留手机号错误");
         }
-        final long proxyNameCount = this.dealerService.getByProxyName(secondLevelDealerAddRequest.getName());
+        final long proxyNameCount = this.dealerService.selectByProxyNameAndOemType(secondLevelDealerAddRequest.getName(), EnumOemType.DEALER.getId());
         if (proxyNameCount > 0) {
             return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
         }

@@ -35,7 +35,8 @@ sendCode.addEventListener('click', function () {
   if (validate.phone(mobile.value)) {
     if (countdown.check()) {
       http.post('/wx/getCode', {
-        mobile: mobile.value
+        mobile: mobile.value,
+        oemNo: pageData.oemNo
       }, function (data) {
         if (data === false) {
           layer.style.display = 'block';
@@ -53,11 +54,11 @@ cancel.addEventListener('click', function () {
 });
 
 login.addEventListener('click', function () {
-  window.location.href = '/sqb/login?phone=' + mobile.value;
+  window.location.href = '/sqb/login?phone=' + mobile.value + "&oemNo=" + pageData.oemNo;
 });
 
 // 注册
-submit.addEventListener('click', ()=> {
+submit.addEventListener('click', () => {
   if (!pageData.qrCode || pageData.qrCode == '') {
     if (validate.joint({
         phone: mobile.value,
@@ -66,9 +67,10 @@ submit.addEventListener('click', ()=> {
       http.post('/wx/login', {
         mobile: mobile.value,
         code: code.value,
+        oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
-      }, ()=> {
-        window.location.replace("/sqb/addInfo");
+      }, () => {
+        window.location.replace("/sqb/addInfo?oemNo=" + pageData.oemNo);
       })
     }
   } else {
@@ -80,9 +82,10 @@ submit.addEventListener('click', ()=> {
         mobile: mobile.value,
         code: code.value,
         qrCode: pageData.qrCode,
+        oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
-      }, ()=> {
-        window.location.replace("/sqb/addInfo");
+      }, () => {
+        window.location.replace("/sqb/addInfo?oemNo=" + pageData.oemNo);
       })
     }
   }

@@ -37,6 +37,7 @@ public class HsyQueryMerchantController extends BaseController {
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
         request.setDealerId(dealerId);
+
         if(request.getEndTime()!=null&&!"".equals(request.getEndTime())){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dt = sdf.parse(request.getEndTime());
@@ -45,6 +46,7 @@ public class HsyQueryMerchantController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             request.setEndTime(sdf.format(rightNow.getTime()));
         }
+
         if(request.getAuditTime1()!=null&&!"".equals(request.getAuditTime1())){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dt = sdf.parse(request.getAuditTime1());
@@ -53,6 +55,7 @@ public class HsyQueryMerchantController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             request.setAuditTime1(sdf.format(rightNow.getTime()));
         }
+
         if (level==1){
             List<HsyQueryMerchantResponse> list = hsyMerchantAuditService.hsyMerchantList(request);
             int count = hsyMerchantAuditService.hsyMerchantListCount(request);
@@ -67,6 +70,8 @@ public class HsyQueryMerchantController extends BaseController {
             pageModel.setRecords(list);
             return CommonResponse.objectResponse(1, "success", pageModel);
         }
+
+
         return CommonResponse.simpleResponse(-1, "查询异常");
     }
 }

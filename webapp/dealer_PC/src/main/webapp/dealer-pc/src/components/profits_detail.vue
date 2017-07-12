@@ -6,7 +6,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">分润详情</h3>
+              <h3 class="box-title">分润明细</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
@@ -23,10 +23,11 @@
                   </el-option>
                 </el-select>
               </div>
-              <div class="screen-item">
+              <div class="screen-item" v-if="isShow">
                 <span class="screen-title">分润日期</span>
                 <el-date-picker size="small"
                                 v-model="datetime"
+                                default-value="datetime"
                                 type="daterange"
                                 align="right"
                                 @change="datetimeSelect"
@@ -39,12 +40,12 @@
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
-            <div class="box-body">统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</div>
+            <div class="box-body">统计总额 {{allTotal | filter_toFix}}元 当页总额 {{pageTotal | filter_toFix}}元</div>
             <div class="box-body">
               <el-table :data="tableData" border
                         v-loading="tableLoading"
                         element-loading-text="数据加载中">
-                <el-table-column type="index" label="序号"></el-table-column>
+                <el-table-column type="index" label="序号" width="62"></el-table-column>
                 <el-table-column prop="splitOrderNo" label="分润流水号"></el-table-column>
                 <el-table-column label="业务类型">
                   <template scope="scope">
@@ -53,7 +54,7 @@
                 </el-table-column>
                 <el-table-column label="分润时间" width="180">
                   <template scope="scope">
-                    {{ scope.row.splitCreateTime | datetime }}
+                    {{ scope.row.splitDate | datetime }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
@@ -63,7 +64,7 @@
                 <!--{{ scope.row.settleTime | datetime }}-->
                 <!--</template>-->
                 <!--</el-table-column>-->
-                <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
+                <!--<el-table-column prop="dealerName" label="代理商名称"></el-table-column>-->
                 <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
                 <el-table-column prop="remark" label="备注信息"></el-table-column>
               </el-table>
@@ -120,8 +121,8 @@
           }
         ],
         datetime: '',
-        beginDate: '',
-        endDate: '',
+        startTime: '',
+        endTime: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -150,26 +151,43 @@
           }]
         },
         pageTotal: 0,
-        allTotal: 0
+        allTotal: 0,
+        isShow: true
       }
     },
     created() {
+      let query = this.$route.query;
+      if(query.businessType){
+        this.isShow = false;
+      }
+      if (query.businessType == '好收收- 收款') {
+        this.businessType = 'hssPay';
+      } else if (query.businessType == '好收收- 提现') {
+        this.businessType = 'hssWithdraw';
+      } else if (query.businessType == '好收收- 升级费') {
+        this.businessType = 'hssPromote';
+      } else if (query.businessType == '好收银- 收款') {
+        this.businessType = 'hsyPay';
+      }
+      this.datetime = query.splitDates + ' - ' + query.splitDates;
+      this.startTime = query.splitDates;
+      this.endTime = query.splitDates;
       this.getData();
       this.getTotal();
     },
-    filters: {
-      fix(v = 0){
+    /*filters: {
+      fix(v){
         if (v) {
           return v.toFixed(2);
         }
         return '0.00';
       }
-    },
+    },*/
     methods: {
       datetimeSelect: function (val) {
         let format = val.split(' - ');
-        this.beginDate = format[0];
-        this.endDate = format[1];
+        this.startTime = format[0];
+        this.endTime = format[1];
       },
       screen: function () {
         this.getData();
@@ -179,8 +197,8 @@
         this.$http.post('/daili/profit/profitAmount', {
           orderNo: this.orderNo,
           businessType: this.businessType,
-          beginDate: this.beginDate,
-          endDate: this.endDate
+          startTime: this.startTime,
+          endTime: this.endTime
         }).then(res => {
           this.allTotal = res.data;
         }, err => {
@@ -189,13 +207,13 @@
       },
       getData: function () {
         this.tableLoading = true;
-        this.$http.post('/daili/profit/details', {
+        this.$http.post('/daili/profitCount/getCountDetails', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           orderNo: this.orderNo,
           businessType: this.businessType,
-          beginDate: this.beginDate,
-          endDate: this.endDate
+          startTime: this.startTime,
+          endTime: this.endTime
         }).then(res => {
           this.tableLoading = false;
           this.total = res.data.count;

@@ -72,6 +72,9 @@ public class MerchantInfoCheckRecordController extends BaseController {
         if (!merchantInfoOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
+//        if (merchantInfoOptional.get().getBranchCode()==null||"".equals(merchantInfoOptional.get().getBranchCode())) {
+//            return CommonResponse.simpleResponse(-1, "联行号未填写");
+//        }
         MerchantInfo merchantInfo = merchantInfoOptional.get();
         requestMerchantInfo.setStatus(EnumMerchantStatus.PASSED.getId());
         requestMerchantInfo.setName(super.getAdminUser().getUsername());
@@ -83,6 +86,10 @@ public class MerchantInfoCheckRecordController extends BaseController {
         merchant.setCheckedTime(new Date());
         this.merchantInfoService.addAccountId(accountId, EnumMerchantStatus.PASSED.getId(), merchant.getId(),merchant.getCheckedTime());
         //插入银行卡账户表
+        int count = accountBankService.isHasAccountBank(accountId);
+        if(count>0){
+            CommonResponse.simpleResponse(-1,"账户已存在");
+        }
         accountBankService.initAccountBank(merchant.getId(),accountId);
         Optional<UserInfo> toUer = userInfoService.selectByMerchantId(requestMerchantInfo.getMerchantId());
         String toUsers = toUer.get().getOpenId();

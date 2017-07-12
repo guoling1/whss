@@ -2,6 +2,9 @@ package com.jkm.hss.account.sevice;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.ProfitCountRequest;
+import com.jkm.hss.account.entity.ProfitCountRespons;
+import com.jkm.hss.account.entity.ProfitDetailCountRespons;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -82,7 +85,7 @@ public interface SplitAccountRecordService {
                                   String receiptMoneyUserName, String remark, int accountUserType);
 
     PageModel<SplitAccountRecord> selectByParam(int pageNo, int pageSize, long accountId, String orderNo, String businessType, String beginDate, String endDate);
-    BigDecimal selectStatisticsByParam(long accountId, String orderNo, String businessType, String beginDate, String endDate);
+    String selectStatisticsByParam(long accountId, String orderNo, String businessType, String beginDate, String endDate);
 
     /**
      * 校验分账单流水号
@@ -99,4 +102,32 @@ public interface SplitAccountRecordService {
      * @return
      */
     List<SplitAccountRecord> getByOrderNo(String orderNo);
+
+    /**
+     * dealer_pc分润统计
+     * @param request
+     * @return
+     */
+    List<ProfitCountRespons> getProfit(ProfitCountRequest request);
+
+    /**
+     * 分润统计总数
+     * @param request
+     * @return
+     */
+    int getProfitCount(ProfitCountRequest request);
+
+    /**
+     * dealer_pc 分润明细
+     * @param req
+     * @return
+     */
+    List<ProfitDetailCountRespons> getCountDetails(ProfitCountRequest req);
+
+    /**
+     * dealer_pc 分润明细总数
+     * @param req
+     * @return
+     */
+    int getCountDetailsNo(ProfitCountRequest req);
 }

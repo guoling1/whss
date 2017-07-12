@@ -67,6 +67,21 @@ public interface AdminRoleDao {
     List<AdminRoleListPageResponse> selectAdminDealerRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
 
     /**
+     * 根据分页查询角色个数
+     * @param adminRoleListRequest
+     * @return
+     */
+    long selectAdminOemRoleCountByPageParams(AdminRoleListRequest adminRoleListRequest);
+
+    /**
+     * 分页查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    List<AdminRoleListPageResponse> selectAdminOemRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
+
+
+    /**
      *分类查询角色列表
      * @param type
      * @return

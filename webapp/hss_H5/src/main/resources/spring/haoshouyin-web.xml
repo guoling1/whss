@@ -17,6 +17,8 @@
     <!-- 注解支持 -->
     <task:annotation-driven />
 
+    <import resource="classpath:ehcache/applicationContext-ehcache.xml"/>
+
     <mvc:annotation-driven validator="validator"/>
     <mvc:default-servlet-handler />
     <context:component-scan base-package="com.jkm.hss"/>
@@ -31,7 +33,6 @@
         <property name="prefix" value="/WEB-INF/jsp"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-
     <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">
         <constructor-arg name="endpoint" value="${oss_endpoint}"/>
         <constructor-arg name="accessKeyId" value="${oss_accessKeyId}"/>
@@ -60,7 +61,9 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/callback/**"/>
-            <bean id="commonInterceptor" class="com.jkm.hss.interceptor.CommonInterceptor"/>
+            <bean id="commonInterceptor" class="com.jkm.hss.interceptor.CommonInterceptor">
+                <property name="oemInfoService" ref="oemInfoServiceImpl"/>
+            </bean>
         </mvc:interceptor>
 
         <mvc:interceptor>
@@ -73,6 +76,33 @@
             <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
                 <property name="dealerService" ref="dealerServiceImpl"/>
                 <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>
+            </bean>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/sqb/addInfo"/>
+            <mvc:mapping path="/sqb/addNext"/>
+            <mvc:mapping path="/sqb/charge"/>
+            <mvc:mapping path="/sqb/collection"/>
+            <mvc:mapping path="/sqb/tradeRecord"/>
+            <mvc:mapping path="/sqb/bank"/>
+            <mvc:mapping path="/sqb/creditCardAuthen"/>
+            <mvc:mapping path="/sqb/myRecommend"/>
+            <mvc:mapping path="/sqb/upgradeMax"/>
+            <mvc:mapping path="/sqb/upgradeMin"/>
+            <mvc:mapping path="/sqb/toUpgrade"/>
+            <mvc:mapping path="/sqb/authentication"/>
+            <mvc:mapping path="/trade/firstUnionPayPage"/>
+            <mvc:mapping path="/trade/againUnionPayPage"/>
+            <mvc:mapping path="/account/toWithdraw"/>
+            <mvc:mapping path="/account/toHssAccount"/>
+            <mvc:mapping path="/channel/toListJsp"/>
+            <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
+                <property name="oemInfoService" ref="oemInfoServiceImpl"/>
+                <property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>
+                <property name="userInfoService" ref="userInfoServiceImpl"/>
+                <property name="merchantInfoService" ref="merchantInfoServiceImpl"/>
+                <property name="merchantInfoCheckRecordService" ref="merchantInfoCheckRecordServiceImpl"/>
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>

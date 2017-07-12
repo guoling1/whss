@@ -3,6 +3,8 @@ package com.jkm.hss.merchant.entity;
 import com.jkm.base.common.entity.BaseEntity;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Created by zhangbin on 2017/3/2.
  */
@@ -47,5 +49,5 @@ public class Notice extends BaseEntity {
     /**
      * 过期时间
      */
-    private Data expirationTime;
+    private Date expirationTime;
 }

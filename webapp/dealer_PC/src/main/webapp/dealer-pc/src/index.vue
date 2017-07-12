@@ -292,21 +292,21 @@
             </ul>
           </li>-->
           <!--<li class="treeview">-->
-            <!--<a href="#">-->
-              <!--<i class="fa fa-user-secret"></i> <span>我的信息</span>-->
-              <!--<span class="pull-right-container">-->
-                <!--<i class="fa fa-angle-left pull-right"></i>-->
-                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
-              <!--</span>-->
-            <!--</a>-->
-            <!--<ul class="treeview-menu">-->
-              <!--<li>-->
-                <!--<router-link to="information"><i class="fa fa-circle-o"></i> 注册信息</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="policy"><i class="fa fa-circle-o"></i> 代理政策</router-link>-->
-              <!--</li>-->
-            <!--</ul>-->
+          <!--<a href="#">-->
+          <!--<i class="fa fa-user-secret"></i> <span>我的信息</span>-->
+          <!--<span class="pull-right-container">-->
+          <!--<i class="fa fa-angle-left pull-right"></i>-->
+          <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
+          <!--</span>-->
+          <!--</a>-->
+          <!--<ul class="treeview-menu">-->
+          <!--<li>-->
+          <!--<router-link to="information"><i class="fa fa-circle-o"></i> 注册信息</router-link>-->
+          <!--</li>-->
+          <!--<li>-->
+          <!--<router-link to="policy"><i class="fa fa-circle-o"></i> 代理政策</router-link>-->
+          <!--</li>-->
+          <!--</ul>-->
           <!--</li>-->
 
           <!-- <li class="header">LABELS</li>
@@ -338,7 +338,7 @@
         dealerInfo: '',
         position: '',
         dealerLeavel: '',
-        list:{},
+        list: {},
         classList:['glyphicon glyphicon-home','fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus','fa fa-user']
 //        classList:['fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus','fa fa-user']
       }
@@ -350,8 +350,10 @@
             vm.dealerInfo = data.dealerInfo;
             if (data.dealerLeavel == 1) {
               vm.position = '一级代理商'
-            } else {
+            } else if (data.dealerLeavel == 2) {
               vm.position = '二级代理商'
+            } else {
+              vm.position = '分公司'
             }
             vm.dealerLeavel = data.dealerLeavel;
           }

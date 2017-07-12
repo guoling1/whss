@@ -37,6 +37,10 @@ public class ListSecondDealerRequest extends PageQueryParams {
      * 省市编码
      */
     private String districtCode;
+    /**
+     * 所属分公司
+     */
+    private String oemName;
 
     private int offset;
 

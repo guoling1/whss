@@ -73,4 +73,8 @@ public class SecondDealerResponse {
      * 上级代理名称
      */
     private String firstProxyName;
+    /**
+     * 所属分公司
+     */
+    private String oemName;
 }

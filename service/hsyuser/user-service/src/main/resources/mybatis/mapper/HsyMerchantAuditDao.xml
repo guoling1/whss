@@ -60,6 +60,9 @@
         <if test="status!=null and status!=''">
         AND a.`STATUS` = #{status}
         </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
     </select>
 
 
@@ -96,7 +99,7 @@
             AND e.realname =#{realname}
         </if>
         <if test="source==1">
-            AND c.DEALERID = 0 AND c.`DEALERID` = ""
+            AND c.DEALERID = 0
         </if>
         <if test="source==2">
             AND c.DEALERID <![CDATA[ > ]]> 0
@@ -199,9 +202,16 @@
         <if test="auditTime1!=null and auditTime1!=''">
             AND a.AUDITTIME <![CDATA[ <= ]]> #{auditTime1}
         </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
+        <if test="status!=null and status!=''">
+            AND a.`STATUS` = #{status}
+        </if>
         ORDER BY
         a.CREATETIME DESC
     </select>
+
 
     <!-- 查询商户待审核列表 -->
     <select id="getCheckPending" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
@@ -616,6 +626,16 @@
 
     <!-- 店铺详情 -->
     <select id="getShopInfo" resultType="com.jkm.hsy.user.entity.ShopInfoResponse">
-
+        SELECT
+            a.SHORTNAME,
+            a.CONTACTCELLPHONE,
+            a.ADDRESS,
+            a.DISTRICTCODE,
+            b.TYPE
+        FROM
+            app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON b.SID = a.ID
+        WHERE
+           b.`UID`in (SELECT `UID` FROM `app_biz_shop_user_role` WHERE `SID` = #{id} AND `ROLE` =1 and `TYPE` =1 )
     </select>
 </mapper>

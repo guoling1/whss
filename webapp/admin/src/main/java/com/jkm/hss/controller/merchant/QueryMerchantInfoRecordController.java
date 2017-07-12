@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -19,6 +20,7 @@ import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.push.sevice.PushService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +37,7 @@ import java.util.List;
 /**
  * Created by zhangbin on 2016/12/2.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/QueryMerchantInfoRecord")
 public class QueryMerchantInfoRecordController extends BaseController {
@@ -60,14 +63,21 @@ public class QueryMerchantInfoRecordController extends BaseController {
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
         JSONObject jsonObject = new JSONObject();
+        int status = this.queryMerchantInfoRecordService.getStatus(merchantInfo.getId());
+        int accountId = this.queryMerchantInfoRecordService.getAccountId(merchantInfo.getId());
+        merchantInfo.setStatus(status);
+        merchantInfo.setAccountId(accountId);
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
         MerchantInfoResponse response = this.queryMerchantInfoRecordService.getrecommenderInfo(merchantInfo.getId());
 
         if (list.size()>0 || response!=null){
             for (int i=0;i<list.size();i++){
+                if (list.get(i).getOemId()==0){
+                    list.get(i).setBranchCompany("金开门");
+                }
                 if (list.get(i).getSecondDealerId()>0){
                     list.get(i).setMarkCode2(list.get(i).getMarkCode1());
-                    MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstLevelDealerId());
+                    MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstDealerId());
                     if (list.get(i).getMarkCode1()!=null&&!list.get(i).getMarkCode1().equals("")){
                         list.get(i).setMarkCode1(proxyNames.getMarkCode());
                     }
@@ -185,6 +195,24 @@ public class QueryMerchantInfoRecordController extends BaseController {
         jsonObject.put("code",-1);
         jsonObject.put("msg","没有查到符合条件的数据");
         return jsonObject;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/saveNo",method = RequestMethod.POST)
+    public CommonResponse saveNo(@RequestBody SaveLineNoRequest req) {
+        try {
+            if (req.getStatus()==2) {
+                this.queryMerchantInfoRecordService.saveNo(req);
+            }
+            if (req.getStatus()==3||req.getStatus()==6) {
+                this.queryMerchantInfoRecordService.saveNo1(req);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            log.debug("操作异常");
+        }
+        return CommonResponse.simpleResponse(1,"保存成功");
+
     }
 
 }

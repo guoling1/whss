@@ -27,6 +27,10 @@ public class MyQrCodeListResponse {
      */
     private Date activateTime;
     /**
+     *一代名称
+     */
+    private String firstDealerName;
+    /**
      * 二代名称
      */
     private String secondDealerName;

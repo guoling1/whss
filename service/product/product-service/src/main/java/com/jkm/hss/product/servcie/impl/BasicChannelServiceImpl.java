@@ -1,12 +1,13 @@
 package com.jkm.hss.product.servcie.impl;
 
 import com.google.common.base.Optional;
+import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.TriggersRemove;
 import com.jkm.hss.product.dao.BasicChannelDao;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
-import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
      * @param payChannel
      * @return
      */
+    @Cacheable(cacheName="channelCache")
     @Override
     public Optional<BasicChannel> selectByChannelTypeSign(int payChannel) {
         return Optional.fromNullable(this.basicChannelDao.selectByChannelTypeSign(payChannel));
@@ -76,6 +78,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
      * {@inheritDoc}
      * @param basicChannel
      */
+    @TriggersRemove(cacheName="channelCache",  removeAll=true)
     @Override
     public void update(BasicChannel basicChannel) {
         this.basicChannelDao.update(basicChannel);

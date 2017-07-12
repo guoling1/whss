@@ -12,7 +12,7 @@ public class AdminRoleAndTypeDetailRequest {
      */
     private long id;
     /**
-     * 代理商编码
+     * 类型
      */
     private int type;
 }

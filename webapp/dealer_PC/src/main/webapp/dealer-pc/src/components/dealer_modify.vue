@@ -91,6 +91,7 @@
     name: 'app',
     created(){
       let query = this.$route.query;
+      this.dealerType = query.dealerType;
       this.update.dealerId = query.dealerId;
       this.form.dealerId = query.dealerId;
       this.update.loginPwd = '123456';
@@ -129,6 +130,7 @@
     },
     data() {
       return {
+        dealerType: '',
         modify_pwd: false,
         update: {
           loginPwd: '',
@@ -246,12 +248,16 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.$http.post('/daili/dealer/updateDealer', this.form).then(res => {
-              this.$router.push('/daili/app/dealer_list');
               this.$message({
                 showClose: true,
                 message: '修改代理商成功',
                 type: 'success'
               });
+              if (this.dealerType == 1) {
+                this.$router.push('/daili/app/first_dealer_list');
+              } else {
+                this.$router.push('/daili/app/dealer_list');
+              }
             }, err => {
               this.$message({
                 showClose: true,

@@ -2,6 +2,10 @@ package com.jkm.hss.merchant.service.impl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jkm.hss.dealer.enums.EnumSignCode;
+import com.jkm.hss.dealer.helper.response.OemDetailResponse;
+import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.merchant.dao.MerchantInfoCheckRecordDao;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.SendMsgService;
@@ -15,6 +19,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,10 +35,17 @@ import java.util.Map;
 @Slf4j
 @Service
 public class SendMsgServiceImpl implements SendMsgService {
+    @Autowired
+    private MerchantInfoCheckRecordDao merchantInfoCheckRecordDao;
+    @Autowired
+    private OemInfoService oemInfoService;
     @Override
     public void sendMessage(String money,String orderNo,String payNo,String store,String merchantName,String touser) {
+            int oemId = this.merchantInfoCheckRecordDao.queryOemId(touser);
+            String templateId = this.merchantInfoCheckRecordDao.seleTemplateId(touser,EnumSignCode.RECEIPT.getId());
+            OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(oemId);
             Map<String, String> ret = new HashMap<String, String>();
-            String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
+            String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken(oemDetailResponse.getAppId(),oemDetailResponse.getAppSecret());
             HttpClient client = new DefaultHttpClient();
             HttpPost method = new HttpPost(turl);
             JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
@@ -63,7 +75,11 @@ public class SendMsgServiceImpl implements SendMsgService {
                 remark.put("value","感谢您的支持，如有疑问请联系客服!");
                 jo.put("remark",remark);
                 jsonParam.put("touser",touser);
-                jsonParam.put("template_id","JW4HPfr8xrm0iQ7lqcWzHQKASHh79y69NMgMWOi41bE");
+                if (oemId==0) {
+                    jsonParam.put("template_id", "JW4HPfr8xrm0iQ7lqcWzHQKASHh79y69NMgMWOi41bE");
+                }else{
+                    jsonParam.put("template_id", templateId);
+                }
                 jsonParam.put("data",jo);
                 String tt  = jsonParam.toString();
                 method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
@@ -144,8 +160,12 @@ public class SendMsgServiceImpl implements SendMsgService {
     @Override
     public void sendPushMessage(final BigDecimal totalAmount, final Date withdrawTime, final BigDecimal poundage,
                                 final String bankNo, final String toUser) {
+
+        int oemId = this.merchantInfoCheckRecordDao.queryOemId(toUser);
+        String templateId = this.merchantInfoCheckRecordDao.seleTemplateId(toUser,EnumSignCode.WITHDRAW.getId());
+        OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(oemId);
         Map<String, String> ret = new HashMap<String, String>();
-        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
+        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken(oemDetailResponse.getAppId(),oemDetailResponse.getAppSecret());
 
         final HttpClient client = new DefaultHttpClient();
         final HttpPost method = new HttpPost(turl);
@@ -170,7 +190,13 @@ public class SendMsgServiceImpl implements SendMsgService {
             remark.put("value", "到账银行卡尾号 (" + bankNo + ")，如有疑问，请联系我们：400-622-6233");
             jo.put("remark", remark);
             jsonParam.put("touser", toUser);
-            jsonParam.put("template_id", "2dIyIc91CjMLiWaFFF7-RAlxv-bjGCjXL2c049TPPtQ");
+            if (oemId==0) {
+                jsonParam.put("template_id", "2dIyIc91CjMLiWaFFF7-RAlxv-bjGCjXL2c049TPPtQ");
+            }else{
+                jsonParam.put("template_id", templateId);
+            }
+
+
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);
@@ -253,9 +279,11 @@ public class SendMsgServiceImpl implements SendMsgService {
 
     @Override
     public void sendAuditThroughMessage(String result, Date TransitTime,String touser) {
-
+        int oemId = this.merchantInfoCheckRecordDao.queryOemId(touser);
+        String templateId = this.merchantInfoCheckRecordDao.seleTemplateId(touser, EnumSignCode.AUDITED.getId());
+        OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(oemId);
         Map<String, String> ret = new HashMap<String, String>();
-        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
+        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken(oemDetailResponse.getAppId(),oemDetailResponse.getAppSecret());
 
         final HttpClient client = new DefaultHttpClient();
         final HttpPost method = new HttpPost(turl);
@@ -265,7 +293,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             JSONObject jsonParam = new JSONObject();
             JSONObject jo = new JSONObject();
             final JSONObject first =new JSONObject();
-            first.put("value", "恭喜您，商户资料审核通过，您可以直接扫描收款牌上的二维码收款，也可以从“好收收”公众号发起收款。");
+            first.put("value", "恭喜您，商户资料审核通过，您可以从公众号发起收款啦。");
             jo.put("first", first);
             final JSONObject keyword1 =new JSONObject();
             keyword1.put("value", result);
@@ -277,8 +305,12 @@ public class SendMsgServiceImpl implements SendMsgService {
             remark.put("value", "点击收款");
             jo.put("remark", remark);
             jsonParam.put("touser", touser);
-            jsonParam.put("template_id", "ATdpk_M-d_PVbSE3IFIA5qso4L7z03S_45ewPNHBcFI");
-            jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/collection");
+            if (oemId==0) {
+                jsonParam.put("template_id", "ATdpk_M-d_PVbSE3IFIA5qso4L7z03S_45ewPNHBcFI");
+            }else{
+                jsonParam.put("template_id", templateId);
+            }
+            jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/collection?oemNo="+oemDetailResponse.getOemNo());
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);
@@ -305,9 +337,11 @@ public class SendMsgServiceImpl implements SendMsgService {
 
     @Override
     public void sendAuditNoThroughMessage(String name, String desr,String touser) {
-
+        int oemId = this.merchantInfoCheckRecordDao.queryOemId(touser);
+        String templateId = this.merchantInfoCheckRecordDao.seleTemplateId(touser,EnumSignCode.NOTTHROUGH.getId());
+        OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(oemId);
         Map<String, String> ret = new HashMap<String, String>();
-        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
+        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken(oemDetailResponse.getAppId(),oemDetailResponse.getAppSecret());
 
         final HttpClient client = new DefaultHttpClient();
         final HttpPost method = new HttpPost(turl);
@@ -329,8 +363,14 @@ public class SendMsgServiceImpl implements SendMsgService {
             remark.put("value", "点击重新提交资料");
             jo.put("remark", remark);
             jsonParam.put("touser", touser);
-            jsonParam.put("template_id", "gr-Nr_ADa5yo0bLAPyn6wteVJnWNcVHNeIK-gvfI75Y");
-            jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/prompt");
+            if (oemId==0) {
+                jsonParam.put("template_id", "gr-Nr_ADa5yo0bLAPyn6wteVJnWNcVHNeIK-gvfI75Y");
+            }else{
+                jsonParam.put("template_id", templateId);
+            }
+
+
+            jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/prompt?oemNo="+oemDetailResponse.getOemNo());
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);

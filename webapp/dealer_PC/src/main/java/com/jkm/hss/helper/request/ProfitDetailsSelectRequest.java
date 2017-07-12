@@ -32,4 +32,11 @@ public class ProfitDetailsSelectRequest {
      * 2017-02-09
      */
     private String endDate;
+
+    private String startTime;
+
+    private String endTime;
+
+
+
 }

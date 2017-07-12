@@ -1,6 +1,7 @@
 package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
+import com.jkm.hss.admin.helper.requestparam.OemProductionRequest;
 import com.jkm.hss.admin.helper.requestparam.ProductionRequest;
 import com.jkm.hss.admin.helper.responseparam.ProductionListResponse;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +27,12 @@ public interface ProductionQrCodeRecordDao {
      * @param productionRequest
      */
     List<ProductionListResponse> selectList(ProductionRequest productionRequest);
+    /**
+     * 分公司按条件查询列表
+     *
+     * @param oemProductionRequest
+     */
+    List<ProductionListResponse> selectOemList(OemProductionRequest oemProductionRequest);
 
     /**
      * 按条件查询列表个数
@@ -33,6 +40,12 @@ public interface ProductionQrCodeRecordDao {
      * @param productionRequest
      */
     Long selectCount(ProductionRequest productionRequest);
+    /**
+     * 分公司按条件查询列表个数
+     *
+     * @param oemProductionRequest
+     */
+    Long selectOemCount(OemProductionRequest oemProductionRequest);
 
     /**
      * 更改下载url

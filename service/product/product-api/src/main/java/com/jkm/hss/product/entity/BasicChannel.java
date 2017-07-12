@@ -6,6 +6,7 @@ import com.jkm.hss.product.enums.EnumBasicChannelStatus;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
  * tb_basic_channel
  */
 @Data
-public class BasicChannel extends BaseEntity{
+public class BasicChannel  extends BaseEntity implements Serializable{
 
     //通道名称，通道类型，收单公司，渠道来源，原始交易费率，原始结算费率（按笔收，最低手续费
     /**

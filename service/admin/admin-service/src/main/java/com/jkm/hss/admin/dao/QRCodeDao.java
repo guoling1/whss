@@ -48,6 +48,14 @@ public interface QRCodeDao {
      * @return
      */
     int markCodeToDealer(@Param("firstLevelDealerId") long firstLevelDealerId, @Param("codeIds") List<Long> codeIds);
+    /**
+     * 将二维码分配各分公司自己
+     *
+     * @param firstLevelDealerId
+     * @param codeIds
+     * @return
+     */
+    int markCodeToOemSelf(@Param("firstLevelDealerId") long firstLevelDealerId, @Param("codeIds") List<Long> codeIds);
 
     /**
      * 将指定的二维码标记在代理商名下
@@ -424,6 +432,16 @@ public interface QRCodeDao {
      */
     List<QRCode> selectUnDistributeCodeByDealerIdAndRangeCodeAndSysType(@Param("dealerId") long dealerId,
                                                               @Param("startCode") String startCode, @Param("endCode") String endCode,@Param("sysType") String sysType);
+    /**
+     * 查询分公司某一二维码范围下的未分配的二维码
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByOemIdAndRangeCodeAndSysType(@Param("dealerId") long dealerId,
+                                                                        @Param("startCode") String startCode, @Param("endCode") String endCode,@Param("sysType") String sysType);
 
     /**
      * 按产品类型查询某个代理商下的所有二维码
@@ -432,10 +450,17 @@ public interface QRCodeDao {
      * @return
      */
     List<QRCode> getUnDistributeCodeByDealerIdAndSysType(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
+    /**
+     * 【分公司分配二维码】按产品类型查询某个代理商下的所有二维码
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByOemIdAndSysType(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
 
 
     /**
-     * admin查询未分配的二维码个数
+     * admin查询未分配的二维码列表
      *
      * @return
      */
@@ -536,4 +561,47 @@ public interface QRCodeDao {
      * @return
      */
     long getRevokeTotalCount(@Param("sysType") String sysType,@Param("startCode") String startCode,@Param("endCode") String endCode);
+    /**
+     * hss项目下的二维码个数[分公司]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    long getOemHSSQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * hss项目下的二维码列表[分公司]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    List<MyQrCodeListResponse> getOemHSSQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * 查询一级代理商剩余二维码数[分公司]
+     *
+     * @param dealerId
+     * @return
+     */
+    int getResidueCount(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
+
+    /**
+     * 查询一级代理商已分配二维码数[分公司]
+     *
+     * @param dealerId
+     * @return
+     */
+    int getDistributeCount(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
+
+    /**
+     * 查询一级代理商未激活二维码数[分公司]
+     *
+     * @param dealerId
+     * @return
+     */
+    int getUnActivateCount(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
+    /**
+     * 查询一级代理商已激活二维码数[分公司]
+     *
+     * @param dealerId
+     * @return
+     */
+    int getActivateCount(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
 }

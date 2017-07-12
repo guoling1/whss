@@ -15,7 +15,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-  <title>好收收</title>
+  <title>${oemName}</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
@@ -23,16 +23,16 @@
 
 <div id="wallet">
   <div class="wallet">
-    <a class="operation touch_op" href="/sqb/collection">
+    <a class="operation touch_op" href="/sqb/collection?oemNo=${oemNo}">
       <div class="logo collection"></div>
       <div class="operation-title">收款</div>
     </a>
-    <a class="operation" href="/account/toHssAccount">
+    <a class="operation" href="/account/toHssAccount?oemNo=${oemNo}">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </a>
-    <a class="operation" href="/account/toWithdraw">
+    <a class="operation" href="/account/toWithdraw?oemNo=${oemNo}">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
     </a>
@@ -44,10 +44,10 @@
     </div>
   </div>
   <div class="record">
-    <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
-    <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
-    <a href="/sqb/authentication" class="group touch_gr"><span class="user"></span>用户认证</a>
-    <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group touch_gr"><span class="help"></span>使用帮助</a>
+    <a href="/sqb/tradeRecord?oemNo=${oemNo}" class="group touch_gr"><span class="record"></span>收款记录</a>
+    <a href="/sqb/bank?oemNo=${oemNo}" class="group touch_gr"><span class="bank"></span>银行卡</a>
+    <a href="/sqb/authentication?oemNo=${oemNo}" class="group touch_gr"><span class="user"></span>用户认证</a>
+    <a href="/merchantInfo/toHelp" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
   <div>
     <div class="advertisement">
@@ -112,9 +112,10 @@
 </body>
 <script>
   var pageData = {
-    showRecommend: '${showRecommend}'//1显示升级 2不显示升级
+    showRecommend: '${showRecommend}',//1显示升级 2不显示升级
+    oemNo: '${oemNo}'
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.30/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.31/wallet.min.js"></script>
 </html>

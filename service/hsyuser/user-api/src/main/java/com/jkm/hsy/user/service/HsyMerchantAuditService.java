@@ -138,6 +138,7 @@ public interface HsyMerchantAuditService {
      */
     void updatePhone(String changePhone, Long uid);
 
+
     /**
      * 修改商户认证信息
      * @param hsyMerchantAuditRequest

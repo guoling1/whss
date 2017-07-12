@@ -46,12 +46,15 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         }
         Integer status = req.getStatus();
         if (status!=null) {
-            if (status == 3) {
+            if (status == 2) {
                 List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
                 if (list.size() > 0) {
                     for (int i = 0; i < list.size(); i++) {
                         if (list.get(i).getMobile() != null && !list.get(i).getMobile().equals("")) {
                             list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                        }
+                        if (list.get(i).getOemId()==0){
+                            list.get(i).setBranchCompany("金开门");
                         }
 
                     }
@@ -109,7 +112,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     public int getCount(MerchantInfoRequest req) {
         Integer status = req.getStatus();
         if (status!=null){
-            if (status==3){
+            if (status==2){
                 int count = merchantInfoQueryDao.getCount(req);
                 return count;
             }

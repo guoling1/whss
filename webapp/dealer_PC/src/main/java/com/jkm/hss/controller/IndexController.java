@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
  * Created by yuxiang on 2016/11/16
  */
 @Controller
-@RequestMapping(value = "")
 public class IndexController extends BaseController {
 
     /**

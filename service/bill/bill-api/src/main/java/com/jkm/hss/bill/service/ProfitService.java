@@ -38,4 +38,12 @@ public interface ProfitService {
      * @return
      */
     List<ProfitResponse> getInfo(String businessOrderNo);
+
+    /**
+     * 导出分润明细
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadExcel(ProfitDetailsRequest req, String baseUrl);
 }

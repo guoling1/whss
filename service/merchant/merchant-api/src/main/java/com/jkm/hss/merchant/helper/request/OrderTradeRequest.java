@@ -14,6 +14,7 @@ public class OrderTradeRequest {
 //     * 退款单号
 //     */
 //    private String refundOrderNo;
+    private int source;//直销参数
 
     private Date begin;
 
@@ -28,6 +29,11 @@ public class OrderTradeRequest {
      * hsy商户名
      */
     private String shortName;
+
+    /**
+     * 分公司
+     */
+    private String branchCompany;
 
     /**
      * 商户编码
