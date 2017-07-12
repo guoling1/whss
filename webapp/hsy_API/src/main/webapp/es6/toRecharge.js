@@ -55,15 +55,11 @@ recharge.addEventListener('click',function () {
                         alert("请求失败")
                     },
                     success: function (data) {
-                        $.ajax({
-                            type:'get',
-                            url:data.payResponse.url,
-                            dataType:"json",
-                            success:function (data) {
-                                message.load_hide();
-                                onWeixinJSBridge(data);
-                            }
-                        })
+                        http.post(data.payResponse.url, {}, function (data) {
+                            console.log(data)
+                            message.load_hide();
+                            onWeixinJSBridge(data);
+                        });
                     }
                 });
                 /*http.post_form('/membership/recharge',{
@@ -94,15 +90,10 @@ recharge.addEventListener('click',function () {
                         alert("请求失败")
                     },
                     success: function (data) {
-                        $.ajax({
-                            type:'get',
-                            url:data.payResponse.url,
-                            dataType:"json",
-                            success:function (data) {
-                                message.load_hide();
-                                onWeixinJSBridge(data);
-                            }
-                        })
+                        http.get(data.payResponse.url, {}, function (data) {
+                            message.load_hide();
+                            onAlipayJSBridge(data);
+                        });
                     }
                 });
                 /*http.post_form('/membership/recharge',{
