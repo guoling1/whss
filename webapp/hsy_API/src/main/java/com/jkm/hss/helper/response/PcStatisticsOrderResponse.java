@@ -64,7 +64,7 @@ public class PcStatisticsOrderResponse {
             this.refundNumber = this.refundNumber + statisticsOrder.getNumber();
             this.refundAmount = this.refundAmount.add(statisticsOrder.getRefundAmount());
             detail.setRefundNumber(detail.getRefundNumber() + statisticsOrder.getNumber());
-            detail.setRefundAmount(detail.getRefundAmount().add(statisticsOrder.getRefundAmount()));
+            detail.setRefundAmount(detail.getRefundAmount().add(null != statisticsOrder.getRefundAmount() ? statisticsOrder.getRefundAmount() : new BigDecimal("0.00")));
         }
     }
 
