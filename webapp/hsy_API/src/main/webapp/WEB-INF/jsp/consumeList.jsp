@@ -25,6 +25,6 @@
 <%--<a href="<%=basePath%>membership/consumeListByPage?mid=${mid}&currentPage=1">test</a>--%>
 </body>
 <script src="../../js/jquery-2.2.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.1.3.min.js"></script>
-<script src="../../js/2.0.1.1/consumeList.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.2.min.js"></script>
+<script src="../../js/2.0.2/consumeList.min.js"></script>
 </html>
