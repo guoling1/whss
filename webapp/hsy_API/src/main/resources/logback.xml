@@ -19,7 +19,7 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>${normal-pattern}</Pattern>
         </encoder>
-        <filter class="com.jkm.base.common.util.DaoLogFilter"/>
+        <!--<filter class="com.jkm.base.common.util.DaoLogFilter"/>-->
     </appender>
 
     <logger name="com.jkm" additivity="${log.console.append}" level="DEBUG">
