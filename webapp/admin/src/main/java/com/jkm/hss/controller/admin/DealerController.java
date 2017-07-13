@@ -305,9 +305,16 @@ public class DealerController extends BaseController {
                     du.setProductId(upgerdeRates.get(0).getProductId());
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
-                    du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
-                    du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
-                    du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
+
+                    if(upgerdeRates.get(0).getOemShareRate()!=null){
+                        du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getFirstDealerShareProfitRate()!=null){
+                        du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getSecondDealerShareProfitRate()!=null){
+                        du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
+                    }
                     du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                     final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate2 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
@@ -331,9 +338,15 @@ public class DealerController extends BaseController {
                     du.setProductId(upgerdeRates.get(0).getProductId());
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
-                    du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
-                    du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
-                    du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
+                    if(upgerdeRates.get(0).getOemShareRate()!=null){
+                        du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getFirstDealerShareProfitRate()!=null){
+                        du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getSecondDealerShareProfitRate()!=null){
+                        du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
+                    }
                     du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
@@ -345,9 +358,15 @@ public class DealerController extends BaseController {
                     du.setProductId(dealerUpgerdeRate.getProductId());
                     du.setDealerId(dealerUpgerdeRate.getDealerId());
                     du.setType(dealerUpgerdeRate.getType());
-                    du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
-                    du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
-                    du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+                    if(dealerUpgerdeRate.getOemShareRate()!=null){
+                        du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
+                    }
+                    if(dealerUpgerdeRate.getFirstDealerShareProfitRate()!=null){
+                        du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
+                    }
+                    if(dealerUpgerdeRate.getSecondDealerShareProfitRate()!=null){
+                        du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+                    }
                     du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
