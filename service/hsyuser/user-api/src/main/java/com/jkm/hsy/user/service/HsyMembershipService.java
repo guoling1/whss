@@ -41,5 +41,5 @@ public interface HsyMembershipService {
     public List<AppBizShop> findSuitShopByMCID(Long mcid);
     public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
-    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid)throws Exception;
+    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid);
 }
