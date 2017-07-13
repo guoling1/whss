@@ -29,6 +29,7 @@ public class Task {
     @Autowired
     private SendMqMsgService sendMqMsgService;
     @Autowired
+    @Qualifier("hsyBalanceAccountEmailService")
     private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
 
     /**

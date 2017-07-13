@@ -4,6 +4,7 @@ import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class SendWeekEmailTask extends AbstractTask {
 
     @Autowired
+    @Qualifier("hsyBalanceAccountEmailService")
     private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
 
 
