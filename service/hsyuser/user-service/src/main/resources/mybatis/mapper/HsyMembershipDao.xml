@@ -319,4 +319,15 @@
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
     </select>
 
+    <select id="findMemberListByOUIDAndUID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        from app_policy_member member
+        left join app_policy_consumer consumer on member.CID=consumer.ID
+        left join app_policy_membership_card card on member.MCID=card.ID
+        where 1=1 and card.UID=#{uid}
+        <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
+        <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
+    </select>
+
 </mapper>

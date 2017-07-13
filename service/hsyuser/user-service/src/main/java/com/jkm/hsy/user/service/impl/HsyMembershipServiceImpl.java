@@ -844,4 +844,18 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return list;
     }
 
+    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid)throws Exception{
+        List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUIDAndUID(openID,userID,uid);
+        if(list!=null&&list.size()!=0) {
+            AppPolicyMember appPolicyMember=list.get(0);
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+            appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+            return appPolicyMember;
+        }
+        else
+            return null;
+    }
+
 }
