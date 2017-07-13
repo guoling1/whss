@@ -4,6 +4,8 @@
     <title>提示</title>
 </head>
 <body>
-提示：${tips}
+<div id="tips">
+    提示：${tips}
+</div>
 </body>
 </html>

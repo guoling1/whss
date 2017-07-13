@@ -15,7 +15,7 @@
   <!--<img src="../assets/member/fail.png" alt="">-->
   <p class="result">充值成功</p>
   <%--<p class="errCode">错误码</p>--%>
-  <a href="javascript:;" class="toRecord" href="<%=basePath%>membership/toRechargeList?mid=${appPolicyMember.id}" >查看充值记录</a>
+  <a class="toRecord" href="<%=basePath%>membership/toRechargeList?mid=${appPolicyMember.id}" >查看充值记录</a>
   <a class="weui-btn weui-btn_plain-primary back" href="javascript:" onclick="self.location=document.referrer;">返回</a>
 </div>
 

@@ -2430,3 +2430,40 @@ input:focus {
 #needRecharge p.content {
   padding-bottom: 53px;
 }
+#rechargeResults {
+  background: #f4f5f8;
+  min-height: 100%;
+  padding-top: 39px;
+}
+#rechargeResults img {
+  width: 88px;
+  height: 88px;
+}
+#rechargeResults .result {
+  padding: 28px 0 0;
+  font-size: 18px;
+}
+#rechargeResults .errCode {
+  padding-top: 16px;
+  font-size: 14px;
+  color: #999;
+}
+#rechargeResults .toRecord {
+  display: inline-block;
+  padding: 48px 0 29px;
+  font-size: 15px;
+  color: #333;
+}
+#rechargeResults .back {
+  font-size: 16px;
+  width: 119px;
+  height: 29px;
+  line-height: 29px;
+}
+#tips {
+  padding-top: 50%;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  background: #f4f5f8;
+}
