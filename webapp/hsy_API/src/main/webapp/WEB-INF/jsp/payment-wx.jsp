@@ -32,6 +32,8 @@
       <img src="../assets/member/zhekou.png" alt="">
       <span><span id="rebate">${appPolicyMember.discountInt}</span>.${appPolicyMember.discountFloat}折</span>
       <span class="right">-￥<span id="minus">0.00</span></span>
+      ${appPolicyMember.cid},${appPolicyMember.mcid},${appPolicyMember.id}
+      isMemberCardPay 0 否 1是  discountFee
     </div>
   </div>
   <%--<div class="safe">

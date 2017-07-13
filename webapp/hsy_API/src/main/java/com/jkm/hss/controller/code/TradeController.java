@@ -84,14 +84,18 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
-        final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId());
-        if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
-                    .addParam("subMerName", resultPair.getRight())
-                    .addParam("amount", payRequest.getTotalFee()).build();
+        if(payRequest.getIsMemberCardPay()==1) {
+            return null;
+        }else{
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId());
+            if (0 == resultPair.getLeft()) {
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                        .addParam("subMerName", resultPair.getRight())
+                        .addParam("amount", payRequest.getTotalFee()).build();
+            }
+            return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
     }
 
 
