@@ -442,6 +442,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         if(appPolicyRechargeOrder.getCurrentPage()<=0)
             throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
 
+        appPolicyRechargeOrder.setMemberID(appPolicyRechargeOrder.getMid());
         PageUtils page=new PageUtils();
         page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
         page.setPageSize(AppConstant.PAGE_SIZE);
