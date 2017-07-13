@@ -75,19 +75,30 @@
                 </el-table-column>
               </el-table>
             </div>
-            <!--<div class="box-body">-->
-            <!--<label class="form-label">代理商推广码&推广链接</label>-->
-            <!--<br>-->
-            <!--<el-switch v-model="inviteBoolean" @change="switchInvite"-->
-            <!--on-text="开启" on-color="#13ce66"-->
-            <!--off-text="关闭" off-color="#ff4949">-->
-            <!--</el-switch>-->
-            <!--<div class="inviteText" v-show="inviteBoolean">-->
-            <!--推广码：{{inviteCode}}-->
-            <!--<br>-->
-            <!--推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}-->
-            <!--</div>-->
-            <!--</div>-->
+            <div class="box-body">
+              <label class="form-label">代理商推广码&推广链接</label>
+              <br>
+              <el-switch v-model="inviteBoolean" @change="switchInvite"
+                         on-text="开启" on-color="#13ce66"
+                         off-text="关闭" off-color="#ff4949">
+              </el-switch>
+              <div class="inviteText" v-show="inviteBoolean">
+                推广码：{{inviteCode}}
+                <br>
+                推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}
+              </div>
+            </div>
+            <div class="box-body">
+              <label class="form-label">合伙人推荐功能</label>
+              <br>
+              <el-switch v-model="inviteBoolean" @change="switchInvite"
+                         on-text="开启" on-color="#13ce66"
+                         off-text="关闭" off-color="#ff4949">
+              </el-switch>
+              <div class="inviteText" v-show="inviteBoolean">
+                开通后，代理商设置的商户终端费率按产品费率执行
+              </div>
+            </div>
             <div class="box-body">
               <el-button type="primary" size="small" @click="onSubmit">保存产品设置</el-button>
             </div>
@@ -106,7 +117,7 @@
     name: 'app',
     created(){
       let query = this.$route.query;
-      this.$http.post('/daili/dealer/getDealerProduct', {
+      this.$http.post('/daili/dealer/getFirstDealerProduct', {
         dealerId: query.dealerId,
         sysType: query.product,
         productId: query.productId
