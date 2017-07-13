@@ -94,8 +94,7 @@ public class CodeController extends BaseController {
             Preconditions.checkState(appBizShops.get(0).getStatus()==AppConstant.SHOP_STATUS_NORMAL, "商户未通过审核");
             List<AppAuUser> appAuUsers = hsyShopDao.findCorporateUserByShopID(merchantId);
             Preconditions.checkState(appAuUsers!=null&&appAuUsers.size()>0, "商户不存在");
-            String merchantName = hsyShopDao.findShopNameByID(merchantId);
-            model.addAttribute("name", merchantName);
+            model.addAttribute("merchantId", merchantId);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
             Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(appAuUsers.get(0).getId());
             Preconditions.checkState(userCurrentChannelPolicyOptional.isPresent(), "商户使用中通道未设置");
