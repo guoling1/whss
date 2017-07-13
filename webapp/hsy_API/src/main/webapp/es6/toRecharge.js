@@ -48,11 +48,13 @@ recharge.addEventListener('click',function () {
                     data:{
                         type: pageData.type,
                         source: pageData.source,
-                        mid: pageData.mid
+                        mid: pageData.mid,
+                        amount: price.value
                     },
                     dataType: "json",
                     error: function () {
                         alert("请求失败")
+
                     },
                     success: function (data) {
                         http.post(data.payResponse.url, {}, function (data) {
