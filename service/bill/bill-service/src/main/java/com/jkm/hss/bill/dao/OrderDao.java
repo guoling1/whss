@@ -670,4 +670,6 @@ public interface OrderDao {
 
     List<Order> selectOrderListByCount(@Param("accountId") long accountId, @Param("count") int count,
                                        @Param("status") int status, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
+
+    Order selectOrderBySn(String sn);
 }
