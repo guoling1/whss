@@ -204,7 +204,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
 
     @Transactional
     public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse) {
-        List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getTradeOrderNo());
+        List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getBusinessOrderNo());
         AppPolicyRechargeOrder appPolicyRechargeOrder=rechargeOrderList.get(0);
         if(appPolicyRechargeOrder.getStatus()== OrderStatus.NEED_RECHARGE.key)
         {
