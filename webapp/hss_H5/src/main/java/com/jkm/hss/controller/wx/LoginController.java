@@ -1030,13 +1030,13 @@ public class LoginController extends BaseController {
         model.addAttribute("currentLevel",result.get().getLevel());
         model.addAttribute("upgradeRules",list);
         model.addAttribute("merchantId",result.get().getId());
-        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
         Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        String oemNo = "";
         if(oemInfoOptional.isPresent()){
-            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
-        }else{
-            model.addAttribute("oemNo","");
+            oemNo = oemInfoOptional.get().getOemNo();
         }
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return "/toUpgerde";
     }
 
