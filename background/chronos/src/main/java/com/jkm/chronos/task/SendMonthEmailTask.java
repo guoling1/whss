@@ -23,7 +23,7 @@ public class SendMonthEmailTask extends AbstractTask {
 
     @Override
     protected void run() {
-        this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
+//        this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
     }
 
     /**

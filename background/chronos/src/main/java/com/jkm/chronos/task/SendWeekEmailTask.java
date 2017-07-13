@@ -24,7 +24,7 @@ public class SendWeekEmailTask extends AbstractTask {
 
     @Override
     protected void run() {
-        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
+//        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
     }
 
     /**
