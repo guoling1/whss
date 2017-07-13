@@ -14,6 +14,10 @@ public class FirstDealerProductDetailResponse {
      * 产品名称
      */
     private String productName;
+    /**
+     * 推荐开关
+     */
+    private Integer recommendBtn;
 
     /**
      * 产品列表

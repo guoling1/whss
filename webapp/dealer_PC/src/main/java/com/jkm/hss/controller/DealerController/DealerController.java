@@ -799,7 +799,7 @@ public class DealerController extends BaseController {
                 tempTypeName = "好收银";
             }
             firstDealerProductDetailResponse.setProductName(tempTypeName);
-
+            firstDealerProductDetailResponse.setRecommendBtn(dealerOptional.get().getRecommendBtn());
             List<DealerProfitSettingResponse> dealerProfitSettingResponses = dealerProfitService.selectDealerByDealerIdAndProductId(dealerOptional.get().getId(),request.getProductId());
             if(dealerProfitSettingResponses.size()<=0){
                 dealerProfitSettingResponses = dealerProfitService.selectByDealerIdAndProductId(request.getProductId());
@@ -873,7 +873,7 @@ public class DealerController extends BaseController {
                 tempTypeName = "好收银";
             }
             firstDealerProductDetailResponse.setProductName(tempTypeName);
-
+            firstDealerProductDetailResponse.setRecommendBtn(dealerOptional.get().getRecommendBtn());
 
             //设置分润空间
             List<DealerProfitSettingResponse> dealerProfitResponses = dealerProfitService.selectByDealerIdAndProductId(productOptional.get().getId());
