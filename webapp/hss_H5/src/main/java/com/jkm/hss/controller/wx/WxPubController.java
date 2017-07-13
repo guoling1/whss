@@ -1592,7 +1592,15 @@ public class WxPubController extends BaseController {
         toUpgradeResponse.setMerchantId(merchantInfo.get().getId());
         toUpgradeResponse.setCurrentLevel(merchantInfo.get().getLevel());
         toUpgradeResponse.setUpgradeRules(list);
-        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        String oemNo = "";
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+        if(!oemInfoOptional.isPresent()&&merchantInfo.get().getOemId()>0){
+            return CommonResponse.simpleResponse(-1, "分公司信息配置有误");
+        }
+        if(oemInfoOptional.isPresent()){
+            oemNo = oemInfoOptional.get().getOemNo();
+        }
+        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", toUpgradeResponse);
     }
 }
