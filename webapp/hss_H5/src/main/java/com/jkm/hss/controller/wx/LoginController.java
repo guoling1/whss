@@ -863,7 +863,7 @@ public class LoginController extends BaseController {
         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
         model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
         String oemNo = "";
-        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(result.get().getOemId());
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
         if(oemInfoOptional.isPresent()){
             oemNo = oemInfoOptional.get().getOemNo();
         }
