@@ -878,13 +878,13 @@ public class LoginController extends BaseController {
         BigDecimal totalProfit = partnerShallProfitDetailService.selectTotalProfitByMerchantId(result.get().getId());
         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
         model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
-        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        String oemNo = "";
         Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(result.get().getOemId());
         if(oemInfoOptional.isPresent()){
-            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
-        }else{
-            model.addAttribute("oemNo","");
+            oemNo = oemInfoOptional.get().getOemNo();
         }
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return "/myRecommend";
 
     }
