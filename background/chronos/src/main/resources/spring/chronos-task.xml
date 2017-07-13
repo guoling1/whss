@@ -39,6 +39,12 @@
 
     <task:annotation-driven/>
 
+    <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">
+        <constructor-arg name="endpoint" value="${oss_endpoint}"/>
+        <constructor-arg name="accessKeyId" value="${oss_accessKeyId}"/>
+        <constructor-arg name="secretAccessKey" value="${oss_secretAccessKey}"/>
+    </bean>
+
     <reg:zookeeper id="regCenter"
                    serverLists="${serverLists}"
                    namespace="${namespace}"
