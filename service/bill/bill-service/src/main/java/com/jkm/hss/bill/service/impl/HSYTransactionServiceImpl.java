@@ -204,7 +204,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
 
     @Transactional
     public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse) {
-        List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getTradeOrderNo());
+        List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getBusinessOrderNo());
         AppPolicyRechargeOrder appPolicyRechargeOrder=rechargeOrderList.get(0);
         if(appPolicyRechargeOrder.getStatus()== OrderStatus.NEED_RECHARGE.key)
         {
@@ -221,17 +221,17 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                     appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
                     appPolicyRechargeOrderUpdate.setUpdateTime(date);
                     hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
-//                    //生成分润消息记录
-//                    final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
-//                    consumeMsgSplitProfitRecord.setHsyOrderId(appPolicyRechargeOrder.getId());
-//                    consumeMsgSplitProfitRecord.setRequestParam("");
-//                    consumeMsgSplitProfitRecord.setTag(MqConfig.SPLIT_PROFIT);
-//                    consumeMsgSplitProfitRecord.setStatus(EnumConsumeMsgSplitProfitRecordStatus.PENDING_SEND.getId());
-//                    final long consumeMsgSplitProfitRecordId = this.sendMqMsgService.add(consumeMsgSplitProfitRecord);
-//                    //发消息分润
-//                    final JSONObject requestJsonObject = new JSONObject();
-//                    requestJsonObject.put("consumeMsgSplitProfitRecordId", consumeMsgSplitProfitRecordId);
-//                    MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 20000);
+                    //生成分润消息记录
+                    final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
+                    consumeMsgSplitProfitRecord.setHsyRechargeOrderId(appPolicyRechargeOrder.getId());
+                    consumeMsgSplitProfitRecord.setRequestParam("");
+                    consumeMsgSplitProfitRecord.setTag(MqConfig.SPLIT_PROFIT);
+                    consumeMsgSplitProfitRecord.setStatus(EnumConsumeMsgSplitProfitRecordStatus.PENDING_SEND.getId());
+                    final long consumeMsgSplitProfitRecordId = this.sendMqMsgService.add(consumeMsgSplitProfitRecord);
+                    //发消息分润
+                    final JSONObject requestJsonObject = new JSONObject();
+                    requestJsonObject.put("consumeMsgSplitProfitRecordId", consumeMsgSplitProfitRecordId);
+                    MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 20000);
                     break;
                 case FAIL:
                     appPolicyRechargeOrderUpdate.setId(appPolicyRechargeOrder.getId());

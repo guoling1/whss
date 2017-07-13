@@ -27,8 +27,8 @@ var mySwiper = new Swiper('.swiper-container', {
     centeredSlides: true,
     coverflow: {
         rotate: 0,
-        stretch: -40,
-        depth: 200,
+        stretch: 0,
+        depth: 100,
         modifier: 1,
         slideShadows : false
     },

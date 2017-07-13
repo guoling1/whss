@@ -67,6 +67,7 @@
         mid　: '${appPolicyMember.id}'
     }
 </script>
+<script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>

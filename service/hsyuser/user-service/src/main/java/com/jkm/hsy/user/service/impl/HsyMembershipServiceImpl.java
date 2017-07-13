@@ -226,9 +226,14 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         Integer cardCount=hsyMembershipDao.findMemberCardCountByMCID(appPolicyMembershipCard.getId());
         Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid(),null,null);
         List<AppBizShop> shopList=hsyMembershipDao.findSuitShopByMCID(appPolicyMembershipCard.getId());
-
-        BigDecimal proportion = new BigDecimal(cardCount).divide(new BigDecimal(cardTotalCount),4,BigDecimal.ROUND_HALF_UP);
-        BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal proportion=BigDecimal.ZERO;
+        BigDecimal proportionEx=null;
+        if(cardTotalCount!=0) {
+            proportion = new BigDecimal(cardCount).divide(new BigDecimal(cardTotalCount), 4, BigDecimal.ROUND_HALF_UP);
+            proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        }else{
+            proportionEx=BigDecimal.ZERO;
+        }
 
         Map result=new HashMap();
         result.put("appPolicyMembershipCard",list.get(0));
@@ -773,13 +778,11 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getAlipayChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getUserID());
             List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
-            appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
             appPolicyRechargeOrder.setSource("alipay");
         }else {
             appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getWechatChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getOpenID());
             List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
-            appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
             appPolicyRechargeOrder.setSource("wechat");
         }
 
@@ -794,6 +797,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         List<AppAuUser> userList=hsyMembershipDao.findShopNameAndGlobalID(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantName(userList.get(0).getShopName());
         appPolicyRechargeOrder.setMerchantNO(userList.get(0).getGlobalID());
+        appPolicyRechargeOrder.setPayeeAccountID(userList.get(0).getAccountID());
         appPolicyRechargeOrder.setStatus(OrderStatus.NEED_RECHARGE.key);
         appPolicyRechargeOrder.setCreateTime(date);
         appPolicyRechargeOrder.setUpdateTime(date);

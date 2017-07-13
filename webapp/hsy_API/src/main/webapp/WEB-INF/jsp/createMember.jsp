@@ -85,7 +85,7 @@
     <div class="swiper-container top" id="swiper">
         <div class="swiper-wrapper">
             <c:forEach items="${cardList }" var="entity" varStatus="status">
-                <div class="swiper-slide">
+                <div class="swiper-slide" style="width: 285px">
                     <div class="card">
                         <span class="name">${entity.membershipName}</span>
                         <span class="type">${entity.membershipName}</span>
@@ -111,7 +111,7 @@
                 <input class="weui-input" type="tel" placeholder="请输入短信验证码" id="code"/>
             </div>
             <div class="weui-cell__ft">
-                <button class="weui-btn weui-btn_plain-primary btnCode" id="sendCode">获取验证码</button>
+                <button class="weui-btn weui-btn_plain-primary btnCode" id="sendCode" style="width: 100px">获取验证码</button>
             </div>
         </div>
     </div>
@@ -144,6 +144,7 @@
         <button id="sendVcode">发送验证码</button>--%>
 </body>
 <script src="../../js/swiper-3.4.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>--%>
 <script src="../../js/2.0.2/createMember.min.js"></script>
 </html>

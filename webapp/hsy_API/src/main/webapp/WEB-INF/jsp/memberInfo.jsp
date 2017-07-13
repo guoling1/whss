@@ -24,7 +24,7 @@
         <div class="price">￥<span>${appPolicyMember.remainingSum}</span></div>
         </c:if>
     </div>
-    <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
+    <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>sqb/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
     <div class="weui-cells">
         <%--<a class="weui-cell weui-cell_access" href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">--%>
         <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/toConsumeList?mid=${appPolicyMember.id}">

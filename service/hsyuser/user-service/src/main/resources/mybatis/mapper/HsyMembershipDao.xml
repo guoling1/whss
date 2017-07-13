@@ -145,7 +145,7 @@
     </select>
 
     <select id="findShopNameAndGlobalID" resultType="com.jkm.hsy.user.entity.AppAuUser">
-        select user.GLOBALID globalID,shop.name shopName
+        select user.GLOBALID globalID,shop.name shopName,user.accountID accountID
         from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
         left join app_biz_shop shop on shop.ID=sur.sid
         where sur.TYPE=1 and user.ID=#{uid}

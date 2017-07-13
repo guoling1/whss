@@ -37,49 +37,79 @@ let onAlipayJSBridge = function (jsonData) {
         });
 };
 recharge.addEventListener('click',function () {
-
     let keyCtrl = pageData.source;
     if ( keyCtrl ) {
         switch ( keyCtrl ) {
             case 'WX':
-                if(price.value > 0){
-                    message.load_show('正在支付');
-                    http.post_form('/membership/recharge',{
+                message.load_show('正在支付');
+                $.ajax({
+                    type: "get",
+                    url: '/membership/recharge',
+                    data:{
                         type: pageData.type,
                         source: pageData.source,
                         mid: pageData.mid,
                         amount: price.value
-                    },function (data) {
-                        http.post(data.payUrl, {}, function (data) {
+                    },
+                    dataType: "json",
+                    error: function () {
+                        alert("请求失败")
+
+                    },
+                    success: function (data) {
+                        http.post(data.payResponse.url, {}, function (data) {
+                            console.log(data)
                             message.load_hide();
                             onWeixinJSBridge(data);
                         });
-                    })
-                } else {
-                    message.prompt_show('请输入正确的支付金额');
-                }
+                    }
+                });
+                /*http.post_form('/membership/recharge',{
+                 type: pageData.type,
+                 source: pageData.source,
+                 mid: pageData.mid,
+                 },function (data) {
+                 console.log(data.payResponse.url)
+                 http.get(data.payResponse.url, {}, function (data) {
+                 console.log(data)
+                 message.load_hide();
+                 onWeixinJSBridge(data);
+                 });
+                 })*/
                 break;
             case 'ZFB':
-                if(price.value > 0){
-                    message.load_show('正在支付');
-                    http.post_form('/membership/recharge',{
+                message.load_show('正在支付');
+                $.ajax({
+                    type: "get",
+                    url: '/membership/recharge',
+                    data:{
                         type: pageData.type,
                         source: pageData.source,
-                        mid: pageData.mid,
-                        amount: price.value
-                    },function (data) {
-                        http.post(data.payUrl, {}, function (data) {
+                        mid: pageData.mid
+                    },
+                    dataType: "json",
+                    error: function () {
+                        alert("请求失败")
+                    },
+                    success: function (data) {
+                        http.get(data.payResponse.url, {}, function (data) {
                             message.load_hide();
                             onAlipayJSBridge(data);
                         });
-                    })
-                } else {
-                    message.prompt_show('请输入正确的支付金额');
-                }
+                    }
+                });
+                /*http.post_form('/membership/recharge',{
+                 type: pageData.type,
+                 source: pageData.source,
+                 mid: pageData.mid,
+                 },function (data) {
+                 http.get(data.payResponse.url, {}, function (data) {
+                 message.load_hide();
+                 onAlipayJSBridge(data);
+                 });
+                 })*/
                 break;
         }
     }
-
-
 })
 
