@@ -76,12 +76,11 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId, @RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "merchantId") Long merchantId) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "merchantId") Long merchantId) throws IOException {
         model.addAttribute("hsyOrderId", hsyOrderId);
         String merchantName = hsyShopDao.findShopNameByID(merchantId);
         model.addAttribute("merchantName", merchantName);
@@ -95,12 +94,11 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "merchantId") Long merchantId) throws IOException {
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "merchantId") Long merchantId) throws IOException {
         model.addAttribute("hsyOrderId", hsyOrderId);
         String merchantName = hsyShopDao.findShopNameByID(merchantId);
         model.addAttribute("merchantName", merchantName);

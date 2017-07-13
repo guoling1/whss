@@ -28,9 +28,9 @@
       <span class="key-icon">￥</span>
       <input type="hidden" id="key-input" value="">
     </div>
-    <div class="sale">
+    <div class="sale" <c:if test="${appPolicyMember==null}">style="display:none;"</c:if> >
       <img src="../assets/member/zhekou.png" alt="">
-      <span><span id="rebate">9</span>折</span>
+      <span><span id="rebate">${appPolicyMember.discountInt}</span>.${appPolicyMember.discountFloat}折</span>
       <span class="right">-￥<span id="minus">0.00</span></span>
     </div>
   </div>
@@ -42,7 +42,7 @@
     <div class="copyright">
       <img src="../assets/member/vip.png" alt="">
       <span class="word">卡内余额：</span>
-      <span>￥500.00</span>
+      <span>${appPolicyMember.remainingSum}</span>
       <span class="weui-btn weui-btn_mini weui-btn_primary">充值</span>
     </div>
     <%--<div class="copyright flexBox">

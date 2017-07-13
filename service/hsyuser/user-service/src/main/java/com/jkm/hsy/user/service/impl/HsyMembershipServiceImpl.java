@@ -853,6 +853,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             appPolicyMember.setRemainingSum(account.get().getAvailable());
             appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
             appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+            DecimalFormat a=new DecimalFormat("0.0");
+            String discountStr=a.format(appPolicyMember.getDiscount());
+            String discountInt=discountStr.split("\\.")[0];
+            String discountFloat=discountStr.split("\\.")[1];
+            appPolicyMember.setDiscountInt(discountInt);
+            appPolicyMember.setDiscountFloat(discountFloat);
             return appPolicyMember;
         }
         else
