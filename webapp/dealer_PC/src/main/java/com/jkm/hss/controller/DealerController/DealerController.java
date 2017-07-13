@@ -807,17 +807,32 @@ public class DealerController extends BaseController {
             firstDealerProductDetailResponse.setDealerProfits(dealerProfitSettingResponses);
 
             List<DealerUpgerdeRate> dealerUpgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),request.getProductId());
+
+            List<DealerUpgerdeRate> oemUpgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(super.getDealerId(),request.getProductId());
             List<FirstDealerProductDetailResponse.DealerUpgerdeRate> dealerUpgerdeRateList = new ArrayList<>();
-            for(int i=0;i<dealerUpgerdeRates.size();i++){
-                FirstDealerProductDetailResponse.DealerUpgerdeRate dealerUpgerdeRate1 = firstDealerProductDetailResponse.new DealerUpgerdeRate();
-                dealerUpgerdeRate1.setProductId(product.getId());
-                dealerUpgerdeRate1.setDealerId(dealerOptional.get().getId());
-                dealerUpgerdeRate1.setType(dealerUpgerdeRates.get(i).getType());
-                dealerUpgerdeRate1.setFirstDealerShareProfitRate(dealerUpgerdeRates.get(i).getFirstDealerShareProfitRate().toPlainString());
-                dealerUpgerdeRate1.setSecondDealerShareProfitRate(dealerUpgerdeRates.get(i).getSecondDealerShareProfitRate().toPlainString());
-                dealerUpgerdeRate1.setOemShareRate(dealerUpgerdeRates.get(i).getOemShareRate().toPlainString());
-                dealerUpgerdeRate1.setBossDealerShareRate(dealerUpgerdeRates.get(i).getBossDealerShareRate().toPlainString());
-                dealerUpgerdeRateList.add(dealerUpgerdeRate1);
+            if(dealerUpgerdeRates.size()==0){
+                for(int i=0;i<oemUpgerdeRates.size();i++){
+                    FirstDealerProductDetailResponse.DealerUpgerdeRate dealerUpgerdeRate1 = firstDealerProductDetailResponse.new DealerUpgerdeRate();
+                    dealerUpgerdeRate1.setProductId(product.getId());
+                    dealerUpgerdeRate1.setDealerId(dealerOptional.get().getId());
+                    dealerUpgerdeRate1.setType(oemUpgerdeRates.get(i).getType());
+                    dealerUpgerdeRate1.setOemShareRate(oemUpgerdeRates.get(i).getOemShareRate().toPlainString());
+                    dealerUpgerdeRate1.setBossDealerShareRate(oemUpgerdeRates.get(i).getBossDealerShareRate().toPlainString());
+                    dealerUpgerdeRateList.add(dealerUpgerdeRate1);
+                }
+            }
+            if(dealerUpgerdeRates.size()==2){
+                for(int j=0;j<dealerUpgerdeRates.size();j++){
+                    FirstDealerProductDetailResponse.DealerUpgerdeRate dealerUpgerdeRate1 = firstDealerProductDetailResponse.new DealerUpgerdeRate();
+                    dealerUpgerdeRate1.setProductId(product.getId());
+                    dealerUpgerdeRate1.setDealerId(dealerOptional.get().getId());
+                    dealerUpgerdeRate1.setType(dealerUpgerdeRates.get(j).getType());
+                    dealerUpgerdeRate1.setFirstDealerShareProfitRate(dealerUpgerdeRates.get(j).getFirstDealerShareProfitRate().toPlainString());
+                    dealerUpgerdeRate1.setSecondDealerShareProfitRate(dealerUpgerdeRates.get(j).getSecondDealerShareProfitRate().toPlainString());
+                    dealerUpgerdeRate1.setOemShareRate(dealerUpgerdeRates.get(j).getOemShareRate().toPlainString());
+                    dealerUpgerdeRate1.setBossDealerShareRate(dealerUpgerdeRates.get(j).getBossDealerShareRate().toPlainString());
+                    dealerUpgerdeRateList.add(dealerUpgerdeRate1);
+                }
             }
             firstDealerProductDetailResponse.setDealerUpgerdeRates(dealerUpgerdeRateList);
 
