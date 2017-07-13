@@ -78,7 +78,7 @@
             <div class="box-body">
               <label class="form-label">合伙人推荐功能</label>
               <br>
-              <el-switch v-model="recommendBoolean" @change="switchInvite"
+              <el-switch v-model="recommendBoolean" @change="switchRecommend"
                          on-text="开启" on-color="#13ce66"
                          off-text="关闭" off-color="#ff4949">
               </el-switch>
@@ -146,6 +146,7 @@
         tableData: [],
         formObject: [],
         recommendBoolean: false,
+        recommendBtn: false,
         dealerProfits: []
       }
     },
@@ -155,11 +156,11 @@
         this.formObject.push('form' + length);
         return 'form' + length;
       },
-      switchInvite: function (Boole) {
+      switchRecommend: function (Boole) {
         if (Boole) {
-          this.inviteStatus = 2;
+          this.recommendBtn = 2;
         } else {
-          this.inviteStatus = 1;
+          this.recommendBtn = 1;
         }
       },
       onSubmit: function () {
