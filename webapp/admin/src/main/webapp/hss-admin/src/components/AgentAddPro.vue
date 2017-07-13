@@ -20,45 +20,46 @@
               <div class="form-group">
                 <div class="product">
                   <div class="col-xs-10" style="margin-left: 5%">
-                        <div class="box box1">
-                          <div class="box-body table-responsive no-padding">
-                            <table class="table table-hover">
-                              <tbody>
-                              <tr>
-                                <th>通道名称</th>
-                                <th>支付结算手续费</th>
-                                <th>结算时间</th>
-                                <th>提现结算费</th>
-                                <th>商户支付手续费</th>
-                                <th>商户提现手续费</th>
-                              </tr>
-                              <tr v-for="channel in channels">
-                                <td>{{channel.channelName}}</td>
-                                <td><input type="number" name="name" v-model="channel.paymentSettleRate">%</td>
-                                <td>{{channel.settleType}}</td>
-                                <td><input type="number" name="name" v-model="channel.withdrawSettleFee">元/笔</td>
-                                <td><input type="number" name="name" v-model="channel.merchantSettleRate">%</td>
-                                <td><input type="number" name="name" v-model="channel.merchantWithdrawFee">元/笔</td>
-                              </tr>
-                              </tbody></table>
-                          </div>
-                          <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
+                    <div class="box box1">
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody>
+                          <tr>
+                            <th>通道名称</th>
+                            <th>支付结算手续费</th>
+                            <th>结算时间</th>
+                            <th>提现结算费</th>
+                            <th>商户支付手续费</th>
+                            <th>商户提现手续费</th>
+                          </tr>
+                          <tr v-for="channel in channels">
+                            <td>{{channel.channelName}}</td>
+                            <td><input type="number" name="name" v-model="channel.paymentSettleRate">%</td>
+                            <td>{{channel.settleType}}</td>
+                            <td><input type="number" name="name" v-model="channel.withdrawSettleFee">元/笔</td>
+                            <td><input type="number" name="name" v-model="channel.merchantSettleRate">%</td>
+                            <td><input type="number" name="name" v-model="channel.merchantWithdrawFee">元/笔</td>
+                          </tr>
+                          </tbody>
+                        </table>
                       </div>
+                      <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                  </div>
                 </div>
               </div>
             </div>
           </form>
         </div>
-        <div style="position: relative">
+        <div style="position: relative" v-if="oemType==0">
           <div class="box-header" style="margin-top: 15px">
             <h3 class="box-title title2">代理商推广码&推广链接：</h3>
           </div>
-            <el-radio-group v-model="records.inviteBtn" style="margin-left: 65px">
-              <el-radio :label="2" style="display: block">开</el-radio>
-              <el-radio :label="1" style="display: block;margin:10px 0 0">关</el-radio>
-            </el-radio-group>
+          <el-radio-group v-model="records.inviteBtn" style="margin-left: 65px">
+            <el-radio :label="2" style="display: block">开</el-radio>
+            <el-radio :label="1" style="display: block;margin:10px 0 0">关</el-radio>
+          </el-radio-group>
           <div style="position: absolute;top: 41px;left: 108px">
             <span style="font-weight: normal;margin-left: 20px">推广码：{{records.inviteCode}}</span>
             <span style="font-weight: normal;margin-left: 20px">推广链接：http://hss.qianbaojiajia.com/reg?invite={{records.inviteCode}}</span>
@@ -97,10 +98,11 @@
                             <td>{{dealerProfit.channelName}}</td>
                             <td><input type="number" name="name" v-model="dealerProfit.profitSpace">%</td>
                           </tr>
-                          <tr >
+                          <tr>
                             <td colspan="2"><span>总分润空间不得大于该通道商户费率与一级代理商结算价之差</span></td>
                           </tr>
-                          </tbody></table>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
@@ -112,25 +114,29 @@
                           <tr>
                             <th>分润类型</th>
                             <th>金开门分润比例</th>
+                            <th v-if="oemType==1">分公司分润比例</th>
                             <th>一级代理商分润比例</th>
                             <th>二级代理分润比例</th>
                           </tr>
                           <tr>
                             <td>升级费分润</td>
                             <td>{{dealerUpgerdeRate1.bossDealerShareRate}}%</td>
+                            <td v-if="oemType==1"><input type="number" v-model="dealerUpgerdeRate1.oemShareRate">%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate1.firstDealerShareProfitRate">%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate1.secondDealerShareProfitRate">%</td>
                           </tr>
                           <tr>
                             <td>收单分润</td>
                             <td>{{dealerUpgerdeRate2.bossDealerShareRate}}%</td>
+                            <td v-if="oemType==1"><input type="number" v-model="dealerUpgerdeRate2.oemShareRate">%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate2.firstDealerShareProfitRate">%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate2.secondDealerShareProfitRate">%</td>
                           </tr>
                           <tr>
                             <td colspan="4">金开门，一级代理，二级代理的比例之和必须等于100%</td>
                           </tr>
-                          </tbody></table>
+                          </tbody>
+                        </table>
                       </div>
                       <!-- /.box-body -->
                     </div>
@@ -142,8 +148,12 @@
           </form>
         </div>
         <!--<div class="btn btn-primary" @click="goBack" style="margin: 20px 20px 100px 40px;">返回</div>-->
-        <div class="btn btn-primary" @click="_$power(change,'boss_first_product__update')" style="margin: 20px 20px 100px;" v-if="level==1&&!isAdd">修改</div>
-        <div class="btn btn-primary" @click="_$power(change,'boss_merchant_check')" style="margin: 20px 20px 100px;" v-if="level==1&&isAdd">开 通</div>
+        <div class="btn btn-primary" @click="_$power(change,'boss_first_product__update')"
+             style="margin: 20px 20px 100px;" v-if="level==1&&!isAdd">修改
+        </div>
+        <div class="btn btn-primary" @click="_$power(change,'boss_merchant_check')" style="margin: 20px 20px 100px;"
+             v-if="level==1&&isAdd">开 通
+        </div>
       </div>
     </div>
   </div>
@@ -155,36 +165,38 @@
     name: 'agentAddBase',
     data () {
       return {
-        isAdd:true,
-        records:'',
-        channels:'',
-        dealerProfits:[],
-        dealerUpgerdeRate1:'',
-        dealerUpgerdeRate2:'',
-        level:1,
-        url:''
+        isAdd: true,
+        records: '',
+        channels: '',
+        dealerProfits: [],
+        dealerUpgerdeRate1: '',
+        dealerUpgerdeRate2: '',
+        level: 1,
+        url: '',
+        oemType: 0
       }
     },
     created: function () {
-      if(this.$route.query.productId!=0){
-          this.$data.isAdd = false;
+      if (this.$route.query.productId != 0) {
+        this.$data.isAdd = false;
       }
-      if(this.$route.query.level==2){
+      if (this.$route.query.level == 2) {
         this.$data.level = 2;
       }
-      this.$http.get('/admin/dealer/'+this.$route.query.product+'/'+this.$route.query.dealerId+'/'+this.$route.query.productId)
+      this.$http.get('/admin/dealer/' + this.$route.query.product + '/' + this.$route.query.dealerId + '/' + this.$route.query.productId)
         .then(function (res) {
           this.records = res.data;
+          this.oemType = res.data.oemType;
           this.channels = res.data.product.channels;
           this.dealerProfits = res.data.dealerProfits;
-          if(this.$route.query.product == 'hss'){
-            res.data.totalProfitSpace = (res.data.totalProfitSpace*100).toFixed(0);
-            res.data.dealerUpgerdeRates[0].bossDealerShareRate = (res.data.dealerUpgerdeRates[0].bossDealerShareRate*100).toFixed(0);
-            res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100).toFixed(0);
-            res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100).toFixed(0);
-            res.data.dealerUpgerdeRates[1].bossDealerShareRate = (res.data.dealerUpgerdeRates[1].bossDealerShareRate*100).toFixed(0);
-            res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100).toFixed(0);
-            res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100).toFixed(0);
+          if (this.$route.query.product == 'hss') {
+            res.data.totalProfitSpace = (res.data.totalProfitSpace * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].bossDealerShareRate = (res.data.dealerUpgerdeRates[0].bossDealerShareRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].bossDealerShareRate = (res.data.dealerUpgerdeRates[1].bossDealerShareRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate * 100).toFixed(0);
             this.$data.dealerUpgerdeRate1 = res.data.dealerUpgerdeRates[0];
             this.$data.dealerUpgerdeRate2 = res.data.dealerUpgerdeRates[1];
           }
@@ -203,23 +215,23 @@
       },
       //修改
       change: function () {
-        if(this.$route.query.product == 'hss'){
-          this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace/100;
-          this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate/100).toFixed(2)
-          this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate/100).toFixed(2);
-          this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate/100).toFixed(2);
-          this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate/100).toFixed(2);
-          this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate/100).toFixed(2);
-          this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate/100).toFixed(2);
+        if (this.$route.query.product == 'hss') {
+          this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace / 100;
+          this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate / 100).toFixed(2)
+          this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate / 100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate / 100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate / 100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate / 100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate / 100).toFixed(2);
           this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
           this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
         }
         this.$data.records.dealerId = this.$route.query.dealerId;
         this.$data.records.product.channels = this.$data.channels;
         this.$data.records.dealerProfits = this.dealerProfits;
-        if(this.$route.query.product == "hss"){
+        if (this.$route.query.product == "hss") {
           this.$data.url = '/admin/dealer/addOrUpdateHssDealer'
-        }else {
+        } else {
           this.$data.url = '/admin/dealer/addOrUpdateHsyDealer'
         }
         this.$http.post(this.$data.url, this.$data.records)
@@ -234,14 +246,14 @@
 //            });
 //            this.$router.go(-1)
           }, function (err) {
-            if(this.$route.query.product == "hss"){
-              this.$data.records.totalProfitSpace = (this.$data.records.totalProfitSpace*100).toFixed(0);
-              this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate*100).toFixed(0);
-              this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate*100).toFixed(0);
-              this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate*100).toFixed(0);
-              this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate*100).toFixed(0);
-              this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate*100).toFixed(0);
-              this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate*100).toFixed(0);
+            if (this.$route.query.product == "hss") {
+              this.$data.records.totalProfitSpace = (this.$data.records.totalProfitSpace * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate * 100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
               this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
             }
@@ -267,9 +279,10 @@
     margin-bottom: 10px;
   }
 
-  .title2{
+  .title2 {
     margin-left: 20px;
   }
+
   input {
     width: 77%;
     border: none;
