@@ -2406,3 +2406,27 @@ input:focus {
 #record .weui-cells .weui-cell .weui-cell__ft .price {
   font-size: 18px;
 }
+#needRecharge {
+  padding: 0 15px;
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+}
+#needRecharge img {
+  display: inline-block;
+  padding-top: 70px;
+  padding-bottom: 30px;
+  width: 115px;
+  height: 215px;
+}
+#needRecharge p {
+  text-align: left;
+  font-size: 15px;
+  color: #333;
+}
+#needRecharge p.title {
+  line-height: 30px;
+}
+#needRecharge p.content {
+  padding-bottom: 53px;
+}
