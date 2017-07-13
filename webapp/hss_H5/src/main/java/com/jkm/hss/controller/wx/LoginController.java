@@ -489,11 +489,7 @@ public class LoginController extends BaseController {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
             model.addAttribute("oemNo", oemNo);
-            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                model.addAttribute("showRecommend", 2);
-            }else{
-                model.addAttribute("showRecommend", 1);
-            }
+            model.addAttribute("showRecommend", 1);
         }else{
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.isPresent()){//存在
@@ -542,28 +538,16 @@ public class LoginController extends BaseController {
                             model.addAttribute("showRecommend", 2);//不显示升级
                         }
                     }else{
-                        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                            model.addAttribute("showRecommend", 2);
-                        }else{
-                            model.addAttribute("showRecommend", 1);
-                        }
+                        model.addAttribute("showRecommend", 1);
                         model.addAttribute("avaliable", "0.00");
                     }
                 }else{
-                    if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                        model.addAttribute("showRecommend", 2);
-                    }else{
-                        model.addAttribute("showRecommend", 1);
-                    }
+                    model.addAttribute("showRecommend", 1);
                     model.addAttribute("avaliable", "0.00");
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                    model.addAttribute("showRecommend", 2);
-                }else{
-                    model.addAttribute("showRecommend", 1);
-                }
+                model.addAttribute("showRecommend", 1);
                 model.addAttribute("avaliable", "0.00");
             }
             model.addAttribute("oemNo", oemNo);
