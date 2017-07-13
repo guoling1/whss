@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
 import java.util.List;
@@ -103,4 +104,49 @@ public class FirstDealerProductDetailResponse {
          */
         private String minMerchantWithdrawFee;
     }
+
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerUpgerdeRate> dealerUpgerdeRates;
+    @Data
+    public  class DealerUpgerdeRate {
+        /**
+         * 升级分润费率编码
+         */
+        private long id;
+        /**
+         * 产品编码
+         */
+        private long productId;
+        /**
+         * 代理商编码
+         */
+        private long dealerId;
+        /**
+         * 分润类型
+         * {@link com.jkm.hss.dealer.enums.EnumDealerRateType}
+         */
+        private int type;
+        /**
+         *金开门分润比例
+         */
+        private String bossDealerShareRate;
+        /**
+         *金开门分润比例
+         */
+        private String oemShareRate;
+        /**
+         * 一代分润
+         */
+        private String firstDealerShareProfitRate;
+        /**
+         * 二代分润
+         */
+        private String secondDealerShareProfitRate;
+    }
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerProfitSettingResponse> dealerProfits;
 }

@@ -229,7 +229,11 @@ public class DealerController extends BaseController {
         }
         final Dealer dealer = dealerOptional.get();
         final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
-        firstLevelDealerGet2Response.setOemType(dealerOptional.get().getOemType());
+        if(dealerOptional.get().getOemId()>0){
+            firstLevelDealerGet2Response.setOemType(EnumOemType.OEM.getId());
+        }else{
+            firstLevelDealerGet2Response.setOemType(EnumOemType.DEALER.getId());
+        }
         if(productId>0){//修改
             Optional<Product> productOptional = this.productService.selectById(productId);
             if(!productOptional.isPresent()){
@@ -969,11 +973,11 @@ public class DealerController extends BaseController {
         if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
             return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
         }
-        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getOemShareProfitRate())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getOemShareRate())) {
             return CommonResponse.simpleResponse(-1, "分公司分润比例不能为空");
         }
         BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
-        BigDecimal b4 = new BigDecimal(dealerUpgerdeRateParam.getOemShareProfitRate());
+        BigDecimal b4 = new BigDecimal(dealerUpgerdeRateParam.getOemShareRate());
         BigDecimal b = b1.add(b4);
         if (b.compareTo(new BigDecimal("1"))>0) {
             return CommonResponse.simpleResponse(-1, "金开门，分公司的比例之和必须小于等于100%");
