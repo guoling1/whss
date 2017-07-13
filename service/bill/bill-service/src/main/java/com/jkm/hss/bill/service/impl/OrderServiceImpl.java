@@ -1516,9 +1516,8 @@ public class OrderServiceImpl implements OrderService {
         final int status = response.getStatus();
         if (status == EnumBasicStatus.SUCCESS.getId()){
             //代付受理成功
-            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
-            final String remark = playMoneyOrder.getRemark();
-            final String[] split = remark.split(",");
+            final String orders = playMoneyOrder.getGoodsDescribe();
+            final String[] split = orders.split(",");
             final Order firstOrder = this.orderDao.selectOrderBySn(split[0]);
             final Order lastOrder = this.orderDao.selectOrderBySn(split[split.length -1]);
             final Account account = this.accountService.getByIdWithLock(playMoneyOrder.getPayer()).get();
@@ -1564,9 +1563,16 @@ public class OrderServiceImpl implements OrderService {
             this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(),
                     settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
 
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+            playMoneyOrder.setGoodsName(settlementRecord.getSettleNo());
+            this.update(playMoneyOrder);
+            return Pair.of(1, "提现受理成功");
+
         }else if (status == EnumBasicStatus.FAIL.getId()){
             //代付失败
+            return Pair.of(-1, "提现失败");
         }
+        return Pair.of(-1, "提现失败");
     }
 
     private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account) {
@@ -1584,12 +1590,12 @@ public class OrderServiceImpl implements OrderService {
         //手续费
         playMoneyOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
         playMoneyOrder.setGoodsName(account.getUserName());
-        playMoneyOrder.setGoodsDescribe(account.getUserName());
+        playMoneyOrder.setGoodsDescribe(orders);
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         playMoneyOrder.setSettleTime(new Date());
         playMoneyOrder.setSettleType(EnumBalanceTimeType.D0.getType());
         playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.getId());
-        playMoneyOrder.setRemark(orders);
+        playMoneyOrder.setRemark("");
         return this.add(playMoneyOrder);
     }
 

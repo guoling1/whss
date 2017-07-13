@@ -114,7 +114,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HSYRefundOrderService hsyRefundOrderService;
     @Autowired
     private HsyUserDao hsyUserDao;
-
+    @Autowired
+    private SettlementRecordService settlementRecordService;
     /**
      * {@inheritDoc}
      *
@@ -1494,19 +1495,20 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     private void markWithdrawSuccess(final long orderId, final long accountId,
                                      final PaymentSdkDaiFuResponse response) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        if (order.isWithDrawing()) {
+        final Order playMoneyOrder = this.orderService.getByIdWithLock(orderId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleNo(playMoneyOrder.getGoodsName()).get();
+        if (playMoneyOrder.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
-            order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            order.setRemark(response.getMessage());
-            order.setSn(response.getSn());
-            this.orderService.update(order);
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
+            playMoneyOrder.setRemark(response.getMessage());
+            playMoneyOrder.setSn(response.getSn());
+            this.orderService.update(playMoneyOrder);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额
             final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
             unFrozenRecord.setAccountId(account.getId());
             unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
-            unFrozenRecord.setBusinessNo(order.getOrderNo());
+            unFrozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
             unFrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
             unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
             unFrozenRecord.setUnfrozenTime(new Date());
@@ -1517,6 +1519,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
+            //更新结算单
+            //待结算金额减少
+            this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId(), EnumSettleStatus.SETTLE_ING.getId());
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
+            playMoneyOrder.setSettleStatus(EnumSettleStatus.SETTLED.getId());
+            playMoneyOrder.setRemark("提现成功");
+            this.orderService.update(playMoneyOrder);
+            this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
             //入账到手续费账户
 //            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
 //            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
@@ -1525,7 +1535,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //                    "提现分润", EnumAccountFlowType.INCREASE);
 //            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
-            try {
+            /*try {
                 log.info("订单[]，提现成功，推送", order.getOrderNo());
                 final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
                 final AppBizCard appBizCard = new AppBizCard();
@@ -1535,7 +1545,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 this.pushService.pushCashOutMsg(shop.getUid(), appBizCard1.getCardBank(), order.getTradeAmount().doubleValue(), cardNO.substring(cardNO.length() - 4));
             } catch (final Throwable e) {
                 log.error("订单[" + order.getOrderNo() + "]，提现成功，推送异常", e);
-            }
+            }*/
         }
     }
     /**

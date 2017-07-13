@@ -156,6 +156,14 @@ public class HsyAccountServiceImpl implements HsyAccountService {
         final JSONObject result = new JSONObject();
         final long withDrawOrderId = dataJo.getLongValue(dataJo.getString("withDrawOrderId"));
         Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
+        if (pair.getLeft() == 1){
+            result.put("code", 1);
+            result.put("msg", pair.getRight());
+        }else {
+            result.put("code", -1);
+            result.put("msg", pair.getLeft());
+        }
+        return  result.toString();
     }
 
 
