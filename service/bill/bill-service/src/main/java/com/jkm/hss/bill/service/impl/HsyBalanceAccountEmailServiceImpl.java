@@ -122,6 +122,9 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         for (AppAuUser appAuUser : appAuUsers) {
             try {
                 if (!StringUtils.isEmpty(appAuUser.getEmail())) {
+                    if (appAuUser.getId() != 215) {
+                        continue;
+                    }
                     this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
                     log.info("商户[{}], 发送周邮件成功", appAuUser.getGlobalID());
                 }
