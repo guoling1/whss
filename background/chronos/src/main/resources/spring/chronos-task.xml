@@ -51,7 +51,7 @@
                    baseSleepTimeMilliseconds="${baseSleepTimeMilliseconds}"
                    maxSleepTimeMilliseconds="${maxSleepTimeMilliseconds}"
                    maxRetries="${maxRetries}"/>
-    <!--cron="0 0/20 0 * * ?"-->
+
     <job:bean id="retrySplitProfitTask"
         class="com.jkm.chronos.task.RetrySplitProfitTask"
         description="定时重发分润失败消息任务"
@@ -62,7 +62,6 @@
         overwrite="true"
         monitorExecution="true"/>
 
-    <!--cron="0 0 18 ? * MON"-->
     <job:bean id="sendWeekEmailTask"
               class="com.jkm.chronos.task.SendWeekEmailTask"
               description="发送周账单任务"
@@ -73,7 +72,7 @@
               overwrite="true"
               monitorExecution="true"/>
 
-    <!--cron="0 0 18 1 * ?"-->
+
     <job:bean id="sendMonthEmailTask"
               class="com.jkm.chronos.task.SendMonthEmailTask"
               description="发送月账单任务"
