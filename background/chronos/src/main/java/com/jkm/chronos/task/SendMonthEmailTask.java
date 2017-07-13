@@ -25,6 +25,7 @@ public class SendMonthEmailTask extends AbstractTask {
 
     @Override
     protected void run() {
+        log.info("333");
 //        this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
     }
 
