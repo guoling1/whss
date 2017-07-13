@@ -47,7 +47,7 @@ public class HssOemAddOrUpdateRequest {
         /**
          *分公司分润比例
          */
-        private String oemShareProfitRate;
+        private String oemShareRate;
 
 
         /**

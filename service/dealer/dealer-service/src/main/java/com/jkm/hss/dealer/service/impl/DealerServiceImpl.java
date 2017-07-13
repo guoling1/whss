@@ -2407,7 +2407,7 @@ public class DealerServiceImpl implements DealerService {
                     du.setType(dealerUpgradeRate.getType());
                     du.setDealerId(dealerUpgradeRate.getDealerId());
                     du.setBossDealerShareRate(new BigDecimal(dealerUpgradeRate.getBossDealerShareRate()));
-                    du.setOemShareRate(new BigDecimal(dealerUpgradeRate.getOemShareProfitRate()));
+                    du.setOemShareRate(new BigDecimal(dealerUpgradeRate.getOemShareRate()));
                     du.setStatus(EnumDealerStatus.NORMAL.getId());
                     this.dealerUpgerdeRateService.update(du);
                 }else{//新增
@@ -2416,7 +2416,7 @@ public class DealerServiceImpl implements DealerService {
                     du.setType(dealerUpgradeRate.getType());
                     du.setDealerId(dealerUpgradeRate.getDealerId());
                     du.setBossDealerShareRate(new BigDecimal(dealerUpgradeRate.getBossDealerShareRate()));
-                    du.setOemShareRate(new BigDecimal(dealerUpgradeRate.getOemShareProfitRate()));
+                    du.setOemShareRate(new BigDecimal(dealerUpgradeRate.getOemShareRate()));
                     du.setStatus(EnumDealerStatus.NORMAL.getId());
                     this.dealerUpgerdeRateService.insert(du);
                 }
