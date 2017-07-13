@@ -402,8 +402,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
-        if(account.get().getUpdateTime().compareTo(account.get().getCreateTime())!=0)
-            appPolicyMember.setLastConsumeTime(account.get().getUpdateTime());
+        Date lastConsumeTime=hsyMembershipDao.findLastConsumeTime(appPolicyMember.getId());
+        appPolicyMember.setLastConsumeTime(lastConsumeTime);
 
         Map result=new HashMap();
         result.put("appPolicyMember",appPolicyMember);

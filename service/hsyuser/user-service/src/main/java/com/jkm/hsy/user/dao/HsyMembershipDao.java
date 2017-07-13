@@ -47,4 +47,5 @@ public interface HsyMembershipDao {
     public List<AppPolicyMembershipCard> findMemberCardAndStatistic(@Param("uid")Long uid);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
     public List<AppPolicyMember> findMemberListByOUIDAndUID(@Param("openID")String openID,@Param("userID")String userID,@Param("uid")Long uid);
+    public Date findLastConsumeTime(@Param("mid")Long mid);
 }

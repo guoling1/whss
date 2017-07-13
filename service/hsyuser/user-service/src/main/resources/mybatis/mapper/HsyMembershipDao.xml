@@ -330,4 +330,8 @@
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
     </select>
 
+    <select id="findLastConsumeTime" resultType="java.util.Date">
+        select pay_success_time from tb_hsy_order where mid=#{mid} order by pay_success_time desc limit 1
+    </select>
+
 </mapper>

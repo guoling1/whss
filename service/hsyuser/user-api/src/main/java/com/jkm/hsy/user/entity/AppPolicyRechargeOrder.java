@@ -43,6 +43,7 @@ public class AppPolicyRechargeOrder {
     private Integer currentPage;
     private String typeName;//类型名称
     private String consumerCellphone;//消费者手机号
+    private Long mid;//会员id
 
     public Long getId() {
         return id;
@@ -306,5 +307,13 @@ public class AppPolicyRechargeOrder {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getMid() {
+        return mid;
+    }
+
+    public void setMid(Long mid) {
+        this.mid = mid;
     }
 }
