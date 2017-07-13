@@ -130,6 +130,8 @@
         this.dealerId = query.dealerId;
         this.product = query.product;
         this.productName = res.data.productName;
+        this.recommendBoolean = (res.data.recommendBtn == 2);
+        this.recommendBtn = res.data.recommendBtn;
         this.tableData = res.data.product.channels;
         this.productId = res.data.product.productId;
         this.dealerProfits = res.data.dealerProfits;
@@ -146,7 +148,7 @@
         tableData: [],
         formObject: [],
         recommendBoolean: false,
-        recommendBtn: false,
+        recommendBtn: 1,
         dealerProfits: []
       }
     },
