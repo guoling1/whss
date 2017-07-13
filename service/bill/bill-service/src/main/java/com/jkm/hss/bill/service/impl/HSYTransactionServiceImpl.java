@@ -275,7 +275,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             if (consumeMsgSplitProfitRecord.getHsyOrderId() > 0) {
                 final HsyOrder hsyOrder = this.hsyOrderService.getById(consumeMsgSplitProfitRecord.getHsyOrderId()).get();
                 orderNo = hsyOrder.getOrderno();
-                amount = hsyOrder.getAmount();
+                amount = hsyOrder.getRealAmount();
                 payChannelSign = hsyOrder.getPaychannelsign();
                 uid = hsyOrder.getUid();
                 settleType = hsyOrder.getSettleType();
