@@ -17,15 +17,15 @@
   <div class="space flexBox flex-box-column">
     <div class="cont">
       <div class="info">
-          <c:if test="${upgradeRules.type==1}">
-              <div class="assistant"></div>
-          </c:if>
-          <c:if test="${upgradeRules.type==2}">
-              <div class="manager"></div>
-          </c:if>
-          <c:if test="${upgradeRules.type==3}">
-              <div class="boss"></div>
-          </c:if>
+        <c:if test="${upgradeRules.type==1}">
+          <div class="assistant"></div>
+        </c:if>
+        <c:if test="${upgradeRules.type==2}">
+          <div class="manager"></div>
+        </c:if>
+        <c:if test="${upgradeRules.type==3}">
+          <div class="boss"></div>
+        </c:if>
         <div class="name">${upgradeRules.name}</div>
       </div>
       <div class="payType">
@@ -82,7 +82,8 @@
 <script>
   var pageData = {
     level: ${upgradeRules.id},
-    shareUrl: '${shareUrl}'
+    shareUrl: '${shareUrl}',
+    oemNo: '${oemNo}'
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>

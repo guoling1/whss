@@ -98,7 +98,9 @@ layer.addEventListener('click', function () {
 });
 
 // 获取升级
-http.post('/wx/toUpgrade', {}, function (data) {
+http.post('/wx/toUpgrade', {
+  oemNo: pageData.oemNo
+}, function (data) {
   nowLevel = data.currentLevel;
   if (nowLevel == 3) {
     isUpBtn.style.display = 'none';
@@ -181,7 +183,7 @@ http.post('/wx/toUpgrade', {}, function (data) {
           if (upType) {
             layer.style.display = 'block';
           } else {
-            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id);
+            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id + '?oemNo' + pageData.oemNo);
           }
         });
         boss_banner_list.appendChild(boss_banner_head);
@@ -259,7 +261,7 @@ http.post('/wx/toUpgrade', {}, function (data) {
           if (upType) {
             layer.style.display = 'block';
           } else {
-            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id);
+            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id + '?oemNo' + pageData.oemNo);
           }
         });
         manager_banner_list.appendChild(manager_banner_head);
@@ -337,7 +339,7 @@ http.post('/wx/toUpgrade', {}, function (data) {
           if (upType) {
             layer.style.display = 'block';
           } else {
-            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id);
+            window.location.replace('/sqb/toBuy/' + data.upgradeRules[i].id + '?oemNo' + pageData.oemNo);
           }
         });
         assistant_banner_list.appendChild(assistant_banner_head);
