@@ -97,6 +97,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
             paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
             paymentSdkDaiFuRequest.setPayOrderSn("");
+            paymentSdkDaiFuRequest.setBankCity("北京市");
             //请求网关
             PaymentSdkDaiFuResponse response = null;
             try {
