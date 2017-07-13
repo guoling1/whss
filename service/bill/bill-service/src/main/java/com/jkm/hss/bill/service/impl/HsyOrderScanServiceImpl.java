@@ -277,6 +277,12 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         pageAll.setPage(page);
         pageAll.getPage().setTotalRecord(hsyOrderDao.findConsumeOrderListByPageCount(pageAll.getObjectT()));
         pageAll.setList(hsyOrderDao.findConsumeOrderListByPage(pageAll));
+        for(HsyOrder o:pageAll.getList()) {
+            if (o.getPaytype().contains("wechat"))
+                o.setPaytype("微信");
+            else
+                o.setPaytype("支付宝");
+        }
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 boolean flag=false;
