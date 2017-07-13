@@ -76,28 +76,33 @@
               </el-table>
             </div>
             <div class="box-body">
-              <label class="form-label">代理商推广码&推广链接</label>
-              <br>
-              <el-switch v-model="inviteBoolean" @change="switchInvite"
-                         on-text="开启" on-color="#13ce66"
-                         off-text="关闭" off-color="#ff4949">
-              </el-switch>
-              <div class="inviteText" v-show="inviteBoolean">
-                推广码：{{inviteCode}}
-                <br>
-                推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}
-              </div>
-            </div>
-            <div class="box-body">
               <label class="form-label">合伙人推荐功能</label>
               <br>
-              <el-switch v-model="inviteBoolean" @change="switchInvite"
+              <el-switch v-model="recommendBoolean" @change="switchInvite"
                          on-text="开启" on-color="#13ce66"
                          off-text="关闭" off-color="#ff4949">
               </el-switch>
               <div class="inviteText" v-show="inviteBoolean">
                 开通后，代理商设置的商户终端费率按产品费率执行
               </div>
+            </div>
+            <div class="box-body">
+              <label class="form-label">合伙人推荐分润设置</label>
+              <el-table :data="dealerProfits" border>
+                <el-table-column prop="channelName" label="通道名称"></el-table-column>
+                <el-table-column label="总分润空间">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.profitSpace" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" size="small" v-model="scope.row.profitSpace">
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+              </el-table>
             </div>
             <div class="box-body">
               <el-button type="primary" size="small" @click="onSubmit">保存产品设置</el-button>
@@ -125,11 +130,9 @@
         this.dealerId = query.dealerId;
         this.product = query.product;
         this.productName = res.data.productName;
-        this.inviteStatus = res.data.inviteBtn;
-        this.inviteCode = res.data.inviteCode;
-        this.inviteBoolean = (this.inviteStatus == 2);
         this.tableData = res.data.product.channels;
         this.productId = res.data.product.productId;
+        this.dealerProfits = res.data.dealerProfits;
       }, err => {
         console.log(err);
       })
@@ -140,11 +143,10 @@
         product: '',
         productId: '',
         productName: '',
-        inviteBoolean: false,
-        inviteStatus: 1,
-        inviteCode: '',
         tableData: [],
-        formObject: []
+        formObject: [],
+        recommendBoolean: false,
+        dealerProfits: []
       }
     },
     methods: {
