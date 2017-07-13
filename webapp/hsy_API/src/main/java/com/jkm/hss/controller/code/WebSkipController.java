@@ -78,9 +78,11 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId, @RequestParam(value = "name") String name) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId, @RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId) throws IOException {
         model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("merchantName", name);
+        AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(openId,null,userId);
+        model.addAttribute("appPolicyMember",appPolicyMember);
         return "/payment-wx";
     }
 
@@ -94,9 +96,11 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "name") String name) throws IOException {
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId) throws IOException {
         model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("merchantName", name);
+        AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(null,openId,userId);
+        model.addAttribute("appPolicyMember",appPolicyMember);
         return "/payment-zfb";
     }
 
