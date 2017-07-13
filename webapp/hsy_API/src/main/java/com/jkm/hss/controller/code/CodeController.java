@@ -17,10 +17,8 @@ import com.jkm.hsy.user.Enum.EnumNetStatus;
 import com.jkm.hsy.user.Enum.EnumOpenProductStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.UserChannelPolicy;
-import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
+import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +57,9 @@ public class CodeController extends BaseController {
 
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+
+    @Autowired
+    private HsyMembershipService hsyMembershipService;
 
 
     /**
@@ -128,6 +129,8 @@ public class CodeController extends BaseController {
 
                 final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
                 model.addAttribute("hsyOrderId",hsyOrderId);
+                AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(openId,null,appAuUsers.get(0).getId());
+                model.addAttribute("appPolicyMember",appPolicyMember);
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
@@ -152,6 +155,9 @@ public class CodeController extends BaseController {
                 }
                 final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign(),merchantId,openId,code);
                 model.addAttribute("hsyOrderId",hsyOrderId);
+
+                AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(null,openId,appAuUsers.get(0).getId());
+                model.addAttribute("appPolicyMember",appPolicyMember);
                 url = "/sqb/paymentZfb";
             }
         } else {

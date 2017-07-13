@@ -844,7 +844,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return list;
     }
 
-    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid)throws Exception{
+    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid){
         List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUIDAndUID(openID,userID,uid);
         if(list!=null&&list.size()!=0) {
             AppPolicyMember appPolicyMember=list.get(0);
