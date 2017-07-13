@@ -229,7 +229,11 @@ public class DealerController extends BaseController {
         }
         final Dealer dealer = dealerOptional.get();
         final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
-        firstLevelDealerGet2Response.setOemType(dealerOptional.get().getOemType());
+        if(dealerOptional.get().getOemId()>0){
+            firstLevelDealerGet2Response.setOemType(EnumOemType.OEM.getId());
+        }else{
+            firstLevelDealerGet2Response.setOemType(EnumOemType.DEALER.getId());
+        }
         if(productId>0){//修改
             Optional<Product> productOptional = this.productService.selectById(productId);
             if(!productOptional.isPresent()){
