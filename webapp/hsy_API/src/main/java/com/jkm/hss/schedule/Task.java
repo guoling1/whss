@@ -63,7 +63,7 @@ public class Task {
      *
      * 间隔5秒一个消息
      */
-    @Scheduled(cron = "0 0 0/1 * * ?")
+//    @Scheduled(cron = "0 0 0/1 * * ?")
     public void handleRetrySendSplitProfitTask() {
         final List<ConsumeMsgSplitProfitRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
         log.info("定时任务--处理重发分润，消息个数[{}]", records.size());
@@ -80,7 +80,7 @@ public class Task {
     /**
      * 周一发送上周对账邮件
      */
-    @Scheduled(cron = "0 0 18 ? * MON")
+//    @Scheduled(cron = "0 0 18 ? * MON")
     public void sendWeekEmail() {
         log.info("定时任务--处理每周发送邮件");
         this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
@@ -89,7 +89,7 @@ public class Task {
     /**
      * 1号发送上月对账邮件
      */
-    @Scheduled(cron = "0 0 18 1 * ?")
+//    @Scheduled(cron = "0 0 18 1 * ?")
     public void sendMonthEmail() {
         log.info("定时任务--处理每周发送邮件");
         this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
