@@ -175,7 +175,7 @@ public class AccountController extends BaseController{
             if (1 != pair.getLeft()) {
                 return CommonResponse.simpleResponse(-1, pair.getRight());
             }
-            if(DateUtil.isInDate(new Date(),"09:00:00","22:25:00")){
+            if(!DateUtil.isInDate(new Date(),"09:00:00","22:25:00")){
                 return CommonResponse.simpleResponse(-1, "请在09:00至22:25进行提现");
             }
             if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo( new BigDecimal("2")) == -1)){
