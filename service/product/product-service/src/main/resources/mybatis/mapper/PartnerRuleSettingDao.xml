@@ -113,7 +113,7 @@
             p.boss_rate,
             g.view_channel_name as channel_name
 	    from tb_product_channel_gateway as g cross  JOIN tb_partner_rule_setting as p on g.channel_sign=p.channel_type_sign
-	    where g.gateway_type='product' and g.dealer_id=#{dealerId} and p.product_id =#{productId} and p.status=1 order by p.channel_type_sign asc;
+	    where g.gateway_type='product' and g.dealer_id=#{dealerId} and p.product_id =#{productId} and p.status=1 and g.status=2 order by p.channel_type_sign asc;
     </select>
 
     <select id="selectById" resultType="com.jkm.hss.product.entity.PartnerRuleSetting">
