@@ -3207,7 +3207,7 @@ public class DealerServiceImpl implements DealerService {
             //分公司分润
             final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             if (merchantInfo.getSecondMerchantId() == 0){
-                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney);
+                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(oemMoney);
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
@@ -3264,7 +3264,7 @@ public class DealerServiceImpl implements DealerService {
                     secondSelfMerchantRate = new BigDecimal("0");
                 }
                 final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
-                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney);
+                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney).subtract(oemMoney);
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
@@ -3499,7 +3499,7 @@ public class DealerServiceImpl implements DealerService {
                 map.put("secondMoney", Triple.of(secondDealer.getAccountId(), secondMoney, dealerUpgerdeRate.getSecondDealerShareProfitRate()));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
                 log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
-                        "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "2J商户分润:"+ secondMerchantMoney+
+                        "产品分润:" + productMoney + "O，单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "2J商户分润:"+ secondMerchantMoney+
                 "1代分润:" + firstMoney + "2代分润" + secondMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
