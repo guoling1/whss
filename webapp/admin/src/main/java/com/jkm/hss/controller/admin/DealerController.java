@@ -229,7 +229,11 @@ public class DealerController extends BaseController {
         }
         final Dealer dealer = dealerOptional.get();
         final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
-        firstLevelDealerGet2Response.setOemType(dealerOptional.get().getOemType());
+        if(dealerOptional.get().getOemId()>0){
+            firstLevelDealerGet2Response.setOemType(EnumOemType.OEM.getId());
+        }else{
+            firstLevelDealerGet2Response.setOemType(EnumOemType.DEALER.getId());
+        }
         if(productId>0){//修改
             Optional<Product> productOptional = this.productService.selectById(productId);
             if(!productOptional.isPresent()){
@@ -301,9 +305,16 @@ public class DealerController extends BaseController {
                     du.setProductId(upgerdeRates.get(0).getProductId());
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
-                    du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
-                    du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
-                    du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
+
+                    if(upgerdeRates.get(0).getOemShareRate()!=null){
+                        du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getFirstDealerShareProfitRate()!=null){
+                        du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getSecondDealerShareProfitRate()!=null){
+                        du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
+                    }
                     du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                     final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate2 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
@@ -327,9 +338,15 @@ public class DealerController extends BaseController {
                     du.setProductId(upgerdeRates.get(0).getProductId());
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
-                    du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
-                    du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
-                    du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
+                    if(upgerdeRates.get(0).getOemShareRate()!=null){
+                        du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getFirstDealerShareProfitRate()!=null){
+                        du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
+                    }
+                    if(upgerdeRates.get(0).getSecondDealerShareProfitRate()!=null){
+                        du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
+                    }
                     du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
@@ -341,9 +358,15 @@ public class DealerController extends BaseController {
                     du.setProductId(dealerUpgerdeRate.getProductId());
                     du.setDealerId(dealerUpgerdeRate.getDealerId());
                     du.setType(dealerUpgerdeRate.getType());
-                    du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
-                    du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
-                    du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+                    if(dealerUpgerdeRate.getOemShareRate()!=null){
+                        du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
+                    }
+                    if(dealerUpgerdeRate.getFirstDealerShareProfitRate()!=null){
+                        du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
+                    }
+                    if(dealerUpgerdeRate.getSecondDealerShareProfitRate()!=null){
+                        du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+                    }
                     du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
@@ -969,11 +992,11 @@ public class DealerController extends BaseController {
         if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
             return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
         }
-        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getOemShareProfitRate())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(dealerUpgerdeRateParam.getOemShareRate())) {
             return CommonResponse.simpleResponse(-1, "分公司分润比例不能为空");
         }
         BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
-        BigDecimal b4 = new BigDecimal(dealerUpgerdeRateParam.getOemShareProfitRate());
+        BigDecimal b4 = new BigDecimal(dealerUpgerdeRateParam.getOemShareRate());
         BigDecimal b = b1.add(b4);
         if (b.compareTo(new BigDecimal("1"))>0) {
             return CommonResponse.simpleResponse(-1, "金开门，分公司的比例之和必须小于等于100%");

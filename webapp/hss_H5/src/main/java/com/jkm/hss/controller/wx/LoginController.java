@@ -489,11 +489,7 @@ public class LoginController extends BaseController {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
             model.addAttribute("oemNo", oemNo);
-            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                model.addAttribute("showRecommend", 2);
-            }else{
-                model.addAttribute("showRecommend", 1);
-            }
+            model.addAttribute("showRecommend", 1);
         }else{
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.isPresent()){//存在
@@ -542,28 +538,16 @@ public class LoginController extends BaseController {
                             model.addAttribute("showRecommend", 2);//不显示升级
                         }
                     }else{
-                        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                            model.addAttribute("showRecommend", 2);
-                        }else{
-                            model.addAttribute("showRecommend", 1);
-                        }
+                        model.addAttribute("showRecommend", 1);
                         model.addAttribute("avaliable", "0.00");
                     }
                 }else{
-                    if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                        model.addAttribute("showRecommend", 2);
-                    }else{
-                        model.addAttribute("showRecommend", 1);
-                    }
+                    model.addAttribute("showRecommend", 1);
                     model.addAttribute("avaliable", "0.00");
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
-                    model.addAttribute("showRecommend", 2);
-                }else{
-                    model.addAttribute("showRecommend", 1);
-                }
+                model.addAttribute("showRecommend", 1);
                 model.addAttribute("avaliable", "0.00");
             }
             model.addAttribute("oemNo", oemNo);
@@ -878,13 +862,13 @@ public class LoginController extends BaseController {
         BigDecimal totalProfit = partnerShallProfitDetailService.selectTotalProfitByMerchantId(result.get().getId());
         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
         model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
-        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
-        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(result.get().getOemId());
+        String oemNo = "";
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
         if(oemInfoOptional.isPresent()){
-            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
-        }else{
-            model.addAttribute("oemNo","");
+            oemNo = oemInfoOptional.get().getOemNo();
         }
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return "/myRecommend";
 
     }
@@ -1030,13 +1014,13 @@ public class LoginController extends BaseController {
         model.addAttribute("currentLevel",result.get().getLevel());
         model.addAttribute("upgradeRules",list);
         model.addAttribute("merchantId",result.get().getId());
-        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
         Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        String oemNo = "";
         if(oemInfoOptional.isPresent()){
-            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
-        }else{
-            model.addAttribute("oemNo","");
+            oemNo = oemInfoOptional.get().getOemNo();
         }
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return "/toUpgerde";
     }
 
