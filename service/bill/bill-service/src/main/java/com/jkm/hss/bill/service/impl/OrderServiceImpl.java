@@ -1497,6 +1497,7 @@ public class OrderServiceImpl implements OrderService {
             paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
             paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
             paymentSdkDaiFuRequest.setPayOrderSn("");
+            paymentSdkDaiFuRequest.setOrders(playMoneyOrder.getGoodsDescribe());
             //请求网关
             PaymentSdkDaiFuResponse response = null;
             try {
