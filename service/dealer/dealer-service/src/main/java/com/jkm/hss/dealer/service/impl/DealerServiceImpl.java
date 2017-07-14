@@ -3207,7 +3207,7 @@ public class DealerServiceImpl implements DealerService {
             //分公司分润
             final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             if (merchantInfo.getSecondMerchantId() == 0){
-                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney);
+                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(oemMoney);
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
@@ -3264,7 +3264,7 @@ public class DealerServiceImpl implements DealerService {
                     secondSelfMerchantRate = new BigDecimal("0");
                 }
                 final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
-                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney);
+                final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney).subtract(oemMoney);
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
