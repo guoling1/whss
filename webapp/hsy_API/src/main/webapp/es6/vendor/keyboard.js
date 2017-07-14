@@ -36,8 +36,9 @@ _require.register("keyboard", (module, exports, _require, global) => {
       this.realNum = document.getElementById('realNum').innerHTML;
       //计算折扣
       const calculate = function (num,rebate) {
-        document.getElementById('minus').innerHTML = (num*((10-rebate)/10)).toFixed(2);
-        document.getElementById('realNum').innerHTML = (num - (document.getElementById('minus').innerHTML)).toFixed(2);
+        document.getElementById('realNum').innerHTML = (num*(rebate/10)).toFixed(2)
+        document.getElementById('minus').innerHTML = (num-(document.getElementById('realNum').innerHTML)).toFixed(2);
+        // document.getElementById('realNum').innerHTML = (num - (document.getElementById('minus').innerHTML)).toFixed(2);
       }
       // 改变微信title
       const changeTitle = function (title) {
