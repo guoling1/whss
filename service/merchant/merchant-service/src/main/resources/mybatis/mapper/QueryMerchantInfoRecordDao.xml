@@ -36,8 +36,8 @@
                 a.branch_name,
             </if>
             <if test="status==3 or status==6">
-                (SELECT branch_code FROM tb_account_bank WHERE account_id=#{accountId} AND is_default=1) AS branchCode,
-                (SELECT branch_name FROM tb_account_bank WHERE account_id=#{accountId} AND is_default=1) AS branchName,
+                (SELECT branch_code FROM tb_account_bank WHERE account_id=#{accountId} AND is_default=1 AND card_type=0 AND status=0) AS branchCode,
+                (SELECT branch_name FROM tb_account_bank WHERE account_id=#{accountId} AND is_default=1 AND card_type=0 AND status=0) AS branchName,
             </if>
             (
                 SELECT
