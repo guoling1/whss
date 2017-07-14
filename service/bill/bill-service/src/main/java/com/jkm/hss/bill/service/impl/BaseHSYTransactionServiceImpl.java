@@ -182,7 +182,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
-                return Triple.of(0, payResponse.getUrl(), shop.getName());
+                return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");
             default:
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
         }
