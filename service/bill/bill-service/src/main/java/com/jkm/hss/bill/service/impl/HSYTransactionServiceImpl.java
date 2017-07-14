@@ -1,9 +1,12 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
+import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
@@ -24,6 +27,7 @@ import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
+import com.jkm.hsy.user.constant.MemberStatus;
 import com.jkm.hsy.user.constant.OrderStatus;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -55,6 +59,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     private HsyOrderDao hsyOrderDao;
     @Autowired
     private HsyMembershipDao hsyMembershipDao;
+    @Autowired
+    private MemberAccountService memberAccountService;
     @Autowired
     private PushService pushService;
     @Autowired
@@ -153,6 +159,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             hsyOrderUpdate.setMcid(mcid);
             hsyOrderUpdate.setMid(mid);
             hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
             hsyOrderDao.update(hsyOrderUpdate);
             return this.baseHSYTransactionService.placeOrderImpl(tradeHsyOrder, discountFee);
         }
@@ -193,9 +200,19 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             hsyOrderUpdate.setMcid(mcid);
             hsyOrderUpdate.setMid(mid);
             hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
             hsyOrderDao.update(hsyOrderUpdate);
-
-            return this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
+            Triple<Integer, String, String> result=this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            BigDecimal remainingSum=account.get().getAvailable();
+            if(remainingSum.compareTo(BigDecimal.ZERO)==0)
+            {
+                AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
+                appPolicyMemberUp.setId(appPolicyMember.getId());
+                appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
+                hsyMembershipDao.updateMember(appPolicyMemberUp);
+            }
+            return result;
         }
         return Triple.of(-1, "订单异常", "");
     }

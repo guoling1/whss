@@ -6,6 +6,7 @@ package com.jkm.hsy.user.constant;
 public enum MemberStatus {
     ACTIVE(1,"正常"),
     NOT_ACTIVE_FOR_RECHARGE(2,"未充值无法使用"),
+    CANCEL(3,"注销"),
     ;
     public int key;
     public String value;
