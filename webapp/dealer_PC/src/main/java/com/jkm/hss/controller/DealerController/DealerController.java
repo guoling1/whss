@@ -824,6 +824,7 @@ public class DealerController extends BaseController {
             if(dealerUpgerdeRates.size()==2){
                 for(int j=0;j<dealerUpgerdeRates.size();j++){
                     FirstDealerProductDetailResponse.DealerUpgerdeRate dealerUpgerdeRate1 = firstDealerProductDetailResponse.new DealerUpgerdeRate();
+                    dealerUpgerdeRate1.setId(dealerUpgerdeRates.get(j).getId());
                     dealerUpgerdeRate1.setProductId(product.getId());
                     dealerUpgerdeRate1.setDealerId(dealerOptional.get().getId());
                     dealerUpgerdeRate1.setType(dealerUpgerdeRates.get(j).getType());
