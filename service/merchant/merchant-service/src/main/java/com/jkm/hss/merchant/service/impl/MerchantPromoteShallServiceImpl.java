@@ -87,6 +87,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
 
     private Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShallToOem(MerchantInfo merchantInfo, String orderNo, String businessNo, BigDecimal tradeAmount) {
         try{
+            final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
             log.info("商户【" +merchantInfo.getId() +"]请求进行升级费分润：" + orderNo);
             Pair<BigDecimal, BigDecimal> pair = merchantInfoService.getUpgradeShareProfit(businessNo);
             //获取分润金额
@@ -112,8 +113,13 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 }else{
                     inDirectMoney = new BigDecimal("0");
                 }
+                //oem
+                final Dealer oemInfo = this.dealerService.getById(merchantInfo.getOemId()).get();
+                final DealerUpgerdeRate dealerUpgerdeRates = this.dealerUpgerdeRateService
+                        .selectByDealerIdAndTypeAndProductId(merchantInfo.getOemId(), EnumDealerRateType.UPGRADE, product.getId());
+                final BigDecimal oemMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).multiply(dealerUpgerdeRates.getOemShareRate()).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //金开门利润 = 升级费 - 直推分润 - 间推分润
-                BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney);
+                BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(oemMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
                 detail.setMerchantId(merchantInfo.getId());
@@ -151,10 +157,10 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 }
                 this.partnerShallProfitDetailService.init(detail);
                 map.put("companyMoney", Triple.of(AccountConstants.JKM_ACCOUNT_ID, productMoney, "D0"));
+                map.put("oemMoney", Triple.of(oemInfo.getAccountId(), oemMoney, "D0"));
                 return map;
             }
 
-            final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
             //获取升级规则
             BigDecimal directMoney = null;
             MerchantInfo directMerchantInfo = null;
