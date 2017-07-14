@@ -191,6 +191,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         final PayResponse payResponse = new PayResponse();
         payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         payResponse.setTradeOrderNo(order.getOrderNo());
+        payResponse.setTradeOrderId(orderId);
         if (order.isDuePay()) {
             final MemberAccount memberAccount = this.memberAccountService.getByIdWithLock(order.getMemberAccountId()).get();
             final ReceiptMemberMoneyAccount receiptMemberMoneyAccount = this.receiptMemberMoneyAccountService.getByIdWithLock(order.getMerchantReceiveAccountId()).get();
