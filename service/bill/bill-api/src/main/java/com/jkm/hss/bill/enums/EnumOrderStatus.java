@@ -54,7 +54,12 @@ public enum  EnumOrderStatus {
     /**
      *提现中
      */
-    WAIT_WITHDRAW(9, "待提现")
+    WAIT_WITHDRAW(9, "待提现"),
+
+    /**
+     *提现中
+     */
+    WITHDRAW_FAIL(10, "提现失败"),
     ;
 
     @Getter

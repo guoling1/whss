@@ -701,6 +701,8 @@ public interface OrderService {
      */
     String getAmountCounts1(OrderTradeRequest req);
 
+    void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus);
+
     /**
      * 查询交易详情
      * @param orderRecord

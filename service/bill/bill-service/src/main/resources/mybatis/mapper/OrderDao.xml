@@ -3218,6 +3218,9 @@
         AND upper_channel = #{upperChannel}
         AND payment_channel = #{settleChannel}
     </update>
+    <update id="markOrder2SettleFail">
+        UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
+    </update>
     <select id="getBranch" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,

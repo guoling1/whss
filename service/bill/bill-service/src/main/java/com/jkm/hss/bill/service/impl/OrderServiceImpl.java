@@ -1631,6 +1631,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus) {
+         this.orderDao.markOrder2SettleFail(settlementRecordId, settleStatus, oriSettleStatus);
+    }
+
+    @Override
     public int listFirstCount(OrderTradeRequest req) {
         if("hss".equals(req.getAppId())){
             return this.orderDao.listFirstCount(req);

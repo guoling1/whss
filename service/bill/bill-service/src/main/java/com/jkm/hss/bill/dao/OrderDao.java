@@ -680,4 +680,6 @@ public interface OrderDao {
                                        @Param("status") int status, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
 
     Order selectOrderBySn(String sn);
+
+    void markOrder2SettleFail(@Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus, @Param("oriSettleStatus") int oriSettleStatus);
 }

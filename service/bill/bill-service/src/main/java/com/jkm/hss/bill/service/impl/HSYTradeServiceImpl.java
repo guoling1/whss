@@ -1496,13 +1496,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private void markWithdrawSuccess(final long orderId, final long accountId,
                                      final PaymentSdkDaiFuResponse response) {
         final Order playMoneyOrder = this.orderService.getByIdWithLock(orderId).get();
-        final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleNo(playMoneyOrder.getGoodsName()).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(playMoneyOrder.getSettlementRecordId()).get();
         if (playMoneyOrder.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
-            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            playMoneyOrder.setRemark(response.getMessage());
-            playMoneyOrder.setSn(response.getSn());
-            this.orderService.update(playMoneyOrder);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额
             final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
@@ -1523,10 +1519,12 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             //待结算金额减少
             this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId(), EnumSettleStatus.SETTLE_ING.getId());
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            playMoneyOrder.setSettleStatus(EnumSettleStatus.SETTLED.getId());
-            playMoneyOrder.setRemark("提现成功");
+            playMoneyOrder.setRemark(response.getMessage());
+            playMoneyOrder.setSn(response.getSn());
             this.orderService.update(playMoneyOrder);
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
+
+            this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(),EnumSettleStatus.SETTLED.getId(),EnumSettleStatus.SETTLE_ING.getId());
             //入账到手续费账户
 //            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
 //            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
@@ -1558,6 +1556,36 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private void  markWithdrawFail(final long orderId, final long accountId,
                                    final PaymentSdkDaiFuResponse response) {
         log.error("###########【Impossible】#########提现单[{}]提现失败####################", orderId);
+        final Order playMoneyOrder = this.orderService.getByIdWithLock(orderId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(playMoneyOrder.getSettlementRecordId()).get();
+        if (playMoneyOrder.isWithDrawing()) {
+            final Account account = this.accountService.getByIdWithLock(accountId).get();
+            final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
+            //解冻金额
+            final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
+            unFrozenRecord.setAccountId(account.getId());
+            unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
+            unFrozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+            unFrozenRecord.setUnfrozenType(EnumUnfrozenType.UNFROZEN.getId());
+            unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
+            unFrozenRecord.setUnfrozenTime(new Date());
+            unFrozenRecord.setRemark("提现失败");
+            this.unfrozenRecordService.add(unFrozenRecord);
+            //减少总金额,减少冻结金额
+            Preconditions.checkState(account.getFrozenAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
+            Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
+            this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
+            this.accountService.increaseSettleAmount(accountId, frozenRecord.getFrozenAmount());
+            //更新结算单
+            //待结算金额减少
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+            playMoneyOrder.setRemark(response.getMessage());
+            this.orderService.update(playMoneyOrder);
+
+            this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLE_FAIL.getId());
+
+            this.orderService.markOrder2SettleFail(settlementRecord.getId(),  EnumSettleStatus.SETTLE_FAIL.getId(),  EnumSettleStatus.SETTLE_ING.getId());
+        }
     }
 
     /**
