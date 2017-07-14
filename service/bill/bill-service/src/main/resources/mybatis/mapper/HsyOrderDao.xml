@@ -134,46 +134,15 @@
     </update>
 
     <update id="updateAmountAndStatus">
-        UPDATE tb_hsy_order SET amount = #{amount}, orderstatus = #{status} WHERE id = #{id}
+        UPDATE tb_hsy_order SET amount = #{amount}, realAmount = #{amount}, orderstatus = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateOrderNumber">
+        UPDATE tb_hsy_order SET  ordernumber = #{orderNumber} WHERE id = #{id}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT id,
-        ordernumber,
-        shopid,
-        shopname,
-        merchant_no,
-        merchantname,
-        order_no,
-        order_id,
-        orderstatus,
-        sourcetype,
-        validationcode,
-        amount,
-        poundage,
-        qrcode,
-        cashierid,
-        cashiername,
-        pay_sn,
-        pay_type,
-        pay_channel_sign,
-        pay_success_time,
-        refund_amount,
-        refund_status,
-        refund_time,
-        goods_name,
-        goods_describe,
-        authCode,
-        realAmount,
-        uid,
-        accountid,
-        dealerid,
-        remark,
-        create_time,
-        update_time
-        FROM tb_hsy_order
-        WHERE id = #{id}
-        ;
+        SELECT * FROM tb_hsy_order WHERE id = #{id}
     </select>
 
     <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.HsyOrder">
@@ -252,6 +221,9 @@
             <if test="selectAll == 0">
                 AND shopid = #{shopId}
             </if>
+            <if test="tradeOrderNo != null and tradeOrderNo != ''">
+                AND order_no = #{tradeOrderNo}
+            </if>
             AND orderstatus in (2,6,7)
             AND payment_channel IN
             <foreach collection="paymentChannels" index="index" item="item" open="(" separator="," close=")">
@@ -272,6 +244,9 @@
             </if>
             <if test="selectAll == 0">
                 AND shopid = #{shopId}
+            </if>
+            <if test="tradeOrderNo != null and tradeOrderNo != ''">
+                AND order_no = #{tradeOrderNo}
             </if>
             AND orderstatus in (2,6,7)
             AND payment_channel IN
@@ -335,4 +310,50 @@
             </if>
         </where>
     </select>
+
+    <select id="pcStatisticsOrder" resultType="com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder">
+        SELECT payment_channel, orderstatus as orderStatus, COUNT(id) as `number`, SUM(amount) as total_amount,
+        SUM(realAmount) as real_amount, SUM(refund_amount) as refund_amount, SUM(poundage) as poundage FROM tb_hsy_order
+        where shopid = #{shopId}
+        AND orderstatus in (2, 6)
+        AND payment_channel IN (1, 2)
+        AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        GROUP BY payment_channel, orderstatus
+    </select>
+
+    <select id="findConsumeOrderListByPage" parameterType="page" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        select
+          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
+        from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
+        where orderstatus!=1 and orderstatus!=3
+        <if test="objectT.mcid!=null and objectT.mcid!=''">
+            AND MCID=#{objectT.mcid}
+        </if>
+        <if test="objectT.mid!=null and objectT.mid!=''">
+            AND MID=#{objectT.mid}
+        </if>
+        order by corder.update_time desc
+    </select>
+
+    <select id="findConsumeOrderListByPageCount" parameterType="com.jkm.hss.bill.entity.HsyOrder" resultType="java.lang.Integer">
+        select count(1) from (select
+        corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time
+        createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
+        from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
+        where orderstatus!=1 and orderstatus!=3
+        <if test="mcid!=null and mcid!=''">
+            AND MCID=#{mcid}
+        </if>
+        <if test="mid!=null and mid!=''">
+            AND MID=#{mid}
+        </if>) x
+    </select>
+
+    <select id="findConsumeOrderInfo"  resultType="com.jkm.hss.bill.entity.HsyOrder">
+        select
+        corder.id,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
+        from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
+        where corder.id=#{id}
+    </select>
+
 </mapper>

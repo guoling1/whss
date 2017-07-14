@@ -121,14 +121,14 @@
                           <tr>
                             <td>升级费分润</td>
                             <td>{{dealerUpgerdeRate1.bossDealerShareRate}}%</td>
-                            <td v-if="oemType==1"><input type="number" v-model="dealerUpgerdeRate1.oemShareRate">%</td>
+                            <td v-if="oemType==1">{{dealerUpgerdeRate1.oemShareRate}}%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate1.firstDealerShareProfitRate">%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate1.secondDealerShareProfitRate">%</td>
                           </tr>
                           <tr>
                             <td>收单分润</td>
                             <td>{{dealerUpgerdeRate2.bossDealerShareRate}}%</td>
-                            <td v-if="oemType==1"><input type="number" v-model="dealerUpgerdeRate2.oemShareRate">%</td>
+                            <td v-if="oemType==1">{{dealerUpgerdeRate2.oemShareRate}}%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate2.firstDealerShareProfitRate">%</td>
                             <td><input type="number" v-model="dealerUpgerdeRate2.secondDealerShareProfitRate">%</td>
                           </tr>
@@ -193,6 +193,8 @@
             res.data.totalProfitSpace = (res.data.totalProfitSpace * 100).toFixed(0);
             res.data.dealerUpgerdeRates[0].bossDealerShareRate = (res.data.dealerUpgerdeRates[0].bossDealerShareRate * 100).toFixed(0);
             res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[0].oemShareRate = (res.data.dealerUpgerdeRates[0].oemShareRate * 100).toFixed(0);
+            res.data.dealerUpgerdeRates[1].oemShareRate = (res.data.dealerUpgerdeRates[1].oemShareRate * 100).toFixed(0);
             res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate = (res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate * 100).toFixed(0);
             res.data.dealerUpgerdeRates[1].bossDealerShareRate = (res.data.dealerUpgerdeRates[1].bossDealerShareRate * 100).toFixed(0);
             res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate = (res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate * 100).toFixed(0);
@@ -220,6 +222,8 @@
           this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate / 100).toFixed(2)
           this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate / 100).toFixed(2);
           this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate / 100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[0].oemShareRate = (this.$data.records.dealerUpgerdeRates[0].oemShareRate / 100).toFixed(2);
+          this.$data.records.dealerUpgerdeRates[1].oemShareRate = (this.$data.records.dealerUpgerdeRates[1].oemShareRate / 100).toFixed(2);
           this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate / 100).toFixed(2);
           this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate / 100).toFixed(2);
           this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate / 100).toFixed(2);
@@ -251,6 +255,8 @@
               this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate * 100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate * 100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[0].oemShareRate = (this.$data.records.dealerUpgerdeRates[0].oemShareRate * 100).toFixed(0);
+              this.$data.records.dealerUpgerdeRates[1].oemShareRate = (this.$data.records.dealerUpgerdeRates[1].oemShareRate * 100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = (this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate * 100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate * 100).toFixed(0);
               this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = (this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate * 100).toFixed(0);

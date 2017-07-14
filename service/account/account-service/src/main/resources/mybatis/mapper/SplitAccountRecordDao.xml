@@ -110,6 +110,10 @@
         SELECT COUNT(0) FROM tb_split_account_record WHERE split_sn = #{splitSn}
     </select>
 
+    <select id="selectByOrderNo" resultType="com.jkm.hss.account.entity.SplitAccountRecord">
+        SELECT * FROM tb_split_account_record WHERE order_no = #{orderNo}
+    </select>
+
     <!-- 分润统计 -->
     <select id="getProfit" resultType="com.jkm.hss.account.entity.ProfitCountRespons">
         SELECT

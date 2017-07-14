@@ -124,12 +124,12 @@
                           <tr>
                             <td>升级费分润</td>
                             <td>{{dealerUpgerdeRate1.bossDealerShareRate}}%</td>
-                            <td><input type="number" v-model="dealerUpgerdeRate1.oemShareRate">%</td>
+                            <td><input type="number" name="name" v-model="dealerUpgerdeRate1.oemShareRate">%</td>
                           </tr>
                           <tr>
                             <td>收单分润</td>
                             <td>{{dealerUpgerdeRate2.bossDealerShareRate}}%</td>
-                            <td><input type="number" v-model="dealerUpgerdeRate2.oemShareRate">%</td>
+                            <td><input type="number" name="name" v-model="dealerUpgerdeRate2.oemShareRate">%</td>
                           </tr>
                           </tbody>
                         </table>
