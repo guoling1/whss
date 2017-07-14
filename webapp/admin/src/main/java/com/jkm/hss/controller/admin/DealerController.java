@@ -265,7 +265,7 @@ public class DealerController extends BaseController {
             oemUpgradeRate = new BigDecimal("0");
             oemTradeRate = new BigDecimal("0");
         }
-        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
+        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productOptional.get().getId());
         if(!upgradeRecommendRulesOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
         }
@@ -399,7 +399,7 @@ public class DealerController extends BaseController {
         }else{//新增
             Product product = productOptional.get();
             //根据产品查找产品详情
-            final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productOptional.get().getId());
+            final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(product.getId());
             final FirstLevelDealerGet2Response.Product productResponse = firstLevelDealerGet2Response.new Product();
             productResponse.setProductId(product.getId());
             productResponse.setProductName(product.getProductName());
