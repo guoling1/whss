@@ -274,7 +274,7 @@
                   dealerUpgerdeRates[i].oemShareRate = (dealerUpgerdeRates[i].oemShareRate/100).toFixed(2)
                   dealerUpgerdeRates[i].secondDealerShareProfitRate = (dealerUpgerdeRates[i].secondDealerShareProfitRate/100).toFixed(2)
                 }
-                this.$http.post('/daili/dealer/addOrUpdateDealerProduct', {
+                this.$http.post('/daili/dealer/addOrUpdateHssDealer', {
                   dealerId: this.dealerId,
                   recommendBtn: this.recommendBtn,
                   product: {
