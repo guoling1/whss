@@ -771,12 +771,14 @@ public class PayServiceImpl implements PayService {
         final Triple<Long, BigDecimal, String> secondMoneyTriple = promoteShallMap.get("secondMoney");
         final Triple<Long, BigDecimal, String> directMoneyTriple = promoteShallMap.get("directMoney");
         final Triple<Long, BigDecimal, String> inDirectMoneyTriple = promoteShallMap.get("inDirectMoney");
+        final Triple<Long, BigDecimal, String> oemMoneyTriple = promoteShallMap.get("oemMoney");
         final BigDecimal companyMoney = null == companyMoneyTriple ? new BigDecimal("0.00") : companyMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
         final BigDecimal directMoney = null == directMoneyTriple ? new BigDecimal("0.00") : directMoneyTriple.getMiddle();
         final BigDecimal inDirectMoney = null == inDirectMoneyTriple ? new BigDecimal("0.00") : inDirectMoneyTriple.getMiddle();
-        Preconditions.checkState(order.getRealPayAmount().compareTo(companyMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney)) >= 0);
+        final BigDecimal oemMoney = null == oemMoneyTriple ? new BigDecimal("0.00") : inDirectMoneyTriple.getMiddle();
+        Preconditions.checkState(order.getRealPayAmount().compareTo(companyMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney).add(oemMoney)) >= 0);
         //手续费账户结算
         if (null != companyMoneyTriple) {
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),

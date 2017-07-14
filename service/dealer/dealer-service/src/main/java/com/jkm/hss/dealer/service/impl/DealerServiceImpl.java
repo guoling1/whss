@@ -3199,6 +3199,8 @@ public class DealerServiceImpl implements DealerService {
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign,firstMerchantInfo)));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+                log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
+                "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney);
                 return map;
             }else{
                 //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -3255,6 +3257,8 @@ public class DealerServiceImpl implements DealerService {
                 map.put("secondMerchantMoney", Triple.of(secondMerchantInfo.getAccountId(), secondMerchantMoney, getMerchantRate(channelSign,secondMerchantInfo)));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+                log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
+                        "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "2J商户分润:"+ secondMerchantMoney);
                 return map;
             }
 
@@ -3298,7 +3302,8 @@ public class DealerServiceImpl implements DealerService {
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign, firstMerchantInfo)));
                 map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, dealerUpgerdeRate.getFirstDealerShareProfitRate()));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
-
+                log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
+                        "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "1代分润:"+ firstMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
                 detail.setMerchantId(merchantId);
@@ -3341,7 +3346,8 @@ public class DealerServiceImpl implements DealerService {
                 map.put("secondMoney", Triple.of(secondDealer.getAccountId(), secondMoney, dealerUpgerdeRate.getSecondDealerShareProfitRate()));
                 map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, dealerUpgerdeRate.getFirstDealerShareProfitRate()));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
-
+                log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
+                        "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "1J分润:"+ firstMoney + "2J分润"+ secondMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
                 detail.setMerchantId(merchantId);
@@ -3410,7 +3416,9 @@ public class DealerServiceImpl implements DealerService {
                 map.put("secondMerchantMoney", Triple.of(secondMerchantInfo.getAccountId(), secondMerchantMoney, getMerchantRate(channelSign, secondMerchantInfo)));
                 map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, dealerUpgerdeRate.getFirstDealerShareProfitRate()));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
-
+                log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
+                        "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "2J商户分润:"+ secondMerchantMoney
+                +"1代分润" + firstMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
                 detail.setMerchantId(merchantId);
@@ -3454,7 +3462,9 @@ public class DealerServiceImpl implements DealerService {
                 map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, dealerUpgerdeRate.getFirstDealerShareProfitRate()));
                 map.put("secondMoney", Triple.of(secondDealer.getAccountId(), secondMoney, dealerUpgerdeRate.getSecondDealerShareProfitRate()));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
-
+                log.info("交易单号[" + orderNo + "]请求就行收单分润:" + "通道成本:" + basicMoney+ "通道分润:" + channelMoney +
+                        "产品分润:" + productMoney + "O单分润:" + oemMoney + "1J商户分润:" + firstMerchantMoney + "2J商户分润:"+ secondMerchantMoney+
+                "1代分润:" + firstMoney + "2代分润" + secondMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setProductType(EnumProductType.HSS.getId());
                 detail.setMerchantId(merchantId);
