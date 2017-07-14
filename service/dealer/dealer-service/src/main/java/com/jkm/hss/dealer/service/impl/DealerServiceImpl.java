@@ -3201,8 +3201,11 @@ public class DealerServiceImpl implements DealerService {
             }else{
                 firstMerchantMoney =  new BigDecimal(0);
             }
+            final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
+                    (oemInfo.getId(), EnumDealerRateType.TRADE, product.getId());
+            final BigDecimal totalProfitSpace = this.getDealerTotalProfitSpace(oemInfo, channelSign);
             //分公司分润
-            final BigDecimal oemMoney = tradeAmount.multiply(merchantRate.subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
+            final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             if (merchantInfo.getSecondMerchantId() == 0){
                 final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney);
                 //没有上上级
@@ -3299,7 +3302,7 @@ public class DealerServiceImpl implements DealerService {
         //一级代理
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
-                (0, EnumDealerRateType.TRADE, product.getId());
+                (firstDealer.getId(), EnumDealerRateType.TRADE, product.getId());
         final BigDecimal totalProfitSpace = this.getDealerTotalProfitSpace(firstDealer, channelSign);
         //二级代理信息
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
