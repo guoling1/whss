@@ -126,6 +126,18 @@
             <if test="paytype!=null">
                 pay_type=#{paytype},
             </if>
+            <if test="cid!=null">
+                cid=#{cid},
+            </if>
+            <if test="mcid!=null">
+                mcid=#{mcid},
+            </if>
+            <if test="mid!=null">
+                mid=#{mid},
+            </if>
+            <if test="isMemberCardPay!=null">
+                isMemberCardPay=#{isMemberCardPay},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}
             </if>

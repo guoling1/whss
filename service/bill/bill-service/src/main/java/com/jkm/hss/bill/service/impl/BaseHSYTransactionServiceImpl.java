@@ -12,6 +12,7 @@ import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -124,6 +125,66 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 return Triple.of(0, payResponse.getUrl(), shop.getName());
              default:
                  return Triple.of(-1, payResponse.getMessage(), shop.getName());
+        }
+    }
+
+    @Transactional
+    public Triple<Integer, String, String> placeOrderMemberImpl(HsyOrder hsyOrder, BigDecimal amount,Long accountID,Long reciptAccountID){
+        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(hsyOrder.getShopid()).get(0);
+        final PayParams payParams = new PayParams();
+        payParams.setBusinessOrderNo(hsyOrder.getOrdernumber());
+        payParams.setChannel(hsyOrder.getPaychannelsign());
+        payParams.setMerchantPayType(EnumMerchantPayType.MERCHANT_JSAPI);
+        payParams.setAppId(EnumAppType.HSY.getId());
+        payParams.setTradeAmount(amount);
+        payParams.setRealPayAmount(amount);
+        payParams.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
+        payParams.setPayeeAccountId(shop.getAccountID());
+        payParams.setGoodsName(hsyOrder.getGoodsname());
+        payParams.setGoodsDescribe(hsyOrder.getGoodsdescribe());
+        payParams.setWxAppId(WxConstants.APP_HSY_ID);
+        payParams.setMemberId(hsyOrder.getMemberId());
+        payParams.setMerchantNo(hsyOrder.getMerchantNo());
+        payParams.setMerchantName(hsyOrder.getMerchantname());
+        if (EnumPayChannelSign.isWechatOfficialPay(hsyOrder.getPaychannelsign())) {//微信官方支付
+            final long uid = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0).getId();
+            final UserChannelPolicy userChannelPolicy = this.userChannelPolicyService.selectByUserIdAndChannelTypeSign(uid,
+                    hsyOrder.getPaychannelsign()).get();
+            payParams.setWxAppId(userChannelPolicy.getAppId());
+            payParams.setSubMerchantId(userChannelPolicy.getExchannelCode());
+            if (StringUtils.isEmpty(userChannelPolicy.getSubAppId())) {
+                payParams.setMemberId(hsyOrder.getMemberId());
+            } else {
+                payParams.setMemberId("");
+                payParams.setSubAppId(userChannelPolicy.getSubAppId());
+                payParams.setSubMemberId(hsyOrder.getMemberId());
+            }
+        }
+        payParams.setMemberCardPay(true);
+        payParams.setMemberAccountId(accountID);
+        payParams.setMerchantReceiveAccountId(reciptAccountID);
+
+        final PayResponse payResponse = this.tradeService.pay(payParams);
+        final EnumBasicStatus status = EnumBasicStatus.of(payResponse.getCode());
+        final HsyOrder updateOrder = new HsyOrder();
+        switch (status) {
+            case FAIL:
+                updateOrder.setId(hsyOrder.getId());
+                updateOrder.setOrderno(payResponse.getTradeOrderNo());
+                updateOrder.setOrderid(payResponse.getTradeOrderId());
+                updateOrder.setRemark(payResponse.getMessage());
+                this.hsyOrderService.update(updateOrder);
+                return Triple.of(-1, payResponse.getMessage(), shop.getName());
+            case SUCCESS:
+                updateOrder.setId(hsyOrder.getId());
+                updateOrder.setOrderno(payResponse.getTradeOrderNo());
+                updateOrder.setValidationcode(payResponse.getTradeOrderNo().substring(payResponse.getTradeOrderNo().length() - 4));
+                updateOrder.setOrderid(payResponse.getTradeOrderId());
+                updateOrder.setRemark(payResponse.getMessage());
+                this.hsyOrderService.update(updateOrder);
+                return Triple.of(0, payResponse.getUrl(), shop.getName());
+            default:
+                return Triple.of(-1, payResponse.getMessage(), shop.getName());
         }
     }
 }

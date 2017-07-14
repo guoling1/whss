@@ -294,7 +294,7 @@
 
     <select id="findMemberConsumeStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMemberStatistic">
         select count(1) consumeCount,COALESCE(sum(realAmount),0) consumeSum from tb_hsy_order
-        where uid=#{uid} and mcid is not null and orderstatus!=1 and orderstatus!=3
+        where uid=#{uid} and isMemberCardPay =1 and orderstatus!=1 and orderstatus!=3
         <if test="startTime!=null">
             AND pay_success_time >=#{startTime}
         </if>

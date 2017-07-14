@@ -27,10 +27,7 @@ import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.OrderStatus;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.AppParam;
-import com.jkm.hsy.user.entity.AppPolicyRechargeOrder;
+import com.jkm.hsy.user.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
@@ -123,7 +120,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
      */
     @Override
     @Transactional
-    public Triple<Integer, String, String> placeOrder(final String totalAmount, final long hsyOrderId) {
+    public Triple<Integer, String, String> placeOrder(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid) {
         log.info("订单[{}]发起支付请求，金额[{}]", hsyOrderId, totalAmount);
         final HsyOrder hsyOrder = this.hsyOrderService.getByIdWithLock(hsyOrderId).get();
         final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder);
@@ -133,9 +130,72 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             tradeHsyOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
         }
         if (tradeHsyOrder.isPendingPay()) {
-            final BigDecimal amount = new BigDecimal(totalAmount);
-            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
-            return this.baseHSYTransactionService.placeOrderImpl(tradeHsyOrder, amount);
+//            final BigDecimal amount = new BigDecimal(totalAmount);
+//            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+
+            if(mcid!=null) {
+                BigDecimal cent=new BigDecimal(0.01);
+                List<AppPolicyMembershipCard> cardList = hsyMembershipDao.findMemberCardByID(mcid);
+                AppPolicyMembershipCard appPolicyMembershipCard = cardList.get(0);
+                BigDecimal calDiscountFee = new BigDecimal(totalAmount).multiply(appPolicyMembershipCard.getDiscount().divide(new BigDecimal(10), 2, BigDecimal.ROUND_HALF_UP));
+                if (calDiscountFee.compareTo(cent) == -1)
+                    calDiscountFee = cent;
+                calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
+                if (calDiscountFee.compareTo(discountFee) != 0)
+                    return Triple.of(-1, "打折后金额计算不一致", "");
+            }
+
+            HsyOrder hsyOrderUpdate=new HsyOrder();
+            hsyOrderUpdate.setId(tradeHsyOrder.getId());
+            hsyOrderUpdate.setAmount(discountFee);
+            hsyOrderUpdate.setRealAmount(new BigDecimal(totalAmount));
+            hsyOrderUpdate.setCid(cid);
+            hsyOrderUpdate.setMcid(mcid);
+            hsyOrderUpdate.setMid(mid);
+            hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderDao.update(hsyOrderUpdate);
+            return this.baseHSYTransactionService.placeOrderImpl(tradeHsyOrder, discountFee);
+        }
+        return Triple.of(-1, "订单异常", "");
+    }
+
+    public Triple<Integer, String, String> placeOrderMember(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid,String consumerCellphone){
+        log.info("订单[{}]发起支付请求，金额[{}]", hsyOrderId, totalAmount);
+        final HsyOrder hsyOrder = this.hsyOrderService.getByIdWithLock(hsyOrderId).get();
+        final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder);
+        HsyOrder tradeHsyOrder = hsyOrder;
+        //说明已经请求过交易，用新订单再次请求
+        if (newOrderId > 0) {
+            tradeHsyOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
+        }
+        if (tradeHsyOrder.isPendingPay()) {
+//            final BigDecimal amount = new BigDecimal(totalAmount);
+//            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+
+            BigDecimal cent=new BigDecimal(0.01);
+            List<AppPolicyMember> memberList = hsyMembershipDao.findMemberInfoByID(mid);
+            AppPolicyMember appPolicyMember = memberList.get(0);
+            BigDecimal calDiscountFee = new BigDecimal(totalAmount).multiply(appPolicyMember.getDiscount().divide(new BigDecimal(10), 2, BigDecimal.ROUND_HALF_UP));
+            if (calDiscountFee.compareTo(cent) == -1)
+                calDiscountFee = cent;
+            calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
+            if (calDiscountFee.compareTo(discountFee) != 0)
+                return Triple.of(-1, "打折后金额计算不一致", "");
+
+            if(!consumerCellphone.equals(appPolicyMember.getConsumerCellphone().substring(appPolicyMember.getConsumerCellphone().length()-6)))
+                return Triple.of(-1, "手机号后6位与注册手机号后6位不一致", "");
+
+            HsyOrder hsyOrderUpdate=new HsyOrder();
+            hsyOrderUpdate.setId(tradeHsyOrder.getId());
+            hsyOrderUpdate.setAmount(discountFee);
+            hsyOrderUpdate.setRealAmount(new BigDecimal(totalAmount));
+            hsyOrderUpdate.setCid(cid);
+            hsyOrderUpdate.setMcid(mcid);
+            hsyOrderUpdate.setMid(mid);
+            hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderDao.update(hsyOrderUpdate);
+
+            return this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
         }
         return Triple.of(-1, "订单异常", "");
     }

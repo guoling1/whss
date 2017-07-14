@@ -44,4 +44,9 @@ public class StaticCodePayRequest {
      * 会员ID
      */
     private Long mid;
+
+    /**
+     * 消费者手机后六位
+     */
+    private String consumerCellphone;
 }

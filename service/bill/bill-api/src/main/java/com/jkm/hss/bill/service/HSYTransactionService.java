@@ -6,6 +6,8 @@ import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.math.BigDecimal;
+
 /**
  * Created by yulong.zhang on 2017/6/12.
  */
@@ -29,7 +31,16 @@ public interface HSYTransactionService {
      * @param hsyOrderId 订单id
      * @return
      */
-    Triple<Integer, String, String> placeOrder(String totalAmount, long hsyOrderId);
+    Triple<Integer, String, String> placeOrder(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid);
+
+    /**
+     * 好收银扫码下单(会员卡)
+     *
+     * @param totalAmount 订单金额
+     * @param hsyOrderId 订单id
+     * @return
+     */
+    Triple<Integer, String, String> placeOrderMember(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid,String consumerCellphone);
 
     /**
      * 支付回调
