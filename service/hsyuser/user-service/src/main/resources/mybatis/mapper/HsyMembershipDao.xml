@@ -152,8 +152,8 @@
     </select>
 
     <insert id="insertRechargeOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
-        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,POUNDAGE,REMARK,SETTLETYPE,CREATETIME,UPDATETIME)
-        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{cid},#{mcid},#{uid},#{merchantReceiveAccountID},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{source},#{poundage},#{remark},#{settleType},#{createTime},#{updateTime})
+        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,MEMBERSHIPNAME,CONSUMERCELLPHONE,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,POUNDAGE,REMARK,SETTLETYPE,CREATETIME,UPDATETIME)
+        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{cid},#{mcid},#{uid},#{merchantReceiveAccountID},#{membershipName},#{consumerCellphone},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{source},#{poundage},#{remark},#{settleType},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateRechargeOrder" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
@@ -173,6 +173,8 @@
             <if test="mcid!=null">MCID=#{mcid},</if>
             <if test="uid!=null">UID=#{uid},</if>
             <if test="merchantReceiveAccountID!=null">MERCHANTRECEIVEACCOUNTID=#{merchantReceiveAccountID},</if>
+            <if test="membershipName!=null and membershipName!=''">MEMBERSHIPNAME=#{membershipName},</if>
+            <if test="consumerCellphone!=null and consumerCellphone!=''">CONSUMERCELLPHONE=#{consumerCellphone},</if>
             <if test="goodsName!=null and goodsName!=''">GOODSNAME=#{goodsName},</if>
             <if test="goodsDescribe!=null and goodsDescribe!=''">GOODSDESCRIBE=#{goodsDescribe},</if>
             <if test="merchantName!=null and merchantName!=''">MERCHANTNAME=#{merchantName},</if>
@@ -294,7 +296,7 @@
 
     <select id="findMemberConsumeStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMemberStatistic">
         select count(1) consumeCount,COALESCE(sum(realAmount),0) consumeSum from tb_hsy_order
-        where uid=#{uid} and mcid is not null and orderstatus!=1 and orderstatus!=3
+        where uid=#{uid} and isMemberCardPay =1 and orderstatus!=1 and orderstatus!=3
         <if test="startTime!=null">
             AND pay_success_time >=#{startTime}
         </if>
@@ -317,6 +319,31 @@
         where 1=1
         <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
+    </select>
+
+    <select id="findMemberListByOUIDAndUID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        from app_policy_member member
+        left join app_policy_consumer consumer on member.CID=consumer.ID
+        left join app_policy_membership_card card on member.MCID=card.ID
+        where 1=1 and card.UID=#{uid}
+        <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
+        <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
+    </select>
+
+    <select id="findLastConsumeTime" resultType="java.util.Date">
+        select pay_success_time from tb_hsy_order where mid=#{mid} order by pay_success_time desc limit 1
+    </select>
+
+    <select id="findAppPolicyRechargeOrderByParam" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select ORDERNO,MEMBERSHIPNAME,CONSUMERCELLPHONE,TRADEAMOUNT,REALPAYAMOUNT,
+        (case when source='wechat' then '微信'
+        when source='alipay' then '支付宝' else '' end) source,PAYSUCCESSTIME from app_policy_recharge_order
+        where 1=1
+        <if test="uid!=null">and UID=#{uid}</if>
+        <if test="startTime!=null">and PAYSUCCESSTIME>#{startTime}</if>
+        <if test="endTime!=null"><![CDATA[ and PAYSUCCESSTIME<#{endTime}]]></if>
     </select>
 
 </mapper>

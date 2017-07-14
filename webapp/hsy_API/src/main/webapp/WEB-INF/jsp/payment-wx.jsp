@@ -28,10 +28,12 @@
       <span class="key-icon">￥</span>
       <input type="hidden" id="key-input" value="">
     </div>
-    <div class="sale">
+    <div class="sale" <c:if test="${appPolicyMember==null}">style="display:none;"</c:if> >
       <img src="../assets/member/zhekou.png" alt="">
-      <span><span id="rebate">9</span>折</span>
+      <span><span id="rebate">${appPolicyMember.discountInt}.${appPolicyMember.discountFloat}</span>折</span>
       <span class="right">-￥<span id="minus">0.00</span></span>
+      <%--${appPolicyMember.cid},${appPolicyMember.mcid},${appPolicyMember.id}
+      isMemberCardPay 0 否 1是  discountFee--%>
     </div>
   </div>
   <%--<div class="safe">
@@ -40,10 +42,12 @@
   </div>--%>
   <div class="keyboard" id="keyboard">
     <div class="copyright">
-      <img src="../assets/member/vip.png" alt="">
-      <span class="word">卡内余额：</span>
-      <span>￥500.00</span>
-      <span class="weui-btn weui-btn_mini weui-btn_primary">充值</span>
+      <div <c:if test="${appPolicyMember==null}">style="display:none;"</c:if> >
+        <img src="../assets/member/vip.png" alt="">
+        <span class="word">卡内余额：</span>
+        <span>${appPolicyMember.remainingSum}</span>
+        <a class="weui-btn weui-btn_mini weui-btn_primary" href="/sqb/toRecharge?mid=${appPolicyMember.id}&source=WX">充值</a>
+      </div>
     </div>
     <%--<div class="copyright flexBox">
       <span class="line"></span>
@@ -67,9 +71,14 @@
       </div>
       <div class="wx">
         <div class="delete" keyCtrl="delete" touch="true"></div>
-        <div class="pay" id="choose">
+        <%--会员--%>
+        <div class="pay" id="choose" <c:if test="${appPolicyMember==null}">style="display:none;"</c:if>>
           <p>￥<span id="realNum">0.00</span></p>
           <p>付款</p>
+        </div>
+        <%--非会员--%>
+        <div class="pay" keyCtrl="wx-pay" <c:if test="${appPolicyMember!=null}">style="display:none;"</c:if>>
+          付款
         </div>
       </div>
     </div>
@@ -86,7 +95,7 @@
             <a class="weui-cell weui-cell_access" href="javascript:;" id="memberPay">
               <div class="weui-cell__hd"><img src="../../assets/member/vip.png" alt="" style="width:20px;margin-right:5px;display:block"></div>
               <div class="weui-cell__bd">
-                <p>会员卡支付(余额￥5.55)</p>
+                <p>会员卡支付(余额￥${appPolicyMember.remainingSum})</p>
               </div>
               <div class="weui-cell__ft"></div>
             </a>
@@ -108,7 +117,7 @@
           <img src="../../assets/member/cha.png" alt="" id="closePay">
           <strong class="weui-dialog__title">支付</strong>
         </div>
-        <div class="weui-dialog__price">￥5.55</div>
+        <div class="weui-dialog__price" id="paymenyPrice">￥5.55</div>
         <div class="weui-dialog__bd">
           <div class="weui-cells">
             <a class="weui-cell weui-cell_access" href="javascript:;">
@@ -146,7 +155,18 @@
 </body>
 <script>
   var pageData = {
-    hsyOrderId: '${hsyOrderId}'
+      hsyOrderId: '${hsyOrderId}',
+      remainingSum:'${appPolicyMember.remainingSum}',
+      type:'',
+      cid: '${appPolicyMember.cid}',
+      mcid:'${appPolicyMember.mcid}',
+      id:'${appPolicyMember.id}'
+  };
+  console.log('${appPolicyMember.id}')
+  if(${appPolicyMember==null}){
+      pageData.type='noMember'  // 无会员卡
+  }else {
+      pageData.type ='member'
   }
 
 </script>

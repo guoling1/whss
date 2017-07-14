@@ -547,7 +547,7 @@ public class MembershipController {
         rechargeParams.setChannel(appPolicyRechargeOrder.getPayChannelSign());
         rechargeParams.setMerchantPayType(EnumMerchantPayType.MERCHANT_JSAPI);
         rechargeParams.setAppId("hsy");
-        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getTradeAmount());
+        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getRealPayAmount());
         rechargeParams.setRealPayAmount(appPolicyRechargeOrder.getRealPayAmount());
         rechargeParams.setMarketingAmount(appPolicyRechargeOrder.getMarketingAmount());
         rechargeParams.setPayeeAccountId(appPolicyRechargeOrder.getPayeeAccountID());

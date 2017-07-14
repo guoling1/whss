@@ -100,7 +100,7 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"uid\":215,\"param\":\"13521691431\",\"currentPage\":1}";
+        String param="{\"uid\":215,\"currentPage\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -152,7 +152,7 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"mcid\":18,\"currentPage\":1,\"mid\":32}";
+        String param="{\"mcid\":18,\"currentPage\":1,\"mid\":36}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -178,7 +178,7 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"uid\":71}";
+        String param="{\"uid\":215}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

@@ -126,6 +126,18 @@
             <if test="paytype!=null">
                 pay_type=#{paytype},
             </if>
+            <if test="cid!=null">
+                cid=#{cid},
+            </if>
+            <if test="mcid!=null">
+                mcid=#{mcid},
+            </if>
+            <if test="mid!=null">
+                mid=#{mid},
+            </if>
+            <if test="isMemberCardPay!=null">
+                isMemberCardPay=#{isMemberCardPay},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}
             </if>
@@ -338,7 +350,7 @@
 
     <select id="findConsumeOrderListByPage" parameterType="page" resultType="com.jkm.hss.bill.entity.HsyOrder">
         select
-          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
+          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
         where orderstatus!=1 and orderstatus!=3
         <if test="objectT.mcid!=null and objectT.mcid!=''">

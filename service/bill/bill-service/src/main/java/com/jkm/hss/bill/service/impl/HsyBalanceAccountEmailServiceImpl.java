@@ -13,11 +13,13 @@ import com.jkm.hss.bill.helper.ApplicationConsts;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShopUserRole;
 import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.entity.AppPolicyRechargeOrder;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyUserService;
@@ -50,6 +52,8 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
     private HsyUserDao hsyUserDao;
     @Autowired
     private HSYOrderService hsyOrderService;
+    @Autowired
+    private HsyMembershipDao hsyMembershipDao;
 
     /**
      * {@inheritDoc}
@@ -122,7 +126,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         for (AppAuUser appAuUser : appAuUsers) {
             try {
                 if (!StringUtils.isEmpty(appAuUser.getEmail())) {
-                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
+                    this.simpleSend(appAuUser.getId(),appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
                     log.info("商户[{}], 发送周邮件成功", appAuUser.getGlobalID());
                 }
             } catch (final Throwable e) {
@@ -148,7 +152,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         for (AppAuUser appAuUser : appAuUsers) {
             try {
                 if (!StringUtils.isEmpty(appAuUser.getEmail())) {
-                    this.simpleSend(appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
+                    this.simpleSend(appAuUser.getId(),appAuUser.getGlobalID(), startTime, endTime, appAuUser.getEmail(), appAuUser.getRealname());
                     log.info("商户[{}], 发送月邮件成功", appAuUser.getGlobalID());
                 }
             } catch (final Throwable e) {
@@ -183,17 +187,31 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(userRole.getUid()).get(0);
         this.hsyUserService.updateEmailById(email, appAuUser.getId());
         final String merchantNo = appAuUser.getGlobalID();
-        this.simpleSend(merchantNo, startTime, endTime, email, appAuUser.getRealname());
+        this.simpleSend(appAuUser.getId(),merchantNo, startTime, endTime, email, appAuUser.getRealname());
         return "";
     }
 
-    private void simpleSend(final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName) {
+    private void simpleSend(Long uid,final String merchantNo, final Date startTime, final Date endTime, final String email, final String userName) {
         final List<HsyOrder> hsyOrders = this.hsyOrderService.getByMerchantNoAndTime(merchantNo, startTime, endTime);
+        List<AppPolicyRechargeOrder> appPolicyRechargeOrderList=hsyMembershipDao.findAppPolicyRechargeOrderByParam(uid, startTime, endTime);
         log.info("商户【{}】，发送对账邮件【{}】，【{}】-【{}】交易个数【{}】", merchantNo, email, startTime, endTime, hsyOrders.size());
-        if (CollectionUtils.isEmpty(hsyOrders)) {
+        if (CollectionUtils.isEmpty(hsyOrders)&&CollectionUtils.isEmpty(appPolicyRechargeOrderList)) {
             return;
         }
-        final String fileUrl = this.generateExcelSheet(hsyOrders, merchantNo);
+        String[] urls=new String[2];
+
+        String hsyOrdersFileUrl=null;
+        if(!CollectionUtils.isEmpty(hsyOrders)) {
+            hsyOrdersFileUrl = this.generateExcelSheet(hsyOrders, merchantNo);
+            urls[0]=hsyOrdersFileUrl;
+        }
+
+        String appPolicyRechargeOrderFileUrl=null;
+        if(!CollectionUtils.isEmpty(appPolicyRechargeOrderList)){
+            appPolicyRechargeOrderFileUrl=generateExcelSheetAppPolicyRechargeOrder(appPolicyRechargeOrderList,merchantNo);
+            urls[1]=appPolicyRechargeOrderFileUrl;
+        }
+
         final BaseEmailInfo baseEmailInfo = new BaseEmailInfo();
         baseEmailInfo.setServerHost(ApplicationConsts.getApplicationConfig().emailServerHost());
         baseEmailInfo.setServerPort(ApplicationConsts.getApplicationConfig().emailServerPort());
@@ -203,7 +221,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         baseEmailInfo.setFromAddress(ApplicationConsts.getApplicationConfig().emailFromAddress());
         baseEmailInfo.setToAddress(email);
         baseEmailInfo.setSubject("钱包++ 对账单");
-        baseEmailInfo.setAttachFileNames(new String[]{fileUrl});
+        baseEmailInfo.setAttachFileNames(urls);
         final String startDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(startTime);
         final String endDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(endTime);
         String tradeDate;
@@ -288,6 +306,36 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
             columns.add(null != hsyOrder.getPoundage() ? hsyOrder.getPoundage().toPlainString() : "0.00");
             columns.add(null != hsyOrder.getRefundamount() ? hsyOrder.getRefundamount().toPlainString() : "0.00");
             columns.add(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
+        }
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + excelSheetVO.getName() + ".xls");
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheetVO);
+        try {
+            ExcelUtil.exportExcel(excelSheets, new FileOutputStream(excelFile));
+        }catch (Exception e){
+            log.debug("生成excel异常",e);
+        }
+        return excelFile.getAbsolutePath();
+    }
+
+    private String generateExcelSheetAppPolicyRechargeOrder(final List<AppPolicyRechargeOrder> appPolicyRechargeOrderList, final String merchantNo) {
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final ArrayList<List<String>> datas = new ArrayList<>();
+        excelSheetVO.setDatas(datas);
+        excelSheetVO.setName(merchantNo + "_statement_" + DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd));
+        final List<String> head = Arrays.asList(new String[]{"充值单号", "会员卡名称", "会员手机号", "充值金额", "实付金额", "支付方式", "充值成功时间"});
+        datas.add(head);
+        for (AppPolicyRechargeOrder appPolicyRechargeOrder : appPolicyRechargeOrderList) {
+            final List<String> columns = new ArrayList<>();
+            datas.add(columns);
+            columns.add(appPolicyRechargeOrder.getOrderNO());
+            columns.add(appPolicyRechargeOrder.getMembershipName());
+            columns.add(appPolicyRechargeOrder.getConsumerCellphone());
+            columns.add(appPolicyRechargeOrder.getTradeAmount()+"");
+            columns.add(appPolicyRechargeOrder.getRealPayAmount()+"");
+            columns.add(appPolicyRechargeOrder.getSource());
+            columns.add(DateFormatUtil.format(appPolicyRechargeOrder.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
         }
         final String tempDir = this.getTempDir();
         final File excelFile = new File(tempDir + File.separator + excelSheetVO.getName() + ".xls");

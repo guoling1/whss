@@ -3,10 +3,12 @@
  */
 const message = _require('message');
 const Keyboard = _require('keyboard');
+const http = _require('http');
 new Keyboard({
   spanId: 'key-span',
   inputId: 'key-input',
-  keyboardId: 'keyboard'
+  keyboardId: 'keyboard',
+    pageData:pageData
 });
 let choose = document.getElementById('choose');
 let close = document.getElementById('close');
@@ -65,14 +67,27 @@ let closePay = document.getElementById('closePay');
 boxInput.init(function(){
     getValue();
 });
-// document.getElementById("confirmButton").onclick = function(){
-//     getValue();
-// }
 function getValue(){
     var val = boxInput.getBoxInputValue();
     boxInput.setValue();
     maskPay.style.opacity = 0;
     maskPay.style.display = 'none';
+    message.load_show('正在支付');
+    let realNum = document.getElementById('realNum').innerHTML;
+    let totalFee = document.getElementById('key-span').innerHTML;
+    http.post('/trade/scReceipt', {
+        totalFee: totalFee,
+        hsyOrderId: pageData.hsyOrderId,
+        isMemberCardPay:1,
+        discountFee:realNum,
+        cid: pageData.cid,
+        mcid: pageData.mcid,
+        mid: pageData.id,
+        consumerCellphone: val
+    }, function (data) {
+        message.load_hide();
+        window.location.href = '/trade/success/' + jsonData.orderId;
+    });
 }
 choose.addEventListener('click',function () {
     if(val.value > 0){
@@ -86,15 +101,20 @@ close.addEventListener('click',function () {
     mask.style.opacity = 0;
     mask.style.display = 'none';
 });
-memberPay.addEventListener('click',function () {
-    if(val.value > 0){
+
+memberPay.addEventListener('click',function (e) {
+    let realNum = document.getElementById('realNum').innerHTML;
+    if(parseInt(pageData.remainingSum) < parseInt(realNum)){
+        mask.style.opacity = 0;
+        mask.style.display = 'none';
+        message.prompt_show('余额不足，请先充值');
+    }else {
+        document.getElementById('paymenyPrice').innerHTML = '￥'+realNum;
         mask.style.opacity = 0;
         mask.style.display = 'none';
         maskPay.style.opacity = 1;
         maskPay.style.display = 'block';
         document.getElementsByClassName('realInput')[0].focus();
-    }else {
-        message.prompt_show('请输入正确的支付金额');
     }
 });
 closePay.addEventListener('click',function () {

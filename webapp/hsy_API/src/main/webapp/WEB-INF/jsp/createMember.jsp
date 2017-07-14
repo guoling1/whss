@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../css/style.2.0.2.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
     <link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">
-    <script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>
+    <%--<script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>--%>
     <%--<script>
         $(function(){
             $(":radio").click(function(){

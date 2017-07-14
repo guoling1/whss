@@ -402,8 +402,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
-        if(account.get().getUpdateTime().compareTo(account.get().getCreateTime())!=0)
-            appPolicyMember.setLastConsumeTime(account.get().getUpdateTime());
+        Date lastConsumeTime=hsyMembershipDao.findLastConsumeTime(appPolicyMember.getId());
+        appPolicyMember.setLastConsumeTime(lastConsumeTime);
 
         Map result=new HashMap();
         result.put("appPolicyMember",appPolicyMember);
@@ -442,6 +442,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         if(appPolicyRechargeOrder.getCurrentPage()<=0)
             throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
 
+        appPolicyRechargeOrder.setMemberID(appPolicyRechargeOrder.getMid());
         PageUtils page=new PageUtils();
         page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
         page.setPageSize(AppConstant.PAGE_SIZE);
@@ -794,6 +795,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyRechargeOrder.setMcid(appPolicyMember.getMcid());
         appPolicyRechargeOrder.setUid(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantReceiveAccountID(appPolicyMember.getReceiptAccountID());
+        appPolicyRechargeOrder.setConsumerCellphone(appPolicyMember.getConsumerCellphone());
+        appPolicyRechargeOrder.setMembershipName(appPolicyMember.getMembershipName());
         List<AppAuUser> userList=hsyMembershipDao.findShopNameAndGlobalID(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantName(userList.get(0).getShopName());
         appPolicyRechargeOrder.setMerchantNO(userList.get(0).getGlobalID());
@@ -842,6 +845,26 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             member.setDiscountFloat(discountFloat);
         }
         return list;
+    }
+
+    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid){
+        List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUIDAndUID(openID,userID,uid);
+        if(list!=null&&list.size()!=0) {
+            AppPolicyMember appPolicyMember=list.get(0);
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+            appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+            DecimalFormat a=new DecimalFormat("0.0");
+            String discountStr=a.format(appPolicyMember.getDiscount());
+            String discountInt=discountStr.split("\\.")[0];
+            String discountFloat=discountStr.split("\\.")[1];
+            appPolicyMember.setDiscountInt(discountInt);
+            appPolicyMember.setDiscountFloat(discountFloat);
+            return appPolicyMember;
+        }
+        else
+            return null;
     }
 
 }
