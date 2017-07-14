@@ -86,7 +86,7 @@ function getValue(){
         consumerCellphone: val
     }, function (data) {
         message.load_hide();
-        window.location.href = '/trade/success/' + jsonData.orderId;
+        window.location.href = '/trade/success/' + data.orderId;
     });
 }
 choose.addEventListener('click',function () {
