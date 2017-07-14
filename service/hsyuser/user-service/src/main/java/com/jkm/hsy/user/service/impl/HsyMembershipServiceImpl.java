@@ -795,6 +795,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyRechargeOrder.setMcid(appPolicyMember.getMcid());
         appPolicyRechargeOrder.setUid(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantReceiveAccountID(appPolicyMember.getReceiptAccountID());
+        appPolicyRechargeOrder.setConsumerCellphone(appPolicyMember.getConsumerCellphone());
+        appPolicyRechargeOrder.setMembershipName(appPolicyMember.getMembershipName());
         List<AppAuUser> userList=hsyMembershipDao.findShopNameAndGlobalID(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantName(userList.get(0).getShopName());
         appPolicyRechargeOrder.setMerchantNO(userList.get(0).getGlobalID());
