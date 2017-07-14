@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.AccountFlow;
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -173,7 +175,9 @@ public class AccountController extends BaseController{
             if (1 != pair.getLeft()) {
                 return CommonResponse.simpleResponse(-1, pair.getRight());
             }
-
+            if(DateUtil.isInDate(new Date(),"09:00:00","22:25:00")){
+                return CommonResponse.simpleResponse(-1, "请在09:00至22:25进行提现");
+            }
             if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo( new BigDecimal("2")) == -1)){
                 return CommonResponse.simpleResponse(-1, "提现金额不得小于2元");
             }

@@ -72,7 +72,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
     @Transactional
     @Override
     public Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId, BigDecimal withdrawFee) {
-        channel = EnumPayChannelSign.HE_LI_UNIONPAY.getId();
+        channel = EnumPayChannelSign.MB_UNIONPAY_DO.getId();
         final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(accountId);
         Preconditions.checkArgument(dealerOptional.isPresent(), "代理商不存在");
         final Dealer dealer = dealerOptional.get();
@@ -92,7 +92,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             paymentSdkDaiFuRequest.setAccountName(dealer.getBankAccountName());
             paymentSdkDaiFuRequest.setAccountNumber(DealerSupport.decryptBankCard(dealer.getId(),dealer.getSettleBankCard()));
             paymentSdkDaiFuRequest.setIdCard(DealerSupport.decryptIdentity(dealer.getId(), dealer.getIdCard()));
-            paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.HE_LI_UNIONPAY.getId());
+            paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.MOBAO.getId());
             paymentSdkDaiFuRequest.setNote(dealer.getProxyName());
             paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
             paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
