@@ -64,7 +64,7 @@ public class Order extends BaseEntity {
     /**
      * 结算单id
      */
-    private String settlementRecordId;
+    private long settlementRecordId;
 
     /**
      * 流水号

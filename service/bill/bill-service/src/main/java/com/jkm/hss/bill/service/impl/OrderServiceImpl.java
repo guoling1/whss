@@ -1565,7 +1565,7 @@ public class OrderServiceImpl implements OrderService {
                     settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
 
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
-            playMoneyOrder.setGoodsName(settlementRecord.getSettleNo());
+            playMoneyOrder.setSettlementRecordId(settlementRecordId);
             this.update(playMoneyOrder);
             return Pair.of(1, "提现受理成功");
 
