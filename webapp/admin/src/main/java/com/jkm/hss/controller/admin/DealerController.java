@@ -228,20 +228,48 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, "不属于代理商，属于分公司");
         }
         final Dealer dealer = dealerOptional.get();
-        final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
-        if(dealerOptional.get().getOemId()>0){
-            firstLevelDealerGet2Response.setOemType(EnumOemType.OEM.getId());
-        }else{
-            firstLevelDealerGet2Response.setOemType(EnumOemType.DEALER.getId());
-        }
-        if(productId>0){//修改
-            Optional<Product> productOptional = this.productService.selectById(productId);
+        Optional<Product> productOptional = null;
+        if(productId>0){
+            productOptional = this.productService.selectById(productId);
             if(!productOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "好收收产品配置有误");
             }
-            if(!(EnumProductType.HSS.getId()).equals(productOptional.get().getType())){
-                return CommonResponse.simpleResponse(-1, "该产品不属于好收收");
+        }else{
+            productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "好收收产品不存在");
             }
+        }
+        if(!(EnumProductType.HSS.getId()).equals(productOptional.get().getType())){
+            return CommonResponse.simpleResponse(-1, "该产品不属于好收收");
+        }
+        final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
+        BigDecimal oemUpgradeRate = null;
+        BigDecimal oemTradeRate = null;
+        if(dealerOptional.get().getOemId()>0){
+            firstLevelDealerGet2Response.setOemType(EnumOemType.OEM.getId());
+            DealerUpgerdeRate dealerHssUpgerdeRate = dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId(dealerOptional.get().getOemId(),EnumDealerRateType.UPGRADE,productOptional.get().getId());
+            if(dealerHssUpgerdeRate!=null){
+                oemUpgradeRate = dealerHssUpgerdeRate.getOemShareRate();
+            }else{
+                oemUpgradeRate = new BigDecimal("0");
+            }
+            DealerUpgerdeRate dealerHssTradeRate = dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId(dealerOptional.get().getOemId(),EnumDealerRateType.TRADE,productOptional.get().getId());
+            if(dealerHssTradeRate!=null){
+                oemTradeRate = dealerHssTradeRate.getOemShareRate();
+            }else{
+                oemTradeRate = new BigDecimal("0");
+            }
+        }else{
+            firstLevelDealerGet2Response.setOemType(EnumOemType.DEALER.getId());
+            oemUpgradeRate = new BigDecimal("0");
+            oemTradeRate = new BigDecimal("0");
+        }
+        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
+        if(!upgradeRecommendRulesOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
+        }
+        if(productId>0){//修改
             final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productId);
             final FirstLevelDealerGet2Response.Product productResponse = firstLevelDealerGet2Response.new Product();
             productResponse.setProductId(productId);
@@ -274,12 +302,6 @@ public class DealerController extends BaseController {
                 dealerProfitSettingResponses = dealerProfitService.selectByDealerIdAndProductId(productId);
             }
             firstLevelDealerGet2Response.setDealerProfits(dealerProfitSettingResponses);
-
-            Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
-            if(!upgradeRecommendRulesOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
-            }
-
             List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,productId);
             final List<FirstLevelDealerGet2Response.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
             if(upgerdeRates.size()==0){
@@ -288,12 +310,14 @@ public class DealerController extends BaseController {
                 dealerUpgerdeRate1.setProductId(productId);
                 dealerUpgerdeRate1.setDealerId(dealerId);
                 dealerUpgerdeRate1.setType(EnumDealerRateType.UPGRADE.getId());
+                dealerUpgerdeRate1.setOemShareRate(oemUpgradeRate.toPlainString());
                 dealerUpgerdeRate1.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
                 final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate2 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
                 dealerUpgerdeRate2.setId(0);
                 dealerUpgerdeRate2.setProductId(productId);
                 dealerUpgerdeRate2.setDealerId(dealerId);
                 dealerUpgerdeRate2.setType(EnumDealerRateType.TRADE.getId());
+                dealerUpgerdeRate1.setOemShareRate(oemTradeRate.toPlainString());
                 dealerUpgerdeRate2.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
                 dealerUpgerdeRates.add(dealerUpgerdeRate1);
                 dealerUpgerdeRates.add(dealerUpgerdeRate2);
@@ -305,23 +329,21 @@ public class DealerController extends BaseController {
                     du.setProductId(upgerdeRates.get(0).getProductId());
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
-
-                    if(upgerdeRates.get(0).getOemShareRate()!=null){
-                        du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
-                    }
+                    du.setOemShareRate(oemUpgradeRate.toPlainString());
                     if(upgerdeRates.get(0).getFirstDealerShareProfitRate()!=null){
                         du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
                     }
                     if(upgerdeRates.get(0).getSecondDealerShareProfitRate()!=null){
                         du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
                     }
-                    du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
+                    du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
                     dealerUpgerdeRates.add(du);
                     final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate2 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
                     dealerUpgerdeRate2.setId(0);
                     dealerUpgerdeRate2.setProductId(productId);
                     dealerUpgerdeRate2.setDealerId(dealerId);
                     dealerUpgerdeRate2.setType(EnumDealerRateType.TRADE.getId());
+                    dealerUpgerdeRate2.setOemShareRate(oemTradeRate.toPlainString());
                     dealerUpgerdeRate2.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
                     dealerUpgerdeRates.add(dealerUpgerdeRate2);
                 }
@@ -331,6 +353,7 @@ public class DealerController extends BaseController {
                     dealerUpgerdeRate1.setProductId(productId);
                     dealerUpgerdeRate1.setDealerId(dealerId);
                     dealerUpgerdeRate1.setType(EnumDealerRateType.UPGRADE.getId());
+                    dealerUpgerdeRate1.setOemShareRate(oemUpgradeRate.toPlainString());
                     dealerUpgerdeRate1.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
                     dealerUpgerdeRates.add(dealerUpgerdeRate1);
                     final FirstLevelDealerGet2Response.DealerUpgerdeRate du = firstLevelDealerGet2Response.new DealerUpgerdeRate();
@@ -338,16 +361,14 @@ public class DealerController extends BaseController {
                     du.setProductId(upgerdeRates.get(0).getProductId());
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
-                    if(upgerdeRates.get(0).getOemShareRate()!=null){
-                        du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
-                    }
+                    du.setOemShareRate(oemTradeRate.toPlainString());
                     if(upgerdeRates.get(0).getFirstDealerShareProfitRate()!=null){
                         du.setFirstDealerShareProfitRate(upgerdeRates.get(0).getFirstDealerShareProfitRate().toString());
                     }
                     if(upgerdeRates.get(0).getSecondDealerShareProfitRate()!=null){
                         du.setSecondDealerShareProfitRate(upgerdeRates.get(0).getSecondDealerShareProfitRate().toString());
                     }
-                    du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
+                    du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
             }
@@ -358,8 +379,12 @@ public class DealerController extends BaseController {
                     du.setProductId(dealerUpgerdeRate.getProductId());
                     du.setDealerId(dealerUpgerdeRate.getDealerId());
                     du.setType(dealerUpgerdeRate.getType());
-                    if(dealerUpgerdeRate.getOemShareRate()!=null){
-                        du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
+                    if(EnumDealerRateType.TRADE.getId()==dealerUpgerdeRate.getType()){
+                        du.setOemShareRate(oemTradeRate.toPlainString());
+                        du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
+                    }else{
+                        du.setOemShareRate(oemUpgradeRate.toPlainString());
+                        du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
                     }
                     if(dealerUpgerdeRate.getFirstDealerShareProfitRate()!=null){
                         du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
@@ -367,17 +392,12 @@ public class DealerController extends BaseController {
                     if(dealerUpgerdeRate.getSecondDealerShareProfitRate()!=null){
                         du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
                     }
-                    du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
             }
             firstLevelDealerGet2Response.setDealerUpgerdeRates(dealerUpgerdeRates);
         }else{//新增
-            Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
-            if(!productOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "好收收产品不存在");
-            }
-            final Product product = productOptional.get();
+            Product product = productOptional.get();
             //根据产品查找产品详情
             final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productOptional.get().getId());
             final FirstLevelDealerGet2Response.Product productResponse = firstLevelDealerGet2Response.new Product();
@@ -401,22 +421,17 @@ public class DealerController extends BaseController {
             //设置分润空间
             List<DealerProfitSettingResponse> dealerProfitResponses = dealerProfitService.selectByDealerIdAndProductId(productOptional.get().getId());
             firstLevelDealerGet2Response.setDealerProfits(dealerProfitResponses);
-
-            Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(product.getId());
-            if(!upgradeRecommendRulesOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
-            }
             final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate1 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
             dealerUpgerdeRate1.setProductId(product.getId());
             dealerUpgerdeRate1.setDealerId(dealerId);
             dealerUpgerdeRate1.setType(EnumDealerRateType.UPGRADE.getId());
-            dealerUpgerdeRate1.setOemShareRate("0");
+            dealerUpgerdeRate1.setOemShareRate(oemUpgradeRate.toPlainString());
             dealerUpgerdeRate1.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
             final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate2 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
             dealerUpgerdeRate2.setProductId(product.getId());
             dealerUpgerdeRate2.setDealerId(dealerId);
             dealerUpgerdeRate2.setType(EnumDealerRateType.TRADE.getId());
-            dealerUpgerdeRate2.setOemShareRate("0");
+            dealerUpgerdeRate2.setOemShareRate(oemTradeRate.toPlainString());
             dealerUpgerdeRate2.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
             final List<FirstLevelDealerGet2Response.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
             dealerUpgerdeRates.add(dealerUpgerdeRate1);
@@ -441,6 +456,10 @@ public class DealerController extends BaseController {
         }
         if (dealerOptional.get().getOemType()!= EnumOemType.OEM.getId()) {
             return CommonResponse.simpleResponse(-1, "不属于分公司，属于代理商");
+        }
+        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
+        if(!upgradeRecommendRulesOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
         }
         final OemHssResponse oemHssResponse = new OemHssResponse();
         if(productId>0){//修改
@@ -481,10 +500,6 @@ public class DealerController extends BaseController {
                 dealerProfitSettingResponses = dealerProfitService.selectByDealerIdAndProductId(productId);
             }
             oemHssResponse.setDealerProfits(dealerProfitSettingResponses);
-            Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
-            if(!upgradeRecommendRulesOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
-            }
             List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,productId);
             final List<OemHssResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
 
@@ -512,7 +527,7 @@ public class DealerController extends BaseController {
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
                     du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
-                    du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
+                    du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
                     dealerUpgerdeRates.add(du);
                     final OemHssResponse.DealerUpgerdeRate dealerUpgerdeRate2 = oemHssResponse.new DealerUpgerdeRate();
                     dealerUpgerdeRate2.setId(0);
@@ -536,7 +551,7 @@ public class DealerController extends BaseController {
                     du.setDealerId(upgerdeRates.get(0).getDealerId());
                     du.setType(upgerdeRates.get(0).getType());
                     du.setOemShareRate(upgerdeRates.get(0).getOemShareRate().toString());
-                    du.setBossDealerShareRate(upgerdeRates.get(0).getBossDealerShareRate().toString());
+                    du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
                     dealerUpgerdeRates.add(du);
                 }
             }
@@ -548,7 +563,11 @@ public class DealerController extends BaseController {
                     du.setDealerId(dealerUpgerdeRate.getDealerId());
                     du.setType(dealerUpgerdeRate.getType());
                     du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
-                    du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
+                    if(upgerdeRates.get(0).getType()==EnumDealerRateType.TRADE.getId()){
+                        du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
+                    }else{
+                        du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
+                    }
                     dealerUpgerdeRates.add(du);
                 }
             }
@@ -578,15 +597,9 @@ public class DealerController extends BaseController {
             oemHssResponse.setProduct(productResponse);
             oemHssResponse.setProductName("好收收");
             oemHssResponse.setRecommendBtn(dealerOptional.get().getRecommendBtn());
-
             //设置分润空间
             List<DealerProfitSettingResponse> dealerProfitResponses = dealerProfitService.selectByDealerIdAndProductId(productOptional.get().getId());
             oemHssResponse.setDealerProfits(dealerProfitResponses);
-
-            Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(product.getId());
-            if(!upgradeRecommendRulesOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
-            }
             final OemHssResponse.DealerUpgerdeRate dealerUpgerdeRate1 = oemHssResponse.new DealerUpgerdeRate();
             dealerUpgerdeRate1.setProductId(product.getId());
             dealerUpgerdeRate1.setDealerId(dealerId);
