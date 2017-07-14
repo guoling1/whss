@@ -457,10 +457,6 @@ public class DealerController extends BaseController {
         if (dealerOptional.get().getOemType()!= EnumOemType.OEM.getId()) {
             return CommonResponse.simpleResponse(-1, "不属于分公司，属于代理商");
         }
-        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
-        if(!upgradeRecommendRulesOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
-        }
         final OemHssResponse oemHssResponse = new OemHssResponse();
         if(productId>0){//修改
             Optional<Product> productOptional = this.productService.selectById(productId);
@@ -469,6 +465,10 @@ public class DealerController extends BaseController {
             }
             if(!(EnumProductType.HSS.getId()).equals(productOptional.get().getType())){
                 return CommonResponse.simpleResponse(-1, "该产品不属于好收收");
+            }
+            Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productId);
+            if(!upgradeRecommendRulesOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
             }
             final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productId);
             final OemHssResponse.Product productResponse = oemHssResponse.new Product();
@@ -577,6 +577,10 @@ public class DealerController extends BaseController {
             Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
             if(!productOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "好收收产品不存在");
+            }
+            Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(productOptional.get().getId());
+            if(!upgradeRecommendRulesOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "请先配置升级费分润和收单分润");
             }
             final Product product = productOptional.get();
             //根据产品查找产品详情
