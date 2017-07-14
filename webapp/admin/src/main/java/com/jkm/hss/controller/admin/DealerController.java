@@ -410,11 +410,13 @@ public class DealerController extends BaseController {
             dealerUpgerdeRate1.setProductId(product.getId());
             dealerUpgerdeRate1.setDealerId(dealerId);
             dealerUpgerdeRate1.setType(EnumDealerRateType.UPGRADE.getId());
+            dealerUpgerdeRate1.setOemShareRate("0");
             dealerUpgerdeRate1.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
             final FirstLevelDealerGet2Response.DealerUpgerdeRate dealerUpgerdeRate2 = firstLevelDealerGet2Response.new DealerUpgerdeRate();
             dealerUpgerdeRate2.setProductId(product.getId());
             dealerUpgerdeRate2.setDealerId(dealerId);
             dealerUpgerdeRate2.setType(EnumDealerRateType.TRADE.getId());
+            dealerUpgerdeRate2.setOemShareRate("0");
             dealerUpgerdeRate2.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
             final List<FirstLevelDealerGet2Response.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
             dealerUpgerdeRates.add(dealerUpgerdeRate1);
