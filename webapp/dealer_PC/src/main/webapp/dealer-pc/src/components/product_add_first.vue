@@ -279,10 +279,10 @@
                   recommendBtn: this.recommendBtn,
                   product: {
                     productId: this.productId,
-                    channels: this.tableData,
-                    dealerProfits: this.dealerProfits,
-                    dealerUpgerdeRates: dealerUpgerdeRates
-                  }
+                    channels: this.tableData
+                  },
+                  dealerProfits: this.dealerProfits,
+                  dealerUpgerdeRates: dealerUpgerdeRates
                 }).then(res => {
                   done();
                   instance.confirmButtonLoading = false;
