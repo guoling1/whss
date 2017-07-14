@@ -160,7 +160,7 @@
       type:'',
       cid: '${appPolicyMember.cid}',
       mcid:'${appPolicyMember.mcid}',
-      id:'${appPolicyMember.id}'
+      mid:'${appPolicyMember.id}'
   };
   if(${appPolicyMember==null}){
       pageData.type='noMember'  // 无会员卡

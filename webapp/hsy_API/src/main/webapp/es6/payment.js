@@ -82,7 +82,7 @@ function getValue(){
         discountFee:realNum,
         cid: pageData.cid,
         mcid: pageData.mcid,
-        id: pageData.id,
+        mid: pageData.id,
         consumerCellphone: val
     }, function (data) {
         message.load_hide();

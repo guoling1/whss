@@ -36,7 +36,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
       this.realNum = document.getElementById('realNum').innerHTML;
       //计算折扣
       const calculate = function (num,rebate) {
-        document.getElementById('minus').innerHTML = (num*(rebate/10)).toFixed(2);
+        document.getElementById('minus').innerHTML = (num*((10-rebate)/10)).toFixed(2);
         document.getElementById('realNum').innerHTML = (num - (document.getElementById('minus').innerHTML)).toFixed(2);
       }
       // 改变微信title
@@ -244,7 +244,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                                 discountFee:realNum,
                                 cid: pageData.cid,
                                 mcid: pageData.mcid,
-                                id: pageData.id
+                                mid: pageData.id
                             }, function (data) {
                                 http.post(data.payUrl, {}, function (data) {
                                     message.load_hide();
@@ -265,7 +265,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                                 discountFee:realNum,
                                 cid: pageData.cid,
                                 mcid: pageData.mcid,
-                                id: pageData.id
+                                mid: pageData.id
                             }, function (data) {
                                 http.post(data.payUrl, {}, function (data) {
                                     message.load_hide();
@@ -291,7 +291,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
               discountFee:realNum,
               cid: pageData.cid,
               mcid: pageData.mcid,
-              id: pageData.id,
+              mid: pageData.id,
               consumerCellphone: phone
           }, function (data) {
               window.location.href = '/trade/success/' + jsonData.orderId;
