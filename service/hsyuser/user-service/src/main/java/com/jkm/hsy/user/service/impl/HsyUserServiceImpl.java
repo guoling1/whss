@@ -21,6 +21,7 @@ import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hss.product.dao.BasicChannelDao;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.Enum.EnumNetStatus;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
@@ -74,6 +75,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private HsyChannelDao hsyChannelDao;
     @Autowired
     private UserTradeRateDao userTradeRateDao;
+    @Autowired
+    private PushService pushService;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -276,6 +279,24 @@ public class HsyUserServiceImpl implements HsyUserService {
         if(appAuUserFind.getStatus().equals(AppConstant.USER_STATUS_FORBID))
             throw new ApiHandleException(ResultCode.USER_FORBID);
 
+        AppBizShop appBizShop=new AppBizShop();
+        appBizShop.setUid(appAuUserFind.getId());
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
+            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        else
+        {
+            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
+            if(parentList!=null&&parentList.size()!=0) {
+                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+                appAuUserFind.setDealerID(parentList.get(0).getDealerID());
+            }
+        }
+        List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
+        if(shopList!=null&&shopList.size()!=0)
+            appBizShop=shopList.get(0);
+        if(appBizShop.getStatus()==3||appBizShop.getStatus()==4)
+            throw new ApiHandleException(ResultCode.NOT_ALLOW_LOGIN);
+
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
         {
@@ -316,21 +337,6 @@ public class HsyUserServiceImpl implements HsyUserService {
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
 
-        AppBizShop appBizShop=new AppBizShop();
-        appBizShop.setUid(appAuUserFind.getId());
-        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
-            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
-        else
-        {
-            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
-            if(parentList!=null&&parentList.size()!=0) {
-                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
-                appAuUserFind.setDealerID(parentList.get(0).getDealerID());
-            }
-        }
-        List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
-        if(shopList!=null&&shopList.size()!=0)
-            appBizShop=shopList.get(0);
 //        if(AppConstant.USER_STATUS_NORMAL!=appAuUserFind.getStatus())
 //            throw new ApiHandleException(ResultCode.USER_NO_CEHCK);
         if(appBizShop.getCheckErrorInfo()==null)
@@ -439,6 +445,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 qrMap.put("shortName",shopQR.getShortName());
                 qrMap.put("name",shopQR.getName());
                 qrMap.put("type",shopQR.getType());
+                qrMap.put("id",shopQR.getId());
                 if(qrList!=null&&qrList.size()!=0)
                     qrMap.put("qrList",qrList);
                 shopQRList.add(qrMap);
@@ -647,6 +654,8 @@ public class HsyUserServiceImpl implements HsyUserService {
         Date date=new Date();
         appAuUser.setUpdateTime(date);
         hsyUserDao.update(appAuUser);
+        pushService.pushReferrals(list.get(0).getId(),appParam.getAccessToken());
+        hsyUserDao.updateAppAuUserTokenStatusForRemove(list.get(0).getId(),appParam.getAccessToken());
         return "";
     }
 
@@ -1080,6 +1089,8 @@ public class HsyUserServiceImpl implements HsyUserService {
         Date date=new Date();
         appAuUser.setUpdateTime(date);
         hsyUserDao.updateByID(appAuUser);
+        hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
+        pushService.pushDisable(appAuUser.getId());
         return "";
     }
 
@@ -1248,6 +1259,7 @@ public class HsyUserServiceImpl implements HsyUserService {
                 qrMap.put("shortName",shopQR.getShortName());
                 qrMap.put("name",shopQR.getName());
                 qrMap.put("type",shopQR.getType());
+                qrMap.put("id",shopQR.getId());
                 if(qrList!=null&&qrList.size()!=0)
                     qrMap.put("qrList",qrList);
                 shopQRList.add(qrMap);
@@ -1399,7 +1411,8 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.ORIGINAL_PASSWORD_NOT_MATCH);
 
         hsyUserDao.updateByID(appAuUser);
-
+        pushService.pushReferrals(appAuUser.getId(),appParam.getAccessToken());
+        hsyUserDao.updateAppAuUserTokenStatusForRemove(appAuUser.getId(),appParam.getAccessToken());
         return "";
     }
 

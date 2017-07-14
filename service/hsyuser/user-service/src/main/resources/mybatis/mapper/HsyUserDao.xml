@@ -254,11 +254,11 @@
 
     <select id="findpwdByToken" parameterType="String" resultType="String">
         SELECT A.PASSWORD FROM app_au_token  T
-inner join app_au_user_token as ATT ON T.ID=ATT.TID
-inner join app_au_user A ON A.ID=ATT.UID
-where T.ACCESSTOKEN=#{acccesstoken}
-AND ATT.STATUS=1
-limit 1
+        inner join app_au_user_token as ATT ON T.ID=ATT.TID
+        inner join app_au_user A ON A.ID=ATT.UID
+        where T.ACCESSTOKEN=#{acccesstoken}
+        AND ATT.STATUS=1
+        limit 1
     </select>
     <select id="findAppAuUserRole" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
         select * from app_biz_shop_user_role where SID=#{sid} AND  UID=#{parentID} limit 1
@@ -272,4 +272,8 @@ limit 1
         SELECT id,username,password,salt,realname,email,mobile,type,dealer_id dealID FROM tb_admin_user adminUser left join app_au_user_admin ua on adminUser.id=ua.AUID
         where UID=#{uid}
     </select>
+
+    <update id="updateAppAuUserTokenStatusForRemove" >
+        update app_au_user_token set STATUS=2 where UID=#{uid} and TID not in (select ID from app_au_token where ACCESSTOKEN=#{accessToken})
+    </update>
 </mapper>

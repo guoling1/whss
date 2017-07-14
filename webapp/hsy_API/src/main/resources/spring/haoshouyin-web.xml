@@ -59,20 +59,15 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/callback/**"/>
             <bean id="commonInterceptor" class="com.jkm.hss.interceptor.CommonInterceptor"/>
         </mvc:interceptor>
 
         <mvc:interceptor>
-            <mvc:mapping path="/dealer/**"/>
-            <mvc:mapping path="/dealerBank/**"/>
-            <mvc:exclude-mapping path="/dealer/sendVerifyCode"/>
-            <mvc:exclude-mapping path="/dealer/login*"/>
-            <mvc:exclude-mapping path="/dealer/ajaxLogin*"/>
-            <mvc:exclude-mapping path="/time/dailyProfit"/>
-            <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
-                <property name="dealerService" ref="dealerServiceImpl"/>
-                <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>
+            <mvc:mapping path="/pc/**"/>
+            <mvc:exclude-mapping path="/pc/user/login"/>
+            <bean id="pcUserLoginInterceptor" class="com.jkm.hss.interceptor.PcUserLoginInterceptor">
+                <property name="pcUserPassportService" ref="pcUserPassportServiceImpl"/>
+                <property name="hsyUserDao" ref="hsyUserDao"/>
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>

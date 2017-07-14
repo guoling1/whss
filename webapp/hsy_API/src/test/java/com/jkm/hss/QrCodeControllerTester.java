@@ -71,4 +71,43 @@ public class QrCodeControllerTester {
         AppResult result=gson.fromJson(json, AppResult.class);
         System.out.println("dataResult---"+result.getEncryptDataResult());
     }
+
+    @Test
+    public void testTradeLogin()throws Exception{
+        String url="http://localhost:8080/pc/trade/login";
+        HttpURLConnection httpConnection = (HttpURLConnection)new URL(url).openConnection();
+        httpConnection.setDoOutput(true);
+        httpConnection.setRequestMethod("POST");
+//		httpConnection.setReadTimeout(5*1000);
+        httpConnection.setDoInput(true);
+        httpConnection.setRequestProperty("Accept-Charset", "utf-8");
+        httpConnection.setRequestProperty("accept", "*/*");
+        httpConnection.setRequestProperty("connection", "Keep-Alive");
+        httpConnection.setRequestProperty("Content-Type","application/json");
+        httpConnection.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+
+        String s="{\"cellphone\":\"18612406643\",\"password\":\"888888\"}";
+        OutputStream output = httpConnection.getOutputStream();
+        output.write(s.getBytes("utf-8"));
+        output.flush();
+        output.close();
+
+        InputStream inStream = httpConnection.getInputStream();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while( (len=inStream.read(buffer)) != -1 ){
+            outStream.write(buffer, 0, len);
+        }
+        inStream.close();
+        output.close();
+        outStream.close();
+        String json = new String(outStream.toByteArray(),"utf-8");
+        System.out.println("appParam---"+s);
+        System.out.println("appResult---"+json);
+        Gson gson=new Gson();
+        AppResult result=gson.fromJson(json, AppResult.class);
+        System.out.println("dataResult---"+result.getEncryptDataResult());
+    }
+
 }

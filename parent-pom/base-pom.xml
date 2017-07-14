@@ -55,6 +55,12 @@
             </properties>
         </profile>
         <profile>
+            <id>test2</id>
+            <properties>
+                <project.environment>test2</project.environment>
+            </properties>
+        </profile>
+        <profile>
             <id>preview</id>
             <properties>
                 <project.environment>preview</project.environment>
