@@ -23,12 +23,12 @@ browser.elastic_touch();
 var mcid,isDeposited;
 var mySwiper = new Swiper('.swiper-container', {
     effect : 'coverflow',
-    slidesPerView: 1.25,
+    slidesPerView: 1.35,
     centeredSlides: true,
     coverflow: {
         rotate: 0,
-        stretch: 0,
-        depth: 100,
+        stretch: -50,
+        depth: 200,
         modifier: 1,
         slideShadows : false
     },

@@ -85,7 +85,7 @@
     <div class="swiper-container top" id="swiper">
         <div class="swiper-wrapper" style="width: 100%">
             <c:forEach items="${cardList }" var="entity" varStatus="status">
-                <div class="swiper-slide">
+                <div class="swiper-slide" style="width: 100px">
                     <div class="card">
                         <span class="name">${entity.membershipName}</span>
                         <span class="type">${entity.membershipName}</span>
