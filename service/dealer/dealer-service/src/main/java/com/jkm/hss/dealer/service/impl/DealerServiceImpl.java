@@ -3196,17 +3196,20 @@ public class DealerServiceImpl implements DealerService {
             //上级商户的费率
             final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
             final BigDecimal firstMerchantMoney;
+            BigDecimal subRate;
             if (merchantRate.compareTo(firstMerchantRate) == 1){
-                firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+                subRate = merchantRate.subtract(firstMerchantRate);
+                firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
             }else{
                 firstMerchantMoney =  new BigDecimal(0);
+                subRate = new BigDecimal("0");
             }
             final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
                     (oemInfo.getId(), EnumDealerRateType.TRADE, product.getId());
             final BigDecimal totalProfitSpace = this.getDealerTotalProfitSpace(oemInfo, channelSign);
-            //分公司分润
-            final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             if (merchantInfo.getSecondMerchantId() == 0){
+                //分公司分润
+                final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.subtract(subRate).multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(oemMoney);
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
@@ -3232,6 +3235,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setSecondMerchantShallAmount(new BigDecimal(0));
                 detail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
                 this.partnerShallProfitDetailService.init(detail);
+
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign,firstMerchantInfo)));
                 map.put("oemMoney",Triple.of(oemInfo.getAccountId(), oemMoney,oemDealerChannelRate.getDealerTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
@@ -3263,7 +3267,10 @@ public class DealerServiceImpl implements DealerService {
                     //商户小于等于上上级
                     secondSelfMerchantRate = new BigDecimal("0");
                 }
-                final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+
+                final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
+                //分公司分润
+                final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.subtract(subRate).subtract(secondSelfMerchantRate).multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney).subtract(oemMoney);
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
@@ -3313,7 +3320,7 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal firstMerchantMoney;
         final BigDecimal firstMerchantSelfRate;
         if (merchantRate.compareTo(firstMerchantRate) == 1){
-            firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+            firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
             firstMerchantSelfRate = merchantRate.subtract(firstMerchantRate);
         }else{
             firstMerchantMoney =  new BigDecimal(0);
@@ -3434,7 +3441,7 @@ public class DealerServiceImpl implements DealerService {
                 //商户小于等于上上级
                 secondSelfMerchantRate = new BigDecimal("0");
             }
-            final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+            final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
             if (merchantInfo.getSecondDealerId() == 0){
                 //有上上级，一级下的商户
                 final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
