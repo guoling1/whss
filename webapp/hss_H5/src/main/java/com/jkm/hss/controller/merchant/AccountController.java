@@ -95,7 +95,7 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/toWithdraw", method = RequestMethod.GET)
     public String toWithdrawJsp(final HttpServletRequest request, final HttpServletResponse response,Model model) throws UnsupportedEncodingException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -112,7 +112,7 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/toHssAccount", method = RequestMethod.GET)
     public String toHssAccount(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws UnsupportedEncodingException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{

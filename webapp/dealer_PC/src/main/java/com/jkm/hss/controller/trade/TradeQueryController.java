@@ -120,8 +120,8 @@ public class TradeQueryController extends BaseController {
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
         }
         if (level==2){
-            String totalPayment = this.orderService.getAmountCount(req);
-            String totalPoundage = this.orderService.getAmountCount1(req);
+            String totalPayment = this.orderService.getAmountCounts(req);
+            String totalPoundage = this.orderService.getAmountCounts1(req);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("totalPayment",totalPayment);
             jsonObject.put("totalPoundage",totalPoundage);

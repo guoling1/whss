@@ -664,6 +664,14 @@ public interface OrderDao {
 
     String getAmountCountBranch1(OrderTradeRequest req);
 
+    String getAmountCountHss(OrderTradeRequest req);
+
+    String getAmountCountsHsy(OrderTradeRequest req);
+
+    String getAmountCountHss1(OrderTradeRequest req);
+
+    String getAmountCountsHsy1(OrderTradeRequest req);
+
     int markOrder2SettlementIngBySettleChannel(@Param("settleDate") Date settleDate, @Param("accountId") long accountId,
                                                @Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus,
                                                @Param("upperChannel") int upperChannel, @Param("settleChannel") int settleChannel);

@@ -5,6 +5,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 import com.jkm.hss.merchant.service.WebsiteService;
+import com.jkm.hss.push.sevice.PushService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping(value = "/website")
 public class WebsiteController extends BaseController {
+    @Autowired
+    private PushService pushService;
 
     @Autowired
     private WebsiteService websiteService;
@@ -74,4 +77,5 @@ public class WebsiteController extends BaseController {
         }
         return ip;
     }
+
 }

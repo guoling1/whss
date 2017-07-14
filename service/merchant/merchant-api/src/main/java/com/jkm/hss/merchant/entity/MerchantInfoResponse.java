@@ -26,6 +26,8 @@ public class MerchantInfoResponse {
      */
     private String stat;
 
+    private String branchCode;//联行号
+
     /**
      * 支行信息
      */

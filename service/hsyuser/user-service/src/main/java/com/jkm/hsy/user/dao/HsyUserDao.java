@@ -32,6 +32,7 @@ public interface HsyUserDao {
     public String findpwdByToken(@Param("acccesstoken") String acccesstoken);
     public AppBizShopUserRole findAppAuUserRole(AppAuUser appAuUser);
     public List<AdminUser> findAdminUserByUID(@Param("uid")Long uid);
+    public void updateAppAuUserTokenStatusForRemove(@Param("uid")Long uid,@Param("accessToken")String token);
 
     /**
      * 查找所有法人
