@@ -88,8 +88,8 @@ public class TradeController extends BaseController {
             Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrderMember(payRequest.getTotalFee(), payRequest.getHsyOrderId(),payRequest.getDiscountFee(),payRequest.getIsMemberCardPay(),payRequest.getCid(),payRequest.getMcid(),payRequest.getMid(),payRequest.getConsumerCellphone());
             if (0 == resultPair.getLeft()) {
                 return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                        .addParam("subMerName", resultPair.getRight())
-                        .addParam("amount", payRequest.getDiscountFee()).build();
+                        .addParam("tradeNO", resultPair.getMiddle())
+                        .addParam("orderId", Long.parseLong(resultPair.getRight())).build();
             }
             return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
         }else{

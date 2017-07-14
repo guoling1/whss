@@ -237,7 +237,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
                         break;
                     case 'wx-pay':
                         if (realNum > 0) {
-                            console.log(pageData.id)
+                            mask.style.opacity = 0;
+                            mask.style.display = 'none';
                             message.load_show('正在支付');
                             http.post('/trade/scReceipt', {
                                 totalFee: totalFee,
@@ -259,6 +260,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
                         break;
                     case 'ali-pay':
                         if (realNum > 0) {
+                            mask.style.opacity = 0;
+                            mask.style.display = 'none';
                             message.load_show('正在支付');
                             http.post('/trade/scReceipt', {
                                 totalFee: realNum,

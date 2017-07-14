@@ -140,7 +140,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 BigDecimal calDiscountFee = new BigDecimal(totalAmount).multiply(appPolicyMembershipCard.getDiscount().divide(new BigDecimal(10), 2, BigDecimal.ROUND_HALF_UP));
                 if (calDiscountFee.compareTo(cent) == -1)
                     calDiscountFee = cent;
-                calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
+                calDiscountFee=calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
                 if (calDiscountFee.compareTo(discountFee) != 0)
                     return Triple.of(-1, "打折后金额计算不一致", "");
             }
@@ -178,7 +178,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             BigDecimal calDiscountFee = new BigDecimal(totalAmount).multiply(appPolicyMember.getDiscount().divide(new BigDecimal(10), 2, BigDecimal.ROUND_HALF_UP));
             if (calDiscountFee.compareTo(cent) == -1)
                 calDiscountFee = cent;
-            calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
+            calDiscountFee=calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
             if (calDiscountFee.compareTo(discountFee) != 0)
                 return Triple.of(-1, "打折后金额计算不一致", "");
 
