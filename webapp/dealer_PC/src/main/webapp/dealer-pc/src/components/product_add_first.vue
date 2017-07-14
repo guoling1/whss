@@ -75,19 +75,91 @@
                 </el-table-column>
               </el-table>
             </div>
-            <!--<div class="box-body">-->
-            <!--<label class="form-label">代理商推广码&推广链接</label>-->
-            <!--<br>-->
-            <!--<el-switch v-model="inviteBoolean" @change="switchInvite"-->
-            <!--on-text="开启" on-color="#13ce66"-->
-            <!--off-text="关闭" off-color="#ff4949">-->
-            <!--</el-switch>-->
-            <!--<div class="inviteText" v-show="inviteBoolean">-->
-            <!--推广码：{{inviteCode}}-->
-            <!--<br>-->
-            <!--推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}-->
-            <!--</div>-->
-            <!--</div>-->
+            <div class="box-body">
+              <label class="form-label">合伙人推荐功能</label>
+              <br>
+              <el-switch v-model="recommendBoolean" @change="switchRecommend"
+                         on-text="开启" on-color="#13ce66"
+                         off-text="关闭" off-color="#ff4949">
+              </el-switch>
+              <div class="inviteText" v-show="recommendBoolean==1">
+                开通后，代理商设置的商户终端费率按产品费率执行
+              </div>
+            </div>
+            <div class="box-body">
+              <label class="form-label">合伙人推荐分润设置</label>
+              <el-table :data="dealerProfits" border>
+                <el-table-column prop="channelName" label="通道名称"></el-table-column>
+                <el-table-column label="总分润空间">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.profitSpace" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" size="small" v-model="scope.row.profitSpace">
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-table :data="dealerUpgerdeRates" border style="margin-top: 15px">
+                <el-table-column prop="channelName" label="分润类型">
+                  <template scope="scope">
+                    <span v-if="scope.row.type==1">升级费分润</span>
+                    <span v-if="scope.row.type==2">收单分润</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="金开门分润比例">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.profitSpace" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" size="small" v-model="scope.row.bossDealerShareRate" disabled>
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="分公司分润比例">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.profitSpace" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" size="small" v-model="scope.row.oemShareRate" disabled>
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="一级代理商分润比例">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.firstDealerShareProfitRate" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空',trigger:'blur'}">
+                        <el-input placeholder="" size="small" v-model="scope.row.firstDealerShareProfitRate">
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="二级代理商分润比例">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.secondDealerShareProfitRate" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空',trigger:'blur'}">
+                        <el-input placeholder="" size="small" v-model="scope.row.secondDealerShareProfitRate">
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
             <div class="box-body">
               <el-button type="primary" size="small" @click="onSubmit">保存产品设置</el-button>
             </div>
@@ -106,7 +178,7 @@
     name: 'app',
     created(){
       let query = this.$route.query;
-      this.$http.post('/daili/dealer/getDealerProduct', {
+      this.$http.post('/daili/dealer/getFirstDealerProduct', {
         dealerId: query.dealerId,
         sysType: query.product,
         productId: query.productId
@@ -114,11 +186,19 @@
         this.dealerId = query.dealerId;
         this.product = query.product;
         this.productName = res.data.productName;
-        this.inviteStatus = res.data.inviteBtn;
-        this.inviteCode = res.data.inviteCode;
-        this.inviteBoolean = (this.inviteStatus == 2);
+        this.recommendBoolean = (res.data.recommendBtn == 2);
+        this.recommendBtn = res.data.recommendBtn;
         this.tableData = res.data.product.channels;
         this.productId = res.data.product.productId;
+        this.dealerProfits = res.data.dealerProfits;
+        this.dealerUpgerdeRates = JSON.parse(JSON.stringify(res.data.dealerUpgerdeRates));
+        for(let i=0;i<this.dealerUpgerdeRates.length;i++){
+            this.dealerUpgerdeRates[i].bossDealerShareRate = (this.dealerUpgerdeRates[i].bossDealerShareRate*100).toFixed(0)
+            this.dealerUpgerdeRates[i].firstDealerShareProfitRate = (this.dealerUpgerdeRates[i].firstDealerShareProfitRate*100).toFixed(0)
+            this.dealerUpgerdeRates[i].oemShareRate = (this.dealerUpgerdeRates[i].oemShareRate*100).toFixed(0)
+            this.dealerUpgerdeRates[i].secondDealerShareProfitRate = (this.dealerUpgerdeRates[i].secondDealerShareProfitRate*100).toFixed(0)
+        }
+        this.dealerUpgerdeRatesOld = res.data.dealerUpgerdeRates;
       }, err => {
         console.log(err);
       })
@@ -129,11 +209,13 @@
         product: '',
         productId: '',
         productName: '',
-        inviteBoolean: false,
-        inviteStatus: 1,
-        inviteCode: '',
         tableData: [],
-        formObject: []
+        formObject: [],
+        recommendBoolean: false,
+        recommendBtn: 1,
+        dealerProfits: [],
+        dealerUpgerdeRates:[],
+        dealerUpgerdeRatesOld:[]
       }
     },
     methods: {
@@ -142,11 +224,11 @@
         this.formObject.push('form' + length);
         return 'form' + length;
       },
-      switchInvite: function (Boole) {
+      switchRecommend: function (Boole) {
         if (Boole) {
-          this.inviteStatus = 2;
+          this.recommendBtn = 2;
         } else {
-          this.inviteStatus = 1;
+          this.recommendBtn = 1;
         }
       },
       onSubmit: function () {
@@ -185,12 +267,21 @@
               if (action === 'confirm') {
                 instance.confirmButtonLoading = true;
                 instance.confirmButtonText = '执行中...';
+                let dealerUpgerdeRates = JSON.parse(JSON.stringify(this.dealerUpgerdeRates));
+                for(let i=0;i<dealerUpgerdeRates.length;i++){
+                  dealerUpgerdeRates[i].bossDealerShareRate = (dealerUpgerdeRates[i].bossDealerShareRate/100).toFixed(2)
+                  dealerUpgerdeRates[i].firstDealerShareProfitRate = (dealerUpgerdeRates[i].firstDealerShareProfitRate/100).toFixed(2)
+                  dealerUpgerdeRates[i].oemShareRate = (dealerUpgerdeRates[i].oemShareRate/100).toFixed(2)
+                  dealerUpgerdeRates[i].secondDealerShareProfitRate = (dealerUpgerdeRates[i].secondDealerShareProfitRate/100).toFixed(2)
+                }
                 this.$http.post('/daili/dealer/addOrUpdateDealerProduct', {
                   dealerId: this.dealerId,
-                  inviteBtn: this.inviteStatus,
+                  recommendBtn: this.recommendBtn,
                   product: {
                     productId: this.productId,
-                    channels: this.tableData
+                    channels: this.tableData,
+                    dealerProfits: this.dealerProfits,
+                    dealerUpgerdeRates: dealerUpgerdeRates
                   }
                 }).then(res => {
                   done();
