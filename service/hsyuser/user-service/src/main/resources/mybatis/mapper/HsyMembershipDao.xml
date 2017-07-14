@@ -341,9 +341,9 @@
         (case when source='wechat' then '微信'
         when source='alipay' then '支付宝' else '' end) source,PAYSUCCESSTIME from app_policy_recharge_order
         where 1=1
-        <if test="uid!=null'">and UID=#{uid}</if>
-        <if test="startTime!=null'">and PAYSUCCESSTIME>#{startTime}</if>
-        <if test="endTime!=null'"><![CDATA[ and PAYSUCCESSTIME<#{endTime}]]></if>
+        <if test="uid!=null">and UID=#{uid}</if>
+        <if test="startTime!=null">and PAYSUCCESSTIME>#{startTime}</if>
+        <if test="endTime!=null"><![CDATA[ and PAYSUCCESSTIME<#{endTime}]]></if>
     </select>
 
 </mapper>
