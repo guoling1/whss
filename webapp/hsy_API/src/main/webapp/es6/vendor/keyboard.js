@@ -236,6 +236,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                         break;
                     case 'wx-pay':
                         if (realNum > 0) {
+                            console.log(pageData.id)
                             message.load_show('正在支付');
                             http.post('/trade/scReceipt', {
                                 totalFee: totalFee,

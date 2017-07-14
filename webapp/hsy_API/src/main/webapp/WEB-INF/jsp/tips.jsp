@@ -4,8 +4,10 @@
     <title>提示</title>
 </head>
 <body>
-<div id="tips">
-    提示：${tips}
-</div>
+    <div id="rechargeResults">
+        <img src="../assets/member/fail.png" alt="">
+        <p class="result">提示</p>
+        <p class="errCode">${tips}</p>
+    </div>
 </body>
 </html>
