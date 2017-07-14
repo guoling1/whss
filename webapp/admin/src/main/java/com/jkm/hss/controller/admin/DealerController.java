@@ -563,7 +563,7 @@ public class DealerController extends BaseController {
                     du.setDealerId(dealerUpgerdeRate.getDealerId());
                     du.setType(dealerUpgerdeRate.getType());
                     du.setOemShareRate(dealerUpgerdeRate.getOemShareRate().toString());
-                    if(upgerdeRates.get(0).getType()==EnumDealerRateType.TRADE.getId()){
+                    if(dealerUpgerdeRate.getType()==EnumDealerRateType.TRADE.getId()){
                         du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getTradeRate().toString());
                     }else{
                         du.setBossDealerShareRate(upgradeRecommendRulesOptional.get().getUpgradeRate().toString());
