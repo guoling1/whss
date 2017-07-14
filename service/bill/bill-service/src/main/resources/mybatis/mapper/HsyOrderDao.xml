@@ -134,46 +134,15 @@
     </update>
 
     <update id="updateAmountAndStatus">
-        UPDATE tb_hsy_order SET amount = #{amount}, orderstatus = #{status} WHERE id = #{id}
+        UPDATE tb_hsy_order SET amount = #{amount}, realAmount = #{amount}, orderstatus = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateOrderNumber">
+        UPDATE tb_hsy_order SET  ordernumber = #{orderNumber} WHERE id = #{id}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT id,
-        ordernumber,
-        shopid,
-        shopname,
-        merchant_no,
-        merchantname,
-        order_no,
-        order_id,
-        orderstatus,
-        sourcetype,
-        validationcode,
-        amount,
-        poundage,
-        qrcode,
-        cashierid,
-        cashiername,
-        pay_sn,
-        pay_type,
-        pay_channel_sign,
-        pay_success_time,
-        refund_amount,
-        refund_status,
-        refund_time,
-        goods_name,
-        goods_describe,
-        authCode,
-        realAmount,
-        uid,
-        accountid,
-        dealerid,
-        remark,
-        create_time,
-        update_time
-        FROM tb_hsy_order
-        WHERE id = #{id}
-        ;
+        SELECT * FROM tb_hsy_order WHERE id = #{id}
     </select>
 
     <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.HsyOrder">
@@ -252,6 +221,9 @@
             <if test="selectAll == 0">
                 AND shopid = #{shopId}
             </if>
+            <if test="tradeOrderNo != null and tradeOrderNo != ''">
+                AND order_no = #{tradeOrderNo}
+            </if>
             AND orderstatus in (2,6,7)
             AND payment_channel IN
             <foreach collection="paymentChannels" index="index" item="item" open="(" separator="," close=")">
@@ -272,6 +244,9 @@
             </if>
             <if test="selectAll == 0">
                 AND shopid = #{shopId}
+            </if>
+            <if test="tradeOrderNo != null and tradeOrderNo != ''">
+                AND order_no = #{tradeOrderNo}
             </if>
             AND orderstatus in (2,6,7)
             AND payment_channel IN
@@ -334,6 +309,16 @@
                 AND pay_success_time BETWEEN #{startTime} AND #{endTime}
             </if>
         </where>
+    </select>
+
+    <select id="pcStatisticsOrder" resultType="com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder">
+        SELECT payment_channel, orderstatus as orderStatus, COUNT(id) as `number`, SUM(amount) as total_amount,
+        SUM(realAmount) as real_amount, SUM(refund_amount) as refund_amount, SUM(poundage) as poundage FROM tb_hsy_order
+        where shopid = #{shopId}
+        AND orderstatus in (2, 6)
+        AND payment_channel IN (1, 2)
+        AND pay_success_time BETWEEN #{startTime} AND #{endTime}
+        GROUP BY payment_channel, orderstatus
     </select>
 
     <select id="findConsumeOrderListByPage" parameterType="page" resultType="com.jkm.hss.bill.entity.HsyOrder">
