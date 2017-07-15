@@ -777,7 +777,7 @@ public class PayServiceImpl implements PayService {
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
         final BigDecimal directMoney = null == directMoneyTriple ? new BigDecimal("0.00") : directMoneyTriple.getMiddle();
         final BigDecimal inDirectMoney = null == inDirectMoneyTriple ? new BigDecimal("0.00") : inDirectMoneyTriple.getMiddle();
-        final BigDecimal oemMoney = null == oemMoneyTriple ? new BigDecimal("0.00") : inDirectMoneyTriple.getMiddle();
+        final BigDecimal oemMoney = null == oemMoneyTriple ? new BigDecimal("0.00") : oemMoneyTriple.getMiddle();
         Preconditions.checkState(order.getRealPayAmount().compareTo(companyMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney).add(oemMoney)) >= 0);
         //手续费账户结算
         if (null != companyMoneyTriple) {
