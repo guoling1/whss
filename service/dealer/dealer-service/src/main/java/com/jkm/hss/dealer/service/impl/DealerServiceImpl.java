@@ -379,7 +379,10 @@ public class DealerServiceImpl implements DealerService {
         //商户手续费 = 交易金额 * 商户费率
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final BigDecimal merchantRate = getMerchantRate(channelSign, merchantInfo);
+        final PartnerRuleSetting partnerRuleSetting = this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign).get();
         final BigDecimal originMoney = tradeAmount.multiply(getMerchantRate(channelSign, merchantInfo)).setScale(2, BigDecimal.ROUND_UP);
+        //升级差额
+        final BigDecimal cha = partnerRuleSetting.getCommonRate().compareTo(merchantRate) == 1 ? partnerRuleSetting.getCommonRate().subtract(merchantRate) : new BigDecimal("0");
         //final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
         //计算商户手续费
         final BigDecimal waitOriginMoney = this.calculateMerchantFee(tradeAmount, originMoney, channelSign);
@@ -522,7 +525,7 @@ public class DealerServiceImpl implements DealerService {
 
             if (merchantInfo.getSecondDealerId() == 0){
                 //没有上上级,一级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润）*  一级分润比例
                 final BigDecimal add = (dealerUpgerdeRate.getSecondDealerShareProfitRate()).add(dealerUpgerdeRate.getFirstDealerShareProfitRate());
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_HALF_UP);
@@ -560,7 +563,7 @@ public class DealerServiceImpl implements DealerService {
                 return map;
             }else{
                 //没有上上级，二级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate);
                 //二级代理（间接商户）=（利润空间 - 上级商户分润 ）* 二级分润比例（利润空间，不同的一级代理不同）
                 final BigDecimal secondMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getSecondDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 ）*  一级分润比例
@@ -629,7 +632,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
             if (merchantInfo.getSecondDealerId() == 0){
                 //有上上级，一级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）*  一级分润比例
                 final BigDecimal add = (dealerUpgerdeRate.getSecondDealerShareProfitRate()).add(dealerUpgerdeRate.getFirstDealerShareProfitRate());
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_HALF_UP);
@@ -669,7 +672,7 @@ public class DealerServiceImpl implements DealerService {
 
             }else{
                 //有上上级，二级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
                 //二级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）* 二级分润比例（利润空间，不同的一级代理不同）
                 final BigDecimal secondMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getSecondDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）*  一级分润比例
@@ -3165,10 +3168,13 @@ public class DealerServiceImpl implements DealerService {
             //不属于， 如果网关中存在该通道，合伙人推荐中未设置费率，则该通道不参与合伙人推荐，此时“间接商户”不对代理商分润，也不对推荐他的商户分润，直接商户的代理商分润按费率差分润
             return this.getShallProfitNotBelongPartner2Oem( orderNo,  tradeAmount,  channelSign,  merchantId, merchantInfo.getOemId(), product.getId());
         }
+        final PartnerRuleSetting partnerRuleSetting = this.partnerRuleSettingService.selectByProductIdAndChannelSign(product.getId(), channelSign).get();
         Map<String,Triple<Long,BigDecimal,BigDecimal>> map = new HashMap<>();
         log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
         //商户手续费 = 交易金额 * 商户费率
         final BigDecimal merchantRate = getMerchantRate(channelSign, merchantInfo);
+        //升级差额
+        final BigDecimal cha = partnerRuleSetting.getCommonRate().compareTo(merchantRate) == 1 ? partnerRuleSetting.getCommonRate().subtract(merchantRate) : new BigDecimal("0");
         final BigDecimal originMoney = tradeAmount.multiply(getMerchantRate(channelSign, merchantInfo)).setScale(2, BigDecimal.ROUND_UP);
         //final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
         //查询分公司信息
@@ -3209,7 +3215,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal totalProfitSpace = this.getDealerTotalProfitSpace(oemInfo, channelSign);
             if (merchantInfo.getSecondMerchantId() == 0){
                 //分公司分润
-                final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.subtract(subRate).multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
+                final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.subtract(cha).subtract(subRate).multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(oemMoney);
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
@@ -3270,7 +3276,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
                 //分公司分润
-                final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.subtract(subRate).subtract(secondSelfMerchantRate).multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
+                final BigDecimal oemMoney = tradeAmount.multiply(totalProfitSpace.subtract(cha).subtract(subRate).subtract(secondSelfMerchantRate).multiply(dealerUpgerdeRate.getOemShareRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney).subtract(oemMoney);
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
@@ -3331,7 +3337,7 @@ public class DealerServiceImpl implements DealerService {
 
             if (merchantInfo.getSecondDealerId() == 0){
                 //没有上上级,一级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润）*  一级分润比例
                 final BigDecimal add = (dealerUpgerdeRate.getSecondDealerShareProfitRate()).add(dealerUpgerdeRate.getFirstDealerShareProfitRate());
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_HALF_UP);
@@ -3373,7 +3379,7 @@ public class DealerServiceImpl implements DealerService {
                 return map;
             }else{
                 //没有上上级，二级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate);
                 //二级代理（间接商户）=（利润空间 - 上级商户分润 ）* 二级分润比例（利润空间，不同的一级代理不同）
                 final BigDecimal secondMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getSecondDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 ）*  一级分润比例
@@ -3444,7 +3450,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
             if (merchantInfo.getSecondDealerId() == 0){
                 //有上上级，一级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）*  一级分润比例
                 final BigDecimal add = (dealerUpgerdeRate.getSecondDealerShareProfitRate()).add(dealerUpgerdeRate.getFirstDealerShareProfitRate());
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_HALF_UP);
@@ -3488,7 +3494,7 @@ public class DealerServiceImpl implements DealerService {
                 return map;
             }else{
                 //有上上级，二级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
+                final BigDecimal space = totalProfitSpace.subtract(cha).subtract(firstMerchantSelfRate).subtract(secondSelfMerchantRate);
                 //二级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）* 二级分润比例（利润空间，不同的一级代理不同）
                 final BigDecimal secondMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getSecondDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）*  一级分润比例
