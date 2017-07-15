@@ -174,21 +174,25 @@ public class TradeServiceImpl implements TradeService {
         } else {
             log.info("11111111111");
             //获取支付url
+            log.info("[{}]", payParams);
+            log.info("[{}]", PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
+            log.info("[{}]", PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
+            log.info("[{}]", PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()
-//                    .merchantNo(payParams.getMerchantNo())
-//                    .returnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId())
-//                    .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
-//                    .wxAppId(payParams.getWxAppId())
-//                    .memberId(payParams.getMemberId())
-//                    .subAppId(payParams.getSubAppId())
-//                    .subMerchantId(payParams.getSubMerchantId())
-//                    .subMemberId(payParams.getSubMemberId())
-//                    .authCode(payParams.getAuthCode())
-//                    .bankBranchCode(payParams.getBankBranchCode())
-//                    .bankCardNo(payParams.getBankCardNo())
-//                    .realName(payParams.getRealName())
-//                    .idCard(payParams.getIdCard())
-//                    .settleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL)
+                    .merchantNo(payParams.getMerchantNo())
+                    .returnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId())
+                    .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
+                    .wxAppId(payParams.getWxAppId())
+                    .memberId(payParams.getMemberId())
+                    .subAppId(payParams.getSubAppId())
+                    .subMerchantId(payParams.getSubMerchantId())
+                    .subMemberId(payParams.getSubMemberId())
+                    .authCode(payParams.getAuthCode())
+                    .bankBranchCode(payParams.getBankBranchCode())
+                    .bankCardNo(payParams.getBankCardNo())
+                    .realName(payParams.getRealName())
+                    .idCard(payParams.getIdCard())
+                    .settleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL)
                     .build();
             log.info("11111111111=222");
             final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
