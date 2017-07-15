@@ -167,6 +167,7 @@ public class TradeServiceImpl implements TradeService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         order.setPoundage(new BigDecimal("0.00"));
         this.orderService.add(order);
+        log.info("" + order.getId());
         log.info("[{}]", order);
         if (payParams.getMemberCardPay()) {
             //从卡扣钱
