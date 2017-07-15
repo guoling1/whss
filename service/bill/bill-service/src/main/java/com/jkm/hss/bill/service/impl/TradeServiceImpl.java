@@ -167,10 +167,12 @@ public class TradeServiceImpl implements TradeService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         order.setPoundage(new BigDecimal("0.00"));
         this.orderService.add(order);
+        log.info("[{}]", order);
         if (payParams.getMemberCardPay()) {
             //从卡扣钱
             return this.baseTradeService.memberPayImpl(order.getId());
         } else {
+            log.info("11111111111");
             //获取支付url
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()
                     .merchantNo(payParams.getMerchantNo())
@@ -188,6 +190,7 @@ public class TradeServiceImpl implements TradeService {
                     .idCard(payParams.getIdCard())
                     .settleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL)
                     .build();
+            log.info("11111111111=222");
             final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
             return this.baseTradeService.handlePlaceOrderResult(paymentSdkPlaceOrderResponse, payParams.getMerchantPayType(), order);
         }
