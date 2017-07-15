@@ -118,6 +118,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         try {
             log.info("订单请求");
             final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
+            log.info("dddd");
             return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
         } catch (final Throwable e){
             log.error("业务方[{}]-订单[{}]，下单失败-请求网关下单异常", order.getAppId(), order.getId());
