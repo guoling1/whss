@@ -99,4 +99,6 @@ public class PaymentSdkDaiFuRequest {
     private String notifyUrl;
 
     private String orders;
+
+    private String merchantNo;
 }

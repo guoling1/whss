@@ -45,9 +45,7 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.UserTradeRate;
-import com.jkm.hsy.user.entity.UserWithdrawRate;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.HsyShopService;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import com.jkm.hsy.user.service.UserWithdrawRateService;
@@ -1479,6 +1477,13 @@ public class OrderServiceImpl implements OrderService {
     public Pair<Integer, String> confirmWithdraw(long withDrawOrderId) {
 
         final Order playMoneyOrder = this.orderDao.selectByIdWithLock(withDrawOrderId);
+        final Optional<Account> accountOptional = this.accountService.getById(playMoneyOrder.getPayer());
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(playMoneyOrder.getPayer()).get(0);
+        final AppBizShop appBizShop =
+                this.hsyShopDao.findPrimaryAppBizShopByAccountID(playMoneyOrder.getPayer()).get(0);
+        final AppBizCard appCard = new AppBizCard();
+        appCard.setSid(appBizShop.getId());
+        final AppBizCard appBizCard = this.hsyShopDao.findAppBizCardByParam(appCard).get(0);
         //请求提现
         if (playMoneyOrder.getStatus() == EnumOrderStatus.WAIT_WITHDRAW.getId()) {
             final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
@@ -1488,10 +1493,10 @@ public class OrderServiceImpl implements OrderService {
             paymentSdkDaiFuRequest.setTradeType("D0");
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile("");
-            paymentSdkDaiFuRequest.setBankName("");
-            paymentSdkDaiFuRequest.setAccountName("");
-            paymentSdkDaiFuRequest.setAccountNumber("");
-            paymentSdkDaiFuRequest.setIdCard("");
+            paymentSdkDaiFuRequest.setBankName(appBizCard.getCardBank());
+            paymentSdkDaiFuRequest.setAccountName(appBizCard.getCardAccountName());
+            paymentSdkDaiFuRequest.setAccountNumber(appBizCard.getCardNO());
+            paymentSdkDaiFuRequest.setIdCard(appBizCard.getIdcardNO());
             paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SYJ.getId());
             paymentSdkDaiFuRequest.setNote("");
             paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
