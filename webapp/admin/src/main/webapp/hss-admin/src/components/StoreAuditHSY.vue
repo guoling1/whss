@@ -324,6 +324,7 @@
             <div class="label">联行号：
               <span>{{$msg.branchCode}}</span>
               <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)" style="padding: 0">补填</el-button>
+              <!--<el-button type="text" @click="wad"  style="padding: 0">补填</el-button>-->
             </div>
           </el-col>
           <el-col :span="5">
