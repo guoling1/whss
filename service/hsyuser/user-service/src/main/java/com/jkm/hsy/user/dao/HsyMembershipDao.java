@@ -5,7 +5,7 @@ import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,7 +57,7 @@ public interface HsyMembershipDao {
      * @return
      */
     MemberResponse getMemberDetails(MemberRequest request);
-    public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid, @Param("startTime") Date startTime,@Param("endTime") Date endTime);
+    public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
     public List<BasicChannel> findChannelAccountID(@Param("channelTypeSign")Integer channelTypeSign);
     public List<AppBizShop> findSuitShopByMCID(@Param("mcid")Long mcid);
     public List<AppPolicyMember> findMemberListByPage(Page<AppPolicyMember> entity);
