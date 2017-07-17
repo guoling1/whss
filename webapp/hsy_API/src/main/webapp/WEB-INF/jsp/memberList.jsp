@@ -8,8 +8,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡列表</title>
-    <script src="http://static.jinkaimen.cn/hsy/css/style.2.0.2.css"></script>
-    <%--<link rel="stylesheet" href="../../css/style.2.0.2.css">--%>
+    <link rel="stylesheet" href="../../css/style.2.0.2.css">
 </head>
 <body>
 <div id="memberList">

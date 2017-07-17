@@ -143,6 +143,7 @@
         <button id="createMember">开通</button>
         <button id="sendVcode">发送验证码</button>--%>
 </body>
+<script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="../../js/swiper-3.4.2.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>--%>

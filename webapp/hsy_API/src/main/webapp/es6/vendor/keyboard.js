@@ -36,7 +36,11 @@ _require.register("keyboard", (module, exports, _require, global) => {
       this.realNum = document.getElementById('realNum').innerHTML;
       //计算折扣
       const calculate = function (num,rebate) {
-        document.getElementById('realNum').innerHTML = (num*(rebate/10)).toFixed(2)
+          if((num*(rebate/10)).toFixed(2)< 0.01&&num>0){
+              document.getElementById('realNum').innerHTML = 0.01;
+          }else {
+              document.getElementById('realNum').innerHTML = (num*(rebate/10)).toFixed(2)
+          }
         document.getElementById('minus').innerHTML = (num-(document.getElementById('realNum').innerHTML)).toFixed(2);
         // document.getElementById('realNum').innerHTML = (num - (document.getElementById('minus').innerHTML)).toFixed(2);
       }
