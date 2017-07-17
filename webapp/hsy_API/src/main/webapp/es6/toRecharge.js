@@ -41,34 +41,39 @@ recharge.addEventListener('click',function () {
     if ( keyCtrl ) {
         switch ( keyCtrl ) {
             case 'WX':
-                $.ajax({
-                    type: "get",
-                    url: '/membership/recharge',
-                    data:{
-                        type: pageData.type,
-                        source: pageData.source,
-                        mid: pageData.mid,
-                        amount: price.value
-                    },
-                    dataType: "json",
-                    error: function () {
-                        alert("请求失败")
-                    },
-                    success: function (data) {
-                        if(data.flag == 'memberInfo'){
-                            document.getElementById('iosDialog2').style.opacity='1'
-                        }else if(data.flag == 'fail'){
-                            // message.load_hide();
-                            message.prompt_show(data.result);
-                        }else {
-                            message.load_show('正在支付');
-                            http.post(data.payResponse.url, {}, function (data) {
-                                message.load_hide();
-                                onWeixinJSBridge(data);
-                            });
+                if(price.value>0){
+                    $.ajax({
+                        type: "get",
+                        url: '/membership/recharge',
+                        data:{
+                            type: pageData.type,
+                            source: pageData.source,
+                            mid: pageData.mid,
+                            amount: price.value
+                        },
+                        dataType: "json",
+                        error: function () {
+                            alert("请求失败")
+                        },
+                        success: function (data) {
+                            if(data.flag == 'memberInfo'){
+                                document.getElementById('iosDialog2').style.opacity='1'
+                            }else if(data.flag == 'fail'){
+                                // message.load_hide();
+                                message.prompt_show(data.result);
+                            }else {
+                                message.load_show('正在支付');
+                                http.post(data.payResponse.url, {}, function (data) {
+                                    message.load_hide();
+                                    onWeixinJSBridge(data);
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }else {
+                    message.prompt_show('请输入正确的支付金额');
+                }
+
                 /*http.post_form('/membership/recharge',{
                  type: pageData.type,
                  source: pageData.source,
@@ -83,33 +88,38 @@ recharge.addEventListener('click',function () {
                  })*/
                 break;
             case 'ZFB':
-                $.ajax({
-                    type: "get",
-                    url: '/membership/recharge',
-                    data:{
-                        type: pageData.type,
-                        source: pageData.source,
-                        mid: pageData.mid
-                    },
-                    dataType: "json",
-                    error: function () {
-                        alert("请求失败")
-                    },
-                    success: function (data) {
-                        if(data.flag == 'memberInfo'){
-                            document.getElementById('iosDialog2').style.opacity='1'
-                        }else if(data.flag == 'fail'){
-                            // message.load_hide();
-                            message.prompt_show(data.result);
-                        }else {
-                            message.load_show('正在支付');
-                            http.get(data.payResponse.url, {}, function (data) {
-                                message.load_hide();
-                                onAlipayJSBridge(data);
-                            });
+                if(price.value>0){
+                    $.ajax({
+                        type: "get",
+                        url: '/membership/recharge',
+                        data:{
+                            type: pageData.type,
+                            source: pageData.source,
+                            mid: pageData.mid
+                        },
+                        dataType: "json",
+                        error: function () {
+                            alert("请求失败")
+                        },
+                        success: function (data) {
+                            if(data.flag == 'memberInfo'){
+                                document.getElementById('iosDialog2').style.opacity='1'
+                            }else if(data.flag == 'fail'){
+                                // message.load_hide();
+                                message.prompt_show(data.result);
+                            }else {
+                                message.load_show('正在支付');
+                                http.get(data.payResponse.url, {}, function (data) {
+                                    message.load_hide();
+                                    onAlipayJSBridge(data);
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }else {
+                    message.prompt_show('请输入正确的支付金额');
+                }
+
                 /*http.post_form('/membership/recharge',{
                  type: pageData.type,
                  source: pageData.source,

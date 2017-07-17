@@ -37,7 +37,7 @@
 
     <div id="recharge" class="weui-btn weui-btn_primary" style="margin: 30px 15px 0">充值</div>
     <a href="<%=basePath%>membership/toRechargeList?mid=${appPolicyMember.id}" class="toRecord">点击查看充值记录</a>
-    <div class="js_dialog" id="iosDialog2" style="display: block">
+    <div class="js_dialog" id="iosDialog2" style="display: none">
         <div class="weui-mask"></div>
         <div class="weui-dialog">
             <div class="weui-dialog__bd">您已成功开通会员卡</div>
