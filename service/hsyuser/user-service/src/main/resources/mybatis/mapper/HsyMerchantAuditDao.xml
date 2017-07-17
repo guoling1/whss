@@ -370,6 +370,11 @@
     </select>
 
     <!--  -->
+    <select id="getResul" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME AS aNames,PARENTCODE,CODE AS codes FROM app_biz_district WHERE CODE = #{branchDistrictCode}
+    </select>
+
+    <!--  -->
     <select id="getResult" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT ANAME AS aNames,PARENTCODE,CODE AS codes FROM app_biz_district WHERE CODE = #{branchDistrictCode}
     </select>

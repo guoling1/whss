@@ -755,7 +755,7 @@ public class HsyShopServiceImpl implements HsyShopService {
     }
 
     @Override
-    public void changeStatus(int isPublic, Long id) {
+    public void changeStatus(String isPublic, Long id) {
         this.hsyShopDao.changeStatus(isPublic,id);
     }
 }

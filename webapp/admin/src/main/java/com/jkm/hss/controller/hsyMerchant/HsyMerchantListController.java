@@ -411,8 +411,10 @@ public class HsyMerchantListController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
             }
         }catch (Exception e){
+
             log.debug("修改异常");
-            throw e;
+            return CommonResponse.simpleResponse(-1, "修改异常");
+
         }
 
 

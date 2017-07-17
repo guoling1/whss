@@ -62,7 +62,7 @@ public class HsyMerchantAuditRequest {
     private String contactName;//联系人姓名
     private String contactCellphone;//联系人手机号
     private Integer status;//状态：1 正常 99禁用
-    private int isPublic;//是否对公1是 2否'
+    private String isPublic;//是否对公1是 0否'
     private String checkErrorInfo;//审核错误原因
     private Long accountID;//账户ID
     private Date createTime;

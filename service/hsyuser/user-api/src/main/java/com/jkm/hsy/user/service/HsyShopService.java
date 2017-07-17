@@ -54,5 +54,5 @@ public interface HsyShopService {
      * @param isPublic
      * @param id
      */
-    void changeStatus(int isPublic, Long id);
+    void changeStatus(String isPublic, Long id);
 }

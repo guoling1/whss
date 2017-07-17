@@ -138,17 +138,24 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         }
         if (res.getBranchDistrictCode()!=null){
-            HsyMerchantAuditResponse result = hsyMerchantAuditDao.getResult1(res.getBranchDistrictCode());
-
-            if (!"0".equals(result.getParentCode())){
-                res.setANames1(result.getANames1());
-                res.setCodes1(result.getCodes1());
+            HsyMerchantAuditResponse resul = hsyMerchantAuditDao.getResul(res.getBranchDistrictCode());
+            res.setANames1(resul.getANames());
+            res.setCodes1(resul.getCodes());
+            if (!"0".equals(resul.getParentCode())){
+                HsyMerchantAuditResponse result = hsyMerchantAuditDao.getResult1(resul.getParentCode());
+                res.setANames(result.getANames1());
+                res.setCodes(result.getCodes1());
                 if (!"0".equals(result.getParentCode())){
-                    HsyMerchantAuditResponse result1 = hsyMerchantAuditDao.getResult(result.getParentCode());
-                    res.setANames(result1.getANames());
-                    res.setCodes(result1.getCodes());
+                    res.setANames1(result.getANames1());
+                    res.setCodes1(result.getCodes1());
+                    if (!"0".equals(result.getParentCode())){
+                        HsyMerchantAuditResponse result1 = hsyMerchantAuditDao.getResult(result.getParentCode());
+                        res.setANames(result1.getANames());
+                        res.setCodes(result1.getCodes());
+                    }
                 }
             }
+
         }
         String districtCode = res.getDistrictCode();
         res.setDistrictCodes(res.getDistrictCode());

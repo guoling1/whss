@@ -64,5 +64,5 @@ public interface HsyShopDao {
      * @param isPublic
      * @param id
      */
-    void changeStatus(@Param("isPublic") int isPublic,@Param("id") Long id);
+    void changeStatus(@Param("isPublic") String isPublic,@Param("id") Long id);
 }

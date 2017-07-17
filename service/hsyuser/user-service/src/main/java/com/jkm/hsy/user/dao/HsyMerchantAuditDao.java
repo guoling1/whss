@@ -191,4 +191,6 @@ public interface HsyMerchantAuditDao {
     HsyMerchantAuditResponse getResult(@Param("branchDistrictCode") String branchDistrictCode);
 
     HsyMerchantAuditResponse getResult1(@Param("branchDistrictCode") String branchDistrictCode);
+
+    HsyMerchantAuditResponse getResul(@Param("branchDistrictCode") String branchDistrictCode);
 }
