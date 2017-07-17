@@ -37,7 +37,7 @@ public interface PartnerRuleSettingService {
      * 升级降费率升级页
      * @return
      */
-    List<PartnerRuleSettingResponse> selectAllItemByProductId(long productId);
+    List<PartnerRuleSettingResponse> selectAllItemByProductId(long dealerId,long productId);
     /**
      * 根据产品编码查询升级规则
      * @return
