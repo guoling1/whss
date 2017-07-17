@@ -15,6 +15,15 @@
     <p class="title">尊敬的 ${cellphone}准会员：</p>
     <p class="content">您的会员卡还差一步即可开通成功，请您点击下方的【继续开卡】</p>
     <div id="recharge" class="weui-btn weui-btn_primary">继续开卡</div>
+    <div class="js_dialog" id="iosDialog2" style="display: none">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__bd">您已成功开通会员卡</div>
+            <div class="weui-dialog__ft">
+                <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}"  class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+            </div>
+        </div>
+    </div>
 </div>
     <%--<h1 style="font-size: 40px;">
         尊敬的 ${cellphone}准会员：

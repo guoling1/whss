@@ -18,7 +18,7 @@ let onWeixinJSBridge = function (jsonData) {
             if (res.err_msg == "get_brand_wcpay_request:cancel") {
                 console.log('取消支付')
             } else if (res.err_msg == "get_brand_wcpay_request:ok") {
-                window.location.href = '/membership/success/' + jsonData.orderId+'?mid='+pageData.mid+'&source'+pageData.source;
+                window.location.href = '/membership/success/' + jsonData.orderId+'?mid='+pageData.mid+'&source='+pageData.source;
             } else {
                 alert(res.err_code + res.err_desc + res.err_msg);
             }
@@ -54,11 +54,18 @@ recharge.addEventListener('click',function () {
                         alert("请求失败")
                     },
                     success: function (data) {
-                        http.post(data.payResponse.url, {}, function (data) {
-                            console.log(data)
+                        if(data.flag == 'memberInfo'){
+                            document.getElementById('iosDialog2').style.display='block'
+                        }else if(data.flag == 'fail'){
                             message.load_hide();
-                            onWeixinJSBridge(data);
-                        });
+                            message.prompt_show(data.result);
+                        }else {
+                            http.post(data.payResponse.url, {}, function (data) {
+                                console.log(data)
+                                message.load_hide();
+                                onWeixinJSBridge(data);
+                            });
+                        }
                     }
                 });
                 /*http.post_form('/membership/recharge',{
@@ -89,10 +96,17 @@ recharge.addEventListener('click',function () {
                         alert("请求失败")
                     },
                     success: function (data) {
-                        http.post(data.payResponse.url, {}, function (data) {
+                        if(data.flag == 'memberInfo'){
+                            document.getElementById('iosDialog2').style.display="block"
+                        }else if(data.flag == 'fail'){
                             message.load_hide();
-                            onAlipayJSBridge(data);
-                        });
+                            message.prompt_show(data.result);
+                        }else {
+                            http.get(data.payResponse.url, {}, function (data) {
+                                message.load_hide();
+                                onAlipayJSBridge(data);
+                            });
+                        }
                     }
                 });
                 /*http.post_form('/membership/recharge',{
