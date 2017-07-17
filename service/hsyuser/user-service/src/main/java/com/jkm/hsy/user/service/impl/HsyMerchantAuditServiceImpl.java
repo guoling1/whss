@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
-import com.jkm.hss.product.enums.EnumBasicSettleType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
@@ -23,7 +22,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/1/19.
@@ -133,6 +135,19 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
             if (res.getStatus()==4){
                 res.setStat("商户已注册");
+            }
+        }
+        if (res.getBranchDistrictCode()!=null){
+            HsyMerchantAuditResponse result = hsyMerchantAuditDao.getResult1(res.getBranchDistrictCode());
+
+            if (!"0".equals(result.getParentCode())){
+                res.setANames1(result.getANames1());
+                res.setCodes1(result.getCodes1());
+                if (!"0".equals(result.getParentCode())){
+                    HsyMerchantAuditResponse result1 = hsyMerchantAuditDao.getResult(result.getParentCode());
+                    res.setANames(result1.getANames());
+                    res.setCodes(result1.getCodes());
+                }
             }
         }
         String districtCode = res.getDistrictCode();

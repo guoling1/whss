@@ -56,5 +56,13 @@ public interface HsyShopDao {
      * @param bankAddress
      */
     void changeSettlementCard(@Param("cardNo") String cardNo,@Param("bankName") String bankName,
-                              @Param("districtCode") String districtCode,@Param("bankAddress") String bankAddress,@Param("id") Long id);
+                              @Param("districtCode") String districtCode,
+                              @Param("bankAddress") String bankAddress,@Param("id") Long id,@Param("branchCode") String branchCode);
+
+    /**
+     * 修改对公或者对私
+     * @param isPublic
+     * @param id
+     */
+    void changeStatus(@Param("isPublic") int isPublic,@Param("id") Long id);
 }

@@ -392,16 +392,29 @@ public class HsyMerchantListController extends BaseController {
         if ("".equals(hsyMerchantAuditRequest.getBankAddress())&&hsyMerchantAuditRequest.getBankAddress()==null){
             return CommonResponse.simpleResponse(-1, "支行不能为空");
         }
-
-        long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
-
-        this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),hsyMerchantAuditRequest.getBankName(),
-                hsyMerchantAuditRequest.getDistrictCode(),hsyMerchantAuditRequest.getBankAddress(),hsyMerchantAuditRequest.getId());
-
-        boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId(),super.getAdminUser().getId(), EnumOpt.MODIFYDEFAULTCARD.getMsg());
-        if (b==false){
-            return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
+        if ("".equals(hsyMerchantAuditRequest.getBranchCode())&&hsyMerchantAuditRequest.getBranchCode()==null){
+            return CommonResponse.simpleResponse(-1, "联行号不能为空");
         }
+        try {
+            long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
+
+            this.hsyShopService.changeSettlementCard(hsyMerchantAuditRequest.getCardNo(),
+                    hsyMerchantAuditRequest.getBankName(),
+                    hsyMerchantAuditRequest.getDistrictCode(),
+                    hsyMerchantAuditRequest.getBankAddress(),
+                    hsyMerchantAuditRequest.getId(),
+                    hsyMerchantAuditRequest.getBranchCode());
+            this.hsyShopService.changeStatus(hsyMerchantAuditRequest.getIsPublic(),hsyMerchantAuditRequest.getId());
+
+            boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId(),super.getAdminUser().getId(), EnumOpt.MODIFYDEFAULTCARD.getMsg());
+            if (b==false){
+                return CommonResponse.simpleResponse(-1, "修改上游银行卡失败，请务必联系技术解决！！");
+            }
+        }catch (Exception e){
+            log.debug("修改异常");
+            throw e;
+        }
+
 
         return CommonResponse.simpleResponse(1, "修改成功");
     }

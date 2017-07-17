@@ -182,4 +182,13 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     List<ShopInfoResponse> getShopInfo(@Param("id") Long id);
+
+    /**
+     * 查询省市及编码
+     * @param branchDistrictCode
+     * @return
+     */
+    HsyMerchantAuditResponse getResult(@Param("branchDistrictCode") String branchDistrictCode);
+
+    HsyMerchantAuditResponse getResult1(@Param("branchDistrictCode") String branchDistrictCode);
 }
