@@ -98,4 +98,10 @@ public class HsyMerchantAuditResponse {
     private Integer hxbOpenProduct;//华夏开通产品状态
     private String hxbOpenProductRemarks;//华夏开通产品信息
 
+    //活动编码
+    private String hxWx;
+    private String msWx;
+    private String hxZfb;
+    private String msZfb;
+
 }

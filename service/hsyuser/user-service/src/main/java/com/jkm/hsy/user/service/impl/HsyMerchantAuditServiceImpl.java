@@ -1,9 +1,16 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.util.ExcelUtil;
+import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
+import com.jkm.hss.product.enums.EnumBasicSettleType;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
+import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +23,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/1/19.
@@ -29,7 +34,8 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
     @Autowired
     private HsyMerchantAuditDao hsyMerchantAuditDao;
-
+    @Autowired
+    private UserChannelPolicyDao UserChannelPolicyDao;
     @Override
     public List<HsyMerchantAuditResponse> getMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
 
@@ -463,6 +469,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
     public List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) throws ParseException {
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.hsyMerchant(hsyMerchantAuditRequest);
+        this.addActCode(list);
         System.out.print("----------------------");
         System.out.print(new Date());
         if (list.size()>0){
@@ -526,6 +533,51 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         System.out.print("++++++++++++++");
         System.out.print(new Date());
         return list;
+    }
+
+    private void addActCode(List<HsyMerchantAuditResponse> list) {
+        List<Long>  userIds = Lists.transform(list, new Function<HsyMerchantAuditResponse, Long>() {
+            @Override
+            public Long apply(HsyMerchantAuditResponse input) {
+                return input.getUid();
+            }
+        });
+        final List<UserChannelPolicy> userChannelPolicies1 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.SYJ_WECHAT.getId(), EnumSettlePeriodType.T1.getId());
+        final Map<Long, UserChannelPolicy> map1 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+            @Override
+            public Long apply(UserChannelPolicy input) {
+                return input.getUserId();
+            }
+        });
+        final List<UserChannelPolicy> userChannelPolicies2 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.SYJ_ALIPAY.getId(), EnumSettlePeriodType.T1.getId());
+        final Map<Long, UserChannelPolicy> map2 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+            @Override
+            public Long apply(UserChannelPolicy input) {
+                return input.getUserId();
+            }
+        });
+        final List<UserChannelPolicy> userChannelPolicies3 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.XMMS_WECHAT_T1.getId(), EnumSettlePeriodType.T1.getId());
+        final Map<Long, UserChannelPolicy> map3 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+            @Override
+            public Long apply(UserChannelPolicy input) {
+                return input.getUserId();
+            }
+        });
+        final List<UserChannelPolicy> userChannelPolicies4 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.XMMS_ALIPAY_T1.getId(), EnumSettlePeriodType.T1.getId());
+        final Map<Long, UserChannelPolicy> map4 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+            @Override
+            public Long apply(UserChannelPolicy input) {
+                return input.getUserId();
+            }
+        });
+        for (HsyMerchantAuditResponse response : list){
+            //hx
+            response.setHxWx(map1.get(response.getUid()).getExchannelEventCode());
+            response.setMsWx(map3.get(response.getUid()).getExchannelEventCode());
+            response.setHxZfb(map2.get(response.getUid()).getExchannelEventCode());
+            response.setMsZfb(map4.get(response.getUid()).getExchannelEventCode());
+        }
+
     }
 
     @Override
@@ -645,6 +697,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         heads.add("省市");
         heads.add("行业");
         heads.add("状态");
+        heads.add("民生微信");
+        heads.add("华夏微信");
+        heads.add("民生支付宝");
+        heads.add("华夏支付宝");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
@@ -678,6 +734,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 columns.add(list.get(i).getDistrictCode());
                 columns.add(list.get(i).getIndustryCode());
                 columns.add(list.get(i).getStat());
+                columns.add(list.get(i).getHxWx());
+                columns.add(list.get(i).getMsWx());
+                columns.add(list.get(i).getHxZfb());
+                columns.add(list.get(i).getMsZfb());
                 datas.add(columns);
             }
         }
