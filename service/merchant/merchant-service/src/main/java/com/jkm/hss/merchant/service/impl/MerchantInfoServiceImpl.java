@@ -193,8 +193,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      * @param mobile
      */
     @Override
-    public Optional<MerchantInfo> selectByMobile(String mobile) {
-        return Optional.fromNullable(this.merchantInfoDao.selectByMobile(mobile));
+    public List<MerchantInfo> selectByMobile(String mobile) {
+        return this.merchantInfoDao.selectByMobile(mobile);
     }
 
     /**

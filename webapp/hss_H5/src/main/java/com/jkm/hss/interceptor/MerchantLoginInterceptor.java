@@ -72,6 +72,11 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 Preconditions.checkState(userInfoOptional.get().getMerchantId()>0, "商户不存在");
                 Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
                 Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
+                Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoOptional.get().getOemId());
+                if(!oemInfoOptional1.isPresent()){
+                    Preconditions.checkState(oemInfoOptional1.isPresent(), "分公司不存在");
+                }
+                oemNo = oemInfoOptional1.get().getOemNo();
                 if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
                     Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                     Preconditions.checkState(oemInfoOptional.isPresent(), "参数不合法");
@@ -148,7 +153,6 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     return false;
                 }
             }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                 return false;
             }

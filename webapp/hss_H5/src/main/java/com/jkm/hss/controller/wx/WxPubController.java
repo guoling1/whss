@@ -337,15 +337,19 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
         long oemId = 0;
+        final String mobile = codeRequest.getMobile();
         if(codeRequest.getOemNo()!=null&&!"".equals(codeRequest.getOemNo())){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(codeRequest.getOemNo());
             if(!oemInfoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+            if(merchantInfoList.size()>0){
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+            }
         }
-
-        final String mobile = codeRequest.getMobile();
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
         }
@@ -951,6 +955,18 @@ public class WxPubController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
+            if(merchantInfoList.size()>0){
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()>0){
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if((WxConstants.APP_ID).equals(oemInfoOptional1.get().getAppId())){
+                            oemId = merchantInfoList.get(i).getOemId();
+                        }
+                    }
+                }
+            }
         }
         if (StringUtils.isBlank(directLoginRequest.getMobile())) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
