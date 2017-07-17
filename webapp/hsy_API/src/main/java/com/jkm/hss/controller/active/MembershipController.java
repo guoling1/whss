@@ -434,19 +434,18 @@ public class MembershipController {
         }
         if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
             AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
-            if(appPolicyRechargeOrder.getStatus()==OrderStatus.HAS_REQUSET_TRADE.key)
-            {
-                map.put("flag","fail");
-                map.put("result","正在交易中请勿再次付款");
-                writeJsonToResponse(map,response,pw);
-                return;
-            }
-            else if(appPolicyRechargeOrder.getStatus()==OrderStatus.RECHARGE_SUCCESS.key)
-            {
-                map.put("flag","memberInfo");
-                map.put("result","您已经成功开通会员卡");
-                writeJsonToResponse(map,response,pw);
-                return;
+            if(appPolicyRechargeOrder!=null) {
+                if (appPolicyRechargeOrder.getStatus() == OrderStatus.HAS_REQUSET_TRADE.key) {
+                    map.put("flag", "fail");
+                    map.put("result", "正在交易中请稍后");
+                    writeJsonToResponse(map, response, pw);
+                    return;
+                } else if (appPolicyRechargeOrder.getStatus() == OrderStatus.RECHARGE_SUCCESS.key) {
+                    map.put("flag", "memberInfo");
+                    map.put("result", "您已经成功开通会员卡");
+                    writeJsonToResponse(map, response, pw);
+                    return;
+                }
             }
         }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);

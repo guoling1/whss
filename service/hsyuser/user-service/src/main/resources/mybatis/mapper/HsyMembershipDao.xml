@@ -349,7 +349,7 @@
 
     <select id="findRechargeOrderAboutRechargeStatus" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
         select ID,ORDERNO,MEMBERSHIPNAME,CONSUMERCELLPHONE,TRADEAMOUNT,REALPAYAMOUNT,STATUS,PAYSUCCESSTIME from app_policy_recharge_order
-        where (status=1 or status=3) and MEMBERID=#{mid}
+        where (status=1 or status=3) and MEMBERID=#{mid} and (type=1 or type=2)
         order by PAYSUCCESSTIME
     </select>
 
