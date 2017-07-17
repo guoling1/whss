@@ -192,6 +192,7 @@ public class MembershipController {
         Long uid;
         try {
             String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
+            uidHttp=uidHttp.replace("<>","/");
             String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
             uid = Long.parseLong(uidAES.trim());
         } catch (Exception e) {

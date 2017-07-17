@@ -197,6 +197,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         String uidEncode=null;
         try {
             String uidAES=AppAesUtil.encryptCBC_NoPaddingToBase64String(uid+"", AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
+            uidAES=uidAES.replace("/","<>");
             uidEncode= URLEncoder.encode(uidAES,"utf-8");
         } catch (Exception e) {
             throw new ApiHandleException(ResultCode.ESCAPE_FAIL);

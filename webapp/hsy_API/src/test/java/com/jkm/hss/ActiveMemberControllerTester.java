@@ -48,7 +48,7 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"id\":215}";
+        String param="{\"id\":437}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
