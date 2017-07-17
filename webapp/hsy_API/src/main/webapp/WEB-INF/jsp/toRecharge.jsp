@@ -42,7 +42,7 @@
         <div class="weui-dialog">
             <div class="weui-dialog__bd">您已成功开通会员卡</div>
             <div class="weui-dialog__ft">
-                <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}"  class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+                <a href="<%=basePath%>membership/memberInfo?mid=${appPolicyMember.id}&source=${source}"  class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
             </div>
         </div>
     </div>

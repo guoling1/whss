@@ -41,7 +41,6 @@ recharge.addEventListener('click',function () {
     if ( keyCtrl ) {
         switch ( keyCtrl ) {
             case 'WX':
-                message.load_show('正在支付');
                 $.ajax({
                     type: "get",
                     url: '/membership/recharge',
@@ -59,9 +58,10 @@ recharge.addEventListener('click',function () {
                         if(data.flag == 'memberInfo'){
                             document.getElementById('iosDialog2').style.opacity='1'
                         }else if(data.flag == 'fail'){
-                            message.load_hide();
+                            // message.load_hide();
                             message.prompt_show(data.result);
                         }else {
+                            message.load_show('正在支付');
                             http.post(data.payResponse.url, {}, function (data) {
                                 message.load_hide();
                                 onWeixinJSBridge(data);
@@ -83,7 +83,6 @@ recharge.addEventListener('click',function () {
                  })*/
                 break;
             case 'ZFB':
-                message.load_show('正在支付');
                 $.ajax({
                     type: "get",
                     url: '/membership/recharge',
@@ -100,9 +99,10 @@ recharge.addEventListener('click',function () {
                         if(data.flag == 'memberInfo'){
                             document.getElementById('iosDialog2').style.opacity='1'
                         }else if(data.flag == 'fail'){
-                            message.load_hide();
+                            // message.load_hide();
                             message.prompt_show(data.result);
                         }else {
+                            message.load_show('正在支付');
                             http.get(data.payResponse.url, {}, function (data) {
                                 message.load_hide();
                                 onAlipayJSBridge(data);
