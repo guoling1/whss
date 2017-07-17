@@ -868,4 +868,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             return null;
     }
 
+    public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid){
+        List<AppPolicyRechargeOrder> list=hsyMembershipDao.findRechargeOrderAboutRechargeStatus(mid);
+        if(list!=null&&list.size()!=0)
+            return list.get(0);
+        else
+            return null;
+    }
+
 }

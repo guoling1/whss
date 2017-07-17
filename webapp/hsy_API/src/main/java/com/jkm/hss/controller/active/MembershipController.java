@@ -360,6 +360,14 @@ public class MembershipController {
     @RequestMapping("memberInfo")
     public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key)
+        {
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
+            model.addAttribute("source", source);
+            return "redirect:/sqb/needRecharge";
+        }
+
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
 //        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
         appPolicyMember.setRemainingSum(account.get().getAvailable());
@@ -425,7 +433,21 @@ public class MembershipController {
             return;
         }
         if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
-
+            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+            if(appPolicyRechargeOrder.getStatus()==OrderStatus.HAS_REQUSET_TRADE.key)
+            {
+                map.put("flag","fail");
+                map.put("result","正在交易中请勿再次付款");
+                writeJsonToResponse(map,response,pw);
+                return;
+            }
+            else if(appPolicyRechargeOrder.getStatus()==OrderStatus.RECHARGE_SUCCESS.key)
+            {
+                map.put("flag","memberInfo");
+                map.put("result","您已经成功开通会员卡");
+                writeJsonToResponse(map,response,pw);
+                return;
+            }
         }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
         RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
@@ -501,7 +523,7 @@ public class MembershipController {
     }
 
     @RequestMapping(value = "success/{id}")
-    public String paySuccessPage(final Model model, @PathVariable("id") long id) {
+    public String paySuccessPage(final Model model, @PathVariable("id") long id,Long mid,String source) {
         final Optional<Order> orderOptional = this.orderService.getById(id);
         if(!orderOptional.isPresent()){
             return "/500.jsp";
@@ -510,7 +532,9 @@ public class MembershipController {
             model.addAttribute("sn", order.getOrderNo());
             model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
-            return "/successRecharge.jsp";
+            model.addAttribute("mid", mid);
+            model.addAttribute("source", source);
+            return "/successRecharge";
         }
     }
 

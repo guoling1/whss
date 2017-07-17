@@ -42,4 +42,5 @@ public interface HsyMembershipService {
     public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
     public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid);
+    public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid);
 }

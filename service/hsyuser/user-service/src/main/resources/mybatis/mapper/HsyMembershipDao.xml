@@ -346,4 +346,10 @@
         <if test="endTime!=null"><![CDATA[ and PAYSUCCESSTIME<#{endTime}]]></if>
     </select>
 
+    <select id="findRechargeOrderAboutRechargeStatus" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select ID,ORDERNO,MEMBERSHIPNAME,CONSUMERCELLPHONE,TRADEAMOUNT,REALPAYAMOUNT,STATUS,PAYSUCCESSTIME from app_policy_recharge_order
+        where (status=1 or status=3) and MEMBERID=#{mid}
+        order by PAYSUCCESSTIME
+    </select>
+
 </mapper>
