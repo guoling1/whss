@@ -849,7 +849,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     }
 
     public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid){
-        List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUIDAndUID(openID,userID,uid);
+        List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUIDAndUID(openID,userID,uid, MemberStatus.ACTIVE.key);
         if(list!=null&&list.size()!=0) {
             AppPolicyMember appPolicyMember=list.get(0);
             Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());

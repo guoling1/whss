@@ -328,6 +328,7 @@
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
         where 1=1 and card.UID=#{uid}
+        <if test="status!=null">and member.status=#{status}</if>
         <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
     </select>
