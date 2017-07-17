@@ -491,8 +491,10 @@ public class LoginController extends BaseController {
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
                 model.addAttribute("oemNo", oemNo);
+                model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             }else{
                 model.addAttribute("oemNo", "");
+                model.addAttribute("oemName","好收收");
             }
             model.addAttribute("avaliable", "0.00");
             model.addAttribute("showRecommend", 1);
@@ -501,12 +503,39 @@ public class LoginController extends BaseController {
             if(userInfoOptional.isPresent()){//存在
                 Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
                 Preconditions.checkState(merchantInfo.isPresent(), "商户注册信息有误，只有用户没有商户！");
-                if(merchantInfo.get().getOemId()>0){
-                    Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
-                    Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
-                    oemNo = oemInfoOptional.get().getOemNo();
-                }else{
-                    oemNo = "";
+                if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                    if(merchantInfo.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
+                        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+                        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }else{
+                            model.addAttribute("oemNo", oemNo);
+                            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+                        }
+                    }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
+                        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                        String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
+                        return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                    }
+                }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
+                    if(merchantInfo.get().getOemId()>0){//分公司商户
+                        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+                        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        if(!(WxConstants.APP_ID).equals(oemInfoOptional.get().getAppId())){
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                        }else{
+                            model.addAttribute("oemNo", oemNo);
+                            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+                        }
+                    }else{
+                        model.addAttribute("oemNo", "");
+                        model.addAttribute("oemName","好收收");
+                    }
                 }
                 final Optional<Account> accountOptional = this.accountService.getById(merchantInfo.get().getAccountId());
                 if(!accountOptional.isPresent()){
@@ -526,14 +555,17 @@ public class LoginController extends BaseController {
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 model.addAttribute("showRecommend", 1);
                 model.addAttribute("avaliable", "0.00");
+
                 if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                     Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                     Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                    model.addAttribute("oemNo", oemNo);
+                    model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
                 }else{
-                    oemNo = "";
+                    model.addAttribute("oemNo", "");
+                    model.addAttribute("oemName","好收收");
                 }
             }
-            model.addAttribute("oemNo", oemNo);
         }
         return "/wallet";
     }
