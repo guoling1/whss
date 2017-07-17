@@ -234,7 +234,7 @@ public class MembershipController {
             model.addAttribute("mid", appPolicyMember.getId());
             model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
             model.addAttribute("source", authInfo.getSource());
-            return "/needRecharge";
+            return "redirect:/sqb/needRecharge";
         }
 
         if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
@@ -253,10 +253,11 @@ public class MembershipController {
                 return "/tips";
             }
 
-            model.addAttribute("appPolicyMember",appPolicyMember);
-            model.addAttribute("type", RechargeValidType.RECHARGE.key);
+//            model.addAttribute("appPolicyMember",appPolicyMember);
+//            model.addAttribute("type", RechargeValidType.RECHARGE.key);
+            model.addAttribute("mid", appPolicyMember.getId());
             model.addAttribute("source", authInfo.getSource());
-            return "/toRecharge";
+            return "redirect:/sqb/toRecharge";
         }
         else{
             model.addAttribute("tips","找不到该操作！");
@@ -412,10 +413,17 @@ public class MembershipController {
             writeJsonToResponse(map,response,pw);
             return;
         }
+        if(appPolicyMember.getCanRecharge()==0)
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡无法自助充值");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
         RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
         PayResponse payResponse=tradeService.recharge(rechargeParams);
-        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId());
+        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId(),OrderStatus.HAS_REQUSET_TRADE.key);
         if(payResponse.getCode()!= EnumBasicStatus.SUCCESS.getId())
         {
             map.put("flag","fail");

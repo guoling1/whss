@@ -814,11 +814,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return appPolicyRechargeOrder;
     }
 
-    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID){
+    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID,Integer status){
         AppPolicyRechargeOrder appPolicyRechargeOrderUp=new AppPolicyRechargeOrder();
         appPolicyRechargeOrderUp.setId(appPolicyRechargeOrder.getId());
         appPolicyRechargeOrderUp.setTradeNO(tradeNO);
         appPolicyRechargeOrderUp.setTradeID(tradeID);
+        appPolicyRechargeOrderUp.setStatus(status);
         hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUp);
         appPolicyRechargeOrder.setOrderNO(tradeNO);
         appPolicyRechargeOrder.setTradeID(tradeID);

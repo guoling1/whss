@@ -46,7 +46,9 @@
         <img src="../assets/member/vip.png" alt="">
         <span class="word">卡内余额：</span>
         <span>${appPolicyMember.remainingSum}</span>
+        <c:if test="${appPolicyMember.canRecharge==1}">
         <a class="weui-btn weui-btn_mini weui-btn_primary" href="/sqb/toRecharge?mid=${appPolicyMember.id}&source=WX">充值</a>
+        </c:if>
       </div>
     </div>
     <%--<div class="copyright flexBox">

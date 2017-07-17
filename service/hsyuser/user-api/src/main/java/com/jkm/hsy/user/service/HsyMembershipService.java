@@ -37,7 +37,7 @@ public interface HsyMembershipService {
     public AppAuVerification findRightVcode(String cellphone);
     public AppPolicyMember findMemberInfoByID(Long mid);
     public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember, String type,String source,BigDecimal amount);
-    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID);
+    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID,Integer status);
     public List<AppBizShop> findSuitShopByMCID(Long mcid);
     public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);

@@ -205,7 +205,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             Triple<Integer, String, String> result=this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
             Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
             BigDecimal remainingSum=account.get().getAvailable();
-            if(remainingSum.compareTo(BigDecimal.ZERO)==0)
+            if(remainingSum.compareTo(BigDecimal.ZERO)==0&&appPolicyMember.getCanRecharge()==0)
             {
                 AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
                 appPolicyMemberUp.setId(appPolicyMember.getId());
@@ -283,13 +283,23 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse) {
         List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getBusinessOrderNo());
         AppPolicyRechargeOrder appPolicyRechargeOrder=rechargeOrderList.get(0);
-        if(appPolicyRechargeOrder.getStatus()== OrderStatus.NEED_RECHARGE.key)
+        if(appPolicyRechargeOrder.getStatus()== OrderStatus.HAS_REQUSET_TRADE.key)
         {
             EnumBasicStatus status = EnumBasicStatus.of(callbackResponse.getCode());
             AppPolicyRechargeOrder appPolicyRechargeOrderUpdate=new AppPolicyRechargeOrder();
             Date date=new Date();
             switch (status) {
                 case SUCCESS:
+
+                    List<AppPolicyMember> memberList = hsyMembershipDao.findMemberInfoByID(appPolicyRechargeOrder.getMemberID());
+                    AppPolicyMember appPolicyMember = memberList.get(0);
+                    if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key) {
+                        AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
+                        appPolicyMemberUp.setId(appPolicyMember.getId());
+                        appPolicyMemberUp.setStatus(MemberStatus.ACTIVE.key);
+                        hsyMembershipDao.updateMember(appPolicyMemberUp);
+                    }
+
                     appPolicyRechargeOrderUpdate.setId(appPolicyRechargeOrder.getId());
                     appPolicyRechargeOrderUpdate.setStatus(OrderStatus.RECHARGE_SUCCESS.key);
                     appPolicyRechargeOrderUpdate.setPoundage(callbackResponse.getPoundage());
