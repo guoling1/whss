@@ -572,10 +572,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         });
         for (HsyMerchantAuditResponse response : list){
             //hx
-            response.setHxWx(map1.get(response.getUid()).getExchannelEventCode());
-            response.setMsWx(map3.get(response.getUid()).getExchannelEventCode());
-            response.setHxZfb(map2.get(response.getUid()).getExchannelEventCode());
-            response.setMsZfb(map4.get(response.getUid()).getExchannelEventCode());
+            response.setHxWx(map1.get(response.getUid()) == null ?  "" : map1.get(response.getUid()).getExchannelEventCode());
+            response.setMsWx(map3.get(response.getUid()) == null ?  "" : map3.get(response.getUid()).getExchannelEventCode());
+            response.setHxZfb(map2.get(response.getUid()) == null ?  "" : map2.get(response.getUid()).getExchannelEventCode());
+            response.setMsZfb(map4.get(response.getUid()) == null ?  "" : map4.get(response.getUid()).getExchannelEventCode());
         }
 
     }
