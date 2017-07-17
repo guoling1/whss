@@ -697,10 +697,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         heads.add("省市");
         heads.add("行业");
         heads.add("状态");
-        heads.add("民生微信");
         heads.add("华夏微信");
-        heads.add("民生支付宝");
+        heads.add("民生微信");
         heads.add("华夏支付宝");
+        heads.add("民生支付宝");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
