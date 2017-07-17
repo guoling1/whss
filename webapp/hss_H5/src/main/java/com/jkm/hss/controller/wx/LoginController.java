@@ -182,7 +182,7 @@ public class LoginController extends BaseController {
                             }
                         }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                             if(result.get().getOemId()>0){//分公司商户
-                                model.addAttribute("message","请求参数有误");
+                                model.addAttribute("message","该微信号已被注册，请用其他微信号注册");
                                 return "/message";
                             }
                         }
