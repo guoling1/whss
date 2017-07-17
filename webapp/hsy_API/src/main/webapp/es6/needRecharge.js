@@ -18,7 +18,7 @@ let onWeixinJSBridge = function (jsonData) {
             if (res.err_msg == "get_brand_wcpay_request:cancel") {
                 console.log('取消支付')
             } else if (res.err_msg == "get_brand_wcpay_request:ok") {
-                window.location.href = '/membership/success/' + jsonData.orderId;
+                window.location.href = '/membership/success/' + jsonData.orderId+'?mid='+pageData.mid+'&source'+pageData.source;
             } else {
                 alert(res.err_code + res.err_desc + res.err_msg);
             }
@@ -31,7 +31,7 @@ let onAlipayJSBridge = function (jsonData) {
     AlipayJSBridge.call("tradePay", {tradeNO: jsonData.tradeNO},
         function (result) {
             if (result.resultCode == 9000 || result.resultCode == 8000) {
-                window.location.href = '/membership/success/' + jsonData.orderId;
+                window.location.href = '/membership/success/' + jsonData.orderId+'?mid='+pageData.mid+'&source'+pageData.source;
             }
         });
 };

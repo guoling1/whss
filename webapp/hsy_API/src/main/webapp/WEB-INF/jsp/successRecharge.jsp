@@ -12,14 +12,13 @@
 <body>
 
 <div id="rechargeResults">
-  <img src="../assets/member/success.png" alt="">
-  <!--<img src="../assets/member/fail.png" alt="">-->
+  <img src="../../assets/member/success.png" alt="">
+  <!--<img src="../../assets/member/fail.png" alt="">-->
   <p class="result">充值成功</p>
   <%--<p class="errCode">错误码</p>--%>
   <a class="toRecord" href="<%=basePath%>membership/toRechargeList?mid=${appPolicyMember.id}" style="padding-bottom: 10px">查看充值记录</a>
   <a class="toRecord" href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}" style="display: block;padding-top: 0;">查看会员卡详情</a>
   <a class="weui-btn weui-btn_plain-primary back" href="javascript:" onclick="self.location=document.referrer;">返回</a>
 </div>
-
 </body>
 </html>

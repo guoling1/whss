@@ -7,7 +7,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>消费记录</title>
-    <script src="http://static.jinkaimen.cn/hsy/css/style.2.0.2.css"></script>
+    <link rel="stylesheet" href="../../css/style.2.0.2.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -27,5 +27,5 @@
 <script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/consumeList.min.js"></script>
+<script src="../../js/2.0.2/consumeList.min.js"></script>
 </html>
