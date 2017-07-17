@@ -550,21 +550,21 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         });
         final List<UserChannelPolicy> userChannelPolicies2 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.SYJ_ALIPAY.getId(), EnumSettlePeriodType.T1.getId());
-        final Map<Long, UserChannelPolicy> map2 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+        final Map<Long, UserChannelPolicy> map2 = Maps.uniqueIndex(userChannelPolicies2, new Function<UserChannelPolicy, Long>() {
             @Override
             public Long apply(UserChannelPolicy input) {
                 return input.getUserId();
             }
         });
         final List<UserChannelPolicy> userChannelPolicies3 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.XMMS_WECHAT_T1.getId(), EnumSettlePeriodType.T1.getId());
-        final Map<Long, UserChannelPolicy> map3 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+        final Map<Long, UserChannelPolicy> map3 = Maps.uniqueIndex(userChannelPolicies3, new Function<UserChannelPolicy, Long>() {
             @Override
             public Long apply(UserChannelPolicy input) {
                 return input.getUserId();
             }
         });
         final List<UserChannelPolicy> userChannelPolicies4 = this.UserChannelPolicyDao.selectByUserIdsAndChannelSignAndType(userIds, EnumPayChannelSign.XMMS_ALIPAY_T1.getId(), EnumSettlePeriodType.T1.getId());
-        final Map<Long, UserChannelPolicy> map4 = Maps.uniqueIndex(userChannelPolicies1, new Function<UserChannelPolicy, Long>() {
+        final Map<Long, UserChannelPolicy> map4 = Maps.uniqueIndex(userChannelPolicies4, new Function<UserChannelPolicy, Long>() {
             @Override
             public Long apply(UserChannelPolicy input) {
                 return input.getUserId();
