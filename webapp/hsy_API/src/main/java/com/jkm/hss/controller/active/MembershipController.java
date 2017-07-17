@@ -11,10 +11,12 @@ import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.RechargeParams;
 import com.jkm.hss.bill.service.HsyOrderScanService;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.entity.AuthParam;
@@ -78,6 +80,8 @@ public class MembershipController {
     private TradeService tradeService;
     @Autowired
     private HsyOrderScanService hsyOrderScanService;
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("getAuth/{operate}/{uidEncode}")
     public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode,@PathVariable String operate){
@@ -420,6 +424,9 @@ public class MembershipController {
             writeJsonToResponse(map,response,pw);
             return;
         }
+        if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
+
+        }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
         RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
         PayResponse payResponse=tradeService.recharge(rechargeParams);
@@ -491,6 +498,20 @@ public class MembershipController {
     public String toRechargeList(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
         model.addAttribute("mid",mid);
         return "/rechargeList";
+    }
+
+    @RequestMapping(value = "success/{id}")
+    public String paySuccessPage(final Model model, @PathVariable("id") long id) {
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+        if(!orderOptional.isPresent()){
+            return "/500.jsp";
+        }else{
+            final Order order = orderOptional.get();
+            model.addAttribute("sn", order.getOrderNo());
+            model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            model.addAttribute("money", order.getRealPayAmount().toPlainString());
+            return "/successRecharge.jsp";
+        }
     }
 
     @RequestMapping("sendVcode")
