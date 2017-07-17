@@ -236,7 +236,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')
         </if>
         <if test="globalID!=null and globalID!=''">
-            AND a.GLOBALID=#{globalID}
+            AND c.GLOBALID=#{globalID}
         </if>
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')

@@ -1525,7 +1525,7 @@
             AND b.mark_code = #{markCode}
         </if>
         <if test="globalId != null and globalId!=''">
-            AND x.GLOBALID = #{globalId}
+            AND z.GLOBALID = #{globalId}
         </if>
         <if test="appId != null and appId!=''">
             AND a.app_id = #{appId}
@@ -1895,7 +1895,7 @@
             AND b.mark_code = #{markCode}
         </if>
         <if test="globalId != null and globalId!=''">
-            AND x.GLOBALID = #{globalId}
+            AND z.GLOBALID = #{globalId}
         </if>
         <if test="appId != null and appId!=''">
             AND a.app_id = #{appId}
