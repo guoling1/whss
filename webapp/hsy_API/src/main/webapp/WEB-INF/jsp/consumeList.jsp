@@ -7,7 +7,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>消费记录</title>
-    <link rel="stylesheet" href="../../css/style.1.0.0.css">
+    <script src="http://static.jinkaimen.cn/hsy/css/style.2.0.2.css"></script>
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>

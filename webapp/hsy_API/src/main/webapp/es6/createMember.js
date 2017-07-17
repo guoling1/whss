@@ -112,7 +112,7 @@ submit.addEventListener('click', ()=> {
                         if(data.status==1)
                             location.href="/membership/createMemberSuccess?mid="+data.mid;
                         else
-                            location.href="/membership/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
+                            location.href="/sqb/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
                     }
                     else
                         alert(data.result);

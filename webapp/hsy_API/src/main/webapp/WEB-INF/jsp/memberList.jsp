@@ -8,7 +8,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡列表</title>
-    <link rel="stylesheet" href="../../css/style.2.0.2.css">
+    <script src="http://static.jinkaimen.cn/hsy/css/style.2.0.2.css"></script>
+    <%--<link rel="stylesheet" href="../../css/style.2.0.2.css">--%>
 </head>
 <body>
 <div id="memberList">
@@ -20,7 +21,7 @@
         <ul class="leftList" id="leftList">
             <c:forEach items="${memberList}" var="member">
             <li>
-                <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">
+                <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}" style="display: inline-block;width: 100%;height: 100%;">
                 <span class="name"><c:out value="${member.membershipShopName}"></c:out></span>
                 <span class="type"><c:out value="${member.membershipName}"></c:out></span>
                 <span class="discount"><span>${member.discountInt}</span>.${member.discountFloat}折</span>
@@ -31,5 +32,6 @@
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
-<script src="../../js/2.0.2/memberList.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/memberList.min.js"></script>
+<%--<script src="../../js/2.0.2/memberList.min.js"></script>--%>
 </html>

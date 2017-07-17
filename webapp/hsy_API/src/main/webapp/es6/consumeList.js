@@ -62,7 +62,8 @@ let getData = function (e, page) {
                 div_list_right.appendChild(span1)
                 div_list.appendChild(div_list_left);
                 div_list.appendChild(div_list_right);
-                weuiCells.insertBefore(div_list, weuiCells.childNodes[0]);
+                // weuiCells.insertBefore(div_list, weuiCells.childNodes[0]);
+                weuiCells.appendChild(div_list);
             }
             if (data.page.totalPage != nowPage) {
                 more.style.display = 'block';
