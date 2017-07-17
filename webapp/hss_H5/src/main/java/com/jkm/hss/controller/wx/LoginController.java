@@ -169,21 +169,21 @@ public class LoginController extends BaseController {
                                 if(oemInfoOptional.isPresent()){
                                     if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
                                         model.addAttribute("message","请求参数有误");
-                                        return "redirect:/sqb/message";
+                                        return "/message";
                                     }
                                 }else{
                                     log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
                                     model.addAttribute("message","分公司尚未配置");
-                                    return "redirect:/sqb/message";
+                                    return "/message";
                                 }
                             }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
                                 model.addAttribute("message","该微信号已被注册，请用其他微信号注册");
-                                return "redirect:/sqb/message";
+                                return "/message";
                             }
                         }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                             if(result.get().getOemId()>0){//分公司商户
                                 model.addAttribute("message","请求参数有误");
-                                return "redirect:/sqb/message";
+                                return "/message";
                             }
                         }
 
