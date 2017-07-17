@@ -82,5 +82,5 @@ public interface UserChannelPolicyDao {
      */
     String selectAppSecretByAppId(@Param("appId") String appId);
 
-    List<UserChannelPolicy> selectByUserIdsAndChannelSignAndType(List<Long> userIds, int channelSign, String type);
+    List<UserChannelPolicy> selectByUserIdsAndChannelSignAndType(@Param("userIds") List<Long> userIds, @Param("channelSign") int channelSign, @Param("type") String type);
 }
