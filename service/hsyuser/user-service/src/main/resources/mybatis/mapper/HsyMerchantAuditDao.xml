@@ -37,7 +37,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')
         </if>
         <if test="globalID!=null and globalID!=''">
-            AND a.GLOBALID=#{globalID}
+            AND c.GLOBALID=#{globalID}
         </if>
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
@@ -83,12 +83,41 @@
     <!-- 查询商户列表 -->
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,e.mobile,
-        (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE UID=b.`UID`) AS shopNo,
-        (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
-        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
+            a.ID,
+            a.`NAME`,
+            a.SHORTNAME,
+            a.INDUSTRYCODE,
+            a.DISTRICTCODE,
+            a.ADDRESS,
+            a.EMAIL,
+            a.LICENCEID,
+            a.STOREFRONTID,
+            a.COUNTERID,
+            a.INDOORID,
+            a.PARENTID,
+            a.CONTACTNAME,
+            a.CONTACTCELLPHONE,
+            a.`STATUS`,
+            a.ISPUBLIC,
+            a.CHECKERRORINFO,
+            a.AUDITTIME,
+            a.CREATETIME,
+            a.UPDATETIME,
+            a.COMMITTIME,
+            a.LICENCENO,
+            a.LICENCESTARTDATE,
+            a.LICENCEENDDATE,
+            c.GLOBALID,
+            c.CELLPHONE,
+            c.DEALERID,
+            e.realname,
+            e.username,
+            e.mobile,
+            (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE UID=b.`UID`) AS shopNo,
+            (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
+            (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
-        app_biz_shop a
+            app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
         LEFT JOIN app_au_user_admin d ON d.SID=a.ID
@@ -114,7 +143,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')
         </if>
         <if test="globalID!=null and globalID!=''">
-            AND a.GLOBALID=#{globalID}
+            AND c.GLOBALID=#{globalID}
         </if>
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
@@ -148,13 +177,40 @@
     <!-- 导出hsy商户列表 -->
     <select id="hsyMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
-        a.*, c.CELLPHONE,c.DEALERID,e.realname,e.username,
-        (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE UID=b.`UID`) AS shopNo,
-        (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
-        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1,
-        c.id as uid
+            a.ID,
+            a.`NAME`,
+            a.SHORTNAME,
+            a.INDUSTRYCODE,
+            a.DISTRICTCODE,
+            a.ADDRESS,
+            a.EMAIL,
+            a.LICENCEID,
+            a.STOREFRONTID,
+            a.COUNTERID,
+            a.INDOORID,
+            a.PARENTID,
+            a.CONTACTNAME,
+            a.CONTACTCELLPHONE,
+            a.`STATUS`,
+            a.ISPUBLIC,
+            a.CHECKERRORINFO,
+            a.AUDITTIME,
+            a.CREATETIME,
+            a.UPDATETIME,
+            a.COMMITTIME,
+            a.LICENCENO,
+            a.LICENCESTARTDATE,
+            a.LICENCEENDDATE,
+            c.GLOBALID,
+            c.CELLPHONE,
+            c.DEALERID,
+            e.realname,
+            e.username,
+            (SELECT COUNT(*) FROM app_biz_shop_user_role WHERE UID=b.`UID`) AS shopNo,
+            (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=c.DEALERID) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = c.DEALERID AND `level`=2)  ) as proxyName,
+            (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) as proxyName1
         FROM
-        app_biz_shop a
+            app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
         LEFT JOIN app_au_user_admin d ON d.SID=a.ID
@@ -180,7 +236,7 @@
             AND (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')
         </if>
         <if test="globalID!=null and globalID!=''">
-            AND a.GLOBALID=#{globalID}
+            AND c.GLOBALID=#{globalID}
         </if>
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
