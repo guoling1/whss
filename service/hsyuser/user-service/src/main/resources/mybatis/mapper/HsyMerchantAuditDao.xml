@@ -684,6 +684,7 @@
     <!-- 店铺详情 -->
     <select id="getShopInfo" resultType="com.jkm.hsy.user.entity.ShopInfoResponse">
         SELECT
+            a.GLOBALID,
             a.SHORTNAME,
             a.CONTACTCELLPHONE,
             a.ADDRESS,

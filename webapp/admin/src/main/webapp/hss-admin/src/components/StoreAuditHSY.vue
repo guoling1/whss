@@ -223,6 +223,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="shortName" label="店铺名称"></el-table-column>
+              <el-table-column prop="globalID" label="店铺编号"></el-table-column>
               <el-table-column prop="districtCode" label="所在地"></el-table-column>
               <el-table-column prop="address" label="地址"></el-table-column>
               <el-table-column prop="contactCellphone" label="联系电话"></el-table-column>
