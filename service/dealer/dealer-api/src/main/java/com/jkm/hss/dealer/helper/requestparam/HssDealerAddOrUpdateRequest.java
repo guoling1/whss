@@ -72,6 +72,10 @@ public class HssDealerAddOrUpdateRequest {
          *金开门分润比例
          */
         private String bossDealerShareRate;
+        /**
+         *分公司分润比例
+         */
+        private String oemShareRate;
     }
 
 

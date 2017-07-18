@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.HsyRefundOrder;
 import com.jkm.hss.bill.entity.Order;
@@ -88,6 +89,16 @@ public interface HSYTradeService {
     String appRefund(String paramData, AppParam appParam);
 
     String appRefund1o6(String paramData, AppParam appParam);
+
+    /**
+     * pc收银退款
+     *
+     * @param orderId
+     * @param uid
+     * @param password
+     * @return
+     */
+    JSONObject pcAppRefund(long orderId, long uid, String password);
 
     /**
      * 退款实现

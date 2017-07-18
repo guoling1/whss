@@ -1,9 +1,12 @@
 package com.jkm.hsy.user.dao;
 
+import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,4 +37,36 @@ public interface HsyMembershipDao {
     public List<AppPolicyMembershipCard> findMemberCardByID(@Param("id") Long id);
     public Integer findMemberCardCountByMCID(@Param("mcid")Long mcid);
     public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid);
+
+    /**
+     * 会员列表
+     * @param request
+     * @return
+     */
+    List<MemberResponse> getMemberList(MemberRequest request);
+
+    /**
+     * 会员总数
+     * @param request
+     * @return
+     */
+    int getMemberListCount(MemberRequest request);
+
+    /**
+     * 会员详情
+     * @param request
+     * @return
+     */
+    MemberResponse getMemberDetails(MemberRequest request);
+    public Integer findMemberCardCascadeCountByUID(@Param("uid")Long uid, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+    public List<BasicChannel> findChannelAccountID(@Param("channelTypeSign")Integer channelTypeSign);
+    public List<AppBizShop> findSuitShopByMCID(@Param("mcid")Long mcid);
+    public List<AppPolicyMember> findMemberListByPage(Page<AppPolicyMember> entity);
+    public Integer findMemberListByPageCount(AppPolicyMember entity);
+    public List<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> entity);
+    public Integer findRechargeOrderListByPageCount(AppPolicyRechargeOrder entity);
+    public List<AppPolicyRechargeOrder> findRechargeOrderInfo(@Param("id")Long id);
+    public AppPolicyMemberStatistic findMemberConsumeStatistic(@Param("uid")Long uid, @Param("startTime") Date startTime,@Param("endTime") Date endTime);
+    public List<AppPolicyMembershipCard> findMemberCardAndStatistic(@Param("uid")Long uid);
+    public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
 }
