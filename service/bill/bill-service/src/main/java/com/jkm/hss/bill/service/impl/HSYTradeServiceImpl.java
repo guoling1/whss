@@ -1526,7 +1526,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                             new BigDecimal("0") : new BigDecimal(jsonObject.getString("avaWithdraw")).subtract(new BigDecimal(jsonObject.getString("fee")));
                     result.put("receiveAmount", receiveAmount);
                     result.put("withDrawOrderId",jsonObject.getString("withDrawOrderId"));
-                    jsonObject.put("isFirst",jsonObject.getString("isFirst"));
+                    result.put("isFirst",jsonObject.getString("isFirst"));
                 } else {
                     result.put("canWithdraw", EnumBoolean.FALSE.getCode());
                     result.put("phone", appAuUser.getCellphone());
