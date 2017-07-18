@@ -200,7 +200,7 @@
     </select>
 
     <select id="findMemberCardCountByMCID" resultType="java.lang.Integer">
-      select count(1) from app_policy_member where mcid=#{mcid}
+      select count(1) from app_policy_member where mcid=#{mcid} and status=1
     </select>
 
     <select id="findMemberCardCascadeCountByUID" resultType="java.lang.Integer">
