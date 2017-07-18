@@ -25,6 +25,8 @@ public class WithdrawOrderResponse {
 
     private String cardNo;
 
+    private String bankPic;
+
     private int status;
 
 }

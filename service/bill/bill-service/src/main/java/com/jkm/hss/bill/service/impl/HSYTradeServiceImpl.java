@@ -32,7 +32,9 @@ import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
@@ -119,6 +121,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
     @Autowired
     private HsyOrderDao hsyOrderDao;
+    @Autowired
+    private BankCardBinService bankCardBinService;
     /**
      * {@inheritDoc}
      *
@@ -1598,6 +1602,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             response.setStatus(order.getStatus());
             response.setOrderNo(order.getOrderNo());
             response.setPoundage(order.getPoundage().toString());
+            response.setBankPic(this.getBankPic(order.getTradeCardNo()));
             orderList.add(response);
         }
         pageModel.setCount(count);
@@ -1607,6 +1612,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         result.put("msg", "查询成功");
         return result.toJSONString();
     }
+
 
     /**
      * 处理提现结果
@@ -1775,5 +1781,81 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         }
         log.error("can not be here");
         return new Date();
+    }
+
+    private String getBankPic(String tradeCardNo) {
+        final String pri = "http://static.jinkaimen.cn/bank/";
+        final String las = ".png";
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(tradeCardNo);
+        if (!bankCardBinOptional.isPresent()){
+            return pri + "DEFAULT" + las;
+        }
+        String mid;
+        final String backCode = bankCardBinOptional.get().getShorthand();
+        switch (backCode){
+            case "ABC":
+                mid = "ABC";
+                break;
+            case "BANKCOMM":
+                mid = "BANKCOMM";
+                break;
+            case "BJBANK":
+                mid = "BJBANK";
+                break;
+            case "BJNC":
+                mid = "BJNC";
+                break;
+            case "BOC":
+                mid = "BOC";
+                break;
+            case "CCB":
+                mid = "CCB";
+                break;
+            case "CEB":
+                mid = "CEB";
+                break;
+            case "CGB":
+                mid = "CGB";
+                break;
+            case "CIB":
+                mid = "CIB";
+                break;
+            case "CITIC":
+                mid = "CITIC";
+                break;
+            case "CMB":
+                mid = "CMB";
+                break;
+            case "CMBC":
+                mid = "CMBC";
+                break;
+            case "DY":
+                mid = "DY";
+                break;
+            case "HXB":
+                mid = "HXB";
+                break;
+            case "ICBC":
+                mid = "ICBC";
+                break;
+            case "PINGAN":
+                mid = "PINGAN";
+                break;
+            case "PSBC":
+                mid = "PSBC";
+                break;
+            case "SHBANK":
+                mid = "SHBANK";
+                break;
+            case "SHNS":
+                mid = "SHNS";
+                break;
+            case "SPDB":
+                mid = "SPDB";
+                break;
+            default:
+                mid = "DEFAULT";
+        }
+        return pri + mid + las;
     }
 }
