@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 public class BankBranchRequest extends PageQueryParams {
     /**
+     *开户卡号
+     */
+    private String bankNo;
+    /**
      *开户行
      */
     private String bankName;
