@@ -3620,4 +3620,8 @@
     <select id="selectWithdrawOrdersByParam" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE payer = #{accountId} AND app_id = 'hsy' AND trade_type = 3 AND status in(5, 6, 10) ORDER BY create_time DESC limit #{firstIndex},#{pageSize}
     </select>
+    <select id="selectWithdrawingOrderByAccountId" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE payee = #{accountId} AND status  in(5,6) AND pay_channel_sign in(801,802)
+        AND refund_status = 0 AND create_time BETWEEN #{begin} AND #{end}
+    </select>
 </mapper>

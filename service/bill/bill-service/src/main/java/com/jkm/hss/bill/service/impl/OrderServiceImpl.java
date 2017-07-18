@@ -7,6 +7,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.*;
 import com.jkm.hss.account.entity.*;
@@ -33,7 +34,6 @@ import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryPayOrderByOrderNoRes
 import com.jkm.hss.bill.helper.responseparam.PaymentSdkQueryRefundOrderByOrderNoResponse;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -46,7 +46,6 @@ import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.*;
-import com.jkm.hsy.user.service.HsyShopService;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import com.jkm.hsy.user.service.UserWithdrawRateService;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +56,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -1420,11 +1418,19 @@ public class OrderServiceImpl implements OrderService {
         //查询商户当天的可以提现的订单 每次限制75个
         final List<Order> orderList =
                 this.selectOrderListByCount(account.getId(), 75, EnumOrderStatus.PAY_SUCCESS, DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+        //判断当天是否已经提现
+         List<Order> withdrawOrders =  this.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+        int isFirst = EnumBoolean.TRUE.getCode();
+        if (withdrawOrders.size() > 0){
+            isFirst = EnumBoolean.FALSE.getCode();
+        }
         //判断提现
         if(CollectionUtils.isEmpty(orderList)){
             final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("withDrawOrderId", 0);
             jsonObject.put("avaWithdraw",new BigDecimal("0"));
             jsonObject.put("fee",new BigDecimal("0"));
+            jsonObject.put("isFirst",isFirst);
             return jsonObject;
         }
         final BigDecimal wechatTradeRate =
@@ -1465,6 +1471,7 @@ public class OrderServiceImpl implements OrderService {
         //初始化提现单
         final long withDrawOrderId = this.initD0WithDrawOrder(jsonObject, sns.toString(), account, appBizCard);
         jsonObject.put("withDrawOrderId",withDrawOrderId);
+        jsonObject.put("isFirst",isFirst);
 
         return jsonObject;
     }
@@ -1655,6 +1662,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize) {
         return this.orderDao.selectWithdrawOrdersByParam(accountId, firstIndex, pageSize);
+    }
+
+    @Override
+    public List<Order> selectWithdrawingOrderByAccountId(long accountId, String payTime) {
+
+        return this.orderDao.selectWithdrawingOrderByAccountId(accountId, payTime + " 00:00:00", payTime + " 23:59:59");
     }
 
     @Override

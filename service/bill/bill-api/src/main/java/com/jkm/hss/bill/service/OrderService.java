@@ -708,6 +708,8 @@ public interface OrderService {
 
     List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize);
 
+    List<Order> selectWithdrawingOrderByAccountId(long id, String date);
+
     /**
      * 查询交易详情
      * @param orderRecord

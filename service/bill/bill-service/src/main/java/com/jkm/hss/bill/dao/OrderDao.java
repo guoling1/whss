@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.dao;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
@@ -686,4 +687,6 @@ public interface OrderDao {
     long selectWithdrawOrderCountByParam(long accountId);
 
     List<Order> selectWithdrawOrdersByParam(@Param("accountId") long accountId, @Param("firstIndex") int firstIndex, @Param("pageSize") int pageSize);
+
+    List<Order> selectWithdrawingOrderByAccountId(@Param("accountId") long accountId, @Param("begin") String begin, @Param("end") String end);
 }
