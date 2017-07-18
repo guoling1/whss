@@ -56,7 +56,7 @@
         class="com.jkm.chronos.task.RetrySplitProfitTask"
         description="定时重发分润失败消息任务"
         regCenter="regCenter"
-        cron="0 0/5 * * * ?"
+        cron="0 0/10 * * * ?"
         shardingTotalCount="1"
         failover="true"
         overwrite="true"
