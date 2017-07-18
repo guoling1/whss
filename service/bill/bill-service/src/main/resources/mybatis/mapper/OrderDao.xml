@@ -3614,4 +3614,10 @@
     <select id="selectOrderBySn" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE sn = #{sn}
     </select>
+    <select id="selectWithdrawOrderCountByParam" resultType="java.lang.Long">
+        SELECT count(*) FROM tb_order WHERE payer = #{accountId} AND app_id = 'hsy' AND trade_type = 3 AND status in(5, 6, 10)
+    </select>
+    <select id="selectWithdrawOrdersByParam" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE payer = #{accountId} AND app_id = 'hsy' AND trade_type = 3 AND status in(5, 6, 10) ORDER BY create_time DESC limit #{firstIndex},#{pageSize}
+    </select>
 </mapper>

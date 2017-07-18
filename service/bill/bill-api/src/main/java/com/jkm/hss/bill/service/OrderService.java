@@ -18,6 +18,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
+import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -678,7 +679,7 @@ public interface OrderService {
      * @param account
      * @return
      */
-    JSONObject d0WithDrawImpl(Account account, long userId);
+    JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo, AppBizCard appBizCard);
 
     /**
      * 确认提现
@@ -702,6 +703,10 @@ public interface OrderService {
     String getAmountCounts1(OrderTradeRequest req);
 
     void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus);
+
+    long selectWithdrawOrderCountByParam(long accountId);
+
+    List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize);
 
     /**
      * 查询交易详情

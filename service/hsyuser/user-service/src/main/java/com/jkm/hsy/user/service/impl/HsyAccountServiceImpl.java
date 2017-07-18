@@ -1,15 +1,11 @@
 package com.jkm.hsy.user.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
@@ -49,8 +45,6 @@ public class HsyAccountServiceImpl implements HsyAccountService {
     private SendMessageService sendMessageService;
     @Autowired
     private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
-    @Autowired
-    private OrderService orderService;
     /**
      * {@inheritDoc}
      *
@@ -84,7 +78,8 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             if (appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode())
                 if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
                         userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()) {
-                    JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId());
+                   // JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId());
+                    final JSONObject jsonObject = new JSONObject();
                     result.put("canWithdraw", EnumBoolean.TRUE.getCode());
                     result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
                     result.put("bankName", cardBank);
@@ -152,7 +147,7 @@ public class HsyAccountServiceImpl implements HsyAccountService {
     @Override
     public String withdraw(String dataParam, AppParam appParam) {
 
-        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        /*final JSONObject dataJo = JSONObject.parseObject(dataParam);
         final JSONObject result = new JSONObject();
         final long withDrawOrderId = dataJo.getLongValue(dataJo.getString("withDrawOrderId"));
         Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
@@ -163,7 +158,8 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("code", -1);
             result.put("msg", pair.getLeft());
         }
-        return  result.toString();
+        return  result.toString();*/
+        return  "";
     }
 
 

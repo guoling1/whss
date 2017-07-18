@@ -17,6 +17,7 @@ import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
+import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
@@ -43,10 +44,8 @@ import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizCard;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -116,6 +115,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HsyUserDao hsyUserDao;
     @Autowired
     private SettlementRecordService settlementRecordService;
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+    @Autowired
+    private HsyOrderDao hsyOrderDao;
     /**
      * {@inheritDoc}
      *
@@ -1450,6 +1453,133 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                     "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
 
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String getAccount(String dataParam, AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long accountId = dataJo.getLongValue("accountId");
+        final Optional<Account> accountOptional = this.accountService.getById(accountId);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
+        final AppBizShop priShop = this.hsyShopDao.findPrimaryAppBizShopByAccountID(accountId).get(0);
+        final AppBizCard appBizCard = new AppBizCard();
+        appBizCard.setSid(priShop.getId());
+        final AppBizCard card = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final String cardNO = card.getCardNO();
+        final String cardBank = card.getCardBank();
+        final UserCurrentChannelPolicy userCurrentChannelPolicy = this.userCurrentChannelPolicyService.selectByUserId(appAuUser.getId()).get();
+        if (accountOptional.isPresent()) {
+            final Account account = accountOptional.get();
+            result.put("accountId", account.getId());
+            result.put("totalAmount", account.getTotalAmount().toPlainString());
+            result.put("available", account.getAvailable().toPlainString());
+            result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+            result.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
+            if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode())
+                if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
+                        userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()) {
+                    JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(),card);
+                    result.put("canWithdraw", EnumBoolean.TRUE.getCode());
+                    result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
+                    result.put("bankName", cardBank);
+                    result.put("avaWithdraw", jsonObject.getString("avaWithdraw"));
+                    result.put("fee", jsonObject.getString("fee"));
+                    final BigDecimal receiveAmount = new BigDecimal(jsonObject.getString("avaWithdraw")).compareTo(new BigDecimal(jsonObject.getString("fee"))) == -1 ?
+                            new BigDecimal("0") : new BigDecimal(jsonObject.getString("avaWithdraw")).subtract(new BigDecimal(jsonObject.getString("fee")));
+                    result.put("receiveAmount", receiveAmount);
+                    result.put("withDrawOrderId",jsonObject.getString("withDrawOrderId"));
+                } else {
+                    result.put("canWithdraw", EnumBoolean.FALSE.getCode());
+                    result.put("phone", appAuUser.getCellphone());
+                }
+            else{
+                result.put("canWithdraw", EnumBoolean.FALSE.getCode());
+                result.put("phone", appAuUser.getCellphone());
+            }
+
+
+        }
+        return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String withdraw(String dataParam, AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long withDrawOrderId = dataJo.getLongValue("withDrawOrderId");
+        Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
+        if (pair.getLeft() == 1){
+            result.put("code", 1);
+            result.put("msg", pair.getRight());
+        }else {
+            result.put("code", -1);
+            result.put("msg", pair.getLeft());
+        }
+        return  result.toJSONString();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String withdrawOrderList(String dataParam, AppParam appParam) {
+
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long accountId = dataJo.getLongValue("accountId");
+        final int pageNo = dataJo.getIntValue("pageNo");
+        final int pageSize = dataJo.getIntValue("pageSize");
+        final PageModel<WithdrawOrderResponse> pageModel = new PageModel<>(pageNo,
+                pageSize);
+        final long count = this.orderService.selectWithdrawOrderCountByParam(accountId);
+        if (count == 0){
+            pageModel.setCount(0);
+            pageModel.setRecords(Collections.EMPTY_LIST);
+            result.put("code", 1);
+            result.put("pageModel", pageModel);
+            result.put("msg", "查询成功");
+            return result.toJSONString();
+        }
+        final List<Order> orders = this.orderService.selectWithdrawOrdersByParam(accountId, pageModel.getFirstIndex(), pageModel.getPageSize());
+        final List<WithdrawOrderResponse> orderList = new ArrayList<>();
+        for (Order order : orders){
+            final WithdrawOrderResponse response = new WithdrawOrderResponse();
+            response.setAvaWithdraw(order.getRealPayAmount().toString());
+            response.setReceiveAmount(order.getRealPayAmount().subtract(order.getPoundage()).toString());
+            response.setBeginTime(DateFormatUtil.format(order.getCreateTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            response.setEndTime(order.getPaySuccessTime() == null ? "" : DateFormatUtil.format(order.getPaySuccessTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            response.setBankName(order.getBankName());
+            response.setCardNo(order.getTradeCardNo().substring(order.getTradeCardNo().length() - 4, order.getTradeCardNo().length()));
+            response.setStatus(order.getStatus());
+            response.setOrderNo(order.getOrderNo());
+            response.setPoundage(order.getPoundage().toString());
+            orderList.add(response);
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(orderList);
+        result.put("code", 1);
+        result.put("pageModel", pageModel);
+        result.put("msg", "查询成功");
+        return result.toJSONString();
     }
 
     /**

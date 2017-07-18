@@ -1416,7 +1416,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional
     @Override
-    public JSONObject d0WithDrawImpl(Account account, long userId) {
+    public JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo,  AppBizCard appBizCard) {
         //查询商户当天的可以提现的订单 每次限制75个
         final List<Order> orderList =
                 this.selectOrderListByCount(account.getId(), 75, EnumOrderStatus.PAY_SUCCESS, DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
@@ -1461,9 +1461,11 @@ public class OrderServiceImpl implements OrderService {
         jsonObject.put("avaWithdraw",avaWithdraw);
         jsonObject.put("fee",fee);
         jsonObject.put("tradeAmount", tradeAmount);
+        jsonObject.put("merchantNo", merchantNo);
         //初始化提现单
-        final long withDrawOrderId = this.initD0WithDrawOrder(jsonObject, sns.toString(), account);
+        final long withDrawOrderId = this.initD0WithDrawOrder(jsonObject, sns.toString(), account, appBizCard);
         jsonObject.put("withDrawOrderId",withDrawOrderId);
+
         return jsonObject;
     }
 
@@ -1477,8 +1479,6 @@ public class OrderServiceImpl implements OrderService {
     public Pair<Integer, String> confirmWithdraw(long withDrawOrderId) {
 
         final Order playMoneyOrder = this.orderDao.selectByIdWithLock(withDrawOrderId);
-        final Optional<Account> accountOptional = this.accountService.getById(playMoneyOrder.getPayer());
-        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(playMoneyOrder.getPayer()).get(0);
         final AppBizShop appBizShop =
                 this.hsyShopDao.findPrimaryAppBizShopByAccountID(playMoneyOrder.getPayer()).get(0);
         final AppBizCard appCard = new AppBizCard();
@@ -1503,6 +1503,7 @@ public class OrderServiceImpl implements OrderService {
             paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
             paymentSdkDaiFuRequest.setPayOrderSn("");
             paymentSdkDaiFuRequest.setOrders(playMoneyOrder.getGoodsDescribe());
+            paymentSdkDaiFuRequest.setMerchantNo(playMoneyOrder.getMerchantNo());
             //请求网关
             PaymentSdkDaiFuResponse response = null;
             try {
@@ -1582,10 +1583,11 @@ public class OrderServiceImpl implements OrderService {
         return Pair.of(-1, "提现失败");
     }
 
-    private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account) {
+    private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account, AppBizCard appBizCard) {
         final String orders = sns.substring(0, sns.lastIndexOf(",") - 1);
         final Order playMoneyOrder = new Order();
         playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setAppId(EnumAppType.HSY.getId());
         playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
         playMoneyOrder.setTradeAmount(new BigDecimal(jsonObject.getString("tradeAmount")));
         playMoneyOrder.setRealPayAmount(new BigDecimal(jsonObject.getString("avaWithdraw")));
@@ -1594,16 +1596,20 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(EnumAppType.HSY.getId());
+        playMoneyOrder.setMerchantNo(jsonObject.getString("merchantNo"));
+        playMoneyOrder.setBankName(appBizCard.getCardBank());
+        playMoneyOrder.setTradeCardNo(appBizCard.getCardNO());
         //手续费
         playMoneyOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
         playMoneyOrder.setGoodsName(account.getUserName());
         playMoneyOrder.setGoodsDescribe(orders);
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         playMoneyOrder.setSettleTime(new Date());
-        playMoneyOrder.setSettleType(EnumBalanceTimeType.D0.getType());
-        playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.getId());
+//        playMoneyOrder.setSettleType(EnumBalanceTimeType.D0.g'etType());
+        playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.  getId());
         playMoneyOrder.setRemark("");
-        return this.add(playMoneyOrder);
+        this.add(playMoneyOrder);
+        return playMoneyOrder.getId();
     }
 
     @Override
@@ -1639,6 +1645,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus) {
          this.orderDao.markOrder2SettleFail(settlementRecordId, settleStatus, oriSettleStatus);
+    }
+
+    @Override
+    public long selectWithdrawOrderCountByParam(long accountId) {
+        return this.orderDao.selectWithdrawOrderCountByParam(accountId);
+    }
+
+    @Override
+    public List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize) {
+        return this.orderDao.selectWithdrawOrdersByParam(accountId, firstIndex, pageSize);
     }
 
     @Override

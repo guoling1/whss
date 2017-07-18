@@ -241,5 +241,30 @@ public interface HSYTradeService {
      */
     void withdrawSplitAccount(Order order, AppBizShop shop);
 
+    /**
+     * 获取账户信息
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String getAccount(String dataParam, AppParam appParam);
 
+    /**
+     * 提现
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String withdraw(String dataParam, AppParam appParam);
+
+    /**
+     *  提现记录
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String withdrawOrderList(String dataParam, AppParam appParam);
 }

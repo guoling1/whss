@@ -294,14 +294,6 @@
             <groupId>com.jkm</groupId>
             <artifactId>hss-push-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
-            <artifactId>hss-bill-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
-            <artifactId>hss-bill-service</artifactId>
-        </dependency>
         <!-- mybatis release___________________________end -->
     </dependencies>
 </project>

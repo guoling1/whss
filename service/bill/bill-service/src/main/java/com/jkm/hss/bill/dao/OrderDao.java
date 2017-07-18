@@ -682,4 +682,8 @@ public interface OrderDao {
     Order selectOrderBySn(String sn);
 
     void markOrder2SettleFail(@Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus, @Param("oriSettleStatus") int oriSettleStatus);
+
+    long selectWithdrawOrderCountByParam(long accountId);
+
+    List<Order> selectWithdrawOrdersByParam(@Param("accountId") long accountId, @Param("firstIndex") int firstIndex, @Param("pageSize") int pageSize);
 }
