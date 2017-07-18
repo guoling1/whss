@@ -1191,7 +1191,20 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/districtSelect", method = RequestMethod.GET)
-    public String districtSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "bankName", required = false) String bankName) throws IOException {
+    public String districtSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                                 @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                                 @RequestParam(value = "provinceName", required = false) String provinceName,
+                                 @RequestParam(value = "cityCode", required = false) String cityCode,
+                                 @RequestParam(value = "cityName", required = false) String cityName,
+                                 @RequestParam(value = "countyCode", required = false) String countyCode,
+                                 @RequestParam(value = "countyName", required = false) String countyName,
+                                 @RequestParam(value = "bankName", required = false) String bankName) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
         model.addAttribute("bankName", bankName);
         return  "/district";
     }
@@ -1206,8 +1219,20 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/branchSelect", method = RequestMethod.GET)
-    public String branchSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "bankName", required = false) String bankName,@RequestParam(value = "districtCode", required = false) String districtCode) throws IOException {
-        model.addAttribute("districtCode", districtCode);
+    public String branchSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                               @RequestParam(value = "bankName", required = false) String bankName,
+                               @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                               @RequestParam(value = "provinceName", required = false) String provinceName,
+                               @RequestParam(value = "cityCode", required = false) String cityCode,
+                               @RequestParam(value = "cityName", required = false) String cityName,
+                               @RequestParam(value = "countyCode", required = false) String countyCode,
+                               @RequestParam(value = "countyName", required = false) String countyName) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
         model.addAttribute("bankName", bankName);
         return  "/branch";
     }
@@ -1216,13 +1241,14 @@ public class LoginController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param source
+     * @param countyCode
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/addBranch", method = RequestMethod.GET)
-    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "source", required = false) Integer source) throws IOException {
-        model.addAttribute("source", source);
+    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "bankName", required = false) String bankName,@RequestParam(value = "countyCode", required = false) String countyCode) throws IOException {
+        model.addAttribute("bankName", bankName);
+        model.addAttribute("countyCode", countyCode);
         return  "/addBranch";
     }
 }
