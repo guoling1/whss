@@ -1537,6 +1537,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
 
         }
+        log.info("请求参数:" + accountId + "结果:" + result.toJSONString());
         return result.toJSONString();
     }
 
