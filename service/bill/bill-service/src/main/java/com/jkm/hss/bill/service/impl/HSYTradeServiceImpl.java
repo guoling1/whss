@@ -1559,7 +1559,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("msg", pair.getRight());
         }else {
             result.put("code", -1);
-            result.put("msg", pair.getLeft());
+            result.put("msg", pair.getRight());
         }
         return  result.toJSONString();
     }
