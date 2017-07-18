@@ -222,10 +222,6 @@ public class AdminController extends BaseController {
             if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "手机号格式错误");
             }
-//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
-//            if (dealerOptional.isPresent()) {
-//                return CommonResponse.simpleResponse(-1, "手机号已经注册");
-//            }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getName())) {
                 return CommonResponse.simpleResponse(-1, "名称不能为空");
             }

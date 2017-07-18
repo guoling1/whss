@@ -340,20 +340,34 @@
     <update id="changeSettlementCard">
         UPDATE app_biz_card
         <set>
-            <if test="cardNo != null">
+            <if test="cardNo != null and cardNo != ''">
                 CARDNO = #{cardNo},
             </if>
-            <if test="bankName != null">
+            <if test="bankName != null and bankName != ''">
                 CARDBANK = #{bankName},
             </if>
-            <if test="districtCode != null">
+            <if test="districtCode != null and districtCode != ''">
                 BRANCHDISTRICTCODE = #{districtCode},
             </if>
-            <if test="bankAddress != null">
+            <if test="bankAddress != null and bankAddress != ''">
                 BANKADDRESS = #{bankAddress},
+            </if>
+
+            <if test="branchCode != null and branchCode != ''">
+                BRANCHCODE = #{branchCode}
             </if>
         </set>
         WHERE SID = #{id}
+    </update>
+
+    <update id="changeStatus">
+        UPDATE app_biz_shop
+        <set>
+            <if test="isPublic != null and isPublic != ''">
+                ISPUBLIC = #{isPublic}
+            </if>
+        </set>
+        WHERE ID = #{id}
     </update>
 
 </mapper>

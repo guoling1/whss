@@ -16,6 +16,7 @@ import first_dealer_list from './components/first_dealer_list.vue'
 import dealer_add from './components/dealer_add.vue'
 import first_dealer_add from './components/first_dealer_add.vue'
 import dealer_modify from './components/dealer_modify.vue'
+import product_add_first from './components/product_add_first.vue'
 import product_add from './components/product_add.vue'
 import product_add_hsy from './components/product_add_hsy.vue'
 import distribution_qrcode from './components/distribution_qrcode.vue'
@@ -79,6 +80,7 @@ const routes = [
       {path: 'dealer_add', name: "dealer_add", component: dealer_add},
       {path: 'first_dealer_add', name: "first_dealer_add", component: first_dealer_add},
       {path: 'dealer_modify', name: "dealer_modify", component: dealer_modify},
+      {path: 'product_add_first', name: "product_add_first", component: product_add_first},
       {path: 'product_add', name: "product_add", component: product_add},
       {path: 'product_add_hsy', name: "product_add_hsy", component: product_add_hsy},
       {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},

@@ -46,6 +46,16 @@ public class ApplicationConsts {
      */
     public static final String MERCHANT_COOKIE_KEY = "_t_merchant_info_010";
 
+    /**
+     * app用户pc登录
+     */
+    public static final String REQUEST_APP_USER_PC_DATA_BIND = "REQUEST_APP_USER_PC_DATA_BIND";
+
+    /**
+     * app用户pc登录cookie
+     */
+    public static final String APP_USER_PC_COOKIE_KEY = "APP_USER_PC_COOKIE_KEY";
+
 
 
     /**

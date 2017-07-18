@@ -122,7 +122,7 @@ public interface MerchantInfoService {
     /**
      * 根据手机号查询
      */
-    Optional<MerchantInfo> selectByMobile(String mobile);
+    List<MerchantInfo> selectByMobile(String mobile);
 
     /**
      * 根据手机号和代理商编号查询

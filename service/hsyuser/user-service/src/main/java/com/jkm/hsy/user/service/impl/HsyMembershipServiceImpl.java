@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -834,6 +835,39 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             member.setDiscountFloat(discountFloat);
         }
         return list;
+    }
+
+    @Override
+    public List<MemberResponse> getMemberList(MemberRequest request) {
+        List<MemberResponse> list = hsyMembershipDao.getMemberList(request);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                list.get(i).setCreateTimes(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(list.get(i).getCreateTime()));
+                if (list.get(i).getUserID()!=null&&!"".equals(list.get(i).getUserID())){
+                    list.get(i).setUserID("已关联");
+                }else {
+                    list.get(i).setUserID("未关联");
+                }
+                if (list.get(i).getOpenID()!=null&&!"".equals(list.get(i).getOpenID())){
+                    list.get(i).setOpenID("已关联");
+                }else {
+                    list.get(i).setOpenID("未关联");
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int getMemberListCount(MemberRequest request) {
+        return hsyMembershipDao.getMemberListCount(request);
+    }
+
+    @Override
+    public MemberResponse getMemberDetails(MemberRequest request) {
+        return hsyMembershipDao.getMemberDetails(request);
     }
 
 }
