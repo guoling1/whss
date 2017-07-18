@@ -53,14 +53,14 @@
                    maxRetries="${maxRetries}"/>
 
     <job:bean id="retrySplitProfitTask"
-        class="com.jkm.chronos.task.RetrySplitProfitTask"
-        description="定时重发分润失败消息任务"
-        regCenter="regCenter"
-        cron="0 0/10 * * * ?"
-        shardingTotalCount="1"
-        failover="true"
-        overwrite="true"
-        monitorExecution="true"/>
+              class="com.jkm.chronos.task.RetrySplitProfitTask"
+              description="定时重发分润失败消息任务"
+              regCenter="regCenter"
+              cron="0 0/10 * * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
 
     <job:bean id="sendWeekEmailTask"
               class="com.jkm.chronos.task.SendWeekEmailTask"
@@ -98,6 +98,16 @@
               description="易联快捷T1提现任务"
               regCenter="regCenter"
               cron="0/5 * * * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+    <job:bean id="payQueryRefundAcceptRefundOrderTask"
+              class="com.jkm.chronos.task.PayQueryRefundAcceptRefundOrderTask"
+              description="处理退款已受理的退款流水，查询是否到账任务"
+              regCenter="regCenter"
+              cron="0 0 0/2 * * ?"
               shardingTotalCount="1"
               failover="true"
               overwrite="true"

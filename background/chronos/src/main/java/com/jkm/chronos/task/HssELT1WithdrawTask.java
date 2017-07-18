@@ -15,14 +15,19 @@ import java.util.ArrayList;
 @Slf4j
 @Component
 public class HssELT1WithdrawTask extends AbstractTask {
+
+    public HssELT1WithdrawTask() {
+        setName("易联T1提现任务");
+    }
+
     @Autowired
     private OrderService orderService;
 
     @Override
     protected void run() {
-        final ArrayList<Integer> channelList = new ArrayList<>();
-        channelList.add(EnumPayChannelSign.EL_UNIONPAY.getId());
-        this.orderService.handleT1UnSettlePayOrder(channelList);
+//        final ArrayList<Integer> channelList = new ArrayList<>();
+//        channelList.add(EnumPayChannelSign.EL_UNIONPAY.getId());
+//        this.orderService.handleT1UnSettlePayOrder(channelList);
     }
 
     /**
@@ -31,6 +36,6 @@ public class HssELT1WithdrawTask extends AbstractTask {
     @Override
     public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
         super.handleJobExecutionException(jobExecutionException);
-        log.error("重发分润任务执行失败:" + jobExecutionException.getMessage());
+        log.error("易联T1提现任务执行失败:" + jobExecutionException.getMessage());
     }
 }

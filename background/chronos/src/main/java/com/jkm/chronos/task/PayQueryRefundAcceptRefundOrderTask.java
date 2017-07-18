@@ -1,33 +1,28 @@
 package com.jkm.chronos.task;
 
-import com.jkm.hss.bill.service.OrderService;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 /**
  * Created by yulong.zhang on 2017/7/18.
  */
 @Slf4j
 @Component
-public class HssMBT1WithdrawTask extends AbstractTask {
+public class PayQueryRefundAcceptRefundOrderTask extends AbstractTask {
 
-    public HssMBT1WithdrawTask() {
-        setName("魔宝T1提现任务");
+    public PayQueryRefundAcceptRefundOrderTask() {
+        setName("处理退款已受理的退款流水，查询是否到账任务");
     }
 
     @Autowired
-    private OrderService orderService;
+    private HttpClientFacade httpClientFacade;
 
     @Override
     protected void run() {
-//        final ArrayList<Integer> channelList = new ArrayList<>();
-//        channelList.add(EnumPayChannelSign.MB_UNIONPAY.getId());
-//        this.orderService.handleT1UnSettlePayOrder(channelList);
+        this.httpClientFacade.get("http://pay.qianbaojiajia.com/chronos/queryRefundAcceptRefundOrder");
     }
 
     /**
@@ -36,6 +31,6 @@ public class HssMBT1WithdrawTask extends AbstractTask {
     @Override
     public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
         super.handleJobExecutionException(jobExecutionException);
-        log.error("魔宝T1提现任务执行失败:" + jobExecutionException.getMessage());
+        log.error("处理退款已受理的退款流水，查询是否到账任务执行失败:" + jobExecutionException.getMessage());
     }
 }
