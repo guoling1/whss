@@ -71,7 +71,7 @@ public class V1o7BizMapper {
         /**交易记录-version1.5*/
         bizMapper.put("HSY001046", new String[]{"HsyOrderService", "orderList"});
         /**创建会员卡*/
-        bizMapper.put("HSY001047", new String[]{"hsyMembershipService", "insertMemshipCard"});
+        bizMapper.put("HSY001047", new String[]{"hsyMembershipService", "insertMembershipCard"});
         /**刷新登录*/
         bizMapper.put("HSY001048", new String[]{"hsyUserService","refreshlogin","刷新登录"});
         /**好收银店铺对账邮件保存*/
@@ -79,15 +79,15 @@ public class V1o7BizMapper {
         /**首页广告*/
         bizMapper.put("HSY001050", new String[]{"AdvertisementService","getvalidList","首页广告"});
         /**查询会员卡*/
-        bizMapper.put("HSY001051", new String[]{"hsyMembershipService","findMemshipCards"});
+        bizMapper.put("HSY001051", new String[]{"hsyMembershipService","findMembershipCards"});
         /**查询会员卡开卡二维码*/
         bizMapper.put("HSY001052", new String[]{"hsyMembershipService","findMemberQr"});
         /**查询会员卡详情*/
-        bizMapper.put("HSY001053", new String[]{"hsyMembershipService","findMemshipCardsInfo"});
+        bizMapper.put("HSY001053", new String[]{"hsyMembershipService","findMembershipCardsInfo"});
         /**停止(启用)开通会员卡*/
-        bizMapper.put("HSY001054", new String[]{"hsyMembershipService","updateMemshipCardsStatus"});
+        bizMapper.put("HSY001054", new String[]{"hsyMembershipService","updateMembershipCardsStatus"});
         /**修改会员卡*/
-        bizMapper.put("HSY001055", new String[]{"hsyMembershipService","updateMemshipCard"});
+        bizMapper.put("HSY001055", new String[]{"hsyMembershipService","updateMembershipCard"});
         /**更改协议查看状态*/
         bizMapper.put("HSY001056", new String[]{"hsyUserService","updateProtocolSeenStatus"});
         /**主扫创建订单*/
@@ -107,6 +107,20 @@ public class V1o7BizMapper {
         bizMapper.put("HSY001064", new String[]{"hsyUserService","insertAndSendVoiceVerificationCode"});
         /**开启停用提示音*/
         bizMapper.put("HSY001065", new String[]{"hsyUserService","updateIsAvoidingTone"});
+        /**查找会员列表*/
+        bizMapper.put("HSY001066", new String[]{"hsyMembershipService","findMemberList"});
+        /**查找会员详情*/
+        bizMapper.put("HSY001067", new String[]{"hsyMembershipService","findMemberInfo"});
+        /**查找消费列表*/
+        bizMapper.put("HSY001068", new String[]{"hsyOrderScanService","findConsumeOrderList"});
+        /**查找消费具体信息*/
+        bizMapper.put("HSY001069", new String[]{"hsyOrderScanService","findConsumeOrderInfo"});
+        /**查找充值记录*/
+        bizMapper.put("HSY001070", new String[]{"hsyMembershipService","findRechargeOrderList"});
+        /**查找充值记录详情*/
+        bizMapper.put("HSY001071", new String[]{"hsyMembershipService","findRechargeOrderInfo"});
+        /**查找统计值*/
+        bizMapper.put("HSY001072", new String[]{"hsyMembershipService","findMemberStatistic"});
 
     }
 }

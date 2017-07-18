@@ -1,10 +1,10 @@
 package com.jkm.hsy.user.service;
 
+import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,12 +12,17 @@ import java.util.List;
  */
 public interface HsyMembershipService {
     /**app*/
-    public String insertMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String findMemshipCards(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String insertMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMembershipCards(String dataParam, AppParam appParam)throws ApiHandleException;
     public String findMemberQr(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String findMemshipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String updateMemshipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException;
-    public String updateMemshipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMembershipCardsInfo(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String updateMembershipCardsStatus(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String updateMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMemberList(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMemberInfo(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findRechargeOrderList(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findRechargeOrderInfo(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findMemberStatistic(String dataParam, AppParam appParam)throws ApiHandleException;
     /**web*/
     public AppPolicyConsumer findConsumerByOpenID(String openID);
     public AppPolicyConsumer findConsumerByUserID(String userID);
@@ -32,4 +37,28 @@ public interface HsyMembershipService {
     public AppPolicyMember findMemberInfoByID(Long mid);
     public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember, String type,String source,BigDecimal amount);
     public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID);
+
+    /**
+     * 会员列表
+     * @param request
+     * @return
+     */
+    List<MemberResponse> getMemberList(MemberRequest request);
+
+    /**
+     * 会员总数
+     * @param request
+     * @return
+     */
+    int getMemberListCount(MemberRequest request);
+
+    /**
+     * 会员详情
+     * @param request
+     * @return
+     */
+    MemberResponse getMemberDetails(MemberRequest request);
+    public List<AppBizShop> findSuitShopByMCID(Long mcid);
+    public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
+    public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
 }

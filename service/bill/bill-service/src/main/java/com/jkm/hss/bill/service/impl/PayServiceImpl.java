@@ -771,12 +771,14 @@ public class PayServiceImpl implements PayService {
         final Triple<Long, BigDecimal, String> secondMoneyTriple = promoteShallMap.get("secondMoney");
         final Triple<Long, BigDecimal, String> directMoneyTriple = promoteShallMap.get("directMoney");
         final Triple<Long, BigDecimal, String> inDirectMoneyTriple = promoteShallMap.get("inDirectMoney");
+        final Triple<Long, BigDecimal, String> oemMoneyTriple = promoteShallMap.get("oemMoney");
         final BigDecimal companyMoney = null == companyMoneyTriple ? new BigDecimal("0.00") : companyMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
         final BigDecimal directMoney = null == directMoneyTriple ? new BigDecimal("0.00") : directMoneyTriple.getMiddle();
         final BigDecimal inDirectMoney = null == inDirectMoneyTriple ? new BigDecimal("0.00") : inDirectMoneyTriple.getMiddle();
-        Preconditions.checkState(order.getRealPayAmount().compareTo(companyMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney)) >= 0);
+        final BigDecimal oemMoney = null == oemMoneyTriple ? new BigDecimal("0.00") : oemMoneyTriple.getMiddle();
+        Preconditions.checkState(order.getRealPayAmount().compareTo(companyMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney).add(oemMoney)) >= 0);
         //手续费账户结算
         if (null != companyMoneyTriple) {
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
@@ -787,6 +789,44 @@ public class PayServiceImpl implements PayService {
             this.accountService.increaseAvailableAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(jkmAccount.getId(), order.getOrderNo(), companyMoneyTriple.getMiddle(),
                     "商户升级", EnumAccountFlowType.INCREASE);
+        }
+        //oem
+        if (null != oemMoneyTriple) {
+            final Dealer dealer = this.dealerService.getByAccountId(oemMoneyTriple.getLeft()).get();
+            this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
+                    order.getTradeAmount(), order.getRealPayAmount(), oemMoneyTriple, dealer.getProxyName(),
+                    "商户升级-反润", EnumSplitAccountUserType.BRANCH_COMPANY.getId());
+            final Account account = this.accountService.getByIdWithLock(oemMoneyTriple.getLeft()).get();
+            this.accountService.increaseTotalAmount(account.getId(), oemMoneyTriple.getMiddle());
+            this.accountService.increaseSettleAmount(account.getId(), oemMoneyTriple.getMiddle());
+            final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), oemMoneyTriple.getMiddle(),
+                    "商户升级-反润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.BRANCH_COMPANY.getId());
+
+            //生成结算单
+            final SettlementRecord settlementRecord = new SettlementRecord();
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.BRANCH_COMPANY.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
+            settlementRecord.setAccountId(account.getId());
+            settlementRecord.setUserNo(dealer.getMarkCode());
+            settlementRecord.setUserName(dealer.getProxyName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.BRANCH_COMPANY.getId());
+            settlementRecord.setAppId(EnumAppType.HSS.getId());
+            settlementRecord.setSettleDate(order.getSettleTime());
+            settlementRecord.setTradeNumber(1);
+            settlementRecord.setSettleAmount(oemMoneyTriple.getMiddle());
+            settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_ACCOUNT.getId());
+            settlementRecord.setSettleStatus(EnumSettleStatus.SETTLED.getId());
+            final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
+            this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowIncreaseId, settlementRecordId);
+
+            //待结算--可用余额
+            this.accountService.increaseAvailableAmount(account.getId(), oemMoneyTriple.getMiddle());
+            this.accountService.decreaseSettleAmount(account.getId(), oemMoneyTriple.getMiddle());
+            final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), oemMoneyTriple.getMiddle(),
+                    "商户升级-反润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.BRANCH_COMPANY.getId());
+            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), oemMoneyTriple.getMiddle(),
+                    "商户升级-反润", EnumAccountFlowType.INCREASE);
+            this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, settlementRecordId);
+
         }
         //一级代理商利润--到结算--可用余额
         if (null != firstMoneyTriple) {

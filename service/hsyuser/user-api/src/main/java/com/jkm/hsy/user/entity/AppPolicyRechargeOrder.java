@@ -20,6 +20,9 @@ public class AppPolicyRechargeOrder {
     private String ouid;//微信支付宝ID
     private Long memberID;//会员id
     private Long memberAccountID;//会员账户id
+    private Long cid;//消费者ID
+    private Long mcid;//卡ID
+    private Long uid;//主店ID
     private Long merchantReceiveAccountID;//商户收款账户id
     private String goodsName;//商品名称
     private String goodsDescribe;//商品描述
@@ -30,8 +33,12 @@ public class AppPolicyRechargeOrder {
     private Date paySuccessTime;//支付完成时间
     private Integer status;//状态 0待充值 1充值成功 2充值失败
     private Integer type;//类型 1开卡充值 2开卡送 3 充值 4充值送
+    private String source;//来源wechat alipay
     private Date createTime;
     private Date updateTime;
+
+    private Integer currentPage;
+    private String typeName;//类型名称
 
     public Long getId() {
         return id;
@@ -103,6 +110,14 @@ public class AppPolicyRechargeOrder {
 
     public void setMemberAccountID(Long memberAccountID) {
         this.memberAccountID = memberAccountID;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public Long getMerchantReceiveAccountID() {
@@ -215,5 +230,45 @@ public class AppPolicyRechargeOrder {
 
     public void setOuid(String ouid) {
         this.ouid = ouid;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
+    }
+
+    public Long getMcid() {
+        return mcid;
+    }
+
+    public void setMcid(Long mcid) {
+        this.mcid = mcid;
+    }
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

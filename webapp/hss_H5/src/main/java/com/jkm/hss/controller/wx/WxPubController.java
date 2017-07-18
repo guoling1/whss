@@ -8,6 +8,7 @@ import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -336,15 +337,19 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
         long oemId = 0;
+        final String mobile = codeRequest.getMobile();
         if(codeRequest.getOemNo()!=null&&!"".equals(codeRequest.getOemNo())){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(codeRequest.getOemNo());
             if(!oemInfoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+            if(merchantInfoList.size()>0){
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+            }
         }
-
-        final String mobile = codeRequest.getMobile();
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
         }
@@ -566,7 +571,6 @@ public class WxPubController extends BaseController {
         if(!ui.isPresent()){//根据openId找不到商户
             //②根据mobile判断有没有用户
             Optional<MerchantInfo> merchantInfoOptional1 = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
-//            Optional<UserInfo> uoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
             if(merchantInfoOptional1.isPresent()){//有
                 return CommonResponse.simpleResponse(2, "该商户已注册，请直接登录");
             }else{//没有，走注册
@@ -591,12 +595,9 @@ public class WxPubController extends BaseController {
                     mi.setLevel(EnumUpGradeType.COMMON.getId());
                     mi.setHierarchy(0);
                     mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
-                    if(oemId>0){
-                        mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
-                    }
                     mi.setOemId(oemId);
                     //判断是否能升级
-                    if(mi.getFirstDealerId()>0&&oemId==0){
+                    if(mi.getFirstDealerId()>0){
                         Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
                         if(dealerOptional.isPresent()){
                             int recommendBtn = dealerOptional.get().getRecommendBtn();
@@ -954,6 +955,18 @@ public class WxPubController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
+            if(merchantInfoList.size()>0){
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()>0){
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if((WxConstants.APP_ID).equals(oemInfoOptional1.get().getAppId())){
+                            oemId = merchantInfoList.get(i).getOemId();
+                        }
+                    }
+                }
+            }
         }
         if (StringUtils.isBlank(directLoginRequest.getMobile())) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -1460,10 +1473,14 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
+        if(checkMerchantInfoRequest.getChannelTypeSign()==EnumPayChannelSign.MB_UNIONPAY_DO.getId()){
+            boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
+            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在09:00至22:25使用");
+        }
         final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
-//        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
-//            return CommonResponse.simpleResponse(-3, "支行信息不完善");
-//        }
+        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
+            return CommonResponse.simpleResponse(-3, "支行信息不完善");
+        }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
         merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());
@@ -1591,7 +1608,15 @@ public class WxPubController extends BaseController {
         toUpgradeResponse.setMerchantId(merchantInfo.get().getId());
         toUpgradeResponse.setCurrentLevel(merchantInfo.get().getLevel());
         toUpgradeResponse.setUpgradeRules(list);
-        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        String oemNo = "";
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+        if(!oemInfoOptional.isPresent()&&merchantInfo.get().getOemId()>0){
+            return CommonResponse.simpleResponse(-1, "分公司信息配置有误");
+        }
+        if(oemInfoOptional.isPresent()){
+            oemNo = oemInfoOptional.get().getOemNo();
+        }
+        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", toUpgradeResponse);
     }
 }

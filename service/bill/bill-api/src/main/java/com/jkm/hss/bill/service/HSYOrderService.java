@@ -2,8 +2,8 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hsy.user.entity.AppParam;
-import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -67,6 +67,36 @@ public interface HSYOrderService {
     Optional<HsyOrder> selectByOrderId(long orderId);
 
     /**
+     * 订单列表-个数
+     *
+     * @param shopId
+     * @param paymentChannels
+     * @param merchantNo
+     * @param tradeOrderNo
+     * @param selectAll
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    long getOrderCountByParam(long shopId, String merchantNo, String tradeOrderNo, int selectAll, List<Integer> paymentChannels,
+                                 Date startTime, Date endTime);
+
+    /**
+     * 订单列表-记录
+     *
+     * @param shopId
+     * @param merchantNo
+     * @param tradeOrderNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<HsyOrder> getOrdersByParam(long shopId, String merchantNo, String tradeOrderNo, int selectAll, List<Integer> paymentChannels,
+                                       Date startTime, Date endTime, int offset, int count);
+
+    /**
      * 订单列表及统计
      *
      * @param dataParam
@@ -92,4 +122,14 @@ public interface HSYOrderService {
      * @return
      */
     List<HsyOrder> getByMerchantNoAndTime(String merchantNo, Date startTime, Date endTime);
+
+    /**
+     * pc统计
+     *
+     * @param shopId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<PcStatisticsOrder> pcStatisticsOrder(long shopId, Date startTime, Date endTime);
 }
