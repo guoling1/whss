@@ -83,4 +83,24 @@
               overwrite="true"
               monitorExecution="true"/>
 
+    <job:bean id="hssMBT1WithdrawTask"
+              class="com.jkm.chronos.task.HssMBT1WithdrawTask"
+              description="魔宝快捷T1提现任务"
+              regCenter="regCenter"
+              cron="0/5 * * * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+    <job:bean id="hssELT1WithdrawTask"
+              class="com.jkm.chronos.task.HssELT1WithdrawTask"
+              description="易联快捷T1提现任务"
+              regCenter="regCenter"
+              cron="0/5 * * * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
 </beans>
