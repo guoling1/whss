@@ -30,7 +30,10 @@
             </div>
         </div>--%>
     </div>
-    <div></div>
+    <div class="toWrite" style="display: none;" id="toWrite">
+        <p>没有搜索到开户行结果？点击下方手动输入</p>
+        <a href="/sqb/addBranch" class="weui-btn weui-btn_primary">添加开户行</a>
+    </div>
 </div>
 </body>
 <script>

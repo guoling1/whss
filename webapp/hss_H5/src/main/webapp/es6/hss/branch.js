@@ -62,32 +62,37 @@ let searchFun = function (currentPage) {
     }, function (data) {
         console.log(data)
         data = JSON.parse(data)
-        for (let i = 0; i < data.result.records.length; i++) {
-            let weuiCell = document.createElement('div');
-            weuiCell.className = 'weui-cell';
-            let cellBd = document.createElement('div');
-            cellBd.className = 'weui-cell__bd';
-            weuiCell.appendChild(cellBd);
-            let p = document.createElement('p');
-            p.innerHTML = data.result.records[i].branchName
-            cellBd.appendChild(p);
-            weuiCell.onclick = function () {
-                dataStorage.branchCode = data.result.records[i].branchCode;
-                dataStorage.branchName = data.result.records[i].branchName;
-                localStorage.setItem('branch',JSON.stringify(dataStorage))
-                window.location.href = '/sqb/collection?oemNo='+pageData.oemNo;
+        if(data.result.records.length == 0){
+            document.getElementById('toWrite').style.display = 'block';
+        }else {
+            document.getElementById('toWrite').style.display = 'none';
+            for (let i = 0; i < data.result.records.length; i++) {
+                let weuiCell = document.createElement('div');
+                weuiCell.className = 'weui-cell';
+                let cellBd = document.createElement('div');
+                cellBd.className = 'weui-cell__bd';
+                weuiCell.appendChild(cellBd);
+                let p = document.createElement('p');
+                p.innerHTML = data.result.records[i].branchName
+                cellBd.appendChild(p);
+                weuiCell.onclick = function () {
+                    dataStorage.branchCode = data.result.records[i].branchCode;
+                    dataStorage.branchName = data.result.records[i].branchName;
+                    localStorage.setItem('branch',JSON.stringify(dataStorage))
+                    window.location.href = '/sqb/collection?oemNo='+pageData.oemNo;
+                }
+                /*let div_branch = document.createElement('div');
+                 div_branch.className = 't';
+                 div_branch.innerHTML = data[i].branchName;
+                 div_branch.onclick = function () {
+                 branch.value = data[i].branchName;
+                 pageData.branchCode = data[i].branchCode;
+                 pageData.branchName = data[i].branchName;
+                 layer_b.style.display = 'none';
+                 };*/
+                // weuiCell.appendChild(bankList);
+                bankList.appendChild(weuiCell)
             }
-            /*let div_branch = document.createElement('div');
-             div_branch.className = 't';
-             div_branch.innerHTML = data[i].branchName;
-             div_branch.onclick = function () {
-             branch.value = data[i].branchName;
-             pageData.branchCode = data[i].branchCode;
-             pageData.branchName = data[i].branchName;
-             layer_b.style.display = 'none';
-             };*/
-            // weuiCell.appendChild(bankList);
-            bankList.appendChild(weuiCell)
         }
         if (data.result.totalPage != nowPage&&data.result.totalPage!=0) {
             more.style.display = 'block';

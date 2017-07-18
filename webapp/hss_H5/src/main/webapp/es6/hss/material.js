@@ -205,25 +205,6 @@ bankNo.addEventListener('blur', function () {
 
 submit.addEventListener('click', function () {
   let bankPic = upload_bank.getServerId();
-  console.log({
-      merchantName: merchantName.value,
-      address: address.value,
-      bankNo: bankNo.value,
-      name: username.value,
-      identity: identity.value,
-      reserveMobile: reserveMobile.value,
-      code: code.value,
-      bankPic: bankPic,
-      provinceCode: provinceCode,
-      provinceName: provinceName,
-      cityCode: cityCode,
-      cityName: cityName,
-      countyCode: countyCode,
-      countyName: countyName,
-      branchCode:branchStorage.branchCode,
-      branchName:branchStorage.branchName,
-      districtCode:branchStorage.countyCode
-  })
   if (validate.name(merchantName.value, '店铺名称') &&
     validate.empty(provinceCode, '所在地区') &&
     validate.empty(provinceName, '所在地区') &&
@@ -256,7 +237,7 @@ submit.addEventListener('click', function () {
       countyName: countyName,
       branchCode:branchStorage.branchCode,
       branchName:branchStorage.branchName,
-      districtCode:branchName.countyCode
+      districtCode:branchStorage.countyCode
     }, function () {
       window.location.replace("/sqb/addNext?oemNo=" + pageData.oemNo);
     })
