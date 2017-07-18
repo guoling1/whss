@@ -31,10 +31,27 @@ const code = document.getElementById('code');
 const submit = document.getElementById('submit');
 const bankText = document.getElementById('bankText');
 const skip = document.getElementById('skip');
+const branch = document.getElementById('branch');
 
 skip.addEventListener('click', function () {
   window.location.href = '/sqb/wallet?oemNo=' + pageData.oemNo;
 });
+
+branch.addEventListener('click',function () {
+    if(validate.bankNo(bankNo.value)){
+        localStorage.setItem('cardNo',bankNo.value)
+        window.location.href = ' /sqb/districtSelect';
+    }
+})
+
+let branchStorage = JSON.parse(localStorage.getItem('branch'));
+console.log(branchStorage)
+if(branchStorage!=null){
+  console.log(1)
+    document.getElementById('branch').innerHTML = branchStorage.branchName;
+    document.getElementById('branch').style.fontSize = '14px';
+    document.getElementById('branch').style.color = '#4a5171';
+}
 
 let world = document.getElementById('world');
 let layer_w = document.getElementById('layer-w');
@@ -217,7 +234,8 @@ submit.addEventListener('click', function () {
       cityCode: cityCode,
       cityName: cityName,
       countyCode: countyCode,
-      countyName: countyName
+      countyName: countyName,
+
     }, function () {
       window.location.replace("/sqb/addNext?oemNo=" + pageData.oemNo);
     })

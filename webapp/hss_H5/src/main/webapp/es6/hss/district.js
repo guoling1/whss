@@ -44,6 +44,11 @@ function getLocationString() {
     let index = path.lastIndexOf("\/");
     return path.substring(index + 1, path.length);
 }
+let data = localStorage.getItem('branch');
+console.log(data)
+if(data!=''&&data!=null){
+    pageData = JSON.parse(data);
+}
 
 // 处理 初始化 的过程
 if (pageData.provinceCode != '' &&

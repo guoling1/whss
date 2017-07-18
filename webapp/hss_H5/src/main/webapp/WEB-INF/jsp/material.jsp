@@ -35,17 +35,6 @@
       </div>
       <div class="group">
         <div class="name">所在地区</div>
-        <a class="weui-cell weui-cell_access" href="/sqb/districtSelect" style="padding: 0;text-align: left">
-          <div class="weui-cell__bd">
-            <p style="color: #ccc;font-size: 15px;">点击选择</p>
-          </div>
-          <div class="weui-cell__ft">
-          </div>
-        </a>
-        <%--<input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">--%>
-      </div>
-      <div class="group">
-        <div class="name">所在地区</div>
         <input id="world" type="text" class="ipt" placeholder="点击选择" readonly>
 
         <div class="layer" id="layer-w">
@@ -72,6 +61,18 @@
         <div class="name">结算卡</div>
         <input type="number" class="ipt" placeholder="输入本人名下借记卡号" id="bankNo">
         <div class="btn" id="bankShow">支持的银行</div>
+      </div>
+      <div class="group">
+        <div class="name">支行</div>
+        <a class="weui-cell weui-cell_access" id="branch" style="padding: 0;text-align: left;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <div class="weui-cell__bd">
+            <%--<input type="text" class="ipt" placeholder="点击选择" id="branch">--%>
+            <p style="color: #ccc;font-size: 14px;" id="branch">点击选择</p>
+          </div>
+          <div class="weui-cell__ft">
+          </div>
+        </a>
+        <%--<input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">--%>
       </div>
       <div class="group">
         <div class="name">照片</div>
@@ -163,5 +164,6 @@
   });
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.32/material.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.32/material.min.js"></script>--%>
+<script src="../js/hss/2.2.32/material.min.js"></script>
 </html>
