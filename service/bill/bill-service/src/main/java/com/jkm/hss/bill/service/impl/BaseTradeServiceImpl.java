@@ -29,6 +29,7 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -546,6 +547,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Override
     @Transactional
     public long record(final long orderId) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         log.info("交易单[{}], 进行入账操作", order.getOrderNo());
         if ((order.isPaySuccess() || order.isRechargeSuccess()) && order.isDueSettle()) {
@@ -615,6 +618,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                 this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
                 return settlementRecordId;
             }
+            stopWatch.stop();
+            log.info("交易单[{}], 入账结束, 用时[{}]", order.getOrderNo(), stopWatch.getTime());
         }
         return 0;
     }
