@@ -232,7 +232,7 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where card.UID=#{objectT.uid}
+        where card.UID=#{objectT.uid} and member.status=1
         <if test="objectT.param!=null and objectT.param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{objectT.param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{objectT.param},'%'))
         </if>
@@ -246,7 +246,7 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where card.UID=#{uid}
+        where card.UID=#{uid} and member.status=1
         <if test="param!=null and param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{param},'%'))
         </if>) x
@@ -306,7 +306,7 @@
     </select>
 
     <select id="findMemberCardAndStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
-        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID) memberCount
+        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID and status=1) memberCount
         from app_policy_membership_card card where uid=#{uid}
     </select>
 
