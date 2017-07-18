@@ -206,7 +206,7 @@
     <select id="findMemberCardCascadeCountByUID" resultType="java.lang.Integer">
         select count(1) from app_policy_member member
         left join app_policy_membership_card card on member.mcid=card.id
-        where card.UID=#{uid}
+        where card.UID=#{uid} and status=1
         <if test="startTime!=null">
             AND member.CREATETIME >=#{startTime}
         </if>
