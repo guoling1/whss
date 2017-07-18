@@ -363,13 +363,13 @@ public class MembershipController {
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key)
         {
-            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
-            if(appPolicyRechargeOrder==null) {
-                model.addAttribute("mid", appPolicyMember.getId());
-                model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
-                model.addAttribute("source", source);
-                return "redirect:/sqb/needRecharge";
-            }
+//            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+//            if(appPolicyRechargeOrder==null) {
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
+            model.addAttribute("source", source);
+            return "redirect:/sqb/needRecharge";
+//            }
         }
 
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
