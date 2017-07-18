@@ -1,19 +1,23 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Optional;
 import com.jkm.hss.account.enums.EnumAccountUserType;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hss.bill.enums.EnumBasicStatus;
-import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
-import com.jkm.hss.bill.enums.EnumHsySourceType;
+import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.CallbackResponse;
+import com.jkm.hss.bill.helper.PayParams;
+import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.SplitProfitParams;
+import com.jkm.hss.bill.helper.util.VerifyAuthCodeUtil;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.notifier.entity.ConsumeMsgSplitProfitRecord;
@@ -22,10 +26,13 @@ import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
+import com.jkm.hsy.user.Enum.*;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.dao.HsyUserDao;
+import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
+import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -54,6 +61,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     @Autowired
     private TradeService tradeService;
     @Autowired
+    private HsyUserDao hsyUserDao;
+    @Autowired
     private DealerService dealerService;
     @Autowired
     private HSYOrderService hsyOrderService;
@@ -62,7 +71,11 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     @Autowired
     private BasicChannelService basicChannelService;
     @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
     private BaseHSYTransactionService baseHSYTransactionService;
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
 
     /**
      * {@inheritDoc}
@@ -74,7 +87,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
      * @return
      */
     @Override
-    @Transactional
     public long createOrder(final int channel, final long shopId, final String memberId, final String code) {
         log.info("用户[{}]在店铺[{}]扫静态码创建订单，通道[{}]", memberId, shopId, channel);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
@@ -98,6 +110,50 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setGoodsname(shop.getShortName());
         hsyOrder.setGoodsdescribe(shop.getShortName());
         hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
+        this.hsyOrderService.insert(hsyOrder);
+        return hsyOrder.getId();
+    }
+
+    /**
+     * 创建订单
+     *
+     * @param shopId
+     * @param amount
+     * @return
+     */
+    @Override
+    public long createOrder2(final long shopId, final long currentUid, final BigDecimal amount) {
+        log.info("用户-在店铺[{}]通过被扫创建订单，金额[{}]", shopId, amount);
+        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
+        final AppAuUser currentUser = this.hsyUserDao.findAppAuUserByID(currentUid).get(0);
+        final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setShopid(shopId);
+        hsyOrder.setAmount(amount);
+        hsyOrder.setRealAmount(amount);
+        hsyOrder.setShopname(shop.getShortName());
+        hsyOrder.setMerchantNo(appAuUser.getGlobalID());
+        hsyOrder.setMerchantname(shop.getName());
+        hsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+        hsyOrder.setSourcetype(EnumHsySourceType.SCAN.getId());
+        hsyOrder.setValidationcode("");
+        hsyOrder.setQrcode("");
+        hsyOrder.setPaychannelsign(0);
+        hsyOrder.setPaytype("");
+        hsyOrder.setMemberId("");
+        hsyOrder.setPaymentChannel(0);
+        hsyOrder.setUpperChannel(0);
+        hsyOrder.setCashierid(currentUser.getId());
+        hsyOrder.setCashiername(currentUser.getRealname());
+        hsyOrder.setGoodsname(shop.getShortName());
+        hsyOrder.setGoodsdescribe(shop.getShortName());
+        hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }
@@ -309,5 +365,81 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     public String refund(final String paramData, final AppParam appParam) {
 
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     * @param authCode
+     * @return
+     */
+    @Override
+    public Pair<Integer, String> authCodePay(final long orderId, final String authCode) {
+        final Optional<HsyOrder> orderOptional = this.hsyOrderService.getById(orderId);
+        if (!orderOptional.isPresent()) {
+            return Pair.of(-1, "订单不存在");
+        }
+        if (orderOptional.get().isPendingPay()) {
+            final EnumPolicyType policyType = VerifyAuthCodeUtil.verify(authCode);
+            final HsyOrder updateHsyOrder = new HsyOrder();
+            updateHsyOrder.setId(orderId);
+            final UserCurrentChannelPolicy userCurrentChannelPolicy =
+                    this.userCurrentChannelPolicyService.selectByUserId(orderOptional.get().getUid()).get();
+            switch (policyType) {
+                case ALIPAY:
+                    updateHsyOrder.setPaychannelsign(userCurrentChannelPolicy.getAlipayChannelTypeSign());
+                    break;
+                case WECHAT:
+                    updateHsyOrder.setPaychannelsign(userCurrentChannelPolicy.getWechatChannelTypeSign());
+                    break;
+            }
+            final UserChannelPolicy userChannelPolicy =
+                    this.userChannelPolicyService.selectByUserIdAndChannelTypeSign(orderOptional.get().getUid(), updateHsyOrder.getPaychannelsign()).get();
+            updateHsyOrder.setSettleType(userChannelPolicy.getSettleType());
+            updateHsyOrder.setPaytype(basicChannelService.selectCodeByChannelSign(updateHsyOrder.getPaychannelsign(), EnumMerchantPayType.MERCHANT_BAR));
+            final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(updateHsyOrder.getPaychannelsign());
+            updateHsyOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+            updateHsyOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
+            this.hsyOrderService.update(updateHsyOrder);
+
+            final PayParams payParams=new PayParams();
+            payParams.setBusinessOrderNo(orderOptional.get().getOrdernumber());
+            payParams.setChannel(updateHsyOrder.getPaychannelsign());
+            payParams.setMerchantPayType(EnumMerchantPayType.MERCHANT_BAR);
+            payParams.setAppId(EnumAppType.HSY.getId());
+            payParams.setTradeAmount(orderOptional.get().getAmount());
+            payParams.setRealPayAmount(orderOptional.get().getRealAmount());
+            payParams.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
+            payParams.setPayeeAccountId(orderOptional.get().getAccountid());
+            payParams.setGoodsName(orderOptional.get().getGoodsname());
+            payParams.setGoodsDescribe(orderOptional.get().getGoodsdescribe());
+            payParams.setWxAppId(WxConstants.APP_HSY_ID);
+            payParams.setMerchantNo(orderOptional.get().getMerchantNo());
+            payParams.setMerchantName(orderOptional.get().getMerchantname());
+            payParams.setAuthCode(authCode);
+            final PayResponse payResponse=tradeService.pay(payParams);
+            final EnumBasicStatus status = EnumBasicStatus.of(payResponse.getCode());
+            final HsyOrder updateOrder = new HsyOrder();
+            switch (status) {
+                case FAIL:
+                    updateOrder.setId(orderOptional.get().getId());
+                    updateOrder.setOrderno(payResponse.getTradeOrderNo());
+                    updateOrder.setOrderid(payResponse.getTradeOrderId());
+                    updateOrder.setOrderstatus(EnumOrderStatus.PAY_FAIL.getId());
+                    updateOrder.setRemark(payResponse.getMessage());
+                    this.hsyOrderService.update(updateOrder);
+                    return Pair.of(-1, payResponse.getMessage());
+                case SUCCESS:
+                    updateOrder.setId(orderOptional.get().getId());
+                    updateOrder.setOrderno(payResponse.getTradeOrderNo());
+                    updateOrder.setValidationcode(payResponse.getTradeOrderNo().substring(payResponse.getTradeOrderNo().length() - 4));
+                    updateOrder.setOrderid(payResponse.getTradeOrderId());
+                    updateOrder.setRemark(payResponse.getMessage());
+                    this.hsyOrderService.update(updateOrder);
+                    return Pair.of(0, payResponse.getMessage());
+            }
+        }
+        return Pair.of(-1, "订单状态错误");
     }
 }
