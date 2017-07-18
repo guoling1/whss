@@ -4,41 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>我的推广</title>
+  <title>添加开户行</title>
   <!--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.22.css">-->
-  <link rel="stylesheet" href="../css/hss/style.2.2.21.css">
+  <link rel="stylesheet" href="../css/hss/style.2.2.22.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
-<div id="branchInfo">
+<div id="branch1">
   <div class="branch">
     <div class="list">
-      <div class="name">开户行地区</div>
-      <input id="world" class="ipt" type="text" placeholder="点击选择" readonly>
-
-      <div class="layer" id="layer-w">
-        <div class="name">开户行地区</div>
-        <div class="search top">
-          <div class="search-result">
-            <div id="p" style="display:none;">请选择</div>
-            <div id="c" style="display:none;">请选择</div>
-            <div id="ct" style="display:none;">请选择</div>
-          </div>
-          <div class="search-list" id="layer-w-list">
-            <!--动态添加-->
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="list">
-      <div class="name">支行名称</div>
-      <input id="branch" class="ipt" type="text" placeholder="支行名称关键字如：国贸" readonly>
+      <div class="name">支行全称</div>
+      <input id="branch" class="ipt" type="text" placeholder="输入开户支行全称" readonly>
 
       <div class="layer" id="layer-b">
         <div class="match">
           <div class="match_name">支行名称</div>
-          <input id="match_ipt" class="match_ipt" type="text" placeholder="支行名称关键字如：国贸">
+          <input id="match_ipt" class="match_ipt" type="text" placeholder="输入开户支行全称">
         </div>
         <div class="search">
           <div class="search-list" id="layer-b-list">
@@ -52,12 +34,12 @@
       如不确定，请联系您的银行查询
     </div>
     <div class="submit-space">
-      <div id="submit" class="submit">确认修改</div>
+      <div id="submit" class="submit">确定</div>
     </div>
   </div>
 </div>
 <script>
-    var pageData = {
+    /*var pageData = {
         bin: '${bankBin}',
         provinceCode: '${provinceCode}',
         provinceName: '${provinceName}',
@@ -68,11 +50,11 @@
         branchCode: '${branchCode}',
         branchName: '${branchName}',
         oemNo:'${oemNo}'
-    }
+    }*/
 </script>
 </body>
 
 <!--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>-->
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.31/bankBranch.min.js"></script>
+<!--<script src="http://static.jinkaimen.cn/hss/2.2.31/bankBranch.min.js"></script>-->
 </html>
