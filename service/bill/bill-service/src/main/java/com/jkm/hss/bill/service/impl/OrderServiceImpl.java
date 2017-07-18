@@ -1591,7 +1591,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account, AppBizCard appBizCard) {
-        final String orders = sns.substring(0, sns.lastIndexOf(",") - 1);
+        final String orders = sns.substring(0, sns.lastIndexOf(","));
         final Order playMoneyOrder = new Order();
         playMoneyOrder.setPayOrderId(0);
         playMoneyOrder.setAppId(EnumAppType.HSY.getId());
