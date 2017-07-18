@@ -9,7 +9,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>${oemName}</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
+  <link rel="stylesheet" href="../../css/hss/style.2.2.22.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -31,6 +32,17 @@
       <div class="group">
         <div class="name">店铺名</div>
         <input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">
+      </div>
+      <div class="group">
+        <div class="name">所在地区</div>
+        <a class="weui-cell weui-cell_access" href="/sqb/districtSelect" style="padding: 0;text-align: left">
+          <div class="weui-cell__bd">
+            <p style="color: #ccc;font-size: 15px;">点击选择</p>
+          </div>
+          <div class="weui-cell__ft">
+          </div>
+        </a>
+        <%--<input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">--%>
       </div>
       <div class="group">
         <div class="name">所在地区</div>
