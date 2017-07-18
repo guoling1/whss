@@ -1597,8 +1597,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final WithdrawOrderResponse response = new WithdrawOrderResponse();
             response.setAvaWithdraw(order.getRealPayAmount().toString());
             response.setReceiveAmount(order.getRealPayAmount().subtract(order.getPoundage()).toString());
-            response.setBeginTime(DateFormatUtil.format(order.getCreateTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-            response.setEndTime(order.getPaySuccessTime() == null ? "" : DateFormatUtil.format(order.getPaySuccessTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            response.setBeginTime(order.getCreateTime().getTime());
+            response.setEndTime(order.getPaySuccessTime() == null ? 0 : order.getPaySuccessTime().getTime());
             response.setBankName(order.getBankName());
             response.setCardNo(order.getTradeCardNo().substring(order.getTradeCardNo().length() - 4, order.getTradeCardNo().length()));
             response.setStatus(order.getStatus());

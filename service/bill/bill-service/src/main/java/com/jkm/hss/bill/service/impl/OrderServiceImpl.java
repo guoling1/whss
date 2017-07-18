@@ -1452,16 +1452,16 @@ public class OrderServiceImpl implements OrderService {
             sns = sns.append(order.getSn() + ",");
             sumAmount= sumAmount.add(order.getTradeAmount().subtract(order.getPoundage()));
             sumT1Fee = sumT1Fee.add(order.getPoundage());
-            BigDecimal d0PayRate = null;
+            /*BigDecimal d0PayRate = null;
             if (EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
                 d0PayRate = wechatTradeRate;
             }else if (EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
                 d0PayRate = alipayTradeRate;
             }
-            sumD0Fee = sumD0Fee.add(this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), d0PayRate,order.getPayChannelSign()));
+            sumD0Fee = sumD0Fee.add(this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), d0PayRate,order.getPayChannelSign()));*/
         }
         final BigDecimal avaWithdraw = sumAmount;
-        final BigDecimal fee = sumD0Fee.subtract(sumT1Fee).add(userWithdrawRate.getWithdrawRateD0());
+        final BigDecimal fee = sumD0Fee;
 
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("avaWithdraw",avaWithdraw);

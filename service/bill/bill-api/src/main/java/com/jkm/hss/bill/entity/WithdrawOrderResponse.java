@@ -17,9 +17,9 @@ public class WithdrawOrderResponse {
 
     private String poundage;
 
-    private String beginTime;
+    private long beginTime;
 
-    private String endTime;
+    private long endTime;
 
     private String bankName;
 
