@@ -1198,7 +1198,8 @@ public class LoginController extends BaseController {
                                  @RequestParam(value = "cityName", required = false) String cityName,
                                  @RequestParam(value = "countyCode", required = false) String countyCode,
                                  @RequestParam(value = "countyName", required = false) String countyName,
-                                 @RequestParam(value = "bankNo", required = false) String bankNo) throws IOException {
+                                 @RequestParam(value = "bankNo", required = false) String bankNo,
+                                 @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
         model.addAttribute("provinceCode",provinceCode);
         model.addAttribute("provinceName",provinceName);
         model.addAttribute("cityCode",cityCode);
@@ -1206,6 +1207,7 @@ public class LoginController extends BaseController {
         model.addAttribute("countyCode",countyCode);
         model.addAttribute("countyName",countyName);
         model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
         return  "/district";
     }
 
@@ -1226,7 +1228,8 @@ public class LoginController extends BaseController {
                                @RequestParam(value = "cityCode", required = false) String cityCode,
                                @RequestParam(value = "cityName", required = false) String cityName,
                                @RequestParam(value = "countyCode", required = false) String countyCode,
-                               @RequestParam(value = "countyName", required = false) String countyName) throws IOException {
+                               @RequestParam(value = "countyName", required = false) String countyName,
+                               @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
         model.addAttribute("provinceCode",provinceCode);
         model.addAttribute("provinceName",provinceName);
         model.addAttribute("cityCode",cityCode);
@@ -1234,6 +1237,7 @@ public class LoginController extends BaseController {
         model.addAttribute("countyCode",countyCode);
         model.addAttribute("countyName",countyName);
         model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
         return  "/branch";
     }
     /**
@@ -1246,8 +1250,10 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/addBranch", method = RequestMethod.GET)
-    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "countyCode", required = false) String countyCode) throws IOException {
+    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "countyCode", required = false) String countyCode,
+                            @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
         model.addAttribute("countyCode", countyCode);
+        model.addAttribute("oemNo",oemNo);
         return  "/addBranch";
     }
 }
