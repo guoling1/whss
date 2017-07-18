@@ -44,7 +44,7 @@ public interface MerchantInfoDao {
      * @param mobile
      * @return
      */
-    MerchantInfo selectByMobile(@Param("mobile") String mobile);
+    List<MerchantInfo> selectByMobile(@Param("mobile") String mobile);
 
     /**
      * 根据mobile和oemId查询

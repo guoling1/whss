@@ -573,6 +573,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         log.info("交易单[{}], 进行入账操作", order.getOrderNo());
         if ((order.isPaySuccess() || order.isRechargeSuccess()) && order.isDueSettle()) {
+            log.info("交易单[{}], 入账开始", order.getOrderNo());
             //手续费账户--可用余额
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());

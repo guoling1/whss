@@ -381,7 +381,7 @@ public interface DealerService {
      *
      * @param request
      */
-    void addOrUpdateHssOem(OemAddOrUpdateRequest request);
+    void addOrUpdateOemFirstDealer(OemAddOrUpdateRequest request);
     /**
      * 更新或新增好收收分公司配置信息
      *

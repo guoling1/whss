@@ -4,6 +4,8 @@ import com.jkm.base.common.util.Page;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
+import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
+import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.AppPolicyRechargeOrder;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -52,6 +54,15 @@ public interface HsyOrderDao {
     HsyOrder selectById(@Param("id") long id);
 
     /**
+     * 更新订单号
+     *
+     * @param id
+     * @param orderNumber
+     * @return
+     */
+    int updateOrderNumber(@Param("id") long id, @Param("orderNumber") String orderNumber);
+
+    /**
      * 加锁按id查询
      *
      * @param id
@@ -72,10 +83,12 @@ public interface HsyOrderDao {
      */
    long selectOrderCountByParam(@Param("shopId") long shopId,
                                 @Param("merchantNo") String merchantNo,
+                                @Param("tradeOrderNo") String tradeOrderNo,
                                 @Param("selectAll") int selectAll,
                                 @Param("paymentChannels") List<Integer> paymentChannels,
                                 @Param("startTime") Date startTime,
                                 @Param("endTime") Date endTime);
+
 
     /**
      * 订单列表-记录
@@ -90,6 +103,7 @@ public interface HsyOrderDao {
      */
     List<HsyOrder> selectOrdersByParam(@Param("shopId") long shopId,
                                        @Param("merchantNo") String merchantNo,
+                                       @Param("tradeOrderNo") String tradeOrderNo,
                                        @Param("selectAll") int selectAll,
                                        @Param("paymentChannels") List<Integer> paymentChannels,
                                        @Param("startTime") Date startTime,
@@ -135,6 +149,16 @@ public interface HsyOrderDao {
                                                @Param("paymentChannels") List<Integer> paymentChannels,
                                                @Param("startTime") Date startTime,
                                                @Param("endTime") Date endTime);
+
+    /**
+     * pc统计
+     *
+     * @param shopId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<PcStatisticsOrder> pcStatisticsOrder(@Param("shopId") long shopId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     public List<HsyOrder> findConsumeOrderListByPage(Page<HsyOrder> entity);
     public Integer findConsumeOrderListByPageCount(HsyOrder entity);

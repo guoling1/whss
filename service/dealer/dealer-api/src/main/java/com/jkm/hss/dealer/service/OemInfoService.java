@@ -25,6 +25,11 @@ public interface OemInfoService {
      * @return
      */
     OemDetailResponse selectByDealerId(long dealerId);
+    /**
+     *根据分公司编码查询带appId分公司O单配置
+     * @return
+     */
+    OemDetailResponse selectByDealerIdWithAppId(long dealerId);
 
     /**
      * 配置O单

@@ -54,7 +54,7 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
+      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend?oemNo=${oemNo}">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>
@@ -117,5 +117,5 @@
   };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.31/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.32/wallet.min.js"></script>
 </html>

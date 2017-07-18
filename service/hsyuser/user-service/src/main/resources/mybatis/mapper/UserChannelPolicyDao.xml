@@ -109,4 +109,9 @@
         SELECT app_secret as appSecret FROM app_user_channel_policy
         WHERE  app_id= #{appId} or sub_app_id=#{appId} and status = 1 limit 0,1;
     </select>
+    <select id="selectByUserIdsAndChannelSignAndType" resultType="com.jkm.hsy.user.entity.UserChannelPolicy">
+        SELECT <include refid="Base_Column_List"/> FROM app_user_channel_policy
+        WHERE channel_type_sign = #{channelSign} AND settle_type = #{type} AND user_id IN
+        <foreach collection="userIds" index="index" item="item" open="(" separator="," close=")"> #{item} </foreach>
+    </select>
 </mapper>

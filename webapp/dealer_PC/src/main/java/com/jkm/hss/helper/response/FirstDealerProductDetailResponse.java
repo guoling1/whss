@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
 import java.util.List;
@@ -13,17 +14,10 @@ public class FirstDealerProductDetailResponse {
      * 产品名称
      */
     private String productName;
-
     /**
-     * 邀请码
+     * 推荐开关
      */
-    private String inviteCode;
-
-    /**
-     * 推广功能
-     * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
-     */
-    private int inviteBtn;
+    private Integer recommendBtn;
 
     /**
      * 产品列表
@@ -65,8 +59,6 @@ public class FirstDealerProductDetailResponse {
          * 通道名称
          */
         private String channelName;
-
-
         /**
          * 最小支付结算手续费
          */
@@ -99,7 +91,10 @@ public class FirstDealerProductDetailResponse {
          * 最大商户结算手续费
          */
         private String maxMerchantSettleRate;
-
+        /**
+         * 最小商户结算手续费
+         */
+        private String minMerchantSettleRate;
         /**
          * 商户提现手续费
          */
@@ -108,5 +103,54 @@ public class FirstDealerProductDetailResponse {
          * 最大商户提现手续费
          */
         private String maxMerchantWithdrawFee;
+        /**
+         * 最小商户提现手续费
+         */
+        private String minMerchantWithdrawFee;
     }
+
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerUpgerdeRate> dealerUpgerdeRates;
+    @Data
+    public  class DealerUpgerdeRate {
+        /**
+         * 升级分润费率编码
+         */
+        private long id;
+        /**
+         * 产品编码
+         */
+        private long productId;
+        /**
+         * 代理商编码
+         */
+        private long dealerId;
+        /**
+         * 分润类型
+         * {@link com.jkm.hss.dealer.enums.EnumDealerRateType}
+         */
+        private int type;
+        /**
+         *金开门分润比例
+         */
+        private String bossDealerShareRate;
+        /**
+         *金开门分润比例
+         */
+        private String oemShareRate;
+        /**
+         * 一代分润
+         */
+        private String firstDealerShareProfitRate;
+        /**
+         * 二代分润
+         */
+        private String secondDealerShareProfitRate;
+    }
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerProfitSettingResponse> dealerProfits;
 }
