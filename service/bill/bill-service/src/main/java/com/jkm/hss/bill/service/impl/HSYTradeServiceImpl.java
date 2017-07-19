@@ -1513,7 +1513,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
             result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
-            if (function == 1){
+            if (function  < 2){
                 //查询
                 return result.toJSONString();
             }
