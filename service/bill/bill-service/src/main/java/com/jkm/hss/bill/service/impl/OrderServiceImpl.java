@@ -1421,7 +1421,7 @@ public class OrderServiceImpl implements OrderService {
         //判断当天是否已经提现
          List<Order> withdrawOrders =  this.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
         int isFirst = EnumBoolean.TRUE.getCode();
-        if (withdrawOrders.size() > 0){
+        if (withdrawOrders.size() > 10){
             isFirst = EnumBoolean.FALSE.getCode();
         }
         //判断提现
