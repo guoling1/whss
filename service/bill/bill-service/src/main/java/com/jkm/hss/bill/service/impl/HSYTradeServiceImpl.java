@@ -1683,7 +1683,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final List<String> sns = Arrays.asList(split);
             this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId());
 
-            playMoneyOrder.setPaySuccessTime(new Date(Long.valueOf(response.getWithdrawSuccessTime())));
+            playMoneyOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
             playMoneyOrder.setRemark(response.getMessage());
             this.orderService.update(playMoneyOrder);
