@@ -332,7 +332,7 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBranchName(tempBranchName);
                 bankListResponse.setCardType(accountBank1.getCardType());
-                if(accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode())){
+                if((accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode()))||(accountBank1.getBranchName()!=null&&!"".equals(accountBank1.getBranchName()))){
                     bankListResponse.setHasBranch(1);
                 }else{
                     bankListResponse.setHasBranch(0);
