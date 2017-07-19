@@ -100,7 +100,6 @@ submit.onclick = function () {
     validate.empty(pageData.cityName, '所在地区') &&
     validate.empty(pageData.countyCode, '所在地区') &&
     validate.empty(pageData.countyName, '所在地区') &&
-    validate.empty(pageData.branchCode, '支行信息') &&
     validate.empty(pageData.branchName, '支行信息')) {
     http.post('/wx/branchInfo', {
       bankId: getLocationString(),
@@ -118,7 +117,12 @@ submit.onclick = function () {
       } else if (getQueryString('branch')) {
         layer.style.display = 'block';
       } else {
-        window.location.href = '/sqb/bank?oemNo=' + pageData.oemNo;
+        if(pageData.source==1){
+            window.location.href = '/sqb/bank?oemNo=' + pageData.oemNo+'&source='+pageData.source;
+        }else if(pageData.source==2){
+            window.location.href = '/sqb/collection?oemNo=' + pageData.oemNo;
+        }
+        localStorage.removeItem('branch');
       }
     })
   }

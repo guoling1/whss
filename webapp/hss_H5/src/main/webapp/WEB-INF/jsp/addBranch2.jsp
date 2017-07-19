@@ -48,7 +48,8 @@
 </body>
 <script>
     var pageData = {
-        oemNo: '${oemNo}'
+        oemNo: '${oemNo}',
+        source: '${source}'
     }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
