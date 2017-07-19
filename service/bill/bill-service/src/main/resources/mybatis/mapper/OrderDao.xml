@@ -3227,6 +3227,12 @@
     <update id="markOrder2SettleFail">
         UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
     </update>
+    <update id="updateOrdersBySns">
+        UPDATE tb_order SET status = #{status} AND sn in
+        <foreach collection="sns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
     <select id="getBranch" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,

@@ -1433,11 +1433,11 @@ public class OrderServiceImpl implements OrderService {
             jsonObject.put("isFirst",isFirst);
             return jsonObject;
         }
-        final BigDecimal wechatTradeRate =
+  /*      final BigDecimal wechatTradeRate =
                 this.userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId()).get().getTradeRateD0();
         final BigDecimal alipayTradeRate =
                 this.userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId()).get().getTradeRateD0();
-        final UserWithdrawRate userWithdrawRate = this.userWithdrawRateService.selectByUserId(userId).get();
+        final UserWithdrawRate userWithdrawRate = this.userWithdrawRateService.selectByUserId(userId).get();*/
         //统计待结算金额
         BigDecimal sumAmount = new BigDecimal("0");
         //统计T1手续费
@@ -1519,9 +1519,13 @@ public class OrderServiceImpl implements OrderService {
                 response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
             } catch (final Throwable e) {
                 log.error("交易订单[" + playMoneyOrder.getOrderNo() + "], 请求网关支付异常", e);
+                playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+                this.orderDao.update(playMoneyOrder);
             }
             return this.handleHsyD0WithdrawResult(playMoneyOrder, response);
         }
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+        this.orderDao.update(playMoneyOrder);
         return Pair.of(-1, "提现失败");
     }
 
@@ -1533,6 +1537,7 @@ public class OrderServiceImpl implements OrderService {
             //代付受理成功
             final String orders = playMoneyOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
+            final List<String> sns = Arrays.asList(split);
             final Order firstOrder = this.orderDao.selectOrderBySn(split[0]);
             final Order lastOrder = this.orderDao.selectOrderBySn(split[split.length -1]);
             final Account account = this.accountService.getByIdWithLock(playMoneyOrder.getPayer()).get();
@@ -1577,7 +1582,9 @@ public class OrderServiceImpl implements OrderService {
             final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
             this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(),
                     settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
-
+            //更新交易订单为提现中
+            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId());
+            playMoneyOrder.setSn(response.getSn());
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
             playMoneyOrder.setSettlementRecordId(settlementRecordId);
             this.update(playMoneyOrder);

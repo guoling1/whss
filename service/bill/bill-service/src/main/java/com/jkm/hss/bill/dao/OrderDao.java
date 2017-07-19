@@ -689,4 +689,6 @@ public interface OrderDao {
     List<Order> selectWithdrawOrdersByParam(@Param("accountId") long accountId, @Param("firstIndex") int firstIndex, @Param("pageSize") int pageSize);
 
     List<Order> selectWithdrawingOrderByAccountId(@Param("accountId") long accountId, @Param("begin") String begin, @Param("end") String end);
+
+    void updateOrdersBySns(@Param("sns") List<String> sns, @Param("status") int status);
 }

@@ -1504,7 +1504,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizCard card = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
         final String cardNO = card.getCardNO();
         final String cardBank = card.getCardBank();
-        final UserCurrentChannelPolicy userCurrentChannelPolicy = this.userCurrentChannelPolicyService.selectByUserId(appAuUser.getId()).get();
         if (accountOptional.isPresent()) {
             final Account account = accountOptional.get();
             result.put("accountId", account.getId());
@@ -1596,7 +1595,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             response.setBankName(order.getBankName());
             response.setCardNo(order.getTradeCardNo().substring(order.getTradeCardNo().length() - 4, order.getTradeCardNo().length()));
             response.setStatus(order.getStatus());
-            response.setOrderNo(order.getOrderNo());
+            response.setOrderNo(order.getSn());
             response.setPoundage(order.getPoundage().toString());
             response.setBankPic(this.getBankPic(order.getTradeCardNo()));
             orderList.add(response);
