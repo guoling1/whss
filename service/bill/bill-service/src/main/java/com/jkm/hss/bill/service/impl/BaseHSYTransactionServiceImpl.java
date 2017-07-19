@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2017/6/12.
@@ -172,6 +173,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setId(hsyOrder.getId());
                 updateOrder.setOrderno(payResponse.getTradeOrderNo());
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
+                updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_FAIL.getId());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
@@ -180,6 +182,8 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setOrderno(payResponse.getTradeOrderNo());
                 updateOrder.setValidationcode(payResponse.getTradeOrderNo().substring(payResponse.getTradeOrderNo().length() - 4));
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
+                updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_SUCCESS.getId());
+                updateOrder.setPaysuccesstime(new Date());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
                 return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");

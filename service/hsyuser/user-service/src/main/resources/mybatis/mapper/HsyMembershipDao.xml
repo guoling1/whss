@@ -133,9 +133,9 @@
 
     <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME,
-        (select count(*) from app_policy_member member where mcid=card.ID) memberCount,
-        (select COALESCE(sum(TRADEAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
-        (select COALESCE(sum(realAmount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3) consumeSum
+        (select count(*) from app_policy_member member where mcid=card.ID and status=1) memberCount,
+        (select COALESCE(sum(REALPAYAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
+        (select COALESCE(sum(amount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3 and orderstatus!=8) consumeSum
         from app_policy_membership_card card where UID=#{uid}
     </select>
 
@@ -196,17 +196,17 @@
     <select id="findMemberCardByID" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
         from app_policy_membership_card
-        where ID=#{id}
+        where status=1 and ID=#{id}
     </select>
 
     <select id="findMemberCardCountByMCID" resultType="java.lang.Integer">
-      select count(1) from app_policy_member where mcid=#{mcid}
+      select count(1) from app_policy_member where mcid=#{mcid} and status=1
     </select>
 
     <select id="findMemberCardCascadeCountByUID" resultType="java.lang.Integer">
         select count(1) from app_policy_member member
         left join app_policy_membership_card card on member.mcid=card.id
-        where card.UID=#{uid}
+        where card.UID=#{uid} and member.status=1
         <if test="startTime!=null">
             AND member.CREATETIME >=#{startTime}
         </if>
@@ -232,9 +232,12 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where card.UID=#{objectT.uid}
+        where card.UID=#{objectT.uid} and member.status=1
         <if test="objectT.param!=null and objectT.param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{objectT.param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{objectT.param},'%'))
+        </if>
+        <if test="objectT.mcid!=null">
+            AND mcid=#{objectT.mcid}
         </if>
         order by member.UPDATETIME desc
     </select>
@@ -246,9 +249,12 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where card.UID=#{uid}
+        where card.UID=#{uid} and member.status=1
         <if test="param!=null and param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{param},'%'))
+        </if>
+        <if test="mcid!=null">
+            AND mcid=#{mcid}
         </if>) x
     </select>
 
@@ -267,7 +273,7 @@
         <if test="objectT.mcid!=null and objectT.mcid!=''">
             AND MCID=#{objectT.mcid}
         </if>
-        order by rorder.UPDATETIME desc
+        order by rorder.CREATETIME desc
     </select>
 
     <select id="findRechargeOrderListByPageCount" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder" resultType="java.lang.Integer">
@@ -295,8 +301,8 @@
     </select>
 
     <select id="findMemberConsumeStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMemberStatistic">
-        select count(1) consumeCount,COALESCE(sum(realAmount),0) consumeSum from tb_hsy_order
-        where uid=#{uid} and isMemberCardPay =1 and orderstatus!=1 and orderstatus!=3
+        select count(1) consumeCount,COALESCE(sum(amount),0) consumeSum from tb_hsy_order
+        where uid=#{uid} and isMemberCardPay =1 and orderstatus!=1 and orderstatus!=3 and orderstatus!=8
         <if test="startTime!=null">
             AND pay_success_time >=#{startTime}
         </if>
@@ -306,7 +312,7 @@
     </select>
 
     <select id="findMemberCardAndStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
-        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID) memberCount
+        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID and status=1) memberCount
         from app_policy_membership_card card where uid=#{uid}
     </select>
 
@@ -316,7 +322,7 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where 1=1
+        where 1=1 and member.status=1
         <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
     </select>

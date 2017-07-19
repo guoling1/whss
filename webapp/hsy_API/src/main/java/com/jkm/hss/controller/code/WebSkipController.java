@@ -85,6 +85,8 @@ public class WebSkipController extends BaseController {
         String merchantName = hsyShopDao.findShopNameByID(merchantId);
         model.addAttribute("merchantName", merchantName);
         AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(openId,null,userId);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
         model.addAttribute("appPolicyMember",appPolicyMember);
         return "/payment-wx";
     }
@@ -103,6 +105,8 @@ public class WebSkipController extends BaseController {
         String merchantName = hsyShopDao.findShopNameByID(merchantId);
         model.addAttribute("merchantName", merchantName);
         AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(null,openId,userId);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
         model.addAttribute("appPolicyMember",appPolicyMember);
         return "/payment-zfb";
     }

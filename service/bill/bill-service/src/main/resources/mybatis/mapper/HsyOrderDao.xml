@@ -340,14 +340,14 @@
         select
           corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
-        where orderstatus!=1 and orderstatus!=3
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8
         <if test="objectT.mcid!=null and objectT.mcid!=''">
             AND MCID=#{objectT.mcid}
         </if>
         <if test="objectT.mid!=null and objectT.mid!=''">
             AND MID=#{objectT.mid}
         </if>
-        order by corder.update_time desc
+        order by corder.create_time desc
     </select>
 
     <select id="findConsumeOrderListByPageCount" parameterType="com.jkm.hss.bill.entity.HsyOrder" resultType="java.lang.Integer">
@@ -355,7 +355,7 @@
         corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time
         createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
-        where orderstatus!=1 and orderstatus!=3
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8
         <if test="mcid!=null and mcid!=''">
             AND MCID=#{mcid}
         </if>

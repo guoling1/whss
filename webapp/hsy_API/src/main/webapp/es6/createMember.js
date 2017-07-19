@@ -62,6 +62,14 @@ var mySwiper = new Swiper('.swiper-container', {
     }
 })
 
+if(pageData.consumeCellphone!=''||pageData.consumeCellphone!=null){
+    mobile.value = pageData.consumeCellphone;
+    mobile.readonly = 'true'
+}else {
+    mobile.value = '';
+    mobile.readonly = 'false'
+}
+
 sendCode.addEventListener('click', function () {
     if (validate.phone(mobile.value)) {
         if (countdown.check()) {
