@@ -113,6 +113,13 @@ public class HsyMerchantListController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             hsyMerchantAuditRequest.setEndTime(sdfs.format(rightNow.getTime()));
         }
+        if(hsyMerchantAuditRequest.getAuditTime1()!=null&&!"".equals(hsyMerchantAuditRequest.getAuditTime1())){
+            Date dt = sdfs.parse(hsyMerchantAuditRequest.getAuditTime1());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            hsyMerchantAuditRequest.setAuditTime1(sdfs.format(rightNow.getTime()));
+        }
         final String fileZip = this.hsyMerchantAuditService.downLoadHsyMerchant(hsyMerchantAuditRequest, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();

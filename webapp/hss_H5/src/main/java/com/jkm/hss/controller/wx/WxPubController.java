@@ -345,10 +345,21 @@ public class WxPubController extends BaseController {
             }
             oemId = oemInfoOptional.get().getDealerId();
         }else{
-            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
-            if(merchantInfoOptional.isPresent()){
-                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+            if(merchantInfoList.size()>0){
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()==0){
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                    }else{
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if(WxConstants.APP_ID.equals(oemInfoOptional1.get().getAppId())){
+                            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                        }
+                    }
+                }
             }
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
+
         }
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
