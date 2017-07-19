@@ -1546,6 +1546,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final JSONObject dataJo = JSONObject.parseObject(dataParam);
         final JSONObject result = new JSONObject();
         final long withDrawOrderId = dataJo.getLongValue("withDrawOrderId");
+        //拦截提现时间
+
         Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
         if (pair.getLeft() == 1){
             result.put("code", 1);
@@ -1681,7 +1683,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final List<String> sns = Arrays.asList(split);
             this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId());
 
-            playMoneyOrder.setPaySuccessTime(DateFormatUtil.parse(response.getWithdrawSuccessTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            playMoneyOrder.setPaySuccessTime(new Date(Long.valueOf(response.getWithdrawSuccessTime())));
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
             playMoneyOrder.setRemark(response.getMessage());
             this.orderService.update(playMoneyOrder);

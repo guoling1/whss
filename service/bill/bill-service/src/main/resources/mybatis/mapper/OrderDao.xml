@@ -206,6 +206,9 @@
             <if test="paySign != null and paySign != ''">
                 pay_sign = #{paySign},
             </if>
+            <if test="settlementRecordId != null and settlementRecordId != ''">
+                settlement_record_id = #{settlementRecordId},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark},
             </if>
