@@ -1,6 +1,5 @@
 package com.jkm.hss.bill.service;
 
-import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.helper.CallbackResponse;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,6 +22,15 @@ public interface HSYTransactionService {
      * @return
      */
     long createOrder(int channel, long shopId, String memberId, String code);
+
+    /**
+     * 创建订单
+     *
+     * @param shopId
+     * @param amount
+     * @return
+     */
+    long createOrder2(long shopId, long currentUid, BigDecimal amount);
 
     /**
      * 好收银扫码下单
@@ -70,4 +78,13 @@ public interface HSYTransactionService {
      * @return
      */
     String refund(String paramData, AppParam appParam);
+
+    /**
+     * 授权码支付
+     *
+     * @param orderId
+     * @param authCode
+     * @return
+     */
+    Pair<Integer,String> authCodePay(long orderId, String authCode);
 }

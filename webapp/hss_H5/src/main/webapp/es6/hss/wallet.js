@@ -31,7 +31,7 @@ let announcement_text = document.getElementById('announcement-text');
 
 const pxPerRem = document.documentElement.clientWidth;
 upgrade.addEventListener('click', function () {
-  window.location.href = '/sqb/upgradeMax';
+  window.location.href = '/sqb/upgradeMax?oemNo=' + pageData.oemNo;
 });
 // 是否展示升级功能
 if (pageData.showRecommend == 2) {

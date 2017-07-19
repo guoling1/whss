@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
@@ -20,6 +21,11 @@ public class FirstLevelDealerGet2Response {
      * {@link com.jkm.hss.dealer.enums.EnumRecommendBtn}
      */
     private int recommendBtn;
+    /**
+     * 分公司标示 0代理商 1分公司
+     *{@link EnumOemType}
+     */
+    private Integer oemType;
     /**
      * 邀请码
      */
@@ -69,6 +75,10 @@ public class FirstLevelDealerGet2Response {
          *金开门分润比例
          */
         private String bossDealerShareRate;
+        /**
+         *分公司分润比例
+         */
+        private String oemShareRate;
     }
 
     /**

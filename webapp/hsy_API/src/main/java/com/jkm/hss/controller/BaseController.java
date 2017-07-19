@@ -11,6 +11,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hsy.user.entity.PcUserPassport;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -37,6 +38,12 @@ public class BaseController {
      * 经销商 登录缓存
      */
     private static final DataBind<Dealer> DEALER_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.REQUEST_USER_INFO_DATA_BIND_DEALER);
+
+
+    /**
+     * app的用户 登录缓存
+     */
+    private static final DataBind<PcUserPassport> APP_PC_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.REQUEST_APP_USER_PC_DATA_BIND);
 
     /**
      * 日期处理
@@ -131,5 +138,14 @@ public class BaseController {
         return request.getSession().getAttribute(key);
     }
 
+
+    /**
+     * 获取登录令牌
+     *
+     * @return
+     */
+    protected PcUserPassport getPcUserPassport() {
+        return APP_PC_USER_INFO_DATA_BIND.get();
+    }
 
 }
