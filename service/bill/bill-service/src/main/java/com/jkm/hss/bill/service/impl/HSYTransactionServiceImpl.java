@@ -202,8 +202,10 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                     case SUCCESS:
                         //推送
                         try {
+                            log.info("hsy订单[{}],开始推送", callbackResponse.getTradeOrderNo());
                             this.pushService.pushCashMsg(hsyOrder1.getShopid(), EnumPaymentChannel.of(hsyOrder1.getPaymentChannel()).getValue(),
                                     hsyOrder1.getAmount().doubleValue(), hsyOrder1.getValidationcode(), hsyOrder1.getOrderno());
+                            log.info("hsy订单[{}],推送调用结束", callbackResponse.getTradeOrderNo());
                         } catch (final Throwable e) {
                             log.error("订单[" + hsyOrder1.getOrderno() + "]，支付成功，推送异常", e);
                         }

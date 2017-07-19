@@ -23,7 +23,7 @@ public class RetrySplitProfitTask extends AbstractTask {
 
     @Override
     protected void run() {
-//        this.hsyTransactionService.handleRetrySplitProfitTask();
+        this.hsyTransactionService.handleRetrySplitProfitTask();
     }
 
     /**

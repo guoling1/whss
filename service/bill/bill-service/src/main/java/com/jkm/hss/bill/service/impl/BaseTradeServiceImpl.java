@@ -404,6 +404,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW_D0, 20000);
         }
         //TODO 通知业务
+        log.info("业务方[{}]-交易订单[{}]，支付成功, 开始通知业务", order.getAppId(), order.getOrderNo());
         final CallbackResponse callbackResponse = new CallbackResponse();
         callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         callbackResponse.setTradeOrderNo(order.getOrderNo());

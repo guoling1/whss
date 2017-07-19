@@ -25,9 +25,9 @@ public class HssELT1WithdrawTask extends AbstractTask {
 
     @Override
     protected void run() {
-//        final ArrayList<Integer> channelList = new ArrayList<>();
-//        channelList.add(EnumPayChannelSign.EL_UNIONPAY.getId());
-//        this.orderService.handleT1UnSettlePayOrder(channelList);
+        final ArrayList<Integer> channelList = new ArrayList<>();
+        channelList.add(EnumPayChannelSign.EL_UNIONPAY.getId());
+        this.orderService.handleT1UnSettlePayOrder(channelList);
     }
 
     /**

@@ -26,47 +26,47 @@ import java.util.List;
 @Lazy(false)
 public class Task {
 
-    @Autowired
-    private SendMqMsgService sendMqMsgService;
-    @Autowired
-    @Qualifier("hsyBalanceAccountEmailService")
-    private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
+//    @Autowired
+//    private SendMqMsgService sendMqMsgService;
+//    @Autowired
+//    @Qualifier("hsyBalanceAccountEmailService")
+//    private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
 
     /**
      * 处理重发分润-每一小时一次
      *
      * 间隔5秒一个消息
      */
-    @Scheduled(cron = "0 0 0/1 * * ?")
-    public void handleRetrySendSplitProfitTask() {
-        final List<ConsumeMsgSplitProfitRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
-        log.info("定时任务--处理重发分润，消息个数[{}]", records.size());
-        if (!CollectionUtils.isEmpty(records)) {
-            for (int i = 0; i < records.size(); i++) {
-                final ConsumeMsgSplitProfitRecord record = records.get(i);
-                final JSONObject requestJsonObject = new JSONObject();
-                requestJsonObject.put("consumeMsgSplitProfitRecordId", record.getId());
-                MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, i * 5000);
-            }
-        }
-    }
+//    @Scheduled(cron = "0 0 0/1 * * ?")
+//    public void handleRetrySendSplitProfitTask() {
+//        final List<ConsumeMsgSplitProfitRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
+//        log.info("定时任务--处理重发分润，消息个数[{}]", records.size());
+//        if (!CollectionUtils.isEmpty(records)) {
+//            for (int i = 0; i < records.size(); i++) {
+//                final ConsumeMsgSplitProfitRecord record = records.get(i);
+//                final JSONObject requestJsonObject = new JSONObject();
+//                requestJsonObject.put("consumeMsgSplitProfitRecordId", record.getId());
+//                MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, i * 5000);
+//            }
+//        }
+//    }
 
     /**
      * 周一发送上周对账邮件
      */
-    @Scheduled(cron = "0 0 18 ? * MON")
-    public void sendWeekEmail() {
-        log.info("定时任务--处理每周发送邮件");
-        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
-    }
+//    @Scheduled(cron = "0 0 18 ? * MON")
+//    public void sendWeekEmail() {
+//        log.info("定时任务--处理每周发送邮件");
+//        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
+//    }
 
     /**
      * 1号发送上月对账邮件
      */
-    @Scheduled(cron = "0 0 18 1 * ?")
-    public void sendMonthEmail() {
-        log.info("定时任务--处理每周发送邮件");
-        this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
-    }
+//    @Scheduled(cron = "0 0 18 1 * ?")
+//    public void sendMonthEmail() {
+//        log.info("定时任务--处理每周发送邮件");
+//        this.hsyBalanceAccountEmailService.sendMonthBalanceAccountEmail();
+//    }
 
 }
