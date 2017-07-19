@@ -345,8 +345,8 @@ public class WxPubController extends BaseController {
             }
             oemId = oemInfoOptional.get().getDealerId();
         }else{
-            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
-            if(merchantInfoList.size()>0){
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
+            if(merchantInfoOptional.isPresent()){
                 return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
             }
         }
