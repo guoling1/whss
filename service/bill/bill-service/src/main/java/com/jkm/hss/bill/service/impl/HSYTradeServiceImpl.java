@@ -1675,9 +1675,15 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             //更新结算单
             //待结算金额减少
             this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId(), EnumSettleStatus.SETTLE_ING.getId());
+            //更新交易订单为提现成功
+            final String orders = playMoneyOrder.getGoodsDescribe();
+            final String[] split = orders.split(",");
+            final List<String> sns = Arrays.asList(split);
+            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId());
+
+            playMoneyOrder.setPaySuccessTime(DateFormatUtil.parse(response.getWithdrawSuccessTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
             playMoneyOrder.setRemark(response.getMessage());
-            playMoneyOrder.setSn(response.getSn());
             this.orderService.update(playMoneyOrder);
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
 
@@ -1733,6 +1739,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.increaseSettleAmount(accountId, frozenRecord.getFrozenAmount());
+            //更新交易订单
+            final String orders = playMoneyOrder.getGoodsDescribe();
+            final String[] split = orders.split(",");
+            final List<String> sns = Arrays.asList(split);
+            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.PAY_SUCCESS.getId());
             //更新结算单
             //待结算金额减少
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());

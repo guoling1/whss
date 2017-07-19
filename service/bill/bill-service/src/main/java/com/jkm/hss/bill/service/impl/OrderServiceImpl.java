@@ -1678,6 +1678,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void updateOrdersBySns(List<String> sns, int status) {
+        this.orderDao.updateOrdersBySns(sns, status);
+    }
+
+    @Override
     public int listFirstCount(OrderTradeRequest req) {
         if("hss".equals(req.getAppId())){
             return this.orderDao.listFirstCount(req);

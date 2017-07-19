@@ -710,6 +710,8 @@ public interface OrderService {
 
     List<Order> selectWithdrawingOrderByAccountId(long id, String date);
 
+    void updateOrdersBySns(List<String> sns, int status);
+
     /**
      * 查询交易详情
      * @param orderRecord
