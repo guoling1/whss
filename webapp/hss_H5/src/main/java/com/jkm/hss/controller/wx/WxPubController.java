@@ -1529,7 +1529,7 @@ public class WxPubController extends BaseController {
         }
 
         if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",-3);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",accountBank.getId());
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENTING.getId()){
             log.info("商户入网中");
