@@ -710,7 +710,9 @@ public interface OrderService {
 
     List<Order> selectWithdrawingOrderByAccountId(long id, String date);
 
-    void updateOrdersBySns(List<String> sns, int status);
+    void updateOrdersBySns(List<String> sns, int status, int settleStatus,long settlementRecordId,Date settleTime);
+
+    void updateOrdersBySns2Withdraw(List<String> sns, int status);
 
     /**
      * 查询交易详情

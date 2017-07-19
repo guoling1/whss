@@ -1535,9 +1535,11 @@ public class OrderServiceImpl implements OrderService {
         final int status = response.getStatus();
         if (status == EnumBasicStatus.SUCCESS.getId()){
             //代付受理成功
+
             final String orders = playMoneyOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
+
             final Order firstOrder = this.orderDao.selectOrderBySn(split[0]);
             final Order lastOrder = this.orderDao.selectOrderBySn(split[split.length -1]);
             final Account account = this.accountService.getByIdWithLock(playMoneyOrder.getPayer()).get();
@@ -1579,11 +1581,10 @@ public class OrderServiceImpl implements OrderService {
             settlementRecord.setBalanceStartTime(firstOrder.getPaySuccessTime());
             settlementRecord.setBalanceEndTime(lastOrder.getPaySuccessTime());
             settlementRecord.setSettleChannel(EnumSettleChannel.ALL.getId());
-            final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
-            this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(),
-                    settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
-            //更新交易订单为提现中
-            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId());
+            this.settlementRecordService.add(settlementRecord);
+            //更新交易订单为提现中， 结算中
+            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId(), null);
+            //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
             playMoneyOrder.setSn(response.getSn());
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
             playMoneyOrder.setSettlementRecordId(settlementRecord.getId());
@@ -1678,8 +1679,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrdersBySns(List<String> sns, int status) {
-        this.orderDao.updateOrdersBySns(sns, status);
+    public void updateOrdersBySns(List<String> sns, int status,int settleStatus,long settlementRecordId,Date settleTime) {
+        this.orderDao.updateOrdersBySns(sns, status,settleStatus,settlementRecordId, settleTime);
+    }
+
+    @Override
+    public void updateOrdersBySns2Withdraw(List<String> sns, int status) {
+        this.orderDao.updateOrdersBySns2Withdraw(sns, status);
     }
 
     @Override

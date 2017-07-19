@@ -1681,7 +1681,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final String orders = playMoneyOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId());
+            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId(), playMoneyOrder.getSettleTime());
 
             playMoneyOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
@@ -1689,7 +1689,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.orderService.update(playMoneyOrder);
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
 
-            this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(),EnumSettleStatus.SETTLED.getId(),EnumSettleStatus.SETTLE_ING.getId());
+            //this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(),EnumSettleStatus.SETTLED.getId(),EnumSettleStatus.SETTLE_ING.getId());
             //入账到手续费账户
 //            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
 //            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
@@ -1745,7 +1745,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final String orders = playMoneyOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.PAY_SUCCESS.getId());
+            this.orderService.updateOrdersBySns2Withdraw(sns, EnumOrderStatus.PAY_SUCCESS.getId());
             //更新结算单
             //待结算金额减少
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());

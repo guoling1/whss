@@ -690,5 +690,7 @@ public interface OrderDao {
 
     List<Order> selectWithdrawingOrderByAccountId(@Param("accountId") long accountId, @Param("begin") String begin, @Param("end") String end);
 
-    void updateOrdersBySns(@Param("sns") List<String> sns, @Param("status") int status);
+    void updateOrdersBySns(@Param("sns") List<String> sns, @Param("status") int status, @Param("settleStatus") int settleStatus, @Param("settleId") long settleId, @Param("settleTime") Date settleTime);
+
+    void updateOrdersBySns2Withdraw(@Param("sns") List<String> sns, @Param("status") int status);
 }
