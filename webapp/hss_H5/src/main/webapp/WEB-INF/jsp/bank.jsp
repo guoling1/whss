@@ -50,6 +50,6 @@
   };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.32/bank.min.js"></script>--%>
-<script src="../../js/hss/2.2.32/bank.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/bank.min.js"></script>
+<%--<script src="../../js/hss/2.2.32/bank.min.js"></script>--%>
 </html>

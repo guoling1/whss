@@ -45,7 +45,7 @@ gulp.task('less-hss', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(rename({basename: "style.2.2.22"}))
+    .pipe(rename({basename: "style.2.2.23"}))
     .pipe(gulp.dest('css'));
 });
 
@@ -83,7 +83,7 @@ gulp.task('js-hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/2.2.32'));
+    .pipe(gulp.dest('js/hss/2.2.33'));
 });
 
 gulp.task('replace-hss', function () {
