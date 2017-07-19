@@ -1586,7 +1586,7 @@ public class OrderServiceImpl implements OrderService {
             this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId());
             playMoneyOrder.setSn(response.getSn());
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
-            playMoneyOrder.setSettlementRecordId(settlementRecordId);
+            playMoneyOrder.setSettlementRecordId(settlementRecord.getId());
             this.update(playMoneyOrder);
             return Pair.of(1, "提现受理成功");
 
