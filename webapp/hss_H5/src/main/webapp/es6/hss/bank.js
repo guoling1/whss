@@ -76,13 +76,12 @@ let getBankList = function () {
         }
         if (data[i].hasBranch == 0) {
           a.innerHTML = '补充支行信息';
-        } else {
-          a.innerHTML = '修改支行信息';
+            localStorage.removeItem('branch');
+            localStorage.setItem('bankId',data[i].bankId);
+            a.href = '/sqb/bankBranch/' + data[i].bankId + "?oemNo=" + pageData.oemNo+"&source=" + pageData.source;
+            name.appendChild(a);
         }
-        localStorage.removeItem('branch');
-        localStorage.setItem('bankId',data[i].bankId);
-        a.href = '/sqb/bankBranch/' + data[i].bankId + "?oemNo=" + pageData.oemNo+"&source=" + pageData.source;
-        name.appendChild(a);
+
       } else {
         let b = document.createElement('div');
         if (index != -1) {

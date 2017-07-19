@@ -72,13 +72,13 @@ if (pageData.provinceCode != '' &&
   pageData.cityName != '' &&
   pageData.countyCode != '' &&
   pageData.countyName != '' &&
-  pageData.branchCode != '' &&
   pageData.branchName != '') {
   world.value = pageData.provinceName + pageData.cityName + pageData.countyName;
     select.innerHTML = pageData.branchName;
     select.style.fontSize = '15px';
     select.style.color = '#000';
     let branchStorage = JSON.parse(localStorage.getItem('branch'));
+    console.log(branchStorage)
     if(branchStorage!=null){
         if(branchStorage.branchName!=''){
             world.value = branchStorage.provinceName + branchStorage.cityName + branchStorage.countyName;
@@ -91,6 +91,9 @@ if (pageData.provinceCode != '' &&
 
 
 submit.onclick = function () {
+    if(localStorage.getItem('branch')!=null){
+        pageData = JSON.parse(localStorage.getItem('branch'))
+    }
   if (validate.empty(pageData.provinceCode, '所在地区') &&
     validate.empty(pageData.provinceName, '所在地区') &&
     validate.empty(pageData.cityCode, '所在地区') &&
@@ -99,9 +102,6 @@ submit.onclick = function () {
     validate.empty(pageData.countyName, '所在地区') &&
     validate.empty(pageData.branchCode, '支行信息') &&
     validate.empty(pageData.branchName, '支行信息')) {
-    if(localStorage.getItem('branch')!=null){
-        pageData = JSON.parse(localStorage.getItem('branch'))
-    }
     http.post('/wx/branchInfo', {
       bankId: getLocationString(),
       branchCode: pageData.branchCode,

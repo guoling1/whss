@@ -43,7 +43,8 @@ const checkBusinessRegistration = (code, amount) => {
     http.post('/wx/checkMerchantInfo1', {
       amount: amount,
       channelTypeSign: code
-    }, function () {
+    }, function (data) {
+      console.log(data)
       message.load_hide();
       resolve(true);
     });
