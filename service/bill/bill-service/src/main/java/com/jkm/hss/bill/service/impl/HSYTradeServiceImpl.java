@@ -1496,6 +1496,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final JSONObject dataJo = JSONObject.parseObject(dataParam);
         final JSONObject result = new JSONObject();
         final long accountId = dataJo.getLongValue("accountId");
+        final int function = dataJo.getIntValue("function");//1 查询 2提现
         final Optional<Account> accountOptional = this.accountService.getById(accountId);
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
         final AppBizShop priShop = this.hsyShopDao.findPrimaryAppBizShopByAccountID(accountId).get(0);
@@ -1512,6 +1513,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
             result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
+            if (function == 1){
+                //查询
+                return result.toJSONString();
+            }
             if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode()) {
                 JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
                 result.put("canWithdraw", EnumBoolean.TRUE.getCode());
