@@ -28,7 +28,7 @@
                 <span class="screen-title">收款商户名称</span>
                 <el-input v-model="query.merchantName" placeholder="收款商户名称" size="small" style="width:220px"></el-input>
               </div>
-              <!--<div class="screen-item">
+              <div class="screen-item" v-if="isDealer">
                 <span class="screen-title">业务方</span>
                 <el-select v-model="query.appId" size="small" placeholder="请选择" style="width: 220px">
                   <el-option v-for="item in item_appId"
@@ -36,7 +36,7 @@
                              :value="item.value">
                   </el-option>
                 </el-select>
-              </div>-->
+              </div>
               <div class="screen-item">
                 <span class="screen-title">交易状态</span>
                 <el-select v-model="query.status" size="small" clearable placeholder="请选择" style="width: 220px">
@@ -85,13 +85,13 @@
               </div>
             </div>
             <div class="box-body" style="padding-bottom: 0">
-              <span><b>支付金额：</b>统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</span>
-              <span style="margin-left: 20px"><b>手续费：</b>统计总额 {{allTotal1 | fix}}元 当页总额 {{pageTotal1 | fix}}元</span>
+              <span><b>支付金额：</b>统计总额 {{allTotal | filter_toFix}}元 当页总额 {{pageTotal | filter_toFix}}元</span>
+              <span style="margin-left: 20px"><b>手续费：</b>统计总额 {{allTotal1 | filter_toFix}}元 当页总额 {{pageTotal1 | filter_toFix}}元</span>
             </div>
             <div class="box-body">
               <el-table v-loading.body="tableLoading" style="font-size: 12px;margin:15px 0" :data="records" border>
                 <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-                <!--<el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>-->
+                <el-table-column prop="appId" label="业务方" min-width="85" v-if="isDealer"></el-table-column>
                 <el-table-column label="交易订单号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
@@ -237,8 +237,25 @@
         pageTotal: 0,
         pageTotal1: 0,
         allTotal: 0,
-        allTotal1: 0
+        allTotal1: 0,
+        isDealer: true
       }
+    },
+    beforeRouteEnter (to, from, next){
+      store.dispatch('actions_users_getInfo').then(function (data) {
+        next((vm) => {
+          if (data.status === 1) {
+            vm.dealerInfo = data.dealerInfo;
+            if (data.dealerLeavel == 1) {
+              vm.isDealer = true
+            } else if (data.dealerLeavel == 2) {
+              vm.isDealer = true
+            } else {
+              vm.isDealer = false
+            }
+          }
+        });
+      });
     },
     created(){
       var clipboard = new Clipboard('.td');

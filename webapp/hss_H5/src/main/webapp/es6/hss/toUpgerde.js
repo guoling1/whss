@@ -36,7 +36,7 @@ pushToUp.addEventListener('click', function () {
 toUp.addEventListener('click', function () {
   if (toWhere) {
     // to pay
-    window.location.href = '/sqb/toBuy/' + pageData.level;
+    window.location.href = '/sqb/toBuy/' + pageData.level + '?oemNo=' + pageData.oemNo;
   } else {
     // to push
     layer.style.display = 'block';

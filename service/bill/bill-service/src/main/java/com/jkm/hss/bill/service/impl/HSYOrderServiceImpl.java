@@ -14,6 +14,7 @@ import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
 import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
+import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -67,7 +68,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         }
         hsyOrder.setOrdernumber(DateFormatUtil.format(new Date(),"yyyyMMdd")+idStr);
 //        hsyOrder.setValidationcode(hsyOrder.getOrdernumber().substring(hsyOrder.getOrdernumber().length()-4));
-        hsyOrderDao.update(hsyOrder);
+        hsyOrderDao.updateOrderNumber(hsyOrder.getId(), hsyOrder.getOrdernumber());
     }
     private String getFixLenthString(int strLength) {
 
@@ -133,6 +134,43 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     /**
      * {@inheritDoc}
      *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public long getOrderCountByParam(final long shopId, final String merchantNo, final String tradeOrderNo,
+                                     final int selectAll, final List<Integer> paymentChannels, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.selectOrderCountByParam(shopId, merchantNo, tradeOrderNo, selectAll, paymentChannels, startTime, endTime);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param shopId
+     * @param merchantNo
+     * @param selectAll
+     * @param paymentChannels
+     * @param startTime
+     * @param endTime
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<HsyOrder> getOrdersByParam(final long shopId, final String merchantNo, final String tradeOrderNo, final int selectAll, final List<Integer> paymentChannels,
+                                              final Date startTime, final Date endTime, final int offset, final int count) {
+        return this.hsyOrderDao.selectOrdersByParam(shopId, merchantNo, tradeOrderNo, selectAll, paymentChannels,
+                startTime, endTime, offset, count);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param dataParam
      * @param appParam
      * @return
@@ -169,11 +207,11 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         String merchantNo = null;
         if (requestParam.getAll() == 1) {
             final AppBizShop appBizShop = this.hsyShopDao.findAppBizShopByID(requestParam.getShopId()).get(0);
-            final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(appBizShop.getUid()).get(0);
+            final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(appBizShop.getAccountID()).get(0);
             merchantNo = appAuUser.getGlobalID();
         }
-        final long count = this.hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels, startTime, endTime);
-        final List<HsyOrder> hsyOrders = this.hsyOrderDao.selectOrdersByParam(requestParam.getShopId(), merchantNo, requestParam.getAll(), paymentChannels,
+        final long count = this.hsyOrderDao.selectOrderCountByParam(requestParam.getShopId(), merchantNo, "", requestParam.getAll(), paymentChannels, startTime, endTime);
+        final List<HsyOrder> hsyOrders = this.hsyOrderDao.selectOrdersByParam(requestParam.getShopId(), merchantNo, "", requestParam.getAll(), paymentChannels,
                 startTime, endTime, pageModel.getFirstIndex(), requestParam.getPageSize());
         if (CollectionUtils.isEmpty(hsyOrders)) {
             resultMap.put("amount", 0);
@@ -305,5 +343,18 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     public List<HsyOrder> getByMerchantNoAndTime(final String merchantNo, final Date startTime, final Date endTime) {
         return this.hsyOrderDao.selectByMerchantNoAndTime(merchantNo, startTime, endTime);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param shopId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<PcStatisticsOrder> pcStatisticsOrder(final long shopId, final Date startTime, final Date endTime) {
+        return this.hsyOrderDao.pcStatisticsOrder(shopId, startTime, endTime);
     }
 }

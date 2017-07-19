@@ -17,6 +17,7 @@ import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
+import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
@@ -31,7 +32,9 @@ import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
@@ -43,10 +46,8 @@ import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizCard;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -114,7 +115,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HSYRefundOrderService hsyRefundOrderService;
     @Autowired
     private HsyUserDao hsyUserDao;
-
+    @Autowired
+    private SettlementRecordService settlementRecordService;
+    @Autowired
+    private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+    @Autowired
+    private HsyOrderDao hsyOrderDao;
+    @Autowired
+    private BankCardBinService bankCardBinService;
     /**
      * {@inheritDoc}
      *
@@ -476,10 +484,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         return result.toJSONString();
     }
 
+
+
     @Override
     @Transactional
     public String appRefund1o6(String paramData, AppParam appParam) {
-        final JSONObject result = new JSONObject();
         final JSONObject paramJo = JSONObject.parseObject(paramData);
         final long payOrderId = paramJo.getLongValue("payOrderId");
         final String password = paramJo.getString("password");
@@ -494,21 +503,27 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //            return result.toJSONString();
 //        }
         final String tokenpwd=this.hsyUserDao.findpwdByToken(accessToken);
-        if(tokenpwd==null){
+        final JSONObject result = this.refund(tokenpwd, password, payOrder);
+        return result.toJSONString();
+    }
+
+    private JSONObject refund (final String dbPassword, final String password, final Order payOrder) {
+        final JSONObject result = new JSONObject();
+        if(dbPassword==null){
             result.put("code", -2);
             result.put("msg", "token无效");
-            return result.toJSONString();
+            return result;
         }
-        if(StringUtils.isEmpty(password)||!tokenpwd.equals(password)){
+        if(StringUtils.isEmpty(password) || !dbPassword.equals(password)){
             result.put("code", -2);
             result.put("msg", "密码错误");
-            return result.toJSONString();
+            return result;
         }
 
         if (payOrder.isRefundSuccess()) {
             result.put("code", -1);
             result.put("msg", "已退款");
-            return result.toJSONString();
+            return result;
         }
 //        final BigDecimal refundedAmount = this.refundOrderService.getRefundedAmount(payOrderId);
 //        if (payOrder.getRealPayAmount().subtract(refundedAmount).compareTo(refundAmount) < 0) {
@@ -521,13 +536,13 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
             result.put("code", -1);
             result.put("msg", "只可以退当日订单");
-            return result.toJSONString();
+            return result;
         }
-        final List<RefundOrder> refundOrders = this.refundOrderService.getByPayOrderId(payOrderId);
+        final List<RefundOrder> refundOrders = this.refundOrderService.getByPayOrderId(payOrder.getId());
         if (!CollectionUtils.isEmpty(refundOrders)) {
             result.put("code", -1);
             result.put("msg", "退款异常.");
-            return result.toJSONString();
+            return result;
         }
         final RefundOrder refundOrder = new RefundOrder();
         refundOrder.setBatchNo("");
@@ -568,16 +583,34 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final Pair<Integer, String> resultPair = this.refundImpl(refundOrder, payOrder,hsyRefundOrder,newhsyorder);
         if (0 == resultPair.getLeft()) {
             result.put("code", 0);
-            result.put("orderstatus",EnumHsyOrderStatus.REFUND_SUCCESS.getId());
-            result.put("orderstatusName",EnumHsyOrderStatus.REFUND_SUCCESS.getValue());
-            result.put("refundAmount",refundOrder.getRefundAmount());
+            result.put("orderstatus", EnumHsyOrderStatus.REFUND_SUCCESS.getId());
+            result.put("orderstatusName", EnumHsyOrderStatus.REFUND_SUCCESS.getValue());
+            result.put("refundAmount", refundOrder.getRefundAmount());
             result.put("msg", "退款成功");
             result.put("refundTime", this.refundOrderService.getById(refundOrder.getId()).get().getFinishTime());
         } else {
             result.put("code", -1);
             result.put("msg", "退款失败");
         }
-        return result.toJSONString();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     * @param uid
+     * @param password
+     * @return
+     */
+    @Override
+    @Transactional
+    public JSONObject pcAppRefund(final long orderId, final long uid, final String password) {
+        final Long payOrderId = this.hsyOrderService.getById(orderId).get().getOrderid();
+        final Order payOrder = this.orderService.getByIdWithLock(payOrderId).get();
+        final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
+        final JSONObject result = this.refund(appAuUser.getPassword(), password, payOrder);
+        return result;
     }
 
     /**
@@ -1228,6 +1261,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setChannel(channel);
         placeOrderRequest.setWxAppId(WxConstants.APP_HSY_ID);
         placeOrderRequest.setMemberId(order.getPayAccount());
+        placeOrderRequest.setSettleType("T1");
         try {
             final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
             return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
@@ -1452,6 +1486,130 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     }
 
     /**
+     * {@inheritDoc}
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String getAccount(String dataParam, AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long accountId = dataJo.getLongValue("accountId");
+        final Optional<Account> accountOptional = this.accountService.getById(accountId);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
+        final AppBizShop priShop = this.hsyShopDao.findPrimaryAppBizShopByAccountID(accountId).get(0);
+        final AppBizCard appBizCard = new AppBizCard();
+        appBizCard.setSid(priShop.getId());
+        final AppBizCard card = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final String cardNO = card.getCardNO();
+        final String cardBank = card.getCardBank();
+        if (accountOptional.isPresent()) {
+            final Account account = accountOptional.get();
+            result.put("accountId", account.getId());
+            result.put("totalAmount", account.getTotalAmount().toPlainString());
+            result.put("available", account.getAvailable().toPlainString());
+            result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+            result.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
+            if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode()) {
+                JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
+                result.put("canWithdraw", EnumBoolean.TRUE.getCode());
+                result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
+                result.put("bankName", cardBank);
+                result.put("avaWithdraw", jsonObject.getString("avaWithdraw"));
+                result.put("fee", jsonObject.getString("fee"));
+                final BigDecimal receiveAmount = new BigDecimal(jsonObject.getString("avaWithdraw")).compareTo(new BigDecimal(jsonObject.getString("fee"))) == -1 ?
+                        new BigDecimal("0") : new BigDecimal(jsonObject.getString("avaWithdraw")).subtract(new BigDecimal(jsonObject.getString("fee")));
+                result.put("receiveAmount", receiveAmount);
+                result.put("withDrawOrderId", jsonObject.getString("withDrawOrderId"));
+                result.put("isFirst", jsonObject.getString("isFirst"));
+            }else{
+                result.put("canWithdraw", EnumBoolean.FALSE.getCode());
+                result.put("phone", appAuUser.getCellphone());
+            }
+
+
+        }
+        log.info("请求参数:" + accountId + "结果:" + result.toJSONString());
+        return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String withdraw(String dataParam, AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long withDrawOrderId = dataJo.getLongValue("withDrawOrderId");
+        Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
+        if (pair.getLeft() == 1){
+            result.put("code", 1);
+            result.put("msg", pair.getRight());
+        }else {
+            result.put("code", -1);
+            result.put("msg", pair.getRight());
+        }
+        return  result.toJSONString();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String withdrawOrderList(String dataParam, AppParam appParam) {
+
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long accountId = dataJo.getLongValue("accountId");
+        final int pageNo = dataJo.getIntValue("pageNo");
+        final int pageSize = dataJo.getIntValue("pageSize");
+        final PageModel<WithdrawOrderResponse> pageModel = new PageModel<>(pageNo,
+                pageSize);
+        final long count = this.orderService.selectWithdrawOrderCountByParam(accountId);
+        if (count == 0){
+            pageModel.setCount(0);
+            pageModel.setRecords(Collections.EMPTY_LIST);
+            result.put("code", 1);
+            result.put("pageModel", pageModel);
+            result.put("msg", "查询成功");
+            return result.toJSONString();
+        }
+        final List<Order> orders = this.orderService.selectWithdrawOrdersByParam(accountId, pageModel.getFirstIndex(), pageModel.getPageSize());
+        final List<WithdrawOrderResponse> orderList = new ArrayList<>();
+        for (Order order : orders){
+            final WithdrawOrderResponse response = new WithdrawOrderResponse();
+            response.setAvaWithdraw(order.getRealPayAmount().toString());
+            response.setReceiveAmount(order.getRealPayAmount().subtract(order.getPoundage()).toString());
+            response.setBeginTime(order.getCreateTime().getTime());
+            response.setEndTime(order.getPaySuccessTime() == null ? 0 : order.getPaySuccessTime().getTime());
+            response.setBankName(order.getBankName());
+            response.setCardNo(order.getTradeCardNo().substring(order.getTradeCardNo().length() - 4, order.getTradeCardNo().length()));
+            response.setStatus(order.getStatus());
+            response.setOrderNo(order.getSn());
+            response.setPoundage(order.getPoundage().toString());
+            response.setBankPic(this.getBankPic(order.getTradeCardNo()));
+            orderList.add(response);
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(orderList);
+        result.put("code", 1);
+        result.put("pageModel", pageModel);
+        result.put("msg", "查询成功");
+        return result.toJSONString();
+    }
+
+
+    /**
      * 处理提现结果
      *
      * @param orderId
@@ -1494,19 +1652,16 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     private void markWithdrawSuccess(final long orderId, final long accountId,
                                      final PaymentSdkDaiFuResponse response) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        if (order.isWithDrawing()) {
+        final Order playMoneyOrder = this.orderService.getByIdWithLock(orderId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(playMoneyOrder.getSettlementRecordId()).get();
+        if (playMoneyOrder.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
-            order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            order.setRemark(response.getMessage());
-            order.setSn(response.getSn());
-            this.orderService.update(order);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额
             final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
             unFrozenRecord.setAccountId(account.getId());
             unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
-            unFrozenRecord.setBusinessNo(order.getOrderNo());
+            unFrozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
             unFrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
             unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
             unFrozenRecord.setUnfrozenTime(new Date());
@@ -1517,6 +1672,16 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
+            //更新结算单
+            //待结算金额减少
+            this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId(), EnumSettleStatus.SETTLE_ING.getId());
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
+            playMoneyOrder.setRemark(response.getMessage());
+            playMoneyOrder.setSn(response.getSn());
+            this.orderService.update(playMoneyOrder);
+            this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
+
+            this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(),EnumSettleStatus.SETTLED.getId(),EnumSettleStatus.SETTLE_ING.getId());
             //入账到手续费账户
 //            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
 //            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
@@ -1525,7 +1690,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //                    "提现分润", EnumAccountFlowType.INCREASE);
 //            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
-            try {
+            /*try {
                 log.info("订单[]，提现成功，推送", order.getOrderNo());
                 final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
                 final AppBizCard appBizCard = new AppBizCard();
@@ -1535,7 +1700,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 this.pushService.pushCashOutMsg(shop.getUid(), appBizCard1.getCardBank(), order.getTradeAmount().doubleValue(), cardNO.substring(cardNO.length() - 4));
             } catch (final Throwable e) {
                 log.error("订单[" + order.getOrderNo() + "]，提现成功，推送异常", e);
-            }
+            }*/
         }
     }
     /**
@@ -1548,6 +1713,36 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private void  markWithdrawFail(final long orderId, final long accountId,
                                    final PaymentSdkDaiFuResponse response) {
         log.error("###########【Impossible】#########提现单[{}]提现失败####################", orderId);
+        final Order playMoneyOrder = this.orderService.getByIdWithLock(orderId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(playMoneyOrder.getSettlementRecordId()).get();
+        if (playMoneyOrder.isWithDrawing()) {
+            final Account account = this.accountService.getByIdWithLock(accountId).get();
+            final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
+            //解冻金额
+            final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
+            unFrozenRecord.setAccountId(account.getId());
+            unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
+            unFrozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+            unFrozenRecord.setUnfrozenType(EnumUnfrozenType.UNFROZEN.getId());
+            unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
+            unFrozenRecord.setUnfrozenTime(new Date());
+            unFrozenRecord.setRemark("提现失败");
+            this.unfrozenRecordService.add(unFrozenRecord);
+            //减少总金额,减少冻结金额
+            Preconditions.checkState(account.getFrozenAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
+            Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
+            this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
+            this.accountService.increaseSettleAmount(accountId, frozenRecord.getFrozenAmount());
+            //更新结算单
+            //待结算金额减少
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+            playMoneyOrder.setRemark(response.getMessage());
+            this.orderService.update(playMoneyOrder);
+
+            this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLE_FAIL.getId());
+
+            this.orderService.markOrder2SettleFail(settlementRecord.getId(),  EnumSettleStatus.SETTLE_FAIL.getId(),  EnumSettleStatus.SETTLE_ING.getId());
+        }
     }
 
     /**
@@ -1581,5 +1776,81 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         }
         log.error("can not be here");
         return new Date();
+    }
+
+    private String getBankPic(String tradeCardNo) {
+        final String pri = "http://static.jinkaimen.cn/bank/";
+        final String las = ".png";
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(tradeCardNo);
+        if (!bankCardBinOptional.isPresent()){
+            return pri + "DEFAULT" + las;
+        }
+        String mid;
+        final String backCode = bankCardBinOptional.get().getShorthand();
+        switch (backCode){
+            case "ABC":
+                mid = "ABC";
+                break;
+            case "BANKCOMM":
+                mid = "BANKCOMM";
+                break;
+            case "BJBANK":
+                mid = "BJBANK";
+                break;
+            case "BJNC":
+                mid = "BJNC";
+                break;
+            case "BOC":
+                mid = "BOC";
+                break;
+            case "CCB":
+                mid = "CCB";
+                break;
+            case "CEB":
+                mid = "CEB";
+                break;
+            case "CGB":
+                mid = "CGB";
+                break;
+            case "CIB":
+                mid = "CIB";
+                break;
+            case "CITIC":
+                mid = "CITIC";
+                break;
+            case "CMB":
+                mid = "CMB";
+                break;
+            case "CMBC":
+                mid = "CMBC";
+                break;
+            case "DY":
+                mid = "DY";
+                break;
+            case "HXB":
+                mid = "HXB";
+                break;
+            case "ICBC":
+                mid = "ICBC";
+                break;
+            case "PINGAN":
+                mid = "PINGAN";
+                break;
+            case "PSBC":
+                mid = "PSBC";
+                break;
+            case "SHBANK":
+                mid = "SHBANK";
+                break;
+            case "SHNS":
+                mid = "SHNS";
+                break;
+            case "SPDB":
+                mid = "SPDB";
+                break;
+            default:
+                mid = "DEFAULT";
+        }
+        return pri + mid + las;
     }
 }

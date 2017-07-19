@@ -10,6 +10,8 @@ import java.util.Date;
 @Data
 public class ProfitCountRequest {
 
+    private String orderNo;
+
     /**
      * 分账日期
      */

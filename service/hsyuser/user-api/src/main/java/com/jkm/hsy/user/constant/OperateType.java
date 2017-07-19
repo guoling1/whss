@@ -6,6 +6,7 @@ package com.jkm.hsy.user.constant;
 public enum OperateType {
     CREATE("CREATE","注册会员"),
     RECHARGE("RECHARGE","会员充值"),
+    VIEW("VIEW","查看会员列表"),
     ;
     public String key;
     public String value;

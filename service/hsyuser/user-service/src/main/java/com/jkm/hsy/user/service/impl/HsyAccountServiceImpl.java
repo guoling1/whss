@@ -3,6 +3,7 @@ package com.jkm.hsy.user.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,16 +75,30 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
             result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
-            if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
-                    userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()){
-
+            if (appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode())
+                if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
+                        userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()) {
+                   // JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId());
+                    final JSONObject jsonObject = new JSONObject();
+                    result.put("canWithdraw", EnumBoolean.TRUE.getCode());
+                    result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
+                    result.put("bankName", cardBank);
+                    result.put("avaWithdraw", jsonObject.getString("avaWithdraw"));
+                    result.put("fee", jsonObject.getString("fee"));
+                    final BigDecimal receiveAmount = new BigDecimal(jsonObject.getString("avaWithdraw")).compareTo(new BigDecimal(jsonObject.getString("fee"))) == -1 ?
+                            new BigDecimal("0") : new BigDecimal(jsonObject.getString("avaWithdraw")).subtract(new BigDecimal(jsonObject.getString("fee")));
+                    result.put("receiveAmount", receiveAmount);
+                    result.put("withDrawOrderId",jsonObject.getString("withDrawOrderId"));
+                } else {
+                    result.put("canWithdraw", EnumBoolean.FALSE.getCode());
+                    result.put("phone", appAuUser.getCellphone());
+                }
+            else{
+                result.put("canWithdraw", EnumBoolean.FALSE.getCode());
+                result.put("phone", appAuUser.getCellphone());
             }
-            /*result.put("canWithdraw", );
-            result.put("cardNo",cardNO.substring(cardNO.length() - 4 , cardNO.length()));
-            result.put("bankName", cardBank);
-            result.put("avaWithdraw",);
-            result.put("fee", );
-            result.put("receiveAmount",);*/
+
+
         }
         return result.toJSONString();
     }
@@ -118,6 +135,31 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("msg", verifyCode.getValue());
         }
         return result.toJSONString();
+    }
+
+    /**
+     *  {@inheritDoc}
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Transactional
+    @Override
+    public String withdraw(String dataParam, AppParam appParam) {
+
+        /*final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final JSONObject result = new JSONObject();
+        final long withDrawOrderId = dataJo.getLongValue(dataJo.getString("withDrawOrderId"));
+        Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
+        if (pair.getLeft() == 1){
+            result.put("code", 1);
+            result.put("msg", pair.getRight());
+        }else {
+            result.put("code", -1);
+            result.put("msg", pair.getLeft());
+        }
+        return  result.toString();*/
+        return  "";
     }
 
 

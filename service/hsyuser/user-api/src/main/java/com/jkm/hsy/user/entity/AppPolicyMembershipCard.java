@@ -28,6 +28,13 @@ public class AppPolicyMembershipCard {
 
     private String sids;//店铺ID 以,隔开
 
+    private Integer memberCount;//会员卡数量
+    private BigDecimal rechargeSum;//充值总额
+    private BigDecimal consumeSum;//消费总值
+    private String proportion;//比例
+    private String discountInt;
+    private String discountFloat;
+
     public Long getId() {
         return id;
     }
@@ -170,5 +177,53 @@ public class AppPolicyMembershipCard {
 
     public void setCanRecharge(Integer canRecharge) {
         this.canRecharge = canRecharge;
+    }
+
+    public Integer getMemberCount() {
+        return memberCount;
+    }
+
+    public void setMemberCount(Integer memberCount) {
+        this.memberCount = memberCount;
+    }
+
+    public BigDecimal getRechargeSum() {
+        return rechargeSum;
+    }
+
+    public void setRechargeSum(BigDecimal rechargeSum) {
+        this.rechargeSum = rechargeSum;
+    }
+
+    public BigDecimal getConsumeSum() {
+        return consumeSum;
+    }
+
+    public void setConsumeSum(BigDecimal consumeSum) {
+        this.consumeSum = consumeSum;
+    }
+
+    public String getProportion() {
+        return proportion;
+    }
+
+    public void setProportion(String proportion) {
+        this.proportion = proportion;
+    }
+
+    public String getDiscountInt() {
+        return discountInt;
+    }
+
+    public void setDiscountInt(String discountInt) {
+        this.discountInt = discountInt;
+    }
+
+    public String getDiscountFloat() {
+        return discountFloat;
+    }
+
+    public void setDiscountFloat(String discountFloat) {
+        this.discountFloat = discountFloat;
     }
 }

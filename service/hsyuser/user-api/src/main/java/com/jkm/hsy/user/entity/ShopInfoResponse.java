@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class ShopInfoResponse {
     private int type;//店铺类型
+    private String globalID;//编码
     private String shortName;//店铺简称
     private String districtCode;//所在地
     private String address;//地址

@@ -1,19 +1,19 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
-import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.base.common.util.DateTimeUtil;
-import com.jkm.base.common.util.ExcelUtil;
-import com.jkm.base.common.util.SnGenerator;
+import com.jkm.base.common.util.*;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumBankType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
@@ -43,10 +43,11 @@ import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumProductType;
-import com.jkm.hss.product.enums.EnumUpperChannel;
-import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hss.product.enums.*;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.service.UserTradeRateService;
+import com.jkm.hsy.user.service.UserWithdrawRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -62,6 +63,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -94,7 +96,12 @@ public class OrderServiceImpl implements OrderService {
     private PayService payService;
     @Autowired
     private HttpClientFacade httpClientFacade;
-
+    @Autowired
+    private UserTradeRateService userTradeRateService;
+    @Autowired
+    private UserWithdrawRateService userWithdrawRateService;
+    @Autowired
+    private HsyShopDao hsyShopDao;
     /**
      * {@inheritDoc}
      *
@@ -102,8 +109,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public void add(final Order order) {
-        this.orderDao.insert(order);
+    public long add(final Order order) {
+        return this.orderDao.insert(order);
     }
 
     /**
@@ -478,9 +485,9 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate) {
-        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId());
-        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId());
+    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate, List<Long> accountIdlist) {
+        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId(), accountIdlist);
+        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId(),accountIdlist);
         return list.addAll(list1) == true ? list : Collections.EMPTY_LIST;
     }
 
@@ -568,6 +575,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyNameHsy",req.getProxyNameHsy());
         map.put("proxyNameHsy1",req.getProxyNameHsy1());
         map.put("branchCompany",req.getBranchCompany());
+        map.put("source",req.getSource());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1385,6 +1393,288 @@ public class OrderServiceImpl implements OrderService {
     public String getAmountCountBranch1(OrderTradeRequest req) {
         String list = this.orderDao.getAmountCountBranch1(req);
         return list;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param
+     * @param status
+     * @return
+     */
+    @Override
+    public List<Order> selectOrderListByCount(long accountId, int count, EnumOrderStatus status, String payTime) {
+        final List<Order> orderList = this.orderDao.selectOrderListByCount(accountId, count, status.getId(), payTime + " 00:00:00", payTime + " 23:59:59");
+        return CollectionUtils.isEmpty(orderList) ? Collections.EMPTY_LIST : orderList;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param account
+     * @return
+     */
+    @Transactional
+    @Override
+    public JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo,  AppBizCard appBizCard) {
+        //查询商户当天的可以提现的订单 每次限制75个
+        final List<Order> orderList =
+                this.selectOrderListByCount(account.getId(), 75, EnumOrderStatus.PAY_SUCCESS, DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+        //判断当天是否已经提现
+         List<Order> withdrawOrders =  this.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+        int isFirst = EnumBoolean.TRUE.getCode();
+        if (withdrawOrders.size() > 0){
+            isFirst = EnumBoolean.FALSE.getCode();
+        }
+        //判断提现
+        if(CollectionUtils.isEmpty(orderList)){
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("withDrawOrderId", 0);
+            jsonObject.put("avaWithdraw",new BigDecimal("0"));
+            jsonObject.put("fee",new BigDecimal("0"));
+            jsonObject.put("isFirst",isFirst);
+            return jsonObject;
+        }
+  /*      final BigDecimal wechatTradeRate =
+                this.userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId()).get().getTradeRateD0();
+        final BigDecimal alipayTradeRate =
+                this.userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId()).get().getTradeRateD0();
+        final UserWithdrawRate userWithdrawRate = this.userWithdrawRateService.selectByUserId(userId).get();*/
+        //统计待结算金额
+        BigDecimal sumAmount = new BigDecimal("0");
+        //统计T1手续费
+        BigDecimal sumT1Fee = new BigDecimal("0");
+        //统计DO手续费
+        BigDecimal sumD0Fee = new BigDecimal("0");
+        //统计交易金额
+        BigDecimal tradeAmount = new BigDecimal("0");
+        StringBuffer sns = new StringBuffer();
+        for (Order order : orderList){
+            tradeAmount = tradeAmount.add(order.getTradeAmount());
+            sns = sns.append(order.getSn() + ",");
+            sumAmount= sumAmount.add(order.getTradeAmount().subtract(order.getPoundage()));
+            sumT1Fee = sumT1Fee.add(order.getPoundage());
+            /*BigDecimal d0PayRate = null;
+            if (EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
+                d0PayRate = wechatTradeRate;
+            }else if (EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
+                d0PayRate = alipayTradeRate;
+            }
+            sumD0Fee = sumD0Fee.add(this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), d0PayRate,order.getPayChannelSign()));*/
+        }
+        final BigDecimal avaWithdraw = sumAmount;
+        final BigDecimal fee = sumD0Fee;
+
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("avaWithdraw",avaWithdraw);
+        jsonObject.put("fee",fee);
+        jsonObject.put("tradeAmount", tradeAmount);
+        jsonObject.put("merchantNo", merchantNo);
+        //初始化提现单
+        final long withDrawOrderId = this.initD0WithDrawOrder(jsonObject, sns.toString(), account, appBizCard);
+        jsonObject.put("withDrawOrderId",withDrawOrderId);
+        jsonObject.put("isFirst",isFirst);
+
+        return jsonObject;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param withDrawOrderId
+     * @return
+     */
+    @Transactional
+    @Override
+    public Pair<Integer, String> confirmWithdraw(long withDrawOrderId) {
+
+        final Order playMoneyOrder = this.orderDao.selectByIdWithLock(withDrawOrderId);
+        final AppBizShop appBizShop =
+                this.hsyShopDao.findPrimaryAppBizShopByAccountID(playMoneyOrder.getPayer()).get(0);
+        final AppBizCard appCard = new AppBizCard();
+        appCard.setSid(appBizShop.getId());
+        final AppBizCard appBizCard = this.hsyShopDao.findAppBizCardByParam(appCard).get(0);
+        //请求提现
+        if (playMoneyOrder.getStatus() == EnumOrderStatus.WAIT_WITHDRAW.getId()) {
+            final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
+            paymentSdkDaiFuRequest.setAppId(playMoneyOrder.getAppId());
+            paymentSdkDaiFuRequest.setOrderNo(playMoneyOrder.getOrderNo());
+            paymentSdkDaiFuRequest.setTotalAmount(playMoneyOrder.getRealPayAmount().subtract(playMoneyOrder.getPoundage()).toPlainString());
+            paymentSdkDaiFuRequest.setTradeType("D0");
+            paymentSdkDaiFuRequest.setIsCompany("0");
+            paymentSdkDaiFuRequest.setMobile("");
+            paymentSdkDaiFuRequest.setBankName(appBizCard.getCardBank());
+            paymentSdkDaiFuRequest.setAccountName(appBizCard.getCardAccountName());
+            paymentSdkDaiFuRequest.setAccountNumber(appBizCard.getCardNO());
+            paymentSdkDaiFuRequest.setIdCard(appBizCard.getIdcardNO());
+            paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SYJ.getId());
+            paymentSdkDaiFuRequest.setNote("");
+            paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
+            paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
+            paymentSdkDaiFuRequest.setPayOrderSn("");
+            paymentSdkDaiFuRequest.setOrders(playMoneyOrder.getGoodsDescribe());
+            paymentSdkDaiFuRequest.setMerchantNo(playMoneyOrder.getMerchantNo());
+            //请求网关
+            PaymentSdkDaiFuResponse response = null;
+            try {
+                final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
+                        SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
+                response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
+            } catch (final Throwable e) {
+                log.error("交易订单[" + playMoneyOrder.getOrderNo() + "], 请求网关支付异常", e);
+                playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+                this.orderDao.update(playMoneyOrder);
+            }
+            return this.handleHsyD0WithdrawResult(playMoneyOrder, response);
+        }
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+        this.orderDao.update(playMoneyOrder);
+        return Pair.of(-1, "提现失败");
+    }
+
+    private Pair<Integer,String> handleHsyD0WithdrawResult(Order playMoneyOrder, PaymentSdkDaiFuResponse response) {
+
+        //判断代付是否受理成功
+        final int status = response.getStatus();
+        if (status == EnumBasicStatus.SUCCESS.getId()){
+            //代付受理成功
+            final String orders = playMoneyOrder.getGoodsDescribe();
+            final String[] split = orders.split(",");
+            final List<String> sns = Arrays.asList(split);
+            final Order firstOrder = this.orderDao.selectOrderBySn(split[0]);
+            final Order lastOrder = this.orderDao.selectOrderBySn(split[split.length -1]);
+            final Account account = this.accountService.getByIdWithLock(playMoneyOrder.getPayer()).get();
+            final BigDecimal withdrawAmount = playMoneyOrder.getTradeAmount();
+            //结算 ，  冻结
+            this.accountService.decreaseSettleAmount(account.getId(), withdrawAmount);
+            this.accountService.increaseFrozenAmount(account.getId(), withdrawAmount);
+            final FrozenRecord frozenRecord = new FrozenRecord();
+            frozenRecord.setAccountId(account.getId());
+            frozenRecord.setFrozenAmount(withdrawAmount);
+            frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+            frozenRecord.setFrozenTime(new Date());
+            frozenRecord.setRemark("Hsy商户提现");
+            this.frozenRecordService.add(frozenRecord);
+            //添加账户流水--减少
+            this.accountFlowService.addAccountFlowToSettle(account.getId(), playMoneyOrder.getOrderNo(), withdrawAmount,
+                    "提现", EnumAccountFlowType.DECREASE);
+            //创建结算单
+            //生成结算单
+            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(account.getId()).get(0);
+            final SettlementRecord settlementRecord = new SettlementRecord();
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
+            settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(settlementRecord.getAccountUserType(), settlementRecord.getSettleDestination()));
+            settlementRecord.setSettleAuditRecordId(0);
+            settlementRecord.setAccountId(playMoneyOrder.getPayer());
+            settlementRecord.setUserNo(shop.getGlobalID());
+            settlementRecord.setUserName(shop.getShortName());
+            settlementRecord.setAppId(EnumAppType.HSY.getId());
+            settlementRecord.setSettleDate(playMoneyOrder.getSettleTime());
+            settlementRecord.setTradeNumber(split.length);
+            settlementRecord.setTradeAmount(playMoneyOrder.getTradeAmount());
+            settlementRecord.setSettleAmount(playMoneyOrder.getRealPayAmount());
+            settlementRecord.setSettlePoundage(playMoneyOrder.getPoundage());
+            settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+            settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
+            settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+            settlementRecord.setUpperChannel(EnumUpperChannel.SYJ.getId());
+            settlementRecord.setBalanceStartTime(firstOrder.getPaySuccessTime());
+            settlementRecord.setBalanceEndTime(lastOrder.getPaySuccessTime());
+            settlementRecord.setSettleChannel(EnumSettleChannel.ALL.getId());
+            final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
+            this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(),
+                    settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
+            //更新交易订单为提现中
+            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId());
+            playMoneyOrder.setSn(response.getSn());
+            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+            playMoneyOrder.setSettlementRecordId(settlementRecordId);
+            this.update(playMoneyOrder);
+            return Pair.of(1, "提现受理成功");
+
+        }else if (status == EnumBasicStatus.FAIL.getId()){
+            //代付失败
+            return Pair.of(-1, "提现失败");
+        }
+        return Pair.of(-1, "提现失败");
+    }
+
+    private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account, AppBizCard appBizCard) {
+        final String orders = sns.substring(0, sns.lastIndexOf(","));
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setAppId(EnumAppType.HSY.getId());
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(new BigDecimal(jsonObject.getString("tradeAmount")));
+        playMoneyOrder.setRealPayAmount(new BigDecimal(jsonObject.getString("avaWithdraw")));
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(EnumAppType.HSY.getId());
+        playMoneyOrder.setMerchantNo(jsonObject.getString("merchantNo"));
+        playMoneyOrder.setBankName(appBizCard.getCardBank());
+        playMoneyOrder.setTradeCardNo(appBizCard.getCardNO());
+        //手续费
+        playMoneyOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
+        playMoneyOrder.setGoodsName(account.getUserName());
+        playMoneyOrder.setGoodsDescribe(orders);
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(new Date());
+//        playMoneyOrder.setSettleType(EnumBalanceTimeType.D0.g'etType());
+        playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.  getId());
+        playMoneyOrder.setRemark("");
+        this.add(playMoneyOrder);
+        return playMoneyOrder.getId();
+    }
+
+    @Override
+    public String getAmountCounts(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountHss(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountsHsy(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAmountCounts1(OrderTradeRequest req) {
+
+        if("hss".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountHss1(req);
+            return list;
+        }
+        if("hsy".equals(req.getAppId())){
+            String list = this.orderDao.getAmountCountsHsy1(req);
+            return list;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus) {
+         this.orderDao.markOrder2SettleFail(settlementRecordId, settleStatus, oriSettleStatus);
+    }
+
+    @Override
+    public long selectWithdrawOrderCountByParam(long accountId) {
+        return this.orderDao.selectWithdrawOrderCountByParam(accountId);
+    }
+
+    @Override
+    public List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize) {
+        return this.orderDao.selectWithdrawOrdersByParam(accountId, firstIndex, pageSize);
+    }
+
+    @Override
+    public List<Order> selectWithdrawingOrderByAccountId(long accountId, String payTime) {
+
+        return this.orderDao.selectWithdrawingOrderByAccountId(accountId, payTime + " 00:00:00", payTime + " 23:59:59");
     }
 
     @Override

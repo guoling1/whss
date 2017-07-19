@@ -1506,3 +1506,381 @@ input:focus {
     text-align: left;
   }
 }
+
+#memberList {
+  /*overflow: auto;*/
+  background: #333;
+  height: 100%;
+  color: #fff;
+  .hide{
+    display: none;
+  }
+  .navbar {
+    position: fixed;
+    z-index: 100;
+    background: #333;
+    width: 100%;
+    height: 46px;
+    border-top: 1px solid #f4f5f8;
+    font-size: 16px;
+    div{
+      width: 49%;
+      display: inline-block;
+      span{
+        display: inline-block;
+        height: 45px;
+        line-height: 44px;
+        &.active{
+          color: #f49530;
+          border-bottom: 1px solid #f49530;
+        }
+      }
+
+    }
+  }
+  ul {
+    height: 100%;
+    overflow: auto;
+    padding-top: 46px;
+    li {
+      position: relative;
+      margin:20px auto;
+      padding: 16px;
+      width: 285px;
+      height: 149px;
+      background: url("../assets/member/cardbg.png") no-repeat center;
+      background-size: 100% 100%;
+      box-shadow: 0px -4px 20px #2b2b2b;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: left;
+      a {
+        color: #fff;
+      }
+      .type {
+        color: #b36112;
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+      }
+      .discount {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        font-size: 36px;
+        span{
+          font-size: 50px;
+        }
+      }
+    }
+  }
+}
+
+#memberInfo{
+  background: #f4f5f8;
+  min-height: 100%;
+  .top {
+    width: 100%;
+    background: #333;
+    padding-top: 9px;
+    color: #fff;
+    .card {
+      position: relative;
+      margin:0 auto 16px;
+      padding: 16px;
+      width: 285px;
+      height: 149px;
+      background: url("../assets/member/cardbg.png") no-repeat center;
+      background-size: 100% 100%;
+      box-shadow: 0px -4px 20px #2b2b2b;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: left;
+      .name {
+
+      }
+      .type {
+        color: #b36112;
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+      }
+      .discount {
+        position: absolute;
+        right: 16px;
+        bottom: 0px;
+        font-size: 36px;
+        span{
+          font-size: 50px;
+        }
+      }
+    }
+    .phone,.title{
+      color: #999;
+      font-size: 14px;
+    }
+    .title{
+      font-size: 15px;
+      padding: 25px 0 12px;
+    }
+    .price{
+      color: #fff;
+      font-size: 15px;
+      padding-bottom: 21px;
+      span{
+        font-size: 18px;
+      }
+    }
+  }
+  .weui-cells{
+    font-size: 16px;
+    text-align: left;
+    .weui-cell_access{
+      height: 50px;
+    }
+  }
+  .bottom{
+    padding: 26px 0 20px;
+    color: #333;
+    height: 130px;
+    div{
+      display: inline-block;
+      margin: 0 18px;
+    }
+    .icon{
+      width: 24px;
+      height: 24px;
+    }
+    .type{
+      font-size: 12px;
+    }
+  }
+
+}
+
+#toRecharge{
+  background: #f4f5f8;
+  min-height: 100%;
+  .top {
+    width: 100%;
+    background: #333;
+    padding-top: 9px;
+    color: #fff;
+    .card {
+      position: relative;
+      margin:0 auto 16px;
+      padding: 16px;
+      width: 285px;
+      height: 149px;
+      background: url("../assets/member/cardbg.png") no-repeat center;
+      background-size: 100% 100%;
+      box-shadow: 0px -4px 20px #2b2b2b;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: left;
+      .name {
+
+      }
+      .type {
+        color: #b36112;
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+      }
+      .discount {
+        position: absolute;
+        right: 16px;
+        bottom: 0px;
+        font-size: 36px;
+        span{
+          font-size: 50px;
+        }
+      }
+    }
+    .phone,.title{
+      color: #999;
+      font-size: 14px;
+    }
+    .title{
+      font-size: 15px;
+      padding: 25px 0 12px;
+    }
+    .price{
+      color: #fff;
+      font-size: 15px;
+      padding-bottom: 21px;
+      span{
+        font-size: 18px;
+      }
+    }
+  }
+  .weui-cells{
+    margin-top: 30px;
+    font-size: 16px;
+    text-align: left;
+    .weui-cell_access{
+      height: 50px;
+    }
+  }
+  p{
+    padding: 10px 15px 0;
+    margin-bottom: -5px;
+    font-size: 14px;
+    text-align: left;
+    span{
+      color: #f49530;
+    }
+  }
+  .toRecord{
+    display: inline-block;
+    padding-top: 20px;
+    font-size: 14px;
+    color: #1a9a48;
+  }
+}
+
+#createMem{
+  background: #f4f5f8;
+  min-height: 100%;
+  .top {
+    width: 100%;
+    background: #333;
+    padding-top: 9px;
+    padding-bottom: 31px;
+    height: 190px;
+    color: #fff;
+    .card {
+      position: relative;
+      //margin:0 auto;
+      padding: 16px;
+      width: 285px;
+      height: 150px;
+      background: url("../assets/member/cardbg.png") no-repeat center;
+      background-size: 100% 100%;
+      box-shadow: 0px -4px 20px #2b2b2b;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: left;
+      .type {
+        color: #b36112;
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+      }
+      .discount {
+        position: absolute;
+        right: 16px;
+        bottom: 0px;
+        font-size: 36px;
+        span{
+          font-size: 50px;
+        }
+      }
+    }
+  }
+  .weui-cells{
+    font-size: 16px;
+    text-align: left;
+    .weui-cell{
+      height: 50px;
+      font-size: 16px;
+      .weui-cell__ft{
+        margin-right: 15px;
+      }
+      .btnCode{
+        /*width: 84px;*/
+        height: 34px;
+        line-height: 34px;
+        font-size: 14px;
+      }
+    }
+  }
+  .bottom{
+    padding: 26px 0 20px;
+    color: #333;
+    div{
+      display: inline-block;
+      margin: 0 18px;
+    }
+    .icon{
+      width: 24px;
+      height: 24px;
+    }
+    .type{
+      font-size: 12px;
+    }
+  }
+  p{
+    padding: 29px 0 15px;
+    font-size: 15px;
+  }
+  .open{
+    height:50px;
+    line-height:50px;
+    margin: 0 15px 0;
+  }
+}
+
+#createMemberSuccess{
+  background: #f4f5f8;
+  min-height: 100%;
+  padding-top: 70px;
+  img{
+    width: 88px;
+    height: 88px;
+  }
+  .result {
+    padding: 30px 0 0;
+    font-size: 18px;
+  }
+  .toRecord{
+    display: inline-block;
+    padding: 70px 0 34px;
+    font-size: 15px;
+    color: #333;
+  }
+  .back{
+    font-size: 16px;
+    width: 119px;
+    height: 29px;
+    line-height: 29px;
+  }
+}
+
+#record{
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  text-align: left;
+  .weui-cells {
+    margin-top: 0;
+    .weui-cell {
+
+      padding: 12px 15px;
+      height: 60px;
+      .weui-cell__bd{
+        position: relative;
+        p{
+          font-size: 15px;
+        }
+        .time{
+          margin-top: 9px;
+          font-size: 13px;
+          color:#999;
+        }
+      }
+
+      .weui-cell__ft{
+        font-size: 16px;
+        color: #191c1a;
+        img{
+          width: 25px;
+          height: 25px;
+        }
+        .price {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
