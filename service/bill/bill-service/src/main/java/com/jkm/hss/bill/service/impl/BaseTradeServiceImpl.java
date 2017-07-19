@@ -349,7 +349,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order.getAppId(), updateOrder.getPaySuccessTime(), order.getSettleType(), enumPayChannelSign.getUpperChannel()));
         //TODO  hss-hsy
         if (EnumServiceType.APPRECIATION_PAY.getId() != order.getServiceType()) {
-            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()),
+            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.of(order.getAppId()),
                     order.getPayee(), enumPayChannelSign.getId());
             final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate,
                     order.getPayChannelSign());
@@ -437,7 +437,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
         updateOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         //TODO  hss-hsy
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         updateOrder.setPoundage(merchantPayPoundage);
         updateOrder.setPayRate(merchantPayPoundageRate);

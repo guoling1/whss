@@ -172,13 +172,13 @@ public class PayServiceImpl implements PayService {
      * {@inheritDoc}
      *
      * @param businessOrderId
-     * @param channel  通道
+     * @param
      * @param isDynamicCode
      * @return
      */
     @Override
     @Transactional
-    public Pair<Integer, String> codeReceipt(final long businessOrderId, final int channel,
+    public Pair<Integer, String> codeReceipt(final long businessOrderId, final int childChannelSign,
                                              final String appId, final boolean isDynamicCode) {
         final BusinessOrder businessOrder = this.businessOrderService.getByIdWithLock(businessOrderId).get();
         Preconditions.checkState(businessOrder.isDuePay(), "订单[{}]状态[{}]错误", businessOrder.getOrderNo(), businessOrder.getStatus());
@@ -187,9 +187,11 @@ public class PayServiceImpl implements PayService {
             return Pair.of(-1, "请重新输入金额下单");
         }
         log.info("商户[{}] 通过动态扫码， 支付一笔资金[{}]", businessOrder.getMerchantId(), businessOrder.getTradeAmount());
-        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
+        //获取通道的父通道标识
+        int parentChannelSign = this.basicChannelService.selectParentChannelSign(childChannelSign);
+        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(parentChannelSign);
         final MerchantInfo merchant = this.merchantInfoService.selectById(businessOrder.getMerchantId()).get();
-        final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, isDynamicCode ? EnumMerchantPayType.MERCHANT_CODE : EnumMerchantPayType.MERCHANT_JSAPI);
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(parentChannelSign, isDynamicCode ? EnumMerchantPayType.MERCHANT_CODE : EnumMerchantPayType.MERCHANT_JSAPI);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrder.getOrderNo());
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -203,7 +205,8 @@ public class PayServiceImpl implements PayService {
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(channelCode);
-        order.setPayChannelSign(channel);
+        order.setPayChannelSign(parentChannelSign);
+        order.setChildChannelSign(childChannelSign);
         order.setPaymentChannel(payChannelSign.getPaymentChannel().getId());
         order.setUpperChannel(payChannelSign.getUpperChannel().getId());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
@@ -214,7 +217,7 @@ public class PayServiceImpl implements PayService {
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);
         updateBusinessOrder.setTradeOrderNo(order.getOrderNo());
-        updateBusinessOrder.setPayChannelSign(channel);
+        updateBusinessOrder.setPayChannelSign(parentChannelSign);
         updateBusinessOrder.setRemark("请求交易成功");
         this.businessOrderService.update(updateBusinessOrder);
         //请求支付中心下单
@@ -332,7 +335,7 @@ public class PayServiceImpl implements PayService {
         log.info("交易订单[{}]，处理普通支付回调业务", order.getOrderNo());
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         //手续费， 费率
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSS, merchant.getId(), enumPayChannelSign.getId());
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.HSS, merchant.getId(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
@@ -506,7 +509,7 @@ public class PayServiceImpl implements PayService {
     @Transactional
     public void poundageSettle(final Order order, final long merchantId) {
         final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSS, order.getOrderNo(),
-                order.getTradeAmount(), order.getPayChannelSign(), merchantId);
+                order.getTradeAmount(), order.getChildChannelSign(), merchantId);
         final Triple<Long, BigDecimal, BigDecimal> basicMoneyTriple = shallProfitMap.get("basicMoney");
         final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");

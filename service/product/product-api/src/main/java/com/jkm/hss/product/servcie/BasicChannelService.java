@@ -86,4 +86,6 @@ public interface BasicChannelService {
      * @return
      */
     List<BasicChannel> selectHsyAll();
+
+    int selectParentChannelSign(int channelSign);
 }

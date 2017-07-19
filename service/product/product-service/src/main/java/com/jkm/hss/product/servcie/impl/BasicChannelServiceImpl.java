@@ -143,6 +143,15 @@ public class BasicChannelServiceImpl implements BasicChannelService {
     public List<BasicChannel> selectHsyAll() {
         return this.basicChannelDao.selectHsyAll();
     }
+
+    @Override
+    public int selectParentChannelSign(int channelSign) {
+        final int parentChannelSign = this.basicChannelDao.selectParentChannelSign(channelSign);
+        if (parentChannelSign == 0){
+            return channelSign;
+        }
+        return parentChannelSign;
+    }
 //    @Override
 //    public List<BasicChannel> selectListChannel() {
 //        return this.basicChannelDao.selectListChannel();

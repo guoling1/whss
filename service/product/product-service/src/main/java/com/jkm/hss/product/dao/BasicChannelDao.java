@@ -69,4 +69,6 @@ public interface BasicChannelDao {
      * @return
      */
     List<BasicChannel> selectHsyAll();
+
+    int selectParentChannelSign(int channelSign);
 }
