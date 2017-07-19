@@ -66,7 +66,7 @@ function getLocationString() {
 }
 
 // 处理 初始化 的过程
-if (pageData.provinceCode != '' &&
+/*if (pageData.provinceCode != '' &&
   pageData.provinceName != '' &&
   pageData.cityCode != '' &&
   pageData.cityName != '' &&
@@ -86,6 +86,22 @@ if (pageData.provinceCode != '' &&
             select.style.fontSize = '15px';
             select.style.color = '#000';
         }
+    }
+}*/
+world.value = pageData.provinceName + pageData.cityName + pageData.countyName;
+if(pageData.branchName!=''){
+    select.innerHTML = pageData.branchName;
+    select.style.fontSize = '15px';
+    select.style.color = '#000';
+}
+let branchStorage = JSON.parse(localStorage.getItem('branch'));
+console.log(branchStorage)
+if(branchStorage!=null){
+    if(branchStorage.branchName!=''){
+        world.value = branchStorage.provinceName + branchStorage.cityName + branchStorage.countyName;
+        select.innerHTML = branchStorage.branchName;
+        select.style.fontSize = '15px';
+        select.style.color = '#000';
     }
 }
 

@@ -46,6 +46,7 @@ const checkBusinessRegistration = (code, amount) => {
     }, function (data) {
         if(Number(data)){
           localStorage.setItem('bankId',data)
+            localStorage.removeItem('branch');
             window.location.href = '/sqb/bankBranch/' + data + "?oemNo=" + pageData.oemNo+"&source=" + pageData.source;
         }else {
           message.load_hide();
