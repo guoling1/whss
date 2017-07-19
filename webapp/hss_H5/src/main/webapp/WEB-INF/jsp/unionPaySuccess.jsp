@@ -27,6 +27,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('success').style.opacity='1'
+          }
       }
       window.onload = function () {
           aysnLoadCss('http://static.jinkaimen.cn/hss/css/style.2.2.21.css','/css/hss/style.2.2.21.css');
@@ -36,7 +39,7 @@
 </head>
 <body>
 
-<div id="success">
+<div id="success" style="opacity: 0">
   <div class="space">
     <div class="info"></div>
     <div class="text">付款成功</div>

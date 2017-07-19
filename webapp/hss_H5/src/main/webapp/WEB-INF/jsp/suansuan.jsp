@@ -27,6 +27,9 @@
                 link.rel = "stylesheet";
                 document.head.appendChild(link);
             }
+            link.onload = function () {
+                document.getElementById('ad').style.opacity='1'
+            }
         }
         function aysnLoad(url,cburl) {
             var script = document.createElement('script');
@@ -49,7 +52,7 @@
 </head>
 <body>
 
-<div id="ad">
+<div id="ad" style="opacity: 0">
     <img src="http://static.jinkaimen.cn/hss/assets/hss-up-ad.png" alt="">
 </div>
 

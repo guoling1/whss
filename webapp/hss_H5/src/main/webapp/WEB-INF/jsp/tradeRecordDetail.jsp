@@ -26,6 +26,9 @@
                 link.rel = "stylesheet";
                 document.head.appendChild(link);
             }
+            link.onload = function () {
+                document.getElementById('transactionDetail').style.opacity='1'
+            }
         }
         function aysnLoadcb () {
             var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div class="flexBox flex-box-column" id="transactionDetail">
+<div class="flexBox flex-box-column" id="transactionDetail" style="opacity: 0">
     <div class="space">
         <div class="amount">
             <div class="left">金额</div>

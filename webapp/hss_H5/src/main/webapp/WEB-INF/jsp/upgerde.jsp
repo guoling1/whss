@@ -26,6 +26,9 @@
                 link.rel = "stylesheet";
                 document.head.appendChild(link);
             }
+            link.onload = function () {
+                document.getElementById('success').style.opacity='1'
+            }
         }
         function aysnLoadcb () {
             var script = document.createElement('script');

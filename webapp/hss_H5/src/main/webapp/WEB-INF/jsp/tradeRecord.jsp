@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('transaction').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div class="flexBox flex-box-column" id="transaction">
+<div class="flexBox flex-box-column" id="transaction" style="opacity: 0">
   <div class="query" id="query">
     <div class="top flexBox">
       <div class="searchBox">

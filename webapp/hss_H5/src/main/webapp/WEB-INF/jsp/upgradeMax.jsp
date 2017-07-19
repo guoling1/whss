@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('_upgrade').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -77,7 +80,7 @@
 </head>
 <body>
 
-<div id="_upgrade">
+<div id="_upgrade" style="opacity: 0">
   <div class="info">
     <div class="head">
       <c:if test="${empty headimgUrl}"><img src="http://static.jinkaimen.cn/hss/assets/hss-default-head.png"

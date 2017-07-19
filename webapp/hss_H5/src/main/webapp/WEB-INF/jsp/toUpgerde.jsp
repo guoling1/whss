@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('upgradeWay').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -77,7 +80,7 @@
 </head>
 <body>
 
-<div id="upgradeWay">
+<div id="upgradeWay" style="opacity: 0">
   <div class="space flexBox flex-box-column">
     <div class="cont">
       <div class="info">

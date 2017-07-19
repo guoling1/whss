@@ -23,6 +23,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('upload').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -63,7 +66,7 @@
 </head>
 <body>
 
-<div id="upload" class="upload">
+<div id="upload" class="upload" style="opacity: 0">
   <div class="process">
     <div class="steps">
       <span class="right"></span>填写资料

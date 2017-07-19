@@ -30,6 +30,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('payment-wx').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -70,7 +73,7 @@
 </head>
 <body>
 
-<div id="payment-wx">
+<div id="payment-wx" style="opacity: 0">
   <div class="space">
     <div class="prompt">
       <span class="pay"></span>付款给${merchantName}

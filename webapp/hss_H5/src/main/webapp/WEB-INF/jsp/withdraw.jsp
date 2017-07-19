@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('withdrawal').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div id="withdrawal">
+<div id="withdrawal" style="opacity: 0">
   <div class="info">
     <div class="small">可提现金额</div>
     <div class="amount"><span class="s">￥</span><span id="amount"></span></div>
