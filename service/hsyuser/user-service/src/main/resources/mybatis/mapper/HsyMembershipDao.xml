@@ -316,4 +316,45 @@
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
     </select>
 
+    <select id="getMemberList" resultType="com.jkm.hsy.user.entity.MemberResponse">
+        SELECT
+            a.MEMBERCARDNO,
+            a.CREATETIME,
+            b.CONSUMERCELLPHONE,
+            b.USERID,
+            b.OPENID
+        FROM
+            app_policy_member a
+        LEFT JOIN app_policy_consumer b ON a.CID = b.ID
+        WHERE 1=1
+        <if test="consumerCellphone!=null and consumerCellphone!=''">and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
+        <if test="memberCardNO!=null and memberCardNO!=''">and a.MEMBERCARDNO=#{memberCardNO}</if>
+        ORDER BY a.CREATETIME #{offset},#{pageSize}
+    </select>
+
+    <select id="getMemberListCount" resultType="java.lang.Integer">
+        SELECT
+          COUNT(a.ID)
+        FROM
+            app_policy_member a
+        LEFT JOIN app_policy_consumer b ON a.CID = b.ID
+        WHERE 1=1
+        <if test="consumerCellphone!=null and consumerCellphone!=''">and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
+        <if test="memberCardNO!=null and memberCardNO!=''">and a.MEMBERCARDNO=#{memberCardNO}</if>
+    </select>
+
+    <select id="getMemberDetails" resultType="com.jkm.hsy.user.entity.MemberResponse">
+        SELECT
+        a.MEMBERCARDNO,
+        a.CREATETIME,
+        b.CREATETIME AS createTime1,
+        b.CONSUMERCELLPHONE,
+        b.USERID,
+        b.OPENID
+        FROM
+        app_policy_member a
+        LEFT JOIN app_policy_consumer b ON a.CID = b.ID
+        WHERE 1=1
+    </select>
+
 </mapper>

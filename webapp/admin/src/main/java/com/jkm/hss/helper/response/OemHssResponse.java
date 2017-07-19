@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.helper.response.DealerProfitSettingResponse;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,6 +15,11 @@ public class OemHssResponse {
      * 产品名称
      */
     private String productName;
+    /**
+     * 合伙人推荐功能开关
+     * {@link com.jkm.hss.dealer.enums.EnumRecommendBtn}
+     */
+    private int recommendBtn;
     /**
      * 产品列表
      */
@@ -82,4 +88,40 @@ public class OemHssResponse {
          */
         private String merchantWithdrawFee;
     }
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerUpgerdeRate> dealerUpgerdeRates;
+    @Data
+    public  class DealerUpgerdeRate {
+        /**
+         * 升级分润费率编码
+         */
+        private long id;
+        /**
+         * 产品编码
+         */
+        private long productId;
+        /**
+         * 代理商编码
+         */
+        private long dealerId;
+        /**
+         * 分润类型
+         * {@link com.jkm.hss.dealer.enums.EnumDealerRateType}
+         */
+        private int type;
+        /**
+         *金开门分润比例
+         */
+        private String bossDealerShareRate;
+        /**
+         *金开门分润比例
+         */
+        private String oemShareRate;
+    }
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerProfitSettingResponse> dealerProfits;
 }

@@ -19,10 +19,13 @@ import com.jkm.hss.merchant.service.RequestUrlParamService;
 import com.jkm.hss.merchant.service.UserInfoService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -53,7 +56,6 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
         if(oemNo!=null&&"null".equals(oemNo)){
             oemNo = "";
         }
-        request.setAttribute("oemNo",oemNo);
         if ("".equals(CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY))) {
             if(oemNo!=null&&!"".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
@@ -74,22 +76,35 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                 Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
                 if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
                     Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-                    Preconditions.checkState(oemInfoOptional.isPresent(), "参数不合法");
+                    Preconditions.checkState(oemInfoOptional.isPresent(), "分公司不存在");
+                    Preconditions.checkState(merchantInfoOptional.get().getOemId()>0, "参数有误");
                     if(merchantInfoOptional.get().getOemId()>0){
                         if(oemInfoOptional.get().getDealerId()!=merchantInfoOptional.get().getOemId()){//不是同一个分公司的商户
                             CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                             response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                             return false;
                         }
-                    }else{//由金开门切到分公司
-                        CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                        response.sendRedirect(request.getAttribute(ApplicationConsts.REQUEST_URL).toString());
-                        return false;
                     }
                 }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                     if(merchantInfoOptional.get().getOemId()>0){//分公司商户
-                        CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                        response.sendRedirect(request.getAttribute(ApplicationConsts.REQUEST_URL).toString());
+                        Optional<OemInfo> oemInfoOptional2= oemInfoService.selectOemInfoByDealerId(merchantInfoOptional.get().getOemId());
+                        Preconditions.checkState(oemInfoOptional2.isPresent(), "分公司不存在");
+                        String queryString = request.getQueryString();
+                        StringBuffer requestURL = request.getRequestURL();
+                        String redirectUrl = "";
+                        if(StringUtils.isNotBlank(queryString)){
+                            String[] arr = queryString.split("&");
+                            for(int i=0;i<arr.length;i++){
+                                String[] arr2= arr[i].split("=");
+                                if("oemNo".equals(arr2[0])){
+                                    queryString = queryString.replace("oemNo=","oemNo="+oemInfoOptional2.get().getOemNo());
+                                }
+                            }
+                            redirectUrl = requestURL.toString() + "?" + queryString;
+                        }else{
+                            redirectUrl = requestURL.toString()+"?oemNo="+oemInfoOptional2.get().getOemNo();
+                        }
+                        response.sendRedirect(redirectUrl);
                         return false;
                     }
                 }
@@ -148,7 +163,6 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     return false;
                 }
             }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                 return false;
             }

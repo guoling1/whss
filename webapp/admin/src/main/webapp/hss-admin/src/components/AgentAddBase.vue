@@ -327,7 +327,8 @@
           bankAccountName: '',
           bankReserveMobile: '',
           idCard: '',
-          dealerBelong:''
+          dealerBelong:'',
+          oemType:0
         },
         id: 0,
         isShow: true,

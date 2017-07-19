@@ -1253,6 +1253,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setChannel(channel);
         placeOrderRequest.setWxAppId(WxConstants.APP_HSY_ID);
         placeOrderRequest.setMemberId(order.getPayAccount());
+        placeOrderRequest.setSettleType("T1");
         try {
             final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
             return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);

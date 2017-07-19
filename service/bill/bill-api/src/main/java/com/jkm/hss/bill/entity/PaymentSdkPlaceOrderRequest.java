@@ -116,4 +116,9 @@ public class PaymentSdkPlaceOrderRequest {
      * 结算成功，回调url
      */
     private String settleNotifyUrl;
+
+    /**
+     * D0 T1
+     */
+    private String settleType;
 }

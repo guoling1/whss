@@ -97,6 +97,8 @@
             <mvc:mapping path="/account/toWithdraw"/>
             <mvc:mapping path="/account/toHssAccount"/>
             <mvc:mapping path="/channel/toListJsp"/>
+            <mvc:mapping path="/sqb/invite/**"/>
+            <mvc:mapping path="/sqb/toBuy/**"/>
             <bean id="merchantLoginInterceptor" class="com.jkm.hss.interceptor.MerchantLoginInterceptor">
                 <property name="oemInfoService" ref="oemInfoServiceImpl"/>
                 <property name="requestUrlParamService" ref="requestUrlParamServiceImpl"/>

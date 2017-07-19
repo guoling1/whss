@@ -85,8 +85,8 @@ public class PartnerRuleSettingServiceImpl implements PartnerRuleSettingService 
      * @return
      */
     @Override
-    public List<PartnerRuleSettingResponse> selectAllItemByProductId(long productId) {
-        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllItemByProductId(productId);
+    public List<PartnerRuleSettingResponse> selectAllItemByProductId(long dealerId,long productId) {
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingDao.selectAllItemByProductId(dealerId,productId);
         if(partnerRuleSettingResponses.size()>0){
             for(int i=0;i<partnerRuleSettingResponses.size();i++){
                 if(partnerRuleSettingResponses.get(i).getBossRate()!=null){
