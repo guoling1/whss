@@ -64,10 +64,10 @@
       </div>
       <div class="group">
         <div class="name">支行</div>
-        <a class="weui-cell weui-cell_access" id="branch" style="padding: 0;text-align: left;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-          <div class="weui-cell__bd">
+        <a class="weui-cell weui-cell_access" style="padding: 0;text-align: left;">
+          <div class="weui-cell__bd" style="width: 80%">
             <%--<input type="text" class="ipt" placeholder="点击选择" id="branch">--%>
-            <p style="color: #ccc;font-size: 14px;" id="branch">点击选择</p>
+            <p style="width:100%;color: #ccc;font-size: 14px;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="branch">点击选择</p>
           </div>
           <div class="weui-cell__ft">
           </div>

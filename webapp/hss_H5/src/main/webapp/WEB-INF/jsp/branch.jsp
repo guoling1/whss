@@ -38,7 +38,6 @@
 </body>
 <script>
     var pageData = {
-        bin: '${bankBin}',
         provinceCode: '${provinceCode}',
         provinceName: '${provinceName}',
         cityCode: '${cityCode}',

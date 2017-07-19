@@ -72,7 +72,7 @@ submit.onclick = function () {
         validate.empty(pageData.countyCode, '所在地区') &&
         validate.empty(pageData.countyName, '所在地区') ) {
         localStorage.setItem('branch', JSON.stringify(pageData));
-        window.location.href = '/sqb/branchSelect';
+        window.location.href = '/sqb/branchSelect?oemNo=' + pageData.oemNo;
         /*http.post('/wx/branchInfo', {
             bankId: getLocationString(),
             branchCode: pageData.branchCode,

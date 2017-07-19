@@ -40,7 +40,7 @@ skip.addEventListener('click', function () {
 branch.addEventListener('click',function () {
     if(validate.bankNo(bankNo.value)){
         localStorage.setItem('cardNo',bankNo.value)
-        window.location.href = ' /sqb/districtSelect';
+        window.location.href = "/sqb/districtSelect?oemNo=" + pageData.oemNo;
     }
 })
 
@@ -48,9 +48,11 @@ let branchStorage = JSON.parse(localStorage.getItem('branch'));
 console.log(branchStorage)
 if(branchStorage!=null){
   console.log(1)
-    document.getElementById('branch').innerHTML = branchStorage.branchName;
-    document.getElementById('branch').style.fontSize = '14px';
-    document.getElementById('branch').style.color = '#4a5171';
+    if(branchStorage.branchName!=''){
+        document.getElementById('branch').innerHTML = branchStorage.branchName;
+        document.getElementById('branch').style.fontSize = '14px';
+        document.getElementById('branch').style.color = '#4a5171';
+    }
 }
 
 let world = document.getElementById('world');
