@@ -679,6 +679,69 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     /**
      * {@inheritDoc}
      *
+     * @param order
+     */
+    @Override
+    @Transactional
+    public void memberAccountDecrease(Order order) {
+        final MemberAccount memberAccount = this.memberAccountService.getByIdWithLock(order.getMemberAccountId()).get();
+        final ReceiptMemberMoneyAccount receiptMemberMoneyAccount = this.receiptMemberMoneyAccountService.getByIdWithLock(order.getMerchantReceiveAccountId()).get();
+
+        //会员账户额度增加
+        final MemberAccount updateMemberAccount = new MemberAccount();
+        updateMemberAccount.setId(memberAccount.getId());
+        updateMemberAccount.setConsumeTotalAmount(memberAccount.getConsumeTotalAmount().subtract(order.getRealPayAmount()));
+        updateMemberAccount.setAvailable(memberAccount.getAvailable().add(order.getRealPayAmount()));
+        this.memberAccountService.update(updateMemberAccount);
+        //会员账户额度增加-添加流水
+        final MemberAccountFlow memberAccountFlow = new MemberAccountFlow();
+        memberAccountFlow.setAccountId(memberAccount.getId());
+        memberAccountFlow.setFlowNo(this.memberAccountFlowService.getFlowNo());
+        memberAccountFlow.setOrderNo(order.getOrderNo());
+        memberAccountFlow.setBeforeAmount(memberAccount.getAvailable());
+        memberAccountFlow.setAfterAmount(memberAccount.getAvailable().add(order.getRealPayAmount()));
+        memberAccountFlow.setIncomeAmount(order.getRealPayAmount());
+        memberAccountFlow.setOutAmount(new BigDecimal("0.00"));
+        memberAccountFlow.setChangeTime(new Date());
+        memberAccountFlow.setType(EnumAccountFlowType.INCREASE.getId());
+        memberAccountFlow.setRemark("退款增加");
+        this.memberAccountFlowService.add(memberAccountFlow);
+        //商户收会员款账户减少
+        this.receiptMemberMoneyAccountService.decreaseIncomeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount());
+        //商户收会员款账户增加-添加流水
+        final ReceiptMemberMoneyAccountFlow receiptMemberMoneyAccountFlow = new ReceiptMemberMoneyAccountFlow();
+        receiptMemberMoneyAccountFlow.setAccountId(receiptMemberMoneyAccount.getId());
+        receiptMemberMoneyAccountFlow.setFlowNo(this.receiptMemberMoneyAccountFlowService.getFlowNo());
+        receiptMemberMoneyAccountFlow.setOrderNo(order.getOrderNo());
+        receiptMemberMoneyAccountFlow.setBeforeAmount(receiptMemberMoneyAccount.getIncomeToTalAmount());
+        receiptMemberMoneyAccountFlow.setAfterAmount(receiptMemberMoneyAccount.getIncomeToTalAmount().subtract(order.getRealPayAmount()));
+        receiptMemberMoneyAccountFlow.setIncomeAmount(new BigDecimal("0.00"));
+        receiptMemberMoneyAccountFlow.setOutAmount(order.getRealPayAmount());
+        receiptMemberMoneyAccountFlow.setChangeTime(new Date());
+        receiptMemberMoneyAccountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+        receiptMemberMoneyAccountFlow.setRemark("退款减少");
+        this.receiptMemberMoneyAccountFlowService.add(receiptMemberMoneyAccountFlow);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param payOrder
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> memberRefund(final Order payOrder) {
+        this.memberAccountDecrease(payOrder);
+        this.orderService.updateRefundInfo(payOrder.getId(), payOrder.getRealPayAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
+        this.orderService.updateRemark(payOrder.getId(), "已退款");
+        return Pair.of(0, "退款成功");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param settlementRecordId
      * @param payOrderSn
      * @param payChannelSign
