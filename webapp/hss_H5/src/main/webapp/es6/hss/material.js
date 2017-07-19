@@ -239,6 +239,7 @@ submit.addEventListener('click', function () {
       branchName:branchStorage.branchName,
       districtCode:branchStorage.countyCode
     }, function () {
+      localStorage.removeItem('branch');
       window.location.replace("/sqb/addNext?oemNo=" + pageData.oemNo);
     })
   }
