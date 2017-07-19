@@ -104,6 +104,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                         return false;
                     }
                 }
+                request.setAttribute("oemNo",oemNo);
                 if (merchantInfoOptional.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
                     response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                     return false;
