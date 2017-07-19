@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('account').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -62,7 +65,7 @@
 </head>
 <body>
 
-<div id="account">
+<div id="account" style="opacity: 0">
   <div class="account">
     <div class="logo"></div>
     <div class="amount"><span class="s">¥</span><span id="amount"></span></div>

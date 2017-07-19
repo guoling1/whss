@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('prompt').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div id="prompt">
+<div id="prompt" style="opacity: 0">
   <img src="http://static.jinkaimen.cn/hss/assets/hss-prompt.png" alt="">
 
   <p>${message}</p>

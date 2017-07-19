@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('chargeCode').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -82,7 +85,7 @@
 </head>
 <body>
 
-<div id="chargeCode" class="flexBox flex-box-column">
+<div id="chargeCode" class="flexBox flex-box-column" style="opacity: 0">
   <div class="content">
     <div class="top">
       <p class="shop">${subMerName}</p>

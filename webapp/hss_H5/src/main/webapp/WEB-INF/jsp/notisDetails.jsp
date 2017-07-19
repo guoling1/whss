@@ -23,6 +23,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('noticeDetails').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -62,7 +65,7 @@
   </script>
 </head>
 <body>
-<div class="noticeDetails" id="noticeDetails">
+<div class="noticeDetails" id="noticeDetails" style="opacity: 0">
   <div class="title-box">
     <div class="title" id="title"></div>
     <div class="date" id="date"></div>

@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('accountFlow').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -62,7 +65,7 @@
 </head>
 <body>
 
-<div id="accountFlow">
+<div id="accountFlow" style="opacity: 0">
   <div id="content">
     <%-- 动态加载 --%>
   </div>

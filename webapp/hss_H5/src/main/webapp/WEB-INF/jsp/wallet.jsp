@@ -26,10 +26,13 @@
           link.rel = "stylesheet";
           document.head.appendChild(link);
           link.onerror = function () {
-              var link = document.createElement('link');
-              link.href = cburl;
-              link.rel = "stylesheet";
-              document.head.appendChild(link);
+              var link1 = document.createElement('link');
+              link1.href = cburl;
+              link1.rel = "stylesheet";
+              document.head.appendChild(link1);
+          }
+          link.onload = function () {
+              document.getElementById('wallet').style.opacity='1'
           }
       }
       function aysnLoadcb () {
@@ -71,7 +74,7 @@
 </head>
 <body>
 
-<div id="wallet">
+<div id="wallet" style="opacity: 0">
   <div class="wallet">
     <a class="operation touch_op" href="/sqb/collection?oemNo=${oemNo}">
       <div class="logo collection"></div>

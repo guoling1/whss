@@ -23,6 +23,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('noticeList').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -62,7 +65,7 @@
   </script>
 </head>
 <body>
-<div id="noticeList">
+<div id="noticeList" style="opacity: 0">
   <div class="list-box" id="content">
 
   </div>

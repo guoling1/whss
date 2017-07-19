@@ -21,6 +21,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('authentication').style.opacity='1'
+          }
       }
       window.onload = function () {
           aysnLoadCss('http://static.jinkaimen.cn/weui/weui.css','/css/hss/weui.css');
@@ -125,7 +128,7 @@
   </style>
 </head>
 <body>
-<div id="authentication">
+<div id="authentication" style="opacity: 0">
   <div class="space">
     <div class="mark"><span class="store"></span>已认证</div>
     <div class="list">

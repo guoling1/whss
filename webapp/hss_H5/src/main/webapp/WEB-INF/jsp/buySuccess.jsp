@@ -26,6 +26,9 @@
                 link.rel = "stylesheet";
                 document.head.appendChild(link);
             }
+            link.onload = function () {
+                document.getElementById('success').style.opacity='1'
+            }
         }
         function aysnLoadcb () {
             var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div id="success">
+<div id="success" style="opacity:0;">
     <div class="space">
         <div class="info"></div>
         <div class="text">付款成功</div>

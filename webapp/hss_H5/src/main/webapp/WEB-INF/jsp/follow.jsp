@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('follow').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -65,7 +68,7 @@
   </script>
 </head>
 <body>
-<div id="follow">
+<div id="follow" style="opacity: 0">
   <p class="title">您必须关注我们的微信才可以为您提供完整的服务</p>
 
   <p>1. 查账对账，从公众号便捷访问</p>

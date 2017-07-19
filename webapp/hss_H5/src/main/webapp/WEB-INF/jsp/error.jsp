@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('error').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div id="error">
+<div id="error" style="opacity: 0">
   <div class="space">
     <div class="info"></div>
     <div class="title">很遗憾，支付失败</div>

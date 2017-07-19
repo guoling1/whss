@@ -30,6 +30,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('promote').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -85,7 +88,7 @@
 </head>
 <body>
 
-<div id="promote" class="flexBox flex-box-column">
+<div id="promote" class="flexBox flex-box-column" style="opacity: 0">
   <div class="top">
     <div class="promote-title">累计分润(元)</div>
     <div class="amount">${totalProfit}</div>

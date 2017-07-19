@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('branchInfo').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -188,7 +191,7 @@
 </head>
 <body>
 
-<div id="branchInfo">
+<div id="branchInfo" style="opacity: 0">
   <div class="ipt-space">
     <div class="name">信用卡号</div>
     <input id="ipt" class="ipt" type="text" placeholder="输入本人名下信用卡号">

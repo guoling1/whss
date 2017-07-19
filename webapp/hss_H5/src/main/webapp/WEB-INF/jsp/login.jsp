@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('login').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -62,7 +65,7 @@
 </head>
 <body>
 
-<div id='login'>
+<div id='login' style="opacity: 0">
   <h1>${oemName}-商户</h1>
 
   <h2>${wechatCode}</h2>

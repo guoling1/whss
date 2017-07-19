@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('withdrawSuccess').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -61,7 +64,7 @@
   </script>
 </head>
 <body>
-<div id="withdrawSuccess">
+<div id="withdrawSuccess" style="opacity: 0">
   <div class="cont">
     <div class="detail">
       <div class="logo"></div>

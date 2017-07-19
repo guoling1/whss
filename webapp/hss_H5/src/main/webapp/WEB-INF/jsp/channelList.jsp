@@ -26,6 +26,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('channel').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -66,7 +69,7 @@
 </head>
 <body>
 
-<div class="channel">
+<div class="channel" style="opacity:0;">
   <div class="channel-box" id="channelBox">
     <div class="channel-space top" style="margin-bottom: 3px">
       <div class="channel-group" style="border: none">

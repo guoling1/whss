@@ -29,6 +29,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('_againUnionPay').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -69,7 +72,7 @@
 </head>
 <body>
 
-<div id="_againUnionPay">
+<div id="_againUnionPay" style="opacity: 0">
   <div class="space-title">确认订单信息</div>
   <div class="order-info">
     <div class="left">${merchantName}</div>

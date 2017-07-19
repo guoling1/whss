@@ -22,6 +22,9 @@
               link.rel = "stylesheet";
               document.head.appendChild(link);
           }
+          link.onload = function () {
+              document.getElementById('bankList').style.opacity='1'
+          }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
@@ -62,7 +65,7 @@
 </head>
 <body>
 
-<div id="bankList">
+<div id="bankList" style="opacity: 0">
   <div class="group red" id="color">
     <div class="top">
       <div class="logo" id="logo"></div>
