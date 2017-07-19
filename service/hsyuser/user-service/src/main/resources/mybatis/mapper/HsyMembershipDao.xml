@@ -134,8 +134,8 @@
     <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME,
         (select count(*) from app_policy_member member where mcid=card.ID and status=1) memberCount,
-        (select COALESCE(sum(TRADEAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
-        (select COALESCE(sum(realAmount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3 and orderstatus!=8) consumeSum
+        (select COALESCE(sum(REALAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
+        (select COALESCE(sum(amount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3 and orderstatus!=8) consumeSum
         from app_policy_membership_card card where UID=#{uid}
     </select>
 
@@ -273,7 +273,7 @@
         <if test="objectT.mcid!=null and objectT.mcid!=''">
             AND MCID=#{objectT.mcid}
         </if>
-        order by rorder.UPDATETIME desc
+        order by rorder.CREATETIME desc
     </select>
 
     <select id="findRechargeOrderListByPageCount" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder" resultType="java.lang.Integer">
@@ -322,7 +322,7 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where 1=1
+        where 1=1 and member.status=1
         <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
     </select>

@@ -347,7 +347,7 @@
         <if test="objectT.mid!=null and objectT.mid!=''">
             AND MID=#{objectT.mid}
         </if>
-        order by corder.update_time desc
+        order by corder.create_time desc
     </select>
 
     <select id="findConsumeOrderListByPageCount" parameterType="com.jkm.hss.bill.entity.HsyOrder" resultType="java.lang.Integer">

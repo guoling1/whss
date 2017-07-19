@@ -145,7 +145,7 @@
 </body>
 <script>
     var pageData={
-        consumeCellphone:'${appPolicyConsumer.consumeCellphone}'
+        consumeCellphone:'${appPolicyConsumer.consumerCellphone}'
     }
 </script>
 <script src="../../js/jquery-2.2.3.min.js"></script>
