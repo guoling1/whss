@@ -79,7 +79,9 @@ let getBankList = function () {
         } else {
           a.innerHTML = '修改支行信息';
         }
-        a.href = '/sqb/bankBranch/' + data[i].bankId + "?oemNo=" + pageData.oemNo;
+        localStorage.removeItem('branch');
+        localStorage.setItem('bankId',data[i].bankId);
+        a.href = '/sqb/bankBranch/' + data[i].bankId + "?oemNo=" + pageData.oemNo+"&source=" + pageData.source;
         name.appendChild(a);
       } else {
         let b = document.createElement('div');

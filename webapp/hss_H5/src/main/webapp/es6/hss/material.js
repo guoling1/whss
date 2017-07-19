@@ -45,9 +45,7 @@ branch.addEventListener('click',function () {
 })
 
 let branchStorage = JSON.parse(localStorage.getItem('branch'));
-console.log(branchStorage)
 if(branchStorage!=null){
-  console.log(1)
     if(branchStorage.branchName!=''){
         document.getElementById('branch').innerHTML = branchStorage.branchName;
         document.getElementById('branch').style.fontSize = '14px';

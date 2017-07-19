@@ -10,6 +10,11 @@
   <title>${oemName}</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <style>
+    .weui-cell:before{
+      border: none;
+    }
+  </style>
 </head>
 <body>
 
@@ -54,6 +59,17 @@
 
 <div id="branchInfo">
   <div class="branch">
+    <%--<div class="list" style="border-top: 1px solid #edeef5;">
+      <div class="name">支行</div>
+      <a class="weui-cell weui-cell_access" style="padding: 0;text-align: left;">
+        <div class="weui-cell__bd" style="width: 80%">
+          &lt;%&ndash;<input type="text" class="ipt" placeholder="点击选择" id="branch">&ndash;%&gt;
+          <p style="width:100%;color: #ccc;font-size: 14px;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="branch">点击选择</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+      </a>
+    </div>--%>
     <div class="list">
       <div class="name">开户行地区</div>
       <input id="world" class="ipt" type="text" placeholder="点击选择" readonly>
@@ -74,7 +90,15 @@
     </div>
     <div class="list">
       <div class="name">支行名称</div>
-      <input id="branch" class="ipt" type="text" placeholder="支行名称关键字如：国贸" readonly>
+      <a class="weui-cell weui-cell_access" style="padding: 0;text-align: left;">
+        <div class="weui-cell__bd" style="width: 80%">
+          <%--<input type="text" class="ipt" placeholder="点击选择" id="branch">--%>
+          <p style="width:100%;color: #ccc;font-size: 14px;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="select">点击选择</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+      </a>
+      <%--<input id="branch" class="ipt" type="text" placeholder="支行名称关键字如：国贸" readonly>
 
       <div class="layer" id="layer-b">
         <div class="match">
@@ -83,10 +107,10 @@
         </div>
         <div class="search">
           <div class="search-list" id="layer-b-list">
-            <%-- 动态添加 --%>
+            &lt;%&ndash; 动态添加 &ndash;%&gt;
           </div>
         </div>
-      </div>
+      </div>--%>
     </div>
     <div class="small">
       支行信息填写错误可能会导致结算失败<br>
@@ -109,9 +133,13 @@
     countyName: '${countyName}',
     branchCode: '${branchCode}',
     branchName: '${branchName}',
-    oemNo:'${oemNo}'
+    oemNo:'${oemNo}',
+    source: '${source}',
+      bankNo:'${realBankNo}'
   }
+  console.log(pageData)
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.32/bankBranch.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.32/bankBranch.min.js"></script>--%>
+<script src="../../js/hss/2.2.32/bankBranch.min.js"></script>
 </html>

@@ -52,5 +52,5 @@
     }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="../js/hss/2.2.32/addBranch.min.js"></script>
+<script src="../js/hss/2.2.32/addBranch2.min.js"></script>
 </html>

@@ -32,7 +32,7 @@
     </div>
     <div class="toWrite" style="display: none;" id="toWrite">
         <p>没有搜索到开户行结果？点击下方手动输入</p>
-        <a href="/sqb/addBranch" class="weui-btn weui-btn_primary">添加开户行</a>
+        <a href="/sqb/addBranch2?oemNo=${oemNo}&source=${source}" class="weui-btn weui-btn_primary">添加开户行</a>
     </div>
 </div>
 </body>
@@ -46,10 +46,11 @@
         countyName: '${countyName}',
         branchCode: '${branchCode}',
         branchName: '${branchName}',
-        oemNo:'${oemNo}'
+        oemNo:'${oemNo}',
+        source:'${source}'
     }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
 <%--<script src="http://static.jinkaimen.cn/hss/2.2.32/bankBranch.min.js"></script>--%>
-<script src="../js/hss/2.2.32/branch.min.js"></script>
+<script src="../js/hss/2.2.32/branch2.min.js"></script>
 </html>
