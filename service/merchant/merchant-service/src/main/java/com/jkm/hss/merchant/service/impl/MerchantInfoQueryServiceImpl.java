@@ -77,10 +77,10 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
 
     private List<MerchantInfoResponse> downloade(MerchantInfoRequest req) {
-        String mobile = req.getMobile();
-        if (mobile!=null&&!mobile.equals("")){
-            req.setMobile(MerchantSupport.encryptMobile(mobile));
-        }
+//        String mobile = req.getMobile();
+//        if (mobile!=null&&!mobile.equals("")){
+//            req.setMobile(MerchantSupport.encryptMobile(mobile));
+//        }
         Integer status = req.getStatus();
         if (status!=null) {
             if (status == 3) {

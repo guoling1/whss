@@ -323,7 +323,8 @@
           <el-col :span="5">
             <div class="label">联行号：
               <span>{{$msg.branchCode}}</span>
-              <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)" style="padding: 0">补填</el-button>
+              <!--<el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)" style="padding: 0">补填</el-button>-->
+              <!--<el-button type="text" @click="wad"  style="padding: 0">补填</el-button>-->
             </div>
           </el-col>
           <el-col :span="5">
@@ -463,8 +464,12 @@
       <el-dialog title="修改商户结算卡" :visible.sync="isBank">
         <el-form :model="bankForm">
           <el-form-item label="账户类型" label-width="120px">
-            <span v-if="msg.isPublic==1">对公</span>
-            <span v-if="msg.isPublic==0">对私</span>
+            <!--<span v-if="msg.isPublic==1">对公</span>
+            <span v-if="msg.isPublic==0">对私</span>-->
+            <el-select v-model="bankForm.isPublic" size="small" style="width:100%" placeholder="请选择">
+              <el-option label="对公" :value="'1'">对公</el-option>
+              <el-option label="对私" :value="'0'">对私</el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="账号" label-width="120px">
             <el-input v-model="bankForm.cardNo" size="small" style="width: 100%"></el-input>
@@ -490,8 +495,14 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="支行" label-width="120px">
+          <!--<el-form-item label="支行" label-width="120px">
             <el-autocomplete style="width: 100%" v-model="bankForm.bankAddress" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+          </el-form-item>-->
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete v-model="bankForm.bankAddress" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:100%"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="联行号" label-width="120px">
+            <el-input v-model="bankForm.branchCode" size="small" style="width: 100%" disabled></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -757,11 +768,14 @@
         },
         //修改结算卡参数
         bankForm:{
+          isPublic:'',
           province:'',
           districtCode:'',
           cardNo:'',
           bankName:'',
-          bankAddress:''
+          bankAddress:'',
+          bankAddress:'',
+          branchCode:''
         },
         channelForm:{
           userId:'',
@@ -993,12 +1007,38 @@
       },
       bankChange:function(){
         this.isBank = true;
+//        this.bankForm.isPublic
         this.bankForm={
-          province:'',
+          isPublic:""+this.msg.isPublic+"",
+          province:this.msg.codes,
           districtCode:'',
-          cardNo:'',
-          bankName:'',
-          bankAddress:''
+          cardNo:this.msg.cardNO,
+          bankName:this.msg.cardBank,
+          bankAddress:this.msg.bankAddress,
+          branchCode:this.msg.branchCode
+        }
+        if(this.msg.anames=="北京市"||this.msg.anames=="天津市"||this.msg.anames=="上海市"||this.msg.anames=="重庆市"){
+          this.item_city = [{
+            code:this.bankForm.province,
+            aname:this.msg.anames
+          }]
+          this.bankForm.districtCode = this.item_city[0].code;
+          this.bankForm.belongCityName = this.item_city[0].aname;
+        }else{
+          this.$http.post('/admin/unionNumber/findAllCities', {
+            code: this.bankForm.province
+          }).then(res => {
+            this.item_city = res.data;
+            this.bankForm.districtCode = res.data[0].code;
+            this.bankForm.belongCityName = res.data[0].aname;
+            this.bankForm.districtCode = this.msg.codes1
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
         }
       },
       wad:function () {
@@ -1152,7 +1192,7 @@
       },
       handleSelect(item) {
         console.log(item);
-        this.form.branchCode = item.branchCode;
+        this.bankForm.branchCode = item.branchCode;
       },
       province_select: function (provinceCode) {
         for (let m = 0; m < this.item_province.length; m++) {
