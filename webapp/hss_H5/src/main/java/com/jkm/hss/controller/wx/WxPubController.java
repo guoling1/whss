@@ -358,7 +358,6 @@ public class WxPubController extends BaseController {
                     }
                 }
             }
-            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
 
         }
         if (StringUtils.isBlank(mobile)) {
@@ -1294,7 +1293,7 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
-        if(merchantInfo.get().getKmNetStatus()!=EnumKmNetStatus.SUCCESS.getId()){
+        if(merchantInfo.get().getKmNetStatus()==null||merchantInfo.get().getKmNetStatus()!=EnumKmNetStatus.FAIL.getId()){
             merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
@@ -1530,7 +1529,7 @@ public class WxPubController extends BaseController {
         }
 
         if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
-            return CommonResponse.simpleResponse(-3, "支行信息不完善");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",-3);
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENTING.getId()){
             log.info("商户入网中");
