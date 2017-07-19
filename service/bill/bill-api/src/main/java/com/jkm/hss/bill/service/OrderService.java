@@ -182,7 +182,7 @@ public interface OrderService {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate, List<Long> list);
 
     /**
      * 查询交易列表

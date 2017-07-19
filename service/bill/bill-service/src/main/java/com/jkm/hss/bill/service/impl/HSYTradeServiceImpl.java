@@ -1513,25 +1513,19 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
             result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
-            if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode())
-                if (userCurrentChannelPolicy.getWechatChannelTypeSign() == EnumPayChannelSign.SYJ_WECHAT.getId() ||
-                        userCurrentChannelPolicy.getAlipayChannelTypeSign() == EnumPayChannelSign.SYJ_ALIPAY.getId()) {
-                    JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(),card);
-                    result.put("canWithdraw", EnumBoolean.TRUE.getCode());
-                    result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
-                    result.put("bankName", cardBank);
-                    result.put("avaWithdraw", jsonObject.getString("avaWithdraw"));
-                    result.put("fee", jsonObject.getString("fee"));
-                    final BigDecimal receiveAmount = new BigDecimal(jsonObject.getString("avaWithdraw")).compareTo(new BigDecimal(jsonObject.getString("fee"))) == -1 ?
-                            new BigDecimal("0") : new BigDecimal(jsonObject.getString("avaWithdraw")).subtract(new BigDecimal(jsonObject.getString("fee")));
-                    result.put("receiveAmount", receiveAmount);
-                    result.put("withDrawOrderId",jsonObject.getString("withDrawOrderId"));
-                    result.put("isFirst",jsonObject.getString("isFirst"));
-                } else {
-                    result.put("canWithdraw", EnumBoolean.FALSE.getCode());
-                    result.put("phone", appAuUser.getCellphone());
-                }
-            else{
+            if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode()) {
+                JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
+                result.put("canWithdraw", EnumBoolean.TRUE.getCode());
+                result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
+                result.put("bankName", cardBank);
+                result.put("avaWithdraw", jsonObject.getString("avaWithdraw"));
+                result.put("fee", jsonObject.getString("fee"));
+                final BigDecimal receiveAmount = new BigDecimal(jsonObject.getString("avaWithdraw")).compareTo(new BigDecimal(jsonObject.getString("fee"))) == -1 ?
+                        new BigDecimal("0") : new BigDecimal(jsonObject.getString("avaWithdraw")).subtract(new BigDecimal(jsonObject.getString("fee")));
+                result.put("receiveAmount", receiveAmount);
+                result.put("withDrawOrderId", jsonObject.getString("withDrawOrderId"));
+                result.put("isFirst", jsonObject.getString("isFirst"));
+            }else{
                 result.put("canWithdraw", EnumBoolean.FALSE.getCode());
                 result.put("phone", appAuUser.getCellphone());
             }

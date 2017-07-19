@@ -111,7 +111,6 @@ public class ActiveController {
         Method method=null;
         String appResult=null;
         try {
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>." + strs.toString() + ">>> " + strs[1]);
             method = clazz.getMethod(strs[1],String.class,AppParam.class);
             appResult = (String) method.invoke(obj, appParam.getRequestData(), appParam);
         } catch (Exception e) {

@@ -289,6 +289,12 @@
                 GROUP BY account_id, upper_channel
             </otherwise>
         </choose>
+        <if test="accountIdlist != null">
+            AND account_id not in
+            <foreach collection="accountIdlist" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 
     <!-- 提现列表 -->

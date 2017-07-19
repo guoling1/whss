@@ -269,8 +269,9 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         if (null == settleDate) {
             settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         }
-
-        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate);
+        //挂起的
+        List<Long> accountIdList = this.handleWithdrawIngSettle();
+        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate, accountIdList);
         log.info("今日[{}]商户生成结算审核记录,个数[{}]", settleDate, merchantOrderBalanceStatistics.size());
         final ArrayList<SettlementRecord> merchantSettlementRecords = new ArrayList<>();
         if (!CollectionUtils.isEmpty(merchantOrderBalanceStatistics)) {
@@ -405,6 +406,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         this.generateSettlementAuditRecordSendMsg(merchantSettlementRecords);
 
         return Pair.of(0, "success");
+    }
+
+    private List<Long> handleWithdrawIngSettle() {
+        //this.orderService.selectAccountIdsBySettleDate();
+        return null;
     }
 
     private void generateSettlementAuditRecordSendMsg(final ArrayList<SettlementRecord> settlementRecords) {

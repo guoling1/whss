@@ -485,9 +485,9 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate) {
-        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId());
-        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId());
+    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate, List<Long> accountIdlist) {
+        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId(), accountIdlist);
+        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId(),accountIdlist);
         return list.addAll(list1) == true ? list : Collections.EMPTY_LIST;
     }
 
