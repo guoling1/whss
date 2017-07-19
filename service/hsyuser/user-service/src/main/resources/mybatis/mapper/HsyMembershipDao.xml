@@ -236,6 +236,9 @@
         <if test="objectT.param!=null and objectT.param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{objectT.param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{objectT.param},'%'))
         </if>
+        <if test="objectT.mcid!=null">
+            AND mcid=#{objectT.mcid}
+        </if>
         order by member.UPDATETIME desc
     </select>
 
@@ -249,6 +252,9 @@
         where card.UID=#{uid} and member.status=1
         <if test="param!=null and param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{param},'%'))
+        </if>
+        <if test="mcid!=null">
+            AND mcid=#{mcid}
         </if>) x
     </select>
 
