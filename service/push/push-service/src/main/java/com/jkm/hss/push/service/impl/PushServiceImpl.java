@@ -11,6 +11,7 @@ import com.jkm.hss.push.entity.Push;
 import com.jkm.hss.push.producer.PushProducer;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -261,11 +262,17 @@ public class PushServiceImpl implements PushService {
         AppResult   appResult=new AppResult() ;
         appResult.setResultCode(200);
         appResult.setResultMessage(content);
-
+        log.info("订单[{}],推送开始", transactionNumber);
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
+        log.info("订单[{}],推送结束1-时间[{}]", transactionNumber, stopWatch.getTime());
 
+        stopWatch.reset();
+        stopWatch.start();
 //        Map ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
         Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
+        log.info("订单[{}],推送结束2-时间[{}]", transactionNumber, stopWatch.getTime());
         return ret;
     }
 
