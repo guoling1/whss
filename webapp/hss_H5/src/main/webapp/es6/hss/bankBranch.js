@@ -28,6 +28,26 @@ let p = document.getElementById('p');
 let c = document.getElementById('c');
 let ct = document.getElementById('ct');
 
+const select = document.getElementById('select');
+
+select.addEventListener('click',function () {
+    if (!pageData.countyName || pageData.countyName == '') {
+        message.prompt_show('请先选择支行地区');
+        return false;
+    }else {
+        // localStorage.setItem('cardNo',bankNo.value)
+        localStorage.setItem('branch',JSON.stringify(pageData))
+        window.location.href = "/sqb/branchSelect2?oemNo=" + pageData.oemNo+"&source="+pageData.source;
+    }
+    /*if(validate.bankNo(bankNo.value)){
+        localStorage.setItem('cardNo',bankNo.value)
+        window.location.href = "/sqb/branch2?oemNo=" + pageData.oemNo+"&source="+pageData.source;
+    }*/
+})
+
+
+
+
 let Provinces = false;
 let Citys = false;
 let Countrys = false;
@@ -46,27 +66,56 @@ function getLocationString() {
 }
 
 // 处理 初始化 的过程
-if (pageData.provinceCode != '' &&
+/*if (pageData.provinceCode != '' &&
   pageData.provinceName != '' &&
   pageData.cityCode != '' &&
   pageData.cityName != '' &&
   pageData.countyCode != '' &&
   pageData.countyName != '' &&
-  pageData.branchCode != '' &&
   pageData.branchName != '') {
   world.value = pageData.provinceName + pageData.cityName + pageData.countyName;
-  branch.value = pageData.branchName;
+    select.innerHTML = pageData.branchName;
+    select.style.fontSize = '15px';
+    select.style.color = '#000';
+    let branchStorage = JSON.parse(localStorage.getItem('branch'));
+    console.log(branchStorage)
+    if(branchStorage!=null){
+        if(branchStorage.branchName!=''){
+            world.value = branchStorage.provinceName + branchStorage.cityName + branchStorage.countyName;
+            select.innerHTML = branchStorage.branchName;
+            select.style.fontSize = '15px';
+            select.style.color = '#000';
+        }
+    }
+}*/
+world.value = pageData.provinceName + pageData.cityName + pageData.countyName;
+if(pageData.branchName!=''){
+    select.innerHTML = pageData.branchName;
+    select.style.fontSize = '15px';
+    select.style.color = '#000';
+}
+let branchStorage = JSON.parse(localStorage.getItem('branch'));
+console.log(branchStorage)
+if(branchStorage!=null){
+    if(branchStorage.branchName!=''){
+        world.value = branchStorage.provinceName + branchStorage.cityName + branchStorage.countyName;
+        select.innerHTML = branchStorage.branchName;
+        select.style.fontSize = '15px';
+        select.style.color = '#000';
+    }
 }
 
 
 submit.onclick = function () {
+    if(localStorage.getItem('branch')!=null){
+        pageData = JSON.parse(localStorage.getItem('branch'))
+    }
   if (validate.empty(pageData.provinceCode, '所在地区') &&
     validate.empty(pageData.provinceName, '所在地区') &&
     validate.empty(pageData.cityCode, '所在地区') &&
     validate.empty(pageData.cityName, '所在地区') &&
     validate.empty(pageData.countyCode, '所在地区') &&
     validate.empty(pageData.countyName, '所在地区') &&
-    validate.empty(pageData.branchCode, '支行信息') &&
     validate.empty(pageData.branchName, '支行信息')) {
     http.post('/wx/branchInfo', {
       bankId: getLocationString(),
@@ -84,13 +133,18 @@ submit.onclick = function () {
       } else if (getQueryString('branch')) {
         layer.style.display = 'block';
       } else {
-        window.location.href = '/sqb/bank?oemNo=' + pageData.oemNo;
+        if(pageData.source==1){
+            window.location.href = '/sqb/bank?oemNo=' + pageData.oemNo+'&source='+pageData.source;
+        }else if(pageData.source==2){
+            window.location.href = '/sqb/collection?oemNo=' + pageData.oemNo;
+        }
+        localStorage.removeItem('branch');
       }
     })
   }
 };
 
-branch.onclick = function () {
+/*branch.onclick = function () {
   if (!pageData.countyName || pageData.countyName == '') {
     message.prompt_show('请先选择支行地区');
     return false;
@@ -100,9 +154,9 @@ branch.onclick = function () {
   layer_b.style.height = (client_h - rect_b.top) + 'px';
   layer_b_list.style.height = (client_h - rect_b.top - 50) + 'px';
   match_ipt.focus();
-};
+};*/
 
-match_ipt.addEventListener('input', function (e) {
+/*match_ipt.addEventListener('input', function (e) {
   let ev = e.target;
   if (/[\u4e00-\u9fa5]{2,50}/.test(ev.value)) {
     http.post('/bankBranch/getBankBranch', {
@@ -126,10 +180,10 @@ match_ipt.addEventListener('input', function (e) {
       }
     })
   }
-});
+});*/
 
 world.onclick = function () {
-  layer_b.style.display = 'none';
+  // layer_b.style.display = 'none';
   if (!Provinces) {
     // 如果不存在 则去获取数据
     http.post('/district/findAllProvinces', {}, function (data) {
@@ -139,10 +193,13 @@ world.onclick = function () {
   } else {
     ProvincesSet();
   }
-  branch.value = '';
+  select.innerHTML = "点击选择";
+  select.style.color='#ccc';
+  select.style.fontSize= '14px';
+  // branch.value = '';
   pageData.branchCode = '';
   pageData.branchName = '';
-  layer_b_list.innerHTML = '';
+  // layer_b_list.innerHTML = '';
   layer_w.style.display = 'block';
   let rect_w = layer_w.getBoundingClientRect();
   layer_w.style.height = (client_h - rect_w.top) + 'px';

@@ -4,6 +4,7 @@ package com.jkm.hss.controller.merchant;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
@@ -17,8 +18,10 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
+import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,9 @@ public class QueryMerchantInfoRecordController extends BaseController {
 
     @Autowired
     private PushService pushService;
+
+    @Autowired
+    private BasicChannelService basicChannelService;
 
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
@@ -176,7 +182,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     @Override
                     public MerchantRateResponse apply(MerchantChannelRate input) {
                         MerchantRateResponse mechantRateResponse = new MerchantRateResponse();
-                        mechantRateResponse.setChannelName(EnumPayChannelSign.idOf(input.getChannelTypeSign()).getName());
+                        Optional<BasicChannel> basicChannelOptional =  basicChannelService.selectByChannelTypeSign(input.getChannelTypeSign());
+                        mechantRateResponse.setChannelName(basicChannelOptional.get().getChannelName());
                         mechantRateResponse.setMerchantRate(input.getMerchantPayRate().toString());
                         mechantRateResponse.setWithdrawMoney(input.getMerchantWithdrawFee().setScale(2).toString());
                         mechantRateResponse.setEntNet(EnumEnterNet.idOf(input.getEnterNet()).getMsg());

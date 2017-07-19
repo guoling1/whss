@@ -88,4 +88,8 @@ public interface MerchantChannelRateService {
      * 商户入网
      */
     JSONObject enterInterNet1(long accountId,long productId, long merchantId, String channelCompany);
+    /**
+     * 修改商户入网
+     */
+    void updateInterNet(long accountId,long merchantId);
 }

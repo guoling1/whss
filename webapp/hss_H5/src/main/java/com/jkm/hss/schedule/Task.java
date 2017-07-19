@@ -1,6 +1,7 @@
 package com.jkm.hss.schedule;
 
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

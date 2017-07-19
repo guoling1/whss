@@ -1,7 +1,9 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.AppBizBankBranch;
 import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
+import com.jkm.hss.merchant.helper.request.BankBranchRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -58,4 +60,15 @@ public interface BankBranchDao {
      * @param sid
      */
     void updateBranch(@Param("branchName") String branchName,@Param("sid") Long sid,@Param("branchCode") String branchCode,@Param("districtCode") String districtCode);
+
+    /**
+     *根据支行名称和查询条件查询列表
+     * @return
+     */
+    List<AppBizBankBranch> findBankBranchListByPage(BankBranchRequest bankBranchRequest);
+    /**
+     *根据支行名称和查询条件查询条数
+     * @return
+     */
+    Long findBankBranchListByPageCount(BankBranchRequest bankBranchRequest);
 }

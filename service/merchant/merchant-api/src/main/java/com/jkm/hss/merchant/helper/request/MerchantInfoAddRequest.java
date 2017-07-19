@@ -136,6 +136,18 @@ public class MerchantInfoAddRequest {
      * 银行卡简写
      */
     private String bankNoShort;
+    /**
+     * 联行号
+     */
+    private String branchCode;
+    /**
+     * 支行信息
+     */
+    private String branchName;
+    /**
+     *支行地区编码
+     */
+    private String districtCode;
 
 
 

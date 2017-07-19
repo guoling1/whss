@@ -79,11 +79,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                     Preconditions.checkState(oemInfoOptional.isPresent(), "分公司不存在");
                     Preconditions.checkState(merchantInfoOptional.get().getOemId()>0, "参数有误");
                     if(merchantInfoOptional.get().getOemId()>0){
-                        if(oemInfoOptional.get().getDealerId()!=merchantInfoOptional.get().getOemId()){//不是同一个分公司的商户
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
-                            return false;
-                        }
+                        Preconditions.checkState(oemInfoOptional.get().getDealerId()==merchantInfoOptional.get().getOemId(), "该微信已绑定其他公众号，请在其他公众号登录");
                     }
                 }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                     if(merchantInfoOptional.get().getOemId()>0){//分公司商户
@@ -108,6 +104,7 @@ public class MerchantLoginInterceptor extends HandlerInterceptorAdapter {
                         return false;
                     }
                 }
+                request.setAttribute("oemNo",oemNo);
                 if (merchantInfoOptional.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
                     response.sendRedirect("http://hss.qianbaojiajia.com/sqb/reg?oemNo="+oemNo);
                     return false;
