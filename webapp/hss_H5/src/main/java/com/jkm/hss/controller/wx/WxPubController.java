@@ -1477,10 +1477,7 @@ public class WxPubController extends BaseController {
             boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
             if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在09:00至22:25使用");
         }
-        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
-        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
-            return CommonResponse.simpleResponse(-3, "支行信息不完善");
-        }
+
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
         merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());
@@ -1494,6 +1491,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
+        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
         //hlb通道结算卡拦截
         if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
             final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
@@ -1518,6 +1516,10 @@ public class WxPubController extends BaseController {
 
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNSUPPORT.getId()){
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "无需入网");
+        }
+
+        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
+            return CommonResponse.simpleResponse(-3, "支行信息不完善");
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENTING.getId()){
             log.info("商户入网中");
