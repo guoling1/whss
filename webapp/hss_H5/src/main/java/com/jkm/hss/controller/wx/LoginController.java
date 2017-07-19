@@ -755,8 +755,10 @@ public class LoginController extends BaseController {
             if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
                 String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
                 model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                model.addAttribute("realBankNo",bankNo);
             }else{
                 model.addAttribute("bankNo","");
+                model.addAttribute("realBankNo","");
             }
             if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
                 String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
