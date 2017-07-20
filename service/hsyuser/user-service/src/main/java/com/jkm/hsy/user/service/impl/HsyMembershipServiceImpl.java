@@ -4,8 +4,6 @@ import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
-import com.jkm.hss.product.enums.EnumPaymentChannel;
-import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -835,6 +833,18 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             member.setDiscountFloat(discountFloat);
         }
         return list;
+    }
+
+    @Override
+    public List<MerchantMemberResponse> getMerchantMemberList(MemberRequest request) {
+        List<MerchantMemberResponse> list = this.hsyMembershipDao.getMerchantMemberList(request);
+        return list;
+    }
+
+    @Override
+    public List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request) {
+        List<MerchantMemberResponse> lists = this.hsyMembershipDao.getMerchantMemberLists(request);
+        return lists;
     }
 
     @Override

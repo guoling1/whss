@@ -21,6 +21,8 @@ public class MemberRequest {
      */
     private int pageSize;
 
+    private String realname;//商户名（会员卡）
+
     private String memberCardNO;//会员卡号
 
     private String consumerCellphone;//消费者手机号

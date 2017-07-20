@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
-
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,4 +68,18 @@ public interface HsyMembershipDao {
     public AppPolicyMemberStatistic findMemberConsumeStatistic(@Param("uid")Long uid, @Param("startTime") Date startTime,@Param("endTime") Date endTime);
     public List<AppPolicyMembershipCard> findMemberCardAndStatistic(@Param("uid")Long uid);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
+
+    /**
+     * 查询商户列表（会员卡）
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberList(MemberRequest request);
+
+    /**
+     * 查询商户列表（会员卡）总数
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request);
 }
