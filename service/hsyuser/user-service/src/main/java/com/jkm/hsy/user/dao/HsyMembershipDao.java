@@ -82,4 +82,11 @@ public interface HsyMembershipDao {
      * @return
      */
     List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request);
+
+    /**
+     * 商户会员卡列表
+     * @param request
+     * @return
+     */
+    List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request);
 }

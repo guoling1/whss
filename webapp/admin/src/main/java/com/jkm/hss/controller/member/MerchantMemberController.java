@@ -4,6 +4,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hsy.user.entity.MemberRequest;
 import com.jkm.hsy.user.entity.MerchantMemberResponse;
+import com.jkm.hsy.user.entity.MerchantMemberShipResponse;
 import com.jkm.hsy.user.service.HsyMembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,11 +52,11 @@ public class MerchantMemberController {
     @ResponseBody
     @RequestMapping(value = "/getMemberShipList",method = RequestMethod.POST)
     public CommonResponse getMemberShipList(@RequestBody MemberRequest request){
-        final PageModel<MerchantMemberResponse> pageModel = new PageModel<MerchantMemberResponse>(request.getPageNo(), request.getPageSize());
+        final PageModel<MerchantMemberShipResponse> pageModel = new PageModel<MerchantMemberShipResponse>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
-        List<MerchantMemberResponse> list = this.hsyMembershipService.getMerchantMemberList(request);
-        List<MerchantMemberResponse> lists = this.hsyMembershipService.getMerchantMemberLists(request);
-        pageModel.setCount(lists.size());
+        List<MerchantMemberShipResponse> list = this.hsyMembershipService.getMemberShipList(request);
+//        List<MerchantMemberResponse> lists = this.hsyMembershipService.getMerchantMemberLists(request);
+//        pageModel.setCount(lists.size());
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
     }

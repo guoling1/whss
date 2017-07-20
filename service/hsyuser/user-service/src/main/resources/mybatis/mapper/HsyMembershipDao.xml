@@ -362,7 +362,7 @@
         SELECT
             u.ID,
             u.GLOBALID,
-            u.REALNAME,
+            s.SHORTNAME AS REALNAME,
             t.count as cardCount,
             (
                 SELECT
@@ -374,6 +374,8 @@
             ) AS total
         FROM
             app_au_user u
+        LEFT JOIN app_biz_shop_user_role r ON r.UID=u.ID AND r.TYPE=1 AND r.ROLE=1 AND r.`STATUS`=1
+        LEFT JOIN app_biz_shop s ON s.ID = r.SID
         RIGHT JOIN (
             SELECT
                 UID,
@@ -413,6 +415,11 @@
         UID
         ) AS t ON u.ID = t.UID WHERE 1=1
         <if test="realname!=null and realname!=''"> and u.REALNAME=#{realname}</if>
+    </select>
+
+    <select id="getMemberShipList" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+
+        <if test="!=null and !=''"> and =#{}</if>
     </select>
 
 </mapper>

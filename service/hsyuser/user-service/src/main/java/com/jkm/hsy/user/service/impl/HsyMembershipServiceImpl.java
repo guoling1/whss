@@ -848,6 +848,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     }
 
     @Override
+    public List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request) {
+        List<MerchantMemberShipResponse> list = this.hsyMembershipDao.getMemberShipList(request);
+        return list;
+    }
+
+    @Override
     public List<MemberResponse> getMemberList(MemberRequest request) {
         List<MemberResponse> list = hsyMembershipDao.getMemberList(request);
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
