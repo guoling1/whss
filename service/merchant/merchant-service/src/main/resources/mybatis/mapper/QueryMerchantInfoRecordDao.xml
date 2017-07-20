@@ -175,12 +175,7 @@
         UPDATE tb_merchant_info
         SET  branch_code = #{branchCode},
              branch_name = #{bankName},
-             province_code = #{branchProvinceCode},
-             province_name = #{branchProvinceName},
-             city_code = #{branchCityCode},
-             city_name = #{branchCityName},
-             county_code = #{branchCountyCode},
-             county_name = #{branchCountyName}
+             district_code = #{branchCountyCode}
         WHERE id=#{id}
     </update>
 
@@ -195,7 +190,7 @@
              branch_city_name = #{branchCityName},
              branch_county_code = #{branchCountyCode},
              branch_county_name = #{branchCountyName}
-        WHERE account_id=#{accountId} AND is_default=1
+        WHERE account_id=#{accountId} AND is_default=1 and card_type=0 and status=0
     </update>
     <select id="getStatus" resultType="java.lang.Integer">
         SELECT status FROM tb_merchant_info WHERE id = #{id}

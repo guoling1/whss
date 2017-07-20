@@ -41,13 +41,13 @@ public class V1o7BizMapper {
         /**app收款*/
         bizMapper.put("HSY001030", new String[]{"hsyTradeService", "appReceipt"});
         /**app提现*/
-        bizMapper.put("HSY001031", new String[]{"hsyTradeService", "appWithdraw"});
+        bizMapper.put("HSY001031", new String[]{"hsyTradeService", "withdraw"});
         /**app获取提现页面信息*/
         bizMapper.put("HSY001032", new String[]{"hsyTradeService", "getWithdrawInfo"});
         /** 账户余额信息*/
-        bizMapper.put("HSY001033", new String[]{"hsyAccountService", "getAccount"});
-        /**获取提现验证码*/
-        bizMapper.put("HSY001034", new String[]{"hsyAccountService", "getVerifyCode"});
+        bizMapper.put("HSY001033", new String[]{"hsyTradeService", "getAccount"});
+        /**提现记录*/
+        bizMapper.put("HSY001034", new String[]{"hsyTradeService", "withdrawOrderList"});
         /**结算记录*/
         bizMapper.put("HSY001035", new String[]{"accountSettleAuditRecordService", "appSettleRecordList"});
         /**交易记录-version1*/

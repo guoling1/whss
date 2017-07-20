@@ -34,6 +34,7 @@
         business_order_no,
         order_no,
         sn,
+        settlement_record_id,
         trade_amount,
         real_pay_amount,
         marketing_amount,
@@ -80,6 +81,7 @@
         #{businessOrderNo},
         #{orderNo},
         #{sn},
+        #{settlementRecordId},
         #{tradeAmount},
         #{realPayAmount},
         #{marketingAmount},
@@ -206,6 +208,9 @@
             <if test="paySign != null and paySign != ''">
                 pay_sign = #{paySign},
             </if>
+            <if test="settlementRecordId != null and settlementRecordId != ''">
+                settlement_record_id = #{settlementRecordId},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark},
             </if>
@@ -271,14 +276,30 @@
         SUM(poundage) as poundage,
         MIN(pay_success_time) as trade_start_time,
         MAX(pay_success_time) as trade_end_time,
-        upper_channel
+        upper_channel,
+        payment_channel as settle_channel
         FROM tb_order
         WHERE app_id = 'hsy'
         AND status IN (4, 7)
         AND settle_status = 1
         AND refund_status = 0
         AND settle_time = #{settleDate}
-        GROUP BY account_id, upper_channel
+        <choose>
+            <when test="upperChannel == 7">
+                AND upper_channel = 7
+                GROUP BY account_id, upper_channel,payment_channel
+            </when>
+            <otherwise>
+                AND upper_channel = #{upperChannel}
+                GROUP BY account_id, upper_channel
+            </otherwise>
+        </choose>
+        <if test="accountIdlist != null">
+            AND account_id not in
+            <foreach collection="accountIdlist" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 
     <!-- 提现列表 -->
@@ -1917,7 +1938,6 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
-
         <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
@@ -1956,14 +1976,6 @@
         id = #{dealerId}
     </select>
 
-    <select id="getProxyName" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
-        SELECT
-        proxy_name
-        FROM
-        tb_dealer
-        WHERE
-        id = #{firstLevelDealerId}
-    </select>
 
     <select id="getProxyName1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
@@ -3205,6 +3217,34 @@
             #{item}
         </foreach>
     </update>
+    <update id="markOrder2SettlementIngBySettleChannel">
+        UPDATE tb_order SET settlement_record_id = #{settlementRecordId}, settle_status = #{settleStatus}
+        WHERE
+        app_id = 'hsy'
+        AND status IN (4, 7)
+        AND settle_status = 1
+        AND refund_status = 0
+        AND settle_time = #{settleDate}
+        AND payee = #{accountId}
+        AND upper_channel = #{upperChannel}
+        AND payment_channel = #{settleChannel}
+    </update>
+    <update id="markOrder2SettleFail">
+        UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
+    </update>
+    <update id="updateOrdersBySns">
+        UPDATE tb_order SET status = #{status}, settle_status = #{settleStatus},settlement_record_id = #{settleId},
+        settle_time = #{settleTime}  WHERE sn in
+        <foreach collection="sns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateOrdersBySns2Withdraw">
+        UPDATE tb_order SET status = #{status} WHERE sn in
+        <foreach collection="sns" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
     <select id="getBranch" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,
@@ -3590,5 +3630,22 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
+    </select>
+    <select id="selectOrderListByCount" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE payee = #{accountId} AND status = #{status} AND pay_channel_sign in(801,802) AND settle_status = 1
+        AND refund_status = 0 AND pay_success_time BETWEEN #{beginTime} AND #{endTime} ORDER BY id ASC limit #{count}
+    </select>
+    <select id="selectOrderBySn" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE sn = #{sn}
+    </select>
+    <select id="selectWithdrawOrderCountByParam" resultType="java.lang.Long">
+        SELECT count(*) FROM tb_order WHERE payer = #{accountId} AND app_id = 'hsy' AND trade_type = 3 AND status in(5, 6, 10)
+    </select>
+    <select id="selectWithdrawOrdersByParam" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE payer = #{accountId} AND app_id = 'hsy' AND trade_type = 3 AND status in(5, 6, 10) ORDER BY create_time DESC limit #{firstIndex},#{pageSize}
+    </select>
+    <select id="selectWithdrawingOrderByAccountId" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE payee = #{accountId} AND status  in(5,6) AND pay_channel_sign in(801,802)
+        AND refund_status = 0 AND create_time BETWEEN #{begin} AND #{end}
     </select>
 </mapper>

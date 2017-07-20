@@ -13,4 +13,8 @@
     <select id="findByCode" resultType="com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse">
         SELECT CODE,ANAME FROM app_biz_district WHERE CODE = #{code}
     </select>
+
+    <select id="getByCode" resultType="com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2">
+        SELECT ANAME,CODE,PARENTCODE FROM app_biz_district WHERE CODE = #{code}
+    </select>
 </mapper>

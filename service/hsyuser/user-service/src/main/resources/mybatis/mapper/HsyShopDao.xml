@@ -257,7 +257,7 @@
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
-          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID,user.ISOPEND0
         from app_au_user user
         where user.ACCOUNTID=#{accountID}
         order by user.UPDATETIME desc

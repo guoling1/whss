@@ -1,8 +1,10 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.BankBranchDao;
+import com.jkm.hss.merchant.entity.AppBizBankBranch;
 import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
+import com.jkm.hss.merchant.helper.request.BankBranchRequest;
 import com.jkm.hss.merchant.service.BankBranchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +73,27 @@ public class BankBranchServiceImpl implements BankBranchService{
     @Override
     public void updateBranch(String branchName,Long sid, String branchCode, String districtCode) {
         this.bankBranchDao.updateBranch(branchName,sid,branchCode,districtCode);
+    }
+
+    /**
+     * 根据支行名称和查询条件查询列表
+     *
+     * @param bankBranchRequest
+     * @return
+     */
+    @Override
+    public List<AppBizBankBranch> findBankBranchListByPage(BankBranchRequest bankBranchRequest) {
+        return bankBranchDao.findBankBranchListByPage(bankBranchRequest);
+    }
+
+    /**
+     * 根据支行名称和查询条件查询条数
+     *
+     * @param bankBranchRequest
+     * @return
+     */
+    @Override
+    public Long findBankBranchListByPageCount(BankBranchRequest bankBranchRequest) {
+        return bankBranchDao.findBankBranchListByPageCount(bankBranchRequest);
     }
 }

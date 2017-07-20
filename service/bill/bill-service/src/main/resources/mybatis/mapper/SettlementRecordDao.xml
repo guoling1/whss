@@ -22,6 +22,7 @@
         settle_mode,
         settle_destination,
         settle_status,
+        settle_channel,
         status
         )
         VALUES
@@ -44,6 +45,7 @@
         #{settleMode},
         #{settleDestination},
         #{settleStatus},
+        #{settleChannel},
         #{status}
         );
     </insert>
