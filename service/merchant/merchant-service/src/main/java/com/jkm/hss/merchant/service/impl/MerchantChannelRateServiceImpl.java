@@ -369,13 +369,13 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      * @param merchantId
      */
     @Override
-    public JSONObject updateKmBankInfo(long accountId,long merchantId,String oriBankNo) {
+    public JSONObject updateKmBankInfo(long accountId,long merchantId,String bankNo) {
         AccountBank accountBank = accountBankService.getDefault(accountId);
         MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
-        paramsMap.put("bankNo", accountBank.getBankNo());
-        paramsMap.put("oriBankNo", oriBankNo);
+        paramsMap.put("bankNo", bankNo);
+        paramsMap.put("oriBankNo", accountBank.getBankNo());
         paramsMap.put("bankBranch", accountBank.getBranchName());
         paramsMap.put("bankCode", accountBank.getBranchCode());
         paramsMap.put("bankName", accountBank.getBankName());

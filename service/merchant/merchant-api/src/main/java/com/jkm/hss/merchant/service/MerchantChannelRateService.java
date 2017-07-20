@@ -95,7 +95,7 @@ public interface MerchantChannelRateService {
     /**
      * 修改银行卡信息
      */
-    JSONObject updateKmBankInfo(long accountId,long merchantId,String oriBankNo);
+    JSONObject updateKmBankInfo(long accountId,long merchantId,String bankNo);
     /**
      * 修改卡盟联行号
      */
