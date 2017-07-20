@@ -268,7 +268,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             Triple<Integer, String, String> result=this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
             Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
             BigDecimal remainingSum=account.get().getAvailable();
-            if(remainingSum.compareTo(BigDecimal.ZERO)==0&&appPolicyMember.getCanRecharge()==0&&appPolicyMember.getIsDeposited()==1)
+            if(result.getLeft()==0&&remainingSum.compareTo(BigDecimal.ZERO)==0&&appPolicyMember.getCanRecharge()==0&&appPolicyMember.getIsDeposited()==1)
             {
                 AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
                 appPolicyMemberUp.setId(appPolicyMember.getId());
