@@ -60,7 +60,7 @@
         settle_type,
         success_settle_time,
         pay_channel_sign,
-        child_channel_sign
+        child_channel_sign,
         payment_channel,
         upper_channel,
         pay_bank_card,
