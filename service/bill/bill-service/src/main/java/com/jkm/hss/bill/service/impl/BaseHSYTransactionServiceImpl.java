@@ -10,6 +10,7 @@ import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
@@ -45,6 +46,8 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     private TradeService tradeService;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private SendMsgService sendMsgService;
 
     /**
      * {@inheritDoc}
@@ -186,6 +189,11 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setPaysuccesstime(new Date());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
+                try {
+                    sendMsgService.sendMessage(hsyOrder.getAmount() + "", hsyOrder.getOrdernumber(), hsyOrder.getOrderno(), hsyOrder.getShopname(), hsyOrder.getMerchantname(), hsyOrder.getMemberId());
+                }catch(Exception e){
+                    log.info("发送会员卡购买成功信息失败："+e.getMessage());
+                }
                 return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");
             default:
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
