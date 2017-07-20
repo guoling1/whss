@@ -25,9 +25,32 @@ public class MerchantMemberController {
     @Autowired
     private HsyMembershipService hsyMembershipService;
 
+    /**
+     * 商户列表（会员卡）
+     * @param request
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/getMerchantMemberList",method = RequestMethod.POST)
     public CommonResponse getMerchantMemberList(@RequestBody MemberRequest request){
+        final PageModel<MerchantMemberResponse> pageModel = new PageModel<MerchantMemberResponse>(request.getPageNo(), request.getPageSize());
+        request.setOffset(pageModel.getFirstIndex());
+        List<MerchantMemberResponse> list = this.hsyMembershipService.getMerchantMemberList(request);
+        List<MerchantMemberResponse> lists = this.hsyMembershipService.getMerchantMemberLists(request);
+        pageModel.setCount(lists.size());
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1, "success", pageModel);
+    }
+
+
+    /**
+     * 商家会员列表
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getMemberShipList",method = RequestMethod.POST)
+    public CommonResponse getMemberShipList(@RequestBody MemberRequest request){
         final PageModel<MerchantMemberResponse> pageModel = new PageModel<MerchantMemberResponse>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
         List<MerchantMemberResponse> list = this.hsyMembershipService.getMerchantMemberList(request);
