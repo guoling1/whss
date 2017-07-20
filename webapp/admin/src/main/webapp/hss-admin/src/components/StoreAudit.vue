@@ -286,12 +286,12 @@
           <el-form-item label="结算卡号：" width="120">
             <el-input style="width: 70%" size="small" v-model="bankQuery.bankNo"></el-input>
           </el-form-item>
-          <el-form-item label="开户行" label-width="120px">
-            <el-autocomplete style="width: 100%" v-model="bankQuery.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
+          <el-form-item label="开户行:"  width="120">
+            <el-autocomplete style="width: 70%" v-model="bankQuery.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
           </el-form-item>
-          <el-form-item label="省/市/区" label-width="120px">
+          <el-form-item label="省/市/区：" width="120">
             <el-cascader :placeholder="请选择"
-                         style="width: 100%"
+                         style="width: 70%"
                          :options="options2"
                          v-model="cityCode"
                          size="small"
@@ -299,8 +299,8 @@
                          :props="props"
             ></el-cascader>
           </el-form-item>
-          <el-form-item label="支行" label-width="120px">
-            <el-autocomplete v-model="autobankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:100%"></el-autocomplete>
+          <el-form-item label="支行：" width="120">
+            <el-autocomplete v-model="autobankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:70%"></el-autocomplete>
           </el-form-item>
           <el-form-item label="银行绑定手机号：" width="120">
             <el-input style="width: 70%" size="small" v-model="bankQuery.reserveMobile"></el-input>
@@ -470,9 +470,17 @@
         rateInfo: [],
         changeBank: false,
         bankQuery:{
+          branchName:'',
+          branchProvinceCode:'',
+          branchProvinceName:'',
+          branchCityCode:'',
+          branchCityName:'',
+          branchCountyCode:'',
+          branchCountyName:'',
           merchantId:'',
           bankNo:'',
-          reserveMobile:''
+          reserveMobile:'',
+          bankName:''
         },
         dealerNo:'',
         dealerName:'',
@@ -559,6 +567,22 @@
         });
     },
     methods: {
+      changeBankFn: function () {
+        this.changeBank = true;
+        this.bankQuery = {
+            branchName:'',
+            branchProvinceCode:'',
+            branchProvinceName:'',
+            branchCityCode:'',
+            branchCityName:'',
+            branchCountyCode:'',
+            branchCountyName:'',
+            merchantId:'',
+            bankNo:'',
+            reserveMobile:'',
+            bankName:''
+        };
+      },
       marryBankSearch: function (queryString, cb) {
         var results=[],url='';
         this.$http.post('/admin/hsyMerchantList/getPersonalBankNameList',{bankName:queryString,cardNo:this.bankQuery.bankNo})
@@ -597,6 +621,8 @@
             if(this.options2[i].value==val[0]){
               this.form.branchProvince_name = this.options2[i].aname;
               this.form.branchProvince_code = this.options2[i].value;
+              this.bankQuery.branchProvinceName = this.options2[i].aname;
+              this.bankQuery.branchProvinceCode = this.options2[i].value;
                 for(let j=0;j<res.data.length;j++){
                   res.data[j].value = res.data[j].code;
                   res.data[j].label = res.data[j].aname;
@@ -616,6 +642,8 @@
                   if(this.options2[i].cities[k].value==val[1]){
                     this.form.branchCityCode = this.options2[i].cities[k].value;
                     this.form.branchCityName = this.options2[i].cities[k].aname;
+                    this.bankQuery.branchCityCode = this.options2[i].cities[k].value;
+                    this.bankQuery.branchCityName = this.options2[i].cities[k].aname;
                     for(let j=0;j<res.data.length;j++){
                       res.data[j].value = res.data[j].code;
                       res.data[j].label = res.data[j].aname;
@@ -632,7 +660,11 @@
         var results=[],districtCode='',cardBank = '';
         //查支行
         districtCode=this.form.branchCityCode;
-        cardBank=this.msg.bankName;
+        if(this.changeBank){
+          cardBank=this.bankQuery.bankName;
+        }else {
+          cardBank=this.msg.bankName;
+        }
         this.form.branchCode=''
         this.$http.post('/admin/wad/branch',{branchName:queryString,bankName:cardBank,districtCode:districtCode})
           .then(res=>{
@@ -659,6 +691,7 @@
       handleSelect(item) {
         console.log(item);
         this.form.branchCode = item.branchCode;
+        this.bankQuery.branchName = item.branchName;
       },
       submit: function () {
         for(let i=0; i<this.citys.length;i++){
@@ -696,6 +729,7 @@
               this.btnLoad = false;
               this.isWad = false;
               this.getData()
+              location.reload()
             })
             .catch(err=>{
               this.btnLoad = false;
@@ -1007,6 +1041,13 @@
       // 修改结算卡
       changeBankNo: function () {
         this.bankDis = true;
+        for(let i=0; i<this.citys.length;i++){
+          if(this.citys[i].value == this.cityCode[2]){
+            this.bankQuery.branchCountyCode = this.citys[i].aname;
+            this.bankQuery.branchCountyName = this.citys[i].value;
+          }
+        }
+        this.bankQuery.merchantId = this.id;
         this.$http.post('/admin/accountBank/changeBankCard',this.bankQuery)
           .then(res=>{
             this.$message({
@@ -1014,6 +1055,7 @@
               type: 'success',
               message: '修改成功'
             });
+            location.reload()
             this.getData();
             this.changeBank = false;
             this.bankDis = false;
