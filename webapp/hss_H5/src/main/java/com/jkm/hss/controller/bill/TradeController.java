@@ -657,7 +657,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "信用卡不存在");
         }
         final boolean exist = this.channelSupportCreditBankService.
-                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(againUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), accountBankOptional.get().getBankBin());
+                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel().getId(), accountBankOptional.get().getBankBin());
         if (!exist) {
             return CommonResponse.simpleResponse(-1, "信用卡暂不可用");
         }
