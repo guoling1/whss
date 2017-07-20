@@ -45,6 +45,7 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -93,6 +94,8 @@ public class OrderServiceImpl implements OrderService {
     private PayService payService;
     @Autowired
     private HttpClientFacade httpClientFacade;
+    @Autowired
+    private BasicChannelService basicChannelService;
 
     /**
      * {@inheritDoc}
@@ -527,7 +530,9 @@ public class OrderServiceImpl implements OrderService {
 //                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
-                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                        final int payChannelSign = list.get(i).getPayChannelSign();
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(payChannelSign);
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
