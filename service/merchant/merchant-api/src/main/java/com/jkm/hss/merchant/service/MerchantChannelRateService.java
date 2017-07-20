@@ -99,5 +99,5 @@ public interface MerchantChannelRateService {
     /**
      * 修改卡盟联行号
      */
-    void updateKmBranchInfo(long accountId,long merchantId,String oriBankNo);
+    void updateKmBranchInfo(long accountId,long merchantId);
 }

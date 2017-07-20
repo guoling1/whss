@@ -398,7 +398,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      * @param merchantId
      */
     @Override
-    public void updateKmBranchInfo(long accountId,long merchantId,String oriBankNo) {
+    public void updateKmBranchInfo(long accountId,long merchantId) {
         AccountBank accountBank = accountBankService.getDefault(accountId);
         MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
         Map<String, String> paramsMap = new HashMap<String, String>();
