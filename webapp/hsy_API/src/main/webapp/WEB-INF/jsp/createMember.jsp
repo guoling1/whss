@@ -87,9 +87,9 @@
             <c:forEach items="${cardList }" var="entity" varStatus="status">
                 <div class="swiper-slide" style="width: 100px">
                     <div class="card">
-                        <span class="name">${entity.membershipName}</span>
+                        <span class="name">${entity.membershipShopName}</span>
                         <span class="type">${entity.membershipName}</span>
-                        <span class="discount"><span><c:out value="${entity.discountInt}"/></span>.${entity.discountFloat}折</span>
+                        <span class="discount" <c:if test="${entity.discountInt==10}">style="display:none;"</c:if> ><span><c:out value="${entity.discountInt}"/></span>.${entity.discountFloat}折</span>
                     </div>
                     <input type="hidden" isDeposited="${entity.isDeposited}" depositAmount="${entity.depositAmount}" name="mcid" value="${entity.id}" class="swiperInp"/>
                 </div>
