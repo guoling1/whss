@@ -712,7 +712,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(list.getPayChannelSign());
+                        list.setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
@@ -768,7 +769,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(list.getPayChannelSign());
+                        list.setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
