@@ -146,8 +146,8 @@ public class BasicChannelServiceImpl implements BasicChannelService {
 
     @Override
     public int selectParentChannelSign(int channelSign) {
-        final BasicChannel basicChannel = this.basicChannelDao.selectParentChannelSign(channelSign);
-        final int parentChannelSign = basicChannel.getChannelTypeSign();
+        final BasicChannel basicChannel = this.basicChannelDao.selectByChannelTypeSign(channelSign);
+        final int parentChannelSign = basicChannel.getParentChannelSign();
         if (parentChannelSign == 0){
             return channelSign;
         }
@@ -156,7 +156,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
 
     @Override
     public BasicChannel selectParentChannel(int channelSign) {
-        final BasicChannel basicChannel = this.basicChannelDao.selectParentChannelSign(channelSign);
+        final BasicChannel basicChannel = this.basicChannelDao.selectByChannelTypeSign(channelSign);
         final int parentChannelSign = basicChannel.getParentChannelSign();
         if (parentChannelSign == 0){
             return basicChannel;

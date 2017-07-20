@@ -104,7 +104,4 @@
     <select id="selectHsyAll" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE is_hsy=1 and status=2
     </select>
-    <select id="selectParentChannelSign" resultType="com.jkm.hss.product.entity.BasicChannel">
-        SELECT * FROM tb_basic_channel WHERE channel_type_sign = #{channelSign}
-    </select>
 </mapper>
