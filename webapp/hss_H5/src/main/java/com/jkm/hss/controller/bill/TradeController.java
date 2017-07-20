@@ -168,7 +168,8 @@ public class TradeController extends BaseController {
         if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
-        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(payRequest.getPayChannel());
+        if (!EnumPayChannelSign.isExistById(parentChannelSign)) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Optional<BusinessOrder> businessOrderOptional = this.businessOrderService.getById(payRequest.getOrderId());
@@ -545,7 +546,8 @@ public class TradeController extends BaseController {
         if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId() && merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
-        if (!EnumPayChannelSign.isUnionPay(firstUnionPaySendMsgRequest.getChannel())) {
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(firstUnionPaySendMsgRequest.getChannel());
+        if (!EnumPayChannelSign.isExistById(parentChannelSign)) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         if (!ValidateUtils.isMobile(firstUnionPaySendMsgRequest.getMobile())) {
@@ -642,7 +644,8 @@ public class TradeController extends BaseController {
         if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
-        if (!EnumPayChannelSign.isUnionPay(againUnionPaySendMsgRequest.getChannel())) {
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(againUnionPaySendMsgRequest.getChannel());
+        if (!EnumPayChannelSign.isExistById(parentChannelSign)) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Optional<AccountBank> accountBankOptional = this.accountBankService.selectById(againUnionPaySendMsgRequest.getCreditCardId());
