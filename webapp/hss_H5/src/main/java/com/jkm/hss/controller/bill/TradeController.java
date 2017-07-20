@@ -186,7 +186,7 @@ public class TradeController extends BaseController {
                 Preconditions.checkState(oemDetailResponse!=null, "O单配置有误");
                 oemNo = oemDetailResponse.getOemNo();
             }
-            final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(payRequest.getPayChannel());
+            final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(parentChannelSign);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", merchantInfo.getMerchantName())
@@ -408,7 +408,8 @@ public class TradeController extends BaseController {
         if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId() && merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, " 未登录");
         }
-        Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(unionPayRequest.getPayChannel());
+        Preconditions.checkState(EnumPayChannelSign.isUnionPay(parentChannelSign), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
         if (creditBankCount <= 0) {
@@ -435,7 +436,8 @@ public class TradeController extends BaseController {
         final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
         final Integer channelSign = Integer.valueOf(channelStr);
-        Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(channelSign);
+        Preconditions.checkState(EnumPayChannelSign.isUnionPay(parentChannelSign), "渠道不是快捷");
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
         if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
             model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
@@ -476,12 +478,13 @@ public class TradeController extends BaseController {
             final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
             final Integer channelSign = Integer.valueOf(channelStr);
-            Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
+            final int parentChannelSign = this.basicChannelService.selectParentChannelSign(channelSign);
+            Preconditions.checkState(EnumPayChannelSign.isUnionPay(parentChannelSign), "渠道不是快捷");
             model.addAttribute("amount", amountStr);
             model.addAttribute("merchantName", merchantInfo.getMerchantName());
             final AccountBank accountBank = this.accountBankService.getDefaultCreditCard(merchantInfo.getAccountId());
             final boolean exist = this.channelSupportCreditBankService.
-                    isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(channelSign).getUpperChannel().getId(), accountBank.getBankBin());
+                    isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel().getId(), accountBank.getBankBin());
             final String bankNo = accountBank.getBankNo();
             final String mobile = accountBank.getReserveMobile();
             if (exist) {
@@ -591,7 +594,7 @@ public class TradeController extends BaseController {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
         }
         final boolean exist = this.channelSupportCreditBankService.
-                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getShorthand());
+                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel().getId(), bankCardBin.getShorthand());
         if (!bankCardBin.getShorthand().equals(firstUnionPaySendMsgRequest.getBankCode())) {
             if (!exist) {
                 return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();

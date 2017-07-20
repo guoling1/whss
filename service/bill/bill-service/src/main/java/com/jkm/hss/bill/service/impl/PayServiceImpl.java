@@ -985,13 +985,13 @@ public class PayServiceImpl implements PayService {
      * {@inheritDoc}
      *
      * @param businessOrderId
-     * @param channel
+     * @param
      * @param appId
      * @return
      */
     @Override
     @Transactional
-    public Pair<Integer, String> firstUnionPay(final long businessOrderId, final int channel,
+    public Pair<Integer, String> firstUnionPay(final long businessOrderId, final int childChannel,
                                                final long creditBankCardId, final String appId) {
         final BusinessOrder businessOrder = this.businessOrderService.getByIdWithLock(businessOrderId).get();
         Preconditions.checkState(businessOrder.isDuePay(), "订单[{}]状态[{}]错误", businessOrder.getOrderNo(), businessOrder.getStatus());
@@ -1002,7 +1002,8 @@ public class PayServiceImpl implements PayService {
         log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", businessOrder.getMerchantId(), businessOrder.getTradeAmount());
         final MerchantInfo merchant = this.merchantInfoService.selectById(businessOrder.getMerchantId()).get();
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
-        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(childChannel);
+        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(parentChannelSign);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrder.getOrderNo());
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -1016,7 +1017,8 @@ public class PayServiceImpl implements PayService {
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(enumPayChannelSign.getCode());
-        order.setPayChannelSign(channel);
+        order.setPayChannelSign(parentChannelSign);
+        order.setPayChannelSign(childChannel);
         order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
@@ -1029,7 +1031,7 @@ public class PayServiceImpl implements PayService {
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);
         updateBusinessOrder.setTradeOrderNo(order.getOrderNo());
-        updateBusinessOrder.setPayChannelSign(channel);
+        updateBusinessOrder.setPayChannelSign(parentChannelSign);
         updateBusinessOrder.setRemark("请求交易成功");
         updateBusinessOrder.setTradeCardNo(accountBank.getBankNo());
         updateBusinessOrder.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
@@ -1037,21 +1039,21 @@ public class PayServiceImpl implements PayService {
         updateBusinessOrder.setBankName(accountBank.getBankName());
         this.businessOrderService.update(updateBusinessOrder);
         return this.unionPay(order.getId(), businessOrder.getMerchantId(), businessOrder.getTradeAmount().toPlainString(),
-                channel, creditBankCardId, appId);
+                parentChannelSign, creditBankCardId, appId);
     }
 
     /**
      * {@inheritDoc}
      *
      * @param businessOrderId
-     * @param channel
+     * @param
      * @param expireDate
      * @param cvv
      * @param appId
      * @return
      */
     @Override
-    public Pair<Integer, String> againUnionPay(final long businessOrderId, final int channel, final String expireDate,
+    public Pair<Integer, String> againUnionPay(final long businessOrderId, final int childChannel, final String expireDate,
                                                final String cvv, final long creditBankCardId, final String appId) {
 
         final BusinessOrder businessOrder = this.businessOrderService.getByIdWithLock(businessOrderId).get();
@@ -1063,7 +1065,8 @@ public class PayServiceImpl implements PayService {
         log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", businessOrder.getMerchantId(), businessOrder.getTradeAmount());
         final MerchantInfo merchant = this.merchantInfoService.selectById(businessOrder.getMerchantId()).get();
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
-        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(childChannel);
+        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(parentChannelSign);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrder.getOrderNo());
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -1077,7 +1080,8 @@ public class PayServiceImpl implements PayService {
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(enumPayChannelSign.getCode());
-        order.setPayChannelSign(channel);
+        order.setPayChannelSign(parentChannelSign);
+        order.setChildChannelSign(childChannel);
         order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
@@ -1092,7 +1096,7 @@ public class PayServiceImpl implements PayService {
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);
         updateBusinessOrder.setTradeOrderNo(order.getOrderNo());
-        updateBusinessOrder.setPayChannelSign(channel);
+        updateBusinessOrder.setPayChannelSign(parentChannelSign);
         updateBusinessOrder.setRemark("请求交易成功");
         updateBusinessOrder.setTradeCardNo(accountBank.getBankNo());
         updateBusinessOrder.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
@@ -1100,7 +1104,7 @@ public class PayServiceImpl implements PayService {
         updateBusinessOrder.setBankName(accountBank.getBankName());
         this.businessOrderService.update(updateBusinessOrder);
         return this.unionPay(order.getId(), businessOrder.getMerchantId(), businessOrder.getTradeAmount().toPlainString(),
-                channel, creditBankCardId, appId);
+                parentChannelSign, creditBankCardId, appId);
     }
 
     /**
@@ -1108,14 +1112,14 @@ public class PayServiceImpl implements PayService {
      *
      * @param merchantId  商户ID
      * @param amount      金额
-     * @param channel     渠道
+     * @param
      * @param creditBankCardId  信用卡ID
      * @param appId
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Pair<Integer, String> unionPay(final long orderId, final long merchantId, final String amount, final int channel,
+    public Pair<Integer, String> unionPay(final long orderId, final long merchantId, final String amount, final int parentChannelSign,
                                           final long creditBankCardId, final String appId) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
