@@ -8,6 +8,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.QRCodeUtil;
 import com.jkm.hss.admin.dao.QRCodeDao;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
@@ -19,6 +20,7 @@ import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
 import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
 import com.jkm.hss.admin.helper.responseparam.*;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,9 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     @Autowired
     private QRCodeDao qrCodeDao;
+
+    @Autowired
+    private AdminUserService adminUserService;
 
     @Autowired
     private ProductionQrCodeRecordService productionQrCodeRecordService;
@@ -171,7 +176,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public QRCode initMerchantCode(final long merchantId,final long productId,final String sysType) {
+    public QRCode initMerchantCode(final long merchantId,final long productId,final String sysType,final long oemId) {
         final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
         String startCode;
         if (latestQRCode.isPresent()) {
@@ -181,7 +186,12 @@ public class QRCodeServiceImpl implements QRCodeService {
         }
         final QRCode qrCode = new QRCode();
         qrCode.setCode(startCode);
-        qrCode.setAdminId(0);
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserByDealerIdAndIsMaster(oemId,EnumIsMaster.MASTER.getCode());
+        if(adminUserOptional.isPresent()){
+            qrCode.setAdminId(adminUserOptional.get().getId());
+        }else{
+            qrCode.setAdminId(3);
+        }
         qrCode.setFirstLevelDealerId(0);
         qrCode.setSecondLevelDealerId(0);
         qrCode.setMerchantId(merchantId);

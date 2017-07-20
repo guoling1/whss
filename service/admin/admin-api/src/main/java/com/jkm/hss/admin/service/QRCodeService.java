@@ -99,7 +99,7 @@ public interface QRCodeService {
      *
      * @return
      */
-    QRCode initMerchantCode(long merchantId,final long productId,final String sysType);
+    QRCode initMerchantCode(long merchantId,final long productId,final String sysType,long oemId);
 
 
     /**
