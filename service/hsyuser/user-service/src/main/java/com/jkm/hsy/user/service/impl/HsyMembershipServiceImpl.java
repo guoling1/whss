@@ -911,4 +911,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             return null;
     }
 
+    public List<AppPolicyMembershipCardShop> getMembershipCardShop(Long mcid){
+        return hsyMembershipDao.getMembershipCardShop(mcid);
+    }
+
+    public BigDecimal findConsumeOrderSum(Long mcid, Long mid){
+        return hsyMembershipDao.findConsumeOrderSum(mcid,mid);
+    }
+
 }

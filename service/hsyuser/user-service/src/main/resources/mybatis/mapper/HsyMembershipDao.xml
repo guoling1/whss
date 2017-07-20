@@ -29,7 +29,7 @@
     </update>
 
     <insert id="insertMembershipCardShop" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
-        insert into app_policy_membership_card(MCID,SID)
+        insert into app_policy_membership_card_shop(MCID,SID)
         values(#{mcid},#{sid})
     </insert>
 
@@ -398,6 +398,24 @@
         app_policy_member a
         LEFT JOIN app_policy_consumer b ON a.CID = b.ID
         WHERE 1=1
+    </select>
+
+    <select id="getMembershipCardShop" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
+        select MCID,SID from app_policy_membership_card_shop
+        where MCID=#{mcid}
+    </select>
+
+    <select id="findConsumeOrderSum" resultType="java.math.BigDecimal">
+        select
+          sum(corder.amount)
+        from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8
+        <if test="mcid!=null and mcid!=''">
+            AND MCID=#{mcid}
+        </if>
+        <if test="mid!=null and mid!=''">
+            AND MID=#{mid}
+        </if>
     </select>
 
 </mapper>
