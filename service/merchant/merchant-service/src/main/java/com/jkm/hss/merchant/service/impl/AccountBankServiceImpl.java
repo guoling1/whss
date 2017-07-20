@@ -1,11 +1,9 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2;
 import com.jkm.hss.admin.service.AppBizDistrictService;
 import com.jkm.hss.merchant.dao.AccountBankDao;
-import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -374,7 +372,10 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile) {
+    public int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile,
+                              String branchCityCode, String branchCityName,
+                              String branchCountyCode, String branchCountyName,
+                              String branchProvinceCode, String branchProvinceName, String branchName) {
 
         this.reset(merchantInfo.getAccountId(),EnumAccountBank.DEBITCARD.getId());
         AccountBank accountBank = new AccountBank();
@@ -395,6 +396,13 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
         accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
+        accountBank.setBranchCityCode(branchCityCode);
+        accountBank.setBranchCityName(branchCityName);
+        accountBank.setBranchCountyCode(branchCountyCode);
+        accountBank.setBranchCountyName(branchCountyName);
+        accountBank.setBranchProvinceCode(branchProvinceCode);
+        accountBank.setBranchProvinceName(branchProvinceName);
+        accountBank.setBranchName(branchName);
         return this.insert(accountBank);
     }
     /**

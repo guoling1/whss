@@ -20,7 +20,6 @@ import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
@@ -213,6 +212,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
             }
             if (req.getStatus()==3||req.getStatus()==6) {
                 this.queryMerchantInfoRecordService.saveNo1(req);
+                merchantChannelRateService.updateKmBranchInfo(req.getAccountId(),req.getId());
+
             }
         }catch (Exception e){
             e.printStackTrace();
