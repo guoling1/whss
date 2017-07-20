@@ -70,5 +70,5 @@ public interface BasicChannelDao {
      */
     List<BasicChannel> selectHsyAll();
 
-    int selectParentChannelSign(int channelSign);
+    BasicChannel selectParentChannelSign(int channelSign);
 }
