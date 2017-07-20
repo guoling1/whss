@@ -183,8 +183,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     @Override
                     public MerchantRateResponse apply(MerchantChannelRate input) {
                         MerchantRateResponse mechantRateResponse = new MerchantRateResponse();
-                        final int parentChannelSign = basicChannelService.selectParentChannelSign(input.getChannelTypeSign());
-                        mechantRateResponse.setChannelName(EnumPayChannelSign.idOf(parentChannelSign).getName());
+                        final BasicChannel basicChannel = basicChannelService.selectByChannelTypeSign(input.getChannelTypeSign()).get();
+                        mechantRateResponse.setChannelName(basicChannel.getChannelShortName());
                         mechantRateResponse.setMerchantRate(input.getMerchantPayRate().toString());
                         mechantRateResponse.setWithdrawMoney(input.getMerchantWithdrawFee().setScale(2).toString());
                         mechantRateResponse.setEntNet(EnumEnterNet.idOf(input.getEnterNet()).getMsg());
