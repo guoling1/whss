@@ -116,6 +116,7 @@ public class ChannelGatewayController extends BaseController {
             }
             final BasicChannel parentChannel = this.basicChannelService.selectParentChannel(channelSign);
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
+            log.info("》》》》》》》》》》》》》》" + parentChannel.toString());
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(parentChannel.getChannelTypeSign()).getPaymentChannel().getValue());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
             merchantChannelResponse.setChannelRate(merchantChannelRate.getMerchantPayRate().toString());
