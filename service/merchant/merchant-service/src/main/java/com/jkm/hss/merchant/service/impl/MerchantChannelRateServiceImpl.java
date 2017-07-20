@@ -361,4 +361,67 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             merchantInfoDao.updateKmNetStatus(merchantId,EnumKmNetStatus.FAIL.getId());
         }
     }
+
+    /**
+     * 修改银行卡信息
+     *
+     * @param accountId
+     * @param merchantId
+     */
+    @Override
+    public JSONObject updateKmBankInfo(long accountId,long merchantId,String oriBankNo) {
+        AccountBank accountBank = accountBankService.getDefault(accountId);
+        MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("merchantNo", merchantInfo.getMarkCode());
+        paramsMap.put("bankNo", accountBank.getBankNo());
+        paramsMap.put("oriBankNo", oriBankNo);
+        paramsMap.put("bankBranch", accountBank.getBranchName());
+        paramsMap.put("bankCode", accountBank.getBranchCode());
+        paramsMap.put("bankName", accountBank.getBankName());
+        paramsMap.put("prov", accountBank.getBranchProvinceName());
+        paramsMap.put("city", accountBank.getBranchCityName());
+        log.info("修改银行卡信息参数为："+JSONObject.fromObject(paramsMap).toString());
+        JSONObject jo = new JSONObject();
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdate(), paramsMap);
+        if (result != null && !"".equals(result)) {
+            jo = JSONObject.fromObject(result);
+            log.info("修改卡盟联行号返回参数为："+jo.toString());
+        }
+        return jo;
+    }
+
+    /**
+     * 修改卡盟联行号
+     *
+     * @param accountId
+     * @param merchantId
+     */
+    @Override
+    public void updateKmBranchInfo(long accountId,long merchantId,String oriBankNo) {
+        AccountBank accountBank = accountBankService.getDefault(accountId);
+        MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("merchantNo", merchantInfo.getMarkCode());
+        paramsMap.put("bankNo", accountBank.getBankNo());
+        paramsMap.put("oriBankNo", accountBank.getBankNo());
+        paramsMap.put("bankBranch", accountBank.getBranchName());
+        paramsMap.put("bankCode", accountBank.getBranchCode());
+        paramsMap.put("bankName", accountBank.getBankName());
+        paramsMap.put("prov", accountBank.getBranchProvinceName());
+        paramsMap.put("city", accountBank.getBranchCityName());
+        log.info("修改卡盟联行号参数为："+JSONObject.fromObject(paramsMap).toString());
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdate(), paramsMap);
+        if (result != null && !"".equals(result)) {
+            JSONObject jo = JSONObject.fromObject(result);
+            log.info("修改卡盟联行号返回参数为："+jo.toString());
+            if (jo.getInt("code") == 1) {
+                merchantInfoDao.updateKmNetStatus(merchantId, EnumKmNetStatus.SUCCESS.getId());
+            } else {
+                merchantInfoDao.updateKmNetStatus(merchantId,EnumKmNetStatus.FAIL.getId());
+            }
+        } else {
+            merchantInfoDao.updateKmNetStatus(merchantId,EnumKmNetStatus.FAIL.getId());
+        }
+    }
 }

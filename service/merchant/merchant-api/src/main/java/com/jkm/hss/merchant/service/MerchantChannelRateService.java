@@ -92,4 +92,12 @@ public interface MerchantChannelRateService {
      * 修改商户入网
      */
     void updateInterNet(long accountId,long merchantId);
+    /**
+     * 修改银行卡信息
+     */
+    JSONObject updateKmBankInfo(long accountId,long merchantId,String oriBankNo);
+    /**
+     * 修改卡盟联行号
+     */
+    void updateKmBranchInfo(long accountId,long merchantId,String oriBankNo);
 }
