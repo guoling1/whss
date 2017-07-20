@@ -169,6 +169,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final int parentChannelSign = this.basicChannelService.selectParentChannelSign(payRequest.getPayChannel());
+        log.info("》》》》》》》》》》》》》》》" + parentChannelSign);
         if (!EnumPayChannelSign.isExistById(parentChannelSign)) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
