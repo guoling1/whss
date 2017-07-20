@@ -62,12 +62,13 @@ var mySwiper = new Swiper('.swiper-container', {
     }
 })
 
-if(pageData.consumeCellphone!=''||pageData.consumeCellphone!=null){
+if(pageData.consumeCellphone!=''){
     mobile.value = pageData.consumeCellphone;
     mobile.readOnly = 'true'
 }else {
     mobile.value = '';
-    mobile.readOnly = 'false'
+    // mobile.removeAttribute('readOnly')
+    // mobile.readOnly = 'false'
 }
 
 sendCode.addEventListener('click', function () {

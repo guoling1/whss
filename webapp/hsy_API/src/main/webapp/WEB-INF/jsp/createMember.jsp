@@ -147,6 +147,7 @@
     var pageData={
         consumeCellphone:'${appPolicyConsumer.consumerCellphone}'
     }
+    console.log(pageData.consumeCellphone=='')
 </script>
 <script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="../../js/swiper-3.4.2.min.js"></script>
