@@ -550,12 +550,6 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      */
     @Override
     public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
-        MerchantInfo merchantInfo = merchantInfoDao.selectById(continueBankInfoRequest.getId());
-        if(merchantInfo.getProvinceCode()!=null&&!"".equals(merchantInfo.getProvinceCode())
-                &&merchantInfo.getCityCode()!=null&&!"".equals(merchantInfo.getCityCode())
-                &&merchantInfo.getCountyCode()!=null&&!"".equals(merchantInfo.getCountyCode())){
-            return 0;
-        }
         return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
     }
 
@@ -580,6 +574,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     public void changeDealer(String code,ChangeDealerRequest changeDealerRequest) {
         merchantInfoDao.updateDealerInfo(changeDealerRequest);
         qrCodeService.updateDealerInfo(code,changeDealerRequest.getFirstDealerId(),changeDealerRequest.getSecondDealerId());
+    }
+
+    /**
+     * 处理卡盟修改入网信息
+     */
+    @Override
+    public void handleKmUpdateStatus() {
+        List<MerchantInfo> merchantInfoList = merchantInfoDao.selectByKmNetStatus();
+        for(int i=0;i<merchantInfoList.size();i++){
+            merchantChannelRateService.updateInterNet(merchantInfoList.get(i).getAccountId(),merchantInfoList.get(i).getId());
+        }
     }
 
 }

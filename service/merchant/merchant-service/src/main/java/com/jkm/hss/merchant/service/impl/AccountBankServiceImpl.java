@@ -2,6 +2,8 @@ package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2;
+import com.jkm.hss.admin.service.AppBizDistrictService;
 import com.jkm.hss.merchant.dao.AccountBankDao;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.AccountBank;
@@ -40,6 +42,8 @@ public class AccountBankServiceImpl implements AccountBankService{
     private BankCardBinService bankCardBinService;
     @Autowired
     private VerifyIdService verifyIdService;
+    @Autowired
+    private AppBizDistrictService appBizDistrictService;
 
     /**
      * 是否有银行卡信息
@@ -87,12 +91,20 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setReserveMobile(merchantInfo.getReserveMobile());
         accountBank.setBranchCode(merchantInfo.getBranchCode());
         accountBank.setBranchName(merchantInfo.getBranchName());
-        accountBank.setBranchProvinceCode(merchantInfo.getProvinceCode());
-        accountBank.setBranchProvinceName(merchantInfo.getProvinceName());
-        accountBank.setBranchCityCode(merchantInfo.getCityCode());
-        accountBank.setBranchCityName(merchantInfo.getCityName());
-        accountBank.setBranchCountyCode(merchantInfo.getCountyCode());
-        accountBank.setBranchCountyName(merchantInfo.getCountyName());
+        AppBizDistrictResponse2 adrCounty = appBizDistrictService.getByCode(merchantInfo.getDistrictCode());
+        accountBank.setBranchCountyCode(adrCounty.getCode());
+        accountBank.setBranchCountyName(adrCounty.getAname());
+        AppBizDistrictResponse2 adrCity = appBizDistrictService.getByCode(adrCounty.getParentCode());
+        accountBank.setBranchCityCode(adrCity.getCode());
+        accountBank.setBranchCityName(adrCity.getAname());
+        if("110000,120000,310000,500000".contains(adrCity.getCode())){
+            accountBank.setBranchProvinceCode(adrCity.getCode());
+            accountBank.setBranchProvinceName(adrCity.getAname());
+        }else{
+            AppBizDistrictResponse2 adrProvince = appBizDistrictService.getByCode(adrCity.getParentCode());
+            accountBank.setBranchProvinceCode(adrProvince.getCode());
+            accountBank.setBranchProvinceName(adrProvince.getAname());
+        }
         accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
         accountBank.setIsAuthen(merchantInfo.getIsAuthen());
         accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
@@ -320,7 +332,7 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBranchName(tempBranchName);
                 bankListResponse.setCardType(accountBank1.getCardType());
-                if(accountBank1.getBranchName()!=null&&!"".equals(accountBank1.getBranchName())){
+                if((accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode()))||(accountBank1.getBranchName()!=null&&!"".equals(accountBank1.getBranchName()))){
                     bankListResponse.setHasBranch(1);
                 }else{
                     bankListResponse.setHasBranch(0);

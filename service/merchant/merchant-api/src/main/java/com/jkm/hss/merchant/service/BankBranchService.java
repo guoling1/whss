@@ -1,7 +1,9 @@
 package com.jkm.hss.merchant.service;
 
+import com.jkm.hss.merchant.entity.AppBizBankBranch;
 import com.jkm.hss.merchant.entity.AppBizBankBranchResponse;
 import com.jkm.hss.merchant.entity.BankBranch;
+import com.jkm.hss.merchant.helper.request.BankBranchRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -62,4 +64,14 @@ public interface BankBranchService {
      * @param sid
      */
     void updateBranch(String branchName,Long sid, String branchCode, String districtCode);
+    /**
+     *根据支行名称和查询条件查询列表
+     * @return
+     */
+    List<AppBizBankBranch> findBankBranchListByPage(BankBranchRequest bankBranchRequest);
+    /**
+     *根据支行名称和查询条件查询条数
+     * @return
+     */
+    Long findBankBranchListByPageCount(BankBranchRequest bankBranchRequest);
 }

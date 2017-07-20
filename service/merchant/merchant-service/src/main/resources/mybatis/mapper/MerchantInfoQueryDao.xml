@@ -83,6 +83,9 @@
         <if test="proxyName1 != null and proxyName1!=''">
             AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
         </if>
+        <if test="branchCompany != null and branchCompany!=''">
+            AND a.oem_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{branchCompany},'%'))
+        </if>
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
