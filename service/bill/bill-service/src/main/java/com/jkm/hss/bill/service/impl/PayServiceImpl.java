@@ -1018,7 +1018,7 @@ public class PayServiceImpl implements PayService {
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(enumPayChannelSign.getCode());
         order.setPayChannelSign(parentChannelSign);
-        order.setPayChannelSign(childChannel);
+        order.setChildChannelSign(childChannel);
         order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
