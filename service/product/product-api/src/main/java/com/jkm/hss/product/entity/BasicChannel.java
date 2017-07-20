@@ -49,7 +49,7 @@ public class BasicChannel  extends BaseEntity implements Serializable{
     /**
      * 父通道id
      */
-    private int parentChannelId;
+    private int parentChannelSign;
     /**
      * 支持的支付方式， 扫码，公众号， 或者两者都支持
      *
