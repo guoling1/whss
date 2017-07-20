@@ -64,10 +64,10 @@ var mySwiper = new Swiper('.swiper-container', {
 
 if(pageData.consumeCellphone!=''||pageData.consumeCellphone!=null){
     mobile.value = pageData.consumeCellphone;
-    mobile.readonly = 'true'
+    mobile.readOnly = 'true'
 }else {
     mobile.value = '';
-    mobile.readonly = 'false'
+    mobile.readOnly = 'false'
 }
 
 sendCode.addEventListener('click', function () {
