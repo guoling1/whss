@@ -1293,9 +1293,9 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
-//        if(merchantInfo.get().getKmNetStatus()==null||merchantInfo.get().getKmNetStatus()!=EnumKmNetStatus.FAIL.getId()){
-//            merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
-//        }
+        if(merchantInfo.get().getKmNetStatus()==null||merchantInfo.get().getKmNetStatus()!=EnumKmNetStatus.FAIL.getId()){
+            merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
