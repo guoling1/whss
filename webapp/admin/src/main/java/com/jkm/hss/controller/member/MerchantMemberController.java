@@ -18,7 +18,7 @@ import java.util.List;
  * Created by zhangbin on 2017/7/19.
  */
 @Controller
-@RequestMapping(value = "/damin/merchantMember")
+@RequestMapping(value = "/admin/merchantMember")
 public class MerchantMemberController {
 
 
