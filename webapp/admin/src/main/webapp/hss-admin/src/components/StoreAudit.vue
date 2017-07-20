@@ -286,6 +286,22 @@
           <el-form-item label="结算卡号：" width="120">
             <el-input style="width: 70%" size="small" v-model="bankQuery.bankNo"></el-input>
           </el-form-item>
+          <el-form-item label="开户行" label-width="120px">
+            <el-autocomplete style="width: 100%" v-model="bankQuery.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="省/市/区" label-width="120px">
+            <el-cascader :placeholder="请选择"
+                         style="width: 100%"
+                         :options="options2"
+                         v-model="cityCode"
+                         size="small"
+                         @active-item-change="handleItemChange"
+                         :props="props"
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete v-model="autobankName" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:100%"></el-autocomplete>
+          </el-form-item>
           <el-form-item label="银行绑定手机号：" width="120">
             <el-input style="width: 70%" size="small" v-model="bankQuery.reserveMobile"></el-input>
           </el-form-item>
@@ -543,6 +559,23 @@
         });
     },
     methods: {
+      marryBankSearch: function (queryString, cb) {
+        var results=[],url='';
+        this.$http.post('/admin/hsyMerchantList/getPersonalBankNameList',{bankName:queryString,cardNo:this.bankQuery.bankNo})
+          .then(res=>{
+            for(let i=0; i<res.data.length; i++){
+              res.data[i].value = res.data[i].bankName;
+            }
+            results = res.data;
+          })
+          .catch(err=>{
+
+          });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
       wad:function () {
         this.form = {
           branchProvince_name:'',
