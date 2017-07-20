@@ -418,8 +418,26 @@
     </select>
 
     <select id="getMemberShipList" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+        SELECT
+            a.ID,
+            a.UID,
+            a.MEMBERSHIPNAME,
+            a.MEMBERSHIPSHOPNAME,
+            a.DEPOSITAMOUNT,
+            a.DISCOUNT,
+            a.ISPRESENTEDVIAACTIVATE,
+            a.RECHARGEPRESENTAMOUNT
+        FROM
+          app_policy_membership_card a WHERE a.UID=#{id}
+        GROUP BY a.UID,a.ID
+        LIMIT #{offset},#{pageSize}
+    </select>
 
-        <if test="!=null and !=''"> and =#{}</if>
+    <select id="getMemberShipLists" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+        SELECT DISTINCT b.*,a.UID,d.SHORTNAME FROM app_policy_membership_card a
+        LEFT JOIN app_policy_membership_card_shop b ON b.MCID=a.ID
+        LEFT JOIN app_biz_shop_user_role c ON c.SID = b.SID
+        LEFT JOIN app_biz_shop d ON d.ID=c.SID WHERE a.UID={uid}
     </select>
 
 </mapper>
