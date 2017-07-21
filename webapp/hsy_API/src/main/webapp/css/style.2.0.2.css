@@ -1295,11 +1295,12 @@ input:focus {
 #collection .js_dialog .weui-dialog__hd img,
 #payment-wx .js_dialog .weui-dialog__hd img,
 #payment-zfb .js_dialog .weui-dialog__hd img {
+  padding: 10px;
   position: absolute;
-  left: 15px;
-  top: 25px;
-  width: 8px;
-  height: 15px;
+  left: 8px;
+  top: 17px;
+  width: 28px;
+  height: 35px;
 }
 #collection .js_dialog .weui-dialog__bd,
 #payment-wx .js_dialog .weui-dialog__bd,

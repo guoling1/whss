@@ -7,9 +7,11 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡</title>
-    <link rel="stylesheet" href="../../css/style.2.0.2.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.2.0.2.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/swiper-3.4.2.min.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
-    <link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">
+    <%--<link rel="stylesheet" href="../../css/style.2.0.2.css">--%>
+    <%--<link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">--%>
     <%--<script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>--%>
     <%--<script>
         $(function(){
@@ -147,7 +149,6 @@
     var pageData={
         consumeCellphone:'${appPolicyConsumer.consumerCellphone}'
     }
-    console.log(pageData.consumeCellphone=='')
 </script>
 <script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="../../js/swiper-3.4.2.min.js"></script>
