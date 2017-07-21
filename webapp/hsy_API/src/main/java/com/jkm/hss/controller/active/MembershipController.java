@@ -433,15 +433,15 @@ public class MembershipController {
             writeJsonToResponse(map,response,pw);
             return;
         }
+        if(appPolicyMember.getCanRecharge()==0&&type!=null&&type.equals(RechargeValidType.RECHARGE.key))
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡无法自助充值");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
 
         if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
-            if(appPolicyMember.getCanRecharge()==0)
-            {
-                map.put("flag","fail");
-                map.put("result","该会员卡无法自助充值");
-                writeJsonToResponse(map,response,pw);
-                return;
-            }
             AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
             if(appPolicyRechargeOrder!=null) {
                 if (appPolicyRechargeOrder.getStatus() == OrderStatus.HAS_REQUSET_TRADE.key) {
