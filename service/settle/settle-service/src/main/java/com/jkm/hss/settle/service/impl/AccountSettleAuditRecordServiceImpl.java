@@ -21,6 +21,7 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.SettlementRecord;
+import com.jkm.hss.bill.enums.EnumSettleChannel;
 import com.jkm.hss.bill.enums.EnumSettleDestinationType;
 import com.jkm.hss.bill.enums.EnumSettleModeType;
 import com.jkm.hss.bill.enums.EnumSettlementRecordStatus;
@@ -268,12 +269,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         if (null == settleDate) {
             settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         }
-
-        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate);
+        //挂起的
+        List<Long> accountIdList = this.handleWithdrawIngSettle();
+        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate, accountIdList);
         log.info("今日[{}]商户生成结算审核记录,个数[{}]", settleDate, merchantOrderBalanceStatistics.size());
         final ArrayList<SettlementRecord> merchantSettlementRecords = new ArrayList<>();
         if (!CollectionUtils.isEmpty(merchantOrderBalanceStatistics)) {
             for (OrderBalanceStatistics merchantStatistics : merchantOrderBalanceStatistics) {
+                if (merchantStatistics.getUpperChannel() != EnumUpperChannel.XMMS_BANK.getId()){
+                    merchantStatistics.setSettleChannel(EnumSettleChannel.ALL.getId());
+                }
                 final AccountSettleAuditRecord accountSettleAuditRecord = new AccountSettleAuditRecord();
                 final SettlementRecord settlementRecord = new SettlementRecord();
                 final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(merchantStatistics.getAccountId()).get(0);
@@ -312,6 +317,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 settlementRecord.setUpperChannel(accountSettleAuditRecord.getUpperChannel());
                 settlementRecord.setBalanceStartTime(accountSettleAuditRecord.getBalanceStartTime());
                 settlementRecord.setBalanceEndTime(accountSettleAuditRecord.getBalanceEndTime());
+                settlementRecord.setSettleChannel(merchantStatistics.getSettleChannel());
                 final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
                 merchantSettlementRecords.add(settlementRecord);
                 final int updateCount = this.orderService.markOrder2SettlementIng(settleDate, merchantStatistics.getAccountId(),
@@ -402,6 +408,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         return Pair.of(0, "success");
     }
 
+    private List<Long> handleWithdrawIngSettle() {
+        //this.orderService.selectAccountIdsBySettleDate();
+        return null;
+    }
+
     private void generateSettlementAuditRecordSendMsg(final ArrayList<SettlementRecord> settlementRecords) {
         for (SettlementRecord settlementRecord : settlementRecords) {
             try {
@@ -415,14 +426,40 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 final Map<String, String> params = ImmutableMap.of("date", dateFormat.format(settlementRecord.getSettleDate()),
                         "amount", settlementRecord.getSettleAmount().toPlainString(),
                         "bankCardNo", cardNO.substring(cardNO.length() - 4));
-                this.sendMessageService.sendMessage(SendMessageParams.builder()
-                        .mobile(appAuUser.getCellphone())
-                        .uid(settlementRecord.getId() + "")
-                        .data(params)
-                        .userType(EnumUserType.FOREGROUND_USER)
-                        .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS)
-                        .build()
-                );
+                final EnumSettleChannel enumSettleChannel = EnumSettleChannel.of(settlementRecord.getSettleChannel());
+                switch (enumSettleChannel){
+                    case WECHANT:
+                        this.sendMessageService.sendMessage(SendMessageParams.builder()
+                                .mobile(appAuUser.getCellphone())
+                                .uid(settlementRecord.getId() + "")
+                                .data(params)
+                                .userType(EnumUserType.FOREGROUND_USER)
+                                .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS_WX)
+                                .build()
+                        );
+                        break;
+                    case ALIPAY:
+                        this.sendMessageService.sendMessage(SendMessageParams.builder()
+                                .mobile(appAuUser.getCellphone())
+                                .uid(settlementRecord.getId() + "")
+                                .data(params)
+                                .userType(EnumUserType.FOREGROUND_USER)
+                                .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS_ZFB)
+                                .build()
+                        );
+                        break;
+                    case ALL:
+                        this.sendMessageService.sendMessage(SendMessageParams.builder()
+                                .mobile(appAuUser.getCellphone())
+                                .uid(settlementRecord.getId() + "")
+                                .data(params)
+                                .userType(EnumUserType.FOREGROUND_USER)
+                                .noticeType(EnumNoticeType.SETTLEMENT_SUCCESS)
+                                .build()
+                        );
+                        break;
+                }
+
             } catch (final Throwable e) {
                 log.error("hsy结算单[" + settlementRecord.getId() + "],发送短信失败", e);
             }

@@ -7,6 +7,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.bill.service.HSYTradeService;
 import com.jkm.hss.helper.request.AuditSupportBankRequest;
 import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
 import com.jkm.hss.controller.BaseController;
@@ -38,6 +39,23 @@ import java.util.List;
 @RequestMapping(value = "/admin/channel")
 @Slf4j
 public class ChannelController extends BaseController {
+
+    @Autowired
+    private HSYTradeService hsyTradeService;
+
+    @RequestMapping("/test")
+    public void test11(){
+        String dataParam0 = "{\"accountId\":890,\"pageNo\":1,\"pageSize\":5}";
+        this.hsyTradeService.withdrawOrderList( dataParam0, null);
+
+        String dataParam1 = "{\"withDrawOrderId\":7681}";
+        this.hsyTradeService.withdraw(dataParam1  , null);
+
+        String dataParam = "{\"accountId\":890}";
+        this.hsyTradeService.getAccount( dataParam, null);
+    }
+
+
 
     @Autowired
     private BasicChannelService basicChannelService;

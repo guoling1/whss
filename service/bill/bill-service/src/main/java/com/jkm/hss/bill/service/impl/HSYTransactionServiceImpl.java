@@ -43,6 +43,7 @@ import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import com.jkm.hsy.user.entity.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -52,8 +53,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -503,6 +504,26 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 }
                 stopWatch.stop();
                 log.info("记录[{}],分润结束,用时[{}]", consumeMsgSplitProfitRecordId, stopWatch.getTime());
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleRetrySplitProfitTask() {
+        final List<ConsumeMsgSplitProfitRecord> records = this.sendMqMsgService.getPendingRecordsByTag(MqConfig.SPLIT_PROFIT);
+        log.info("处理重发分润任务，个数[{}]", records.size());
+        if (!CollectionUtils.isEmpty(records)) {
+            for (int i = 0; i < records.size(); i++) {
+                this.paySplitProfit(records.get(i).getId());
+
+                try {
+                    Thread.sleep(5000);
+                } catch (final Throwable e) {
+                    log.error("处理重发分润任务异常", e);
+                }
             }
         }
     }

@@ -120,6 +120,11 @@ public class SettlementRecord extends BaseEntity {
     private int settleStatus;
 
     /**
+     * 结算通道
+     * {@link com.jkm.hss.bill.enums.EnumSettleChannel}
+     */
+    private int settleChannel;
+    /**
      * 是否待提现
      *
      * @return

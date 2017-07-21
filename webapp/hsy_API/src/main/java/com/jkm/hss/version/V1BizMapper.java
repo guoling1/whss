@@ -38,11 +38,11 @@ public class V1BizMapper {
 		/**app收款*/
 		bizMapper.put("HSY001030", new String[]{"hsyTradeService", "appReceipt"});
 		/**app提现*/
-		bizMapper.put("HSY001031", new String[]{"hsyTradeService", "appWithdraw"});
+		bizMapper.put("HSY001031", new String[]{"hsyTradeService", "withdraw"});
 		/**app获取提现页面信息*/
 		bizMapper.put("HSY001032", new String[]{"hsyTradeService", "getWithdrawInfo"});
 		/** 账户余额信息*/
-		bizMapper.put("HSY001033", new String[]{"hsyAccountService", "getAccount"});
+		bizMapper.put("HSY001033", new String[]{"hsyTradeService", "getAccount"});
 		/**获取提现验证码*/
 		bizMapper.put("HSY001034", new String[]{"hsyAccountService", "getVerifyCode"});
 		/**结算记录*/

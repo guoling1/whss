@@ -49,7 +49,17 @@ public enum  EnumOrderStatus {
     /**
      *充值失败
      */
-    RECHARGE_FAIL(8, "充值失败")
+    RECHARGE_FAIL(8, "充值失败"),
+
+    /**
+     *提现中
+     */
+    WAIT_WITHDRAW(9, "待提现"),
+
+    /**
+     *提现中
+     */
+    WITHDRAW_FAIL(10, "提现失败"),
     ;
 
     @Getter

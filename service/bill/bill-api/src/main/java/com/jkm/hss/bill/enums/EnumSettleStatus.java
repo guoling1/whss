@@ -27,7 +27,11 @@ public enum EnumSettleStatus {
     /**
      * 部分结算
      */
-    SETTLE_PART(4, "部分结算")
+    SETTLE_PART(4, "部分结算"),
+    /**
+     *结算失败
+     */
+    SETTLE_FAIL(5, "结算失败"),
     ;
 
 
