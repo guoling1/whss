@@ -9,5 +9,4 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 public interface BankCardBinService {
 
     Optional<BankCardBin> analyseCardNo(String bankNo);
-
 }

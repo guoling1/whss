@@ -249,4 +249,10 @@
         set cvv=null,expiry_time=null
         WHERE id = #{id}
     </update>
+    <!--根据openId查询-->
+    <select id="getCountByOpenId" resultType="java.lang.Integer">
+        select count(1) as count
+        from tb_account_bank as b INNER JOIN tb_merchant_info as m on b.account_id=m.account_id INNER JOIN  tb_user_info as u on u.merchant_id=m.id
+        where u.open_id=#{openId} and b.is_default=1
+    </select>
 </mapper>

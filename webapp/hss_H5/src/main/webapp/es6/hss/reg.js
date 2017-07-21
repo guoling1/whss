@@ -70,6 +70,7 @@ submit.addEventListener('click', () => {
         oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
       }, () => {
+        localStorage.removeItem('branch')
         window.location.replace("/sqb/addInfo?oemNo=" + pageData.oemNo);
       })
     }
@@ -85,6 +86,7 @@ submit.addEventListener('click', () => {
         oemNo: pageData.oemNo,
         inviteCode: inviteCode.value
       }, () => {
+          localStorage.removeItem('branch')
         window.location.replace("/sqb/addInfo?oemNo=" + pageData.oemNo);
       })
     }

@@ -61,8 +61,14 @@
     </div>
   </div>
 </div>
-
+<script>
+  var pageData={
+      oemNo:'${oemNo}',
+      source:'2'
+  }
+</script>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.32/channelList.min.js"></script>
+<%--<script src="../../js/hss/2.2.32/channelList.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/channelList.min.js"></script>
 </html>

@@ -2,6 +2,8 @@ package com.jkm.hss.admin.service;
 
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictListResponse;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,4 +34,10 @@ public interface AppBizDistrictService {
      * @return
      */
     List<AppBizDistrictResponse> findByCode(String code);
+    /**
+     *
+     * @param code
+     * @return
+     */
+    AppBizDistrictResponse2 getByCode(@Param("code") String code);
 }

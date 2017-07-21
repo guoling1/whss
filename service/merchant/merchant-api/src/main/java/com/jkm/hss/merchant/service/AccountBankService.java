@@ -144,7 +144,8 @@ public interface AccountBankService {
      * @param reserveMobile
      * @return
      */
-    int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile);
+//    int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile);
+    int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile, String branchCityCode, String branchCityName, String branchCountyCode, String branchCountyName, String branchProvinceCode, String branchProvinceName, String branchName);
     /**
      * 更改默认银行卡（已存在银行卡）
      * @param bankId
@@ -232,4 +233,6 @@ public interface AccountBankService {
      * @param type
      */
     void cleanCvvAndExpiryTime(long id,int type);
+
+
 }

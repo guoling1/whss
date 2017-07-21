@@ -21,6 +21,7 @@ public final class Startup {
         final AbstractApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring/chronos-task.xml");
         try {
             //可以获取通道配置，做简单测试
+            log.info("定时任务启动！！！");
         } catch (final Throwable e) {
             log.error(e.getMessage(), e);
             throw e;
