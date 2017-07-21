@@ -150,7 +150,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public long regByWx(MerchantInfo merchantInfo) {
         merchantInfoDao.insertSelective(merchantInfo);
-        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getProductId(), EnumQRCodeSysType.HSS.getId());
+        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getProductId(), EnumQRCodeSysType.HSS.getId(),merchantInfo.getOemId());
         merchantInfo.setCode(qrCode.getCode());
         merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
         merchantInfoDao.updateBySelective(merchantInfo);

@@ -8,6 +8,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.QRCodeUtil;
 import com.jkm.hss.admin.dao.QRCodeDao;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
@@ -19,6 +20,7 @@ import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
 import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
 import com.jkm.hss.admin.helper.responseparam.*;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,9 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     @Autowired
     private QRCodeDao qrCodeDao;
+
+    @Autowired
+    private AdminUserService adminUserService;
 
     @Autowired
     private ProductionQrCodeRecordService productionQrCodeRecordService;
@@ -171,7 +176,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public QRCode initMerchantCode(final long merchantId,final long productId,final String sysType) {
+    public QRCode initMerchantCode(final long merchantId,final long productId,final String sysType,final long oemId) {
         final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
         String startCode;
         if (latestQRCode.isPresent()) {
@@ -181,7 +186,12 @@ public class QRCodeServiceImpl implements QRCodeService {
         }
         final QRCode qrCode = new QRCode();
         qrCode.setCode(startCode);
-        qrCode.setAdminId(0);
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserByDealerIdAndIsMaster(oemId,EnumIsMaster.MASTER.getCode());
+        if(adminUserOptional.isPresent()){
+            qrCode.setAdminId(adminUserOptional.get().getId());
+        }else{
+            qrCode.setAdminId(3);
+        }
         qrCode.setFirstLevelDealerId(0);
         qrCode.setSecondLevelDealerId(0);
         qrCode.setMerchantId(merchantId);
@@ -555,7 +565,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final String tempDir = QRCodeUtil.getTempDir();
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
                 codes.get(count - 1).getCode() + ".xls");
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl,sysType);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;
@@ -584,7 +594,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public String downloadExcelByCode(final int adminId, final long startId, final long endId, final String baseUrl) {
+    public String downloadExcelByCode(final int adminId, final long startId, final long endId, final String baseUrl,String sysType) {
 
         final List<QRCode> codes = this.qrCodeDao.selectByIdRange(startId, endId);
         if (CollectionUtils.isEmpty(codes)) {
@@ -593,7 +603,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final String tempDir = QRCodeUtil.getTempDir();
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
                 codes.get(codes.size() - 1).getCode() + ".xls");
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl,sysType);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;
@@ -694,7 +704,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @param baseUrl
      * @return
      */
-    private ExcelSheetVO generateCodeExcelSheet(List<QRCode> codes, final String baseUrl) {
+    private ExcelSheetVO generateCodeExcelSheet(List<QRCode> codes, final String baseUrl,final String sysType) {
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
@@ -705,8 +715,12 @@ public class QRCodeServiceImpl implements QRCodeService {
         for (QRCode qrCode : codes) {
             final ArrayList<String> columns = new ArrayList<>();
             final StringBuilder urlBuilder = new StringBuilder(baseUrl + "?");
-            urlBuilder.append("code").append("=").append(qrCode.getCode()).append("&")
-                    .append("sign").append("=").append(qrCode.getSign());
+            if((EnumQRCodeSysType.HSY.getId()).equals(sysType)){
+                urlBuilder.append("code").append("=").append(qrCode.getCode());
+            }else{
+                urlBuilder.append("code").append("=").append(qrCode.getCode()).append("&")
+                        .append("sign").append("=").append(qrCode.getSign());
+            }
             columns.add(qrCode.getCode());
             columns.add(urlBuilder.toString());
             datas.add(columns);
@@ -920,7 +934,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
                 codes.get(count - 1).getCode() + ".xls");
 
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl,sysType);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;

@@ -67,24 +67,22 @@ public class CodeController extends BaseController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
+    @RequestMapping(value = "**", method = RequestMethod.GET)
     public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) throws UnsupportedEncodingException {
         boolean isRedirect = true;
         final String code = request.getParameter("code");
-        final String sign = request.getParameter("sign");
+        String url = "";
         if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
-            return "redirect:http://hss.qianbaojiajia.com/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
+            model.addAttribute("message", "二维码不属于该系统");
+            url = "/message";
         }
-        log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "二维码不存在");
         Preconditions.checkState((qrCodeOptional.get().getSysType()).equals(EnumQRCodeSysType.HSY.getId()), "二维码不属于该系统");
         final QRCode qrCode = qrCodeOptional.get();
-        Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
         final String agent = request.getHeader("User-Agent").toLowerCase();
         log.info("User-Agent is [{}]",agent);
-        String url = "";
         if (qrCode.isActivate()) {//已激活
             log.info("code[{}] is activate", code);
             List<AppBizShop> appBizShops = hsyShopDao.findAppBizShopByID(merchantId);
