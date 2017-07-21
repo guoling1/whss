@@ -13,6 +13,8 @@ import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -48,6 +50,8 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     private UserChannelPolicyService userChannelPolicyService;
     @Autowired
     private SendMsgService sendMsgService;
+    @Autowired
+    private PushService pushService;
 
     /**
      * {@inheritDoc}
@@ -189,6 +193,12 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setPaysuccesstime(new Date());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
+                try {
+                    this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
+                            amount.doubleValue(), updateOrder.getValidationcode(), updateOrder.getOrderno());
+                } catch (final Throwable e) {
+                    log.error("订单[" + hsyOrder.getOrderno() + "]，支付成功，推送异常", e);
+                }
                 return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");
             default:
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());

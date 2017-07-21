@@ -282,15 +282,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
                 hsyMembershipDao.updateMember(appPolicyMemberUp);
             }
-            if(result.getLeft()==0)
-            {
-                try {
-                    this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
-                            hsyOrder.getAmount().doubleValue(), hsyOrder.getValidationcode(), hsyOrder.getOrderno());
-                } catch (final Throwable e) {
-                    log.error("订单[" + hsyOrder.getOrderno() + "]，支付成功，推送异常", e);
-                }
-            }
             return result;
         }
         return Triple.of(-1, "订单异常", "");
