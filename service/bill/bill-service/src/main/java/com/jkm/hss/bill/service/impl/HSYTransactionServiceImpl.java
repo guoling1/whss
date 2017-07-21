@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.hss.account.entity.MemberAccount;
+import com.google.common.base.Optional;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
@@ -36,6 +37,10 @@ import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.MemberStatus;
 import com.jkm.hsy.user.constant.OrderStatus;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
+import com.jkm.hsy.user.Enum.*;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
@@ -114,9 +119,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setShopname(shop.getShortName());
         hsyOrder.setMerchantNo(appAuUser.getGlobalID());
         hsyOrder.setMerchantname(shop.getName());
-        hsyOrder.setUid(appAuUser.getId());
-        hsyOrder.setAccountid(appAuUser.getAccountID());
-        hsyOrder.setDealerid(appAuUser.getDealerID());
         hsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
         hsyOrder.setSourcetype(EnumHsySourceType.QRCODE.getId());
         hsyOrder.setValidationcode("");
@@ -129,9 +131,10 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setGoodsname(shop.getShortName());
         hsyOrder.setGoodsdescribe(shop.getShortName());
         hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());
-//        hsyOrder.setUid(appAuUser.getId());
-//        hsyOrder.setAccountid(appAuUser.getAccountID());
-//        hsyOrder.setDealerid(appAuUser.getDealerID());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
+        hsyOrder.setPoundage(new BigDecimal("0.00"));
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }
@@ -260,12 +263,20 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             hsyOrderUpdate.setMcid(mcid);
             hsyOrderUpdate.setMid(mid);
             hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderUpdate.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+            hsyOrderUpdate.setPaytype(EnumPayChannelSign.MEMBER.getCode());
+            hsyOrderUpdate.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
+            hsyOrderUpdate.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
             hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
             hsyOrderDao.update(hsyOrderUpdate);
+            tradeHsyOrder.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+            tradeHsyOrder.setPaytype(EnumPayChannelSign.MEMBER.getCode());
+            tradeHsyOrder.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
+            tradeHsyOrder.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
             Triple<Integer, String, String> result=this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
             Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
             BigDecimal remainingSum=account.get().getAvailable();
-            if(remainingSum.compareTo(BigDecimal.ZERO)==0&&appPolicyMember.getCanRecharge()==0)
+            if(result.getLeft()==0&&remainingSum.compareTo(BigDecimal.ZERO)==0&&appPolicyMember.getCanRecharge()==0&&appPolicyMember.getIsDeposited()==1)
             {
                 AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
                 appPolicyMemberUp.setId(appPolicyMember.getId());

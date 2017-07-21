@@ -77,6 +77,18 @@ public class ReceiptMemberMoneyAccountServiceImpl implements ReceiptMemberMoneyA
      * {@inheritDoc}
      *
      * @param id
+     * @param income
+     * @return
+     */
+    @Override
+    public int decreaseIncomeAmount(final long id, final BigDecimal income) {
+        return this.receiptMemberMoneyAccountDao.decreaseIncomeAmount(id, income);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
      * @param recharge
      * @return
      */

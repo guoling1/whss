@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -73,4 +74,6 @@ public interface HsyMembershipDao {
     public Date findLastConsumeTime(@Param("mid")Long mid);
     public List<AppPolicyRechargeOrder> findAppPolicyRechargeOrderByParam(@Param("uid") Long uid,@Param("startTime")Date startTime,@Param("endTime")Date endTime);
     public List<AppPolicyRechargeOrder> findRechargeOrderAboutRechargeStatus(@Param("mid") Long mid);
+    public List<AppPolicyMembershipCardShop> getMembershipCardShop(@Param("mcid")Long mcid);
+    public BigDecimal findConsumeOrderSum(@Param("mcid")Long mcid,@Param("mid")Long mid);
 }

@@ -10,8 +10,11 @@ import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -28,6 +31,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2017/6/12.
@@ -44,6 +48,10 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     private TradeService tradeService;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private SendMsgService sendMsgService;
+    @Autowired
+    private PushService pushService;
 
     /**
      * {@inheritDoc}
@@ -172,6 +180,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setId(hsyOrder.getId());
                 updateOrder.setOrderno(payResponse.getTradeOrderNo());
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
+                updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_FAIL.getId());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
@@ -180,8 +189,16 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setOrderno(payResponse.getTradeOrderNo());
                 updateOrder.setValidationcode(payResponse.getTradeOrderNo().substring(payResponse.getTradeOrderNo().length() - 4));
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
+                updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_SUCCESS.getId());
+                updateOrder.setPaysuccesstime(new Date());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
+                try {
+                    this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
+                            amount.doubleValue(), updateOrder.getValidationcode(), updateOrder.getOrderno());
+                } catch (final Throwable e) {
+                    log.error("订单[" + hsyOrder.getOrderno() + "]，支付成功，推送异常", e);
+                }
                 return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");
             default:
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());

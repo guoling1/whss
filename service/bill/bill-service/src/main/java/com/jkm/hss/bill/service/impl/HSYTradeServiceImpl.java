@@ -123,6 +123,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HsyOrderDao hsyOrderDao;
     @Autowired
     private BankCardBinService bankCardBinService;
+    @Autowired
+    private BaseTradeService baseTradeService;
+
     /**
      * {@inheritDoc}
      *
@@ -533,7 +536,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //        }
         final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(payOrder.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
         final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
-        if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
+        if (payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
             result.put("code", -1);
             result.put("msg", "只可以退当日订单");
             return result;
@@ -625,6 +628,49 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public Pair<Integer, String> refundImpl(final RefundOrder refundOrder, final Order payOrder,final HsyRefundOrder hsyRefundOrder,final HsyOrder hsyOrder) {
+        if (EnumPayChannelSign.MEMBER.getId() == payOrder.getPayChannelSign()) {
+            final Pair<Integer, String> result = this.baseTradeService.memberRefund(payOrder);
+            if (0 == result.getLeft()) {
+                final RefundOrder refundOrder2 = new RefundOrder();
+                refundOrder2.setId(refundOrder.getId());
+                refundOrder2.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                refundOrder2.setRemark("退款成功");
+                refundOrder2.setMessage("退款成功");
+                refundOrder2.setFinishTime(new Date());
+                this.refundOrderService.update(refundOrder2);
+                //add by wayne 2017/05/20
+                if(hsyRefundOrder!=null&&hsyRefundOrder.getId()>0) {
+                    hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    hsyRefundOrder.setRemark("退款成功");
+                    hsyRefundOrder.setRefundtime(new Date());
+                    this.hsyRefundOrderService.update(hsyRefundOrder);
+                }
+                if(hsyOrder!=null&&hsyOrder.getId()>0){
+                    hsyOrder.setOrderstatus(EnumHsyOrderStatus.REFUND_SUCCESS.getId());
+                    hsyOrder.setRefundtime(new Date());
+                    this.hsyOrderService.update(hsyOrder);
+                }
+                return Pair.of(0, "退款成功");
+            }
+
+            final RefundOrder refundOrder1 = new RefundOrder();
+            refundOrder1.setId(refundOrder.getId());
+            refundOrder1.setStatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+            refundOrder1.setRemark("退款失败");
+            refundOrder1.setMessage("退款失败");
+            this.refundOrderService.update(refundOrder1);
+            //add by wayne 2017/05/20
+            if(hsyRefundOrder!=null&&hsyRefundOrder.getId()>0) {
+                hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+                hsyRefundOrder.setRemark("退款失败");
+                this.hsyRefundOrderService.update(hsyRefundOrder);
+            }
+            if(hsyOrder!=null&&hsyOrder.getId()>0){
+                hsyOrder.setOrderstatus(EnumHsyOrderStatus.REFUND_FAIL.getId());
+                this.hsyOrderService.update(hsyOrder);
+            }
+            return Pair.of(0, "退款失败");
+        }
         //退款到手续费账户
         this.refund2Poundage(refundOrder, payOrder);
         //退商户款

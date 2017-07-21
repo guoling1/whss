@@ -363,13 +363,13 @@ public class MembershipController {
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
         if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key)
         {
-            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
-            if(appPolicyRechargeOrder==null) {
-                model.addAttribute("mid", appPolicyMember.getId());
-                model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
-                model.addAttribute("source", source);
-                return "redirect:/sqb/needRecharge";
-            }
+//            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+//            if(appPolicyRechargeOrder==null) {
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
+            model.addAttribute("source", source);
+            return "redirect:/sqb/needRecharge";
+//            }
         }
 
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
@@ -377,6 +377,10 @@ public class MembershipController {
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        if(appPolicyMember.getIsDeposited()==0) {
+            BigDecimal totalAmount=hsyMembershipService.findConsumeOrderSum(appPolicyMember.getMcid(),appPolicyMember.getId());
+            appPolicyMember.setConsumeTotalAmount(totalAmount);
+        }
 
         DecimalFormat a=new DecimalFormat("0.0");
         String discountStr=a.format(appPolicyMember.getDiscount());
@@ -429,21 +433,22 @@ public class MembershipController {
             writeJsonToResponse(map,response,pw);
             return;
         }
-        if(appPolicyMember.getCanRecharge()==0)
+        if(appPolicyMember.getCanRecharge()==0&&type!=null&&type.equals(RechargeValidType.RECHARGE.key))
         {
             map.put("flag","fail");
             map.put("result","该会员卡无法自助充值");
             writeJsonToResponse(map,response,pw);
             return;
         }
+
         if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
             AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
             if(appPolicyRechargeOrder!=null) {
                 if (appPolicyRechargeOrder.getStatus() == OrderStatus.HAS_REQUSET_TRADE.key) {
-                    map.put("flag", "fail");
-                    map.put("result", "正在交易中请稍后");
-                    writeJsonToResponse(map, response, pw);
-                    return;
+//                    map.put("flag", "fail");
+//                    map.put("result", "正在交易中请稍后");
+//                    writeJsonToResponse(map, response, pw);
+//                    return;
                 } else if (appPolicyRechargeOrder.getStatus() == OrderStatus.RECHARGE_SUCCESS.key) {
                     map.put("flag", "memberInfo");
                     map.put("result", "您已经成功开通会员卡");
@@ -488,6 +493,7 @@ public class MembershipController {
         page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
         page.setPageSize(AppConstant.PAGE_SIZE);
         Page<AppPolicyRechargeOrder> pageAll=new Page<AppPolicyRechargeOrder>();
+        appPolicyRechargeOrder.setMemberID(appPolicyRechargeOrder.getMid());
         pageAll.setObjectT(appPolicyRechargeOrder);
         pageAll.setPage(page);
         pageAll= hsyMembershipService.findRechargeOrderListByPage(pageAll);

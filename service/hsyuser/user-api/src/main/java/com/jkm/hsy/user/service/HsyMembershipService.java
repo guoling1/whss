@@ -3,6 +3,7 @@ package com.jkm.hsy.user.service;
 import com.jkm.base.common.util.Page;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -63,4 +64,6 @@ public interface HsyMembershipService {
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
     public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid);
     public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid);
+    public List<AppPolicyMembershipCardShop> getMembershipCardShop(Long mcid);
+    public BigDecimal findConsumeOrderSum(Long mcid, Long mid);
 }

@@ -25,6 +25,10 @@
         UPDATE tb_receipt_member_money_account SET income_total_amount = income_total_amount + #{income} WHERE id = #{id}
     </update>
 
+    <update id="decreaseIncomeAmount">
+        UPDATE tb_receipt_member_money_account SET income_total_amount = income_total_amount - #{income} WHERE id = #{id}
+    </update>
+
     <update id="increaseRechargeAmount">
          UPDATE tb_receipt_member_money_account SET recharge_total_amount = recharge_total_amount + #{recharge} WHERE id = #{id}
     </update>

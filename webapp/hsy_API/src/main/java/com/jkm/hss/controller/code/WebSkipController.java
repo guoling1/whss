@@ -16,6 +16,7 @@ import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hsy.user.constant.RechargeValidType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppPolicyMember;
+import com.jkm.hsy.user.entity.AppPolicyMembershipCardShop;
 import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,7 +87,21 @@ public class WebSkipController extends BaseController {
         String merchantName = hsyShopDao.findShopNameByID(merchantId);
         model.addAttribute("merchantName", merchantName);
         AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(openId,null,userId);
-        model.addAttribute("appPolicyMember",appPolicyMember);
+        if(appPolicyMember!=null){
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            List<AppPolicyMembershipCardShop> cardShopList=hsyMembershipService.getMembershipCardShop(appPolicyMember.getMcid());
+            boolean viewFlag=false;
+            for(AppPolicyMembershipCardShop appPolicyMembershipCardShop:cardShopList){
+                if(appPolicyMembershipCardShop.getSid().equals(merchantId))
+                {
+                    viewFlag=true;
+                    break;
+                }
+            }
+            if(viewFlag)
+                model.addAttribute("appPolicyMember",appPolicyMember);
+        }
         return "/payment-wx";
     }
 
@@ -103,7 +119,21 @@ public class WebSkipController extends BaseController {
         String merchantName = hsyShopDao.findShopNameByID(merchantId);
         model.addAttribute("merchantName", merchantName);
         AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(null,openId,userId);
-        model.addAttribute("appPolicyMember",appPolicyMember);
+        if(appPolicyMember!=null){
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            List<AppPolicyMembershipCardShop> cardShopList=hsyMembershipService.getMembershipCardShop(appPolicyMember.getMcid());
+            boolean viewFlag=false;
+            for(AppPolicyMembershipCardShop appPolicyMembershipCardShop:cardShopList){
+                if(appPolicyMembershipCardShop.getSid().equals(merchantId))
+                {
+                    viewFlag=true;
+                    break;
+                }
+            }
+            if(viewFlag)
+                model.addAttribute("appPolicyMember",appPolicyMember);
+        }
         return "/payment-zfb";
     }
 
