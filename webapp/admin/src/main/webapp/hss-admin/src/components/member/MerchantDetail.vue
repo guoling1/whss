@@ -8,17 +8,23 @@
         </div>
 
         <div class="box-body">
-
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column prop="branchCode" label="会员卡名"></el-table-column>
-            <el-table-column prop="province" label="生效店铺"></el-table-column>
-            <el-table-column prop="city" label="开卡储值额" align="right"></el-table-column>
-            <el-table-column prop="bankName" label="折扣"></el-table-column>
-            <el-table-column prop="bankName" label="开卡送额" align="right"></el-table-column>
-            <el-table-column prop="bankName" label="充值送" align="right"></el-table-column>
-            <el-table-column prop="bankName" label="可分享"></el-table-column>
-            <el-table-column prop="bankName" label="办理数量" align="right"></el-table-column>
+            <el-table-column prop="membershipName" label="会员卡名"></el-table-column>
+            <el-table-column prop="validShop" label="生效店铺"></el-table-column>
+            <el-table-column prop="depositAmount" label="开卡储值额" align="right"></el-table-column>
+            <el-table-column label="折扣">
+              <template scope="scope">{{scope.row.discount|discount}}</template>
+            </el-table-column>
+            <el-table-column prop="" label="开卡送额" align="right">
+              <template scope="scope">
+                <span v-if="scope.row.isPresentedViaActivate==1">开</span>
+                <span v-if="scope.row.isPresentedViaActivate==0">关</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="rechargePresentAmount" label="充值送" align="right"></el-table-column>
+            <!--<el-table-column prop="bankName" label="可分享"></el-table-column>-->
+            <el-table-column prop="cardCount" label="办理数量" align="right"></el-table-column>
           </el-table>
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -94,6 +100,15 @@
       handleCurrentChange(val) {
         this.query.pageNo = val;
         this.getData()
+      }
+    },
+    filters:{
+      discount:function (val) {
+        if(val==10){
+            return '无'
+        }else {
+            return val+'折'
+        }
       }
     }
   }
