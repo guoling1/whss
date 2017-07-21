@@ -619,7 +619,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public Pair<Integer, String> refundImpl(final RefundOrder refundOrder, final Order payOrder,final HsyRefundOrder hsyRefundOrder,final HsyOrder hsyOrder) {
-        if (EnumPayChannelSign.MEMBER.getId() == hsyOrder.getPaychannelsign()) {
+        if (EnumPayChannelSign.MEMBER.getId() == payOrder.getPayChannelSign()) {
             final Pair<Integer, String> result = this.baseTradeService.memberRefund(payOrder);
             if (0 == result.getLeft()) {
                 final RefundOrder refundOrder2 = new RefundOrder();
