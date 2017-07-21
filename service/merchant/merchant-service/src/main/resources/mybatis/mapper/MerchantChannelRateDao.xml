@@ -105,4 +105,9 @@
         SET merchant_pay_rate = #{rate}
         WHERE merchant_id = #{merchantId} and product_id=#{productId} and channel_type_sign=#{channelTypeSign}
     </update>
+    <update id="updateKmRate">
+        UPDATE tb_merchant_channel_rate
+        SET remarks = #{msg}
+        WHERE merchant_id = #{merchantId} AND channel_type_sign in (208,209)
+    </update>
 </mapper>
