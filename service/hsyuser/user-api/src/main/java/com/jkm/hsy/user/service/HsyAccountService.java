@@ -24,4 +24,14 @@ public interface HsyAccountService {
      * @return
      */
     String getVerifyCode(String dataParam, AppParam appParam);
+
+    /**
+     * 查询账户
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String withdraw(String dataParam, AppParam appParam);
+
 }

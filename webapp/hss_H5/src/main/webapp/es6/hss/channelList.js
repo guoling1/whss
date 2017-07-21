@@ -43,9 +43,16 @@ const checkBusinessRegistration = (code, amount) => {
     http.post('/wx/checkMerchantInfo1', {
       amount: amount,
       channelTypeSign: code
-    }, function () {
-      message.load_hide();
-      resolve(true);
+    }, function (data) {
+        if(Number(data)){
+          localStorage.setItem('bankId',data)
+            localStorage.removeItem('branch');
+            message.load_hide();
+            window.location.href = '/sqb/bankBranch/' + data + "?oemNo=" + pageData.oemNo+"&source=" + pageData.source;
+        }else {
+          message.load_hide();
+           resolve(true);
+        }
     });
   });
 };

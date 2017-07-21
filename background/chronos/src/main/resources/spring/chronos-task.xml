@@ -18,8 +18,18 @@
        http://www.springframework.org/schema/task/spring-task.xsd">
 
     <import resource="classpath:/spring/chronos-db.xml"/>
-    <!--引入所有需要的xml文件-->
-    <!--<import resource="classpath:/spring/*.xml"/>-->
+    <import resource="classpath*:/spring/account-service.xml"/>
+    <import resource="classpath*:/spring/bank-service.xml"/>
+    <import resource="classpath*:/spring/admin-service.xml"/>
+    <import resource="classpath*:/spring/bill-service.xml"/>
+    <import resource="classpath*:/spring/user-service.xml"/>
+    <import resource="classpath*:/spring/notifier-service.xml"/>
+    <import resource="classpath*:/spring/dealer-service.xml"/>
+    <import resource="classpath*:/spring/merchant-service.xml"/>
+    <import resource="classpath*:/spring/product-service.xml"/>
+    <import resource="classpath*:/spring/push-service.xml"/>
+    <import resource="classpath*:/spring/settle-service.xml"/>
+    <import resource="classpath*:/spring/sms-sdk.xml"/>
 
     <context:annotation-config/>
     <context:component-scan base-package="com.jkm.chronos.task"/>
@@ -29,6 +39,12 @@
 
     <task:annotation-driven/>
 
+    <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">
+        <constructor-arg name="endpoint" value="${oss_endpoint}"/>
+        <constructor-arg name="accessKeyId" value="${oss_accessKeyId}"/>
+        <constructor-arg name="secretAccessKey" value="${oss_secretAccessKey}"/>
+    </bean>
+
     <reg:zookeeper id="regCenter"
                    serverLists="${serverLists}"
                    namespace="${namespace}"
@@ -36,13 +52,65 @@
                    maxSleepTimeMilliseconds="${maxSleepTimeMilliseconds}"
                    maxRetries="${maxRetries}"/>
 
-    <job:bean id="repayTask"
-        class="com.jkm.chronos.task.TestTask"
-        description="定时还款任务"
-        regCenter="regCenter"
-        cron="0 0 18,23 * * ?"
-        shardingTotalCount="1"
-        failover="true"
-        overwrite="true"
-        monitorExecution="true"/>
+    <job:bean id="retrySplitProfitTask"
+              class="com.jkm.chronos.task.RetrySplitProfitTask"
+              description="定时重发分润失败消息任务"
+              regCenter="regCenter"
+              cron="0 0 0/1 * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+    <job:bean id="sendWeekEmailTask"
+              class="com.jkm.chronos.task.SendWeekEmailTask"
+              description="发送周账单任务"
+              regCenter="regCenter"
+              cron="0 0 18 ? * MON"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+
+    <job:bean id="sendMonthEmailTask"
+              class="com.jkm.chronos.task.SendMonthEmailTask"
+              description="发送月账单任务"
+              regCenter="regCenter"
+              cron="0 0 18 1 * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+    <job:bean id="hssMBT1WithdrawTask"
+              class="com.jkm.chronos.task.HssMBT1WithdrawTask"
+              description="魔宝快捷T1提现任务"
+              regCenter="regCenter"
+              cron="0 0 6 * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+    <job:bean id="hssELT1WithdrawTask"
+              class="com.jkm.chronos.task.HssELT1WithdrawTask"
+              description="易联快捷T1提现任务"
+              regCenter="regCenter"
+              cron="0 35 10 * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
+    <job:bean id="payQueryRefundAcceptRefundOrderTask"
+              class="com.jkm.chronos.task.PayQueryRefundAcceptRefundOrderTask"
+              description="处理退款已受理的退款流水，查询是否到账任务"
+              regCenter="regCenter"
+              cron="0 0 0/2 * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
 </beans>

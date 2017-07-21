@@ -1,6 +1,7 @@
 package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +29,13 @@ public interface AppBizDistrictDao {
      * @return
      */
     List<AppBizDistrictResponse> findByCode(@Param("code") String code);
+
+    /**
+     *
+     * @param code
+     * @return
+     */
+    AppBizDistrictResponse2 getByCode(@Param("code") String code);
 
 
 }

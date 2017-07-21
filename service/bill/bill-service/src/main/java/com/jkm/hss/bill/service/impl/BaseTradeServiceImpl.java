@@ -29,6 +29,7 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -406,6 +407,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW_D0, 20000);
         }
         //TODO 通知业务
+        log.info("业务方[{}]-交易订单[{}]，支付成功, 开始通知业务", order.getAppId(), order.getOrderNo());
         final CallbackResponse callbackResponse = new CallbackResponse();
         callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         callbackResponse.setTradeOrderNo(order.getOrderNo());
@@ -572,6 +574,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Override
     @Transactional
     public long record(final long orderId) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         log.info("交易单[{}], 进行入账操作", order.getOrderNo());
         if ((order.isPaySuccess() || order.isRechargeSuccess()) && order.isDueSettle()) {
@@ -641,6 +645,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                 this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
                 return settlementRecordId;
             }
+            stopWatch.stop();
+            log.info("交易单[{}], 入账结束, 用时[{}]", order.getOrderNo(), stopWatch.getTime());
         }
         return 0;
     }

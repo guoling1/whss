@@ -508,8 +508,12 @@ public class LoginController extends BaseController {
                         Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
                         Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
                         if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
+                            Optional<OemInfo> oemInfoOptional1 =  oemInfoService.selectByOemNo(oemNo);
+                            Preconditions.checkState(oemInfoOptional1.isPresent(), "分公司尚未配置");
+                            model.addAttribute("oemNo", oemNo);
+                            model.addAttribute("oemName",oemInfoOptional1.get().getBrandName());
                             CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                            return "/wallet";
                         }else{
                             model.addAttribute("oemNo", oemNo);
                             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
@@ -517,17 +521,20 @@ public class LoginController extends BaseController {
                     }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
                         Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                         Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        model.addAttribute("oemNo", oemNo);
+                        model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
                         CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                        String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-                        return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                        return "/wallet";
                     }
                 }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                     if(merchantInfo.get().getOemId()>0){//分公司商户
                         Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
                         Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
                         if(!(WxConstants.APP_ID).equals(oemInfoOptional.get().getAppId())){
+                            model.addAttribute("oemNo", "");
+                            model.addAttribute("oemName","好收收");
                             CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                            return "/wallet";
                         }else{
                             model.addAttribute("oemNo", oemNo);
                             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
@@ -739,7 +746,7 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/bankBranch/{bankId}", method = RequestMethod.GET)
-    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId) throws IOException {
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId,@RequestParam(value = "source", required = false) Integer source) throws IOException {
             Optional<AccountBank> accountBankOptional = accountBankService.selectById(bankId);
             if(!accountBankOptional.isPresent()){
                 model.addAttribute("message","查询不到默认银行卡信息");
@@ -748,8 +755,10 @@ public class LoginController extends BaseController {
             if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
                 String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
                 model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                model.addAttribute("realBankNo",bankNo);
             }else{
                 model.addAttribute("bankNo","");
+                model.addAttribute("realBankNo","");
             }
             if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
                 String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
@@ -765,6 +774,7 @@ public class LoginController extends BaseController {
                 model.addAttribute("oemName","好收收");
             }
             model.addAttribute("oemNo", oemNo);
+            model.addAttribute("source", source);
             model.addAttribute("bankName", accountBankOptional.get().getBankName());
             model.addAttribute("bankBin",accountBankOptional.get().getBankBin());
             model.addAttribute("provinceCode",accountBankOptional.get().getBranchProvinceCode());
@@ -1182,5 +1192,127 @@ public class LoginController extends BaseController {
         return "/buySuccess";
     }
 
+    /**
+     * 地区选择
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/districtSelect", method = RequestMethod.GET)
+    public String districtSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                                 @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                                 @RequestParam(value = "provinceName", required = false) String provinceName,
+                                 @RequestParam(value = "cityCode", required = false) String cityCode,
+                                 @RequestParam(value = "cityName", required = false) String cityName,
+                                 @RequestParam(value = "countyCode", required = false) String countyCode,
+                                 @RequestParam(value = "countyName", required = false) String countyName,
+                                 @RequestParam(value = "bankNo", required = false) String bankNo,
+                                 @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
+        model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
+        return  "/district";
+    }
 
+    /**
+     * 支行选择
+     * @param request
+     * @param response
+     * @param model
+     * @param bankNo
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/branchSelect", method = RequestMethod.GET)
+    public String branchSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                               @RequestParam(value = "bankNo", required = false) String bankNo,
+                               @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                               @RequestParam(value = "provinceName", required = false) String provinceName,
+                               @RequestParam(value = "cityCode", required = false) String cityCode,
+                               @RequestParam(value = "cityName", required = false) String cityName,
+                               @RequestParam(value = "countyCode", required = false) String countyCode,
+                               @RequestParam(value = "countyName", required = false) String countyName,
+                               @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
+        model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
+        return  "/branch";
+    }
+    /**
+     * 添加支行
+     * @param request
+     * @param response
+     * @param model
+     * @param countyCode
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/addBranch", method = RequestMethod.GET)
+    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "countyCode", required = false) String countyCode,
+                            @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
+        model.addAttribute("countyCode", countyCode);
+        model.addAttribute("oemNo",oemNo);
+        return  "/addBranch";
+    }
+
+    /**
+     * 支行选择
+     * @param request
+     * @param response
+     * @param model
+     * @param bankNo
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/branchSelect2", method = RequestMethod.GET)
+    public String branchSelect2(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                               @RequestParam(value = "bankNo", required = false) String bankNo,
+                               @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                               @RequestParam(value = "provinceName", required = false) String provinceName,
+                               @RequestParam(value = "cityCode", required = false) String cityCode,
+                               @RequestParam(value = "cityName", required = false) String cityName,
+                               @RequestParam(value = "countyCode", required = false) String countyCode,
+                               @RequestParam(value = "countyName", required = false) String countyName,
+                               @RequestParam(value = "oemNo", required = false) String oemNo,
+                                @RequestParam(value = "source", required = false) Integer source) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
+        model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("source",source);
+        return  "/branch2";
+    }
+    /**
+     * 添加支行
+     * @param request
+     * @param response
+     * @param model
+     * @param countyCode
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/addBranch2", method = RequestMethod.GET)
+    public String addBranch2(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "countyCode", required = false) String countyCode,
+                            @RequestParam(value = "oemNo", required = false) String oemNo,@RequestParam(value = "source", required = false) Integer source) throws IOException {
+        model.addAttribute("countyCode", countyCode);
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("source",source);
+        return  "/addBranch2";
+    }
 }

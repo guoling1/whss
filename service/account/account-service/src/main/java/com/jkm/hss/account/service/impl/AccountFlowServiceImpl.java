@@ -166,6 +166,40 @@ public class AccountFlowServiceImpl implements AccountFlowService {
     }
 
     /**
+     * {@inheritDoc}
+     * @param accountId
+     * @param orderNo
+     * @param changeAmount
+     * @param remark
+     * @param type
+     */
+    @Override
+    public void addAccountFlowToSettle(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type) {
+
+        final Account account = this.accountService.getByIdWithLock(accountId).get();
+        final AccountFlow accountFlow = new AccountFlow();
+        accountFlow.setFlowNo(this.getFlowNo());
+        accountFlow.setAccountId(account.getId());
+        accountFlow.setOrderNo(orderNo);
+        accountFlow.setType(type.getId());
+        if (EnumAccountFlowType.DECREASE.getId() == type.getId()) {
+            accountFlow.setOutAmount(changeAmount);
+            accountFlow.setIncomeAmount(new BigDecimal("0.00"));
+            accountFlow.setBeforeAmount(account.getDueSettleAmount().add(changeAmount));
+            accountFlow.setAfterAmount(account.getDueSettleAmount());
+        }
+        if (EnumAccountFlowType.INCREASE.getId() == type.getId()) {
+            accountFlow.setOutAmount(new BigDecimal("0.00"));
+            accountFlow.setIncomeAmount(changeAmount);
+            accountFlow.setBeforeAmount(account.getDueSettleAmount().subtract(changeAmount));
+            accountFlow.setAfterAmount(account.getDueSettleAmount());
+        }
+        accountFlow.setChangeTime(new Date());
+        accountFlow.setRemark(remark);
+        this.accountFlowDao.insert(accountFlow);
+    }
+
+    /**
      * 获取流水号
      *
      * @return
