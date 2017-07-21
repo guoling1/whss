@@ -442,8 +442,8 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
         final MerchantChannelRate merchantChannelRate = this.merchantChannelRateDao.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
-        paramsMap.put("wxT0Fee", merchantChannelRate.getMerchantPayRate().toString());
-        paramsMap.put("aipayT0Fee", merchantChannelRate.getMerchantPayRate().toString());
+        paramsMap.put("wxRate", merchantChannelRate.getMerchantPayRate().toString());
+        paramsMap.put("zfbRate", merchantChannelRate.getMerchantPayRate().toString());
         log.info("修改卡盟联商户费率参数为："+JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdateRate(), paramsMap);
         JSONObject jo = JSONObject.fromObject(result);
