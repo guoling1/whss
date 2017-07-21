@@ -128,6 +128,7 @@ public class TradeServiceImpl implements TradeService {
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PayResponse pay(final PayParams payParams) {
+        log.info("[{}]", payParams);
         log.info("业务方[{}],通过渠道[{}]进行支付[{}],实付金额[{}]", payParams.getAppId(), payParams.getChannel(), payParams.getTradeAmount(), payParams.getRealPayAmount());
         final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(payParams.getBusinessOrderNo());
         if (orderOptional.isPresent()) {
