@@ -20,16 +20,6 @@
             <el-table-column prop="bankName" label="可分享"></el-table-column>
             <el-table-column prop="bankName" label="办理数量" align="right"></el-table-column>
           </el-table>
-          <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="query.pageNo"
-                           :page-sizes="[10, 20, 50]"
-                           :page-size="query.pageSize"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="count">
-            </el-pagination>
-          </div>
         </div>
       </div>
     </div>
@@ -42,15 +32,9 @@
     name: 'Merchant',
     data(){
       return {
-        query:{
-          pageNo:1,
-          pageSize:10,
-          realname:''
-        },
         records: [],
         count: 0,
         loading: true,
-        bankName:""
       }
     },
     created: function () {
@@ -59,7 +43,7 @@
     methods: {
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/merchantMember/getMerchantMemberList',this.query)
+        this.$http.post('/admin/merchantMember/getMemberShipList',{uid:this.$route.query.id})
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
