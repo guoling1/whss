@@ -565,7 +565,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final String tempDir = QRCodeUtil.getTempDir();
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
                 codes.get(count - 1).getCode() + ".xls");
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl,sysType);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;
@@ -594,7 +594,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public String downloadExcelByCode(final int adminId, final long startId, final long endId, final String baseUrl) {
+    public String downloadExcelByCode(final int adminId, final long startId, final long endId, final String baseUrl,String sysType) {
 
         final List<QRCode> codes = this.qrCodeDao.selectByIdRange(startId, endId);
         if (CollectionUtils.isEmpty(codes)) {
@@ -603,7 +603,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final String tempDir = QRCodeUtil.getTempDir();
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
                 codes.get(codes.size() - 1).getCode() + ".xls");
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl,sysType);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;
@@ -704,7 +704,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @param baseUrl
      * @return
      */
-    private ExcelSheetVO generateCodeExcelSheet(List<QRCode> codes, final String baseUrl) {
+    private ExcelSheetVO generateCodeExcelSheet(List<QRCode> codes, final String baseUrl,final String sysType) {
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
@@ -715,8 +715,12 @@ public class QRCodeServiceImpl implements QRCodeService {
         for (QRCode qrCode : codes) {
             final ArrayList<String> columns = new ArrayList<>();
             final StringBuilder urlBuilder = new StringBuilder(baseUrl + "?");
-            urlBuilder.append("code").append("=").append(qrCode.getCode()).append("&")
-                    .append("sign").append("=").append(qrCode.getSign());
+            if((EnumQRCodeSysType.HSY.getId()).equals(sysType)){
+                urlBuilder.append("code").append("=").append(qrCode.getCode());
+            }else{
+                urlBuilder.append("code").append("=").append(qrCode.getCode()).append("&")
+                        .append("sign").append("=").append(qrCode.getSign());
+            }
             columns.add(qrCode.getCode());
             columns.add(urlBuilder.toString());
             datas.add(columns);
@@ -930,7 +934,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
                 codes.get(count - 1).getCode() + ".xls");
 
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl,sysType);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;

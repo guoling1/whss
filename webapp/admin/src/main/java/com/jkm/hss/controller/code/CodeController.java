@@ -92,7 +92,7 @@ public class CodeController extends BaseController {
         }
         if("hsy".equals(request.getSysType())){
             fileZip = this.qrCodeService.downloadExcel(1, request.getCount(),
-                    "http://hsy.qianbaojiajia.com/code/scanCode",request.getProductId(),request.getSysType());
+                    "http://hsy.qianbaojiajia.com/code",request.getProductId(),request.getSysType());
         }
 
         final String fileName = getFileName(fileZip);
@@ -126,8 +126,16 @@ public class CodeController extends BaseController {
     public CommonResponse downloadExcelByCode(final HttpServletRequest request) {
         final String startId = request.getParameter("startId");
         final String endId = request.getParameter("endId");
+        final String sysType = request.getParameter("sysType");
+        String qrUrl = "";
+        if("hss".equals(sysType)){
+            qrUrl = "http://hss.qianbaojiajia.com/code/scanCode";
+        }
+        if("hsy".equals(sysType)){
+            qrUrl = "http://hsy.qianbaojiajia.com/code";
+        }
         final String fileZip = this.qrCodeService.downloadExcelByCode(1, Long.valueOf(startId), Long.valueOf(endId),
-                ApplicationConsts.getApplicationConfig().QRCodeUrl());
+                qrUrl,sysType);
         final String fileName = getFileName(fileZip);
 
         final ObjectMetadata meta = new ObjectMetadata();

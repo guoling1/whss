@@ -292,7 +292,7 @@ public interface QRCodeService {
      * @param baseUrl
      * @return
      */
-    String downloadExcelByCode(int adminId, long startId, long endId, String baseUrl);
+    String downloadExcelByCode(int adminId, long startId, long endId, String baseUrl,String sysType);
 
     /**
      * 查询所有未分配的二维码个数
