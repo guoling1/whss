@@ -189,11 +189,6 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setPaysuccesstime(new Date());
                 updateOrder.setRemark(payResponse.getMessage());
                 this.hsyOrderService.update(updateOrder);
-                try {
-                    sendMsgService.sendMessage(hsyOrder.getAmount() + "", hsyOrder.getOrdernumber(), hsyOrder.getOrderno(), hsyOrder.getShopname(), hsyOrder.getMerchantname(), hsyOrder.getMemberId());
-                }catch(Exception e){
-                    log.info("发送会员卡购买成功信息失败："+e.getMessage());
-                }
                 return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");
             default:
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
