@@ -527,7 +527,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //        }
         final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(payOrder.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
         final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
-        if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
+        if (payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
             result.put("code", -1);
             result.put("msg", "只可以退当日订单");
             return result;
