@@ -82,4 +82,11 @@ public interface HsyMembershipService {
      * @return
      */
     List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request);
+
+    /**
+     * 会员卡列表
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardList(MemberRequest request);
 }

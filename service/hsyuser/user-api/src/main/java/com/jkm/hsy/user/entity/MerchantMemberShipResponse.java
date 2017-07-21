@@ -20,4 +20,6 @@ public class MerchantMemberShipResponse {
     private List validShop;//有效店铺
     private int cardCount;//办理数量
     private String shortName;//商户简称
+    private Long mcid;
+    private Long sid;
 }

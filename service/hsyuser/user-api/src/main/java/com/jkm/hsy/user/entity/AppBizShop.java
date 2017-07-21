@@ -10,7 +10,7 @@ public class AppBizShop {
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称
-    private String shortName;//店铺简称
+
     private String industryCode;//行业代码
     private String districtCode;//行政区代码
     private String address;//地址

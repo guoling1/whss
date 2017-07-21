@@ -88,7 +88,7 @@
             <mvc:mapping path="/admin/queryOrder/**"/>
             <mvc:mapping path="/admin/unionNumber/**"/>
             <mvc:mapping path="/admin/wad/**"/>
-            <mvc:mapping path="/admin/merchantMember/**"/>
+            <!--<mvc:mapping path="/admin/merchantMember/**"/>-->
             <mvc:mapping path="/admin/AchievementStatistics/**"/>
             <mvc:exclude-mapping path="/admin/user/login*"/>
             <mvc:exclude-mapping path="/admin/qrcode/**"/>

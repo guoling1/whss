@@ -853,15 +853,18 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         List result = new ArrayList();
         if (list.size()>0) {
             for (int i=0;i<list.size();i++){
-                List<MerchantMemberShipResponse> lists = this.hsyMembershipDao.getMemberShipLists(list.get(i).getUid());
-                if (list.size()>0){
-                    for (int j=0;j<lists.size();j++){
-                        result.add(lists.get(i).getShortName());
-                        list.get(i).setValidShop(result);
-                    }
-                }
+                List<MerchantMemberShipResponse> lists = this.hsyMembershipDao.getMemberShipLists(request.getUid());
+
+                list.get(i).setValidShop(lists);
+
             }
         }
+        return list;
+    }
+
+    @Override
+    public List<CardNoResponse> getcardList(MemberRequest request) {
+        List<CardNoResponse> list = this.hsyMembershipDao.getcardList(request);
         return list;
     }
 

@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class MemberRequest {
 
+    private Long uid;
+
     /**
      * 条数
      */

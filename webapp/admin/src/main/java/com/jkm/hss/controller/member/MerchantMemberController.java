@@ -2,6 +2,7 @@ package com.jkm.hss.controller.member;
 
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hsy.user.entity.CardNoResponse;
 import com.jkm.hsy.user.entity.MemberRequest;
 import com.jkm.hsy.user.entity.MerchantMemberResponse;
 import com.jkm.hsy.user.entity.MerchantMemberShipResponse;
@@ -57,6 +58,21 @@ public class MerchantMemberController {
         List<MerchantMemberShipResponse> list = this.hsyMembershipService.getMemberShipList(request);
 //        List<MerchantMemberResponse> lists = this.hsyMembershipService.getMerchantMemberLists(request);
 //        pageModel.setCount(lists.size());
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1, "success", pageModel);
+    }
+
+    /**
+     * 会员列表
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getcardList",method = RequestMethod.POST)
+    public CommonResponse getcardList(@RequestBody MemberRequest request){
+        final PageModel<CardNoResponse> pageModel = new PageModel<CardNoResponse>(request.getPageNo(), request.getPageSize());
+        request.setOffset(pageModel.getFirstIndex());
+        List<CardNoResponse> list = this.hsyMembershipService.getcardList(request);
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
     }

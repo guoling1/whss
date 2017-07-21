@@ -96,4 +96,11 @@ public interface HsyMembershipDao {
      * @return
      */
     List<MerchantMemberShipResponse> getMemberShipLists(@Param("uid") Long uid);
+
+    /**
+     * 会员卡列表
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardList(MemberRequest request);
 }
