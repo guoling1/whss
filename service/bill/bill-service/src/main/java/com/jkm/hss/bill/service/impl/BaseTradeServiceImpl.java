@@ -187,7 +187,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public PayResponse memberPayImpl(final long orderId) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
+        final Order order = this.orderService.getById(orderId).get();
         final PayResponse payResponse = new PayResponse();
         payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         payResponse.setTradeOrderNo(order.getOrderNo());
@@ -236,12 +236,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             this.receiptMemberMoneyAccountFlowService.add(receiptMemberMoneyAccountFlow);
             //更新交易
             final Order updateOrder = new Order();
+            updateOrder.setId(orderId);
             updateOrder.setPaySuccessTime(new Date());
             updateOrder.setRemark("会员卡支付成功");
             updateOrder.setSn("");
             updateOrder.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
             //TODO
             updateOrder.setSettleTime(new Date());
+            updateOrder.setSuccessSettleTime(new Date());
             updateOrder.setSettleStatus(EnumSettleStatus.SETTLED.getId());
             this.orderService.update(updateOrder);
 
