@@ -265,6 +265,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             hsyOrderUpdate.setPaytype(EnumPayChannelSign.MEMBER.getCode());
             hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
             hsyOrderDao.update(hsyOrderUpdate);
+            tradeHsyOrder.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+            tradeHsyOrder.setPaytype(EnumPayChannelSign.MEMBER.getCode());
             Triple<Integer, String, String> result=this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
             Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
             BigDecimal remainingSum=account.get().getAvailable();
