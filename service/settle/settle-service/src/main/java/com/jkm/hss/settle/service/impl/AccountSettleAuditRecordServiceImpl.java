@@ -28,6 +28,7 @@ import com.jkm.hss.bill.enums.EnumSettlementRecordStatus;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
+import com.jkm.hss.bill.service.WithdrawOrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.mq.config.MqConfig;
@@ -88,7 +89,8 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     private OrderService orderService;
     @Autowired
     private SendMessageService sendMessageService;
-
+    @Autowired
+    private WithdrawOrderService withdrawOrderService;
      /**
      * {@inheritDoc}
      *
@@ -409,7 +411,8 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     }
 
     private List<Long> handleWithdrawIngSettle() {
-        //this.orderService.selectAccountIdsBySettleDate();
+        final Date date = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        List<Order> list =  this.withdrawOrderService.selectWithdrawingOrderByBefore(date);
         return null;
     }
 
