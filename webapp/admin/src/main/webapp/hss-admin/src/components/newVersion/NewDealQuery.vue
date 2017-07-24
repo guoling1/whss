@@ -290,7 +290,7 @@
         });
       });
 
-      this.$http.post('/admin/channel/list')
+      this.$http.post('/admin/channel/listGateway')
         .then(function (res) {
           this.channelList = res.data;
         }, function (err) {
