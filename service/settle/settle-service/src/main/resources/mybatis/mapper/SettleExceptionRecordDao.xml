@@ -4,6 +4,7 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_settle_exception_record
         (settle_target_no,
+        withdraw_order_id,
         settle_target_name,
         settle_target_type,
         begin_time,
@@ -12,6 +13,7 @@
         status
         )VALUES(
         #{settleTargetNo},
+        #{withdrawOrderId},
         #{settleTargetName},
         #{settleTargetType},
         #{beginTime},
@@ -29,4 +31,50 @@
         remarks = #{remarks},
         status = #{status}
     </update>
+    <select id="selectCountByParam" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_settle_exception_record
+        <where>
+            <if test="userNo != null">
+                AND settle_target_no = #{userNo}
+            </if>
+            <if test="userName != null">
+                AND settle_target_name like "%"#{userName}"%"
+            </if>
+            <if test="userType > 0">
+                AND settle_target_type = #{userType}
+            </if>
+            <if test="settleExceptionStatus > 0">
+                AND status = #{settleExceptionStatus}
+            </if>
+            <if test="startDate != null">
+                AND settle_date BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </select>
+    <select id="selectByParam" resultType="com.jkm.hss.settle.entity.SettleExceptionRecord">
+        SELECT * FROM tb_settle_exception_record
+        <where>
+            <if test="userNo != null">
+                AND settle_target_no = #{userNo}
+            </if>
+            <if test="userName != null">
+                AND settle_target_name like "%"#{userName}"%"
+            </if>
+            <if test="userType > 0">
+                AND settle_target_type = #{userType}
+            </if>
+            <if test="settleExceptionStatus > 0">
+                AND status = #{settleExceptionStatus}
+            </if>
+            <if test="startDate != null">
+                AND settle_date BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.settle.entity.SettleExceptionRecord">
+        SELECT * FROM tb_settle_exception_record WHERE id = #{id} FOR UPDATE
+    </select>
+
 </mapper>

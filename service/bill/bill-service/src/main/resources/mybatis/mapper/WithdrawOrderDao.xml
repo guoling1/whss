@@ -11,6 +11,7 @@
         withdraw_amount,
         withdraw_user_type,
         withdraw_user_no,
+        withdraw_user_name,
         withdraw_user_account_id,
         upper_channel,
         apply_time,
@@ -30,6 +31,7 @@
         #{withdrawAmount},
         #{withdrawUserType},
         #{withdrawUserNo},
+        #{withdrawUserName},
         #{withdrawUserAccountId},
         #{upperChannel},
         #{applyTime},
@@ -69,7 +71,7 @@
     <select id="getByOrderNo" resultType="com.jkm.hss.bill.entity.WithdrawOrder">
         SELECT * FROM tb_withdraw_order WHERE order_no = #{orderNo}
     </select>
-    <select id="selectWithdrawingOrderByBefore" resultType="com.jkm.hss.bill.entity.Order">
+    <select id="selectWithdrawingOrderByBefore" resultType="com.jkm.hss.bill.entity.WithdrawOrder">
         SELECT * FROM tb_withdraw_order WHERE apply_time  &lt; #{date} AND status = 2
     </select>
 </mapper>

@@ -21,5 +21,5 @@ public interface WithdrawOrderDao {
 
     WithdrawOrder getByOrderNo(String orderNo);
 
-    List<Order> selectWithdrawingOrderByBefore(Date date);
+    List<WithdrawOrder> selectWithdrawingOrderByBefore(Date date);
 }

@@ -56,6 +56,11 @@ public class WithdrawOrder extends BaseEntity{
     private String withdrawUserNo;
 
     /**
+     * 提现用户编号
+     */
+    private String withdrawUserName;
+
+    /**
      * 提现用户资金编号
      */
     private long withdrawUserAccountId;
@@ -115,5 +120,10 @@ public class WithdrawOrder extends BaseEntity{
      */
     public boolean isWithdrawSuccess() {
         return EnumWithdrawOrderStatus.WITHDRAW_SUCCESS.getCode() == this.status;
+    }
+
+    public boolean isWithDrawComplete() {
+        return EnumWithdrawOrderStatus.WITHDRAW_SUCCESS.getCode() == this.status ||
+                EnumWithdrawOrderStatus.WITHDRAW_FAIL.getCode()== this.status;
     }
 }

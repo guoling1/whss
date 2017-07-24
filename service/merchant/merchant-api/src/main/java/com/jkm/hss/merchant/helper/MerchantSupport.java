@@ -1,9 +1,12 @@
 package com.jkm.hss.merchant.helper;
 
 import com.jkm.base.common.util.AESUtil;
+import com.jkm.base.common.util.DateFormatUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2016/11/23.
@@ -168,6 +171,7 @@ public class MerchantSupport {
         return DigestUtils.sha256Hex(password + salt);
     }
     public static void main(String[] args ){
+        final Date date = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         //System.out.println(decryptMobile("B3sItZYv_xR2FGOBZqzPpg"));
        System.out.println(decryptBankCard("UI0zwGFqacS-F0JTa4YBp0-XIgl6ix3Qhuw7WeTfnCw"));
  //       System.out.println(decryptIdentity(""));

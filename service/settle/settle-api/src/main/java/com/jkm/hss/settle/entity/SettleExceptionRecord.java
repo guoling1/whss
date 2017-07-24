@@ -18,6 +18,8 @@ public class SettleExceptionRecord extends BaseEntity {
      */
     private String settleTargetNo;
 
+    private long withdrawOrderId;
+
     /**
      * 结算对象名称
      */
@@ -25,8 +27,9 @@ public class SettleExceptionRecord extends BaseEntity {
 
     /**
      * 结算对象类型
+     *  {@link com.jkm.hss.account.enums.EnumAccountUserType}
      */
-    private String settleTargetType;
+    private int settleTargetType;
 
     /**
      * 挂起开始时间

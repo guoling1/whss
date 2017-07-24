@@ -214,7 +214,7 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
     }
 
     @Override
-    public List<Order> selectWithdrawingOrderByBefore(Date date) {
+    public List<WithdrawOrder> selectWithdrawingOrderByBefore(Date date) {
         return this.withdrawOrderDao.selectWithdrawingOrderByBefore(date);
     }
 
@@ -304,6 +304,7 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
         withdrawOrder.setWithdrawAmount(new BigDecimal(jsonObject.getString("avaWithdraw")));
         withdrawOrder.setWithdrawUserType(EnumWithdrawUserType.HSY_MERCHANT.getType());
         withdrawOrder.setWithdrawUserNo(jsonObject.getString("merchantNo"));
+        withdrawOrder.setWithdrawUserName(account.getUserName());
         withdrawOrder.setWithdrawUserAccountId(account.getId());
         withdrawOrder.setUpperChannel(EnumUpperChannel.SYJ.getId());
         withdrawOrder.setApplyTime(new Date());

@@ -13,9 +13,12 @@ import com.jkm.hss.bill.helper.requestparam.QuerySettlementRecordParams;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.response.ListSettlementRecordResponse;
+import com.jkm.hss.settle.entity.SettleExceptionRecord;
+import com.jkm.hss.settle.service.SettleExceptionRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,8 @@ public class SettlementRecordController extends BaseController {
 
     @Autowired
     private SettlementRecordService settlementRecordService;
-
+    @Autowired
+    private SettleExceptionRecordService settleExceptionRecordService;
     /**
      * 结算记录list
      *
@@ -96,5 +100,60 @@ public class SettlementRecordController extends BaseController {
         result.setCount(page.getCount());
         result.setRecords(responses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+    }
+
+    /**
+     * 结算挂起记录list
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "exceptionList", method = RequestMethod.POST)
+    public CommonResponse listSettlementExceptionRecord(@RequestBody QuerySettlementRecordParams querySettlementRecordParams) {
+
+        final PageModel<SettleExceptionRecord> result = new PageModel<>(querySettlementRecordParams.getPageNo(), querySettlementRecordParams.getPageSize());
+        if (StringUtils.isEmpty(querySettlementRecordParams.getUserNo())) {
+            querySettlementRecordParams.setUserNo(null);
+        }
+        if (StringUtils.isEmpty(querySettlementRecordParams.getUserName())) {
+            querySettlementRecordParams.setUserName(null);
+        }
+        if (StringUtils.isEmpty(querySettlementRecordParams.getStartDate()) || StringUtils.isEmpty(querySettlementRecordParams.getEndDate())) {
+            querySettlementRecordParams.setStartDate(null);
+            querySettlementRecordParams.setEndDate(null);
+        }
+
+        final PageModel<SettleExceptionRecord> page = this.settleExceptionRecordService.listSettlementRecordByParam(querySettlementRecordParams);
+        final List<SettleExceptionRecord> records = page.getRecords();
+        if (CollectionUtils.isEmpty(records)) {
+            result.setCount(0);
+            result.setRecords(Collections.<SettleExceptionRecord>emptyList());
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+        }
+
+        result.setCount(page.getCount());
+        result.setRecords(records);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+    }
+
+    /**
+     * 处理挂起记录
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "handle", method = RequestMethod.POST)
+    public CommonResponse handle(@RequestBody QuerySettlementRecordParams querySettlementRecordParams) {
+        try{
+            Pair<Integer, String> pair =
+                    this.settleExceptionRecordService.handleRecord(querySettlementRecordParams.getSettleExceptionId());
+            if (pair.getLeft() > 0){
+                return CommonResponse.simpleResponse(1, pair.getRight());
+            }
+            return CommonResponse.simpleResponse(-1, pair.getRight());
+        }catch (final Throwable throwable){
+            return CommonResponse.simpleResponse(-1, "处理异常");
+        }
+
     }
 }
