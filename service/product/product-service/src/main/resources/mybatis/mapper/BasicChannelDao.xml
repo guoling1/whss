@@ -82,7 +82,7 @@
         SELECT * FROM tb_basic_channel WHERE channel_source = #{channelSource} AND status = 2 limit 1
     </select>
     <select id="selectAll" resultType="com.jkm.hss.product.entity.BasicChannel">
-        SELECT * FROM tb_basic_channel WHERE status = 2;
+        SELECT * FROM tb_basic_channel WHERE status = 2 AND parent_channel_sign = 0;
     </select>
 
     <!-- 新增产品中添加通道 -->
