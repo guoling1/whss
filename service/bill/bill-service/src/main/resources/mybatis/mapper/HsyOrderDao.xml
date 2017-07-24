@@ -369,7 +369,7 @@
             (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=1) AS proxyName,
             (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=2) AS proxyName1,
             (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS username,
-          (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS realname,
+            (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS realname,
             `user`.REALNAME AS merchantName,
             shop.SHORTNAME
         FROM
@@ -378,7 +378,19 @@
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
         WHERE 1=1
-
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND `user`.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND user.DEALERID = 0</if>
+        <if test="source==2"> AND user.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        ORDER BY a.pay_success_time DESC LIMIT #{offset},#{size}
     </select>
 
     <select id="queryHsyOrderListCount"  resultType="java.lang.Integer">
@@ -389,6 +401,18 @@
         LEFT JOIN app_au_user user ON `user`.ID=a.uid
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND `user`.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND user.DEALERID = 0</if>
+        <if test="source==2"> AND user.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
     </select>
 
 </mapper>

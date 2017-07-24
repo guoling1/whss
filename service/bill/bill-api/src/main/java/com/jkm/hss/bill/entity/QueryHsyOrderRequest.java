@@ -18,6 +18,7 @@ public class QueryHsyOrderRequest {
     private String orderno;//交易订单
     private String paysn;//第三方交易流水号
     private Integer orderstatus;//订单状态
+    private int source;//来源
     /**
      * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      * 支付方式
