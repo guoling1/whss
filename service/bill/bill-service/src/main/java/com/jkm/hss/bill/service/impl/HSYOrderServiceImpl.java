@@ -373,8 +373,12 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         List<QueryHsyOrderResponse> list = this.hsyOrderDao.queryHsyOrderList(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
-                list.get(i).setPaysuccesstimes(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(list.get(i).getPaysuccesstime()));
-                list.get(i).setPaymentChannels(EnumPaymentChannel.of(list.get(i).getPaymentChannel()).getValue());
+                if (list.get(i).getPaysuccesstime()!=null&&!"".equals(list.get(i).getPaysuccesstime())) {
+                    list.get(i).setPaysuccesstimes(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(list.get(i).getPaysuccesstime()));
+                }
+                if (list.get(i).getPaymentChannel()>0) {
+                    list.get(i).setPaymentChannels(EnumPaymentChannel.of(list.get(i).getPaymentChannel()).getValue());
+                }
                 list.get(i).setOrderstatuss(EnumOrderStatus.of(list.get(i).getOrderstatus()).getValue());
             }
         }
@@ -388,6 +392,17 @@ public class HSYOrderServiceImpl implements HSYOrderService {
      */
     @Override
     public int queryHsyOrderListCount(QueryHsyOrderRequest req) {
-        return this.hsyOrderDao.queryHsyOrderListCount(req);
+        final int count = this.hsyOrderDao.queryHsyOrderListCount(req);
+        return count;
+    }
+
+    @Override
+    public String getHsyOrderCounts(QueryHsyOrderRequest req) {
+        return this.hsyOrderDao.getHsyOrderCounts(req);
+    }
+
+    @Override
+    public String getHsyOrderCounts1(QueryHsyOrderRequest req) {
+        return this.hsyOrderDao.getHsyOrderCounts1(req);
     }
 }

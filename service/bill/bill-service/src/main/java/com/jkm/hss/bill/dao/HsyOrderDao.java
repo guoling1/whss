@@ -177,4 +177,18 @@ public interface HsyOrderDao {
      * @return
      */
     int queryHsyOrderListCount(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单支付金额统计
+     * @param req
+     * @return
+     */
+    String getHsyOrderCounts(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单支付手续费
+     * @param req
+     * @return
+     */
+    String getHsyOrderCounts1(QueryHsyOrderRequest req);
 }

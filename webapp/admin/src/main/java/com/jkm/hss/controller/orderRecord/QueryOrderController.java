@@ -114,4 +114,20 @@ public class QueryOrderController extends BaseController {
         pageModel.setCount(count);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
+
+    /**
+     * 统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getHsyOrderCount ",method = RequestMethod.POST)
+    public CommonResponse getHsyOrderCount(@RequestBody QueryHsyOrderRequest req){
+        String totalPayment = this.hsyOrderService.getHsyOrderCounts(req);
+        String totalPoundage = this.hsyOrderService.getHsyOrderCounts1(req);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("totalPayment",totalPayment);
+        jsonObject.put("totalPoundage",totalPoundage);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
+    }
 }

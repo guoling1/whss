@@ -1,9 +1,7 @@
 package com.jkm.hss.bill.dao;
 
-import com.google.common.base.Optional;
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -693,4 +691,6 @@ public interface OrderDao {
     void updateOrdersBySns(@Param("sns") List<String> sns, @Param("status") int status, @Param("settleStatus") int settleStatus, @Param("settleId") long settleId, @Param("settleTime") Date settleTime);
 
     void updateOrdersBySns2Withdraw(@Param("sns") List<String> sns, @Param("status") int status);
+
+
 }
