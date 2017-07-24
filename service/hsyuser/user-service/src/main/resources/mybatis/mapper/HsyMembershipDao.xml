@@ -461,4 +461,24 @@
     LIMIT #{offset},#{pageSize}
     </select>
 
+    <select id="getcardLists" resultType="com.jkm.hsy.user.entity.CardNoResponse">
+        SELECT
+        b.CONSUMERCELLPHONE,
+        c.MEMBERSHIPNAME,
+        e.SHORTNAME,
+        IFNULL((SELECT SUM(TRADEAMOUNT) FROM app_policy_recharge_order WHERE `STATUS`=1 AND MEMBERID=a.ID),0) AS tradeAmount,
+        IFNULL((SELECT SUM(amount) FROM tb_hsy_order WHERE (orderstatus!=1 OR orderstatus!=3 OR orderstatus!=8) AND mid=a.ID),0) AS amount
+        FROM
+        app_policy_member a
+        LEFT JOIN app_policy_consumer b ON b.ID = a.CID
+        LEFT JOIN app_policy_membership_card c ON c.ID = a.MCID
+        LEFT JOIN app_biz_shop_user_role d ON d.UID = c.UID
+        AND d.ROLE = 1
+        AND d.`STATUS` = 1
+        AND d.TYPE = 1
+        LEFT JOIN app_biz_shop e ON e.ID = d.SID
+        WHERE 1=1
+        <if test="consumerCellphone!=null and consumerCellphone!=''"> and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
+    </select>
+
 </mapper>
