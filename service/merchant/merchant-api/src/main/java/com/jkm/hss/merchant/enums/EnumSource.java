@@ -10,7 +10,11 @@ public enum EnumSource {
 
     RECOMMEND(1, "邀请注册"),
 
-    DEALERRECOMMEND(2, "代理商邀请注册");
+    DEALERRECOMMEND(2, "代理商邀请注册"),
+
+    APPRECOMMEND(3, "APP邀请注册"),
+
+    APPDEALERRECOMMEND(4, "APP邀请注册");
 
     @Getter
     private int id;
