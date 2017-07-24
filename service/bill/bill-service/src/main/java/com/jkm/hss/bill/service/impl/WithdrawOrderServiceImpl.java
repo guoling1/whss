@@ -157,7 +157,7 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
     @Transactional
     @Override
     public Pair<Integer, String> confirmWithdraw(long withDrawOrderId) {
-
+        log.info("发起提现2.0");
         final WithdrawOrder withdrawOrder = this.selectByIdWithlock(withDrawOrderId);
         final AppBizShop appBizShop =
                 this.hsyShopDao.findPrimaryAppBizShopByAccountID(withdrawOrder.getWithdrawUserAccountId()).get(0);
