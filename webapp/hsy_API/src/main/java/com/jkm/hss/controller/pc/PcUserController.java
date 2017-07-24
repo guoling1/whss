@@ -7,6 +7,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.PcUserLoginRequest;
+import com.jkm.hss.helper.request.SaveIpRequest;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -153,4 +154,17 @@ public class PcUserController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
 
+    /**
+     * 保存店铺所在的公网ip
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveIp", method = RequestMethod.POST)
+    public CommonResponse saveIp(final SaveIpRequest saveIpRequest) {
+        final long shopId = saveIpRequest.getShopId();
+        final int port = saveIpRequest.getPort();
+
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+    }
 }
