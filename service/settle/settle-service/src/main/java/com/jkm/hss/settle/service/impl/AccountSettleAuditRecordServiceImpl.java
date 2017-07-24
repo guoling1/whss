@@ -431,7 +431,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             record.setSettleTargetNo(withdrawOrder.getWithdrawUserNo());
             record.setWithdrawOrderId(withdrawOrder.getId());
             record.setSettleTargetName(withdrawOrder.getWithdrawUserName());
-            record.setSettleTargetType("商户");
+            record.setSettleTargetType(EnumAccountUserType.MERCHANT.getId());
             record.setBeginTime(DateFormatUtil.parse(withdrawDate+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
             record.setEndTime(DateFormatUtil.parse(withdrawDate+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
             record.setRemarks("挂起");
