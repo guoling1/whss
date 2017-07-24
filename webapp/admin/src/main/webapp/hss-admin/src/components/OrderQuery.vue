@@ -126,7 +126,7 @@
                 </li>
                 <li class="same">
                   <label>交易单号:</label>
-                  <el-input style="width: 188px" v-model="queryHsy.paysn" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="queryHsy.orderno" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>商户名称:</label>
@@ -150,7 +150,7 @@
                 </li>
                 <li class="same">
                   <label>支付方式：</label>
-                  <el-select style="width: 193px" v-model="queryHss.paymentChannel" size="small">
+                  <el-select style="width: 188px" v-model="queryHsy.paymentChannel" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="微信支付" value="1"></el-option>
                     <el-option label="支付宝支付" value="2"></el-option>
@@ -162,7 +162,7 @@
                 </li>
                 <li class="same">
                   <label>订单状态：</label>
-                  <el-select style="width: 193px" clearable v-model="queryHss.orderstatus" size="small">
+                  <el-select style="width: 188px" clearable v-model="queryHsy.orderstatus" size="small">
                     <el-option label="全部" value=""></el-option>
                     <el-option label="待支付" value="1"></el-option>
                     <el-option label="支付中" value="2"></el-option>
@@ -196,11 +196,11 @@
                     <span class="td" :data-clipboard-text="scope.row.ordernumber" style="cursor: pointer" title="点击复制">{{scope.row.ordernumber|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="proxyName" label="一级代理"></el-table-column>
-                <el-table-column prop="proxyName1" label="二级代理"></el-table-column>
+                <el-table-column prop="proxyName" label="一级代理" min-width="90"></el-table-column>
+                <el-table-column prop="proxyName1" label="二级代理" min-width="90"></el-table-column>
                 <el-table-column prop="username" label="报单员"></el-table-column>
-                <el-table-column prop="realname" label="报单员姓名"></el-table-column>
-                <el-table-column prop="merchantName" label="商户名称"></el-table-column>
+                <el-table-column prop="realname" label="报单员姓名" min-width="110"></el-table-column>
+                <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
                 <el-table-column prop="shortName" label="店铺名称"></el-table-column>
                 <el-table-column label="交易单号" min-width="112">
                   <template scope="scope">
@@ -212,17 +212,18 @@
                     <span class="td" :data-clipboard-text="scope.row.paysn" style="cursor: pointer" title="点击复制">{{scope.row.paysn|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="paysuccesstimes" label="成功时间"></el-table-column>
-                <el-table-column prop="amount" label="订单金额"></el-table-column>
-                <el-table-column prop="poundage" label="手续费金额"></el-table-column>
+                <el-table-column prop="paymentChannels" label="支付方式" min-width="155"></el-table-column>
+                <el-table-column prop="paysuccesstimes" label="成功时间" min-width="155"></el-table-column>
+                <el-table-column prop="amount" label="订单金额" min-width="90" align="right"></el-table-column>
+                <el-table-column prop="poundage" label="手续费金额"  min-width="110" align="right"></el-table-column>
                 <el-table-column prop="orderstatuss" label="订单状态"></el-table-column>
               </el-table>
               <div class="block" style="text-align: right">
                 <el-pagination @size-change="handleSizeChangeHsy"
                                @current-change="handleCurrentChangeHsy"
-                               :current-page="queryHsy.pageNo"
+                               :current-page="queryHsy.page"
                                :page-sizes="[10, 20, 50]"
-                               :page-size="queryHsy.pageSize"
+                               :page-size="queryHsy.size"
                                layout="total, sizes, prev, pager, next, jumper"
                                :total="countHsy">
                 </el-pagination>
@@ -283,7 +284,7 @@
           page: 1,
           size: 10,
           ordernumber:'',
-          paysn:'',
+          orderno:'',
           merchantName:'',
           shortName:'',
           proxyName:'',
@@ -383,7 +384,7 @@
             page: 1,
             size: 10,
             ordernumber:'',
-            paysn:'',
+            orderno:'',
             merchantName:'',
             shortName:'',
             proxyName:'',
