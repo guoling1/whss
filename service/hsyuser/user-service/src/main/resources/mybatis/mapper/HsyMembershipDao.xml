@@ -134,7 +134,7 @@
     <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME,
         (select count(*) from app_policy_member member where mcid=card.ID and status=1) memberCount,
-        (select COALESCE(sum(REALPAYAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
+        (select COALESCE(sum(TRADEAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
         (select COALESCE(sum(amount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3 and orderstatus!=8) consumeSum
         from app_policy_membership_card card where UID=#{uid}
     </select>
