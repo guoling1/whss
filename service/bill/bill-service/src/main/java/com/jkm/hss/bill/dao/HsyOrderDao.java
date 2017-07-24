@@ -1,6 +1,8 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
+import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
 import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
@@ -161,4 +163,18 @@ public interface HsyOrderDao {
     public List<HsyOrder> findConsumeOrderListByPage(Page<HsyOrder> entity);
     public Integer findConsumeOrderListByPageCount(HsyOrder entity);
     public List<HsyOrder> findConsumeOrderInfo(@Param("id")Long id);
+
+    /**
+     * hsy订单
+     * @param req
+     * @return
+     */
+    List<QueryHsyOrderResponse> queryHsyOrderList(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单总数
+     * @param req
+     * @return
+     */
+    int queryHsyOrderListCount(QueryHsyOrderRequest req);
 }

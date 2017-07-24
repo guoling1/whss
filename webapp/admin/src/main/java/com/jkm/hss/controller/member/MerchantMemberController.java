@@ -73,7 +73,9 @@ public class MerchantMemberController {
         final PageModel<CardNoResponse> pageModel = new PageModel<CardNoResponse>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
         List<CardNoResponse> list = this.hsyMembershipService.getcardList(request);
+        List<CardNoResponse> lists = this.hsyMembershipService.getcardLists(request);
         pageModel.setRecords(list);
+        pageModel.setCount(lists.size());
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
 

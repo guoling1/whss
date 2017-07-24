@@ -9,6 +9,8 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
+import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
@@ -356,5 +358,26 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     public List<PcStatisticsOrder> pcStatisticsOrder(final long shopId, final Date startTime, final Date endTime) {
         return this.hsyOrderDao.pcStatisticsOrder(shopId, startTime, endTime);
+    }
+
+    /**
+     * hsy订单
+     * @param req
+     * @return
+     */
+    @Override
+    public List<QueryHsyOrderResponse> queryHsyOrderList(QueryHsyOrderRequest req) {
+        List<QueryHsyOrderResponse> list = this.hsyOrderDao.queryHsyOrderList(req);
+        return list;
+    }
+
+    /**
+     * hsy订单总数
+     * @param req
+     * @return
+     */
+    @Override
+    public int queryHsyOrderListCount(QueryHsyOrderRequest req) {
+        return this.hsyOrderDao.queryHsyOrderListCount(req);
     }
 }

@@ -103,4 +103,11 @@ public interface HsyMembershipDao {
      * @return
      */
     List<CardNoResponse> getcardList(MemberRequest request);
+
+    /**
+     * 会员卡列表总数
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardLists(MemberRequest request);
 }
