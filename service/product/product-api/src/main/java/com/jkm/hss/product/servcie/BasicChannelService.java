@@ -92,4 +92,5 @@ public interface BasicChannelService {
     BasicChannel selectParentChannel(int channelSign);
 
 
+    List<BasicChannel> selectAllForGateWay();
 }

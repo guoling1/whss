@@ -70,4 +70,5 @@ public interface BasicChannelDao {
      */
     List<BasicChannel> selectHsyAll();
 
+    List<BasicChannel> selectAllForGateWay();
 }

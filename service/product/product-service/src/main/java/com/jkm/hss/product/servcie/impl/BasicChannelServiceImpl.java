@@ -163,6 +163,11 @@ public class BasicChannelServiceImpl implements BasicChannelService {
         }
         return this.basicChannelDao.selectByChannelTypeSign(parentChannelSign);
     }
+
+    @Override
+    public List<BasicChannel> selectAllForGateWay() {
+        return this.basicChannelDao.selectAllForGateWay();
+    }
 //    @Override
 //    public List<BasicChannel> selectListChannel() {
 //        return this.basicChannelDao.selectListChannel();

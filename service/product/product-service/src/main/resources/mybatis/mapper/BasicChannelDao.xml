@@ -82,7 +82,7 @@
         SELECT * FROM tb_basic_channel WHERE channel_source = #{channelSource} AND status = 2 limit 1
     </select>
     <select id="selectAll" resultType="com.jkm.hss.product.entity.BasicChannel">
-        SELECT * FROM tb_basic_channel WHERE status = 2 AND parent_channel_sign = 0;
+        SELECT * FROM tb_basic_channel WHERE status = 2
     </select>
 
     <!-- 新增产品中添加通道 -->
@@ -103,5 +103,8 @@
     </select>
     <select id="selectHsyAll" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE is_hsy=1 and status=2
+    </select>
+    <select id="selectAllForGateWay" resultType="com.jkm.hss.product.entity.BasicChannel">
+        SELECT * FROM tb_basic_channel WHERE status = 2  AND parent_channel_sign = 0;
     </select>
 </mapper>
