@@ -356,4 +356,39 @@
         where corder.id=#{id}
     </select>
 
+    <select id="queryHsyOrderList"  resultType="com.jkm.hss.bill.entity.QueryHsyOrderResponse">
+        SELECT
+            a.ordernumber,
+            a.order_no,
+            a.pay_sn,
+            a.payment_channel,
+            a.pay_success_time,
+            a.amount,
+            a.poundage,
+            a.orderstatus,
+            (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=1) AS proxyName,
+            (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=2) AS proxyName1,
+            (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS username,
+          (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS realname,
+            `user`.REALNAME AS merchantName,
+            shop.SHORTNAME
+        FROM
+            tb_hsy_order a
+        LEFT JOIN app_au_user user ON `user`.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        WHERE 1=1
+
+    </select>
+
+    <select id="queryHsyOrderListCount"  resultType="java.lang.Integer">
+        SELECT
+            COUNT(a.id)
+        FROM
+            tb_hsy_order a
+        LEFT JOIN app_au_user user ON `user`.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+    </select>
+
 </mapper>

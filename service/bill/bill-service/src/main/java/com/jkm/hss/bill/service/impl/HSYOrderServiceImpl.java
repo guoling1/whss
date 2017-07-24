@@ -13,12 +13,14 @@ import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
 import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
 import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -368,6 +371,13 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     public List<QueryHsyOrderResponse> queryHsyOrderList(QueryHsyOrderRequest req) {
         List<QueryHsyOrderResponse> list = this.hsyOrderDao.queryHsyOrderList(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                list.get(i).setPaysuccesstimes(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(list.get(i).getPaysuccesstime()));
+                list.get(i).setPaymentChannels(EnumPaymentChannel.of(list.get(i).getPaymentChannel()).getValue());
+                list.get(i).setOrderstatuss(EnumOrderStatus.of(list.get(i).getOrderstatus()).getValue());
+            }
+        }
         return list;
     }
 
