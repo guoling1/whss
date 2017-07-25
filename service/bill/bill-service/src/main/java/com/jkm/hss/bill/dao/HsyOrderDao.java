@@ -191,4 +191,11 @@ public interface HsyOrderDao {
      * @return
      */
     String getHsyOrderCounts1(QueryHsyOrderRequest req);
+
+    /**
+     * 下载hsy订单
+     * @param req
+     * @return
+     */
+    List<QueryHsyOrderResponse> selectHsyOrderList(QueryHsyOrderRequest req);
 }
