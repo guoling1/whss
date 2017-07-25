@@ -19,11 +19,6 @@ public class Init {
     @Autowired
     private MessageTemplateInitService messageTemplateInitService;
 
-    @Autowired
-    private AdminUserInitService adminUserInitService;
-    @Autowired
-    private ShopSocketService shopSocketService;
-
     @PostConstruct
     public void initSystem() {
         log.info("######################初始化系统--start##########################");
