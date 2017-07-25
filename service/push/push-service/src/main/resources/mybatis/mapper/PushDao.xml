@@ -9,23 +9,17 @@
         content,
         temp_type,
         push_type,
-        task_id,
-        client_id,
         targets,
-        transaction_number,
-        status
+        transaction_number
         )
         VALUES
         (
         #{title},
         #{content},
         #{tempType},
-        #{pushType},
-        #{taskId},
-        #{clientId},
+        2,
         #{targets},
-        #{transactionNumber},
-        #{status}
+        #{transactionNumber}
         )
     </insert>
 
