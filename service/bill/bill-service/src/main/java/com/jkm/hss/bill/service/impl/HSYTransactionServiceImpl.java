@@ -222,6 +222,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
 
                         if (!StringUtils.isEmpty(hsyOrder1.getPaytype())
                                 && hsyOrder1.getPaytype().contains(EnumMerchantPayType.MERCHANT_JSAPI.getId())) {
+                            log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder1.getShopid(), hsyOrder1.getId(), hsyOrder1.getOrderno());
                             final JSONObject jo = new JSONObject();
                             jo.put("orderNo", hsyOrder1.getOrdernumber());
                             jo.put("tradeOrderNo", hsyOrder1.getOrderno());
