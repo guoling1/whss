@@ -53,7 +53,7 @@ public final class ClientSocketUtil {
      * @return
      */
     public static Socket getSocket(final String ip, final int port) {
-        for (int i = 3; i > 0; i--) {
+        for (int i = 0; i < 3; i++) {
             final Socket socket = createSocket(ip, port, i);
             if (null != socket) {
                 return socket;
@@ -77,7 +77,7 @@ public final class ClientSocketUtil {
             socket.setKeepAlive(true);
             return socket;
         } catch (final IOException e) {
-            log.error("ip-[{}], port-[{}], times-[{}]create socket exception", ip, port, times);
+            log.error("ip-[" + ip + "], port-[" + port + "], times-[" + times + "]create socket exception", e);
         }
         return null;
     }
