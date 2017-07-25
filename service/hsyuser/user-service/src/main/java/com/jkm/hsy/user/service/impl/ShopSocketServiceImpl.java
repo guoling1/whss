@@ -200,7 +200,7 @@ public class ShopSocketServiceImpl implements ShopSocketService {
             updateShopSocket.setIp(ip);
             updateShopSocket.setPc("");
             updateShopSocket.setPort(port);
-            this.update(shopSocket);
+            this.update(updateShopSocket);
             //更新缓存
             shopSocketConcurrentMap.remove(shopId);
             return;
