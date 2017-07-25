@@ -21,6 +21,10 @@ public class ConsumeMsgSplitProfitRecord extends BaseEntity{
      */
     private long hsyOrderId;
     /**
+     * 好收银充值记录id
+     */
+    private long hsyRechargeOrderId;
+    /**
      * 请求参数
      */
     private String requestParam;

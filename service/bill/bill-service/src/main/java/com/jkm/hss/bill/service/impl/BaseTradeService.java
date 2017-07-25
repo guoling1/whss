@@ -128,6 +128,20 @@ public interface BaseTradeService {
     void memberAccountIncrease(Order order);
 
     /**
+     * 退款， 会员账户增加
+     *
+     * @param order
+     */
+    void memberAccountDecrease(Order order);
+
+    /**
+     * 会员卡退款
+     *
+     * @return
+     */
+    Pair<Integer, String> memberRefund(Order payOrder);
+
+    /**
      * 按结算单提现
      *
      * @param settlementRecordId

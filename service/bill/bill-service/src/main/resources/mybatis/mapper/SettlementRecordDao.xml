@@ -194,7 +194,7 @@
 
     <select id="selectSettlementRecordsByAccountId" resultType="com.jkm.hss.bill.entity.SettlementRecord">
         SELECT * FROM tb_settlement_record
-        WHERE account_id = #{accountId}
+        WHERE account_id = #{accountId} AND status != 5
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>

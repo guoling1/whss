@@ -7,7 +7,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡</title>
-    <link rel="stylesheet" href="../../css/style.1.0.0.css">
+    <link rel="stylesheet" href="../../css/style.2.0.2.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -24,7 +24,9 @@
         <div class="price">￥<span>${appPolicyMember.remainingSum}</span></div>
         </c:if>
     </div>
-    <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
+    <c:if test="${appPolicyMember.canRecharge==1}">
+    <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>sqb/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
+    </c:if>
     <div class="weui-cells">
         <%--<a class="weui-cell weui-cell_access" href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">--%>
         <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/toConsumeList?mid=${appPolicyMember.id}">

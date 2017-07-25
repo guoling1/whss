@@ -2,13 +2,12 @@ package com.jkm.hsy.user.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.gson.*;
+import com.jkm.base.common.util.Page;
+import com.jkm.base.common.util.PageUtils;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hsy.user.constant.*;
-import com.jkm.hsy.user.dao.HsyMembershipDao;
-import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.dao.HsyVerificationDao;
-import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
+import com.jkm.hsy.user.dao.*;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -40,6 +39,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     private UserCurrentChannelPolicyDao userCurrentChannelPolicyDao;
     @Autowired
     private MemberAccountService memberAccountService;
+    @Autowired
+    private UserChannelPolicyDao userChannelPolicyDao;
 
     /**HSY001047 创建会员卡*/
     public String insertMembershipCard(String dataParam, AppParam appParam)throws ApiHandleException {
@@ -195,6 +196,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         String uidEncode=null;
         try {
             String uidAES=AppAesUtil.encryptCBC_NoPaddingToBase64String(uid+"", AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
+            uidAES=uidAES.replace("/","<>");
             uidEncode= URLEncoder.encode(uidAES,"utf-8");
         } catch (Exception e) {
             throw new ApiHandleException(ResultCode.ESCAPE_FAIL);
@@ -224,9 +226,14 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         Integer cardCount=hsyMembershipDao.findMemberCardCountByMCID(appPolicyMembershipCard.getId());
         Integer cardTotalCount=hsyMembershipDao.findMemberCardCascadeCountByUID(list.get(0).getUid(),null,null);
         List<AppBizShop> shopList=hsyMembershipDao.findSuitShopByMCID(appPolicyMembershipCard.getId());
-
-        BigDecimal proportion=new BigDecimal(cardCount/cardTotalCount);
-        BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal proportion=BigDecimal.ZERO;
+        BigDecimal proportionEx=null;
+        if(cardTotalCount!=0) {
+            proportion = new BigDecimal(cardCount).divide(new BigDecimal(cardTotalCount), 4, BigDecimal.ROUND_HALF_UP);
+            proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        }else{
+            proportionEx=BigDecimal.ZERO;
+        }
 
         Map result=new HashMap();
         result.put("appPolicyMembershipCard",list.get(0));
@@ -395,8 +402,8 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
-        if(account.get().getUpdateTime().compareTo(account.get().getCreateTime())!=0)
-            appPolicyMember.setLastConsumeTime(account.get().getUpdateTime());
+        Date lastConsumeTime=hsyMembershipDao.findLastConsumeTime(appPolicyMember.getId());
+        appPolicyMember.setLastConsumeTime(lastConsumeTime);
 
         Map result=new HashMap();
         result.put("appPolicyMember",appPolicyMember);
@@ -435,6 +442,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         if(appPolicyRechargeOrder.getCurrentPage()<=0)
             throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
 
+        appPolicyRechargeOrder.setMemberID(appPolicyRechargeOrder.getMid());
         PageUtils page=new PageUtils();
         page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
         page.setPageSize(AppConstant.PAGE_SIZE);
@@ -549,7 +557,7 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             if(totalCount==0){
                 card.setProportion("0%");
             }else {
-                BigDecimal proportion = new BigDecimal(card.getMemberCount() / totalCount);
+                BigDecimal proportion = new BigDecimal(card.getMemberCount()).divide(new BigDecimal(totalCount),4,BigDecimal.ROUND_HALF_UP);
                 BigDecimal proportionEx = proportion.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
                 card.setProportion(proportionEx + "%");
             }
@@ -771,24 +779,28 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getAlipayChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getUserID());
             List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
-            appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
             appPolicyRechargeOrder.setSource("alipay");
         }else {
             appPolicyRechargeOrder.setPayChannelSign(userCurrentChannelPolicy.getWechatChannelTypeSign());
             appPolicyRechargeOrder.setOuid(appPolicyMember.getOpenID());
             List<BasicChannel> channelList=hsyMembershipDao.findChannelAccountID(appPolicyRechargeOrder.getPayChannelSign());
-            appPolicyRechargeOrder.setPayeeAccountID(channelList.get(0).getAccountid());
             appPolicyRechargeOrder.setSource("wechat");
         }
+
+        UserChannelPolicy userChannelPolicy=userChannelPolicyDao.selectByUserIdAndChannelTypeSign(appPolicyMember.getUid(),appPolicyRechargeOrder.getPayChannelSign());
+        appPolicyRechargeOrder.setSettleType(userChannelPolicy.getSettleType());
         appPolicyRechargeOrder.setMemberID(appPolicyMember.getId());
         appPolicyRechargeOrder.setMemberAccountID(appPolicyMember.getAccountID());
         appPolicyRechargeOrder.setCid(appPolicyMember.getCid());
         appPolicyRechargeOrder.setMcid(appPolicyMember.getMcid());
         appPolicyRechargeOrder.setUid(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantReceiveAccountID(appPolicyMember.getReceiptAccountID());
+        appPolicyRechargeOrder.setConsumerCellphone(appPolicyMember.getConsumerCellphone());
+        appPolicyRechargeOrder.setMembershipName(appPolicyMember.getMembershipName());
         List<AppAuUser> userList=hsyMembershipDao.findShopNameAndGlobalID(appPolicyMember.getUid());
         appPolicyRechargeOrder.setMerchantName(userList.get(0).getShopName());
         appPolicyRechargeOrder.setMerchantNO(userList.get(0).getGlobalID());
+        appPolicyRechargeOrder.setPayeeAccountID(userList.get(0).getAccountID());
         appPolicyRechargeOrder.setStatus(OrderStatus.NEED_RECHARGE.key);
         appPolicyRechargeOrder.setCreateTime(date);
         appPolicyRechargeOrder.setUpdateTime(date);
@@ -802,11 +814,12 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return appPolicyRechargeOrder;
     }
 
-    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID){
+    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID,Integer status){
         AppPolicyRechargeOrder appPolicyRechargeOrderUp=new AppPolicyRechargeOrder();
         appPolicyRechargeOrderUp.setId(appPolicyRechargeOrder.getId());
         appPolicyRechargeOrderUp.setTradeNO(tradeNO);
         appPolicyRechargeOrderUp.setTradeID(tradeID);
+        appPolicyRechargeOrderUp.setStatus(status);
         hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUp);
         appPolicyRechargeOrder.setOrderNO(tradeNO);
         appPolicyRechargeOrder.setTradeID(tradeID);
@@ -905,6 +918,42 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
     @Override
     public MemberResponse getMemberDetails(MemberRequest request) {
         return hsyMembershipDao.getMemberDetails(request);
+    }
+
+    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid){
+        List<AppPolicyMember> list=hsyMembershipDao.findMemberListByOUIDAndUID(openID,userID,uid, MemberStatus.ACTIVE.key);
+        if(list!=null&&list.size()!=0) {
+            AppPolicyMember appPolicyMember=list.get(0);
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+            appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+            DecimalFormat a=new DecimalFormat("0.0");
+            String discountStr=a.format(appPolicyMember.getDiscount());
+            String discountInt=discountStr.split("\\.")[0];
+            String discountFloat=discountStr.split("\\.")[1];
+            appPolicyMember.setDiscountInt(discountInt);
+            appPolicyMember.setDiscountFloat(discountFloat);
+            return appPolicyMember;
+        }
+        else
+            return null;
+    }
+
+    public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid){
+        List<AppPolicyRechargeOrder> list=hsyMembershipDao.findRechargeOrderAboutRechargeStatus(mid);
+        if(list!=null&&list.size()!=0)
+            return list.get(0);
+        else
+            return null;
+    }
+
+    public List<AppPolicyMembershipCardShop> getMembershipCardShop(Long mcid){
+        return hsyMembershipDao.getMembershipCardShop(mcid);
+    }
+
+    public BigDecimal findConsumeOrderSum(Long mcid, Long mid){
+        return hsyMembershipDao.findConsumeOrderSum(mcid,mid);
     }
 
 }

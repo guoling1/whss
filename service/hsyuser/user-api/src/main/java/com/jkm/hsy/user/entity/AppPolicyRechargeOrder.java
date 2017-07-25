@@ -24,6 +24,8 @@ public class AppPolicyRechargeOrder {
     private Long mcid;//卡ID
     private Long uid;//主店ID
     private Long merchantReceiveAccountID;//商户收款账户id
+    private String membershipName;//会员卡名称
+    private String consumerCellphone;//消费者手机号
     private String goodsName;//商品名称
     private String goodsDescribe;//商品描述
     private String merchantName;//店铺名称
@@ -31,6 +33,9 @@ public class AppPolicyRechargeOrder {
     private String paySN;//流水号
     private Integer payChannelSign;//支付渠道标识
     private Date paySuccessTime;//支付完成时间
+    private BigDecimal poundage;//手续费
+    private String remark;//提示
+    private String settleType;//结算类型
     private Integer status;//状态 0待充值 1充值成功 2充值失败
     private Integer type;//类型 1开卡充值 2开卡送 3 充值 4充值送
     private String source;//来源wechat alipay
@@ -39,9 +44,28 @@ public class AppPolicyRechargeOrder {
 
     private Integer currentPage;
     private String typeName;//类型名称
+    private Long mid;//会员id
+    private Date startTime;
+    private Date endTime;
 
     public Long getId() {
         return id;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public void setId(Long id) {
@@ -270,5 +294,53 @@ public class AppPolicyRechargeOrder {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getConsumerCellphone() {
+        return consumerCellphone;
+    }
+
+    public void setConsumerCellphone(String consumerCellphone) {
+        this.consumerCellphone = consumerCellphone;
+    }
+
+    public BigDecimal getPoundage() {
+        return poundage;
+    }
+
+    public void setPoundage(BigDecimal poundage) {
+        this.poundage = poundage;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public String getSettleType() {
+        return settleType;
+    }
+
+    public void setSettleType(String settleType) {
+        this.settleType = settleType;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Long getMid() {
+        return mid;
+    }
+
+    public void setMid(Long mid) {
+        this.mid = mid;
+    }
+
+    public String getMembershipName() {
+        return membershipName;
+    }
+
+    public void setMembershipName(String membershipName) {
+        this.membershipName = membershipName;
     }
 }

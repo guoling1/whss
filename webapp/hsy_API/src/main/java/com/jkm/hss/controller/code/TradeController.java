@@ -87,14 +87,24 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
-        final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId());
-        if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
-                    .addParam("subMerName", resultPair.getRight())
-                    .addParam("amount", payRequest.getTotalFee()).build();
+        if(payRequest.getIsMemberCardPay()==1) {
+            Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrderMember(payRequest.getTotalFee(), payRequest.getHsyOrderId(),payRequest.getDiscountFee(),payRequest.getIsMemberCardPay(),payRequest.getCid(),payRequest.getMcid(),payRequest.getMid(),payRequest.getConsumerCellphone());
+            if (0 == resultPair.getLeft()) {
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("tradeNO", resultPair.getMiddle())
+                        .addParam("orderId", Long.parseLong(resultPair.getRight())).build();
+            }
+            return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
+        }else{
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId(),payRequest.getDiscountFee(),payRequest.getIsMemberCardPay(),payRequest.getCid(),payRequest.getMcid(),payRequest.getMid());
+            if (0 == resultPair.getLeft()) {
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                        .addParam("subMerName", resultPair.getRight())
+                        .addParam("amount", payRequest.getDiscountFee()).build();
+            }
+            return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
     }
 
 

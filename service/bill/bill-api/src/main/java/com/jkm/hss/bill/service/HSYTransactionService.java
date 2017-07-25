@@ -39,7 +39,16 @@ public interface HSYTransactionService {
      * @param hsyOrderId 订单id
      * @return
      */
-    Triple<Integer, String, String> placeOrder(String totalAmount, long hsyOrderId);
+    Triple<Integer, String, String> placeOrder(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid);
+
+    /**
+     * 好收银扫码下单(会员卡)
+     *
+     * @param totalAmount 订单金额
+     * @param hsyOrderId 订单id
+     * @return
+     */
+    Triple<Integer, String, String> placeOrderMember(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid,String consumerCellphone);
 
     /**
      * 支付回调
@@ -47,6 +56,12 @@ public interface HSYTransactionService {
      * @param callbackResponse
      */
     void handlePayCallbackMsg(CallbackResponse callbackResponse);
+    /**
+     * 充值回调
+     *
+     * @param callbackResponse
+     */
+    public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse);
 
     /**
      * 支付消息分润

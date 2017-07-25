@@ -28,4 +28,13 @@ public interface BaseHSYTransactionService {
      * @return
      */
     Triple<Integer, String, String> placeOrderImpl(HsyOrder hsyOrder, BigDecimal amount);
+
+    /**
+     * 下单实现（会员卡）
+     *
+     * @param hsyOrder
+     * @param amount
+     * @return
+     */
+    Triple<Integer, String, String> placeOrderMemberImpl(HsyOrder hsyOrder, BigDecimal amount,Long accountID,Long reciptAccountID);
 }

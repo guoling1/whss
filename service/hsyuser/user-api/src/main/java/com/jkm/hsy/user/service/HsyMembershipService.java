@@ -1,8 +1,9 @@
 package com.jkm.hsy.user.service;
 
-import com.jkm.hsy.user.constant.Page;
+import com.jkm.base.common.util.Page;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,7 +37,7 @@ public interface HsyMembershipService {
     public AppAuVerification findRightVcode(String cellphone);
     public AppPolicyMember findMemberInfoByID(Long mid);
     public AppPolicyRechargeOrder saveOrder(AppPolicyMember appPolicyMember, String type,String source,BigDecimal amount);
-    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID);
+    public void updateOrder(AppPolicyRechargeOrder appPolicyRechargeOrder,String tradeNO,Long tradeID,Integer status);
 
     /**
      * 会员列表
@@ -61,6 +62,10 @@ public interface HsyMembershipService {
     public List<AppBizShop> findSuitShopByMCID(Long mcid);
     public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
+    public AppPolicyMember findAppPolicyMember(String openID,String userID,Long uid);
+    public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid);
+    public List<AppPolicyMembershipCardShop> getMembershipCardShop(Long mcid);
+    public BigDecimal findConsumeOrderSum(Long mcid, Long mid);
 
     /**
      * 商户列表（会员卡）

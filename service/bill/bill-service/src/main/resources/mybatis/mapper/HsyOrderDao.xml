@@ -126,6 +126,21 @@
             <if test="paytype!=null">
                 pay_type=#{paytype},
             </if>
+            <if test="cid!=null">
+                cid=#{cid},
+            </if>
+            <if test="mcid!=null">
+                mcid=#{mcid},
+            </if>
+            <if test="mid!=null">
+                mid=#{mid},
+            </if>
+            <if test="isMemberCardPay!=null">
+                isMemberCardPay=#{isMemberCardPay},
+            </if>
+            <if test="amount!=null">
+                amount=#{amount},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}
             </if>
@@ -150,33 +165,7 @@
     </select>
 
     <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT id,
-        ordernumber,
-        shopid,
-        shopname,
-        merchantname,
-        order_no,
-        order_id,
-        orderstatus,
-        sourcetype,
-        validationcode,
-        amount,
-        poundage,
-        qrcode,
-        cashierid,
-        cashiername,
-        pay_sn,
-        pay_type,
-        pay_channel_sign,
-        pay_success_time,
-        refund_amount,
-        refund_status,
-        refund_time,
-        goods_name,
-        goods_describe,
-        remark,
-        create_time,
-        update_time
+        SELECT *
         FROM tb_hsy_order
         WHERE order_no = #{orderNo}
     </select>
@@ -323,16 +312,16 @@
 
     <select id="findConsumeOrderListByPage" parameterType="page" resultType="com.jkm.hss.bill.entity.HsyOrder">
         select
-          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
+          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
-        where orderstatus!=1 and orderstatus!=3
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8
         <if test="objectT.mcid!=null and objectT.mcid!=''">
             AND MCID=#{objectT.mcid}
         </if>
         <if test="objectT.mid!=null and objectT.mid!=''">
             AND MID=#{objectT.mid}
         </if>
-        order by corder.update_time desc
+        order by corder.create_time desc
     </select>
 
     <select id="findConsumeOrderListByPageCount" parameterType="com.jkm.hss.bill.entity.HsyOrder" resultType="java.lang.Integer">
@@ -340,7 +329,7 @@
         corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time
         createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
-        where orderstatus!=1 and orderstatus!=3
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8
         <if test="mcid!=null and mcid!=''">
             AND MCID=#{mcid}
         </if>
@@ -354,6 +343,24 @@
         corder.id,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
         where corder.id=#{id}
+    </select>
+
+    <select id="findRechargeOrderInfoByOrderNO"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEID,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.PAYEEACCOUNTID,rorder.OUID,rorder.MEMBERID,rorder.MEMBERACCOUNTID,rorder.CID,rorder.MCID,rorder.UID,rorder.MERCHANTRECEIVEACCOUNTID,rorder.GOODSNAME,rorder.GOODSDESCRIBE,rorder.MERCHANTNAME,rorder.MERCHANTNO,rorder.PAYSN,rorder.PAYCHANNELSIGN,rorder.PAYSUCCESSTIME,rorder.STATUS,rorder.TYPE,rorder.SOURCE,rorder.POUNDAGE,rorder.REMARK,
+        (case when rorder.TYPE=1 then '开卡充值'
+        when rorder.TYPE=2 then '开卡送'
+        when rorder.TYPE=3 then '充值'
+        when rorder.TYPE=4 then '充值送' else '' end) TYPENAME,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
+        from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
+        where rorder.ORDERNO=#{orderNO}
+    </select>
+
+    <select id="findRechargeOrderInfoByID"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+          ID,ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,POUNDAGE,REMARK,SETTLETYPE,CREATETIME,UPDATETIME
+        from app_policy_recharge_order
+        where ID=#{id}
     </select>
 
     <select id="queryHsyOrderList"  resultType="com.jkm.hss.bill.entity.QueryHsyOrderResponse">
