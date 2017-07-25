@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class MemberRequest {
 
+    private Long uid;
+
     /**
      * 条数
      */
@@ -20,6 +22,8 @@ public class MemberRequest {
      * 每页显示页数
      */
     private int pageSize;
+
+    private String realname;//商户名（会员卡）
 
     private String memberCardNO;//会员卡号
 

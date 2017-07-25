@@ -102,6 +102,10 @@ const FilialePro = r => require.ensure([], () => r(require('components/filiale/F
 const FilialeRole = r => require.ensure([], () => r(require('components/filiale/FilialeRole')), 'group-record');
 const FilialeRoleAdd = r => require.ensure([], () => r(require('components/filiale/FilialeRoleAdd')), 'group-record');
 const ConfigureOem = r => require.ensure([], () => r(require('components/filiale/ConfigureOem')), 'group-record');
+// 会员管理
+const Merchant = r => require.ensure([], () => r(require('components/member/Merchant')), 'group-record');
+const MerchantDetail = r => require.ensure([], () => r(require('components/member/MerchantDetail')), 'group-record');
+const Member = r => require.ensure([], () => r(require('components/member/Member')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
   {path: '/admin/login', component: Login},
@@ -110,6 +114,9 @@ let routes = [
     component: Crumbs,
     children: [
       {path: 'achievement', name: 'Achievement', component: Achievement},
+      {path: 'member', name: 'Member', component: Member},
+      {path: 'merchant', name: 'Merchant', component: Merchant},
+      {path: 'merchantDetail', name: 'MerchantDetail', component: MerchantDetail},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
@@ -199,6 +206,8 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'member', name: 'Member', component: Member},
+      {path: 'merchant', name: 'Merchant', component: Merchant},
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},

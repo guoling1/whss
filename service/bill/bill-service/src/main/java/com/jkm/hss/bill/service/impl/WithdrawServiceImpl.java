@@ -100,8 +100,10 @@ public class WithdrawServiceImpl implements WithdrawService {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
         final SettlementRecord settlementRecord = this.settlementRecordService.getById(settlementRecordId).get();
+        final SettleAccountFlow settleAccountFlow = this.settleAccountFlowService.getBySettlementRecordId(settlementRecordId).get(0);
+        final Order payOrder = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo()).get();
         if (settlementRecord.isWaitWithdraw()) {
-            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payChannelSign);
+            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage( payOrder,EnumProductType.HSS, merchantId, payChannelSign);
             final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
             paymentSdkDaiFuRequest.setAppId(settlementRecord.getAppId());
             paymentSdkDaiFuRequest.setOrderNo(settlementRecord.getSettleNo());
@@ -132,8 +134,6 @@ public class WithdrawServiceImpl implements WithdrawService {
                 return Pair.of(-1, "请求网关异常， 提现失败");
             }
             this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAWING.getId());
-            final SettleAccountFlow settleAccountFlow = this.settleAccountFlowService.getBySettlementRecordId(settlementRecordId).get(0);
-            final Order payOrder = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo()).get();
             this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLE_ING.getId());
             return this.handleWithdrawResult(settlementRecordId, response);
         }
@@ -230,7 +230,7 @@ public class WithdrawServiceImpl implements WithdrawService {
 
             BigDecimal merchantWithdrawPoundage = new BigDecimal("0.00");
             if (EnumSettleModeType.CHANNEL_SETTLE.getId() != settlementRecord.getSettleMode()) {
-                merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchant.getId(), payOrder.getPayChannelSign());
+                merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(payOrder,EnumProductType.HSS, merchant.getId(), payOrder.getPayChannelSign());
                 //手续费账户入可用余额
                 final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
                 this.accountService.increaseTotalAmount(poundageAccount.getId(), merchantWithdrawPoundage);

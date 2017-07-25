@@ -66,10 +66,10 @@ public class AccountBankController extends BaseController {
         if(!merchantInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
-        Optional<AccountBank> accountBankOptional = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
-        if(accountBankOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
-        }
+//        Optional<AccountBank> accountBankOptional = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
+//        if(accountBankOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
+//        }
         final JSONObject jsonObject = merchantChannelRateService.updateKmBankInfo(merchantInfoOptional.get().getAccountId(), merchantInfoOptional.get().getId(), changeBankCardRequest.getBankNo());
         final int code = jsonObject.getInt("code");
         if (code==1) {

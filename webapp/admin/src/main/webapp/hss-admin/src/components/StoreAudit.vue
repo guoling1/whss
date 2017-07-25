@@ -706,11 +706,13 @@
         this.form.status = this.status;
         var flag=false;
         for(let k in this.form){
-            if(this.form[k]==''){
+            if(this.form[k]===''){
                 flag = true;
+                console.log(k)
                 break;
             }
         }
+
         if(flag){
           this.$message({
             showClose: true,
