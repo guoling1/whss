@@ -357,4 +357,128 @@
         WHERE 1=1
     </select>
 
+    <!--  -->
+    <select id="getMerchantMemberList" resultType="com.jkm.hsy.user.entity.MerchantMemberResponse">
+        SELECT
+            u.ID,
+            u.GLOBALID,
+            s.SHORTNAME AS REALNAME,
+            t.count as cardCount,
+            (
+                SELECT
+                    IFNULL(sum(TRADEAMOUNT), 0)
+                FROM
+                    app_policy_recharge_order
+                WHERE
+                    UID = t.UID AND `STATUS`=1
+            ) AS total
+        FROM
+            app_au_user u
+        LEFT JOIN app_biz_shop_user_role r ON r.UID=u.ID AND r.TYPE=1 AND r.ROLE=1 AND r.`STATUS`=1
+        LEFT JOIN app_biz_shop s ON s.ID = r.SID
+        RIGHT JOIN (
+            SELECT
+                UID,
+                count(1) AS count
+            FROM
+                app_policy_membership_card WHERE `STATUS`=1
+            GROUP BY
+                UID
+        ) AS t ON u.ID = t.UID WHERE 1=1
+        <if test="realname!=null and realname!=''"> and u.REALNAME=#{realname}</if>
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getMerchantMemberLists" resultType="com.jkm.hsy.user.entity.MerchantMemberResponse">
+        SELECT
+        u.ID,
+        u.GLOBALID,
+        u.REALNAME,
+        t.count as cardCount,
+        (
+        SELECT
+        IFNULL(sum(TRADEAMOUNT), 0)
+        FROM
+        app_policy_recharge_order
+        WHERE
+        UID = t.UID AND `STATUS`=1
+        ) AS total
+        FROM
+        app_au_user u
+        RIGHT JOIN (
+        SELECT
+        UID,
+        count(1) AS count
+        FROM
+        app_policy_membership_card WHERE `STATUS`=1
+        GROUP BY
+        UID
+        ) AS t ON u.ID = t.UID WHERE 1=1
+        <if test="realname!=null and realname!=''"> and u.REALNAME=#{realname}</if>
+    </select>
+
+    <select id="getMemberShipList" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+        SELECT
+            a.ID,
+            a.UID,
+            a.MEMBERSHIPNAME,
+            a.MEMBERSHIPSHOPNAME,
+            a.DEPOSITAMOUNT,
+            a.DISCOUNT,
+            a.ISPRESENTEDVIAACTIVATE,
+            a.RECHARGEPRESENTAMOUNT
+        FROM
+          app_policy_membership_card a WHERE a.UID=#{uid}
+        GROUP BY a.UID,a.ID
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getMemberShipLists" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+        SELECT DISTINCT b.*,a.UID,d.SHORTNAME FROM app_policy_membership_card a
+        LEFT JOIN app_policy_membership_card_shop b ON b.MCID=a.ID
+        LEFT JOIN app_biz_shop_user_role c ON c.SID = b.SID
+        LEFT JOIN app_biz_shop d ON d.ID=c.SID WHERE a.UID=#{uid}
+    </select>
+
+    <select id="getcardList" resultType="com.jkm.hsy.user.entity.CardNoResponse">
+      SELECT
+        b.CONSUMERCELLPHONE,
+        c.MEMBERSHIPNAME,
+        e.SHORTNAME,
+        IFNULL((SELECT SUM(TRADEAMOUNT) FROM app_policy_recharge_order WHERE `STATUS`=1 AND MEMBERID=a.ID),0) AS tradeAmount,
+      IFNULL((SELECT SUM(amount) FROM tb_hsy_order WHERE (orderstatus!=1 OR orderstatus!=3 OR orderstatus!=8) AND mid=a.ID),0) AS amount
+    FROM
+        app_policy_member a
+    LEFT JOIN app_policy_consumer b ON b.ID = a.CID
+    LEFT JOIN app_policy_membership_card c ON c.ID = a.MCID
+    LEFT JOIN app_biz_shop_user_role d ON d.UID = c.UID
+    AND d.ROLE = 1
+    AND d.`STATUS` = 1
+    AND d.TYPE = 1
+    LEFT JOIN app_biz_shop e ON e.ID = d.SID
+    WHERE 1=1
+    <if test="consumerCellphone!=null and consumerCellphone!=''"> and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
+    LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getcardLists" resultType="com.jkm.hsy.user.entity.CardNoResponse">
+        SELECT
+        b.CONSUMERCELLPHONE,
+        c.MEMBERSHIPNAME,
+        e.SHORTNAME,
+        IFNULL((SELECT SUM(TRADEAMOUNT) FROM app_policy_recharge_order WHERE `STATUS`=1 AND MEMBERID=a.ID),0) AS tradeAmount,
+        IFNULL((SELECT SUM(amount) FROM tb_hsy_order WHERE (orderstatus!=1 OR orderstatus!=3 OR orderstatus!=8) AND mid=a.ID),0) AS amount
+        FROM
+        app_policy_member a
+        LEFT JOIN app_policy_consumer b ON b.ID = a.CID
+        LEFT JOIN app_policy_membership_card c ON c.ID = a.MCID
+        LEFT JOIN app_biz_shop_user_role d ON d.UID = c.UID
+        AND d.ROLE = 1
+        AND d.`STATUS` = 1
+        AND d.TYPE = 1
+        LEFT JOIN app_biz_shop e ON e.ID = d.SID
+        WHERE 1=1
+        <if test="consumerCellphone!=null and consumerCellphone!=''"> and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
+    </select>
+
 </mapper>

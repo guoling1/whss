@@ -424,4 +424,40 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             merchantInfoDao.updateKmNetStatus(merchantId,EnumKmNetStatus.FAIL.getId());
         }
     }
+
+    /**
+     *
+     *
+     * @param accountId
+     * @param merchantId
+     */
+    @Override
+    public JSONObject updateKmMerchantRateInfo(long accountId, long merchantId, long productId, int channelTypeSign) {
+        AccountBank accountBank = accountBankService.getDefault(accountId);
+        MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
+        final MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
+        merchantChannelRateRequest.setMerchantId(merchantId);
+        merchantChannelRateRequest.setProductId(productId);
+        merchantChannelRateRequest.setChannelTypeSign(channelTypeSign);
+        final MerchantChannelRate merchantChannelRate = this.merchantChannelRateDao.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("merchantNo", merchantInfo.getMarkCode());
+        paramsMap.put("wxRate", merchantChannelRate.getMerchantPayRate().toString());
+        paramsMap.put("zfbRate", merchantChannelRate.getMerchantPayRate().toString());
+        log.info("修改卡盟联商户费率参数为："+JSONObject.fromObject(paramsMap).toString());
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdateRate(), paramsMap);
+        JSONObject jo = JSONObject.fromObject(result);
+        if (result != null && !"".equals(result)) {
+
+            log.info("修改卡盟商户费率返回参数为："+jo.toString());
+            if (jo.getInt("code") == 1) {
+                merchantChannelRateDao.updateKmRate(merchantId, "已同步");
+            } else {
+                merchantChannelRateDao.updateKmRate(merchantId,"同步失败");
+            }
+        } else {
+            merchantChannelRateDao.updateKmRate(merchantId,"同步失败");
+        }
+        return jo;
+    }
 }

@@ -171,10 +171,11 @@ public class ProductController extends BaseController {
             product.setDealerBalanceType(request.getDealerBalanceType());
             this.productService.update(product);
             for (ProductChannelDetail detail : request.getList()){
+                final int parentChannelSign = this.basicChannelService.selectParentChannelSign(detail.getChannelTypeSign());
                 detail.setProductTradeRate(detail.getProductTradeRate().divide(new BigDecimal(100)));
                 detail.setProductMerchantPayRate(detail.getProductMerchantPayRate().divide(new BigDecimal(100)));
                 detail.setProductId(request.getProductId());
-                detail.setChannelType(EnumPayChannelSign.idOf(detail.getChannelTypeSign()).getPaymentChannel().getId());
+                detail.setChannelType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getId());
                 this.productChannelDetailService.updateOrAdd(detail);
             }
             return  CommonResponse.simpleResponse(1, "success");

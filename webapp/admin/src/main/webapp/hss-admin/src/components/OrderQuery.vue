@@ -61,8 +61,8 @@
                   </el-select>
                 </li>
                 <li class="same">
-                  <div class="btn btn-primary" @click="search('hss')">筛选</div>
-                  <div class="btn btn-primary" @click="reset('hss')">重置</div>
+                  <el-button type="primary" size="small" @click="search('hss')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hss')">重置</el-button>
                 </li>
               </ul>
               <!--表格-->
@@ -119,114 +119,115 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="好收银" name="second">
-              <!--<ul class="search">-->
-                <!--<li class="same">-->
-                  <!--<label>商户编号:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.globalID" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>商户名称:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>注册手机号:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.cellphone" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>注册时间:</label>-->
-                  <!--<el-date-picker style="width: 188px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">-->
-                  <!--</el-date-picker>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>审核时间:</label>-->
-                  <!--<el-date-picker style="width: 188px" v-model="dateHsy1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">-->
-                  <!--</el-date-picker>-->
-                <!--</li>-->
-                <!--&lt;!&ndash;<li class="same">-->
-                  <!--<label>所属分公司:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>&ndash;&gt;-->
-                <!--<li class="same">-->
-                  <!--<label>所属一级代理:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>所属二级代理:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>报单员:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>姓名:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>审核状态:</label>-->
-                  <!--<el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">-->
-                    <!--<el-option label="全部" value="">全部</el-option>-->
-                    <!--<el-option label="已注册" value="0">已注册</el-option>-->
-                    <!--<el-option label="已提交基本资料" value="1">已提交基本资料</el-option>-->
-                    <!--<el-option label="待审核" value="2">待审核</el-option>-->
-                    <!--<el-option label="审核通过" value="3">审核通过</el-option>-->
-                    <!--<el-option label="审核未通过" value="4">审核未通过</el-option>-->
-                  <!--</el-select>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<div class="btn btn-primary" @click="search('hsy')">筛选</div>-->
-                  <!--<div class="btn btn-primary" @click="reset('hsy')">重置</div>-->
-                <!--</li>-->
-                <!--<li class="same" style="float: right">-->
-                  <!--<span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>-->
-                <!--</li>-->
-              <!--</ul>-->
-              <!--<el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>-->
-                <!--<el-table-column type="index" width="62" label="序号"></el-table-column>-->
-                <!--<el-table-column prop="globalID" label="商户编号"></el-table-column>-->
-                <!--<el-table-column prop="shortName" label="商户名称"></el-table-column>-->
-                <!--&lt;!&ndash;<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>&ndash;&gt;-->
-                <!--<el-table-column prop="proxyName" label="所属一级代理"></el-table-column>-->
-                <!--<el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>-->
-                <!--<el-table-column prop="username" label="报单员"></el-table-column>-->
-                <!--<el-table-column prop="realname" label="姓名"></el-table-column>-->
-                <!--&lt;!&ndash;<el-table-column prop="proxyNames" label="所属代理商"></el-table-column>&ndash;&gt;-->
-                <!--<el-table-column label="注册时间">-->
-                  <!--<template scope="scope">-->
-                    <!--<span>{{scope.row.createTime|changeTime}}</span>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-                <!--<el-table-column label="提交时间">-->
-                  <!--<template scope="scope">-->
-                    <!--<span>{{scope.row.commitTime|changeTime}}</span>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-                <!--<el-table-column label="审核时间">-->
-                  <!--<template scope="scope">-->
-                    <!--<span>{{scope.row.auditTime|changeTime}}</span>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-                <!--<el-table-column prop="cellphone" label="注册手机号"></el-table-column>-->
-                <!--<el-table-column prop="districtCode" label="省市"></el-table-column>-->
-                <!--<el-table-column prop="industryCode" label="行业"></el-table-column>-->
-                <!--<el-table-column prop="stat" label="状态"></el-table-column>-->
-                <!--<el-table-column label="操作" width="100">-->
-                  <!--<template scope="scope">-->
-                    <!--<el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" v-if="recordsHsy[scope.$index].stat=='待审核'" type="text" size="small">审核</el-button>-->
-                    <!--<el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_detail')" v-if="recordsHsy[scope.$index].stat!='待审核'" type="text" size="small">查看详情</el-button>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-              <!--</el-table>-->
-              <!--<div class="block" style="text-align: right">-->
-                <!--<el-pagination @size-change="handleSizeChangeHsy"-->
-                               <!--@current-change="handleCurrentChangeHsy"-->
-                               <!--:current-page="queryHsy.pageNo"-->
-                               <!--:page-sizes="[10, 20, 50]"-->
-                               <!--:page-size="queryHsy.pageSize"-->
-                               <!--layout="total, sizes, prev, pager, next, jumper"-->
-                               <!--:total="countHsy">-->
-                <!--</el-pagination>-->
-              <!--</div>-->
+              <ul class="search">
+                <li class="same">
+                  <label>订单号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.ordernumber" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>交易单号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.orderno" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>商户名称:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.merchantName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>店铺名称:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>一级代理:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>二级代理:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>报单员:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>支付方式：</label>
+                  <el-select style="width: 188px" v-model="queryHsy.paymentChannel" size="small">
+                    <el-option label="全部" value="">全部</el-option>
+                    <el-option label="微信支付" value="1"></el-option>
+                    <el-option label="支付宝支付" value="2"></el-option>
+                    <el-option label="快捷支付" value="3"></el-option>
+                    <el-option label="QQ钱包" value="4"></el-option>
+                    <el-option label="会员卡" value="5"></el-option>
+                    <el-option label="银联扫码" value="6"></el-option>
+                  </el-select>
+                </li>
+                <li class="same">
+                  <label>订单状态：</label>
+                  <el-select style="width: 188px" clearable v-model="queryHsy.orderstatus" size="small">
+                    <el-option label="全部" value=""></el-option>
+                    <el-option label="待支付" value="1"></el-option>
+                    <el-option label="支付中" value="2"></el-option>
+                    <el-option label="支付失败" value="3"></el-option>
+                    <el-option label="支付成功" value="4"></el-option>
+                    <el-option label="提现中" value="5"></el-option>
+                    <el-option label="提现成功" value="6"></el-option>
+                    <el-option label="充值成功" value="7"></el-option>
+                    <el-option label="充值失败" value="8"></el-option>
+                    <el-option label="待提现" value="9"></el-option>
+                    <el-option label="提现失败" value="10"></el-option>
+                  </el-select>
+                </li>
+                <li class="same">
+                  <label>交易来源:</label>
+                  <el-select style="width: 188px" v-model="queryHsy.source" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value=""></el-option>
+                    <el-option label="直销" value="1"></el-option>
+                    <el-option label="渠道" value="2"></el-option>
+                  </el-select>
+                </li>
+                <li class="same">
+                  <el-button type="primary" size="small" @click="search('hsy')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hsy')">重置</el-button>
+                </li>
+              </ul>
+              <el-table v-loading.body="hsyLoading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>
+                <el-table-column type="index" width="62" label="序号"></el-table-column>
+                <el-table-column label="订单号" min-width="112">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.ordernumber" style="cursor: pointer" title="点击复制">{{scope.row.ordernumber|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="proxyName" label="一级代理" min-width="90"></el-table-column>
+                <el-table-column prop="proxyName1" label="二级代理" min-width="90"></el-table-column>
+                <el-table-column prop="username" label="报单员"></el-table-column>
+                <el-table-column prop="realname" label="报单员姓名" min-width="110"></el-table-column>
+                <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
+                <el-table-column prop="shortName" label="店铺名称"></el-table-column>
+                <el-table-column label="交易单号" min-width="112">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.orderno" style="cursor: pointer" title="点击复制">{{scope.row.orderno|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="支付流水号" min-width="112">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.paysn" style="cursor: pointer" title="点击复制">{{scope.row.paysn|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="paymentChannels" label="支付方式" min-width="155"></el-table-column>
+                <el-table-column prop="paysuccesstimes" label="成功时间" min-width="155"></el-table-column>
+                <el-table-column prop="amount" label="订单金额" min-width="90" align="right"></el-table-column>
+                <el-table-column prop="poundage" label="手续费金额"  min-width="110" align="right"></el-table-column>
+                <el-table-column prop="orderstatuss" label="订单状态"></el-table-column>
+              </el-table>
+              <div class="block" style="text-align: right">
+                <el-pagination @size-change="handleSizeChangeHsy"
+                               @current-change="handleCurrentChangeHsy"
+                               :current-page="queryHsy.page"
+                               :page-sizes="[10, 20, 50]"
+                               :page-size="queryHsy.size"
+                               layout="total, sizes, prev, pager, next, jumper"
+                               :total="countHsy">
+                </el-pagination>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -258,7 +259,6 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         url: '/admin/queryOrder/queryOrderList',
-        fromName: '',
         queryHss: {
           page: 1,
           size: 10,
@@ -281,15 +281,25 @@
         dateHss: '',
         dateHss1: '',
         queryHsy: {
-          pageNo: 1,
-          pageSize: 10,
+          page: 1,
+          size: 10,
+          ordernumber:'',
+          orderno:'',
+          merchantName:'',
+          shortName:'',
+          proxyName:'',
+          proxyName1:'',
+          username:'',
+          paymentChannel:'',
+          orderstatus:'',
+          source:''
         },
         recordsHss: [],
         recordsHsy: [],
         countHss: 0,
         countHsy: 0,
-        currentPage: 1,
         loading: false,
+        hsyLoading: false
       }
     },
     created: function () {
@@ -320,7 +330,7 @@
         }
       }
       this.getDataHss();
-//      this.getDataHsy()
+      this.getDataHsy()
       this.getAddTotalHss();
     },
     methods: {
@@ -371,30 +381,20 @@
           this.dateHsy='';
           this.dateHsy1='';
           this.queryHsy = {
-            page:1,
-            size:10,
+            page: 1,
+            size: 10,
+            ordernumber:'',
+            orderno:'',
+            merchantName:'',
             shortName:'',
-            globalID:'',
             proxyName:'',
             proxyName1:'',
-            cellphone:'',
             username:'',
-            status:'',
-            startTime:'',
-            endTime:'',
-            auditTime:'',
-            auditTime1:'',
-            realname:''
+            paymentChannel:'',
+            orderstatus:'',
+            source:''
           }
         }
-      },
-      auditHsy: function (id,status) {
-//        this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
-        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAuditHSY?id='+id+'&status='+status);
-      },
-      audit: function (id,status) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAudit?id='+id+'&status='+status);
-//        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       getDataHss: function () {
         this.loading = true;
@@ -449,14 +449,24 @@
           })
       },
       getDataHsy: function () {
-      },
-      onload: function () {
-        if(this.activeName == 'first'){
-          this.$data.loadUrl = this.loadUrlHss;
-        }else if(this.activeName == 'second'){
-          this.$data.loadUrl = this.loadUrlHsy;
-        }
-        this.$data.isMask = true;
+        this.hsyLoading = true;
+        this.$http.post('/admin/queryOrder/queryHsyOrderList',this.queryHsy)
+          .then(function (res) {
+            setTimeout(()=>{
+              this.hsyLoading = false;
+              this.recordsHsy = res.data.records;
+            },1000)
+            this.countHsy = res.data.count;
+          }, function (err) {
+            setTimeout(()=>{
+              this.hsyLoading = false;
+            },1000)
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       search(val){
         if(val == 'hss'){
