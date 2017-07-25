@@ -322,6 +322,24 @@ public class MembershipController {
             AppPolicyConsumer consumerCheck=hsyMembershipService.findConsumerByCellphone(appPolicyConsumer.getConsumerCellphone());
             if(consumerCheck!=null){//判断微信或支付宝以前是否注册过消费者
                 appPolicyConsumer.setId(consumerCheck.getId());
+                if(appPolicyConsumer.getOpenID()!=null&&!appPolicyConsumer.getOpenID().equals("")&&consumerCheck.getOpenID()!=null&&!consumerCheck.getOpenID().equals("")) {
+                    if(!appPolicyConsumer.getOpenID().equals(consumerCheck.getOpenID())){
+                        map.put("flag","fail");
+                        map.put("result","该手机号已注册！");
+                        writeJsonToResponse(map,response,pw);
+                        return;
+                    }
+                }
+
+                if(appPolicyConsumer.getUserID()!=null&&!appPolicyConsumer.getUserID().equals("")&&consumerCheck.getUserID()!=null&&!consumerCheck.getUserID().equals("")) {
+                    if(!appPolicyConsumer.getUserID().equals(consumerCheck.getUserID())){
+                        map.put("flag","fail");
+                        map.put("result","该手机号已注册！");
+                        writeJsonToResponse(map,response,pw);
+                        return;
+                    }
+                }
+
                 hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
                 appPolicyMember=hsyMembershipService.findMemberByCIDAndMCID(appPolicyConsumer.getId(),mcid);
                 if(appPolicyMember==null)//判断是否有该店会员卡

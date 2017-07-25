@@ -323,7 +323,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final ArrayList<List<String>> datas = new ArrayList<>();
         excelSheetVO.setDatas(datas);
-        excelSheetVO.setName(merchantNo + "_statement_" + DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd));
+        excelSheetVO.setName(merchantNo + "_recharge_statement_" + DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd));
         final List<String> head = Arrays.asList(new String[]{"充值单号", "会员卡名称", "会员手机号", "充值金额", "实付金额", "支付方式", "充值成功时间"});
         datas.add(head);
         for (AppPolicyRechargeOrder appPolicyRechargeOrder : appPolicyRechargeOrderList) {
