@@ -3209,7 +3209,7 @@
 
     <select id="selectBySettlementReocrdId" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order
-        WHERE settlement_record_id = #{settlementRecordId} AND trade_type = 3
+        WHERE settlement_record_id = #{settlementRecordId}
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>
