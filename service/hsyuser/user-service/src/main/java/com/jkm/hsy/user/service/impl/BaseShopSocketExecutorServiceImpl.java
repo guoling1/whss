@@ -22,9 +22,9 @@ public class BaseShopSocketExecutorServiceImpl implements BaseShopSocketExecutor
     @Autowired
     private ShopSocketService shopSocketService;
     /**
-     * 线程池，固定大小20
+     * 线程池，固定大小10
      */
-    private static final ExecutorService threadPool = Executors.newFixedThreadPool(20);
+    private static final ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
 
     /**
