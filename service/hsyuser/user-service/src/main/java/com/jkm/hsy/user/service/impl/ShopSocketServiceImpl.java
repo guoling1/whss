@@ -191,18 +191,21 @@ public class ShopSocketServiceImpl implements ShopSocketService {
         if (socketOptional.isPresent()) {
             final ShopSocket shopSocket = socketOptional.get();
             if (shopSocket.isSame(ip, port)) {
+                log.info("店铺[{}]-ip,端口一致", shopId);
                 return;
             }
+            log.info("店铺[{}]-更新ip,端口", shopId);
             final ShopSocket updateShopSocket = new ShopSocket();
+            updateShopSocket.setId(shopSocket.getId());
             updateShopSocket.setIp(ip);
             updateShopSocket.setPc("");
             updateShopSocket.setPort(port);
-            updateShopSocket.setId(shopSocket.getId());
             this.update(shopSocket);
             //更新缓存
             shopSocketConcurrentMap.remove(shopId);
             return;
         }
+        log.info("店铺[{}]-插入ip,端口", shopId);
         final ShopSocket shopSocket = new ShopSocket();
         shopSocket.setIp(ip);
         shopSocket.setPc("");

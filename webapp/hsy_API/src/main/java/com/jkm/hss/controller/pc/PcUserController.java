@@ -169,7 +169,7 @@ public class PcUserController extends BaseController {
         final long shopId = saveIpRequest.getShopId();
         final int port = saveIpRequest.getPort();
         final String ip = IpUtils.getIp(httpServletRequest);
-        log.info("保存店铺-[{}]所在的公网ip[{}]", shopId, ip);
+        log.info("保存店铺-[{}]所在的公网ip[{}]-port[{}]", shopId, ip, port);
         this.shopSocketService.saveSocketIp(shopId, ip, port);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
