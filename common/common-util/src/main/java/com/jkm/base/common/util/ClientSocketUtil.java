@@ -30,7 +30,7 @@ public final class ClientSocketUtil {
                 break;
             }
         }
-        return msg.toString();
+        return msg.toString().substring(0, msg.toString().length() - 3);
     }
 
     /**
