@@ -206,6 +206,7 @@ public class TradeController extends BaseController {
             //调支付推送
             try {
                 final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(order.getOrderNo()).get();
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>:" + hsyOrder.toString());
                 this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
                         hsyOrder.getAmount().doubleValue(), hsyOrder.getValidationcode(), hsyOrder.getOrderno());
             } catch (final Throwable e) {
