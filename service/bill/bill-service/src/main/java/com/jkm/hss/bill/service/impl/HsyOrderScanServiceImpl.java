@@ -337,6 +337,8 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrder=orderList.get(0);
         if(hsyOrder.getPaytype().contains("wechat"))
             hsyOrder.setPaytype("微信");
+        else if(hsyOrder.getPaytype().contains("member"))
+            hsyOrder.setPaytype("会员卡");
         else
             hsyOrder.setPaytype("支付宝");
 
