@@ -6,8 +6,6 @@ import com.jkm.base.common.util.Page;
 import com.jkm.base.common.util.PageUtils;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
-import com.jkm.hss.product.enums.EnumPaymentChannel;
-import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.*;
 import com.jkm.hsy.user.entity.*;
@@ -848,6 +846,45 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
             member.setDiscountFloat(discountFloat);
         }
         return list;
+    }
+
+    @Override
+    public List<MerchantMemberResponse> getMerchantMemberList(MemberRequest request) {
+        List<MerchantMemberResponse> list = this.hsyMembershipDao.getMerchantMemberList(request);
+        return list;
+    }
+
+    @Override
+    public List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request) {
+        List<MerchantMemberResponse> lists = this.hsyMembershipDao.getMerchantMemberLists(request);
+        return lists;
+    }
+
+    @Override
+    public List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request) {
+        List<MerchantMemberShipResponse> list = this.hsyMembershipDao.getMemberShipList(request);
+        List result = new ArrayList();
+        if (list.size()>0) {
+            for (int i=0;i<list.size();i++){
+                List<MerchantMemberShipResponse> lists = this.hsyMembershipDao.getMemberShipLists(request.getUid());
+
+                list.get(i).setValidShop(lists);
+
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<CardNoResponse> getcardList(MemberRequest request) {
+        List<CardNoResponse> list = this.hsyMembershipDao.getcardList(request);
+        return list;
+    }
+
+    @Override
+    public List<CardNoResponse> getcardLists(MemberRequest request) {
+        List<CardNoResponse> lists = this.hsyMembershipDao.getcardLists(request);
+        return lists;
     }
 
     @Override
