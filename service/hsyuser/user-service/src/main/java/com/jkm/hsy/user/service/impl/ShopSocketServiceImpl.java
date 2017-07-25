@@ -79,7 +79,12 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      */
     @Override
     public void removeSocket(final long shopId) {
-        shopSocketConcurrentMap.remove(shopId);
+        final Socket remove = shopSocketConcurrentMap.remove(shopId);
+        try {
+            remove.close();
+        } catch (IOException e) {
+           log.error("关闭socket连接异常", e);
+        }
     }
 
     /**
@@ -202,7 +207,7 @@ public class ShopSocketServiceImpl implements ShopSocketService {
             updateShopSocket.setPort(port);
             this.update(updateShopSocket);
             //更新缓存
-            shopSocketConcurrentMap.remove(shopId);
+            this.removeSocket(shopId);
             return;
         }
         log.info("店铺[{}]-插入ip,端口", shopId);

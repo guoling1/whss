@@ -72,6 +72,9 @@ public final class ClientSocketUtil {
     private static Socket createSocket(final String ip, final int port, final int times) {
         try {
             final Socket socket = new Socket(ip, port);
+            //读超时3秒
+            socket.setSoTimeout(10000);
+            socket.setKeepAlive(true);
             return socket;
         } catch (final IOException e) {
             log.error("ip-[{}], port-[{}], times-[{}]create socket exception", ip, port, times);
