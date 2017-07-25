@@ -257,7 +257,7 @@ public class ActiveController {
         if((appParam.getServiceCode()==null||(appParam.getServiceCode()!=null&&appParam.getServiceCode().trim().equals("")))
                 ||(appParam.getV()==null||(appParam.getV()!=null&&appParam.getV().trim().equals("")))
                 ||(appParam.getAppType()==null||(appParam.getAppType()!=null&&appParam.getAppType().trim().equals("")))
-                ||(appParam.getDeviceid()==null||(appParam.getDeviceid()!=null&&appParam.getDeviceid().trim().equals("")))
+                ||(appParam.getDeviceId()==null||(appParam.getDeviceId()!=null&&appParam.getDeviceId().trim().equals("")))
                 )
             return true;
         if(!(appParam.getAppType().equals("ios")||appParam.getAppType().equals("android")))

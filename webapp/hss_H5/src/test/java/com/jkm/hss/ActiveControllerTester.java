@@ -35,12 +35,12 @@ public class ActiveControllerTester {
     @Test
     public void testUpdateClientID()throws Exception{
         AppParam p=new AppParam();
-        p.setServiceCode("HSY001017");
-        p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
+        p.setServiceCode("HSS001002");
+        p.setAccessToken("be360cb714a8813a2e45adc221454a5f");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
-        String param="{\"clientid\":\"clientid12345678\"}";
+        String param="{\"clientId\":\"clientid12345678\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

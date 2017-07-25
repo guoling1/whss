@@ -35,7 +35,7 @@ public class AppParam {
 	/**
 	 * 设备号
 	 */
-	private String deviceid;
+	private String deviceId;
 	/**
 	 * 文件集合
 	 */
@@ -48,7 +48,7 @@ public class AppParam {
 				+"v:"+this.v+","
 				+"appType:"+this.appType+","
 				+"requestData:"+this.requestData+","
-				+"deviceid:"+this.deviceid;
+				+"deviceId:"+this.deviceId;
 	}
 
 }

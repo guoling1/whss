@@ -41,7 +41,7 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
         } catch(Exception e){
             throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
         }
-        if(!(appAuToken.getDeviceid()!=null&&!appAuToken.getDeviceid().equals("")))
+        if(!(appAuToken.getDeviceId()!=null&&!appAuToken.getDeviceId().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"设备号");
         if(!(appAuToken.getDeviceName()!=null&&!appAuToken.getDeviceName().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"设备名");
@@ -77,7 +77,7 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
         } catch(Exception e){
             throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
         }
-        if(!(appAuToken.getClientid()!=null&&!appAuToken.getClientid().equals("")))
+        if(!(appAuToken.getClientId()!=null&&!appAuToken.getClientId().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"推送号");
         if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
@@ -86,7 +86,7 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
         if (tokenList != null && tokenList.size() != 0)
         {
             AppAuToken appAuTokenUpdate=tokenList.get(0);
-            appAuTokenUpdate.setClientid(appAuToken.getClientid());
+            appAuTokenUpdate.setClientId(appAuToken.getClientId());
             appAuTokenUpdate.setUpdateTime(new Date());
             appAuTokenDao.updateAppAuToken(appAuTokenUpdate);
         }

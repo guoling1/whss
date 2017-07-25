@@ -11,5 +11,6 @@ public class V1o1o1Mapper {
     static{
         bizMapper.put("HSS001001", new String[]{"appAuTokenService","insertTokenDeviceClientInfoAndReturnKey"});
         bizMapper.put("HSS001002", new String[]{"appAuTokenService","updateClientID"});
+        bizMapper.put("HSS001003", new String[]{"appVersionService","getAppVersion"});
     }
 }

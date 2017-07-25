@@ -9,8 +9,8 @@ public class AppAuToken {
     private Long id;
     private String accessToken;//令牌
     private String encryptKey;//加密秘钥
-    private String deviceid;//设备号
-    private String clientid;//推送号
+    private String deviceId;//设备号
+    private String clientId;//推送号
     private String deviceName;//设备名称
     private String appType;//APP类型
     private String osVersion;//系统版本号
