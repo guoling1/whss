@@ -1,8 +1,6 @@
 package com.jkm.hss.controller;
 
-import com.jkm.hss.admin.service.AdminUserInitService;
 import com.jkm.hss.notifier.service.MessageTemplateInitService;
-import com.jkm.hsy.user.service.ShopSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
