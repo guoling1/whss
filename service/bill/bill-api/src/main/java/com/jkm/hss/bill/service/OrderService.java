@@ -674,19 +674,6 @@ public interface OrderService {
      */
     List<Order> selectOrderListByCount(long accountId, int count, EnumOrderStatus status, String payTime);
 
-    /**
-     * D0提现
-     * @param account
-     * @return
-     */
-    JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo, AppBizCard appBizCard);
-
-    /**
-     * 确认提现
-     * @param withDrawOrderId
-     * @return
-     */
-    Pair<Integer, String> confirmWithdraw(long withDrawOrderId);
 
     /**
      * 二级代理商交易统计
@@ -713,6 +700,8 @@ public interface OrderService {
     void updateOrdersBySns(List<String> sns, int status, int settleStatus,long settlementRecordId,Date settleTime);
 
     void updateOrdersBySns2Withdraw(List<String> sns, int status);
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 
     /**
      * 查询交易详情
