@@ -47,10 +47,13 @@ public class BaseShopSocketExecutorServiceImpl implements BaseShopSocketExecutor
                         final String tradeOrderNo = jsonObject.getString("tradeOrderNo");
                         if (1 == code) {
                             log.info("店铺[{}]--订单--交易[{}]，推送成功", shopId, tradeOrderNo);
+                            return;
                         }
                         log.error("店铺[{}]--订单--交易[{}]，推送失败-[{}]", shopId, tradeOrderNo, msg);
+                        return;
                     }
                     log.error("店铺[{}]--订单，推送失败-[{}]", shopId, msg);
+                    return;
                 }
             });
         } catch (final Throwable e) {

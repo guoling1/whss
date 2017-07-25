@@ -232,7 +232,7 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      * @param msg
      */
     private void sendMsg(final long shopId, final String msg, final int times) {
-        log.info("店铺[{}], 第[{}]次, 推送消息", shopId, times);
+        log.info("店铺[{}], 第[{}]次, 推送消息[{}]", shopId, times, msg);
         try {
             final Socket socket = this.getSocket(shopId);
             ClientSocketUtil.sendMsg(socket, msg);
