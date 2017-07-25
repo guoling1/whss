@@ -222,7 +222,7 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      */
     @Override
     public void sendSocketMsg(final long shopId, final String msg) {
-        this.sendMsg(shopId, msg);
+        this.sendMsg(shopId, msg, 1);
     }
 
     /**
@@ -231,15 +231,16 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      * @param shopId
      * @param msg
      */
-    private void sendMsg(final long shopId, final String msg) {
-        for (int i = 2; i > 0; i--) {
-            log.info("店铺[{}], 第一次[{}], 推送消息", shopId, i);
-            try {
-                final Socket socket = this.getSocket(shopId);
-                ClientSocketUtil.sendMsg(socket, msg);
-                return;
-            } catch (final IOException e) {
-                log.error("店铺[" + shopId + "]-推送socket消息[ " + msg + " ]异常", e);
+    private void sendMsg(final long shopId, final String msg, final int times) {
+        log.info("店铺[{}], 第[{}]次, 推送消息", shopId, times);
+        try {
+            final Socket socket = this.getSocket(shopId);
+            ClientSocketUtil.sendMsg(socket, msg);
+            return;
+        } catch (final IOException e) {
+            log.error("店铺[" + shopId + "]-推送socket消息[ " + msg + " ]异常", e);
+            if (times < 2) {
+                this.sendMsg(shopId, msg, times + 1);
             }
         }
     }

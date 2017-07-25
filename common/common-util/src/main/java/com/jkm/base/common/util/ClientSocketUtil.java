@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 /**
  * Created by yulong.zhang on 2017/7/24.
@@ -40,9 +41,9 @@ public final class ClientSocketUtil {
      * @param msg
      */
     public static void sendMsg(final Socket socket, final String msg) throws IOException {
-        final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        bufferedWriter.write(msg + "EOF");
-        bufferedWriter.flush();
+        final OutputStream outputStream = socket.getOutputStream();
+        outputStream.write((msg + "EOF").getBytes(Charset.forName("UTF-8")));
+        outputStream.flush();
     }
 
     /**
