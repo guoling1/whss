@@ -1,19 +1,16 @@
 package com.jkm.hss.bill.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.*;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
-import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumBankType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
@@ -45,7 +42,6 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import com.jkm.hsy.user.service.UserWithdrawRateService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -492,9 +488,9 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate, List<Long> accountIdlist) {
-        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId(), accountIdlist);
-        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId(),accountIdlist);
+    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate, List<Long> accountIdlist,long accountId) {
+        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId(), accountIdlist, accountId);
+        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId(),accountIdlist,accountId);
         return list.addAll(list1) == true ? list : Collections.EMPTY_LIST;
     }
 
@@ -1483,6 +1479,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> selectWithdrawingOrderByBefore(Date date) {
         return this.orderDao.selectWithdrawingOrderByBefore(date);
+    }
+
+    @Override
+    public Order getBySn(String sn) {
+        return this.orderDao.selectOrderBySn(sn);
     }
 
     @Override

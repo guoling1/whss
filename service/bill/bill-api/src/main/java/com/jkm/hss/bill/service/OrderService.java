@@ -182,7 +182,7 @@ public interface OrderService {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate, List<Long> list);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate, List<Long> list,long accountId);
 
     /**
      * 查询交易列表
@@ -710,6 +710,10 @@ public interface OrderService {
      */
 //    MerchantTradeResponse selectOrderListByPageAll(OrderListRequest orderRecord);
 
-
+    /**
+     * 根据支付流水查询
+     * @return
+     */
+    Order getBySn(String sn);
 
 }

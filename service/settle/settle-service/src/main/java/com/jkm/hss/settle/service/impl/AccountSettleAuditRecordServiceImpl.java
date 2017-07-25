@@ -278,7 +278,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         }
         //挂起的
         List<Long> accountIdList = this.handleWithdrawIngSettle();
-        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate, accountIdList);
+        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate, accountIdList,0);
         log.info("今日[{}]商户生成结算审核记录,个数[{}]", settleDate, merchantOrderBalanceStatistics.size());
         final ArrayList<SettlementRecord> merchantSettlementRecords = new ArrayList<>();
         if (!CollectionUtils.isEmpty(merchantOrderBalanceStatistics)) {
@@ -417,20 +417,20 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
 
     private List<Long> handleWithdrawIngSettle() {
         final Date date = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        List<WithdrawOrder> list =  this.withdrawOrderService.selectWithdrawingOrderByBefore(date);
+        List<Order> list =  this.orderService.selectWithdrawingOrderByBefore(date);
         //生成结算挂起单, 提现异常， 当天订单全部挂起
-        List<Long> accountIds = Lists.transform(list, new Function<WithdrawOrder, Long>() {
+        List<Long> accountIds = Lists.transform(list, new Function<Order, Long>() {
             @Override
-            public Long apply(WithdrawOrder input) {
-                return input.getWithdrawUserAccountId();
+            public Long apply(Order input) {
+                return input.getPayer();
             }
         });
-        for (WithdrawOrder withdrawOrder : list){
-            final String withdrawDate = DateFormatUtil.format(withdrawOrder.getApplyTime(), DateFormatUtil.yyyy_MM_dd);
+        for (Order withdrawOrder : list){
+            final String withdrawDate = DateFormatUtil.format(withdrawOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
             final SettleExceptionRecord record = new SettleExceptionRecord();
-            record.setSettleTargetNo(withdrawOrder.getWithdrawUserNo());
+            record.setSettleTargetNo(withdrawOrder.getMerchantNo());
             record.setWithdrawOrderId(withdrawOrder.getId());
-            record.setSettleTargetName(withdrawOrder.getWithdrawUserName());
+            record.setSettleTargetName(withdrawOrder.getGoodsName());
             record.setSettleTargetType(EnumAccountUserType.MERCHANT.getId());
             record.setBeginTime(DateFormatUtil.parse(withdrawDate+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
             record.setEndTime(DateFormatUtil.parse(withdrawDate+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss));

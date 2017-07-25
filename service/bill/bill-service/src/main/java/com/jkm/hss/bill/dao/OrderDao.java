@@ -513,7 +513,7 @@ public interface OrderDao {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdlist") List<Long> accountIdlist);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdlist") List<Long> accountIdlist, @Param("accountId") long accountId);
 
     /**
      * 统计订单金额

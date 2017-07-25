@@ -284,6 +284,15 @@
         AND settle_status = 1
         AND refund_status = 0
         AND settle_time = #{settleDate}
+        <if test="accountIdlist != null">
+            AND payee not in
+            <foreach collection="accountIdlist" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="accountId != 0">
+            AND payee = #{accountId}
+        </if>
         <choose>
             <when test="upperChannel == 7">
                 AND upper_channel = 7
@@ -294,12 +303,6 @@
                 GROUP BY account_id, upper_channel
             </otherwise>
         </choose>
-        <if test="accountIdlist != null">
-            AND account_id not in
-            <foreach collection="accountIdlist" index="index" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
     </select>
 
     <!-- 提现列表 -->
