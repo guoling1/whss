@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.ClientSocketUtil;
 import com.jkm.hsy.user.dao.ShopSocketDao;
@@ -45,7 +46,9 @@ public class ShopSocketServiceImpl implements ShopSocketService {
                     if (!CollectionUtils.isEmpty(shopSockets)) {
                         for (ShopSocket shopSocket : shopSockets) {
                             final Socket socket = ClientSocketUtil.getSocket(shopSocket.getIp(), shopSocket.getPort());
-                            shopSocketConcurrentMap.put(shopSocket.getShopId(), socket);
+                            if (null != socket) {
+                                shopSocketConcurrentMap.put(shopSocket.getShopId(), socket);
+                            }
                         }
                     }
                     isInit.set(true);
@@ -63,7 +66,6 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      */
     @Override
     public Socket putSocket(long shopId, final String ip, final int port) {
-        this.assertInit();
         final Socket socket = ClientSocketUtil.getSocket(ip, port);
         shopSocketConcurrentMap.put(shopId, socket);
         return socket;
@@ -88,7 +90,6 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      */
     @Override
     public Socket getSocket(long shopId) {
-        this.assertInit();
         final Socket socket = shopSocketConcurrentMap.get(shopId);
         if (null != socket) {
             return socket;
@@ -198,8 +199,8 @@ public class ShopSocketServiceImpl implements ShopSocketService {
             updateShopSocket.setPort(port);
             updateShopSocket.setId(shopSocket.getId());
             this.update(shopSocket);
-            //TODO更新缓存
-
+            //更新缓存
+            shopSocketConcurrentMap.remove(shopId);
             return;
         }
         final ShopSocket shopSocket = new ShopSocket();
@@ -230,12 +231,11 @@ public class ShopSocketServiceImpl implements ShopSocketService {
     private void sendMsg(final long shopId, final String msg) {
         for (int i = 2; i > 0; i--) {
             log.info("店铺[{}], 第一次[{}], 推送消息", shopId, i);
-            final Socket socket = this.getSocket(shopId);
             try {
+                final Socket socket = this.getSocket(shopId);
                 ClientSocketUtil.sendMsg(socket, msg);
                 return;
             } catch (final IOException e) {
-                this.removeSocket(shopId);
                 log.error("店铺[" + shopId + "]-推送socket消息[ " + msg + " ]异常", e);
             }
         }
@@ -248,12 +248,50 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      */
     @Override
     public String readSocketMsg(final long shopId) {
-        final Socket socket = this.getSocket(shopId);
         try {
+            final Socket socket = this.getSocket(shopId);
             return ClientSocketUtil.readMsg(socket);
         } catch (final IOException e) {
             log.error("读取socket信息异常", e);
         }
         return null;
+    }
+
+    public static void main(String[] args) throws IOException {
+        final Socket socket = ClientSocketUtil.getSocket("192.168.1.150", 18008);
+        socket.setKeepAlive(true);
+        socket.setSoTimeout(5000);
+        while (true) {
+            try {
+                log.info("{}",  socket.getKeepAlive());
+                log.info("{}",  socket.isConnected());
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            final JSONObject jo = new JSONObject();
+                            jo.put("orderNo", 11111111);
+                            jo.put("tradeOrderNo", 22222222);
+                            jo.put("status", 111111);
+                            jo.put("paySuccessTime", 1111111111);
+                            jo.put("shopName", 11111111);
+                            jo.put("tradeAmount", 111);
+                            jo.put("discountAmount", "0.00");
+                            jo.put("totalAmount", 111111);
+                            jo.put("payChannel", 1);
+                            ClientSocketUtil.sendMsg(socket, jo.toJSONString());
+                            final String s = ClientSocketUtil.readMsg(socket);
+                            log.info("{}", s);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }.run();
+                Thread.sleep(300000);
+            } catch (final Throwable e){
+                log.error("", e);
+            }
+        }
     }
 }

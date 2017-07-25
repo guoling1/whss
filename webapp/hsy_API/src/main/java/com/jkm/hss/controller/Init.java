@@ -39,14 +39,4 @@ public class Init {
         this.messageTemplateInitService.initTemplate();
         log.info("######################初始化模板--end##########################");
     }
-
-    /**
-     * 初始化shop-socket
-     */
-    public void initShopSocket() {
-        log.info("######################初始化shop-socket--start##########################");
-        this.shopSocketService.init();
-        log.info("######################初始化shop-socket--end##########################");
-    }
-
 }

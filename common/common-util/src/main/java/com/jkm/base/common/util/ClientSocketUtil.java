@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.Charset;
 
 /**
  * Created by yulong.zhang on 2017/7/24.
@@ -22,16 +21,15 @@ public final class ClientSocketUtil {
      * @return
      */
     public static String readMsg(final Socket socket) throws IOException {
-        final InputStream inputStream = socket.getInputStream();
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final StringBuilder msg = new StringBuilder("");
         String temp;
         while ((temp = bufferedReader.readLine()) != null) {
             msg.append(temp);
+            if (temp.contains("EOF")) {
+                break;
+            }
         }
-        inputStream.close();
-        bufferedReader.close();
-        socket.close();
         return msg.toString();
     }
 
@@ -42,11 +40,9 @@ public final class ClientSocketUtil {
      * @param msg
      */
     public static void sendMsg(final Socket socket, final String msg) throws IOException {
-        final OutputStream outputStream = socket.getOutputStream();
-        outputStream.write(msg.getBytes(Charset.forName("UTF-8")));
-        socket.shutdownOutput();
-        outputStream.close();
-        socket.close();
+        final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        bufferedWriter.write(msg + "EOF");
+        bufferedWriter.flush();
     }
 
     /**
@@ -76,6 +72,7 @@ public final class ClientSocketUtil {
     private static Socket createSocket(final String ip, final int port, final int times) {
         try {
             final Socket socket = new Socket(ip, port);
+            return socket;
         } catch (final IOException e) {
             log.error("ip-[{}], port-[{}], times-[{}]create socket exception", ip, port, times);
         }

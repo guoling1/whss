@@ -26,15 +26,16 @@ import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
-import com.jkm.hsy.user.Enum.*;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
+import com.jkm.hsy.user.service.impl.BaseShopSocketExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -76,6 +77,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     private BaseHSYTransactionService baseHSYTransactionService;
     @Autowired
     private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+    @Autowired
+    private BaseShopSocketExecutorService baseShopSocketExecutorService;
 
     /**
      * {@inheritDoc}
@@ -216,6 +219,22 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         updateOrder.setPaysn(callbackResponse.getSn());
                         updateOrder.setPaysuccesstime(callbackResponse.getSuccessTime());
                         updateOrder.setRemark(callbackResponse.getMessage());
+
+                        if (!StringUtils.isEmpty(hsyOrder1.getPaytype())
+                                && hsyOrder1.getPaytype().contains(EnumMerchantPayType.MERCHANT_JSAPI.getId())) {
+                            final JSONObject jo = new JSONObject();
+                            jo.put("orderNo", hsyOrder1.getOrdernumber());
+                            jo.put("tradeOrderNo", hsyOrder1.getOrderno());
+                            jo.put("status", updateOrder.getOrderstatus());
+                            jo.put("paySuccessTime", updateOrder.getPaysuccesstime());
+                            jo.put("shopName", hsyOrder1.getShopname());
+                            jo.put("tradeAmount", hsyOrder1.getAmount());
+                            jo.put("discountAmount", "0.00");
+                            jo.put("totalAmount", hsyOrder1.getRealAmount());
+                            jo.put("payChannel", hsyOrder1.getPaymentChannel());
+                            this.baseShopSocketExecutorService.runTask(hsyOrder1.getShopid(), jo.toJSONString());
+                        }
+
                         this.hsyOrderService.update(updateOrder);
                         //生成分润消息记录
                         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
