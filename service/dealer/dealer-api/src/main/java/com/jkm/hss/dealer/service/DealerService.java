@@ -20,6 +20,7 @@ import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.core.annotation.Order;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,7 +39,7 @@ public interface DealerService {
     Map<String, Pair<Long,BigDecimal>> merchantAmount(OrderRecord orderRecord);
 
     /**
-     * 分润接口 , 好收收分润， 好收银分润
+     * 分润接口 , 好收收分润(子通道ID)， 好收银分润(父通道ID)
      */
     Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(EnumProductType type, String orderNo, BigDecimal tradeAmount,
                                                                   int channelSign, long merchantId);

@@ -13,6 +13,7 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.product.entity.ChannelSupportCreditBank;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ChannelSupportCreditBankService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class BankCardController extends BaseController {
     private AccountBankService accountBankService;
     @Autowired
     private ChannelSupportCreditBankService channelSupportCreditBankService;
+    @Autowired
+    private BasicChannelService basicChannelService;
 
     /**
      * 信用卡列表
@@ -45,8 +48,9 @@ public class BankCardController extends BaseController {
     public CommonResponse listCreditCard(@RequestBody CreditCardListRequest creditCardListRequest) {
         final AccountBank accountBank = this.accountBankService.selectById(creditCardListRequest.getCreditCardId()).get();
         final List<AccountBank> accountBanks = this.accountBankService.selectCreditList(accountBank.getAccountId());
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(creditCardListRequest.getChannel());
         final List<ChannelSupportCreditBank> channelSupportCreditBankList =
-                this.channelSupportCreditBankService.getByUpperChannel(EnumPayChannelSign.idOf(creditCardListRequest.getChannel()).getUpperChannel().getId());
+                this.channelSupportCreditBankService.getByUpperChannel(EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel().getId());
         final ImmutableMap<String, ChannelSupportCreditBank> creditBankImmutableMap = Maps.uniqueIndex(channelSupportCreditBankList,
                 new Function<ChannelSupportCreditBank, String>() {
             @Override

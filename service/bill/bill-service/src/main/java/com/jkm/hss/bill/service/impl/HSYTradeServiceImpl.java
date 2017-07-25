@@ -1022,7 +1022,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         log.info("hsy业务返回的通道是[{}]", order.getPayType());
         log.info("交易订单[{}]，处理hsy支付回调业务", order.getOrderNo());
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSY, shop.getId(), enumPayChannelSign.getId());
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.HSY, shop.getId(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);

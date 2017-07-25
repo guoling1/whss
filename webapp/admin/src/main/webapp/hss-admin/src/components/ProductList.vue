@@ -19,7 +19,7 @@
             </el-table-column>
             <el-table-column label="网关配置" min-width="100">
               <template scope="scope">
-                <el-button type="text" @click="setup(scope.$index)" v-if="scope.row.type=='hss'">配置</el-button>
+                <el-button type="text" @click="setup(scope.row.productId)" v-if="scope.row.type=='hss'">配置</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -116,8 +116,8 @@
         window.open('http://admin.qianbaojiajia.com/admin/details/productAdd')
 //        this.$router.push('/admin/record/productAdd')
       },
-      setup:function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/gateway')
+      setup:function (id) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/gateway?productId='+id)
 //        this.$router.push('/admin/record/gateway')
       },
       create: function () {

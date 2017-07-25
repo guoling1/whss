@@ -94,7 +94,12 @@ public class QrCodeController extends BaseController {
         if(!productOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "无此产品");
         }
-        String domainName = "http://"+request.getSysType()+".qianbaojiajia.com/code/scanCode";
+        String domainName = "";
+        if((EnumQRCodeSysType.HSY.getId()).equals(request.getSysType())){
+            domainName = "http://"+request.getSysType()+".qianbaojiajia.com/code";
+        }else{
+            domainName = "http://"+request.getSysType()+".qianbaojiajia.com/code/scanCode";
+        }
         ProductionQrCodeRecord productionQrCodeRecord = this.qrCodeService.productionQrCode(super.getAdminUser().getId(), request.getCount(),
                 domainName,productOptional.get().getId(),request.getSysType(),request.getType());
         final String fileName = getFileName(productionQrCodeRecord.getDownloadUrl(),request.getSysType());

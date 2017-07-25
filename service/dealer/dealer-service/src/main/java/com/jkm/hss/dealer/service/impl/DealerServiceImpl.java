@@ -57,6 +57,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -148,7 +149,7 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     @Transactional
-    public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final EnumProductType type,final String orderNo, final BigDecimal tradeAmount,
+    public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final EnumProductType type, final String orderNo, final BigDecimal tradeAmount,
 
                                                                          final int channelSign, final long merchantId) {
 
@@ -156,69 +157,26 @@ public class DealerServiceImpl implements DealerService {
 
             //好收收收单分润
             try{
-
+                final int childChannelSign = channelSign;
                 final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
-                //hss活动
-                final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-                final Date endDate = DateFormatUtil.parse("2017-05-31 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-                final Date currentDate = new Date();
-                final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
-                if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
-                    //活动商户直接返回
-                    final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
-                    //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-                    final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
-                    final BasicChannel basicChannel = channelOptional.get();
-                    //商户手续费
-                    final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
-                    final BigDecimal waitOriginMoney = tradeAmount.multiply(merchantRate);
-
-                    //计算商户手续费，按照通道来
-                    final BigDecimal waitMoney = this.calculateMerchantFee(tradeAmount, waitOriginMoney, channelSign);
-
-                    //通道成本， 不同通道成本计算不同
-                    final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
-                    final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
-
-                    //通道分润
-                    final BigDecimal channelMoney = waitMoney.subtract(basicMoney);
-                    //记录通道, 产品分润明细
-                    final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
-                    companyProfitDetail.setProductType(EnumProductType.HSS.getId());
-                    companyProfitDetail.setMerchantId(merchantId);
-                    companyProfitDetail.setPaymentSn(orderNo);
-                    companyProfitDetail.setChannelType(channelSign);
-                    companyProfitDetail.setTotalFee(tradeAmount);
-                    companyProfitDetail.setWaitShallAmount(waitMoney);
-                    companyProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
-                    companyProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
-                    companyProfitDetail.setChannelCost(basicMoney);
-                    companyProfitDetail.setChannelShallAmount(channelMoney);
-                    companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
-                    this.companyProfitDetailService.add(companyProfitDetail);
-                    map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
-                    map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
-                    return map;
-                }
-                log.info("-----------------------" + isActTime +"" +(EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign));
                //判断商户是否属于分公司
                 if (merchantInfo.isBelongToOem()){
                     if (merchantInfo.getFirstMerchantId() == 0){
                         //直属商户
-                        return this.getShallProfitDirectToOem(orderNo, tradeAmount, channelSign, merchantId);
+                        return this.getShallProfitDirectToOem(orderNo, tradeAmount, childChannelSign, merchantId);
                     }else{
                         //推荐商户
-                        return this.getShallProfitInDirectToOem(orderNo, tradeAmount, channelSign, merchantId);
+                        return this.getShallProfitInDirectToOem(orderNo, tradeAmount, childChannelSign, merchantId);
                     }
 
                 }
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
                     //直属商户
-                    return this.getShallProfitDirect(orderNo, tradeAmount, channelSign, merchantId);
+                    return this.getShallProfitDirect(orderNo, tradeAmount, childChannelSign, merchantId);
                 }else {
                     //推荐商户
-                    return this.getShallProfitInDirect(orderNo, tradeAmount, channelSign, merchantId);
+                    return this.getShallProfitInDirect(orderNo, tradeAmount, childChannelSign, merchantId);
                 }
 
             }catch (final Throwable throwable){
@@ -1008,7 +966,7 @@ public class DealerServiceImpl implements DealerService {
     }
 
     //分公司商户分润 hss
-    private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitDirectToOem(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
+    private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitDirectToOem(String orderNo, BigDecimal tradeAmount, int childChannelSign, long merchantId) {
         log.info("分公司交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
         final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderIdToHss(orderNo);
         if (detail != null){
@@ -1029,21 +987,21 @@ public class DealerServiceImpl implements DealerService {
         final Dealer oemInfo = this.dealerDao.selectById(merchantInfo.getOemId());
         //计算分公司结算费率
         final DealerChannelRate oemDealerChannelRate =
-                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(merchantInfo.getOemId(), product.getId(), channelSign).get();
+                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(merchantInfo.getOemId(), product.getId(), childChannelSign).get();
         //判断该商户属于哪个代理, 若不属于代理, 则分润进入分公司资金帐户
         if (merchantInfo.getDealerId() == 0){
             final ProductChannelDetail productChannelDetail =
-                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(),channelSign).get();
-            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(),childChannelSign).get();
+            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(childChannelSign);
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
-            final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
+            final BigDecimal merchantRate = this.getMerchantRate(childChannelSign, merchantInfo);
             final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
             //计算商户手续费，按照通道来
-            final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
+            final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, childChannelSign);
             //通道成本， 不同通道成本计算不同
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, childChannelSign);
             //通道分润
             BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -1057,7 +1015,7 @@ public class DealerServiceImpl implements DealerService {
             companyProfitDetail.setProductType(EnumProductType.HSS.getId());
             companyProfitDetail.setMerchantId(merchantId);
             companyProfitDetail.setPaymentSn(orderNo);
-            companyProfitDetail.setChannelType(channelSign);
+            companyProfitDetail.setChannelType(childChannelSign);
             companyProfitDetail.setTotalFee(totalFee);
             companyProfitDetail.setWaitShallAmount(waitMoney);
             companyProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
@@ -1077,19 +1035,19 @@ public class DealerServiceImpl implements DealerService {
         final Dealer dealer = this.dealerDao.selectById(merchantInfo.getDealerId());
         //查询该代理商的收单利率
         final DealerChannelRate dealerChannelRate =
-                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),channelSign).get();
+                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),childChannelSign).get();
         //获取产品的信息, 产品通道的费率
         final Optional<ProductChannelDetail> productChannelDetailOptional =
-                this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign);
+                this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), childChannelSign);
         final ProductChannelDetail productChannelDetail = productChannelDetailOptional.get();
-        final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+        final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(childChannelSign);
         final BasicChannel basicChannel = channelOptional.get();
         //商户手续费
-        final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
+        final BigDecimal merchantRate = this.getMerchantRate(childChannelSign, merchantInfo);
         //待分润金额
         final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
         //计算商户手续费，按照通道来
-        final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
+        final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, childChannelSign);
         //判断代理商等级
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
@@ -1100,7 +1058,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal oemMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().subtract(oemDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
             //通道成本
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, childChannelSign);
             //通道分润
             BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -1112,7 +1070,7 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setProductType(EnumProductType.HSS.getId());
             shallProfitDetail.setMerchantId(merchantInfo.getId());
             shallProfitDetail.setTotalFee(totalFee);
-            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setChannelType(childChannelSign);
             shallProfitDetail.setPaymentSn(orderNo);
             shallProfitDetail.setWaitShallAmount(waitMoney);
             shallProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
@@ -1143,7 +1101,7 @@ public class DealerServiceImpl implements DealerService {
             final Dealer firstDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
             //查询二级的一级dealer 收单费率
             final DealerChannelRate firstDealerChannelRate =
-                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),childChannelSign).get();
             //一级分润
             BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_HALF_UP);
@@ -1158,7 +1116,7 @@ public class DealerServiceImpl implements DealerService {
             channelMoney = channelMoney.compareTo(new BigDecimal("0")) == -1 ? new BigDecimal("0") : channelMoney;
             //通道成本
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, childChannelSign);
             //产品分润
             final BigDecimal productMoney = waitMoney.subtract(firstMoney).subtract(secondMoney).subtract(channelMoney).subtract(basicMoney).subtract(oemMoney);
             //记录分润明细
@@ -1166,7 +1124,7 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setProductType(EnumProductType.HSS.getId());
             shallProfitDetail.setMerchantId(merchantInfo.getId());
             shallProfitDetail.setTotalFee(totalFee);
-            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setChannelType(childChannelSign);
             shallProfitDetail.setPaymentSn(orderNo);
             shallProfitDetail.setWaitShallAmount(waitMoney);
             shallProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
@@ -1203,7 +1161,8 @@ public class DealerServiceImpl implements DealerService {
     //按照通道计算通道成本
     private BigDecimal calculateChannelFee(BigDecimal basicTrade, int channelSign) {
         BigDecimal basicMoney;
-        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(channelSign);
+        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel();
         switch (upperChannel){
             case SAOMI:
                 if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
@@ -1269,8 +1228,9 @@ public class DealerServiceImpl implements DealerService {
     //按照通道计算商户手续费，
     private BigDecimal calculateMerchantFee(BigDecimal totalFee, BigDecimal waitOriginMoney, int channelSign) {
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(channelSign);
         BigDecimal waitMoney;
-        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
+        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel();
         switch (upperChannel){
             case SAOMI:
                 if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){

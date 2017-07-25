@@ -99,6 +99,29 @@ public class ChannelController extends BaseController {
     }
 
     /**
+     * 获取通道列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "listGateway", method = RequestMethod.POST)
+    public CommonResponse listGateway() {
+        try{
+            final List<BasicChannel> list = this.basicChannelService.selectAllForGateWay();
+            if (list.size()>0){
+                for (int i=0;i<list.size();i++){
+                    BigDecimal basicTradeRate = list.get(i).getBasicTradeRate();
+                    BigDecimal res = new BigDecimal(100);
+                    list.get(i).setBasicTradeRate(basicTradeRate.multiply(res));
+                }
+            }
+            return  CommonResponse.objectResponse(1, "success", list);
+        }catch (final Throwable throwable){
+            log.error("获取通道列表异常,异常信息:" + throwable.getMessage());
+        }
+        return CommonResponse.simpleResponse(-1, "fail");
+    }
+
+    /**
      * 修改通道
      * @return
      */
