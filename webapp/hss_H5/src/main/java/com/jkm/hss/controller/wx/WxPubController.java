@@ -1544,6 +1544,16 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
+            // 活动通道卡盟需更新一次上游结算费率
+            if (merchantChannelRate.getRemarks().equals("未同步") || merchantChannelRate.getRemarks().equals("同步失败")){
+                log.info("去卡盟上游同步费率");
+                final JSONObject jo = this.merchantChannelRateService.updateKmMerchantRateInfo(merchantInfo.get().getAccountId(), merchantInfo.get().getId(), merchantInfo.get().getProductId(), checkMerchantInfoRequest.getChannelTypeSign());
+                if(jo.getInt("code")==-1){
+                    return CommonResponse.simpleResponse(-1, "请稍后再试");
+                }else{
+                    return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+                }
+            }
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "商户已入网");
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {

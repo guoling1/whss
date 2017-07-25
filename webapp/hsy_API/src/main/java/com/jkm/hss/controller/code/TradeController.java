@@ -7,11 +7,9 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.service.HSYTradeService;
-import com.jkm.hss.bill.service.HSYTransactionService;
-import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
-import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.*;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.CreateOrderRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
@@ -19,6 +17,8 @@ import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.service.HsyCmbcService;
@@ -58,7 +58,10 @@ public class TradeController extends BaseController {
     private HSYTransactionService hsyTransactionService;
     @Autowired
     private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
-
+    @Autowired
+    private PushService pushService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
     /**
      * 创建好收银订单
      *
@@ -199,6 +202,15 @@ public class TradeController extends BaseController {
             model.addAttribute("sn", order.getOrderNo());
             model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
+
+            //调支付推送
+            try {
+                final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(order.getOrderNo()).get();
+                this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
+                        hsyOrder.getAmount().doubleValue(), hsyOrder.getValidationcode(), hsyOrder.getOrderno());
+            } catch (final Throwable e) {
+                log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
+            }
             return "/success";
         }
     }

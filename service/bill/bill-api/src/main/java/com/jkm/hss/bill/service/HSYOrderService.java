@@ -2,6 +2,8 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
+import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hsy.user.entity.AppParam;
 
@@ -132,4 +134,32 @@ public interface HSYOrderService {
      * @return
      */
     List<PcStatisticsOrder> pcStatisticsOrder(long shopId, Date startTime, Date endTime);
+
+    /**
+     * hsy订单
+     * @param req
+     * @return
+     */
+    List<QueryHsyOrderResponse> queryHsyOrderList(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单总数
+     * @param req
+     * @return
+     */
+    int queryHsyOrderListCount(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单支付金额统计
+     * @param req
+     * @return
+     */
+    String getHsyOrderCounts(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单支付手续费
+     * @param req
+     * @return
+     */
+    String getHsyOrderCounts1(QueryHsyOrderRequest req);
 }

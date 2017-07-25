@@ -48,6 +48,10 @@ import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.UserTradeRateService;
 import com.jkm.hsy.user.service.UserWithdrawRateService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -102,6 +106,9 @@ public class OrderServiceImpl implements OrderService {
     private UserWithdrawRateService userWithdrawRateService;
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private BasicChannelService basicChannelService;
+
     /**
      * {@inheritDoc}
      *
@@ -142,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(payOrder.getAppId());
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payOrder.getPayChannelSign());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage( payOrder,EnumProductType.HSS, merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
         playMoneyOrder.setGoodsDescribe(merchant.getMerchantName());
@@ -180,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(null,EnumProductType.HSY, shop.getId(), channel);
         Preconditions.checkState(amount.compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(shop.getName());
@@ -322,7 +329,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(withdrawParams.getAppId());
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, withdrawParams.getAccountId(), withdrawParams.getChannel());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(null,EnumProductType.HSY, withdrawParams.getAccountId(), withdrawParams.getChannel());
         Preconditions.checkState(withdrawParams.getWithdrawAmount().compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(withdrawParams.getNote());
@@ -537,7 +544,9 @@ public class OrderServiceImpl implements OrderService {
 //                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
-                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                        final int payChannelSign = list.get(i).getPayChannelSign();
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(payChannelSign);
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
@@ -717,7 +726,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(list.getPayChannelSign());
+                        list.setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
@@ -773,7 +783,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(list.getPayChannelSign());
+                        list.setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }

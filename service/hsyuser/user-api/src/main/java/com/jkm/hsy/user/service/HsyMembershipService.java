@@ -66,4 +66,39 @@ public interface HsyMembershipService {
     public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid);
     public List<AppPolicyMembershipCardShop> getMembershipCardShop(Long mcid);
     public BigDecimal findConsumeOrderSum(Long mcid, Long mid);
+
+    /**
+     * 商户列表（会员卡）
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberList(MemberRequest request);
+
+    /**
+     * 商户列表（会员卡）
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request);
+
+    /**
+     * 商户会员卡列表
+     * @param request
+     * @return
+     */
+    List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request);
+
+    /**
+     * 会员卡列表
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardList(MemberRequest request);
+
+    /**
+     * 会员卡列表总数
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardLists(MemberRequest request);
 }

@@ -100,4 +100,11 @@ public interface MerchantChannelRateService {
      * 修改卡盟联行号
      */
     void updateKmBranchInfo(long accountId,long merchantId);
+
+    /**
+     * 修改卡盟费率
+     * @param accountId
+     * @param merchantId
+     */
+    JSONObject updateKmMerchantRateInfo(long accountId,long merchantId, long productId, int channelTypeSign);
 }

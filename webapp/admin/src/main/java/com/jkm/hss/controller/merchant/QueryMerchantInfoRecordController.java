@@ -21,6 +21,8 @@ import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,8 +183,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     @Override
                     public MerchantRateResponse apply(MerchantChannelRate input) {
                         MerchantRateResponse mechantRateResponse = new MerchantRateResponse();
-                        Optional<BasicChannel> basicChannelOptional =  basicChannelService.selectByChannelTypeSign(input.getChannelTypeSign());
-                        mechantRateResponse.setChannelName(basicChannelOptional.get().getChannelName());
+                        final BasicChannel basicChannel = basicChannelService.selectByChannelTypeSign(input.getChannelTypeSign()).get();
+                        mechantRateResponse.setChannelName(basicChannel.getChannelShortName());
                         mechantRateResponse.setMerchantRate(input.getMerchantPayRate().toString());
                         mechantRateResponse.setWithdrawMoney(input.getMerchantWithdrawFee().setScale(2).toString());
                         mechantRateResponse.setEntNet(EnumEnterNet.idOf(input.getEnterNet()).getMsg());

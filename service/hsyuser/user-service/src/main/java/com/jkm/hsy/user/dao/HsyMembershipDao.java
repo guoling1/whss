@@ -76,4 +76,46 @@ public interface HsyMembershipDao {
     public List<AppPolicyRechargeOrder> findRechargeOrderAboutRechargeStatus(@Param("mid") Long mid);
     public List<AppPolicyMembershipCardShop> getMembershipCardShop(@Param("mcid")Long mcid);
     public BigDecimal findConsumeOrderSum(@Param("mcid")Long mcid,@Param("mid")Long mid);
+
+    /**
+     * 查询商户列表（会员卡）
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberList(MemberRequest request);
+
+    /**
+     * 查询商户列表（会员卡）总数
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request);
+
+    /**
+     * 商户会员卡列表
+     * @param request
+     * @return
+     */
+    List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request);
+
+    /**
+     * 商户会员卡列表有效商户
+     * @param uid
+     * @return
+     */
+    List<MerchantMemberShipResponse> getMemberShipLists(@Param("uid") Long uid);
+
+    /**
+     * 会员卡列表
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardList(MemberRequest request);
+
+    /**
+     * 会员卡列表总数
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardLists(MemberRequest request);
 }

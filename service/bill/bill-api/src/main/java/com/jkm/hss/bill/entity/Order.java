@@ -210,6 +210,10 @@ public class Order extends BaseEntity {
     private int payChannelSign;
 
     /**
+     * 子通道标识
+     */
+    private int childChannelSign;
+    /**
      * 支付渠道
      *
      * {@link com.jkm.hss.product.enums.EnumPaymentChannel}

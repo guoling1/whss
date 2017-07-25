@@ -260,7 +260,7 @@ VALUES
     </insert>
 
     <select id="getstdealerrecord" resultType="com.jkm.hss.dealer.entity.STDealerRecord">
-        SELECT `id`,
+        SELECT DISTINCT
     `dealerId`,
     `proxy_name`,
     `recordDay`,
