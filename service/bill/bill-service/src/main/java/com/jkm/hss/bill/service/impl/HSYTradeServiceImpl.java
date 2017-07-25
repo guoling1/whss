@@ -124,8 +124,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Autowired
     private BaseTradeService baseTradeService;
     @Autowired
-    private WithdrawOrderService withdrawOrderService;
-    @Autowired
     private OrderDao orderDao;
     /**
      * {@inheritDoc}
@@ -1446,9 +1444,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public void handleHsyWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
-        final WithdrawOrder order = this.withdrawOrderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo());
+        final Order order = this.orderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
         if (order.isWithDrawing()) {
-            this.handleWithdrawResult(order.getId(), order.getWithdrawUserAccountId(), paymentSdkWithdrawCallbackResponse);
+            this.handleWithdrawResult(order.getId(), order.getPayer(), paymentSdkWithdrawCallbackResponse);
         }
     }
 
@@ -1565,7 +1563,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 return result.toJSONString();
             }
             if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode()) {
-                JSONObject jsonObject = this.withdrawOrderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
+                JSONObject jsonObject = this.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
                 result.put("canWithdraw", EnumBoolean.TRUE.getCode());
                 result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
                 result.put("bankName", cardBank);
@@ -1601,7 +1599,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long withDrawOrderId = dataJo.getLongValue("withDrawOrderId");
         //拦截提现时间
 
-        Pair<Integer, String> pair =  this.withdrawOrderService.confirmWithdraw(withDrawOrderId);
+        Pair<Integer, String> pair = this.confirmWithdraw(withDrawOrderId);
         if (pair.getLeft() == 1){
             result.put("code", 1);
             result.put("msg", pair.getRight());
@@ -1793,10 +1791,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     }
 
 
-   /* @Override
-    public List<WithdrawOrder> selectWithdrawingOrderByBefore(Date date) {
-        return this.withdrawOrderDao.selectWithdrawingOrderByBefore(date);
-    }*/
+    @Override
+    public List<Order> selectWithdrawingOrderByBefore(Date date) {
+        return this.orderService.selectWithdrawingOrderByBefore(date);
+    }
 
     private Pair<Integer,String> handleHsyD0WithdrawResult(Order withdrawOrder, PaymentSdkDaiFuResponse response) {
 
@@ -1903,7 +1901,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
         playMoneyOrder.setPayChannelSign(EnumPayChannelSign.SYJ_WECHAT.getId());
         playMoneyOrder.setPayer(account.getId());
-        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setPayee(account.getId());
         playMoneyOrder.setAppId(EnumAppType.HSY.getId());
         playMoneyOrder.setMerchantNo(jsonObject.getString("merchantNo"));
         playMoneyOrder.setBankName(appBizCard.getCardBank());
@@ -1912,10 +1910,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         playMoneyOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
         playMoneyOrder.setGoodsName(account.getUserName());
         playMoneyOrder.setGoodsDescribe(orders);
-        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         playMoneyOrder.setSettleTime(new Date());
-//        playMoneyOrder.setSettleType(EnumBalanceTimeType.D0.g'etType());
-        playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.  getId());
+        playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.getId());
         playMoneyOrder.setRemark("");
         this.orderService.add(playMoneyOrder);
 
@@ -1932,7 +1928,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     private Pair<Integer, String> handleWithdrawResult(final long orderId, final long accountId,
                                                        final PaymentSdkDaiFuResponse response) {
-        final WithdrawOrder order = this.withdrawOrderService.selectByIdWithlock(orderId);
+        final Order order = this.orderService.getByIdWithLock(orderId).get();
         if (order.isWithDrawing()) {
             final EnumBasicStatus status = EnumBasicStatus.of(response.getStatus());
             switch (status) {
@@ -1965,8 +1961,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     private void markWithdrawSuccess(final long orderId, final long accountId,
                                      final PaymentSdkDaiFuResponse response) {
-        final WithdrawOrder withdrawOrder = this.withdrawOrderService.selectByIdWithlock(orderId);
-        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(withdrawOrder.getSettlementOrderId()).get();
+        final Order withdrawOrder = this.orderService.getByIdWithLock(orderId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(withdrawOrder.getSettlementRecordId()).get();
         if (withdrawOrder.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
@@ -1989,15 +1985,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             //待结算金额减少
             this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId(), EnumSettleStatus.SETTLE_ING.getId());
             //更新交易订单为提现成功
-            final String orders = withdrawOrder.getTradeOrders();
+            final String orders = withdrawOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId(), withdrawOrder.getApplyTime());
+            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId(), withdrawOrder.getSettleTime());
 
-            withdrawOrder.setApplySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
+            withdrawOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            withdrawOrder.setRemarks(response.getMessage());
-            this.withdrawOrderService.update(withdrawOrder);
+            this.orderService.update(withdrawOrder);
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
 
             //this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(),EnumSettleStatus.SETTLED.getId(),EnumSettleStatus.SETTLE_ING.getId());

@@ -295,7 +295,7 @@ public interface HSYTradeService {
      */
     Pair<Integer, String> confirmWithdraw(long withDrawOrderId);
 
-/*
-    List<WithdrawOrder> selectWithdrawingOrderByBefore(Date date);
-*/
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
+
 }

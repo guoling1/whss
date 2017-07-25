@@ -3,34 +3,28 @@
 <mapper namespace="com.jkm.hss.push.dao.PushDao">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_push_message_record
+        INSERT INTO tb_push_message_record_new
         (
         title,
         content,
         temp_type,
         push_type,
-        task_id,
-        client_id,
         targets,
-        transaction_number,
-        status
+        transaction_number
         )
         VALUES
         (
         #{title},
         #{content},
         #{tempType},
-        #{pushType},
-        #{taskId},
-        #{clientId},
+        2,
         #{targets},
-        #{transactionNumber},
-        #{status}
+        #{transactionNumber}
         )
     </insert>
 
     <update id="updatePush">
-        UPDATE tb_push_message_record
+        UPDATE tb_push_message_record_new
         SET
         task_id = #{taskId},
         push_type = #{pushType}
