@@ -61,4 +61,39 @@ public interface HsyMembershipService {
     public List<AppBizShop> findSuitShopByMCID(Long mcid);
     public Page<AppPolicyRechargeOrder> findRechargeOrderListByPage(Page<AppPolicyRechargeOrder> pageAll);
     public List<AppPolicyMember> findMemberListByOUID(AppPolicyConsumer appPolicyConsumer);
+
+    /**
+     * 商户列表（会员卡）
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberList(MemberRequest request);
+
+    /**
+     * 商户列表（会员卡）
+     * @param request
+     * @return
+     */
+    List<MerchantMemberResponse> getMerchantMemberLists(MemberRequest request);
+
+    /**
+     * 商户会员卡列表
+     * @param request
+     * @return
+     */
+    List<MerchantMemberShipResponse> getMemberShipList(MemberRequest request);
+
+    /**
+     * 会员卡列表
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardList(MemberRequest request);
+
+    /**
+     * 会员卡列表总数
+     * @param request
+     * @return
+     */
+    List<CardNoResponse> getcardLists(MemberRequest request);
 }

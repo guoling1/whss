@@ -3,8 +3,11 @@ package com.jkm.hss.controller.orderRecord;
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
+import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.entity.QueryOrderRequest;
 import com.jkm.hss.bill.entity.QueryOrderResponse;
+import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,8 @@ public class QueryOrderController extends BaseController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
 
     @ResponseBody
     @RequestMapping(value = "/queryOrderList",method = RequestMethod.POST)
@@ -86,6 +91,40 @@ public class QueryOrderController extends BaseController {
         }
         String totalPayment = this.orderService.getOrderCount(req);
         String totalPoundage = this.orderService.getOrderCount1(req);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("totalPayment",totalPayment);
+        jsonObject.put("totalPoundage",totalPoundage);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
+    }
+
+    /**
+     * hsy订单
+     * @param req
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryHsyOrderList",method = RequestMethod.POST)
+    public CommonResponse queryHsyOrderList(@RequestBody QueryHsyOrderRequest req) throws ParseException {
+        final PageModel<QueryHsyOrderResponse> pageModel = new PageModel<QueryHsyOrderResponse>(req.getPage(), req.getSize());
+        req.setOffset(pageModel.getFirstIndex());
+        List<QueryHsyOrderResponse> orderList = this.hsyOrderService.queryHsyOrderList(req);
+        int count = this.hsyOrderService.queryHsyOrderListCount(req);
+        pageModel.setRecords(orderList);
+        pageModel.setCount(count);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getHsyOrderCount ",method = RequestMethod.POST)
+    public CommonResponse getHsyOrderCount(@RequestBody QueryHsyOrderRequest req){
+        String totalPayment = this.hsyOrderService.getHsyOrderCounts(req);
+        String totalPoundage = this.hsyOrderService.getHsyOrderCounts1(req);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("totalPayment",totalPayment);
         jsonObject.put("totalPoundage",totalPoundage);
