@@ -171,7 +171,7 @@
       </div>
       <div class="box box-primary">
         <span class="lead" style="display: inline-block">默认结算卡</span>
-        <a href="javascript:;" @click="changeBank = true" v-if="!isShow">修改默认结算卡</a>
+        <a href="javascript:;" @click="_$power(bankChange,'boss_modify_bank_card')" v-if="!isShow">修改默认结算卡</a>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">结算卡开户名：<span>{{$msg.name}}</span></div>
@@ -567,6 +567,9 @@
         });
     },
     methods: {
+      bankChange: function () {
+        this.changeBank = true
+      },
       changeBankFn: function () {
         this.changeBank = true;
         this.bankQuery = {
