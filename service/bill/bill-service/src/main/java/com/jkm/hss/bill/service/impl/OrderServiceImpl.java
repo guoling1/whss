@@ -1482,7 +1482,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> selectWithdrawingOrderByBefore(Date date) {
-        return null;
+        return this.orderDao.selectWithdrawingOrderByBefore(date);
     }
 
     @Override

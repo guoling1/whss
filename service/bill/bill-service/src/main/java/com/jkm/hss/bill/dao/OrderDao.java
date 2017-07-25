@@ -693,4 +693,5 @@ public interface OrderDao {
     void updateOrdersBySns2Withdraw(@Param("sns") List<String> sns, @Param("status") int status);
 
 
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 }
