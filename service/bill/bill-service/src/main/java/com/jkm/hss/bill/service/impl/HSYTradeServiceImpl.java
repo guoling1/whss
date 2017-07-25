@@ -15,6 +15,7 @@ import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.dao.HsyOrderDao;
+import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
@@ -124,7 +125,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private BaseTradeService baseTradeService;
     @Autowired
     private WithdrawOrderService withdrawOrderService;
-
+    @Autowired
+    private OrderDao orderDao;
     /**
      * {@inheritDoc}
      *
@@ -1769,8 +1771,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             paymentSdkDaiFuRequest.setSystemCode(withdrawOrder.getAppId());
             paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
             paymentSdkDaiFuRequest.setPayOrderSn("");
-            paymentSdkDaiFuRequest.setOrders(withdrawOrder.());
-            paymentSdkDaiFuRequest.setMerchantNo(withdrawOrder.getWithdrawUserNo());
+            paymentSdkDaiFuRequest.setOrders(withdrawOrder.getGoodsDescribe());
+            paymentSdkDaiFuRequest.setMerchantNo(withdrawOrder.getMerchantNo());
             //请求网关
             PaymentSdkDaiFuResponse response = null;
             try {
@@ -1779,47 +1781,38 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
             } catch (final Throwable e) {
                 log.error("交易订单[" + withdrawOrder.getOrderNo() + "], 请求网关支付异常", e);
-                withdrawOrder.setRemarks("请求网关支付异常");
+               // withdrawOrder.setRemarks("请求网关支付异常");
                 withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
-                this.update(withdrawOrder);
+                this.orderService.update(withdrawOrder);
             }
             return this.handleHsyD0WithdrawResult(withdrawOrder, response);
         }
         withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
-        this.update(withdrawOrder);
+        this.orderService.update(withdrawOrder);
         return Pair.of(-1, "提现失败");
     }
 
-    @Override
-    public WithdrawOrder selectByIdWithlock(long id) {
-        return this.withdrawOrderDao.selectByIdWithlock(id);
-    }
 
-    @Override
-    public WithdrawOrder getByOrderNo(String orderNo) {
-        return this.withdrawOrderDao.getByOrderNo(orderNo);
-    }
-
-    @Override
+   /* @Override
     public List<WithdrawOrder> selectWithdrawingOrderByBefore(Date date) {
         return this.withdrawOrderDao.selectWithdrawingOrderByBefore(date);
-    }
+    }*/
 
-    private Pair<Integer,String> handleHsyD0WithdrawResult(WithdrawOrder withdrawOrder, PaymentSdkDaiFuResponse response) {
+    private Pair<Integer,String> handleHsyD0WithdrawResult(Order withdrawOrder, PaymentSdkDaiFuResponse response) {
 
         //判断代付是否受理成功
         final int status = response.getStatus();
         if (status == EnumBasicStatus.SUCCESS.getId()){
             //代付受理成功
 
-            final String orders = withdrawOrder.getTradeOrders();
+            final String orders = withdrawOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
 
             final Order firstOrder = this.orderDao.selectOrderBySn(split[0]);
             final Order lastOrder = this.orderDao.selectOrderBySn(split[split.length -1]);
-            final Account account = this.accountService.getByIdWithLock(withdrawOrder.getWithdrawUserAccountId()).get();
-            final BigDecimal withdrawAmount = withdrawOrder.getWithdrawAmount();
+            final Account account = this.accountService.getByIdWithLock(withdrawOrder.getPayer()).get();
+            final BigDecimal withdrawAmount = withdrawOrder.getRealPayAmount();
             //结算 ，  冻结
             this.accountService.decreaseSettleAmount(account.getId(), withdrawAmount);
             this.accountService.increaseFrozenAmount(account.getId(), withdrawAmount);
@@ -1841,14 +1834,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
             settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(settlementRecord.getAccountUserType(), settlementRecord.getSettleDestination()));
             settlementRecord.setSettleAuditRecordId(0);
-            settlementRecord.setAccountId(withdrawOrder.getWithdrawUserAccountId());
+            settlementRecord.setAccountId(withdrawOrder.getPayer());
             settlementRecord.setUserNo(shop.getGlobalID());
             settlementRecord.setUserName(shop.getShortName());
             settlementRecord.setAppId(EnumAppType.HSY.getId());
-            settlementRecord.setSettleDate(withdrawOrder.getApplyTime());
+            settlementRecord.setSettleDate(withdrawOrder.getCreateTime());
             settlementRecord.setTradeNumber(split.length);
             settlementRecord.setTradeAmount(withdrawOrder.getTradeAmount());
-            settlementRecord.setSettleAmount(withdrawOrder.getWithdrawAmount());
+            settlementRecord.setSettleAmount(withdrawOrder.getRealPayAmount());
             settlementRecord.setSettlePoundage(withdrawOrder.getPoundage());
             settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
             settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
@@ -1862,23 +1855,22 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId(), null);
             //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
             withdrawOrder.setSn(response.getSn());
-            withdrawOrder.setOrderSettleTime(firstOrder.getSettleTime());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
-            withdrawOrder.setSettlementOrderId(settlementRecord.getId());
-            withdrawOrder.setRemarks("提现受理成功");
-            this.update(withdrawOrder);
+            withdrawOrder.setSettlementRecordId(settlementRecord.getId());
+            //withdrawOrder.setRemarks("提现受理成功");
+            this.orderService.update(withdrawOrder);
             return Pair.of(1, "提现受理成功");
 
         }else if (status == EnumBasicStatus.FAIL.getId()){
             //代付失败
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
-            withdrawOrder.setRemarks("提现失败");
-            this.update(withdrawOrder);
+           // withdrawOrder.setRemarks("提现失败");
+            this.orderService.update(withdrawOrder);
             return Pair.of(-1, "提现失败");
         }
         withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
-        withdrawOrder.setRemarks("提现失败");
-        this.update(withdrawOrder);
+        //withdrawOrder.setRemarks("提现失败");
+        this.orderService.update(withdrawOrder);
         return Pair.of(-1, "提现失败");
     }
 
