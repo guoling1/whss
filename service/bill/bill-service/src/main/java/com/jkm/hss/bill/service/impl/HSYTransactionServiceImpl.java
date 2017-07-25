@@ -263,10 +263,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             hsyOrderUpdate.setMcid(mcid);
             hsyOrderUpdate.setMid(mid);
             hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
-            hsyOrderUpdate.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
-            hsyOrderUpdate.setPaytype(EnumPayChannelSign.MEMBER.getCode());
-            hsyOrderUpdate.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
-            hsyOrderUpdate.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
             hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
             hsyOrderDao.update(hsyOrderUpdate);
             tradeHsyOrder.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
@@ -282,6 +278,13 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 appPolicyMemberUp.setId(appPolicyMember.getId());
                 appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
                 hsyMembershipDao.updateMember(appPolicyMemberUp);
+            }
+            if(result.getLeft()==0){
+                hsyOrderUpdate.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+                hsyOrderUpdate.setPaytype(EnumPayChannelSign.MEMBER.getCode());
+                hsyOrderUpdate.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
+                hsyOrderUpdate.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
+                hsyOrderDao.update(hsyOrderUpdate);
             }
             return result;
         }
