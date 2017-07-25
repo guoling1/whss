@@ -33,6 +33,8 @@ public class WithdrawOrder extends BaseEntity{
      */
     private long settlementOrderId;
 
+    private Date orderSettleTime;
+
     /**
      * 提现单对应的交易金额
      */

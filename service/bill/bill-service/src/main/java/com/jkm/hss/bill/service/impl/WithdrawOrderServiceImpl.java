@@ -275,6 +275,7 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
             this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId(), null);
             //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
             withdrawOrder.setSn(response.getSn());
+            withdrawOrder.setOrderSettleTime(firstOrder.getSettleTime());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
             withdrawOrder.setSettlementOrderId(settlementRecord.getId());
             withdrawOrder.setRemarks("提现受理成功");
