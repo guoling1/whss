@@ -2,13 +2,13 @@ package com.jkm.hss.controller.active;
 
 import com.google.gson.Gson;
 import com.jkm.base.common.spring.core.SpringContextHolder;
+import com.jkm.hss.merchant.exception.ApiHandleException;
+import com.jkm.hss.merchant.exception.ResultCode;
+import com.jkm.hss.merchant.helper.AppParam;
+import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hss.version.ExcludeServiceCode;
 import com.jkm.hss.version.VersionMapper;
 import com.jkm.hsy.user.entity.AppAuUserToken;
-import com.jkm.hsy.user.entity.AppParam;
-import com.jkm.hsy.user.entity.AppResult;
-import com.jkm.hsy.user.exception.ApiHandleException;
-import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyActiveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +75,7 @@ public class ActiveController {
             return;
         }
 
-        if(!appParam.getServiceCode().equals("HSY001016"))
+        if(!appParam.getServiceCode().equals("HSS001001"))
         {
             if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().trim().equals("")))
             {
@@ -181,7 +181,7 @@ public class ActiveController {
             return;
         }
 
-        if(!appParam.getServiceCode().equals("HSY001016"))
+        if(!appParam.getServiceCode().equals("HSS001001"))
         {
             if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().trim().equals("")))
             {

@@ -4,7 +4,6 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
-import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
@@ -16,7 +15,6 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
-import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.DirectLoginRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
@@ -61,8 +59,8 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequestMapping(value = "merchantInfo")
-public class MerchantInfoController extends BaseController {
+@RequestMapping(value = "app")
+public class AppMerchantInfoController extends BaseController {
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired

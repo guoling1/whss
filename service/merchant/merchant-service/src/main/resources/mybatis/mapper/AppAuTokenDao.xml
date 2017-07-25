@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.AppAuTokenDao">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+        insert into app_au_token(ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,ISAVOIDINGTONE,CREATETIME,UPDATETIME) values(#{accessToken},#{encryptKey},#{deviceid},#{clientid},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{isAvoidingTone},#{createTime},#{updateTime})
+    </insert>
+    <update id="update" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+        update app_au_token
+        <set>
+            <if test="accessToken!=null and accessToken!=''">ACCESSTOKEN=#{accessToken},</if>
+            <if test="encryptKey!=null and encryptKey!=''">ENCRYPTKEY=#{encryptKey},</if>
+            <if test="deviceid!=null and deviceid!=''">DEVICEID=#{deviceid},</if>
+            <if test="clientid!=null and clientid!=''">CLIENTID=#{clientid},</if>
+            <if test="deviceName!=null and deviceName!=''">DEVICENAME=#{deviceName},</if>
+            <if test="appType!=null and appType!=''">APPTYPE=#{appType},</if>
+            <if test="osVersion!=null and osVersion!=''">OSVERSION=#{osVersion},</if>
+            <if test="appCode!=null and appCode!=''">APPCODE=#{appCode},</if>
+            <if test="appVersion!=null and appVersion!=''">APPVERSION=#{appVersion},</if>
+            <if test="appChannel!=null and appChannel!=''">APPCHANNEL=#{appChannel},</if>
+            <if test="isAvoidingTone!=null">ISAVOIDINGTONE=#{isAvoidingTone},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <select id="findAppAuTokenByAccessToken" parameterType="java.lang.String" resultType="com.jkm.hss.merchant.entity.AppAuToken">
+        select
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,ISAVOIDINGTONE,CREATETIME,UPDATETIME
+        from app_au_token
+        where 1=1
+        <if test="accessToken!=null and accessToken!=''">and ACCESSTOKEN=#{accessToken}</if>
+        order by UPDATETIME desc
+    </select>
+
+    <update id="updateAppAuToken" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+        update app_au_token
+        <set>
+            <if test="accessToken!=null and accessToken!=''">ACCESSTOKEN=#{accessToken},</if>
+            <if test="encryptKey!=null and encryptKey!=''">ENCRYPTKEY=#{encryptKey},</if>
+            <if test="deviceid!=null and deviceid!=''">DEVICEID=#{deviceid},</if>
+            <if test="clientid!=null and clientid!=''">CLIENTID=#{clientid},</if>
+            <if test="deviceName!=null and deviceName!=''">DEVICENAME=#{deviceName},</if>
+            <if test="appType!=null and appType!=''">APPTYPE=#{appType},</if>
+            <if test="osVersion!=null and osVersion!=''">OSVERSION=#{osVersion},</if>
+            <if test="appCode!=null and appCode!=''">APPCODE=#{appCode},</if>
+            <if test="appVersion!=null and appVersion!=''">APPVERSION=#{appVersion},</if>
+            <if test="appChannel!=null and appChannel!=''">APPCHANNEL=#{appChannel},</if>
+            <if test="isAvoidingTone!=null">ISAVOIDINGTONE=#{isAvoidingTone},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+</mapper>
