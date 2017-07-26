@@ -51,4 +51,13 @@ public class QuerySettlementRecordParams extends PageQueryParams {
     private long offset;
 
     private int count;
+
+    /**
+     * 0 待处理 2已处理
+     *
+     * 处理状态
+     */
+    private int  settleExceptionStatus;
+
+    private long settleExceptionId;
 }

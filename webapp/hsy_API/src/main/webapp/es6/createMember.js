@@ -23,13 +23,13 @@ browser.elastic_touch();
 var mcid,isDeposited;
 var mySwiper = new Swiper('.swiper-container', {
     effect : 'coverflow',
-    slidesPerView: 1.25,
+    slidesPerView: 1.35,
     centeredSlides: true,
     coverflow: {
-        rotate: 30,
-        stretch: 10,
-        depth: 60,
-        modifier: 2,
+        rotate: 0,
+        stretch: -50,
+        depth: 200,
+        modifier: 1,
         slideShadows : false
     },
     onInit: function(swiper){
@@ -61,6 +61,15 @@ var mySwiper = new Swiper('.swiper-container', {
         }
     }
 })
+
+if(pageData.consumeCellphone!=''){
+    mobile.value = pageData.consumeCellphone;
+    mobile.readOnly = 'true'
+}else {
+    mobile.value = '';
+    // mobile.removeAttribute('readOnly')
+    // mobile.readOnly = 'false'
+}
 
 sendCode.addEventListener('click', function () {
     if (validate.phone(mobile.value)) {
@@ -112,7 +121,7 @@ submit.addEventListener('click', ()=> {
                         if(data.status==1)
                             location.href="/membership/createMemberSuccess?mid="+data.mid;
                         else
-                            location.href="/membership/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
+                            location.href="/sqb/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
                     }
                     else
                         alert(data.result);

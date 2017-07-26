@@ -1,6 +1,8 @@
 package com.jkm.hss.controller.orderRecord;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
@@ -10,6 +12,10 @@ import com.jkm.hss.bill.entity.QueryOrderResponse;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +37,7 @@ import java.util.List;
 /**
  * Created by zhangbin on 2017/5/18.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/queryOrder")
 public class QueryOrderController extends BaseController {
@@ -34,6 +46,8 @@ public class QueryOrderController extends BaseController {
     private OrderService orderService;
     @Autowired
     private HSYOrderService hsyOrderService;
+    @Autowired
+    private OSSClient ossClient;
 
     @ResponseBody
     @RequestMapping(value = "/queryOrderList",method = RequestMethod.POST)
@@ -129,5 +143,37 @@ public class QueryOrderController extends BaseController {
         jsonObject.put("totalPayment",totalPayment);
         jsonObject.put("totalPoundage",totalPoundage);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
+    }
+
+    /**
+     * 导出全部
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/downLoadHsyOrder",method = RequestMethod.POST)
+    private CommonResponse downLoadHsyOrder(@RequestBody QueryHsyOrderRequest req) throws ParseException {
+        final String fileZip = this.hsyOrderService.downLoadHsyOrder(req, ApplicationConsts.getApplicationConfig().ossBucke());
+
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setCacheControl("public, max-age=31536000");
+        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+        meta.setContentType("application/x-xls");
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+        String nowDate = sdf.format(new Date());
+        String fileName = "hss/"+  nowDate + "/" + "好收银订单.xls";
+        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+        URL url = null;
+        JSONObject jsonObject = new JSONObject();
+        List list = new ArrayList();
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+            jsonObject.put("url",url.getHost() + url.getFile());
+            list.add(jsonObject);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "导出成功", list);
+        } catch (IOException e) {
+            log.error("上传文件失败", e);
+        }
+        return null;
     }
 }

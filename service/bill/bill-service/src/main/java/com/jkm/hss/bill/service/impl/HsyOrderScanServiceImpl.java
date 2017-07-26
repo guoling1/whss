@@ -1,6 +1,8 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.google.gson.*;
+import com.jkm.base.common.util.Page;
+import com.jkm.base.common.util.PageUtils;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
@@ -19,8 +21,6 @@ import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.AppConstant;
-import com.jkm.hsy.user.constant.Page;
-import com.jkm.hsy.user.constant.PageUtils;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
@@ -278,6 +278,14 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         pageAll.setPage(page);
         pageAll.getPage().setTotalRecord(hsyOrderDao.findConsumeOrderListByPageCount(pageAll.getObjectT()));
         pageAll.setList(hsyOrderDao.findConsumeOrderListByPage(pageAll));
+        for(HsyOrder o:pageAll.getList()) {
+            if (o.getPaytype().contains("wechat"))
+                o.setPaytype("微信");
+            else if(o.getPaytype().contains("member"))
+                o.setPaytype("会员卡");
+            else
+                o.setPaytype("支付宝");
+        }
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 boolean flag=false;
@@ -329,6 +337,8 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         hsyOrder=orderList.get(0);
         if(hsyOrder.getPaytype().contains("wechat"))
             hsyOrder.setPaytype("微信");
+        else if(hsyOrder.getPaytype().contains("member"))
+            hsyOrder.setPaytype("会员卡");
         else
             hsyOrder.setPaytype("支付宝");
 

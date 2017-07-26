@@ -7,10 +7,12 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡</title>
-    <link rel="stylesheet" href="../../css/style.1.0.0.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/style.2.0.2.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/hsy/css/swiper-3.4.2.min.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
-    <link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">
-    <script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>
+    <%--<link rel="stylesheet" href="../../css/style.2.0.2.css">--%>
+    <%--<link rel="stylesheet" href="../../css/swiper-3.4.2.min.css">--%>
+    <%--<script src="<%=basePath %>js/jquery-2.2.3.min.js"></script>--%>
     <%--<script>
         $(function(){
             $(":radio").click(function(){
@@ -83,13 +85,13 @@
 <body>
 <div id="createMem">
     <div class="swiper-container top" id="swiper">
-        <div class="swiper-wrapper">
+        <div class="swiper-wrapper" style="width: 100%">
             <c:forEach items="${cardList }" var="entity" varStatus="status">
-                <div class="swiper-slide">
+                <div class="swiper-slide" style="width: 100px">
                     <div class="card">
-                        <span class="name">${entity.membershipName}</span>
+                        <span class="name">${entity.membershipShopName}</span>
                         <span class="type">${entity.membershipName}</span>
-                        <span class="discount"><span><c:out value="${entity.discountInt}"/></span>.${entity.discountFloat}折</span>
+                        <span class="discount" <c:if test="${entity.discountInt==10}">style="display:none;"</c:if> ><span><c:out value="${entity.discountInt}"/></span>.${entity.discountFloat}折</span>
                     </div>
                     <input type="hidden" isDeposited="${entity.isDeposited}" depositAmount="${entity.depositAmount}" name="mcid" value="${entity.id}" class="swiperInp"/>
                 </div>
@@ -111,7 +113,7 @@
                 <input class="weui-input" type="tel" placeholder="请输入短信验证码" id="code"/>
             </div>
             <div class="weui-cell__ft">
-                <button class="weui-btn weui-btn_plain-primary btnCode" id="sendCode">获取验证码</button>
+                <button class="weui-btn weui-btn_plain-primary btnCode" id="sendCode" style="width: 100px">获取验证码</button>
             </div>
         </div>
     </div>
@@ -143,7 +145,14 @@
         <button id="createMember">开通</button>
         <button id="sendVcode">发送验证码</button>--%>
 </body>
+<script>
+    var pageData={
+        consumeCellphone:'${appPolicyConsumer.consumerCellphone}'
+    }
+</script>
+<script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="../../js/swiper-3.4.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="../../js/2.0.1.1/createMember.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>--%>
+<script src="../../js/2.0.2/createMember.min.js"></script>
 </html>

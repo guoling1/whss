@@ -1,7 +1,7 @@
 package com.jkm.hss.bill.service;
 
+import com.jkm.base.common.util.Page;
 import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
 

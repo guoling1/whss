@@ -2,9 +2,15 @@ package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.jkm.hss.account.entity.MemberAccount;
+import com.google.common.base.Optional;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
+import com.jkm.hss.account.sevice.MemberAccountService;
+import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.CallbackResponse;
@@ -27,12 +33,20 @@ import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
+import com.jkm.hsy.user.constant.MemberStatus;
+import com.jkm.hsy.user.constant.OrderStatus;
+import com.jkm.hsy.user.dao.HsyMembershipDao;
+import com.jkm.hsy.user.Enum.*;
+import com.jkm.hsy.user.Enum.EnumPolicyType;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import com.jkm.hsy.user.service.impl.BaseShopSocketExecutorService;
+import com.jkm.hsy.user.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -57,6 +72,12 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
 
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private HsyOrderDao hsyOrderDao;
+    @Autowired
+    private HsyMembershipDao hsyMembershipDao;
+    @Autowired
+    private MemberAccountService memberAccountService;
     @Autowired
     private PushService pushService;
     @Autowired
@@ -116,6 +137,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setUid(appAuUser.getId());
         hsyOrder.setAccountid(appAuUser.getAccountID());
         hsyOrder.setDealerid(appAuUser.getDealerID());
+        hsyOrder.setPoundage(new BigDecimal("0.00"));
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }
@@ -157,6 +179,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setUid(appAuUser.getId());
         hsyOrder.setAccountid(appAuUser.getAccountID());
         hsyOrder.setDealerid(appAuUser.getDealerID());
+        hsyOrder.setPoundage(new BigDecimal("0.00"));
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }
@@ -170,7 +193,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
      */
     @Override
     @Transactional
-    public Triple<Integer, String, String> placeOrder(final String totalAmount, final long hsyOrderId) {
+    public Triple<Integer, String, String> placeOrder(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid) {
         log.info("订单[{}]发起支付请求，金额[{}]", hsyOrderId, totalAmount);
         final HsyOrder hsyOrder = this.hsyOrderService.getByIdWithLock(hsyOrderId).get();
         final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder);
@@ -180,9 +203,87 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
             tradeHsyOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
         }
         if (tradeHsyOrder.isPendingPay()) {
-            final BigDecimal amount = new BigDecimal(totalAmount);
-            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
-            return this.baseHSYTransactionService.placeOrderImpl(tradeHsyOrder, amount);
+//            final BigDecimal amount = new BigDecimal(totalAmount);
+//            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+
+            if(mcid!=null) {
+                BigDecimal cent=new BigDecimal(0.01);
+                List<AppPolicyMembershipCard> cardList = hsyMembershipDao.findMemberCardByID(mcid);
+                AppPolicyMembershipCard appPolicyMembershipCard = cardList.get(0);
+                BigDecimal calDiscountFee = new BigDecimal(totalAmount).multiply(appPolicyMembershipCard.getDiscount().divide(new BigDecimal(10), 2, BigDecimal.ROUND_HALF_UP));
+                if (calDiscountFee.compareTo(cent) == -1)
+                    calDiscountFee = cent;
+                calDiscountFee=calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
+                if (calDiscountFee.compareTo(discountFee) != 0)
+                    return Triple.of(-1, "打折后金额计算不一致", "");
+            }
+
+            HsyOrder hsyOrderUpdate=new HsyOrder();
+            hsyOrderUpdate.setId(tradeHsyOrder.getId());
+            hsyOrderUpdate.setAmount(discountFee);
+            hsyOrderUpdate.setRealAmount(new BigDecimal(totalAmount));
+            hsyOrderUpdate.setCid(cid);
+            hsyOrderUpdate.setMcid(mcid);
+            hsyOrderUpdate.setMid(mid);
+            hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+            hsyOrderDao.update(hsyOrderUpdate);
+            return this.baseHSYTransactionService.placeOrderImpl(tradeHsyOrder, discountFee);
+        }
+        return Triple.of(-1, "订单异常", "");
+    }
+
+    public Triple<Integer, String, String> placeOrderMember(String totalAmount, long hsyOrderId, BigDecimal discountFee,Integer isMemberCardPay,Long cid,Long mcid,Long mid,String consumerCellphone){
+        log.info("订单[{}]发起支付请求，金额[{}]", hsyOrderId, totalAmount);
+        final HsyOrder hsyOrder = this.hsyOrderService.getByIdWithLock(hsyOrderId).get();
+        final long newOrderId = this.baseHSYTransactionService.isNeedCreateNewOrder(hsyOrder);
+        HsyOrder tradeHsyOrder = hsyOrder;
+        //说明已经请求过交易，用新订单再次请求
+        if (newOrderId > 0) {
+            tradeHsyOrder = this.hsyOrderService.getByIdWithLock(newOrderId).get();
+        }
+        if (tradeHsyOrder.isPendingPay()) {
+//            final BigDecimal amount = new BigDecimal(totalAmount);
+//            this.hsyOrderService.updateAmountAndStatus(tradeHsyOrder.getId(), amount, EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+
+            BigDecimal cent=new BigDecimal(0.01);
+            List<AppPolicyMember> memberList = hsyMembershipDao.findMemberInfoByID(mid);
+            AppPolicyMember appPolicyMember = memberList.get(0);
+            BigDecimal calDiscountFee = new BigDecimal(totalAmount).multiply(appPolicyMember.getDiscount().divide(new BigDecimal(10), 2, BigDecimal.ROUND_HALF_UP));
+            if (calDiscountFee.compareTo(cent) == -1)
+                calDiscountFee = cent;
+            calDiscountFee=calDiscountFee.setScale(2, BigDecimal.ROUND_HALF_UP);
+            if (calDiscountFee.compareTo(discountFee) != 0)
+                return Triple.of(-1, "打折后金额计算不一致", "");
+
+            if(!consumerCellphone.equals(appPolicyMember.getConsumerCellphone().substring(appPolicyMember.getConsumerCellphone().length()-6)))
+                return Triple.of(-1, "手机号后6位与注册手机号后6位不一致", "");
+
+            HsyOrder hsyOrderUpdate=new HsyOrder();
+            hsyOrderUpdate.setId(tradeHsyOrder.getId());
+            hsyOrderUpdate.setAmount(discountFee);
+            hsyOrderUpdate.setRealAmount(new BigDecimal(totalAmount));
+            hsyOrderUpdate.setCid(cid);
+            hsyOrderUpdate.setMcid(mcid);
+            hsyOrderUpdate.setMid(mid);
+            hsyOrderUpdate.setIsMemberCardPay(isMemberCardPay);
+            hsyOrderUpdate.setOrderstatus(EnumHsyOrderStatus.HAVE_REQUESTED_TRADE.getId());
+            hsyOrderDao.update(hsyOrderUpdate);
+            tradeHsyOrder.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+            tradeHsyOrder.setPaytype(EnumPayChannelSign.MEMBER.getCode());
+            tradeHsyOrder.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
+            tradeHsyOrder.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
+            Triple<Integer, String, String> result=this.baseHSYTransactionService.placeOrderMemberImpl(tradeHsyOrder, discountFee,appPolicyMember.getAccountID(),appPolicyMember.getReceiptAccountID());
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            BigDecimal remainingSum=account.get().getAvailable();
+            if(result.getLeft()==0&&remainingSum.compareTo(BigDecimal.ZERO)==0&&appPolicyMember.getCanRecharge()==0&&appPolicyMember.getIsDeposited()==1)
+            {
+                AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
+                appPolicyMemberUp.setId(appPolicyMember.getId());
+                appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
+                hsyMembershipDao.updateMember(appPolicyMemberUp);
+            }
+            return result;
         }
         return Triple.of(-1, "订单异常", "");
     }
@@ -268,6 +369,67 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         }
     }
 
+    @Transactional
+    public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse) {
+        List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getBusinessOrderNo());
+        AppPolicyRechargeOrder appPolicyRechargeOrder=rechargeOrderList.get(0);
+        if(appPolicyRechargeOrder.getStatus()== OrderStatus.HAS_REQUSET_TRADE.key)
+        {
+            EnumBasicStatus status = EnumBasicStatus.of(callbackResponse.getCode());
+            AppPolicyRechargeOrder appPolicyRechargeOrderUpdate=new AppPolicyRechargeOrder();
+            Date date=new Date();
+            switch (status) {
+                case SUCCESS:
+
+                    List<AppPolicyMember> memberList = hsyMembershipDao.findMemberInfoByID(appPolicyRechargeOrder.getMemberID());
+                    AppPolicyMember appPolicyMember = memberList.get(0);
+                    if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key) {
+                        AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
+                        appPolicyMemberUp.setId(appPolicyMember.getId());
+                        appPolicyMemberUp.setStatus(MemberStatus.ACTIVE.key);
+                        hsyMembershipDao.updateMember(appPolicyMemberUp);
+                    }
+
+                    appPolicyRechargeOrderUpdate.setId(appPolicyRechargeOrder.getId());
+                    appPolicyRechargeOrderUpdate.setStatus(OrderStatus.RECHARGE_SUCCESS.key);
+                    appPolicyRechargeOrderUpdate.setPoundage(callbackResponse.getPoundage());
+                    appPolicyRechargeOrderUpdate.setPaySN(callbackResponse.getSn());
+                    appPolicyRechargeOrderUpdate.setPaySuccessTime(callbackResponse.getSuccessTime());
+                    appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
+                    appPolicyRechargeOrderUpdate.setUpdateTime(date);
+                    hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
+                    //生成分润消息记录
+                    final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
+                    consumeMsgSplitProfitRecord.setHsyRechargeOrderId(appPolicyRechargeOrder.getId());
+                    consumeMsgSplitProfitRecord.setRequestParam("");
+                    consumeMsgSplitProfitRecord.setTag(MqConfig.SPLIT_PROFIT);
+                    consumeMsgSplitProfitRecord.setStatus(EnumConsumeMsgSplitProfitRecordStatus.PENDING_SEND.getId());
+                    final long consumeMsgSplitProfitRecordId = this.sendMqMsgService.add(consumeMsgSplitProfitRecord);
+                    //发消息分润
+                    final JSONObject requestJsonObject = new JSONObject();
+                    requestJsonObject.put("consumeMsgSplitProfitRecordId", consumeMsgSplitProfitRecordId);
+                    MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 20000);
+                    break;
+                case FAIL:
+                    appPolicyRechargeOrderUpdate.setId(appPolicyRechargeOrder.getId());
+                    appPolicyRechargeOrderUpdate.setStatus(OrderStatus.RECHARGE_FAIL.key);
+                    appPolicyRechargeOrderUpdate.setPaySN(callbackResponse.getSn());
+                    appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
+                    appPolicyRechargeOrderUpdate.setUpdateTime(date);
+                    hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
+                    break;
+                case HANDLING:
+                    appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
+                    appPolicyRechargeOrderUpdate.setUpdateTime(date);
+                    hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
+                    break;
+                default:
+                    log.error("交易回调业务，返回状态码[{}]异常", callbackResponse.getCode());
+                    break;
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -281,20 +443,41 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         stopWatch.start();
         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = this.sendMqMsgService.getByIdWithLock(consumeMsgSplitProfitRecordId).get();
         if (consumeMsgSplitProfitRecord.isPendingSend()) {
-            final HsyOrder hsyOrder = this.hsyOrderService.getById(consumeMsgSplitProfitRecord.getHsyOrderId()).get();
+            Preconditions.checkState(consumeMsgSplitProfitRecord.getHsyOrderId() > 0 || consumeMsgSplitProfitRecord.getHsyRechargeOrderId() > 0);
+            String orderNo = "";
+            BigDecimal amount = new BigDecimal("0.00");
+            int payChannelSign = 0;
+            long uid = 0;
+            String settleType = "";
+            if (consumeMsgSplitProfitRecord.getHsyOrderId() > 0) {
+                final HsyOrder hsyOrder = this.hsyOrderService.getById(consumeMsgSplitProfitRecord.getHsyOrderId()).get();
+                orderNo = hsyOrder.getOrderno();
+                amount = hsyOrder.getRealAmount();
+                payChannelSign = hsyOrder.getPaychannelsign();
+                uid = hsyOrder.getUid();
+                settleType = hsyOrder.getSettleType();
+            }
+            if (consumeMsgSplitProfitRecord.getHsyRechargeOrderId() > 0) {
+                final AppPolicyRechargeOrder appPolicyRechargeOrder = this.hsyOrderDao.findRechargeOrderInfoByID(consumeMsgSplitProfitRecord.getHsyRechargeOrderId()).get(0);
+                orderNo = appPolicyRechargeOrder.getOrderNO();
+                amount = appPolicyRechargeOrder.getRealPayAmount();
+                payChannelSign = appPolicyRechargeOrder.getPayChannelSign();
+                uid = appPolicyRechargeOrder.getUid();
+                settleType = appPolicyRechargeOrder.getSettleType();
+            }
             final SplitProfitParams splitProfitParams = new SplitProfitParams();
-            final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSY, hsyOrder.getOrderno(),
-                    hsyOrder.getAmount(), hsyOrder.getPaychannelsign(), hsyOrder.getShopid());
+            final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSY, orderNo,
+                    amount, payChannelSign, uid);
             if (!shallProfitMap.isEmpty()) {
                 final Triple<Long, BigDecimal, BigDecimal> basicMoneyTriple = shallProfitMap.get("basicMoney");
                 final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
                 final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
                 final Triple<Long, BigDecimal, BigDecimal> firstMoneyTriple = shallProfitMap.get("firstMoney");
                 final Triple<Long, BigDecimal, BigDecimal> secondMoneyTriple = shallProfitMap.get("secondMoney");
-                splitProfitParams.setOrderNo(hsyOrder.getOrderno());
+                splitProfitParams.setOrderNo(orderNo);
                 splitProfitParams.setSplitType(EnumSplitBusinessType.HSYPAY.getId());
                 splitProfitParams.setCost(basicMoneyTriple.getMiddle());
-                splitProfitParams.setSettleType(hsyOrder.getSettleType());
+                splitProfitParams.setSettleType(settleType);
                 final ArrayList<SplitProfitParams.SplitProfitDetail> splitProfitDetails = new ArrayList<>(5);
                 splitProfitParams.setSplitProfitDetails(splitProfitDetails);
                 if (null != channelMoneyTriple) {
