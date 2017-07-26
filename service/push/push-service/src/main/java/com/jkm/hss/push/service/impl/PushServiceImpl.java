@@ -242,17 +242,20 @@ public class PushServiceImpl implements PushService {
                 log.info("订单[{}],推送开始", transactionNumber);
                 final StopWatch stopWatch = new StopWatch();
                 stopWatch.start();
-
                 Push push= new Push();
                 push.setTitle("");
                 push.setContent(JSON.toJSONString(appResult));
                 push.setTempType("4");
                 push.setTargets(clients1.toString());
                 push.setTransactionNumber(transactionNumber);
-                pushDao.insert(push);
-
-                this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
-                log.info("订单[{}],推送结束1-时间[{}]", transactionNumber, stopWatch.getTime());
+                try{
+                    pushDao.insert(push);
+                    Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
+                    log.info("订单[{}],推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
+                    return ret;
+                }catch (Exception e) {
+                    log.error("请勿重复插入");
+                }
             }
 
         }
@@ -269,20 +272,21 @@ public class PushServiceImpl implements PushService {
         log.info("订单[{}],推送开始", transactionNumber);
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
-        stopWatch.reset();
-        stopWatch.start();
-
         Push push= new Push();
         push.setTitle("");
         push.setContent(JSON.toJSONString(appResult));
         push.setTempType("4");
         push.setTargets(clients1.toString());
         push.setTransactionNumber(transactionNumber);
-        pushDao.insert(push);
-        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
-        log.info("订单[{}],推送结束2-时间[{}]", transactionNumber, stopWatch.getTime());
-        return ret;
+        try {
+            pushDao.insert(push);
+            Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
+            log.info("订单[{}],推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
+            return ret;
+        }catch (Exception e){
+            log.error("请勿重复插入");
+        }
+        return null;
     }
 
     @Override
