@@ -249,6 +249,16 @@ public class PushServiceImpl implements PushService {
             try {
                 pushDao.insert(push);
                 final Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
+                Push updatePush= new Push();
+                updatePush.setPushType("2");
+                if(ret.containsValue("result=ok")){
+                    updatePush.setStatus(1);
+                }else{
+                    updatePush.setStatus(0);
+                }
+                updatePush.setTaskId((String) ret.get("taskId"));
+                updatePush.setId(push.getId());
+                pushDao.updatePush(updatePush);
                 log.info("订单[{}],有声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
                 return ret;
             } catch (final Throwable e) {
@@ -268,6 +278,16 @@ public class PushServiceImpl implements PushService {
             try {
                 pushDao.insert(push);
                 final Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
+                Push updatePush= new Push();
+                updatePush.setPushType("2");
+                if(ret.containsValue("result=ok")){
+                    updatePush.setStatus(1);
+                }else{
+                    updatePush.setStatus(0);
+                }
+                updatePush.setTaskId((String) ret.get("taskId"));
+                updatePush.setId(push.getId());
+                pushDao.updatePush(updatePush);
                 log.info("订单[{}],无声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
                 return ret;
             } catch (final Throwable e) {
@@ -374,33 +394,12 @@ public class PushServiceImpl implements PushService {
     public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets,String transactionNumber) {
 
         Map ret= PushProducer.pushTransmissionMsgTask(type,content,pushType,clientId,targets);
-        Push push= new Push();
-        push.setPushType(pushType);
-        if(ret.containsValue("result=ok")){
-            push.setStatus(1);
-        }else{
-            push.setStatus(0);
-        }
-        push.setTaskId((String) ret.get("taskId"));
-        push.setTransactionNumber(transactionNumber);
-        pushDao.updatePush(push);
         return ret;
     }
 
     public Map pushTransmissionMsgTask0(Integer type, String content, String pushType, String clientId, List<String> targets,String transactionNumber) {
 
-
         Map ret= PushProducer.pushTransmissionMsgTask0(type,content,pushType,clientId,targets);
-        Push push= new Push();
-        push.setPushType(pushType);
-        if(ret.containsValue("result=ok")){
-            push.setStatus(1);
-        }else{
-            push.setStatus(0);
-        }
-        push.setTaskId((String) ret.get("taskId"));
-        push.setTransactionNumber(transactionNumber);
-        pushDao.updatePush(push);
         return ret;
     }
 

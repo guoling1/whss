@@ -10,7 +10,8 @@
         temp_type,
         push_type,
         targets,
-        transaction_number
+        transaction_number,
+        voice
         )
         VALUES
         (
@@ -19,7 +20,8 @@
         #{tempType},
         2,
         #{targets},
-        #{transactionNumber}
+        #{transactionNumber},
+        #{voice}
         )
     </insert>
 
@@ -27,8 +29,9 @@
         UPDATE tb_push_message_record_new
         SET
         task_id = #{taskId},
-        push_type = #{pushType}
-        WHERE transaction_number = #{transactionNumber}
+        push_type = #{pushType},
+        status = #{status},
+        WHERE id = #{id}
     </update>
 
     <update id="update">
