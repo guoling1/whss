@@ -188,6 +188,9 @@
                   <el-button type="primary" size="small" @click="search('hsy')">筛选</el-button>
                   <el-button type="primary" size="small" @click="reset('hsy')">重置</el-button>
                 </li>
+                <li class="same rightBtn">
+                  <el-button @click="onloadHsy" type="primary" :loading="isLoading" size="small">导出</el-button>
+                </li>
               </ul>
               <el-table v-loading.body="hsyLoading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>
                 <el-table-column type="index" width="62" label="序号"></el-table-column>
@@ -229,6 +232,22 @@
                 </el-pagination>
               </div>
             </el-tab-pane>
+            <div class="box box-info mask el-message-box" v-if="isMask">
+              <div class="maskCon">
+                <div class="head">
+                  <div class="title">消息</div>
+                  <i class="el-icon-close" @click="isMask=false"></i>
+                </div>
+                <div class="body">
+                  <div>确定导出列表吗？</div>
+                </div>
+                <div class="foot">
+                  <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+                  <a :href="'http://'+loadUrlHsy" @click="isMask=false"
+                     class="el-button el-button-default el-button--primary ">下载</a>
+                </div>
+              </div>
+            </div>
           </el-tabs>
         </div>
         <!-- /.box-body -->
@@ -299,7 +318,9 @@
         countHss: 0,
         countHsy: 0,
         loading: false,
-        hsyLoading: false
+        hsyLoading: false,
+        isLoading: false,
+        loadUrlHsy:''
       }
     },
     created: function () {
@@ -343,6 +364,23 @@
         let format = val.split(' - ');
         this.queryHss.paySuccessTime = format[0];
         this.queryHss.paySuccessTime1 = format[1];
+      },
+      onloadHsy: function () {
+        this.isLoading = true
+        this.$http.post('/admin/queryOrder/downLoadHsyOrder',this.queryHsy)
+          .then(res=>{
+          this.isLoading = false;
+          this.loadUrlHsy = res.data[0].url;
+          this.isMask = true;
+        })
+        .catch(err=>{
+          this.isLoading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       },
       reset: function (val) {
         if(val == 'hss'){
@@ -519,5 +557,79 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+
+    .maskCon {
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+
+      .head {
+        position: relative;
+        padding: 20px 20px 0;
+
+        .title {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+
+        i {
+          font-family: element-icons !important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+
+      }
+      .body {
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+
+        div {
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot {
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
   }
 </style>

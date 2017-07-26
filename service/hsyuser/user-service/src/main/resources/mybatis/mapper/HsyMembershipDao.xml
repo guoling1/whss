@@ -487,7 +487,8 @@
             a.DEPOSITAMOUNT,
             a.DISCOUNT,
             a.ISPRESENTEDVIAACTIVATE,
-            a.RECHARGEPRESENTAMOUNT
+            a.RECHARGEPRESENTAMOUNT,
+            (SELECT COUNT(*) FROM app_policy_member WHERE MCID=a.ID) AS cardCount
         FROM
           app_policy_membership_card a WHERE a.UID=#{uid}
         GROUP BY a.UID,a.ID
