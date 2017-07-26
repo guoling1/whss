@@ -13,9 +13,6 @@ import lombok.Data;
 @Data
 public class Push extends BaseEntity {
 
-
-
-
     private String pid;
 
     /**
@@ -52,6 +49,13 @@ public class Push extends BaseEntity {
      * 交易单号
      */
     private String transactionNumber;
+
+    /**
+     * 是否带声音
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
+     */
+    private int voice;
 
     /**
      * 任务id
