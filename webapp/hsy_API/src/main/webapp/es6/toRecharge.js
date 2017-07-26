@@ -110,10 +110,23 @@ recharge.addEventListener('click',function () {
                                 message.prompt_show(data.result);
                             }else {
                                 message.load_show('正在支付');
-                                http.get(data.payResponse.url, {}, function (data) {
+                                $.ajax({
+                                    type:"post",
+                                    url:data.payResponse.url,
+                                    data:{},
+                                    dataType: "json",
+                                    error: function () {
+                                        alert("请求失败")
+                                    },
+                                    success:function (data) {
+                                        message.load_hide();
+                                        onWeixinJSBridge(data.result);
+                                    }
+                                })
+                                /*http.get(data.payResponse.url, {}, function (data) {
                                     message.load_hide();
                                     onAlipayJSBridge(data);
-                                });
+                                });*/
                             }
                         }
                     });
