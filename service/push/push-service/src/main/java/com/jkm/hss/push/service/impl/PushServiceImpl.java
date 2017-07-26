@@ -249,8 +249,11 @@ public class PushServiceImpl implements PushService {
                 push.setTempType("4");
                 push.setTargets(clients1.toString());
                 push.setTransactionNumber(transactionNumber);
-                pushDao.insert(push);
-
+                try{
+                    pushDao.insert(push);
+                }catch (Exception e) {
+                    log.debug("请勿重复插入");
+                }
                 this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
                 log.info("订单[{}],推送结束1-时间[{}]", transactionNumber, stopWatch.getTime());
             }
@@ -279,7 +282,12 @@ public class PushServiceImpl implements PushService {
         push.setTempType("4");
         push.setTargets(clients1.toString());
         push.setTransactionNumber(transactionNumber);
-        pushDao.insert(push);
+        try {
+            pushDao.insert(push);
+        }catch (Exception e){
+            log.debug("请勿重复插入");
+        }
+
         Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
         log.info("订单[{}],推送结束2-时间[{}]", transactionNumber, stopWatch.getTime());
         return ret;
