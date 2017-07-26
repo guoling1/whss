@@ -1850,7 +1850,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             settlementRecord.setSettleChannel(EnumSettleChannel.ALL.getId());
             this.settlementRecordService.add(settlementRecord);
             //更新交易订单为提现中， 结算中
-            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId(), null);
+            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId());
             //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
             withdrawOrder.setSn(response.getSn());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
@@ -1988,7 +1988,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final String orders = withdrawOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId(), withdrawOrder.getSettleTime());
+            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId());
 
             withdrawOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
