@@ -124,6 +124,7 @@ public class SettleExceptionRecordServiceImpl implements SettleExceptionRecordSe
             for (Long auditId : list){
                 this.updateSettleStatus(auditId);
             }
+            return Pair.of(-1, "处理成功");
         }
         return Pair.of(-1, "处理失败,存在未处理的提现订单");
     }
