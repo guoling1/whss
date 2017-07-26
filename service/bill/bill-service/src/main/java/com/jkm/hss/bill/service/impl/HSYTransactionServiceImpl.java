@@ -279,13 +279,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
                 hsyMembershipDao.updateMember(appPolicyMemberUp);
             }
-            if(result.getLeft()==0){
-                hsyOrderUpdate.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
-                hsyOrderUpdate.setPaytype(EnumPayChannelSign.MEMBER.getCode());
-                hsyOrderUpdate.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
-                hsyOrderUpdate.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
-                hsyOrderDao.update(hsyOrderUpdate);
-            }
             return result;
         }
         return Triple.of(-1, "订单异常", "");
