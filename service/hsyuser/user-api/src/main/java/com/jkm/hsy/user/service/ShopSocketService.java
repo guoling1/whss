@@ -11,11 +11,6 @@ import java.net.Socket;
 public interface ShopSocketService {
 
     /**
-     * 初始化socketMap
-     */
-    void init();
-
-    /**
      * 创建socket
      *
      * @param shopId
@@ -23,13 +18,6 @@ public interface ShopSocketService {
      * @param port
      */
     Socket putSocket(long shopId, String ip, int port);
-
-    /**
-     * 删除socket
-     *
-     * @param shopId
-     */
-    void removeSocket(long shopId);
 
     /**
      * 获得socket

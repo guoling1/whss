@@ -7,17 +7,14 @@ import com.jkm.hsy.user.dao.ShopSocketDao;
 import com.jkm.hsy.user.entity.ShopSocket;
 import com.jkm.hsy.user.service.ShopSocketService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by yulong.zhang on 2017/7/24.
@@ -29,33 +26,7 @@ public class ShopSocketServiceImpl implements ShopSocketService {
     @Autowired
     private ShopSocketDao shopSocketDao;
 
-    private static final AtomicBoolean isInit = new AtomicBoolean(false);
-
     private final ConcurrentMap<Long, Socket> shopSocketConcurrentMap = new ConcurrentHashMap<>();
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void init() {
-        if (isNotInit()) {
-            synchronized (ShopSocketServiceImpl.class) {
-                if (isNotInit()) {
-                    final List<ShopSocket> shopSockets = this.shopSocketDao.selectLimit1000();
-                    if (!CollectionUtils.isEmpty(shopSockets)) {
-                        for (ShopSocket shopSocket : shopSockets) {
-                            final Socket socket = ClientSocketUtil.getSocket(shopSocket.getIp(), shopSocket.getPort());
-                            if (null != socket) {
-                                shopSocketConcurrentMap.put(shopSocket.getShopId(), socket);
-                            }
-                        }
-                    }
-                    isInit.set(true);
-                }
-            }
-        }
-    }
 
     /**
      * {@inheritDoc}
@@ -78,52 +49,8 @@ public class ShopSocketServiceImpl implements ShopSocketService {
      * @return
      */
     @Override
-    public void removeSocket(final long shopId) {
-        final Socket remove = shopSocketConcurrentMap.remove(shopId);
-        try {
-            remove.close();
-        } catch (IOException e) {
-           log.error("关闭socket连接异常", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param shopId
-     * @return
-     */
-    @Override
     public Socket getSocket(long shopId) {
-        final Socket socket = shopSocketConcurrentMap.get(shopId);
-        if (null != socket) {
-            return socket;
-        }
-        final Optional<ShopSocket> shopSocketOptional = this.getByShopId(shopId);
-        if (shopSocketOptional.isPresent()) {
-            final ShopSocket shopSocket = shopSocketOptional.get();
-            final Socket socket1 = this.putSocket(shopId, shopSocket.getIp(), shopSocket.getPort());
-            return socket1;
-        }
-        return null;
-    }
-
-
-    /**
-     * 初始化
-     */
-    private void assertInit() {
-        if (isNotInit()) {
-            this.init();
-        }
-    }
-    /**
-     * 未初始化
-     *
-     * @return
-     */
-    private boolean isNotInit() {
-        return !isInit.get();
+        return shopSocketConcurrentMap.get(shopId);
     }
 
     /**
@@ -205,9 +132,6 @@ public class ShopSocketServiceImpl implements ShopSocketService {
             updateShopSocket.setIp(ip);
             updateShopSocket.setPc("");
             updateShopSocket.setPort(port);
-            this.update(updateShopSocket);
-            //更新缓存
-            this.removeSocket(shopId);
             return;
         }
         log.info("店铺[{}]-插入ip,端口", shopId);
