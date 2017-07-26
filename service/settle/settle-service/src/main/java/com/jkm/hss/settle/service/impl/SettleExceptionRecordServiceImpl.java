@@ -1,6 +1,7 @@
 package com.jkm.hss.settle.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -90,8 +91,10 @@ public class SettleExceptionRecordServiceImpl implements SettleExceptionRecordSe
         final PageModel<SettleExceptionRecord> result = new PageModel<>(querySettlementRecordParams.getPageNo(), querySettlementRecordParams.getPageSize());
         querySettlementRecordParams.setOffset(result.getFirstIndex());
         querySettlementRecordParams.setCount(result.getPageSize());
-        querySettlementRecordParams.setStartDate(querySettlementRecordParams.getStartDate() + " 00:00:00");
-        querySettlementRecordParams.setEndDate(querySettlementRecordParams.getEndDate() + " 23:59:59");
+        if (!Strings.isNullOrEmpty(querySettlementRecordParams.getStartDate())){
+            querySettlementRecordParams.setStartDate(querySettlementRecordParams.getStartDate() + " 00:00:00");
+            querySettlementRecordParams.setEndDate(querySettlementRecordParams.getEndDate() + " 23:59:59");
+        }
         final int count = this.settleExceptionRecordDao.selectCountByParam(querySettlementRecordParams);
         final List<SettleExceptionRecord> records = this.settleExceptionRecordDao.selectByParam(querySettlementRecordParams);
         result.setCount(count);
