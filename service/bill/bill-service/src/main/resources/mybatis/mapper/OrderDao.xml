@@ -3236,7 +3236,7 @@
         UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
     </update>
     <update id="updateOrdersBySns">
-        UPDATE tb_order SET  settle_status = #{settleStatus},settlement_record_id = #{settleId}
+        UPDATE tb_order SET settle_status = #{settleStatus},settlement_record_id = #{settleId}
         WHERE sn in
         <foreach collection="sns" index="index" item="item" open="(" separator="," close=")">
             #{item}
