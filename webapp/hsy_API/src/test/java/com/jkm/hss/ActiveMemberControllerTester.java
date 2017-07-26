@@ -5,6 +5,7 @@ import com.jkm.hsy.user.util.AppAesUtil;
 import com.jkm.hsy.user.util.AppDateUtil;
 import org.junit.Test;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
 
@@ -100,9 +101,15 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"uid\":446,\"currentPage\":1,\"mcid\":52}";
+        String param="{\"uid\":1283,\"currentPage\":1,\"mcid\":4}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
+    }
+
+    public static  void main(String[] args)throws Exception{
+        System.out.print(new Date(1501051749000L));;
+        String x="%7B%22mcid%22%3A%222%22%2C%22mid%22%3A%223%22%2C%22";
+        System.out.print(URLDecoder.decode(x,"utf-8"));
     }
 
     @Test
@@ -113,7 +120,7 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"id\":32}";
+        String param="{\"id\":4}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -126,7 +133,7 @@ public class ActiveMemberControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(ActiveControllerTester.v);
-        String param="{\"mcid\":18,\"currentPage\":1,\"mid\":32}";
+        String param="{\"mcid\":2,\"currentPage\":1,\"mid\":3}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
