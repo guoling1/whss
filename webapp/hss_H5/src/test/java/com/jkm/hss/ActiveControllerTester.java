@@ -1,8 +1,8 @@
 package com.jkm.hss;
 
 import com.google.gson.Gson;
-import com.jkm.hsy.user.entity.AppParam;
-import com.jkm.hsy.user.entity.AppResult;
+import com.jkm.hss.merchant.helper.AppParam;
+import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hsy.user.util.AppDateUtil;
 import org.junit.Test;
 
@@ -27,7 +27,9 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
-        String param="{\"deviceid\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appVersion\":\"1.0.0\",\"appChannel\":\"MI\"}";
+        p.setAppType("android");
+        p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
+        String param="{\"deviceId\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appVersion\":\"1.0.0\",\"appChannel\":\"MI\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -40,6 +42,7 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
+        p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"clientId\":\"clientid12345678\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -59,7 +62,7 @@ public class ActiveControllerTester {
                 "&accessToken="+p.getAccessToken()+
                 "&appType="+p.getAppType()+
                 "&timeStamp="+p.getTimeStamp()+
-                "&deviceid="+p.getDeviceid()+
+                "&deviceId="+p.getDeviceId()+
                 "&v="+p.getV();
         if(p.getRequestData()!=null)
             s+="&requestData="+p.getRequestData();

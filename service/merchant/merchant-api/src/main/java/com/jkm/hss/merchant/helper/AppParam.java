@@ -51,4 +51,5 @@ public class AppParam {
 				+"deviceId:"+this.deviceId;
 	}
 
+
 }
