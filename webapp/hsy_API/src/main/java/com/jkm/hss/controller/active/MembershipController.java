@@ -402,8 +402,8 @@ public class MembershipController {
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
 //        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
         appPolicyMember.setRemainingSum(account.get().getAvailable());
-//        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
-        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+//        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
 //        if(appPolicyMember.getIsDeposited()==0) {
             BigDecimal totalAmount=hsyMembershipService.findConsumeOrderSum(appPolicyMember.getMcid(),appPolicyMember.getId());
             appPolicyMember.setConsumeTotalAmount(totalAmount);
