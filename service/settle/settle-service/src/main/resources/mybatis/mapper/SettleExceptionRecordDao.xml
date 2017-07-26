@@ -18,6 +18,7 @@
         #{settleTargetType},
         #{beginTime},
         #{endTime},
+        #{remarks},
         #{status}
         )
     </insert>
