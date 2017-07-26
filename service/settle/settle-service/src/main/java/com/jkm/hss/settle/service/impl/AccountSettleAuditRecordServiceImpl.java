@@ -418,6 +418,9 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     private List<Long> handleWithdrawIngSettle() {
         final Date date = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         List<Order> list =  this.orderService.selectWithdrawingOrderByBefore(date);
+        if (CollectionUtils.isEmpty(list)){
+            return null;
+        }
         //生成结算挂起单, 提现异常， 当天订单全部挂起
         List<Long> accountIds = Lists.transform(list, new Function<Order, Long>() {
             @Override
