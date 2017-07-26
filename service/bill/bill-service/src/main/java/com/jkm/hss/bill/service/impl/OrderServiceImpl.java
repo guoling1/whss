@@ -1467,8 +1467,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrdersBySns(List<String> sns, int status,int settleStatus,long settlementRecordId) {
-        this.orderDao.updateOrdersBySns(sns, status,settleStatus,settlementRecordId);
+    public void updateOrdersBySns(List<String> sns,int settleStatus,long settlementRecordId) {
+        this.orderDao.updateOrdersBySns(sns,settleStatus,settlementRecordId);
     }
 
     @Override

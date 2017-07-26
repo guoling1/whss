@@ -1648,7 +1648,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             response.setBankName(order.getBankName());
             response.setCardNo(order.getTradeCardNo().substring(order.getTradeCardNo().length() - 4, order.getTradeCardNo().length()));
             response.setStatus(order.getStatus());
-            response.setOrderNo(order.getSn());
+            response.setOrderNo(order.getOrderNo());
             response.setPoundage(order.getPoundage().toString());
             response.setBankPic(this.getBankPic(order.getTradeCardNo()));
             orderList.add(response);
@@ -1849,8 +1849,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             settlementRecord.setBalanceEndTime(lastOrder.getPaySuccessTime());
             settlementRecord.setSettleChannel(EnumSettleChannel.ALL.getId());
             this.settlementRecordService.add(settlementRecord);
-            //更新交易订单为提现中， 结算中
-            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId());
+            //更新交易订单为， 结算中
+            this.orderDao.updateOrdersBySns(sns, EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId());
             //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
             withdrawOrder.setSn(response.getSn());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
@@ -1909,6 +1909,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //手续费
         playMoneyOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
         playMoneyOrder.setGoodsName(account.getUserName());
+        playMoneyOrder.setMerchantName(account.getUserName());
         playMoneyOrder.setGoodsDescribe(orders);
         playMoneyOrder.setSettleTime(new Date());
         playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.getId());
@@ -1988,7 +1989,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final String orders = withdrawOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId());
+            this.orderService.updateOrdersBySns(sns, EnumSettleStatus.SETTLED.getId(),settlementRecord.getId());
 
             withdrawOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
@@ -2047,11 +2048,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.increaseSettleAmount(accountId, frozenRecord.getFrozenAmount());
-            //更新交易订单
+            /*//更新交易订单
             final String orders = playMoneyOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns2Withdraw(sns, EnumOrderStatus.PAY_SUCCESS.getId());
+            this.orderService.updateOrdersBySns2Withdraw(sns, EnumOrderStatus.PAY_SUCCESS.getId());*/
             //更新结算单
             //待结算金额减少
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
@@ -2060,7 +2061,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLE_FAIL.getId());
 
-            this.orderService.markOrder2SettleFail(settlementRecord.getId(),  EnumSettleStatus.SETTLE_FAIL.getId(),  EnumSettleStatus.SETTLE_ING.getId());
+            this.orderService.markOrder2SettleFail(settlementRecord.getId(),  EnumSettleStatus.DUE_SETTLE.getId(),  EnumSettleStatus.SETTLE_ING.getId());
         }
     }
 

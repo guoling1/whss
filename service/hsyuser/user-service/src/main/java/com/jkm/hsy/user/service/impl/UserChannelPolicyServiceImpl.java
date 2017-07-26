@@ -148,5 +148,10 @@ public class UserChannelPolicyServiceImpl implements UserChannelPolicyService{
         return userChannelPolicyDao.selectAppSecretByAppId(appId);
     }
 
+    @Override
+    public List<Long> selectUserIdsBySignAndNetStatus(int sign, int netStatus) {
+        return userChannelPolicyDao.selectUserIdsBySignAndNetStatus(sign, netStatus);
+    }
+
 
 }

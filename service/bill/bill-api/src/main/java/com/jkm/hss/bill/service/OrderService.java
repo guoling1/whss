@@ -697,7 +697,7 @@ public interface OrderService {
 
     List<Order> selectWithdrawingOrderByAccountId(long id, String date);
 
-    void updateOrdersBySns(List<String> sns, int status, int settleStatus,long settlementRecordId);
+    void updateOrdersBySns(List<String> sns, int settleStatus,long settlementRecordId);
 
     void updateOrdersBySns2Withdraw(List<String> sns, int status);
 
