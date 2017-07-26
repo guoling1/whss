@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.WithdrawOrderDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_withdraw_order(
+        app_id,
+        order_no,
+        sn,
+        settlement_order_id,
+        order_settle_time,
+        trade_amount,
+        withdraw_amount,
+        withdraw_user_type,
+        withdraw_user_no,
+        withdraw_user_name,
+        withdraw_user_account_id,
+        upper_channel,
+        apply_time,
+        apply_success_time,
+        poundage,
+        trade_orders,
+        bank_name,
+        bank_card_no,
+        remarks,
+        status
+        )VALUES(
+        #{appId},
+        #{orderNo},
+        #{sn},
+        #{settlementOrderId},
+        #{orderSettleTime},
+        #{tradeAmount},
+        #{withdrawAmount},
+        #{withdrawUserType},
+        #{withdrawUserNo},
+        #{withdrawUserName},
+        #{withdrawUserAccountId},
+        #{upperChannel},
+        #{applyTime},
+        #{applySuccessTime},
+        #{poundage},
+        #{tradeOrders},
+        #{bankName},
+        #{bankCardNo},
+        #{remarks},
+        #{status}
+        )
+    </insert>
+    <update id="update">
+        UPDATE tb_withdraw_order
+        SET app_id = #{appId},
+        order_no = #{orderNo},
+        sn = #{sn},
+        settlement_order_id = #{settlementOrderId},
+        trade_amount = #{tradeAmount},
+        withdraw_amount = #{withdrawAmount},
+        withdraw_user_type = #{withdrawUserType},
+        withdraw_user_no = #{withdrawUserNo},
+        withdraw_user_account_id = #{withdrawUserAccountId},
+        upper_channel = #{upperChannel},
+        apply_time = #{applyTime},
+        apply_success_time = #{applySuccessTime},
+        poundage = #{poundage},
+        trade_orders = #{tradeOrders},
+        bank_name = #{bankName},
+        bank_card_no = #{bankCardNo},
+        remarks = #{remarks},
+        status = #{status}
+    </update>
+    <select id="selectByIdWithlock" resultType="com.jkm.hss.bill.entity.WithdrawOrder">
+        SELECT * FROM tb_withdraw_order WHERE id = #{id} FOR UPDATE
+    </select>
+    <select id="getByOrderNo" resultType="com.jkm.hss.bill.entity.WithdrawOrder">
+        SELECT * FROM tb_withdraw_order WHERE order_no = #{orderNo}
+    </select>
+    <select id="selectWithdrawingOrderByBefore" resultType="com.jkm.hss.bill.entity.WithdrawOrder">
+        SELECT * FROM tb_withdraw_order WHERE apply_time  &lt; #{date} AND status = 2
+    </select>
+</mapper>

@@ -1848,6 +1848,7 @@ input:focus {
 }
 #memberList ul li .discount span {
   font-size: 50px;
+  font-weight: bold;
 }
 #memberInfo {
   background: #f4f5f8;
@@ -1872,20 +1873,26 @@ input:focus {
   font-weight: bold;
   text-align: left;
 }
+#memberInfo .top .card .name {
+  font-weight: bold;
+}
 #memberInfo .top .card .type {
   color: #b36112;
   position: absolute;
   bottom: 16px;
   left: 16px;
+  font-weight: bold;
 }
 #memberInfo .top .card .discount {
   position: absolute;
   right: 16px;
   bottom: 0px;
+  font-weight: bold;
   font-size: 36px;
 }
 #memberInfo .top .card .discount span {
   font-size: 50px;
+  font-weight: bold;
 }
 #memberInfo .top .phone,
 #memberInfo .top .title {
@@ -1950,7 +1957,11 @@ input:focus {
   font-weight: bold;
   text-align: left;
 }
+#toRecharge .top .card .name {
+  font-weight: bold;
+}
 #toRecharge .top .card .type {
+  font-weight: bold;
   color: #b36112;
   position: absolute;
   bottom: 16px;
@@ -1960,10 +1971,12 @@ input:focus {
   position: absolute;
   right: 16px;
   bottom: 0px;
+  font-weight: bold;
   font-size: 36px;
 }
 #toRecharge .top .card .discount span {
   font-size: 50px;
+  font-weight: bold;
 }
 #toRecharge .top .phone,
 #toRecharge .top .title {
@@ -2029,20 +2042,26 @@ input:focus {
   font-weight: bold;
   text-align: left;
 }
+#createMem .top .card .name {
+  font-weight: bold;
+}
 #createMem .top .card .type {
   color: #b36112;
   position: absolute;
   bottom: 16px;
   left: 16px;
+  font-weight: bold;
 }
 #createMem .top .card .discount {
   position: absolute;
   right: 16px;
   bottom: 0px;
   font-size: 36px;
+  font-weight: bold;
 }
 #createMem .top .card .discount span {
   font-size: 50px;
+  font-weight: bold;
 }
 #createMem .weui-cells {
   font-size: 16px;

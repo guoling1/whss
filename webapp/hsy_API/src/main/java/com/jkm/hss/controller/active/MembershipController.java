@@ -4,15 +4,19 @@ import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
+import com.jkm.base.common.util.Page;
+import com.jkm.base.common.util.PageUtils;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.RechargeParams;
 import com.jkm.hss.bill.service.HsyOrderScanService;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.entity.AuthParam;
@@ -76,6 +80,8 @@ public class MembershipController {
     private TradeService tradeService;
     @Autowired
     private HsyOrderScanService hsyOrderScanService;
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("getAuth/{operate}/{uidEncode}")
     public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode,@PathVariable String operate){
@@ -186,6 +192,7 @@ public class MembershipController {
         Long uid;
         try {
             String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
+            uidHttp=uidHttp.replace("<>","/");
             String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
             uid = Long.parseLong(uidAES.trim());
         } catch (Exception e) {
@@ -232,7 +239,7 @@ public class MembershipController {
             model.addAttribute("mid", appPolicyMember.getId());
             model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
             model.addAttribute("source", authInfo.getSource());
-            return "/needRecharge";
+            return "redirect:/sqb/needRecharge";
         }
 
         if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
@@ -251,10 +258,11 @@ public class MembershipController {
                 return "/tips";
             }
 
-            model.addAttribute("appPolicyMember",appPolicyMember);
-            model.addAttribute("type", RechargeValidType.RECHARGE.key);
+//            model.addAttribute("appPolicyMember",appPolicyMember);
+//            model.addAttribute("type", RechargeValidType.RECHARGE.key);
+            model.addAttribute("mid", appPolicyMember.getId());
             model.addAttribute("source", authInfo.getSource());
-            return "/toRecharge";
+            return "redirect:/sqb/toRecharge";
         }
         else{
             model.addAttribute("tips","找不到该操作！");
@@ -314,6 +322,24 @@ public class MembershipController {
             AppPolicyConsumer consumerCheck=hsyMembershipService.findConsumerByCellphone(appPolicyConsumer.getConsumerCellphone());
             if(consumerCheck!=null){//判断微信或支付宝以前是否注册过消费者
                 appPolicyConsumer.setId(consumerCheck.getId());
+                if(appPolicyConsumer.getOpenID()!=null&&!appPolicyConsumer.getOpenID().equals("")&&consumerCheck.getOpenID()!=null&&!consumerCheck.getOpenID().equals("")) {
+                    if(!appPolicyConsumer.getOpenID().equals(consumerCheck.getOpenID())){
+                        map.put("flag","fail");
+                        map.put("result","该手机号已注册！");
+                        writeJsonToResponse(map,response,pw);
+                        return;
+                    }
+                }
+
+                if(appPolicyConsumer.getUserID()!=null&&!appPolicyConsumer.getUserID().equals("")&&consumerCheck.getUserID()!=null&&!consumerCheck.getUserID().equals("")) {
+                    if(!appPolicyConsumer.getUserID().equals(consumerCheck.getUserID())){
+                        map.put("flag","fail");
+                        map.put("result","该手机号已注册！");
+                        writeJsonToResponse(map,response,pw);
+                        return;
+                    }
+                }
+
                 hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
                 appPolicyMember=hsyMembershipService.findMemberByCIDAndMCID(appPolicyConsumer.getId(),mcid);
                 if(appPolicyMember==null)//判断是否有该店会员卡
@@ -353,11 +379,26 @@ public class MembershipController {
     @RequestMapping("memberInfo")
     public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key)
+        {
+//            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+//            if(appPolicyRechargeOrder==null) {
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
+            model.addAttribute("source", source);
+            return "redirect:/sqb/needRecharge";
+//            }
+        }
+
         Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
 //        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
         appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        if(appPolicyMember.getIsDeposited()==0) {
+            BigDecimal totalAmount=hsyMembershipService.findConsumeOrderSum(appPolicyMember.getMcid(),appPolicyMember.getId());
+            appPolicyMember.setConsumeTotalAmount(totalAmount);
+        }
 
         DecimalFormat a=new DecimalFormat("0.0");
         String discountStr=a.format(appPolicyMember.getDiscount());
@@ -410,10 +451,34 @@ public class MembershipController {
             writeJsonToResponse(map,response,pw);
             return;
         }
+        if(appPolicyMember.getCanRecharge()==0&&type!=null&&type.equals(RechargeValidType.RECHARGE.key))
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡无法自助充值");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
+
+        if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
+            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+            if(appPolicyRechargeOrder!=null) {
+                if (appPolicyRechargeOrder.getStatus() == OrderStatus.HAS_REQUSET_TRADE.key) {
+//                    map.put("flag", "fail");
+//                    map.put("result", "正在交易中请稍后");
+//                    writeJsonToResponse(map, response, pw);
+//                    return;
+                } else if (appPolicyRechargeOrder.getStatus() == OrderStatus.RECHARGE_SUCCESS.key) {
+                    map.put("flag", "memberInfo");
+                    map.put("result", "您已经成功开通会员卡");
+                    writeJsonToResponse(map, response, pw);
+                    return;
+                }
+            }
+        }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
         RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
         PayResponse payResponse=tradeService.recharge(rechargeParams);
-        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId());
+        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId(),OrderStatus.HAS_REQUSET_TRADE.key);
         if(payResponse.getCode()!= EnumBasicStatus.SUCCESS.getId())
         {
             map.put("flag","fail");
@@ -446,6 +511,7 @@ public class MembershipController {
         page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
         page.setPageSize(AppConstant.PAGE_SIZE);
         Page<AppPolicyRechargeOrder> pageAll=new Page<AppPolicyRechargeOrder>();
+        appPolicyRechargeOrder.setMemberID(appPolicyRechargeOrder.getMid());
         pageAll.setObjectT(appPolicyRechargeOrder);
         pageAll.setPage(page);
         pageAll= hsyMembershipService.findRechargeOrderListByPage(pageAll);
@@ -481,6 +547,22 @@ public class MembershipController {
     public String toRechargeList(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
         model.addAttribute("mid",mid);
         return "/rechargeList";
+    }
+
+    @RequestMapping(value = "success/{id}")
+    public String paySuccessPage(final Model model, @PathVariable("id") long id,Long mid,String source) {
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+        if(!orderOptional.isPresent()){
+            return "/500.jsp";
+        }else{
+            final Order order = orderOptional.get();
+            model.addAttribute("sn", order.getOrderNo());
+            model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            model.addAttribute("money", order.getRealPayAmount().toPlainString());
+            model.addAttribute("mid", mid);
+            model.addAttribute("source", source);
+            return "/successRecharge";
+        }
     }
 
     @RequestMapping("sendVcode")
@@ -545,7 +627,7 @@ public class MembershipController {
         rechargeParams.setChannel(appPolicyRechargeOrder.getPayChannelSign());
         rechargeParams.setMerchantPayType(EnumMerchantPayType.MERCHANT_JSAPI);
         rechargeParams.setAppId("hsy");
-        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getTradeAmount());
+        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getRealPayAmount());
         rechargeParams.setRealPayAmount(appPolicyRechargeOrder.getRealPayAmount());
         rechargeParams.setMarketingAmount(appPolicyRechargeOrder.getMarketingAmount());
         rechargeParams.setPayeeAccountId(appPolicyRechargeOrder.getPayeeAccountID());

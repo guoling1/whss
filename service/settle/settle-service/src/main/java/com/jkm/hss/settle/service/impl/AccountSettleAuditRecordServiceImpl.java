@@ -21,6 +21,7 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.SettlementRecord;
+import com.jkm.hss.bill.entity.WithdrawOrder;
 import com.jkm.hss.bill.enums.EnumSettleChannel;
 import com.jkm.hss.bill.enums.EnumSettleDestinationType;
 import com.jkm.hss.bill.enums.EnumSettleModeType;
@@ -28,6 +29,7 @@ import com.jkm.hss.bill.enums.EnumSettlementRecordStatus;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.SettlementRecordService;
+import com.jkm.hss.bill.service.WithdrawOrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.mq.config.MqConfig;
@@ -40,11 +42,13 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hss.settle.entity.SettleExceptionRecord;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
 import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hss.settle.helper.responseparam.AppSettleRecordDetailResponse;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
+import com.jkm.hss.settle.service.SettleExceptionRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -88,7 +92,10 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     private OrderService orderService;
     @Autowired
     private SendMessageService sendMessageService;
-
+    @Autowired
+    private WithdrawOrderService withdrawOrderService;
+    @Autowired
+    private SettleExceptionRecordService settleExceptionRecordService;
      /**
      * {@inheritDoc}
      *
@@ -271,7 +278,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         }
         //挂起的
         List<Long> accountIdList = this.handleWithdrawIngSettle();
-        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate, accountIdList);
+        final List<OrderBalanceStatistics> merchantOrderBalanceStatistics = this.orderService.statisticsPendingBalanceOrder(settleDate, accountIdList,0);
         log.info("今日[{}]商户生成结算审核记录,个数[{}]", settleDate, merchantOrderBalanceStatistics.size());
         final ArrayList<SettlementRecord> merchantSettlementRecords = new ArrayList<>();
         if (!CollectionUtils.isEmpty(merchantOrderBalanceStatistics)) {
@@ -409,8 +416,31 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     }
 
     private List<Long> handleWithdrawIngSettle() {
-        //this.orderService.selectAccountIdsBySettleDate();
-        return null;
+        final Date date = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        List<Order> list =  this.orderService.selectWithdrawingOrderByBefore(date);
+        if (CollectionUtils.isEmpty(list)){
+            return null;
+        }
+        //生成结算挂起单, 提现异常， 当天订单全部挂起
+        List<Long> accountIds = Lists.transform(list, new Function<Order, Long>() {
+            @Override
+            public Long apply(Order input) {
+                return input.getPayer();
+            }
+        });
+        for (Order withdrawOrder : list){
+            final String withdrawDate = DateFormatUtil.format(withdrawOrder.getCreateTime(), DateFormatUtil.yyyy_MM_dd);
+            final SettleExceptionRecord record = new SettleExceptionRecord();
+            record.setSettleTargetNo(withdrawOrder.getMerchantNo());
+            record.setWithdrawOrderId(withdrawOrder.getId());
+            record.setSettleTargetName(withdrawOrder.getGoodsName());
+            record.setSettleTargetType(EnumAccountUserType.MERCHANT.getId());
+            record.setBeginTime(DateFormatUtil.parse(withdrawDate+" 00:00:00",DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            record.setEndTime(DateFormatUtil.parse(withdrawDate+" 23:59:59",DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            record.setRemarks("挂起");
+            this.settleExceptionRecordService.insert(record);
+        }
+        return accountIds;
     }
 
     private void generateSettlementAuditRecordSendMsg(final ArrayList<SettlementRecord> settlementRecords) {

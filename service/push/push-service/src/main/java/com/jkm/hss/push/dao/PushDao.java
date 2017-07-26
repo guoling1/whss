@@ -62,4 +62,10 @@ public interface PushDao {
      * @return
      */
     List<Map> selectCid(@Param("uid") String uid);
+
+    /**
+     * 更新
+     * @param push
+     */
+    void updatePush(Push push);
 }

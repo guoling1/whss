@@ -110,8 +110,10 @@ public class HsyOrder{
     private Long uid;
     private Long accountid;
     private Long dealerid;
+    private Long cid;
     private Long mcid;
     private Long mid;
+    private Integer isMemberCardPay;
 
     private Date createTime;
     private Date updateTime;

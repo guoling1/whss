@@ -513,7 +513,7 @@ public interface OrderDao {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdlist") List<Long> accountIdlist);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdlist") List<Long> accountIdlist, @Param("accountId") long accountId);
 
     /**
      * 统计订单金额
@@ -693,4 +693,5 @@ public interface OrderDao {
     void updateOrdersBySns2Withdraw(@Param("sns") List<String> sns, @Param("status") int status);
 
 
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 }
