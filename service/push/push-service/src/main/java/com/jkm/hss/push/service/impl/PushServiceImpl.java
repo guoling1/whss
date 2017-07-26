@@ -260,7 +260,6 @@ public class PushServiceImpl implements PushService {
                 updatePush.setId(push.getId());
                 pushDao.updatePush(updatePush);
                 log.info("订单[{}],有声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
-                return ret;
             } catch (final Throwable e) {
                 log.error("请勿重复插入");
             }
@@ -289,7 +288,6 @@ public class PushServiceImpl implements PushService {
                 updatePush.setId(push.getId());
                 pushDao.updatePush(updatePush);
                 log.info("订单[{}],无声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
-                return ret;
             } catch (final Throwable e) {
                 log.error("请勿重复插入");
             }
