@@ -347,11 +347,20 @@ public class MembershipController {
                     Long accountID= memberAccountService.init();
                     Long receiptAccountID=receiptMemberMoneyAccountService.init();
                     appPolicyMember = hsyMembershipService.saveMember(appPolicyConsumer.getId(), mcid, status,accountID,receiptAccountID);
+                    map.put("flag","success");
+                    map.put("mid",appPolicyMember.getId()+"");
+                    writeJsonToResponse(map,response,pw);
+                    return;
                 }
-                map.put("flag","success");
-                map.put("mid",appPolicyMember.getId()+"");
-                writeJsonToResponse(map,response,pw);
-                return;
+                else
+                {
+                    map.put("flag","memberInfo");
+                    map.put("mid",appPolicyMember.getId()+"");
+                    map.put("source", source);
+                    writeJsonToResponse(map,response,pw);
+                    return;
+                }
+
             }
         }
         hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
