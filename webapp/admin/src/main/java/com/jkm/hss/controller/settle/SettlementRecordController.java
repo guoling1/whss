@@ -152,6 +152,7 @@ public class SettlementRecordController extends BaseController {
             }
             return CommonResponse.simpleResponse(-1, pair.getRight());
         }catch (final Throwable throwable){
+            log.info("处理异常，异常信息：" + throwable.getMessage());
             return CommonResponse.simpleResponse(-1, "处理异常");
         }
 
