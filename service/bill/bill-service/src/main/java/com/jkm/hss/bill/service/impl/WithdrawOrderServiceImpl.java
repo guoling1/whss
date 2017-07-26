@@ -287,12 +287,12 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
             withdrawOrder.setRemarks("提现失败");
             this.update(withdrawOrder);
-            return Pair.of(-1, "提现失败");
+            return Pair.of(-1, "银行受理失败");
         }
         withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
         withdrawOrder.setRemarks("提现失败");
         this.update(withdrawOrder);
-        return Pair.of(-1, "提现失败");
+        return Pair.of(-1, "银行受理失败");
     }
 
     private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account, AppBizCard appBizCard) {
