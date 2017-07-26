@@ -29,6 +29,7 @@ import com.jkm.hss.settle.dao.SettleExceptionRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.entity.SettleExceptionRecord;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
+import com.jkm.hss.settle.enums.EnumSettleExceptionStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hss.settle.service.SettleExceptionRecordService;
@@ -124,6 +125,8 @@ public class SettleExceptionRecordServiceImpl implements SettleExceptionRecordSe
             for (Long auditId : list){
                 this.updateSettleStatus(auditId);
             }
+            settleExceptionRecord.setStatus(EnumSettleExceptionStatus.HANDLED.getId());
+            this.update(settleExceptionRecord);
             return Pair.of(-1, "处理成功");
         }
         return Pair.of(-1, "处理失败,存在未处理的提现订单");
