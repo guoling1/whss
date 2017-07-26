@@ -3652,6 +3652,6 @@
         AND refund_status = 0 AND create_time BETWEEN #{begin} AND #{end}
     </select>
     <select id="selectWithdrawingOrderByBefore" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE app_id = 'hsy' AND trade_type = 3 AND payer = payee AND merchant_no !=null  AND apply_time  &lt; #{date} AND status = 5
+        SELECT * FROM tb_order WHERE app_id = 'hsy' AND trade_type = 3 AND payer = payee AND merchant_no !=null  AND create_time  &lt; #{date} AND status = 5
     </select>
 </mapper>
