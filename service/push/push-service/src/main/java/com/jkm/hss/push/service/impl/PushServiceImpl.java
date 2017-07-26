@@ -255,6 +255,7 @@ public class PushServiceImpl implements PushService {
                     return ret;
                 }catch (Exception e) {
                     log.error("请勿重复插入");
+                    return null;
                 }
             }
 
@@ -285,8 +286,8 @@ public class PushServiceImpl implements PushService {
             return ret;
         }catch (Exception e){
             log.error("请勿重复插入");
+            return null;
         }
-        return null;
     }
 
     @Override
