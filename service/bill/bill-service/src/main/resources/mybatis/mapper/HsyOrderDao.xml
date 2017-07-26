@@ -503,7 +503,7 @@
         <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
         <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
         <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
-        ORDER BY a.pay_success_time DESC LIMIT #{offset},#{size}
+        ORDER BY a.pay_success_time DESC
     </select>
 
 </mapper>
