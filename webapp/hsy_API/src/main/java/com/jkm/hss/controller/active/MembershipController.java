@@ -216,7 +216,7 @@ public class MembershipController {
                 return "/createMember";
             }
         } else if (authInfo.getSource().equals("ZFB")) {
-            appPolicyConsumer = hsyMembershipService.findConsumerByUserID(authInfo.getOpenID());
+            appPolicyConsumer = hsyMembershipService.findConsumerByUserID(authInfo.getUserID());
             if (appPolicyConsumer == null) {
                 model.addAttribute("authInfo", authInfo);
                 model.addAttribute("cardList", cardList);
