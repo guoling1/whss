@@ -120,7 +120,7 @@ recharge.addEventListener('click',function () {
                                     },
                                     success:function (data) {
                                         message.load_hide();
-                                        onWeixinJSBridge(data.result);
+                                        onAlipayJSBridge(data.result);
                                     }
                                 })
                                 /*http.get(data.payResponse.url, {}, function (data) {
