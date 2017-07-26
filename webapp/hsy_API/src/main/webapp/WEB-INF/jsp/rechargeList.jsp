@@ -26,5 +26,5 @@
 </body>
 <script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.2.min.js"></script>
-<script src="../../js/2.0.2/rechargeList.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/rechargeList.min.js"></script>
 </html>
