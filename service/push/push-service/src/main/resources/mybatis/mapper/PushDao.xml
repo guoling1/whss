@@ -30,7 +30,7 @@
         SET
         task_id = #{taskId},
         push_type = #{pushType},
-        status = #{status},
+        status = #{status}
         WHERE id = #{id}
     </update>
 
