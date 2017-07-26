@@ -284,9 +284,9 @@
         AND settle_status = 1
         AND refund_status = 0
         AND settle_time = #{settleDate}
-        <if test="accountIdlist != null">
+        <if test="accountIdList != null">
             AND payee not in
-            <foreach collection="accountIdlist" index="index" item="item" open="(" separator="," close=")">
+            <foreach collection="accountIdList" index="index" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -3652,6 +3652,6 @@
         AND refund_status = 0 AND create_time BETWEEN #{begin} AND #{end}
     </select>
     <select id="selectWithdrawingOrderByBefore" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE app_id = 'hsy' AND trade_type = 3 AND payer = payee AND merchant_no !=null  AND create_time  &lt; #{date} AND status = 5
+        SELECT * FROM tb_order WHERE app_id = 'hsy' AND trade_type = 3 AND payer = payee AND status = 5 AND merchant_no !=''  AND create_time  &lt; #{date}
     </select>
 </mapper>
