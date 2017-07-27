@@ -292,6 +292,7 @@
     <select id="getDetails" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT
 			b.CELLPHONE,
+			b.ISOPEND0,
             c.`NAME`,
             c.SHORTNAME,
             c.INDUSTRYCODE,
@@ -713,4 +714,15 @@
         WHERE
            b.`UID`in (SELECT `UID` FROM `app_biz_shop_user_role` WHERE `SID` = #{id} AND `ROLE` =1 and `TYPE` =1 )
     </select>
+
+    <!-- 修改商户d0提现 -->
+    <update id="modifyD0withdraw">
+        UPDATE app_au_user
+        <set>
+            <if test="IsOpenDo!=null and IsOpenDo!=''">
+                ISOPEND0= #{IsOpenDo},
+            </if>
+        </set>
+        WHERE ID=#{userId}
+    </update>
 </mapper>

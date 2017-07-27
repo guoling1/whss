@@ -108,5 +108,6 @@ public class HsyMerchantAuditResponse {
     private String msWx;
     private String hxZfb;
     private String msZfb;
+    private Integer isOpenD0;//是否开通D0提现
 
 }

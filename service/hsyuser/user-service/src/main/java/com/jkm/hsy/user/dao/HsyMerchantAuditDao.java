@@ -193,4 +193,10 @@ public interface HsyMerchantAuditDao {
     HsyMerchantAuditResponse getResult1(@Param("branchDistrictCode") String branchDistrictCode);
 
     HsyMerchantAuditResponse getResul(@Param("branchDistrictCode") String branchDistrictCode);
+
+    /**
+     * 修改商户d0提现
+     * @param userD0WithdrawReques
+     */
+    int modifyD0withdraw(UserD0WithdrawRequest userD0WithdrawReques);
 }
