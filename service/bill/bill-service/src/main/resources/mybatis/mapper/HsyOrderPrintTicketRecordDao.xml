@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.HsyOrderPrintTicketRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+          insert into tb_hsy_order_print_ticket_record (trade_order_no, msg, status) values (#{tradeOrderNo}, #{msg}, #{status});
+    </insert>
+</mapper>

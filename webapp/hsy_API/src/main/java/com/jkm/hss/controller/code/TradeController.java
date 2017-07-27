@@ -5,11 +5,11 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.entity.Account;
-import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.*;
+import com.jkm.hss.bill.service.impl.BaseHSYTransactionService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.CreateOrderRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
@@ -19,9 +19,6 @@ import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.push.sevice.PushService;
-import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.service.HsyCmbcService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,13 +44,9 @@ public class TradeController extends BaseController {
     @Autowired
     private HSYTradeService hsyTradeService;
     @Autowired
-    private HsyShopDao hsyShopDao;
-    @Autowired
     private AccountService accountService;
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private HsyCmbcService hsyCmbcService;
     @Autowired
     private HSYTransactionService hsyTransactionService;
     @Autowired
@@ -62,6 +55,8 @@ public class TradeController extends BaseController {
     private PushService pushService;
     @Autowired
     private HSYOrderService hsyOrderService;
+    @Autowired
+    private BaseHSYTransactionService baseHSYTransactionService;
     /**
      * 创建好收银订单
      *
@@ -205,13 +200,17 @@ public class TradeController extends BaseController {
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
 
             //调支付推送
+            final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(order.getOrderNo()).get();
             try {
-                final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(order.getOrderNo()).get();
                 this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
                         hsyOrder.getAmount().doubleValue(), hsyOrder.getValidationcode(), hsyOrder.getOrderno());
             } catch (final Throwable e) {
                 log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
             }
+
+            //打印
+            this.baseHSYTransactionService.sendPrintMsg(hsyOrder.getId());
+
             return "/success";
         }
     }
