@@ -10,5 +10,5 @@ import java.util.Date;
 @Data
 public class UserD0WithdrawRequest {
     private Long userId;//用户编码
-    private Integer isOpenDo;//是否开通d0提现
+    private Integer isOpenD0;//是否开通d0提现
 }
