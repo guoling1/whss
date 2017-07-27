@@ -176,6 +176,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setUid(appAuUser.getId());
         hsyOrder.setAccountid(appAuUser.getAccountID());
         hsyOrder.setDealerid(appAuUser.getDealerID());
+        hsyOrder.setPoundage(new BigDecimal("0.00"));
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }
@@ -278,13 +279,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 appPolicyMemberUp.setId(appPolicyMember.getId());
                 appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
                 hsyMembershipDao.updateMember(appPolicyMemberUp);
-            }
-            if(result.getLeft()==0){
-                hsyOrderUpdate.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
-                hsyOrderUpdate.setPaytype(EnumPayChannelSign.MEMBER.getCode());
-                hsyOrderUpdate.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
-                hsyOrderUpdate.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
-                hsyOrderDao.update(hsyOrderUpdate);
             }
             return result;
         }

@@ -95,7 +95,8 @@ recharge.addEventListener('click',function () {
                         data:{
                             type: pageData.type,
                             source: pageData.source,
-                            mid: pageData.mid
+                            mid: pageData.mid,
+                            amount: price.value
                         },
                         dataType: "json",
                         error: function () {
@@ -109,10 +110,23 @@ recharge.addEventListener('click',function () {
                                 message.prompt_show(data.result);
                             }else {
                                 message.load_show('正在支付');
-                                http.get(data.payResponse.url, {}, function (data) {
+                                $.ajax({
+                                    type:"post",
+                                    url:data.payResponse.url,
+                                    data:{},
+                                    dataType: "json",
+                                    error: function () {
+                                        alert("请求失败")
+                                    },
+                                    success:function (data) {
+                                        message.load_hide();
+                                        onAlipayJSBridge(data.result);
+                                    }
+                                })
+                                /*http.get(data.payResponse.url, {}, function (data) {
                                     message.load_hide();
                                     onAlipayJSBridge(data);
-                                });
+                                });*/
                             }
                         }
                     });

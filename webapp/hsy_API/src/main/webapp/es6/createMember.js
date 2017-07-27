@@ -116,12 +116,13 @@ submit.addEventListener('click', ()=> {
                     alert("请求失败")
                 },
                 success: function (data) {
-                    if(data.flag=="success")
-                    {
+                    if(data.flag=="success") {
                         if(data.status==1)
                             location.href="/membership/createMemberSuccess?mid="+data.mid;
                         else
                             location.href="/sqb/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
+                    }else if(data.flag=="memberInfo"){
+                        location.href = "/membership/memberInfo?mid="+data.mid+"&source="+$("#source").val();
                     }
                     else
                         alert(data.result);

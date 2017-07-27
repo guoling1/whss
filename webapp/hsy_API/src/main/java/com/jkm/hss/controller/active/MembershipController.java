@@ -216,7 +216,7 @@ public class MembershipController {
                 return "/createMember";
             }
         } else if (authInfo.getSource().equals("ZFB")) {
-            appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
+            appPolicyConsumer = hsyMembershipService.findConsumerByUserID(authInfo.getUserID());
             if (appPolicyConsumer == null) {
                 model.addAttribute("authInfo", authInfo);
                 model.addAttribute("cardList", cardList);
@@ -347,11 +347,20 @@ public class MembershipController {
                     Long accountID= memberAccountService.init();
                     Long receiptAccountID=receiptMemberMoneyAccountService.init();
                     appPolicyMember = hsyMembershipService.saveMember(appPolicyConsumer.getId(), mcid, status,accountID,receiptAccountID);
+                    map.put("flag","success");
+                    map.put("mid",appPolicyMember.getId()+"");
+                    writeJsonToResponse(map,response,pw);
+                    return;
                 }
-                map.put("flag","success");
-                map.put("mid",appPolicyMember.getId()+"");
-                writeJsonToResponse(map,response,pw);
-                return;
+                else
+                {
+                    map.put("flag","memberInfo");
+                    map.put("mid",appPolicyMember.getId()+"");
+                    map.put("source", source);
+                    writeJsonToResponse(map,response,pw);
+                    return;
+                }
+
             }
         }
         hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
@@ -394,11 +403,11 @@ public class MembershipController {
 //        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
         appPolicyMember.setRemainingSum(account.get().getAvailable());
         appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
-        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
-        if(appPolicyMember.getIsDeposited()==0) {
+//        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+//        if(appPolicyMember.getIsDeposited()==0) {
             BigDecimal totalAmount=hsyMembershipService.findConsumeOrderSum(appPolicyMember.getMcid(),appPolicyMember.getId());
             appPolicyMember.setConsumeTotalAmount(totalAmount);
-        }
+//        }
 
         DecimalFormat a=new DecimalFormat("0.0");
         String discountStr=a.format(appPolicyMember.getDiscount());

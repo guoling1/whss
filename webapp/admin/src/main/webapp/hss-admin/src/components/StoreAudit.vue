@@ -699,8 +699,8 @@
       submit: function () {
         for(let i=0; i<this.citys.length;i++){
             if(this.citys[i].value == this.cityCode[2]){
-              this.form.branchCountyCode = this.citys[i].aname;
-              this.form.branchCountyName = this.citys[i].value;
+              this.form.branchCountyCode = this.citys[i].value;
+              this.form.branchCountyName = this.citys[i].aname;
             }
         }
         this.form.id = this.id;
@@ -1048,8 +1048,8 @@
         this.bankDis = true;
         for(let i=0; i<this.citys.length;i++){
           if(this.citys[i].value == this.cityCode[2]){
-            this.bankQuery.branchCountyCode = this.citys[i].aname;
-            this.bankQuery.branchCountyName = this.citys[i].value;
+            this.bankQuery.branchCountyCode = this.citys[i].value;
+            this.bankQuery.branchCountyName = this.citys[i].aname;
           }
         }
         this.bankQuery.merchantId = this.id;

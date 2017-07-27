@@ -162,4 +162,6 @@ public interface HSYOrderService {
      * @return
      */
     String getHsyOrderCounts1(QueryHsyOrderRequest req);
+
+    String downLoadHsyOrder(QueryHsyOrderRequest req, String baseUrl);
 }

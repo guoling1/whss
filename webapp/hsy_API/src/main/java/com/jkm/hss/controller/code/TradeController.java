@@ -87,6 +87,7 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
+        log.info("扫码牌支付-参数[{}]", payRequest);
         if(payRequest.getIsMemberCardPay()==1) {
             Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrderMember(payRequest.getTotalFee(), payRequest.getHsyOrderId(),payRequest.getDiscountFee(),payRequest.getIsMemberCardPay(),payRequest.getCid(),payRequest.getMcid(),payRequest.getMid(),payRequest.getConsumerCellphone());
             if (0 == resultPair.getLeft()) {

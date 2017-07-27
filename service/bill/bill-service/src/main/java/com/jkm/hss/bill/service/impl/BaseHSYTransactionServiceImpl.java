@@ -182,6 +182,10 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setOrderid(payResponse.getTradeOrderId());
                 updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_FAIL.getId());
                 updateOrder.setRemark(payResponse.getMessage());
+                updateOrder.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+                updateOrder.setPaytype(EnumPayChannelSign.MEMBER.getCode());
+                updateOrder.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
+                updateOrder.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
                 this.hsyOrderService.update(updateOrder);
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
             case SUCCESS:
@@ -192,6 +196,10 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_SUCCESS.getId());
                 updateOrder.setPaysuccesstime(new Date());
                 updateOrder.setRemark(payResponse.getMessage());
+                updateOrder.setPaychannelsign(EnumPayChannelSign.MEMBER.getId());
+                updateOrder.setPaytype(EnumPayChannelSign.MEMBER.getCode());
+                updateOrder.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
+                updateOrder.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
                 this.hsyOrderService.update(updateOrder);
                 try {
                     this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
