@@ -48,6 +48,20 @@ public class ActiveControllerTester {
         ActiveControllerTester.testRest(p);
     }
 
+    @Test
+    public void testGetAppVersion()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001003");
+        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
+        String param="{\"versionCode\":\"1.0.0\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
 
     public static void testRest(AppParam p)throws Exception{
         HttpURLConnection httpConnection = (HttpURLConnection)new URL(url).openConnection();
