@@ -21,8 +21,9 @@ public final class ClientSocketUtil {
      * @return
      */
     public static String readMsg(final Socket socket) throws IOException {
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
         final StringBuilder msg = new StringBuilder("");
+        final InputStream inputStream = socket.getInputStream();
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
         String temp;
         while ((temp = bufferedReader.readLine()) != null) {
             msg.append(temp);

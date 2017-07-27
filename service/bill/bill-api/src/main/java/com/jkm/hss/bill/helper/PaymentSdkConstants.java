@@ -69,6 +69,11 @@ public final class PaymentSdkConstants {
      */
     public static final String SDK_QUERY_REFUND_ORDER_URL;
 
+    /**
+     * socket打印
+     */
+    public static final String SOCKET_SEND_MSG_URL;
+
     static {
         final PaymentSdkConfig config = getConfig();
         APP_ID= config.appId();
@@ -95,6 +100,9 @@ public final class PaymentSdkConstants {
         Preconditions.checkState(!StringUtils.isEmpty(SDK_QUERY_PAY_ORDER_URL), "加载支付中心查询支付流水url失败");
         SDK_QUERY_REFUND_ORDER_URL = config.sdkQueryRefundOrderUrl();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_QUERY_REFUND_ORDER_URL), "加载支付中心查询退款流水url失败");
+
+        SOCKET_SEND_MSG_URL = config.socketSendMsgUrl();
+        Preconditions.checkState(!StringUtils.isEmpty(SOCKET_SEND_MSG_URL), "加载socket打印url失败");
     }
 
     private static PaymentSdkConfig getConfig() {
@@ -194,5 +202,14 @@ public final class PaymentSdkConstants {
         @Key("payment.sdk.pay.query.refund.order.url")
         @DefaultValue("http://pay.qianbaojiajia.com/order/queryRefundByOrderNo")
         String sdkQueryRefundOrderUrl();
+
+        /**
+         *  socket打印
+         *
+         * @return
+         */
+        @Key("socket.send.msg.url")
+        @DefaultValue("http://socket.qianbaojiajia.com/socket/sendPrintMsg")
+        String socketSendMsgUrl();
     }
 }

@@ -2,12 +2,10 @@ package com.jkm.hss.controller.pc;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
-import com.jkm.base.common.ip.IpUtils;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.PcUserLoginRequest;
-import com.jkm.hss.helper.request.SaveIpRequest;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -16,7 +14,6 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.PcUserPassport;
 import com.jkm.hsy.user.help.PcUserConsts;
 import com.jkm.hsy.user.service.PcUserPassportService;
-import com.jkm.hsy.user.service.ShopSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +42,6 @@ public class PcUserController extends BaseController {
     private HsyUserDao hsyUserDao;
     @Autowired
     private HsyShopDao hsyShopDao;
-    @Autowired
-    private ShopSocketService shopSocketService;
 
 
     @RequestMapping(value = "/login", method = RequestMethod.OPTIONS)
@@ -156,21 +150,5 @@ public class PcUserController extends BaseController {
         result.put("role", appAuUser.getRole());
         result.put("roleName", appAuUser.getRoleName());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
-    }
-
-    /**
-     * 保存店铺所在的公网ip
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/saveIp", method = RequestMethod.POST)
-    public CommonResponse saveIp(final HttpServletRequest httpServletRequest, @RequestBody final SaveIpRequest saveIpRequest) {
-        final long shopId = saveIpRequest.getShopId();
-        final int port = saveIpRequest.getPort();
-        final String ip = IpUtils.getIp(httpServletRequest);
-        log.info("保存店铺-[{}]所在的公网ip[{}]-port[{}]", shopId, ip, port);
-        this.shopSocketService.saveSocketIp(shopId, ip, port);
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 }

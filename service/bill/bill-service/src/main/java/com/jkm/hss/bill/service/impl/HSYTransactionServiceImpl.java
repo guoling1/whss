@@ -2,10 +2,9 @@ package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.hss.account.entity.MemberAccount;
-import com.google.common.base.Optional;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
@@ -13,10 +12,7 @@ import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.*;
-import com.jkm.hss.bill.helper.CallbackResponse;
-import com.jkm.hss.bill.helper.PayParams;
-import com.jkm.hss.bill.helper.PayResponse;
-import com.jkm.hss.bill.helper.SplitProfitParams;
+import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.helper.util.VerifyAuthCodeUtil;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HSYTransactionService;
@@ -36,17 +32,11 @@ import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.MemberStatus;
 import com.jkm.hsy.user.constant.OrderStatus;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
-import com.jkm.hsy.user.Enum.*;
-import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.*;
-import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
-import com.jkm.hsy.user.service.impl.BaseShopSocketExecutorService;
-import com.jkm.hsy.user.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +89,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     @Autowired
     private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
     @Autowired
-    private BaseShopSocketExecutorService baseShopSocketExecutorService;
+    private HttpClientFacade httpClientFacade;
 
     /**
      * {@inheritDoc}
@@ -283,6 +273,12 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
                 hsyMembershipDao.updateMember(appPolicyMemberUp);
             }
+            //打印
+            if (result.getLeft() == 0) {
+                final HsyOrder hsyOrder1 = this.hsyOrderService.getById(tradeHsyOrder.getId()).get();
+                final String discountAmount = hsyOrder1.getRealAmount().subtract(hsyOrder1.getAmount()).toPlainString();
+                this.sendPrintMsg(hsyOrder1, hsyOrder1.getOrderstatus(), hsyOrder1.getPaysuccesstime(), discountAmount);
+            }
             return result;
         }
         return Triple.of(-1, "订单异常", "");
@@ -320,24 +316,12 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         updateOrder.setPaysn(callbackResponse.getSn());
                         updateOrder.setPaysuccesstime(callbackResponse.getSuccessTime());
                         updateOrder.setRemark(callbackResponse.getMessage());
-
-                        if (!StringUtils.isEmpty(hsyOrder1.getPaytype())
-                                && hsyOrder1.getPaytype().contains(EnumMerchantPayType.MERCHANT_JSAPI.getId())) {
-                            log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder1.getShopid(), hsyOrder1.getId(), hsyOrder1.getOrderno());
-                            final JSONObject jo = new JSONObject();
-                            jo.put("orderNo", hsyOrder1.getOrdernumber());
-                            jo.put("tradeOrderNo", hsyOrder1.getOrderno());
-                            jo.put("status", updateOrder.getOrderstatus());
-                            jo.put("paySuccessTime", updateOrder.getPaysuccesstime());
-                            jo.put("shopName", hsyOrder1.getShopname());
-                            jo.put("tradeAmount", hsyOrder1.getAmount());
-                            jo.put("discountAmount", "0.00");
-                            jo.put("totalAmount", hsyOrder1.getRealAmount());
-                            jo.put("payChannel", hsyOrder1.getPaymentChannel());
-                            this.baseShopSocketExecutorService.runTask(hsyOrder1.getShopid(), jo.toJSONString());
-                        }
-
                         this.hsyOrderService.update(updateOrder);
+                        //打印票据
+                        if (!StringUtils.isEmpty(hsyOrder.getPaytype())
+                                && hsyOrder.getPaytype().contains(EnumMerchantPayType.MERCHANT_JSAPI.getId())) {
+                            this.sendPrintMsg(hsyOrder1, updateOrder.getOrderstatus(), updateOrder.getPaysuccesstime(), "0.00");
+                        }
                         //生成分润消息记录
                         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
                         consumeMsgSplitProfitRecord.setHsyOrderId(hsyOrder1.getId());
@@ -366,6 +350,33 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         break;
                 }
             }
+        }
+    }
+
+    /**
+     * 扫码牌，打印小票
+     *
+     * @param hsyOrder
+     * @param status
+     * @param successTime
+     */
+    private void sendPrintMsg(final HsyOrder hsyOrder, final int status, final Date successTime, final String discountAmount) {
+        log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
+        final JSONObject jo = new JSONObject();
+        jo.put("shopId", hsyOrder.getShopid());
+        jo.put("orderNo", hsyOrder.getOrdernumber());
+        jo.put("tradeOrderNo", hsyOrder.getOrderno());
+        jo.put("status", status);
+        jo.put("paySuccessTime", successTime);
+        jo.put("shopName", hsyOrder.getShopname());
+        jo.put("tradeAmount", hsyOrder.getRealAmount().toPlainString());
+        jo.put("discountAmount", discountAmount);
+        jo.put("totalAmount", hsyOrder.getRealAmount());
+        jo.put("payChannel", hsyOrder.getPaymentChannel());
+        try {
+            this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
+        } catch (final Throwable e) {
+            log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + hsyOrder.getOrderno() + "]，发送打印socket异常", e);
         }
     }
 
@@ -398,6 +409,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                     appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
                     appPolicyRechargeOrderUpdate.setUpdateTime(date);
                     hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
+
                     //生成分润消息记录
                     final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
                     consumeMsgSplitProfitRecord.setHsyRechargeOrderId(appPolicyRechargeOrder.getId());
