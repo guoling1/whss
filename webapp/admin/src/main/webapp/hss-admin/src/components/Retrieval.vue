@@ -59,7 +59,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="userType" label="用户类型"></el-table-column>
-            <el-table-column prop="tradeAmount" label="提现金额" align="right">
+            <el-table-column prop="realPayAmount" label="提现金额" align="right">
               <template scope="scope">
                 <span>{{scope.row.tradeAmount|toFix}}</span>
               </template>
