@@ -3635,7 +3635,7 @@
         </if>
     </select>
     <select id="selectOrderListByCount" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE payee = #{accountId} AND status = #{status} AND pay_channel_sign in(801,802) AND settle_status = 1
+        SELECT * FROM tb_order WHERE payee = #{accountId} AND status IN(4,7) AND pay_channel_sign in(801,802) AND settle_status = 1
         AND refund_status = 0 AND pay_success_time BETWEEN #{beginTime} AND #{endTime} ORDER BY id ASC limit #{count}
     </select>
     <select id="selectOrderBySn" resultType="com.jkm.hss.bill.entity.Order">
