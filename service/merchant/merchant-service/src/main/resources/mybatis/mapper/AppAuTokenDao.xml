@@ -10,7 +10,7 @@
         <set>
             <if test="accessToken!=null and accessToken!=''">ACCESSTOKEN=#{accessToken},</if>
             <if test="encryptKey!=null and encryptKey!=''">ENCRYPTKEY=#{encryptKey},</if>
-            <if test="deviceId!=null and deviceid!=''">DEVICEID=#{deviceId},</if>
+            <if test="deviceId!=null and deviceId!=''">DEVICEID=#{deviceId},</if>
             <if test="clientId!=null and clientid!=''">CLIENTID=#{clientId},</if>
             <if test="deviceName!=null and deviceName!=''">DEVICENAME=#{deviceName},</if>
             <if test="appType!=null and appType!=''">APPTYPE=#{appType},</if>

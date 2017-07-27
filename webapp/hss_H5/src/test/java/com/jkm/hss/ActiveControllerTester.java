@@ -38,7 +38,7 @@ public class ActiveControllerTester {
     public void testUpdateClientID()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001002");
-        p.setAccessToken("be360cb714a8813a2e45adc221454a5f");
+        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
