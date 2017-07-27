@@ -22,7 +22,6 @@
         </div>
     </div>
 </div>
-<%--<a href="<%=basePath%>membership/consumeListByPage?mid=${mid}&currentPage=1">test</a>--%>
 </body>
 <script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>

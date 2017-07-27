@@ -16,7 +16,7 @@
         <div class="card">
             <span class="name">${appPolicyMember.membershipShopName}</span>
             <span class="type">${appPolicyMember.membershipName}</span>
-            <span class="discount"><span>${discountInt}</span>.${discountFloat}折</span>
+            <span class="discount" <c:if test="${discountInt==10}">style="display:none;"</c:if> ><span>${discountInt}</span>.${discountFloat}折</span>
         </div>
         <div class="phone">手机号：${appPolicyMember.consumerCellphone}</div>
         <c:if test="${appPolicyMember.isDeposited==1}">
@@ -89,23 +89,5 @@
         </div>
     </div>
 </div>
-   <%-- <h1 style="font-size: 40px;">
-        会员卡页面<br>
-        会员卡名称:${appPolicyMember.membershipName}<br>
-        会员卡上显示的店铺名称:${appPolicyMember.membershipShopName}<br>
-        手机号:${appPolicyMember.consumerCellphone}<br>
-        会员卡号:${appPolicyMember.memberCardNO}<br>
-        会员卡折扣(折):${appPolicyMember.discount}<br>
-        <c:if test="${appPolicyMember.isDeposited==1}">
-            余额：${appPolicyMember.remainingSum}<br>
-            <a href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">累计消费：${appPolicyMember.consumeTotalAmount}</a><br>
-            <a href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1">累计充值：${appPolicyMember.rechargeTotalAmount}</a><br>
-            <a href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a><br>
-        </c:if>
-
-        <c:forEach items="${appBizShopList}" var="shop">
-            <c:out value="${shop.shortName}"></c:out><br>
-        </c:forEach>
-    </h1>--%>
 </body>
 </html>
