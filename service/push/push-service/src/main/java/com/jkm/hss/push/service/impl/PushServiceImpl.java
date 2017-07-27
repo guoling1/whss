@@ -1,6 +1,7 @@
 package com.jkm.hss.push.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.VelocityStringTemplate;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.entity.SmsTemplate;
@@ -11,6 +12,7 @@ import com.jkm.hss.push.entity.Push;
 import com.jkm.hss.push.producer.PushProducer;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -208,81 +210,89 @@ public class PushServiceImpl implements PushService {
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Map pushCashMsg(Long sid, String payChannel, Double amount, String code, String transactionNumber) {
-
-//        final int count = this.pushDao.getTransactionNumber(transactionNumber);
-//        if (count > 0){
-//            Map map = new HashMap();
-//            map.put("result","已经推送过，不可重复推送");
-//            return map;
-//        }
-        List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
-        List<String>  clients= new ArrayList<>();
-        List<String>  clients1= new ArrayList<>();
+        final List<Map> list = pushDao.selectUserAppBySid(sid.toString());
+        //声音
+        final List<String> clients= new ArrayList<>();
+        //不带声音
+        final List<String> clients1= new ArrayList<>();
         for(Map map: list){
-            if (map.get("ISAVOIDINGTONE") == null || map.get("ISAVOIDINGTONE").toString().equals("0")) {
-                if(map.get("CLIENTID")!=null){
-                    String clientid=map.get("CLIENTID").toString();
+            if (null != map.get("CLIENTID")) {
+                final String clientid = map.get("CLIENTID").toString();
+                if (map.get("ISAVOIDINGTONE") == null || map.get("ISAVOIDINGTONE").toString().equals("0")) {
+                    clients.add(clientid);
+                } else {
                     clients1.add(clientid);
                 }
-            }else {
-                final String clientid = map.get("CLIENTID").toString();
-                if (!"".equals(clientid) && clientid != null) {
-                    clients.add(clientid);
-                }
-                SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
-                Map  data= new HashMap();
-                data.put("code", code);
-                data.put("payChannel",payChannel );
-                data.put("amount", amount);
-
-                String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
-                AppResult   appResult=new AppResult() ;
-                appResult.setResultCode(200);
-                appResult.setResultMessage(content);
-                log.info("订单[{}],推送开始", transactionNumber);
-                final StopWatch stopWatch = new StopWatch();
-                stopWatch.start();
-
-                Push push= new Push();
-                push.setTitle("");
-                push.setContent(JSON.toJSONString(appResult));
-                push.setTempType("4");
-                push.setTargets(clients1.toString());
-                push.setTransactionNumber(transactionNumber);
-                pushDao.insert(push);
-
-                this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients, transactionNumber);
-                log.info("订单[{}],推送结束1-时间[{}]", transactionNumber, stopWatch.getTime());
             }
-
         }
-        SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
-        Map  data= new HashMap();
+        final SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+        final Map data= new HashMap();
         data.put("code", code);
         data.put("payChannel",payChannel );
         data.put("amount", amount);
 
-         String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
-        AppResult   appResult=new AppResult() ;
+        final String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+        final AppResult  appResult=new AppResult() ;
         appResult.setResultCode(200);
         appResult.setResultMessage(content);
         log.info("订单[{}],推送开始", transactionNumber);
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
+        if (!CollectionUtils.isEmpty(clients)) {
+            Push push= new Push();
+            push.setTitle("have voice");
+            push.setContent(JSON.toJSONString(appResult));
+            push.setTempType("4");
+            push.setTargets(clients.toString());
+            push.setTransactionNumber(transactionNumber);
+            push.setVoice(EnumBoolean.TRUE.getCode());
+            try {
+                pushDao.insert(push);
+                final Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
+                Push updatePush= new Push();
+                updatePush.setPushType("2");
+                if(ret.containsValue("result=ok")){
+                    updatePush.setStatus(1);
+                }else{
+                    updatePush.setStatus(0);
+                }
+                updatePush.setTaskId((String) ret.get("taskId"));
+                updatePush.setId(push.getId());
+                pushDao.updatePush(updatePush);
+                log.info("订单[{}],有声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
+            } catch (final Throwable e) {
+                log.error("请勿重复插入");
+            }
+        }
         stopWatch.reset();
         stopWatch.start();
-
-        Push push= new Push();
-        push.setTitle("");
-        push.setContent(JSON.toJSONString(appResult));
-        push.setTempType("4");
-        push.setTargets(clients1.toString());
-        push.setTransactionNumber(transactionNumber);
-        pushDao.insert(push);
-        Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
-        log.info("订单[{}],推送结束2-时间[{}]", transactionNumber, stopWatch.getTime());
-        return ret;
+        if (!CollectionUtils.isEmpty(clients1)) {
+            Push push= new Push();
+            push.setTitle("no voice");
+            push.setContent(JSON.toJSONString(appResult));
+            push.setTempType("4");
+            push.setTargets(clients1.toString());
+            push.setTransactionNumber(transactionNumber);
+            push.setVoice(EnumBoolean.FALSE.getCode());
+            try {
+                pushDao.insert(push);
+                final Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
+                Push updatePush= new Push();
+                updatePush.setPushType("2");
+                if(ret.containsValue("result=ok")){
+                    updatePush.setStatus(1);
+                }else{
+                    updatePush.setStatus(0);
+                }
+                updatePush.setTaskId((String) ret.get("taskId"));
+                updatePush.setId(push.getId());
+                pushDao.updatePush(updatePush);
+                log.info("订单[{}],无声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
+            } catch (final Throwable e) {
+                log.error("请勿重复插入");
+            }
+        }
+        return null;
     }
 
     @Override
@@ -382,33 +392,12 @@ public class PushServiceImpl implements PushService {
     public Map pushTransmissionMsgTask(Integer type, String content, String pushType, String clientId, List<String> targets,String transactionNumber) {
 
         Map ret= PushProducer.pushTransmissionMsgTask(type,content,pushType,clientId,targets);
-        Push push= new Push();
-        push.setPushType(pushType);
-        if(ret.containsValue("result=ok")){
-            push.setStatus(1);
-        }else{
-            push.setStatus(0);
-        }
-        push.setTaskId((String) ret.get("taskId"));
-        push.setTransactionNumber(transactionNumber);
-        pushDao.updatePush(push);
         return ret;
     }
 
     public Map pushTransmissionMsgTask0(Integer type, String content, String pushType, String clientId, List<String> targets,String transactionNumber) {
 
-
-        Map ret= PushProducer.pushTransmissionMsgTask(type,content,pushType,clientId,targets);
-        Push push= new Push();
-        push.setPushType(pushType);
-        if(ret.containsValue("result=ok")){
-            push.setStatus(1);
-        }else{
-            push.setStatus(0);
-        }
-        push.setTaskId((String) ret.get("taskId"));
-        push.setTransactionNumber(transactionNumber);
-        pushDao.updatePush(push);
+        Map ret= PushProducer.pushTransmissionMsgTask0(type,content,pushType,clientId,targets);
         return ret;
     }
 

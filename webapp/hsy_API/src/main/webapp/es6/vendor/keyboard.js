@@ -268,7 +268,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                             mask.style.display = 'none';
                             message.load_show('正在支付');
                             http.post('/trade/scReceipt', {
-                                totalFee: realNum,
+                                totalFee: totalFee,
                                 hsyOrderId: pageData.hsyOrderId,
                                 isMemberCardPay:0,
                                 discountFee:realNum,
