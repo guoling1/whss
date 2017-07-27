@@ -161,7 +161,7 @@ public class MerchantInTask {
     @Autowired
     private HsyShopDao hsyShopDao;
 
-    @Scheduled(cron = "0 42 * * * ?")
+    //@Scheduled(cron = "0 42 * * * ?")
     public void updateSyjMerchantRate() {
 
         List<Long> userIds = this.userChannelPolicyService.selectUserIdsBySignAndNetStatus(EnumPayChannelSign.SYJ_WECHAT.getId(), EnumNetStatus.SUCCESS.getId());
