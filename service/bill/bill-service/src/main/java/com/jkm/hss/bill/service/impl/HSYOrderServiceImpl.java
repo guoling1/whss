@@ -11,19 +11,15 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
 import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.enums.EnumHsySourceType;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.TradeListRequestParam;
 import com.jkm.hss.bill.helper.responseparam.HsyTradeListResponse;
 import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
 import com.jkm.hss.bill.service.HSYOrderService;
-import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -387,7 +383,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 if (list.get(i).getPaymentChannel()>0) {
                     list.get(i).setPaymentChannels(EnumPaymentChannel.of(list.get(i).getPaymentChannel()).getValue());
                 }
-                list.get(i).setOrderstatuss(EnumOrderStatus.of(list.get(i).getOrderstatus()).getValue());
+                list.get(i).setOrderstatuss(EnumHsyOrderStatus.of(list.get(i).getOrderstatus()).getValue());
             }
         }
         return list;
@@ -512,7 +508,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 if (list.get(i).getPaymentChannel()>0) {
                     list.get(i).setPaymentChannels(EnumPaymentChannel.of(list.get(i).getPaymentChannel()).getValue());
                 }
-                list.get(i).setOrderstatuss(EnumOrderStatus.of(list.get(i).getOrderstatus()).getValue());
+                list.get(i).setOrderstatuss(EnumHsyOrderStatus.of(list.get(i).getOrderstatus()).getValue());
             }
         }
         return list;

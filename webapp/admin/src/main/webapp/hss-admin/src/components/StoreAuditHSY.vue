@@ -381,6 +381,12 @@
             <el-button type="primary" size="small" v-if="isInput" @click="rateChange"  :loading="auditClick">保存</el-button>
             <el-button type="primary" size="small" v-if="isInput" @click="rateNoChange">取消</el-button>
           </template>
+          <div>D0提现：
+            <span v-if="$msg.isOpenD0==1">已开通</span>
+            <span v-if="$msg.isOpenD0!=1">已关闭</span>
+            <el-button type="success" size="small" v-if="$msg.isOpenD0!=1" @click="changeD0(1)" :loading="auditClick">开通</el-button>
+            <el-button type="danger" size="small"  v-if="$msg.isOpenD0==1" @click="changeD0(0)" :loading="auditClick">关闭</el-button>
+          </div>
         </div>
       </div>
       <div class="box box-primary" style="overflow: hidden">
@@ -865,6 +871,29 @@
         });
     },
     methods: {
+      changeD0:function (val) {
+        this.auditClick = true;
+        this.$http.post('/admin/hsyMerchantList/modifyD0withdraw',{userId:this.msg.uid,isOpenD0:val})
+          .then(res=>{
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            })
+            this.auditClick = false;
+            this.getData();
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+            this.getData();
+          })
+
+      },
       openChangePhone: function () {
         this.isPhone = true
       },
