@@ -1084,7 +1084,7 @@ public class OrderServiceImpl implements OrderService {
                     list.get(i).setUpdateTimes(dates);
                 }
                 if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getUpperChannel().getValue());
                 }
             }
         }
