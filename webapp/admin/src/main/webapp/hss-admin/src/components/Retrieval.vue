@@ -61,7 +61,7 @@
             <el-table-column prop="userType" label="用户类型"></el-table-column>
             <el-table-column prop="realPayAmount" label="提现金额" align="right">
               <template scope="scope">
-                <span>{{scope.row.tradeAmount|toFix}}</span>
+                <span>{{scope.row.realPayAmount|toFix}}</span>
               </template>
             </el-table-column>
             <el-table-column label="手续费" align="right">
