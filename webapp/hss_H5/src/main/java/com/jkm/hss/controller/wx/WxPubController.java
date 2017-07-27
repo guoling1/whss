@@ -1545,7 +1545,7 @@ public class WxPubController extends BaseController {
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
             // 活动通道卡盟需更新一次上游结算费率
-            if ( ! merchantChannelRate.getRemarks().equals("已同步")){
+            if ( (merchantChannelRate.getRemarks() == null) || (! merchantChannelRate.getRemarks().equals("已同步"))){
                 log.info("去卡盟上游同步费率");
                 final JSONObject jo = this.merchantChannelRateService.updateKmMerchantRateInfo(merchantInfo.get().getAccountId(), merchantInfo.get().getId(), merchantInfo.get().getProductId(), checkMerchantInfoRequest.getChannelTypeSign());
                 if(jo.getInt("code")==-1){
