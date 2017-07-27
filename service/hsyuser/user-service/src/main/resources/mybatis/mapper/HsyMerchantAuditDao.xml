@@ -719,8 +719,8 @@
     <update id="modifyD0withdraw">
         UPDATE app_au_user
         <set>
-            <if test="IsOpenDo!=null and IsOpenDo!=''">
-                ISOPEND0= #{IsOpenDo},
+            <if test="isOpenDo!=null and isOpenDo!=''">
+                ISOPEND0= #{isOpenDo},
             </if>
         </set>
         WHERE ID=#{userId}
