@@ -25,16 +25,6 @@
         </div>
     </div>
 </div>
-    <%--<h1 style="font-size: 40px;">
-        尊敬的 ${cellphone}准会员：
-        您的会员卡还差一步即可开通成功
-        请您点击下方的【继续开卡】
-        <br>
-
-        &lt;%&ndash;临时写的应该用ajax&ndash;%&gt;
-        <a style="color:red;" id="recharge">继续开卡</a>
-        &lt;%&ndash;<a style="color:red;" href="<%=basePath%>membership/recharge?mid=${mid}&type=activate&source=${source}">继续开卡</a>&ndash;%&gt;
-    </h1>--%>
 </body>
 <script>
     var pageData = {
