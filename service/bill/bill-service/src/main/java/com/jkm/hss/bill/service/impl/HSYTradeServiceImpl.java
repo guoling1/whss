@@ -1675,8 +1675,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 this.orderService.selectOrderListByCount(account.getId(), 75, EnumOrderStatus.PAY_SUCCESS, DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
         //判断交易时间 9:00 -22:00
         int isInDate = EnumBoolean.TRUE.getCode();
+        String dateMsg= "";
         if(!DateUtil.isInDate(new Date(),"09:00:00","22:00:00")){
             isInDate = EnumBoolean.FALSE.getCode();
+            dateMsg = "提现时间每日9:00-22:00";
         }
         //判断当天是否已经提现
         List<Order> withdrawOrders =  this.orderService.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
@@ -1734,6 +1736,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         jsonObject.put("withDrawOrderId",withDrawOrderId);
         jsonObject.put("isFirst",isFirst);
         jsonObject.put("isInDate",isInDate);
+        jsonObject.put("dateMsg",dateMsg);
         return jsonObject;
     }
 
