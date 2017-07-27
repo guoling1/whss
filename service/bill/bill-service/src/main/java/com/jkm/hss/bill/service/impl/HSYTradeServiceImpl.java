@@ -1575,6 +1575,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 result.put("withDrawOrderId", jsonObject.getString("withDrawOrderId"));
                 result.put("isFirst", jsonObject.getString("isFirst"));
                 jsonObject.put("isInDate", jsonObject.getString("isInDate"));
+                jsonObject.put("dateMsg", jsonObject.getString("dateMsg"));
             }else{
                 result.put("canWithdraw", EnumBoolean.FALSE.getCode());
                 result.put("phone", appAuUser.getCellphone());
