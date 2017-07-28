@@ -480,6 +480,9 @@
           <el-form-item label="账号" label-width="120px">
             <el-input v-model="bankForm.cardNo" size="small" style="width: 100%"></el-input>
           </el-form-item>
+          <el-form-item label="开户名" label-width="120px">
+            <el-input v-model="bankForm.cardAccountName" size="small" style="width: 100%"></el-input>
+          </el-form-item>
           <el-form-item label="开户行" label-width="120px">
             <el-autocomplete style="width: 100%" v-model="bankForm.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
           </el-form-item>
@@ -781,7 +784,8 @@
           bankName:'',
           bankAddress:'',
           bankAddress:'',
-          branchCode:''
+          branchCode:'',
+          cardAccountName:''
         },
         channelForm:{
           userId:'',
@@ -1050,7 +1054,8 @@
           cardNo:this.msg.cardNO,
           bankName:this.msg.cardBank,
           bankAddress:this.msg.bankAddress,
-          branchCode:this.msg.branchCode
+          branchCode:this.msg.branchCode,
+          cardAccountName:this.msg.cardAccountName
         }
         if(this.msg.anames=="北京市"||this.msg.anames=="天津市"||this.msg.anames=="上海市"||this.msg.anames=="重庆市"){
           this.item_city = [{
