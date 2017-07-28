@@ -1683,7 +1683,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //判断当天是否已经提现
         List<Order> withdrawOrders =  this.orderService.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
         int isFirst = EnumBoolean.TRUE.getCode();
-        if (withdrawOrders.size() > 10){
+        if (withdrawOrders.size() > 0){
             isFirst = EnumBoolean.FALSE.getCode();
         }
         //判断提现
