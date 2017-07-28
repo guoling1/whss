@@ -467,6 +467,13 @@ public class MembershipController {
             writeJsonToResponse(map,response,pw);
             return;
         }
+        if(appPolicyMember.getCardStatus()!=null&&appPolicyMember.getCardStatus()==CardStatus.HALT_USING.key)
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡已停办无法继续充值");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
 
         if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
             AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
