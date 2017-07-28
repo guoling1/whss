@@ -752,8 +752,10 @@ public class HsyShopServiceImpl implements HsyShopService {
     }
 
     @Override
-    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress, Long id, String branchCode) {
-        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress,id,branchCode);
+    public void changeSettlementCard(String cardNo, String bankName,
+                                     String districtCode, String bankAddress,
+                                     Long id, String branchCode, String cardAccountName) {
+        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress,id,branchCode,cardAccountName);
     }
 
     @Override

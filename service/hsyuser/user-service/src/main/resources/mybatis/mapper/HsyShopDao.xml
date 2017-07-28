@@ -356,6 +356,9 @@
             <if test="branchCode != null and branchCode != ''">
                 BRANCHCODE = #{branchCode}
             </if>
+            <if test="cardAccountName != null and cardAccountName != ''">
+                CARDACCOUNTNAME = #{cardAccountName}
+            </if>
         </set>
         WHERE SID = #{id}
     </update>

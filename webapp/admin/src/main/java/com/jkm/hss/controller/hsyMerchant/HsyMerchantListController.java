@@ -402,6 +402,9 @@ public class HsyMerchantListController extends BaseController {
         if ("".equals(hsyMerchantAuditRequest.getBranchCode())&&hsyMerchantAuditRequest.getBranchCode()==null){
             return CommonResponse.simpleResponse(-1, "联行号不能为空");
         }
+        if ("".equals(hsyMerchantAuditRequest.getCardAccountName())&&hsyMerchantAuditRequest.getCardAccountName()==null){
+            return CommonResponse.simpleResponse(-1, "开户名不能为空");
+        }
         try {
             long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
 
@@ -410,7 +413,8 @@ public class HsyMerchantListController extends BaseController {
                     hsyMerchantAuditRequest.getDistrictCode(),
                     hsyMerchantAuditRequest.getBankAddress(),
                     hsyMerchantAuditRequest.getId(),
-                    hsyMerchantAuditRequest.getBranchCode());
+                    hsyMerchantAuditRequest.getBranchCode(),
+                    hsyMerchantAuditRequest.getCardAccountName());
             this.hsyShopService.changeStatus(hsyMerchantAuditRequest.getIsPublic(),hsyMerchantAuditRequest.getId());
 
             boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId(),super.getAdminUser().getId(), EnumOpt.MODIFYDEFAULTCARD.getMsg());
