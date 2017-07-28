@@ -242,7 +242,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
             jo.put("shopName", hsyOrder.getShopname());
             jo.put("tradeAmount", hsyOrder.getRealAmount().toPlainString());
             jo.put("discountAmount", discountAmount);
-            jo.put("totalAmount", hsyOrder.getRealAmount());
+            jo.put("totalAmount", hsyOrder.getAmount());
             jo.put("payChannel", hsyOrder.getPaymentChannel());
             final HsyOrderPrintTicketRecord printTicketRecord = new HsyOrderPrintTicketRecord();
             printTicketRecord.setTradeOrderNo(hsyOrder.getOrderno());

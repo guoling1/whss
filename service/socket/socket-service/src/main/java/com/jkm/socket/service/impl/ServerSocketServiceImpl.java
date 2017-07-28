@@ -1,5 +1,6 @@
 package com.jkm.socket.service.impl;
 
+import com.jkm.base.common.util.ClientSocketUtil;
 import com.jkm.socket.service.SocketExecutorService;
 import com.jkm.socket.service.ServerSocketService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class ServerSocketServiceImpl implements ServerSocketService {
     private void acceptServerSocket() {
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(11111);
+            serverSocket = new ServerSocket(9999);
             serverSocket.setSoTimeout(60000);
             log.info("serverSocket--start");
         } catch (final IOException e) {
@@ -53,5 +54,14 @@ public class ServerSocketServiceImpl implements ServerSocketService {
         }
     }
 
+    public static void main (String[] args) {
+        try {
+            final Socket socket = new Socket("192.168.1.21", 11111);
+            ClientSocketUtil.sendMsg(socket, "{'shopId'}");
+        } catch (final Throwable e) {
+            log.error("", e);
+        }
+
+    }
 
 }
