@@ -1,6 +1,5 @@
 package com.jkm.socket.service.impl;
 
-import com.jkm.base.common.util.ClientSocketUtil;
 import com.jkm.socket.service.SocketExecutorService;
 import com.jkm.socket.service.ServerSocketService;
 import lombok.extern.slf4j.Slf4j;
