@@ -1084,7 +1084,7 @@ public class OrderServiceImpl implements OrderService {
                     list.get(i).setUpdateTimes(dates);
                 }
                 if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getUpperChannel().getValue());
                 }
             }
         }
@@ -1467,8 +1467,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrdersBySns(List<String> sns, int status,int settleStatus,long settlementRecordId,Date settleTime) {
-        this.orderDao.updateOrdersBySns(sns, status,settleStatus,settlementRecordId, settleTime);
+    public void updateOrdersBySns(List<String> sns,int settleStatus,long settlementRecordId) {
+        this.orderDao.updateOrdersBySns(sns,settleStatus,settlementRecordId);
     }
 
     @Override

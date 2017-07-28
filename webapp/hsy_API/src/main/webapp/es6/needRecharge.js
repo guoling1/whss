@@ -33,7 +33,7 @@ let onAlipayJSBridge = function (jsonData) {
         function (result) {
             if (result.resultCode == 9000 || result.resultCode == 8000) {
                 // window.location.href = '/membership/success/' + jsonData.orderId+'?mid='+pageData.mid+'&source'+pageData.source;
-                location.href="/membership/createMemberSuccess?mid="+pageData.mid+'&source='+pageData.source;
+                window.location.href="/membership/createMemberSuccess?mid="+pageData.mid+'&source='+pageData.source;
             }
         });
 };
@@ -105,10 +105,23 @@ recharge.addEventListener('click',function () {
                             message.prompt_show(data.result);
                         }else {
                             message.load_show('正在支付');
-                            http.get(data.payResponse.url, {}, function (data) {
+                            $.ajax({
+                                type:"post",
+                                url:data.payResponse.url,
+                                data:{},
+                                dataType: "json",
+                                error: function () {
+                                    alert("请求失败")
+                                },
+                                success:function (data) {
+                                    message.load_hide();
+                                    onAlipayJSBridge(data.result);
+                                }
+                            })
+                            /*http.get(data.payResponse.url, {}, function (data) {
                                 message.load_hide();
                                 onAlipayJSBridge(data);
-                            });
+                            });*/
                         }
                     }
                 });

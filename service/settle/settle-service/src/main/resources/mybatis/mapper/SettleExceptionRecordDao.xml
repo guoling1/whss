@@ -18,6 +18,7 @@
         #{settleTargetType},
         #{beginTime},
         #{endTime},
+        #{remarks},
         #{status}
         )
     </insert>
@@ -47,7 +48,7 @@
                 AND status = #{settleExceptionStatus}
             </if>
             <if test="startDate != null">
-                AND settle_date BETWEEN #{startDate} AND #{endDate}
+                AND create_time BETWEEN #{startDate} AND #{endDate}
             </if>
         </where>
     </select>
@@ -67,7 +68,7 @@
                 AND status = #{settleExceptionStatus}
             </if>
             <if test="startDate != null">
-                AND settle_date BETWEEN #{startDate} AND #{endDate}
+                AND create_time BETWEEN #{startDate} AND #{endDate}
             </if>
         </where>
         ORDER BY id DESC

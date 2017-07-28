@@ -1,6 +1,7 @@
 package com.jkm.hss.settle.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -28,6 +29,7 @@ import com.jkm.hss.settle.dao.SettleExceptionRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.entity.SettleExceptionRecord;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
+import com.jkm.hss.settle.enums.EnumSettleExceptionStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hss.settle.service.SettleExceptionRecordService;
@@ -90,8 +92,10 @@ public class SettleExceptionRecordServiceImpl implements SettleExceptionRecordSe
         final PageModel<SettleExceptionRecord> result = new PageModel<>(querySettlementRecordParams.getPageNo(), querySettlementRecordParams.getPageSize());
         querySettlementRecordParams.setOffset(result.getFirstIndex());
         querySettlementRecordParams.setCount(result.getPageSize());
-        querySettlementRecordParams.setStartDate(querySettlementRecordParams.getStartDate() + " 00:00:00");
-        querySettlementRecordParams.setEndDate(querySettlementRecordParams.getEndDate() + " 23:59:59");
+        if (!Strings.isNullOrEmpty(querySettlementRecordParams.getStartDate())){
+            querySettlementRecordParams.setStartDate(querySettlementRecordParams.getStartDate() + " 00:00:00");
+            querySettlementRecordParams.setEndDate(querySettlementRecordParams.getEndDate() + " 23:59:59");
+        }
         final int count = this.settleExceptionRecordDao.selectCountByParam(querySettlementRecordParams);
         final List<SettleExceptionRecord> records = this.settleExceptionRecordDao.selectByParam(querySettlementRecordParams);
         result.setCount(count);
@@ -121,6 +125,9 @@ public class SettleExceptionRecordServiceImpl implements SettleExceptionRecordSe
             for (Long auditId : list){
                 this.updateSettleStatus(auditId);
             }
+            settleExceptionRecord.setStatus(EnumSettleExceptionStatus.HANDLED.getId());
+            this.update(settleExceptionRecord);
+            return Pair.of(1, "处理成功");
         }
         return Pair.of(-1, "处理失败,存在未处理的提现订单");
     }

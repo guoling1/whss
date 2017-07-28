@@ -219,9 +219,9 @@ public class PushServiceImpl implements PushService {
             if (null != map.get("CLIENTID")) {
                 final String clientid = map.get("CLIENTID").toString();
                 if (map.get("ISAVOIDINGTONE") == null || map.get("ISAVOIDINGTONE").toString().equals("0")) {
-                    clients1.add(clientid);
-                } else {
                     clients.add(clientid);
+                } else {
+                    clients1.add(clientid);
                 }
             }
         }

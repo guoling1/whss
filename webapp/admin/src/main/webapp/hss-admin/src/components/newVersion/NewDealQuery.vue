@@ -102,6 +102,7 @@
                 <el-option label="快捷支付" value="unionpay"></el-option>
                 <el-option label="QQ钱包" value="qqpay"></el-option>
                 <el-option label="银联扫码" value="hj_unionpay"></el-option>
+                <el-option label="会员卡支付" value="member"></el-option>
               </el-select>
             </li>
             <li class="same">
