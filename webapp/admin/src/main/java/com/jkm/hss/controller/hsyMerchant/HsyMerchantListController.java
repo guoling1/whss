@@ -472,4 +472,25 @@ public class HsyMerchantListController extends BaseController {
             throw e;
         }
     }
+
+    /**
+     * 修改d0提现
+     * @param userD0WithdrawRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/modifyD0withdraw",method = RequestMethod.POST)
+    public CommonResponse modifyD0withdraw(@RequestBody final UserD0WithdrawRequest userD0WithdrawRequest){
+        try {
+            int backCount = this.hsyMerchantAuditService.modifyD0withdraw(userD0WithdrawRequest);
+            if(backCount>0){
+                return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"修改成功");
+            }else{
+                return CommonResponse.simpleResponse(-1,"修改失败");
+            }
+        }catch (Exception e){
+            log.debug("修改失败");
+            throw e;
+        }
+    }
 }

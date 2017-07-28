@@ -685,6 +685,16 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     /**
+     * 修改商户d0提现
+     *
+     * @param userD0WithdrawReques
+     */
+    @Override
+    public int modifyD0withdraw(UserD0WithdrawRequest userD0WithdrawReques) {
+        return this.hsyMerchantAuditDao.modifyD0withdraw(userD0WithdrawReques);
+    }
+
+    /**
      * 获取临时路径
      *
      * @return

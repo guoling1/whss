@@ -284,9 +284,9 @@
         AND settle_status = 1
         AND refund_status = 0
         AND settle_time = #{settleDate}
-        <if test="accountIdlist != null">
+        <if test="accountIdList != null">
             AND payee not in
-            <foreach collection="accountIdlist" index="index" item="item" open="(" separator="," close=")">
+            <foreach collection="accountIdList" index="index" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -320,7 +320,7 @@
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
         LEFT JOIN tb_dealer d ON b.id = d.account_id
         WHERE
-          a.trade_type = 3
+          a.trade_type = 3 AND a.status != 9
     <if test="businessOrderNo != null and businessOrderNo != ''">
         AND a.business_order_no = #{businessOrderNo}
     </if>
@@ -3209,7 +3209,7 @@
 
     <select id="selectBySettlementReocrdId" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order
-        WHERE settlement_record_id = #{settlementRecordId}
+        WHERE settlement_record_id = #{settlementRecordId} AND trade_type = 1
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>
@@ -3236,8 +3236,8 @@
         UPDATE tb_order SET settle_status = #{settleStatus}, success_settle_time = NOW() WHERE  settlement_record_id = #{settlementRecordId} AND settle_status = #{oriSettleStatus}
     </update>
     <update id="updateOrdersBySns">
-        UPDATE tb_order SET status = #{status}, settle_status = #{settleStatus},settlement_record_id = #{settleId},
-        settle_time = #{settleTime}  WHERE sn in
+        UPDATE tb_order SET settle_status = #{settleStatus},settlement_record_id = #{settleId}
+        WHERE sn in
         <foreach collection="sns" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -3635,7 +3635,7 @@
         </if>
     </select>
     <select id="selectOrderListByCount" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE payee = #{accountId} AND status = #{status} AND pay_channel_sign in(801,802) AND settle_status = 1
+        SELECT * FROM tb_order WHERE payee = #{accountId} AND status IN(4,7) AND pay_channel_sign in(801,802) AND settle_status = 1
         AND refund_status = 0 AND pay_success_time BETWEEN #{beginTime} AND #{endTime} ORDER BY id ASC limit #{count}
     </select>
     <select id="selectOrderBySn" resultType="com.jkm.hss.bill.entity.Order">
@@ -3648,10 +3648,10 @@
         SELECT * FROM tb_order WHERE payer = #{accountId} AND app_id = 'hsy' AND trade_type = 3 AND status in(5, 6, 10) ORDER BY create_time DESC limit #{firstIndex},#{pageSize}
     </select>
     <select id="selectWithdrawingOrderByAccountId" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE payee = #{accountId} AND status  in(5,6) AND pay_channel_sign in(801,802)
+        SELECT * FROM tb_order WHERE payee = #{accountId} AND status  in(5,6,10) AND pay_channel_sign in(801,802)
         AND refund_status = 0 AND create_time BETWEEN #{begin} AND #{end}
     </select>
     <select id="selectWithdrawingOrderByBefore" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE app_id = 'hsy' AND trade_type = 3 AND payer = payee AND merchant_no !=null  AND apply_time  &lt; #{date} AND status = 5
+        SELECT * FROM tb_order WHERE app_id = 'hsy' AND trade_type = 3 AND payer = payee AND status = 5 AND merchant_no !=''  AND create_time  &lt; #{date}
     </select>
 </mapper>

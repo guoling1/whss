@@ -87,8 +87,10 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
                 this.orderService.selectOrderListByCount(account.getId(), 75, EnumOrderStatus.PAY_SUCCESS, DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
         //判断交易时间 9:00 -22:00
         int isInDate = EnumBoolean.TRUE.getCode();
+        String dateMsg = "";
         if(!DateUtil.isInDate(new Date(),"09:00:00","22:00:00")){
             isInDate = EnumBoolean.FALSE.getCode();
+            dateMsg = "提现时间每日9:00-22:00";
         }
         //判断当天是否已经提现
         List<Order> withdrawOrders =  this.orderService.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
@@ -146,6 +148,7 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
         jsonObject.put("withDrawOrderId",withDrawOrderId);
         jsonObject.put("isFirst",isFirst);
         jsonObject.put("isInDate",isInDate);
+        jsonObject.put("dateMsg", dateMsg);
         return jsonObject;
     }
 
@@ -157,7 +160,6 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
     @Transactional
     @Override
     public Pair<Integer, String> confirmWithdraw(long withDrawOrderId) {
-        log.info("发起提现2.0");
         final WithdrawOrder withdrawOrder = this.selectByIdWithlock(withDrawOrderId);
         final AppBizShop appBizShop =
                 this.hsyShopDao.findPrimaryAppBizShopByAccountID(withdrawOrder.getWithdrawUserAccountId()).get(0);
@@ -272,7 +274,7 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
             settlementRecord.setSettleChannel(EnumSettleChannel.ALL.getId());
             this.settlementRecordService.add(settlementRecord);
             //更新交易订单为提现中， 结算中
-            this.orderDao.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAWING.getId(), EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId(), null);
+            this.orderDao.updateOrdersBySns(sns, EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId());
             //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
             withdrawOrder.setSn(response.getSn());
             withdrawOrder.setOrderSettleTime(firstOrder.getSettleTime());
@@ -287,12 +289,12 @@ public class WithdrawOrderServiceImpl implements WithdrawOrderService {
             withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
             withdrawOrder.setRemarks("提现失败");
             this.update(withdrawOrder);
-            return Pair.of(-1, "提现失败");
+            return Pair.of(-1, "银行受理失败");
         }
         withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
         withdrawOrder.setRemarks("提现失败");
         this.update(withdrawOrder);
-        return Pair.of(-1, "提现失败");
+        return Pair.of(-1, "银行受理失败");
     }
 
     private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account, AppBizCard appBizCard) {
