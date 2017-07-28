@@ -56,7 +56,7 @@ public class ServerSocketServiceImpl implements ServerSocketService {
 
     public static void main (String[] args) {
         try {
-            final Socket socket = new Socket("192.168.1.21", 9999);
+            final Socket socket = new Socket("218.241.209.214", 11111);
             ClientSocketUtil.sendMsg(socket, "{'shopId'}");
         } catch (final Throwable e) {
             log.error("", e);
