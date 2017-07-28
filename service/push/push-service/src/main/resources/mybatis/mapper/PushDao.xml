@@ -3,26 +3,9 @@
 <mapper namespace="com.jkm.hss.push.dao.PushDao">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_push_message_record_new
-        (
-        title,
-        content,
-        temp_type,
-        push_type,
-        targets,
-        transaction_number,
-        voice
-        )
-        VALUES
-        (
-        #{title},
-        #{content},
-        #{tempType},
-        2,
-        #{targets},
-        #{transactionNumber},
-        #{voice}
-        )
+        INSERT INTO tb_push_message_record_new (title, content, temp_type, push_type, targets, transaction_number, voice)
+        SELECT #{title}, #{content}, #{tempType}, 2, #{targets}, #{transactionNumber}, #{voice} FROM DUAL
+        WHERE NOT EXISTS (SELECT 1 FROM tb_push_message_record_new WHERE transaction_number = #{transactionNumber} AND voice = #{voice});
     </insert>
 
     <update id="updatePush">

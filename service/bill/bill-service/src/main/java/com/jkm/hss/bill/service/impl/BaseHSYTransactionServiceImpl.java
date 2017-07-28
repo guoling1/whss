@@ -227,11 +227,12 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
      *
      * @param hsyOrderId
      */
+    @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void sendPrintMsg(final long hsyOrderId) {
         final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
         try {
             final String discountAmount = hsyOrder.getRealAmount().subtract(hsyOrder.getAmount()).toPlainString();
-            log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
             final JSONObject jo = new JSONObject();
             jo.put("shopId", hsyOrder.getShopid());
             jo.put("orderNo", hsyOrder.getOrdernumber());
@@ -247,7 +248,10 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
             printTicketRecord.setTradeOrderNo(hsyOrder.getOrderno());
             printTicketRecord.setMsg(jo.toJSONString());
             this.hsyOrderPrintTicketRecordService.add(printTicketRecord);
-            this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
+            if (printTicketRecord.getId() > 0) {
+                log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
+                this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
+            }
         } catch (final Throwable e) {
             log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + hsyOrder.getOrderno() + "]，发送打印socket异常", e);
         }
