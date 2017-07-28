@@ -320,7 +320,7 @@
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
         LEFT JOIN tb_dealer d ON b.id = d.account_id
         WHERE
-          a.trade_type = 3
+          a.trade_type = 3 AND status != 9
     <if test="businessOrderNo != null and businessOrderNo != ''">
         AND a.business_order_no = #{businessOrderNo}
     </if>
