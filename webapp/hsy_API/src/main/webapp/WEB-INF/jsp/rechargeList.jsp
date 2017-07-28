@@ -21,10 +21,15 @@
             <div id="context" class="weui-cell__ft">￥<span class="price">55.21</span></div>
         </div>
     </div>
+    <div id="empty" class="empty">
+        <div class="img"></div>
+        <div class="text">暂无充值记录</div>
+    </div>
 </div>
 <%--<a href="<%=basePath%>membership/rechargeListByPage?mid=${mid}&currentPage=1">test</a>--%>
 </body>
-<script src="../../js/jquery-2.2.3.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/rechargeList.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/rechargeList.min.js"></script>--%>
+<script src="../../js/2.0.2/rechargeList.min.js"></script>
 </html>

@@ -17,7 +17,7 @@
         <%--<div class="right"><span id="right">体验卡</span></div>--%>
     </div>
         <%--<a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}">会员卡名称<c:out value="${member.membershipName}"></c:out></a>--%>
-        <ul class="leftList" id="leftList">
+        <ul class="leftList" id="leftList" <c:if test="${memberList.size()<1}">style="display: none" </c:if>>
             <c:forEach items="${memberList}" var="member">
             <li>
                 <a href="<%=basePath%>membership/memberInfo?mid=${member.id}&source=${source}" style="display: inline-block;width: 100%;height: 100%;">
@@ -28,6 +28,10 @@
             </li>
             </c:forEach>
         </ul>
+    <div id="empty" class="empty" <c:if test="${memberList.size()<1}">style="display: block" </c:if>>
+        <div class="img"></div>
+        <div class="text">还没有会员卡</div>
+    </div>
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>

@@ -4,6 +4,7 @@ const tools = _require('tools');
 let query = tools.GetUrlArg();
 let weuiCells = document.getElementById('weui-cells');
 let record = document.getElementById('record');
+let empty = document.getElementById('empty');
 let nowPage = 1;
 let more = document.createElement('div');
 more.className = 'touch_more';
@@ -40,35 +41,40 @@ let getData = function (e, page) {
             alert("请求失败")
         },
         success: function (data) {
-            for (let i = 0; i < data.list.length; i++) {
-                let div_list = document.createElement('div');
-                div_list.className = 'weui-cell';
-                let div_list_left = document.createElement('div');
-                div_list_left.className = 'weui-cell__bd';
-                let left_title = document.createElement('p');
-                left_title.innerHTML = data.list[i].typeName;
-                let left_date = document.createElement('p');
-                left_date.className = 'time';
-                left_date.innerHTML = data.list[i].updateTime;
-                div_list_left.appendChild(left_title);
-                div_list_left.appendChild(left_date);
-                let div_list_right = document.createElement('div');
-                div_list_right.className = 'weui-cell__ft';
-                let span = document.createElement('span');
-                span.innerHTML = "￥";
-                let span1 = document.createElement('span');
-                span1.innerHTML = data.list[i].tradeAmount;
-                div_list_right.appendChild(span)
-                div_list_right.appendChild(span1)
-                div_list.appendChild(div_list_left);
-                div_list.appendChild(div_list_right);
-                // weuiCells.insertBefore(div_list, weuiCells.childNodes[0]);
-                weuiCells.appendChild(div_list);
-            }
-            if (data.page.totalPage != nowPage) {
-                more.style.display = 'block';
-            } else {
-                more.style.display = 'none';
+            if(data.list.length==0){
+                empty.style.display='block';
+                more.style.display='none';
+            }else{
+                for (let i = 0; i < data.list.length; i++) {
+                    let div_list = document.createElement('div');
+                    div_list.className = 'weui-cell';
+                    let div_list_left = document.createElement('div');
+                    div_list_left.className = 'weui-cell__bd';
+                    let left_title = document.createElement('p');
+                    left_title.innerHTML = data.list[i].typeName;
+                    let left_date = document.createElement('p');
+                    left_date.className = 'time';
+                    left_date.innerHTML = data.list[i].updateTime;
+                    div_list_left.appendChild(left_title);
+                    div_list_left.appendChild(left_date);
+                    let div_list_right = document.createElement('div');
+                    div_list_right.className = 'weui-cell__ft';
+                    let span = document.createElement('span');
+                    span.innerHTML = "￥";
+                    let span1 = document.createElement('span');
+                    span1.innerHTML = data.list[i].tradeAmount;
+                    div_list_right.appendChild(span)
+                    div_list_right.appendChild(span1)
+                    div_list.appendChild(div_list_left);
+                    div_list.appendChild(div_list_right);
+                    // weuiCells.insertBefore(div_list, weuiCells.childNodes[0]);
+                    weuiCells.appendChild(div_list);
+                }
+                if (data.page.totalPage != nowPage) {
+                    more.style.display = 'block';
+                } else {
+                    more.style.display = 'none';
+                }
             }
         }
     });

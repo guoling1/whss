@@ -21,10 +21,15 @@
             <div id="context" class="weui-cell__ft">￥<span class="price">55.21</span></div>
         </div>
     </div>
+    <div id="empty" class="empty">
+        <div class="img"></div>
+        <div class="text">暂无消费记录</div>
+    </div>
 </div>
+
 </body>
-<script src="../../js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/consumeList.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/consumeList.min.js"></script>--%>
+<script src="../../js/2.0.2/consumeList.min.js"></script>
 </html>

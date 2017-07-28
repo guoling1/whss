@@ -2,6 +2,7 @@
 const http = _require('http');
 const message = _require('message');
 let recharge = document.getElementById('recharge');
+let abandon = document.getElementById('abandon');
 // 唤起微信支付
 let onWeixinJSBridge = function (jsonData) {
     WeixinJSBridge.invoke(
@@ -71,18 +72,6 @@ recharge.addEventListener('click',function () {
                         }
                     }
                 });
-                /*http.post_form('/membership/recharge',{
-                    type: pageData.type,
-                    source: pageData.source,
-                    mid: pageData.mid,
-                },function (data) {
-                    console.log(data.payResponse.url)
-                    http.get(data.payResponse.url, {}, function (data) {
-                        console.log(data)
-                        message.load_hide();
-                        onWeixinJSBridge(data);
-                    });
-                })*/
                 break;
             case 'ZFB':
                 $.ajax({
@@ -118,25 +107,29 @@ recharge.addEventListener('click',function () {
                                     onAlipayJSBridge(data.result);
                                 }
                             })
-                            /*http.get(data.payResponse.url, {}, function (data) {
-                                message.load_hide();
-                                onAlipayJSBridge(data);
-                            });*/
                         }
                     }
                 });
-                /*http.post_form('/membership/recharge',{
-                    type: pageData.type,
-                    source: pageData.source,
-                    mid: pageData.mid,
-                },function (data) {
-                    http.get(data.payResponse.url, {}, function (data) {
-                        message.load_hide();
-                        onAlipayJSBridge(data);
-                    });
-                })*/
                 break;
         }
     }
+});
+abandon.addEventListener('click',function () {
+    $.ajax({
+        type: "get",
+        url: '/membership/recharge',
+        data:{
+            type: pageData.type,
+            source: pageData.source,
+            mid: pageData.mid
+        },
+        dataType: "json",
+        error: function () {
+            alert("请求失败")
+        },
+        success: function (data) {
+
+        }
+    });
 })
 

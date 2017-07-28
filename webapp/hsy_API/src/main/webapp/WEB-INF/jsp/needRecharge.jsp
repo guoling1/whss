@@ -15,6 +15,7 @@
     <p class="title">尊敬的 ${cellphone}准会员：</p>
     <p class="content">您的会员卡还差一步即可开通成功，请您点击下方的【继续开卡】</p>
     <div id="recharge" class="weui-btn weui-btn_primary">继续开卡</div>
+    <div id="abandon" class="weui-btn weui-btn_primary">放弃开卡</div>
     <div class="js_dialog" id="iosDialog2" style="display: none">
         <div class="weui-mask"></div>
         <div class="weui-dialog">
@@ -33,7 +34,7 @@
         mid　: '${mid}'
     }
 </script>
-<script src="../../js/jquery-2.2.3.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
