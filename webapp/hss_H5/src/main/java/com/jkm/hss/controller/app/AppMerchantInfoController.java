@@ -84,8 +84,6 @@ public class AppMerchantInfoController extends BaseController {
     @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
     @Autowired
-    private OemInfoService oemInfoService;
-    @Autowired
     private SmsAuthService smsAuthService;
     @Autowired
     private DealerRecommendService dealerRecommendService;
@@ -349,64 +347,6 @@ public class AppMerchantInfoController extends BaseController {
                 return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
             }
 
-        }
-    }
-
-    /**
-     * 登录
-     * @param directLoginRequest
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "login", method = RequestMethod.POST)
-    public CommonResponse login(@RequestBody DirectLoginRequest directLoginRequest) {
-        long oemId = 0;
-        if(directLoginRequest.getOemNo()!=null&&!"".equals(directLoginRequest.getOemNo())){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(directLoginRequest.getOemNo());
-            if(!oemInfoOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "分公司不存在");
-            }
-            oemId = oemInfoOptional.get().getDealerId();
-        }else{
-            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
-            if(merchantInfoList.size()>0){
-                for(int i=0;i<merchantInfoList.size();i++){
-                    if(merchantInfoList.get(i).getOemId()>0){
-                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
-                        if((WxConstants.APP_ID).equals(oemInfoOptional1.get().getAppId())){
-                            oemId = merchantInfoList.get(i).getOemId();
-                        }
-                    }
-                }
-            }
-        }
-        if (StringUtils.isBlank(directLoginRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "手机号不能为空");
-        }
-        if (StringUtils.isBlank(directLoginRequest.getCode())) {
-            return CommonResponse.simpleResponse(-1, "验证码不能为空");
-        }
-        if (!ValidateUtils.isMobile(directLoginRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "手机号格式错误");
-        }
-        if (!ValidateUtils.verifyCodeCheck(directLoginRequest.getCode())) {
-            return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
-        }
-        final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.LOGIN_MERCHANT);
-        if (1 != checkResult.getLeft()) {
-            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-        }
-        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(directLoginRequest.getMobile()),oemId);
-        if(!merchantInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该账户不存在，请确定手机号是否正确");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantInfoOptional.get().getId());
-        if(userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该账户不存在，请确定手机号是否正确");
-        }else{
-            log.info("手机号不正确");
-            return CommonResponse.simpleResponse(-1, "该账户不存在，请确定手机号是否正确");
         }
     }
 }
