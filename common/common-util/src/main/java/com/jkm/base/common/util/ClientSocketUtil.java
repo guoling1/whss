@@ -31,6 +31,7 @@ public final class ClientSocketUtil {
                 break;
             }
         }
+        log.info("读取socket信息-[{}]", msg.toString());
         return msg.toString().substring(0, msg.toString().length() - 3);
     }
 
