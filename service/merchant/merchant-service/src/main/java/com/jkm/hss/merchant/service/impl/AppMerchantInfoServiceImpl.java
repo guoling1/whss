@@ -88,6 +88,8 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
     private RecommendService recommendService;
     @Autowired
     private AppAuTokenDao appAuTokenDao;
+    @Autowired
+    private DealerRecommendService dealerRecommendService;
 
     /**
      * 获取验证码 HSS001005
@@ -266,7 +268,7 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
             mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
             mi.setProductId(productId);
             if(inviteCode.length()==6){
-                mi.setSource(EnumSource.APPDEALERRECOMMEND.getId());
+                mi.setSource(EnumSource.DEALERRECOMMEND.getId());
                 Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(inviteCode);
                 if(!dealerOptional.isPresent()){
                     throw new ApiHandleException(ResultCode.INVITECODE_NOT_EXSIT);
@@ -335,8 +337,25 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
                 userInfoService.insertUserInfo(uo);
                 String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER, EnumGlobalIDPro.MIN,uo.getId()+"");
                 userInfoService.updatemarkCode(tempMarkCode,uo.getId());
+
+                //添加好友
+                DealerRecommend dealerRecommend = new DealerRecommend();
+                dealerRecommend.setDealerId(dealerOptional.get().getId());
+                dealerRecommend.setRecommendMerchantId(mi.getId());
+                dealerRecommend.setType(EnumRecommendType.DIRECT.getId());
+                dealerRecommend.setStatus(1);
+                dealerRecommendService.insert(dealerRecommend);
+
+                if(mi.getFirstDealerId()>0&&dealerOptional.get().getLevel()>1){//间接好友
+                    DealerRecommend dealerRecommend1 = new DealerRecommend();
+                    dealerRecommend1.setDealerId(mi.getFirstDealerId());
+                    dealerRecommend1.setRecommendMerchantId(mi.getId());
+                    dealerRecommend1.setType(EnumRecommendType.INDIRECT.getId());
+                    dealerRecommend1.setStatus(1);
+                    dealerRecommendService.insert(dealerRecommend1);
+                }
             }else{
-                mi.setSource(EnumSource.APPRECOMMEND.getId());
+                mi.setSource(EnumSource.RECOMMEND.getId());
                 //初始化代理商和商户
                 Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(inviteCode),oemId);
                 if(!merchantInfoOptional.isPresent()){

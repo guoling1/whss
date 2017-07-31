@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.DealerRecommendDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+		 id,	dealer_id,	recommend_merchant_id,	type,status,	create_time,	update_time
+	</sql>
+
+    <!-- 添加 （匹配有值的字段）-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_dealer_recommend
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="dealerId != null">
+                dealer_id,
+            </if>
+            <if test="recommendMerchantId != null">
+                recommend_merchant_id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="dealerId!=null">
+                #{dealerId},
+            </if>
+            <if test="recommendMerchantId!=null">
+                #{recommendMerchantId},
+            </if>
+            <if test="type!=null">
+                #{type},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!--我推荐的好友-->
+    <select id="selectRecommendByPage" resultType="com.jkm.hss.merchant.entity.RecommendShort">
+        SELECT
+        i.name,r.type,i.status,i.mobile
+        FROM tb_recommend as r left JOIN tb_merchant_info as i on r.dealer_id=i.super_dealer_id
+        WHERE r.dealer_id=#{dealerId} and r.status = 1 ORDER BY r.create_time DESC
+    </select>
+</mapper>

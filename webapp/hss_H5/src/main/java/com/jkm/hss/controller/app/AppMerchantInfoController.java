@@ -20,17 +20,11 @@ import com.jkm.hss.helper.request.AppMerchantLoginCodeRequest;
 import com.jkm.hss.helper.request.DirectLoginRequest;
 import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
-import com.jkm.hss.merchant.entity.MerchantChannelRate;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.Recommend;
-import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
-import com.jkm.hss.merchant.service.MerchantChannelRateService;
-import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.RecommendService;
-import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
@@ -94,64 +88,7 @@ public class AppMerchantInfoController extends BaseController {
     @Autowired
     private SmsAuthService smsAuthService;
     @Autowired
-    private SendMessageService sendMessageService;
-    /**
-     * 获取注册验证码
-     * @param codeRequest
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "getRegisterCode", method = RequestMethod.POST)
-    public CommonResponse getRegisterCode(@RequestBody AppMerchantLoginCodeRequest codeRequest) {
-        final String mobile = codeRequest.getMobile();
-        if (StringUtils.isBlank(mobile)) {
-            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "手机号不能为空");
-        }
-        if (!ValidateUtils.isMobile(mobile)) {
-            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "手机号格式错误");
-        }
-        long oemId = 0;
-        if(oemId>0){
-            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(codeRequest.getOemId());
-            if(!oemInfoOptional.isPresent()){
-                return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "分公司不存在");
-            }
-            oemId = oemInfoOptional.get().getDealerId();
-        }else{
-            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
-            if(merchantInfoList.size()>0){
-                for(int i=0;i<merchantInfoList.size();i++){
-                    if(merchantInfoList.get(i).getOemId()==0){
-                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
-                    }else{
-                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
-                        if(WxConstants.APP_ID.equals(oemInfoOptional1.get().getAppId())){
-                            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
-                        }
-                    }
-                }
-            }
-
-        }
-        Optional<MerchantInfo> userInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
-        if(userInfoOptional.isPresent()){
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
-        }
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.REGISTER_MERCHANT);
-        if (1 == verifyCode.getLeft()) {
-            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
-            this.sendMessageService.sendMessage(SendMessageParams.builder()
-                    .mobile(mobile)
-                    .uid("")
-                    .data(params)
-                    .userType(EnumUserType.BACKGROUND_USER)
-                    .noticeType(EnumNoticeType.REGISTER_MERCHANT)
-                    .build()
-            );
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功",true);
-        }
-        return CommonResponse.simpleResponse(-1, verifyCode.getRight());
-    }
+    private DealerRecommendService dealerRecommendService;
     /**
      * 注册
      *
@@ -234,7 +171,7 @@ public class AppMerchantInfoController extends BaseController {
             mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
             mi.setProductId(productId);
             if(loginRequest.getInviteCode().length()==6){
-                mi.setSource(EnumSource.APPDEALERRECOMMEND.getId());
+                mi.setSource(EnumSource.DEALERRECOMMEND.getId());
                 Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
                 if(!dealerOptional.isPresent()){
                     return CommonResponse.simpleResponse(-1, "邀请码(代理商)不存在");
@@ -308,9 +245,25 @@ public class AppMerchantInfoController extends BaseController {
                 userInfoService.insertUserInfo(uo);
                 String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
                 userInfoService.updatemarkCode(tempMarkCode,uo.getId());
+                //添加好友
+                DealerRecommend dealerRecommend = new DealerRecommend();
+                dealerRecommend.setDealerId(dealerOptional.get().getId());
+                dealerRecommend.setRecommendMerchantId(mi.getId());
+                dealerRecommend.setType(EnumRecommendType.DIRECT.getId());
+                dealerRecommend.setStatus(1);
+                dealerRecommendService.insert(dealerRecommend);
+
+                if(mi.getFirstDealerId()>0&&dealerOptional.get().getLevel()>1){//间接好友
+                    DealerRecommend dealerRecommend1 = new DealerRecommend();
+                    dealerRecommend1.setDealerId(mi.getFirstDealerId());
+                    dealerRecommend1.setRecommendMerchantId(mi.getId());
+                    dealerRecommend1.setType(EnumRecommendType.INDIRECT.getId());
+                    dealerRecommend1.setStatus(1);
+                    dealerRecommendService.insert(dealerRecommend1);
+                }
                 return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
             }else{
-                mi.setSource(EnumSource.APPRECOMMEND.getId());
+                mi.setSource(EnumSource.RECOMMEND.getId());
                 //初始化代理商和商户
                 Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(loginRequest.getInviteCode()),oemId);
                 if(!merchantInfoOptional.isPresent()){

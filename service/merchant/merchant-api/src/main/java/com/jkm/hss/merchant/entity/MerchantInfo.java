@@ -231,6 +231,10 @@ public class MerchantInfo extends BaseEntity{
      * 卡盟修改结果
      */
     private Integer kmNetStatus;
+    /**
+     * 超级合伙人编码
+     */
+    private Long superDealerId;
 
     public String getPlainBankMobile(String phone){
         return phone.substring(0,3) + "****" + phone.substring(7,11);
