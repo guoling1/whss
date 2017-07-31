@@ -410,7 +410,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 Preconditions.checkState(updateCount == updateCount2, "将结算单id更新到结算流水，个数异常");
             }
         }
-        //this.generateSettlementAuditRecordSendMsg(merchantSettlementRecords);
+        this.generateSettlementAuditRecordSendMsg(merchantSettlementRecords);
 
         return Pair.of(0, "success");
     }
