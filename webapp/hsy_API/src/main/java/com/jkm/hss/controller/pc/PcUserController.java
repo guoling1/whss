@@ -148,6 +148,7 @@ public class PcUserController extends BaseController {
             }
         }
         if (!CollectionUtils.isEmpty(updateScanPrintShopIds)) {
+            log.info("店铺[{}],开启扫码打印小票功能", updateScanPrintShopIds);
             this.hsyShopDao.updateOpenScanPrintByShopIds(updateScanPrintShopIds);
         }
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
