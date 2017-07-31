@@ -255,7 +255,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             payResponse.setMessage("支付成功");
 
             //推送 打印
-            this.basePushAndSendService.pushAndSendPrintMsg(payResponse.getBusinessOrderNo(), payResponse.getTradeOrderNo(), updateOrder.getPaySuccessTime());
+            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), updateOrder.getPaySuccessTime());
 
             return payResponse;
         }

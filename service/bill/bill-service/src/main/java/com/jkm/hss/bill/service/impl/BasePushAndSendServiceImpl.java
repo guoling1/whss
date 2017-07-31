@@ -50,7 +50,7 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void pushAndSendPrintMsg(final String orderNumber, final String orderNo, final Date successTime) {
         final HsyOrder hsyOrder = this.hsyOrderService.getByOrderNumber(orderNumber).get();
-        log.info("店铺[{}], 订单[{}], 交易[{}], 开始推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
+        log.info("店铺[{}], 订单[{}], 交易[{}], 开始推送", hsyOrder.getShopid(), hsyOrder.getId(), orderNo);
         try {
             this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
                     hsyOrder.getAmount().doubleValue(), orderNo.substring(orderNo.length() - 4), hsyOrder.getOrderno());
@@ -75,7 +75,7 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
                 jo.put("totalAmount", hsyOrder.getAmount());
                 jo.put("payChannel", hsyOrder.getPaymentChannel());
                 final HsyOrderPrintTicketRecord printTicketRecord = new HsyOrderPrintTicketRecord();
-                printTicketRecord.setTradeOrderNo(hsyOrder.getOrderno());
+                printTicketRecord.setTradeOrderNo(orderNo);
                 printTicketRecord.setMsg(jo.toJSONString());
                 this.hsyOrderPrintTicketRecordService.add(printTicketRecord);
                 if (printTicketRecord.getId() > 0) {
