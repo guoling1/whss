@@ -329,12 +329,6 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         switch (status) {
             case SUCCESS:
                 log.info("业务方[{}]-交易单[{}], 支付-->充值成功回调处理", order.getAppId(), order.getOrderNo());
-
-                //推送，打印
-                if (EnumProductType.HSY.getId().equalsIgnoreCase(order.getAppId())) {
-                    this.basePushAndSendService.pushAndSendPrintMsg(order.getOrderNo(), new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
-                }
-
                 this.markRechargeSuccess(paymentSdkPayCallbackResponse, order);
                 break;
             case FAIL:
