@@ -166,7 +166,7 @@ public interface HSYOrderService {
     String downLoadHsyOrder(QueryHsyOrderRequest req, String baseUrl);
 
     /**
-     * 按定的那好查询
+     * 按订单号那好查询
      *
      * @param orderNumber
      * @return
