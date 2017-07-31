@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
 
@@ -32,8 +31,8 @@ public class ActiveControllerTester {
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setAppType("android");
-        p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
-        String param="{\"deviceId\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appVersion\":\"1.0.0\",\"appChannel\":\"MI\"}";
+        p.setDeviceId("865873032687208");
+        String param="{\"deviceId\":\"865873032687208\",\"deviceName\":\"Xiaomi MI 6\",\"osVersion\":\"7.1.1\",\"appVersion\":\"1.0.0\",\"appChannel\":\"web\",\"appCode\":\"hss\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
         String httpEncode= URLEncoder.encode(base64E,"utf-8");
         p.setRequestData(httpEncode);

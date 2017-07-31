@@ -107,5 +107,14 @@
                 <property name="merchantInfoCheckRecordService" ref="merchantInfoCheckRecordServiceImpl"/>
             </bean>
         </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/appMerchantInfo/save"/>
+            <mvc:mapping path="/appMerchantInfo/sendVerifyCode"/>
+            <bean id="appInterceptor" class="com.jkm.hss.interceptor.AppInterceptor">
+                <property name="appAuTokenService" ref="appAuTokenService"/>
+                <property name="merchantInfoService" ref="merchantInfoServiceImpl"/>
+            </bean>
+        </mvc:interceptor>
     </mvc:interceptors>
 </beans>

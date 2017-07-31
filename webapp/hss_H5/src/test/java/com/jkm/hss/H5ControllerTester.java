@@ -25,14 +25,15 @@ import java.util.Map;
  */
 @Slf4j
 public class H5ControllerTester {
-    public static String HSSH5001001="http://localhost:8081/appMerchantInfo/getRegisterCode";
+    public static String HSSH5001001="http://localhost:8081/wx/getCode";
     public static String HSSH5001002="http://localhost:8081/appMerchantInfo/register";
+    public static String HSSH5001003="http://localhost:8081/appMerchantInfo/getRecommendInfo";
 
     @Test
     public void testGetRegisterCode()throws Exception{
         Map<String, String> map = new JSONObject();
         map.put("mobile","13155555555");
-        map.put("oemId","0");
+        map.put("oemNo","0");
         H5ControllerTester.testRest(map,HSSH5001001);
     }
 
@@ -43,6 +44,14 @@ public class H5ControllerTester {
         map.put("code","485074");
         map.put("inviteCode","13146716739");
         H5ControllerTester.testRest(map,HSSH5001002);
+    }
+
+    @Test
+    public void testGetRecommendInfo()throws Exception{
+        Map<String, String> map = new JSONObject();
+        map.put("inviteCode","13146716739");
+        map.put("oemNo","");
+        H5ControllerTester.testRest(map,HSSH5001003);
     }
 
 

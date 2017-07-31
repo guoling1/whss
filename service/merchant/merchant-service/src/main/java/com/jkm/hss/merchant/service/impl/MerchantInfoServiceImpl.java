@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.service.impl;
 
+import com.aliyun.openservices.shade.com.alibaba.rocketmq.common.filter.impl.Op;
 import com.google.common.base.Optional;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
@@ -585,6 +586,16 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         for(int i=0;i<merchantInfoList.size();i++){
             merchantChannelRateService.updateInterNet(merchantInfoList.get(i).getAccountId(),merchantInfoList.get(i).getId());
         }
+    }
+
+    /**
+     * 根据超级合伙人查询
+     *
+     * @param superDealerId
+     */
+    @Override
+    public Optional<MerchantInfo> selectBySuperDealerId(long superDealerId) {
+        return Optional.fromNullable(merchantInfoDao.selectBySuperDealerId(superDealerId));
     }
 
 }

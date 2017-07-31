@@ -204,4 +204,8 @@ public interface MerchantInfoDao {
      * @return
      */
     List<MerchantInfo> selectByKmNetStatus();
+    /**
+     * 根据超级合伙人查询
+     */
+    MerchantInfo selectBySuperDealerId(@Param("superDealerId") long superDealerId);
 }

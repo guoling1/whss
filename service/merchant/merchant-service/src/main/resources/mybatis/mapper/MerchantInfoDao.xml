@@ -507,4 +507,11 @@
     <select id="selectByKmNetStatus" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
         SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info where km_net_status=2;
     </select>
+
+    <select id="selectBySuperDealerId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_info
+        WHERE super_dealer_id = #{superDealerId}
+    </select>
 </mapper>

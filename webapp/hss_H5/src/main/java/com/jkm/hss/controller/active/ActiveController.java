@@ -2,14 +2,14 @@ package com.jkm.hss.controller.active;
 
 import com.google.gson.Gson;
 import com.jkm.base.common.spring.core.SpringContextHolder;
+import com.jkm.hss.merchant.entity.AppAuUserToken;
 import com.jkm.hss.merchant.exception.ApiHandleException;
 import com.jkm.hss.merchant.exception.ResultCode;
 import com.jkm.hss.merchant.helper.AppParam;
+import com.jkm.hss.merchant.service.AppAuTokenService;
 import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hss.version.ExcludeServiceCode;
 import com.jkm.hss.version.VersionMapper;
-import com.jkm.hsy.user.entity.AppAuUserToken;
-import com.jkm.hsy.user.service.HsyActiveService;
 import com.jkm.hsy.user.util.AppAesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +33,7 @@ import java.util.Map;
 @RequestMapping(value = "/active")
 public class ActiveController {
     @Autowired
-    private HsyActiveService hsyActiveService;
+    private AppAuTokenService appAuTokenService;
 
     @RequestMapping("rest")
     public void rest(@ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw) throws Exception {
@@ -88,7 +86,7 @@ public class ActiveController {
             }
 
             if(!isExcludeServiceCode(appParam.getServiceCode())) {
-                AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
+                AppAuUserToken appAuUserToken = appAuTokenService.findLoginInfoByAccessToken(appParam.getAccessToken());
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
                     result.setResultMessage(ResultCode.USER_NOT_LOGIN.resultMessage);
@@ -212,7 +210,7 @@ public class ActiveController {
             }
 
             if(!isExcludeServiceCode(appParam.getServiceCode())) {
-                AppAuUserToken appAuUserToken = hsyActiveService.findLoginInfoByAccessToken(appParam.getAccessToken());
+                AppAuUserToken appAuUserToken = appAuTokenService.findLoginInfoByAccessToken(appParam.getAccessToken());
                 if (!(appAuUserToken != null && appAuUserToken.getOutTime() != null)) {
                     result.setResultCode(ResultCode.USER_NOT_LOGIN.resultCode);
                     result.setResultMessage(ResultCode.USER_NOT_LOGIN.resultMessage);

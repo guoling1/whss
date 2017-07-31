@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.jkm.hss.merchant.constant.AppConstant;
 import com.jkm.hss.merchant.dao.AppAuTokenDao;
 import com.jkm.hss.merchant.entity.AppAuToken;
+import com.jkm.hss.merchant.entity.AppAuUserToken;
 import com.jkm.hss.merchant.exception.ApiHandleException;
 import com.jkm.hss.merchant.exception.ResultCode;
 import com.jkm.hss.merchant.helper.AppParam;
@@ -49,9 +50,11 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"系统版本号");
         if(!(appAuToken.getAppVersion()!=null&&!appAuToken.getAppVersion().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"app版本号");
+        if(!(appAuToken.getAppCode()!=null&&!appAuToken.getAppCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"APP编号");
         appAuToken.setAppType(appParam.getAppType());
         Date date=new Date();
-        appAuToken.setAppCode("hss");
+        appAuToken.setAppCode(appAuToken.getAppCode());
         appAuToken.setIsAvoidingTone(0);
         appAuToken.setCreateTime(date);
         appAuToken.setUpdateTime(date);
@@ -93,5 +96,13 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
         return "";
+    }
+
+    public AppAuUserToken findLoginInfoByAccessToken(String accessToken){
+        List<AppAuUserToken> list=appAuTokenDao.findLoginInfoByAccessToken(accessToken);
+        if(list!=null&&list.size()!=0)
+            return list.get(0);
+        else
+            return null;
     }
 }

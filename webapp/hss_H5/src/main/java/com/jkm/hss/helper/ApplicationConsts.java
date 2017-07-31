@@ -19,6 +19,10 @@ public class ApplicationConsts {
      * request中经销商登录信息key
      */
     public static final String REQUEST_USER_INFO_DATA_BIND_DEALER = "REQUEST_USER_INFO_DATA_BIND_DEALER";
+    /**
+     * request中app商户登录信息key
+     */
+    public static final String REQUEST_USER_INFO_DATA_BIND_APP = "REQUEST_USER_INFO_DATA_BIND_APP";
 
     /**
      * 经销商的cookie key

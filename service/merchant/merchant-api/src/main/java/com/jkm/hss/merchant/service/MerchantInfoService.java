@@ -212,4 +212,9 @@ public interface MerchantInfoService {
      */
     void handleKmUpdateStatus();
 
+    /**
+     * 根据超级合伙人查询
+     */
+    Optional<MerchantInfo> selectBySuperDealerId(long superDealerId);
+
 }

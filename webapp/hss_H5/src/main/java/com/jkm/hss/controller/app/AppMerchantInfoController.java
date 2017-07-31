@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.app;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
@@ -16,14 +17,12 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
-import com.jkm.hss.helper.request.AppMerchantLoginCodeRequest;
-import com.jkm.hss.helper.request.DirectLoginRequest;
-import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -87,8 +86,16 @@ public class AppMerchantInfoController extends BaseController {
     private SmsAuthService smsAuthService;
     @Autowired
     private DealerRecommendService dealerRecommendService;
+    @Autowired
+    private OemInfoService oemInfoService;
+    @Autowired
+    private BankCardBinService bankCardBinService;
+    @Autowired
+    private VerifyIdService verifyIdService;
+    @Autowired
+    private SendMessageService sendMessageService;
     /**
-     * 注册
+     * HSSH5001002 注册
      *
      * @return
      */
@@ -348,5 +355,224 @@ public class AppMerchantInfoController extends BaseController {
             }
 
         }
+    }
+
+    /**
+     * HSSH5001003 推荐商户名称
+     * @param loginRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getRecommendInfo", method = RequestMethod.POST)
+    public CommonResponse getRecommendInfo(@RequestBody MerchantLoginRequest loginRequest) {
+        long oemId = 0;
+        if(loginRequest.getOemNo()!=null&&!"".equals(loginRequest.getOemNo())){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(loginRequest.getOemNo());
+            if(!oemInfoOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "分公司不存在");
+            }
+            oemId = oemInfoOptional.get().getDealerId();
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+            if(merchantInfoList.size()>0){
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()>0){
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if((WxConstants.APP_ID).equals(oemInfoOptional1.get().getAppId())){
+                            oemId = merchantInfoList.get(i).getOemId();
+                        }
+                    }
+                }
+            }
+        }
+        if (StringUtils.isBlank(loginRequest.getInviteCode())) {
+            return CommonResponse.simpleResponse(-1, "邀请码不能为空");
+        }
+        if(loginRequest.getInviteCode().length()>6){
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(loginRequest.getInviteCode()),oemId);
+            Preconditions.checkState(merchantInfoOptional.isPresent(), "邀请码不存在");
+            if(merchantInfoOptional.get().getName()!=null&&!"".equals(merchantInfoOptional.get().getName())){
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",merchantInfoOptional.get().getName());
+            }else{
+                String mobile = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",mobile.substring(0,3)+mobile.substring(mobile.length()-4,mobile.length()));
+            }
+        }else{
+            Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
+            Preconditions.checkState(dealerOptional.isPresent(), "邀请码不存在");
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectBySuperDealerId(dealerOptional.get().getId());
+            if(merchantInfoOptional.get().getName()!=null&&!"".equals(merchantInfoOptional.get().getName())){
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",merchantInfoOptional.get().getName());
+            }else{
+                String mobile = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",mobile.substring(0,3)+mobile.substring(mobile.length()-4,mobile.length()));
+            }
+        }
+    }
+
+    /**
+     * HSSH5001005 填写资料
+     * @param request
+     * @param response
+     * @param merchantInfo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public CommonResponse save(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantInfoAddRequest merchantInfo){
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        final String reserveMobile = merchantInfo.getReserveMobile();
+        final String verifyCode = merchantInfo.getCode();
+        final String store = merchantInfo.getMerchantName();
+        final String address = merchantInfo.getAddress();
+        final String bankNo = merchantInfo.getBankNo();
+        final String bankPic = merchantInfo.getBankPic();
+        final String name = merchantInfo.getName();
+        final String identity =merchantInfo.getIdentity();
+        if (StringUtils.isBlank(store)) {
+            return CommonResponse.simpleResponse(-1, "店铺名不能为空");
+        }
+        if (StringUtils.isBlank(address)) {
+            return CommonResponse.simpleResponse(-1, "地址不能为空");
+        }
+        if (StringUtils.isBlank(bankNo)) {
+            return CommonResponse.simpleResponse(-1, "结算卡号不能为空");
+        }
+        if (StringUtils.isBlank(bankPic)) {
+            return CommonResponse.simpleResponse(-1, "上传照片不能为空");
+        }
+        if (StringUtils.isBlank(name)) {
+            return CommonResponse.simpleResponse(-1, "开户名不能为空");
+        }
+        if (StringUtils.isBlank(identity)) {
+            return CommonResponse.simpleResponse(-1, "身份证号不能为空");
+        }
+        if (StringUtils.isBlank(reserveMobile)) {
+            return CommonResponse.simpleResponse(-1, "手机号不能为空");
+        }
+        if (StringUtils.isBlank(verifyCode)) {
+            return CommonResponse.simpleResponse(-1, "验证码不能为空");
+        }
+        if (!ValidateUtils.isMobile(reserveMobile)) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        if (StringUtils.isBlank(merchantInfo.getDistrictCode())) {
+            return CommonResponse.simpleResponse(-1, "请选择支行所在地区");
+        }
+        if (StringUtils.isBlank(merchantInfo.getBranchName())) {
+            return CommonResponse.simpleResponse(-1, "请填写支行信息");
+        }
+        if (!ValidateUtils.verifyCodeCheck(verifyCode)) {
+            return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
+        }
+        final Pair<Integer, String> checkResult =
+                this.smsAuthService.checkVerifyCode(reserveMobile, verifyCode, EnumVerificationCodeType.BIND_CARD_MERCHANT);
+        if (1 != checkResult.getLeft()) {
+            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+        }
+        merchantInfo.setId(merchantInfoOptional.get().getId());
+        merchantInfo.setIdentity(MerchantSupport.encryptIdenrity(merchantInfo.getIdentity()));
+        merchantInfo.setStatus(EnumMerchantStatus.ONESTEP.getId());
+        merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
+        Optional<BankCardBin> bankCardBinOptional = bankCardBinService.analyseCardNo(bankNo);
+        merchantInfo.setBankBin(bankCardBinOptional.get().getShorthand());
+        merchantInfo.setBankName(bankCardBinOptional.get().getBankName());
+        merchantInfo.setBankNoShort(merchantInfo.getBankNo().substring((merchantInfo.getBankNo()).length()-4,(merchantInfo.getBankNo()).length()));
+        merchantInfo.setBankNo(MerchantSupport.encryptBankCard(merchantInfo.getBankNo()));
+        merchantInfo.setBankPic(merchantInfo.getBankPic());
+        int res = this.merchantInfoService.update(merchantInfo);
+        if (res<=0) {
+            return CommonResponse.simpleResponse(-1, "资料添加失败");
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "资料添加成功");
+
+    }
+
+    /**
+     * HSSH5001006 发送绑定银行卡验证码
+     * @param merchantInfo
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/sendVerifyCode", method = RequestMethod.POST)
+    public CommonResponse sendVerifyCode(@RequestBody final MerchantInfo merchantInfo, final HttpServletRequest request){
+        Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        String reserveMobile = merchantInfo.getReserveMobile();
+        if (StringUtils.isBlank(reserveMobile)) {
+            return CommonResponse.simpleResponse(-1, "手机号不能为空");
+        }
+        if (!ValidateUtils.isMobile(reserveMobile)) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        //校验身份4要素
+        final Pair<Integer, String> verifyPair =
+                this.verifyID4Element(MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile()), merchantInfo);
+        if (0 == verifyPair.getLeft()) {//成功
+            merchantInfoService.toAuthen("1",merchantInfoOptional.get().getId());
+        }
+
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(reserveMobile, EnumVerificationCodeType.BIND_CARD_MERCHANT);
+        if (1 == verifyCode.getLeft()) {
+            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
+            this.sendMessageService.sendMessage(SendMessageParams.builder()
+                    .mobile(reserveMobile)
+                    .uid(merchantInfo.getId() + "")
+                    .data(params)
+                    .userType(EnumUserType.BACKGROUND_USER)
+                    .noticeType(EnumNoticeType.BIND_CARD_MERCHANT)
+                    .build()
+            );
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");
+        }
+        return CommonResponse.simpleResponse(-1, verifyCode.getRight());
+    }
+
+    /**
+     * HSSH5001007 上传资料
+     * @param request
+     * @param response
+     * @param merchantInfo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/savePic", method = RequestMethod.POST)
+    public CommonResponse savePic(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final MerchantInfoAddRequest merchantInfo){
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
+        merchantInfo.setId(merchantInfoOptional.get().getId());
+        merchantInfo.setStatus(EnumMerchantStatus.REVIEW.getId());
+        if(StringUtils.isBlank(merchantInfo.getIdentityFacePic())){
+            return CommonResponse.simpleResponse(-1, "请上传身份证正面");
+        }
+        if(StringUtils.isBlank(merchantInfo.getIdentityOppositePic())){
+            return CommonResponse.simpleResponse(-1, "请上传身份证反面");
+        }
+        if(StringUtils.isBlank(merchantInfo.getIdentityHandPic())){
+            return CommonResponse.simpleResponse(-1, "请上传手持身份证");
+        }
+        if(StringUtils.isBlank(merchantInfo.getBankHandPic())){
+            return CommonResponse.simpleResponse(-1, "请上传手持银行卡");
+        }
+        merchantInfo.setIdentityFacePic(merchantInfo.getIdentityFacePic());
+        merchantInfo.setIdentityHandPic(merchantInfo.getIdentityHandPic());
+        merchantInfo.setIdentityOppositePic(merchantInfo.getIdentityOppositePic());
+        merchantInfo.setBankHandPic(merchantInfo.getBankHandPic());
+        this.merchantInfoService.updatePic(merchantInfo);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"照片添加成功");
+    }
+
+    /**
+     * 校验身份4要素
+     *
+     * @return
+     */
+    private Pair<Integer, String> verifyID4Element(final String mobile, final MerchantInfo merchantInfo) {
+        final String bankcard = merchantInfo.getBankNo();
+        final String idCard = merchantInfo.getIdentity();
+        final String bankReserveMobile = merchantInfo.getReserveMobile();
+        final String realName = merchantInfo.getName();
+        final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
+        return pair;
     }
 }

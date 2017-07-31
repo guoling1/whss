@@ -22,4 +22,5 @@ public interface AppAuTokenDao {
     void updateAppAuUserTokenByUidAndTid(AppAuUserToken appAuUserToken);
     void insertAppAuUserToken(AppAuUserToken appAuUserToken);
     void updateAppAuToken(AppAuToken appAuToken);
+    List<AppAuUserToken> findLoginInfoByAccessToken(@Param("accessToken")String accessToken);
 }
