@@ -120,8 +120,10 @@ public class HsyAppVersionServiceImpl implements HsyAppVersionService {
         }).create();
         if(versionList!=null&&versionList.size()!=0)
             return gson.toJson(versionList.get(0));
-        else
+        else {
+            appVersion.setIsReview("1");
             return gson.toJson(appVersion);
+        }
     }
 
     /**HSY001040 查找app页面组件*/
