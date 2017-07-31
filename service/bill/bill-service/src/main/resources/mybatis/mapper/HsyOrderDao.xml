@@ -506,4 +506,8 @@
         ORDER BY a.pay_success_time DESC
     </select>
 
+    <select id="selectByOrderNumber" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT * FROM tb_hsy_order WHERE ordernumber = #{orderNumber}
+    </select>
+
 </mapper>

@@ -202,79 +202,10 @@ public class TradeController extends BaseController {
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
 
             //推送, 打印
-            this.basePushAndSendService.pushAndSendPrintMsg(order.getOrderNo(), null != order.getPaySuccessTime() ? order.getPaySuccessTime() : new Date());
+            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), order.getPaymentChannel(),
+                    null != order.getPaySuccessTime() ? order.getPaySuccessTime() : new Date());
 
             return "/success";
         }
-    }
-
-    /**
-     * test 分润重发
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "testSplitProfit")
-    public CommonResponse testSplitProfit() {
-        final ArrayList<JSONObject> list = new ArrayList<>();
-        final JSONObject jo1 = new JSONObject();
-        jo1.put("orderId", 38571);
-        jo1.put("accountId", 1473);
-        list.add(jo1);
-        final JSONObject jo2 = new JSONObject();
-        jo2.put("orderId", 38574);
-        jo2.put("accountId", 1191);
-        list.add(jo2);
-        final JSONObject jo3 = new JSONObject();
-        jo3.put("orderId", 38575);
-        jo3.put("accountId", 1342);
-        list.add(jo3);
-        final JSONObject jo4 = new JSONObject();
-        jo4.put("orderId", 38577);
-        jo4.put("accountId", 1447);
-        list.add(jo4);
-        final JSONObject jo5 = new JSONObject();
-        jo5.put("orderId", 38578);
-        jo5.put("accountId", 1557);
-        list.add(jo5);
-        final JSONObject jo6 = new JSONObject();
-        jo6.put("orderId", 38580);
-        jo6.put("accountId", 1419);
-        list.add(jo6);
-        final JSONObject jo7 = new JSONObject();
-        jo7.put("orderId", 38579);
-        jo7.put("accountId", 1473);
-        list.add(jo7);
-        final JSONObject jo8 = new JSONObject();
-        jo8.put("orderId", 38581);
-        jo8.put("accountId", 1342);
-        list.add(jo8);
-        final JSONObject jo9 = new JSONObject();
-        jo9.put("orderId", 38584);
-        jo9.put("accountId", 1473);
-        list.add(jo9);
-        final JSONObject jo10 = new JSONObject();
-        jo10.put("orderId", 38585);
-        jo10.put("accountId", 1344);
-        list.add(jo10);
-        for (int i = 0; i < list.size(); i++) {
-            //发消息分润
-            final JSONObject requestJsonObject = list.get(i);
-//            final JSONObject requestJsonObject = new JSONObject();
-//            requestJsonObject.put("orderId", order.getId());
-//            requestJsonObject.put("accountId", shop.getAccountID());
-            MqProducer.produce(requestJsonObject, MqConfig.SPLIT_PROFIT, 120000 + i * 10000);
-        }
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
-    }
-    /**
-     * url支付
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "test")
-    public void test(final HttpServletRequest httpServletRequest) {
-        this.hsyBalanceAccountEmailService.sendWeekBalanceAccountEmail();
     }
 }

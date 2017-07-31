@@ -445,6 +445,17 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNumber
+     * @return
+     */
+    @Override
+    public Optional<HsyOrder> getByOrderNumber(final String orderNumber) {
+        return Optional.fromNullable(this.hsyOrderDao.selectByOrderNumber(orderNumber));
+    }
+
 
     /**
      * 生成ExcelVo
