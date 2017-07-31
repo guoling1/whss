@@ -202,4 +202,12 @@ public interface HsyOrderDao {
      * @return
      */
     List<QueryHsyOrderResponse> selectHsyOrderList(QueryHsyOrderRequest req);
+
+    /**
+     * 按订单号查询
+     *
+     * @param orderNumber
+     * @return
+     */
+    HsyOrder selectByOrderNumber(@Param("orderNumber") String orderNumber);
 }

@@ -10,8 +10,9 @@ public interface BasePushAndSendService {
     /**
      * app推送， 发送打印小票消息
      *
-     * @param tradeOrderNo
+     * @param orderNumber 订单号
+     * @param orderNo 交易订单号
      * @param successTime
      */
-    void pushAndSendPrintMsg(String tradeOrderNo, Date successTime);
+    void pushAndSendPrintMsg(String orderNumber, String orderNo, Date successTime);
 }

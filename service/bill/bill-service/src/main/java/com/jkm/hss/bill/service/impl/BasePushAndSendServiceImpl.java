@@ -42,16 +42,18 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
     /**
      * {@inheritDoc}
      *
-     * @param tradeOrderNo
+     * @param orderNumber 订单号
+     * @param orderNo 交易订单号
+     * @param successTime
      */
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void pushAndSendPrintMsg(final String tradeOrderNo, final Date successTime) {
-        final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(tradeOrderNo).get();
+    public void pushAndSendPrintMsg(final String orderNumber, final String orderNo, final Date successTime) {
+        final HsyOrder hsyOrder = this.hsyOrderService.getByOrderNumber(orderNumber).get();
         log.info("店铺[{}], 订单[{}], 交易[{}], 开始推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
         try {
             this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
-                    hsyOrder.getAmount().doubleValue(), tradeOrderNo.substring(tradeOrderNo.length() - 4), hsyOrder.getOrderno());
+                    hsyOrder.getAmount().doubleValue(), orderNo.substring(orderNo.length() - 4), hsyOrder.getOrderno());
         } catch (final Throwable e) {
             log.error("订单[" + hsyOrder.getOrderno() + "]，推送异常", e);
         }
@@ -64,7 +66,7 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
                 final JSONObject jo = new JSONObject();
                 jo.put("shopId", hsyOrder.getShopid());
                 jo.put("orderNo", hsyOrder.getOrdernumber());
-                jo.put("tradeOrderNo", tradeOrderNo);
+                jo.put("tradeOrderNo", orderNo);
                 jo.put("status", EnumOrderStatus.PAY_SUCCESS.getId());
                 jo.put("paySuccessTime", successTime);
                 jo.put("shopName", hsyOrder.getShopname());
