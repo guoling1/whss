@@ -231,8 +231,9 @@ public class ActiveController {
         }
 
         try {
-            String httpEncode= URLEncoder.encode(appParam.getRequestData(),"utf-8");
-            appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(httpEncode, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32)));
+            if(appParam.getRequestData()!=null&&!"".equals(appParam.getRequestData())){
+                appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(appParam.getRequestData(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32)));
+            }
         } catch (Exception e) {
             log.error("解密[{}]异常", e.getMessage());
             throw new Exception("解密异常");
@@ -278,9 +279,11 @@ public class ActiveController {
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
         log.info("明文返回结果是："+appResult);
-        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-        log.info("加密返回结果是："+base64E);
-        result.setEncryptDataResult(base64E);
+        if(appResult!=null&&!"".equals(appResult)){
+            String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
+            log.info("加密返回结果是："+base64E);
+            result.setEncryptDataResult(base64E);
+        }
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
         return;
     }
