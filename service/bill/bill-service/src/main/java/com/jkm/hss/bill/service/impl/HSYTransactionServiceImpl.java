@@ -291,16 +291,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 final HsyOrder updateOrder = new HsyOrder();
                 switch (status) {
                     case SUCCESS:
-                        //推送
-                        try {
-                            log.info("hsy订单[{}],开始推送", callbackResponse.getTradeOrderNo());
-                            this.pushService.pushCashMsg(hsyOrder1.getShopid(), EnumPaymentChannel.of(hsyOrder1.getPaymentChannel()).getValue(),
-                                    hsyOrder1.getAmount().doubleValue(), hsyOrder1.getValidationcode(), hsyOrder1.getOrderno());
-                            log.info("hsy订单[{}],推送调用结束", callbackResponse.getTradeOrderNo());
-                        } catch (final Throwable e) {
-                            log.error("订单[" + hsyOrder1.getOrderno() + "]，支付成功，推送异常", e);
-                        }
-
                         updateOrder.setId(hsyOrder1.getId());
                         updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_SUCCESS.getId());
                         updateOrder.setPoundage(callbackResponse.getPoundage());
@@ -308,11 +298,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         updateOrder.setPaysuccesstime(callbackResponse.getSuccessTime());
                         updateOrder.setRemark(callbackResponse.getMessage());
                         this.hsyOrderService.update(updateOrder);
-                        //打印票据
-                        if (!StringUtils.isEmpty(hsyOrder.getPaytype())
-                                && hsyOrder.getPaytype().contains(EnumMerchantPayType.MERCHANT_JSAPI.getId())) {
-                            this.baseHSYTransactionService.sendPrintMsg(hsyOrder1.getId());
-                        }
+
                         //生成分润消息记录
                         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
                         consumeMsgSplitProfitRecord.setHsyOrderId(hsyOrder1.getId());

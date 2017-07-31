@@ -6,10 +6,10 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
-import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.bill.service.impl.BaseHSYTransactionService;
+import com.jkm.hss.bill.service.impl.BasePushAndSendService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.CreateOrderRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
@@ -17,7 +17,6 @@ import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +32,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2017/1/18.
@@ -57,6 +57,8 @@ public class TradeController extends BaseController {
     private HSYOrderService hsyOrderService;
     @Autowired
     private BaseHSYTransactionService baseHSYTransactionService;
+    @Autowired
+    private BasePushAndSendService basePushAndSendService;
     /**
      * 创建好收银订单
      *
@@ -199,17 +201,8 @@ public class TradeController extends BaseController {
             model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
 
-            //调支付推送
-            final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(order.getOrderNo()).get();
-            try {
-                this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
-                        hsyOrder.getAmount().doubleValue(), hsyOrder.getValidationcode(), hsyOrder.getOrderno());
-            } catch (final Throwable e) {
-                log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
-            }
-
-            //打印
-            this.baseHSYTransactionService.sendPrintMsg(hsyOrder.getId());
+            //推送, 打印
+            this.basePushAndSendService.pushAndSendPrintMsg(order.getOrderNo(), null != order.getPaySuccessTime() ? order.getPaySuccessTime() : new Date());
 
             return "/success";
         }

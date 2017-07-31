@@ -1,25 +1,17 @@
 package com.jkm.hss.bill.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hss.bill.entity.HsyOrderPrintTicketRecord;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumServiceType;
 import com.jkm.hss.bill.helper.PayParams;
 import com.jkm.hss.bill.helper.PayResponse;
-import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.service.HSYOrderService;
-import com.jkm.hss.bill.service.HsyOrderPrintTicketRecordService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumPaymentChannel;
-import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.UserChannelPolicy;
@@ -51,12 +43,6 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
     private TradeService tradeService;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
-    @Autowired
-    private HttpClientFacade httpClientFacade;
-    @Autowired
-    private PushService pushService;
-    @Autowired
-    private HsyOrderPrintTicketRecordService hsyOrderPrintTicketRecordService;
 
     /**
      * {@inheritDoc}
@@ -206,54 +192,10 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
                 updateOrder.setUpperChannel(EnumPayChannelSign.MEMBER.getUpperChannel().getId());
                 updateOrder.setPaymentChannel(EnumPayChannelSign.MEMBER.getPaymentChannel().getId());
                 this.hsyOrderService.update(updateOrder);
-                try {
-                    this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
-                            amount.doubleValue(), updateOrder.getValidationcode(), updateOrder.getOrderno());
-                } catch (final Throwable e) {
-                    log.error("订单[" + hsyOrder.getOrderno() + "]，支付成功，推送异常", e);
-                }
-
-                //打印
-                this.sendPrintMsg(hsyOrder.getId());
 
                 return Triple.of(0, payResponse.getTradeOrderNo(), payResponse.getTradeOrderId()+"");
             default:
                 return Triple.of(-1, payResponse.getMessage(), shop.getName());
-        }
-    }
-
-    /**
-     * 扫码牌，打印小票
-     *
-     * @param hsyOrderId
-     */
-    @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void sendPrintMsg(final long hsyOrderId) {
-        final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
-        try {
-            final String discountAmount = hsyOrder.getRealAmount().subtract(hsyOrder.getAmount()).toPlainString();
-            final JSONObject jo = new JSONObject();
-            jo.put("shopId", hsyOrder.getShopid());
-            jo.put("orderNo", hsyOrder.getOrdernumber());
-            jo.put("tradeOrderNo", hsyOrder.getOrderno());
-            jo.put("status", EnumOrderStatus.PAY_SUCCESS.getId());
-            jo.put("paySuccessTime", null == hsyOrder.getPaysuccesstime() ? new Date() : hsyOrder.getPaysuccesstime());
-            jo.put("shopName", hsyOrder.getShopname());
-            jo.put("tradeAmount", hsyOrder.getRealAmount().toPlainString());
-            jo.put("discountAmount", discountAmount);
-            jo.put("totalAmount", hsyOrder.getAmount());
-            jo.put("payChannel", hsyOrder.getPaymentChannel());
-            final HsyOrderPrintTicketRecord printTicketRecord = new HsyOrderPrintTicketRecord();
-            printTicketRecord.setTradeOrderNo(hsyOrder.getOrderno());
-            printTicketRecord.setMsg(jo.toJSONString());
-            this.hsyOrderPrintTicketRecordService.add(printTicketRecord);
-            if (printTicketRecord.getId() > 0) {
-                log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
-                this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
-            }
-        } catch (final Throwable e) {
-            log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + hsyOrder.getOrderno() + "]，发送打印socket异常", e);
         }
     }
 }
