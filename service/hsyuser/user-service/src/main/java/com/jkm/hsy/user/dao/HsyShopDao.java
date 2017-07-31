@@ -65,4 +65,12 @@ public interface HsyShopDao {
      * @param id
      */
     void changeStatus(@Param("isPublic") String isPublic,@Param("id") Long id);
+
+    /**
+     * 开启店铺的扫码打印小票功能
+     *
+     * @param updateScanPrintShopIds
+     * @return
+     */
+    int updateOpenScanPrintByShopIds(@Param("updateScanPrintShopIds") List<Long> updateScanPrintShopIds);
 }

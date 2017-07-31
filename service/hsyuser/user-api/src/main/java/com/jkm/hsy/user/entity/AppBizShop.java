@@ -55,6 +55,13 @@ public class AppBizShop {
     private String districtName;//行政区名称
     private String email="";
 
+    /**
+     * 扫码支付没打印小票
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
+     */
+    private int openScanPrint;
+
     public Long getId() {
         return id;
     }

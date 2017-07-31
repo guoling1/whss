@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.HsyOrderPrintTicketRecord;
@@ -10,6 +11,8 @@ import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HsyOrderPrintTicketRecordService;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.push.sevice.PushService;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,8 @@ import java.util.Date;
 @Service
 public class BasePushAndSendServiceImpl implements BasePushAndSendService {
 
+    @Autowired
+    private HsyShopDao hsyShopDao;
     @Autowired
     private PushService pushService;
     @Autowired
@@ -52,30 +57,32 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
         }
 
         //打印
-        try {
-            final String discountAmount = hsyOrder.getRealAmount().subtract(hsyOrder.getAmount()).toPlainString();
-            final JSONObject jo = new JSONObject();
-            jo.put("shopId", hsyOrder.getShopid());
-            jo.put("orderNo", hsyOrder.getOrdernumber());
-            jo.put("tradeOrderNo", tradeOrderNo);
-            jo.put("status", EnumOrderStatus.PAY_SUCCESS.getId());
-            jo.put("paySuccessTime", successTime);
-            jo.put("shopName", hsyOrder.getShopname());
-            jo.put("tradeAmount", hsyOrder.getRealAmount().toPlainString());
-            jo.put("discountAmount", discountAmount);
-            jo.put("totalAmount", hsyOrder.getAmount());
-            jo.put("payChannel", hsyOrder.getPaymentChannel());
-            final HsyOrderPrintTicketRecord printTicketRecord = new HsyOrderPrintTicketRecord();
-            printTicketRecord.setTradeOrderNo(hsyOrder.getOrderno());
-            printTicketRecord.setMsg(jo.toJSONString());
-            this.hsyOrderPrintTicketRecordService.add(printTicketRecord);
-            if (printTicketRecord.getId() > 0) {
-                log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
-                this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
+        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(hsyOrder.getShopid()).get(0);
+        if (EnumBoolean.TRUE.getCode() == shop.getOpenScanPrint()) {
+            try {
+                final String discountAmount = hsyOrder.getRealAmount().subtract(hsyOrder.getAmount()).toPlainString();
+                final JSONObject jo = new JSONObject();
+                jo.put("shopId", hsyOrder.getShopid());
+                jo.put("orderNo", hsyOrder.getOrdernumber());
+                jo.put("tradeOrderNo", tradeOrderNo);
+                jo.put("status", EnumOrderStatus.PAY_SUCCESS.getId());
+                jo.put("paySuccessTime", successTime);
+                jo.put("shopName", hsyOrder.getShopname());
+                jo.put("tradeAmount", hsyOrder.getRealAmount().toPlainString());
+                jo.put("discountAmount", discountAmount);
+                jo.put("totalAmount", hsyOrder.getAmount());
+                jo.put("payChannel", hsyOrder.getPaymentChannel());
+                final HsyOrderPrintTicketRecord printTicketRecord = new HsyOrderPrintTicketRecord();
+                printTicketRecord.setTradeOrderNo(hsyOrder.getOrderno());
+                printTicketRecord.setMsg(jo.toJSONString());
+                this.hsyOrderPrintTicketRecordService.add(printTicketRecord);
+                if (printTicketRecord.getId() > 0) {
+                    log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
+                    this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
+                }
+            } catch (final Throwable e) {
+                log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + hsyOrder.getOrderno() + "]，发送打印socket异常", e);
             }
-        } catch (final Throwable e) {
-            log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + hsyOrder.getOrderno() + "]，发送打印socket异常", e);
         }
-
     }
 }
