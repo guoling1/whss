@@ -202,7 +202,8 @@ public class TradeController extends BaseController {
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
 
             //推送, 打印
-            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), null != order.getPaySuccessTime() ? order.getPaySuccessTime() : new Date());
+            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), order.getPaymentChannel(),
+                    null != order.getPaySuccessTime() ? order.getPaySuccessTime() : new Date());
 
             return "/success";
         }

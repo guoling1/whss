@@ -48,14 +48,14 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
      */
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void pushAndSendPrintMsg(final String orderNumber, final String orderNo, final Date successTime) {
+    public void pushAndSendPrintMsg(final String orderNumber, final String orderNo, final int paymentChannel, final Date successTime) {
         final HsyOrder hsyOrder = this.hsyOrderService.getByOrderNumber(orderNumber).get();
         log.info("店铺[{}], 订单[{}], 交易[{}], 开始推送", hsyOrder.getShopid(), hsyOrder.getId(), orderNo);
         try {
-            this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
-                    hsyOrder.getAmount().doubleValue(), orderNo.substring(orderNo.length() - 4), hsyOrder.getOrderno());
+            this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(paymentChannel).getValue(),
+                    hsyOrder.getAmount().doubleValue(), orderNo.substring(orderNo.length() - 4), orderNo);
         } catch (final Throwable e) {
-            log.error("订单[" + hsyOrder.getOrderno() + "]，推送异常", e);
+            log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + orderNo + "]，推送异常", e);
         }
 
         //打印
@@ -73,17 +73,17 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
                 jo.put("tradeAmount", hsyOrder.getRealAmount().toPlainString());
                 jo.put("discountAmount", discountAmount);
                 jo.put("totalAmount", hsyOrder.getAmount());
-                jo.put("payChannel", hsyOrder.getPaymentChannel());
+                jo.put("payChannel", paymentChannel);
                 final HsyOrderPrintTicketRecord printTicketRecord = new HsyOrderPrintTicketRecord();
                 printTicketRecord.setTradeOrderNo(orderNo);
                 printTicketRecord.setMsg(jo.toJSONString());
                 this.hsyOrderPrintTicketRecordService.add(printTicketRecord);
                 if (printTicketRecord.getId() > 0) {
-                    log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
+                    log.info("店铺[{}], 订单[{}], 交易[{}], 打印推送", hsyOrder.getShopid(), hsyOrder.getId(), orderNo);
                     this.httpClientFacade.post(PaymentSdkConstants.SOCKET_SEND_MSG_URL, jo.toJSONString());
                 }
             } catch (final Throwable e) {
-                log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + hsyOrder.getOrderno() + "]，发送打印socket异常", e);
+                log.error("店铺-[" + hsyOrder.getShopid() + "], 交易-[" + orderNo + "]，发送打印socket异常", e);
             }
         }
     }

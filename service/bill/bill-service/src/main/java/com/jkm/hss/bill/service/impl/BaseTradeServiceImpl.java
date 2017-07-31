@@ -255,7 +255,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             payResponse.setMessage("支付成功");
 
             //推送 打印
-            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), updateOrder.getPaySuccessTime());
+            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), order.getPaymentChannel(), updateOrder.getPaySuccessTime());
 
             return payResponse;
         }
@@ -300,7 +300,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
 
                 //推送，打印
                 if (EnumProductType.HSY.getId().equalsIgnoreCase(order.getAppId())) {
-                    this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
+                    this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), order.getPaymentChannel(),
+                            new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
                 }
 
                 this.markPaySuccess(paymentSdkPayCallbackResponse, order);

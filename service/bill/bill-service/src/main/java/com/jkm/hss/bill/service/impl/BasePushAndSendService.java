@@ -12,7 +12,8 @@ public interface BasePushAndSendService {
      *
      * @param orderNumber 订单号
      * @param orderNo 交易订单号
+     * @param paymentChannel
      * @param successTime
      */
-    void pushAndSendPrintMsg(String orderNumber, String orderNo, Date successTime);
+    void pushAndSendPrintMsg(String orderNumber, String orderNo, int paymentChannel, Date successTime);
 }
