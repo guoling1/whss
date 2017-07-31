@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.AppVersion;
+import com.jkm.hss.merchant.entity.AppVersionCommon;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,5 +11,6 @@ import java.util.List;
  */
 @Repository
 public interface AppVersionDao {
-    public List<AppVersion> getAppVersion(AppVersion appVersion);
+    public List<AppVersionCommon> findVersionDetail(AppVersionCommon appVersion);
+    public List<AppVersionCommon> getAppVersion(AppVersionCommon appVersion);
 }

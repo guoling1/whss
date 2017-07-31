@@ -11,6 +11,11 @@ public class V1o1o1Mapper {
     static{
         bizMapper.put("HSS001001", new String[]{"appAuTokenService","insertTokenDeviceClientInfoAndReturnKey"});
         bizMapper.put("HSS001002", new String[]{"appAuTokenService","updateClientID"});
-        bizMapper.put("HSS001003", new String[]{"appVersionService","getAppVersion"});
+        bizMapper.put("HSS001003", new String[]{"appVersionService","findVersionDetail"});
+        bizMapper.put("HSS001004", new String[]{"appVersionService","getAppVersion"});
+        bizMapper.put("HSS001005", new String[]{"appMerchantInfoService","getCode","发送验证码成功"});
+        bizMapper.put("HSS001006", new String[]{"appMerchantInfoService","register","注册成功"});
+        bizMapper.put("HSS001007", new String[]{"appMerchantInfoService","login","登录成功"});
+        bizMapper.put("HSS001008", new String[]{"appMerchantInfoService","logout","退出成功"});
     }
 }

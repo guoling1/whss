@@ -10,6 +10,7 @@ import com.jkm.hss.version.ExcludeServiceCode;
 import com.jkm.hss.version.VersionMapper;
 import com.jkm.hsy.user.entity.AppAuUserToken;
 import com.jkm.hsy.user.service.HsyActiveService;
+import com.jkm.hsy.user.util.AppAesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +34,13 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/active")
 public class ActiveController {
-
     @Autowired
     private HsyActiveService hsyActiveService;
 
     @RequestMapping("rest")
-    public void rest(@ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
+    public void rest(@ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw) throws Exception {
         long startTime=System.currentTimeMillis();
-
+        String privateKey = "6w3W8OOgnRZrkBGS2AdpFTpOykcUsvfI";
         AppResult result=new AppResult();
         if(appParam==null)
         {
@@ -55,7 +57,7 @@ public class ActiveController {
             return;
         }
         log.info(">>>>--"+appParam.getServiceCode()+"--start-->>>>业务代码为："+appParam.getServiceCode()+"--版本号为："+appParam.getV()+"--token为："+appParam.getAccessToken()+"--appType为："+appParam.getAppType());
-        log.info("请求参数是："+appParam.getRequestData());
+        log.info("加密请求参数是："+appParam.getRequestData());
 
         Map<String,String[]> bizMapper= VersionMapper.versionMap.get(appParam.getV());
         if(bizMapper==null)
@@ -101,8 +103,17 @@ public class ActiveController {
                     }
                 }
             }
+            privateKey = appParam.getAccessToken();
         }
-
+        try {
+            if(appParam.getRequestData()!=null&&!"".equals(appParam.getRequestData())){
+                appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(appParam.getRequestData(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32)));
+            }
+        } catch (Exception e) {
+            log.error("解密[{}]异常", e.getMessage());
+            throw new Exception("解密异常");
+        }
+        log.info("解密之后请求参数是："+appParam.getRequestData());
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
         Object obj=ac.getBean(strs[0]);
         Class<? extends Object> clazz = obj.getClass();
@@ -121,7 +132,11 @@ public class ActiveController {
                 String msg="";
                 if(ahe.getMsg()!=null)
                     msg=":"+ahe.getMsg();
-                result.setResultMessage(ahe.getResultCode().resultMessage+msg);
+                if(ahe.getResultCode().resultCode==ResultCode.CUSTOM_EXCEPTION.resultCode){
+                    result.setResultMessage(msg);
+                }else{
+                    result.setResultMessage(ahe.getResultCode().resultMessage+msg);
+                }
                 this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
                 return;
             }
@@ -136,15 +151,20 @@ public class ActiveController {
             result.setResultMessage(strs[2]);
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
-        result.setEncryptDataResult(appResult);
+        log.info("明文返回结果是："+appResult);
+        if(appResult!=null&&!"".equals(appResult)){
+            String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
+            log.info("加密返回结果是："+base64E);
+            result.setEncryptDataResult(base64E);
+        }
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
         return;
     }
 
     @RequestMapping("file")
-    public void file(@RequestParam(value = "fileA", required = false) MultipartFile fileA,@RequestParam(value = "fileB", required = false) MultipartFile fileB,@RequestParam(value = "fileC", required = false) MultipartFile fileC,@RequestParam(value = "fileD", required = false) MultipartFile fileD, @ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw){
+    public void file(@RequestParam(value = "fileA", required = false) MultipartFile fileA,@RequestParam(value = "fileB", required = false) MultipartFile fileB,@RequestParam(value = "fileC", required = false) MultipartFile fileC,@RequestParam(value = "fileD", required = false) MultipartFile fileD, @ModelAttribute AppParam appParam, HttpServletRequest request, HttpServletResponse response, PrintWriter pw) throws Exception {
         long startTime=System.currentTimeMillis();
-
+        String privateKey = "6w3W8OOgnRZrkBGS2AdpFTpOykcUsvfI";
         AppResult result=new AppResult();
         if(appParam==null)
         {
@@ -207,8 +227,17 @@ public class ActiveController {
                     }
                 }
             }
+            privateKey = appParam.getAccessToken();
         }
 
+        try {
+            String httpEncode= URLEncoder.encode(appParam.getRequestData(),"utf-8");
+            appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(httpEncode, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32)));
+        } catch (Exception e) {
+            log.error("解密[{}]异常", e.getMessage());
+            throw new Exception("解密异常");
+        }
+        log.info("解密之后请求参数是："+appParam.getRequestData());
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
         Object obj=ac.getBean(strs[0]);
         Class<? extends Object> clazz = obj.getClass();
@@ -248,7 +277,10 @@ public class ActiveController {
             result.setResultMessage(strs[2]);
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
-        result.setEncryptDataResult(appResult);
+        log.info("明文返回结果是："+appResult);
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
+        log.info("加密返回结果是："+base64E);
+        result.setEncryptDataResult(base64E);
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
         return;
     }

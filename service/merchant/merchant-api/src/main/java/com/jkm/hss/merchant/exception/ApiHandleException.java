@@ -4,6 +4,7 @@ public class ApiHandleException extends Exception{
 	private static final long serialVersionUID = 1L;
 	private ResultCode resultCode;
 	private String msg;
+
 	
 	public ApiHandleException() {
 		super();
@@ -17,6 +18,12 @@ public class ApiHandleException extends Exception{
 	public ApiHandleException( ResultCode resultCode, String msg) {
 		super();
 		this.resultCode = resultCode;
+		this.msg = msg;
+	}
+
+	public ApiHandleException(String msg) {
+		super();
+		this.resultCode = ResultCode.CUSTOM_EXCEPTION;
 		this.msg = msg;
 	}
 

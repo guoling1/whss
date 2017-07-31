@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by hutao on 15/7/9.
@@ -170,5 +171,12 @@ public final class DateUtil {
         } else {
             return false;
         }
+    }
+
+    public static Date changeDate(Date originDate, int calendarField, int distance) {
+        Calendar c = Calendar.getInstance(Locale.CHINA);
+        c.setTime(originDate);
+        c.add(calendarField, distance);
+        return c.getTime();
     }
 }

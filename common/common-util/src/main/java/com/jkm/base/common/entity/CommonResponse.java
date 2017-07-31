@@ -19,6 +19,10 @@ public class CommonResponse<M extends BaseEntity> {
      */
     public static final int SUCCESS_CODE = 1;
     /**
+     * 成功返回码
+     */
+    public static final int FAIL_CODE = -1;
+    /**
      * 返回值
      */
     private final int code;

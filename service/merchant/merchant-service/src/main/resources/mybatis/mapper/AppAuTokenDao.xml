@@ -51,4 +51,35 @@
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
     </update>
+
+    <select id="findAppAuTokenByClientId" parameterType="java.lang.String" resultType="com.jkm.hss.merchant.entity.AppAuToken">
+        select
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,ISAVOIDINGTONE,CREATETIME,UPDATETIME
+        from app_au_token token left join app_au_user_token ut on token.ID=ut.TID
+        where ut.status=1
+        <if test="clientId!=null and clientId!=''">and token.CLIENTID=#{clientId}</if>
+        order by token.UPDATETIME desc
+    </select>
+
+    <update id="updateAppAuUserTokenStatusByTid" parameterType="String">
+        update app_au_user_token set status=2 where TID=${tid} and status=1
+    </update>
+
+    <update id="updateAppAuUserTokenStatusByTidExceptUid" parameterType="String">
+        update app_au_user_token set status=2 where TID=${tid} and uid!=#{uid} and status=1
+    </update>
+
+    <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hss.merchant.entity.AppAuToken" resultType="com.jkm.hss.merchant.entity.AppAuToken">
+        select UID,TID,STATUS,LOGINTIME,OUTTIME
+        from app_au_user_token
+        where 1=1
+        <if test="uid!=null and uid!=''">and UID=#{uid}</if>
+        <if test="tid!=null and tid!=''">and TID=#{tid}</if>
+    </select>
+    <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+        update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime},OUTTIME=#{outTime} where UID=#{uid} and TID=#{tid}
+    </update>
+    <insert id="insertAppAuUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+        insert into app_au_user_token(UID,TID,STATUS,LOGINTIME,OUTTIME) values(#{uid},#{tid},#{status},#{loginTime},#{outTime})
+    </insert>
 </mapper>

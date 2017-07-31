@@ -2,13 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.merchant.dao.AppVersionDao">
 
-    <select id="getAppVersion" parameterType="com.jkm.hss.merchant.entity.AppVersion" resultType="com.jkm.hss.merchant.entity.AppVersion">
+    <select id="findVersionDetail" parameterType="com.jkm.hss.merchant.entity.AppVersionCommon" resultType="com.jkm.hss.merchant.entity.AppVersionCommon">
         SELECT
-        UUID,VERSIONCODE,VERSIONNAME,PACKAGENAME,APPTYPE,VERSIONURL,SIZE,ISUPGRADE,DESCRIPTION,ISREVIEW,CREATETIME,UPDATETIME
-        FROM app_version
-        where APPTYPE=#{appType}
-        and VERSIONCODE>#{versionCode}
+        UUID,APPSORT,APPNAME,VERSIONCODE,VERSIONNAME,PACKAGENAME,APPTYPE,VERSIONURL,SIZE,ISUPGRADE,DESCRIPTION,ISREVIEW,CREATETIME,UPDATETIME
+        FROM app_version_common
+        where APPTYPE=#{appType} and VERSIONCODE=#{versionCode} and APPSORT=#{appSort}
         order by VERSIONCODE desc,UPDATETIME desc
     </select>
 
+    <select id="getAppVersion" parameterType="com.jkm.hss.merchant.entity.AppVersionCommon" resultType="com.jkm.hss.merchant.entity.AppVersionCommon">
+        SELECT
+        UUID,VERSIONCODE,VERSIONNAME,PACKAGENAME,APPTYPE,VERSIONURL,SIZE,ISUPGRADE,DESCRIPTION,ISREVIEW,CREATETIME,UPDATETIME
+        FROM app_version_common
+        where APPTYPE=#{appType}
+        and VERSIONCODE>#{versionCode} and APPSORT=#{appSort}
+        order by VERSIONCODE desc,UPDATETIME desc
+    </select>
 </mapper>
