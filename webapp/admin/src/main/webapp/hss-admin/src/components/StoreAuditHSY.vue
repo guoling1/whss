@@ -12,7 +12,7 @@
           <el-col :span="5">
             <div class="label">注册手机号：<span>{{$msg.cellphone}}</span>
             </div>
-            <el-button type="text" @click="isPhone = true" style="padding: 0">修改</el-button>
+            <el-button type="text" @click="_$power(openChangePhone,'boss_modify_mobile')" style="padding: 0">修改</el-button>
           </el-col>
           <el-col :span="5">
             <div class="label">商户编号：<span>{{$msg.globalID}}</span></div>
@@ -223,6 +223,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="shortName" label="店铺名称"></el-table-column>
+              <el-table-column prop="globalID" label="店铺编号"></el-table-column>
               <el-table-column prop="districtCode" label="所在地"></el-table-column>
               <el-table-column prop="address" label="地址"></el-table-column>
               <el-table-column prop="contactCellphone" label="联系电话"></el-table-column>
@@ -286,7 +287,7 @@
       </div>
       <div class="box box-primary">
         <span class="lead">商户结算信息</span>
-        <el-button type="text" @click="bankChange">修改结算卡信息</el-button>
+        <el-button type="text" @click="_$power(bankChange,'boss_modify_bank_card')">修改结算卡信息</el-button>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin: 15px 0">
           <el-col :span="5">
             <div class="label">结算卡类型：
@@ -322,7 +323,8 @@
           <el-col :span="5">
             <div class="label">联行号：
               <span>{{$msg.branchCode}}</span>
-              <el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)" style="padding: 0">补填</el-button>
+              <!--<el-button type="text" @click="wad" v-if="$msg.status==2&&($msg.branchCode==''||$msg.branchCode==null)" style="padding: 0">补填</el-button>-->
+              <!--<el-button type="text" @click="wad"  style="padding: 0">补填</el-button>-->
             </div>
           </el-col>
           <el-col :span="5">
@@ -334,7 +336,7 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
-        <el-button type="text" v-if="isInput == false" @click="isInput = true">修改费率</el-button>
+        <el-button type="text" v-if="isInput == false" @click="_$power(changeRate,'boss_modify_rate')">修改费率</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="rateData" border style="width: 100%;margin-bottom: 15px">
@@ -379,6 +381,12 @@
             <el-button type="primary" size="small" v-if="isInput" @click="rateChange"  :loading="auditClick">保存</el-button>
             <el-button type="primary" size="small" v-if="isInput" @click="rateNoChange">取消</el-button>
           </template>
+          <div>D0提现：
+            <span v-if="$msg.isOpenD0==1">已开通</span>
+            <span v-if="$msg.isOpenD0!=1">已关闭</span>
+            <el-button type="success" size="small" v-if="$msg.isOpenD0!=1" @click="changeD0(1)" :loading="auditClick">开通</el-button>
+            <el-button type="danger" size="small"  v-if="$msg.isOpenD0==1" @click="changeD0(0)" :loading="auditClick">关闭</el-button>
+          </div>
         </div>
       </div>
       <div class="box box-primary" style="overflow: hidden">
@@ -387,7 +395,7 @@
         <el-button type="text" @click="isWxChannel = true">添加微信官方通道</el-button>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <div>当前使用中的通道：[微信：{{$userChannelList.wxChannelName}}]   [支付宝：{{$userChannelList.zfbChannelName}}]
-            <el-button type="text" size="small" @click="channelChange" style="margin-left: 15px;font-size: 14px">修改</el-button>
+            <el-button type="text" size="small" @click="_$power(channelChange,'boss_modify_current_channel')" style="margin-left: 15px;font-size: 14px">修改</el-button>
           </div>
           <template>
             <el-table :data="$channelList" border style="width: 100%;margin-top: 15px;">
@@ -462,11 +470,18 @@
       <el-dialog title="修改商户结算卡" :visible.sync="isBank">
         <el-form :model="bankForm">
           <el-form-item label="账户类型" label-width="120px">
-            <span v-if="msg.isPublic==1">对公</span>
-            <span v-if="msg.isPublic==0">对私</span>
+            <!--<span v-if="msg.isPublic==1">对公</span>
+            <span v-if="msg.isPublic==0">对私</span>-->
+            <el-select v-model="bankForm.isPublic" size="small" style="width:100%" placeholder="请选择">
+              <el-option label="对公" :value="'1'">对公</el-option>
+              <el-option label="对私" :value="'0'">对私</el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="账号" label-width="120px">
             <el-input v-model="bankForm.cardNo" size="small" style="width: 100%"></el-input>
+          </el-form-item>
+          <el-form-item label="开户名" label-width="120px">
+            <el-input v-model="bankForm.cardAccountName" size="small" style="width: 100%"></el-input>
           </el-form-item>
           <el-form-item label="开户行" label-width="120px">
             <el-autocomplete style="width: 100%" v-model="bankForm.bankName" :fetch-suggestions="marryBankSearch" size="small" placeholder="请输入开户行名称" @select="marryBank"></el-autocomplete>
@@ -489,8 +504,14 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="支行" label-width="120px">
+          <!--<el-form-item label="支行" label-width="120px">
             <el-autocomplete style="width: 100%" v-model="bankForm.bankAddress" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect"></el-autocomplete>
+          </el-form-item>-->
+          <el-form-item label="支行" label-width="120px">
+            <el-autocomplete v-model="bankForm.bankAddress" :fetch-suggestions="querySearchAsync" size="small" placeholder="输入匹配" @select="handleSelect" style="width:100%"></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="联行号" label-width="120px">
+            <el-input v-model="bankForm.branchCode" size="small" style="width: 100%" disabled></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -756,11 +777,15 @@
         },
         //修改结算卡参数
         bankForm:{
+          isPublic:'',
           province:'',
           districtCode:'',
           cardNo:'',
           bankName:'',
-          bankAddress:''
+          bankAddress:'',
+          bankAddress:'',
+          branchCode:'',
+          cardAccountName:''
         },
         channelForm:{
           userId:'',
@@ -850,6 +875,35 @@
         });
     },
     methods: {
+      changeD0:function (val) {
+        this.auditClick = true;
+        this.$http.post('/admin/hsyMerchantList/modifyD0withdraw',{userId:this.msg.uid,isOpenD0:val})
+          .then(res=>{
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            })
+            this.auditClick = false;
+            this.getData();
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+            this.getData();
+          })
+
+      },
+      openChangePhone: function () {
+        this.isPhone = true
+      },
+      changeRate: function () {
+        this.isInput = true
+      },
       datetimeSelect: function (val) {
         if (val == undefined) {
           this.startTime = '';
@@ -992,12 +1046,39 @@
       },
       bankChange:function(){
         this.isBank = true;
+//        this.bankForm.isPublic
         this.bankForm={
-          province:'',
+          isPublic:""+this.msg.isPublic+"",
+          province:this.msg.codes,
           districtCode:'',
-          cardNo:'',
-          bankName:'',
-          bankAddress:''
+          cardNo:this.msg.cardNO,
+          bankName:this.msg.cardBank,
+          bankAddress:this.msg.bankAddress,
+          branchCode:this.msg.branchCode,
+          cardAccountName:this.msg.cardAccountName
+        }
+        if(this.msg.anames=="北京市"||this.msg.anames=="天津市"||this.msg.anames=="上海市"||this.msg.anames=="重庆市"){
+          this.item_city = [{
+            code:this.bankForm.province,
+            aname:this.msg.anames
+          }]
+          this.bankForm.districtCode = this.item_city[0].code;
+          this.bankForm.belongCityName = this.item_city[0].aname;
+        }else{
+          this.$http.post('/admin/unionNumber/findAllCities', {
+            code: this.bankForm.province
+          }).then(res => {
+            this.item_city = res.data;
+            this.bankForm.districtCode = res.data[0].code;
+            this.bankForm.belongCityName = res.data[0].aname;
+            this.bankForm.districtCode = this.msg.codes1
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
         }
       },
       wad:function () {
@@ -1151,7 +1232,7 @@
       },
       handleSelect(item) {
         console.log(item);
-        this.form.branchCode = item.branchCode;
+        this.bankForm.branchCode = item.branchCode;
       },
       province_select: function (provinceCode) {
         for (let m = 0; m < this.item_province.length; m++) {

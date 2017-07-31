@@ -75,7 +75,7 @@
     <div class="title">很遗憾，支付失败</div>
     <div class="text">${errorMsg}</div>
     <div class="btn-box">
-      <a href="/sqb/collection" class="btn">重新收款</a>
+      <a href="/sqb/collection?oemNo=${oemNo}" class="btn">重新收款</a>
     </div>
   </div>
   <div class="qa">
@@ -97,5 +97,5 @@
 
 </body>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.31/common.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.32/common.min.js"></script>--%>
 </html>

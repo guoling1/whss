@@ -150,9 +150,10 @@
 <script>
   var pageData = {
     bankId: '${bankId}',
-    oemNo: '${oemNo}'
+    oemNo: '${oemNo}',
+      source:'2'
   }
 </script>
-<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>--%>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.31/collection.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.14.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.32/collection.min.js"></script>--%>
 </html>

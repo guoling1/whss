@@ -1782,3 +1782,385 @@ input:focus {
   padding: 10px 0;
   text-align: left;
 }
+#memberList {
+  /*overflow: auto;*/
+  background: #333;
+  height: 100%;
+  color: #fff;
+}
+#memberList .hide {
+  display: none;
+}
+#memberList .navbar {
+  position: fixed;
+  z-index: 100;
+  background: #333;
+  width: 100%;
+  height: 46px;
+  border-top: 1px solid #f4f5f8;
+  font-size: 16px;
+}
+#memberList .navbar div {
+  width: 49%;
+  display: inline-block;
+}
+#memberList .navbar div span {
+  display: inline-block;
+  height: 45px;
+  line-height: 44px;
+}
+#memberList .navbar div span.active {
+  color: #f49530;
+  border-bottom: 1px solid #f49530;
+}
+#memberList ul {
+  height: 100%;
+  overflow: auto;
+  padding-top: 46px;
+}
+#memberList ul li {
+  position: relative;
+  margin: 20px auto;
+  padding: 16px;
+  width: 285px;
+  height: 149px;
+  background: url("../assets/member/cardbg.png") no-repeat center;
+  background-size: 100% 100%;
+  box-shadow: 0px -4px 20px #2b2b2b;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+}
+#memberList ul li a {
+  color: #fff;
+}
+#memberList ul li .type {
+  color: #b36112;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+}
+#memberList ul li .discount {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  font-size: 36px;
+}
+#memberList ul li .discount span {
+  font-size: 50px;
+  font-weight: bold;
+}
+#memberInfo {
+  background: #f4f5f8;
+  min-height: 100%;
+}
+#memberInfo .top {
+  width: 100%;
+  background: #333;
+  padding-top: 9px;
+  color: #fff;
+}
+#memberInfo .top .card {
+  position: relative;
+  margin: 0 auto 16px;
+  padding: 16px;
+  width: 285px;
+  height: 149px;
+  background: url("../assets/member/cardbg.png") no-repeat center;
+  background-size: 100% 100%;
+  box-shadow: 0px -4px 20px #2b2b2b;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+}
+#memberInfo .top .card .name {
+  font-weight: bold;
+}
+#memberInfo .top .card .type {
+  color: #b36112;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  font-weight: bold;
+}
+#memberInfo .top .card .discount {
+  position: absolute;
+  right: 16px;
+  bottom: 0px;
+  font-weight: bold;
+  font-size: 36px;
+}
+#memberInfo .top .card .discount span {
+  font-size: 50px;
+  font-weight: bold;
+}
+#memberInfo .top .phone,
+#memberInfo .top .title {
+  color: #999;
+  font-size: 14px;
+}
+#memberInfo .top .title {
+  font-size: 15px;
+  padding: 25px 0 12px;
+}
+#memberInfo .top .price {
+  color: #fff;
+  font-size: 15px;
+  padding-bottom: 21px;
+}
+#memberInfo .top .price span {
+  font-size: 18px;
+}
+#memberInfo .weui-cells {
+  font-size: 16px;
+  text-align: left;
+}
+#memberInfo .weui-cells .weui-cell_access {
+  height: 50px;
+}
+#memberInfo .bottom {
+  padding: 26px 0 20px;
+  color: #333;
+  height: 130px;
+}
+#memberInfo .bottom div {
+  display: inline-block;
+  margin: 0 18px;
+}
+#memberInfo .bottom .icon {
+  width: 24px;
+  height: 24px;
+}
+#memberInfo .bottom .type {
+  font-size: 12px;
+}
+#toRecharge {
+  background: #f4f5f8;
+  min-height: 100%;
+}
+#toRecharge .top {
+  width: 100%;
+  background: #333;
+  padding-top: 9px;
+  color: #fff;
+}
+#toRecharge .top .card {
+  position: relative;
+  margin: 0 auto 16px;
+  padding: 16px;
+  width: 285px;
+  height: 149px;
+  background: url("../assets/member/cardbg.png") no-repeat center;
+  background-size: 100% 100%;
+  box-shadow: 0px -4px 20px #2b2b2b;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+}
+#toRecharge .top .card .name {
+  font-weight: bold;
+}
+#toRecharge .top .card .type {
+  font-weight: bold;
+  color: #b36112;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+}
+#toRecharge .top .card .discount {
+  position: absolute;
+  right: 16px;
+  bottom: 0px;
+  font-weight: bold;
+  font-size: 36px;
+}
+#toRecharge .top .card .discount span {
+  font-size: 50px;
+  font-weight: bold;
+}
+#toRecharge .top .phone,
+#toRecharge .top .title {
+  color: #999;
+  font-size: 14px;
+}
+#toRecharge .top .title {
+  font-size: 15px;
+  padding: 25px 0 12px;
+}
+#toRecharge .top .price {
+  color: #fff;
+  font-size: 15px;
+  padding-bottom: 21px;
+}
+#toRecharge .top .price span {
+  font-size: 18px;
+}
+#toRecharge .weui-cells {
+  margin-top: 30px;
+  font-size: 16px;
+  text-align: left;
+}
+#toRecharge .weui-cells .weui-cell_access {
+  height: 50px;
+}
+#toRecharge p {
+  padding: 10px 15px 0;
+  margin-bottom: -5px;
+  font-size: 14px;
+  text-align: left;
+}
+#toRecharge p span {
+  color: #f49530;
+}
+#toRecharge .toRecord {
+  display: inline-block;
+  padding-top: 20px;
+  font-size: 14px;
+  color: #1a9a48;
+}
+#createMem {
+  background: #f4f5f8;
+  min-height: 100%;
+}
+#createMem .top {
+  width: 100%;
+  background: #333;
+  padding-top: 9px;
+  padding-bottom: 31px;
+  height: 190px;
+  color: #fff;
+}
+#createMem .top .card {
+  position: relative;
+  padding: 16px;
+  width: 285px;
+  height: 150px;
+  background: url("../assets/member/cardbg.png") no-repeat center;
+  background-size: 100% 100%;
+  box-shadow: 0px -4px 20px #2b2b2b;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+}
+#createMem .top .card .name {
+  font-weight: bold;
+}
+#createMem .top .card .type {
+  color: #b36112;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  font-weight: bold;
+}
+#createMem .top .card .discount {
+  position: absolute;
+  right: 16px;
+  bottom: 0px;
+  font-size: 36px;
+  font-weight: bold;
+}
+#createMem .top .card .discount span {
+  font-size: 50px;
+  font-weight: bold;
+}
+#createMem .weui-cells {
+  font-size: 16px;
+  text-align: left;
+}
+#createMem .weui-cells .weui-cell {
+  height: 50px;
+  font-size: 16px;
+}
+#createMem .weui-cells .weui-cell .weui-cell__ft {
+  margin-right: 15px;
+}
+#createMem .weui-cells .weui-cell .btnCode {
+  /*width: 84px;*/
+  height: 34px;
+  line-height: 34px;
+  font-size: 14px;
+}
+#createMem .bottom {
+  padding: 26px 0 20px;
+  color: #333;
+}
+#createMem .bottom div {
+  display: inline-block;
+  margin: 0 18px;
+}
+#createMem .bottom .icon {
+  width: 24px;
+  height: 24px;
+}
+#createMem .bottom .type {
+  font-size: 12px;
+}
+#createMem p {
+  padding: 29px 0 15px;
+  font-size: 15px;
+}
+#createMem .open {
+  height: 50px;
+  line-height: 50px;
+  margin: 0 15px 0;
+}
+#createMemberSuccess {
+  background: #f4f5f8;
+  min-height: 100%;
+  padding-top: 70px;
+}
+#createMemberSuccess img {
+  width: 88px;
+  height: 88px;
+}
+#createMemberSuccess .result {
+  padding: 30px 0 0;
+  font-size: 18px;
+}
+#createMemberSuccess .toRecord {
+  display: inline-block;
+  padding: 70px 0 34px;
+  font-size: 15px;
+  color: #333;
+}
+#createMemberSuccess .back {
+  font-size: 16px;
+  width: 119px;
+  height: 29px;
+  line-height: 29px;
+}
+#record {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  text-align: left;
+}
+#record .weui-cells {
+  margin-top: 0;
+}
+#record .weui-cells .weui-cell {
+  padding: 12px 15px;
+  height: 60px;
+}
+#record .weui-cells .weui-cell .weui-cell__bd {
+  position: relative;
+}
+#record .weui-cells .weui-cell .weui-cell__bd p {
+  font-size: 15px;
+}
+#record .weui-cells .weui-cell .weui-cell__bd .time {
+  margin-top: 9px;
+  font-size: 13px;
+  color: #999;
+}
+#record .weui-cells .weui-cell .weui-cell__ft {
+  font-size: 16px;
+  color: #191c1a;
+}
+#record .weui-cells .weui-cell .weui-cell__ft img {
+  width: 25px;
+  height: 25px;
+}
+#record .weui-cells .weui-cell .weui-cell__ft .price {
+  font-size: 18px;
+}

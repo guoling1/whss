@@ -25,6 +25,7 @@ public class AppPolicyMember {
     private String membershipName;//会员卡名称
     private String membershipShopName;//会员卡上显示的店铺名称
     private BigDecimal discount;//会员卡折扣(折)
+    private Integer isDeposited;//是否储值0不储值 1储值
     private BigDecimal depositAmount;//开卡储值金额
     private Integer isPresentedViaActivate;//是否开卡赠送0否 1是
     private BigDecimal presentAmount;//赠送金额
@@ -32,6 +33,25 @@ public class AppPolicyMember {
     private Integer isPresentedViaRecharge;//是否充值赠送0否 1是
     private BigDecimal rechargeLimitAmount;//单笔充值限额
     private BigDecimal rechargePresentAmount;//单笔充值赠送金额
+
+    private String param;//搜索条件
+    private Integer currentPage;//当前页数
+    private BigDecimal remainingSum;//余额
+    private BigDecimal rechargeTotalAmount;//充值总金额
+    private BigDecimal consumeTotalAmount;//累计消费总金额
+    private Date lastConsumeTime;
+
+    private String discountInt;
+    private String discountFloat;
+    private Integer cardStatus;
+
+    public Integer getCardStatus() {
+        return cardStatus;
+    }
+
+    public void setCardStatus(Integer cardStatus) {
+        this.cardStatus = cardStatus;
+    }
 
     public Long getId() {
         return id;
@@ -216,5 +236,77 @@ public class AppPolicyMember {
 
     public void setCanRecharge(Integer canRecharge) {
         this.canRecharge = canRecharge;
+    }
+
+    public Integer getIsDeposited() {
+        return isDeposited;
+    }
+
+    public void setIsDeposited(Integer isDeposited) {
+        this.isDeposited = isDeposited;
+    }
+
+    public String getParam() {
+        return param;
+    }
+
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
+    }
+
+    public BigDecimal getRemainingSum() {
+        return remainingSum;
+    }
+
+    public void setRemainingSum(BigDecimal remainingSum) {
+        this.remainingSum = remainingSum;
+    }
+
+    public BigDecimal getRechargeTotalAmount() {
+        return rechargeTotalAmount;
+    }
+
+    public void setRechargeTotalAmount(BigDecimal rechargeTotalAmount) {
+        this.rechargeTotalAmount = rechargeTotalAmount;
+    }
+
+    public BigDecimal getConsumeTotalAmount() {
+        return consumeTotalAmount;
+    }
+
+    public void setConsumeTotalAmount(BigDecimal consumeTotalAmount) {
+        this.consumeTotalAmount = consumeTotalAmount;
+    }
+
+    public Date getLastConsumeTime() {
+        return lastConsumeTime;
+    }
+
+    public void setLastConsumeTime(Date lastConsumeTime) {
+        this.lastConsumeTime = lastConsumeTime;
+    }
+
+    public String getDiscountInt() {
+        return discountInt;
+    }
+
+    public void setDiscountInt(String discountInt) {
+        this.discountInt = discountInt;
+    }
+
+    public String getDiscountFloat() {
+        return discountFloat;
+    }
+
+    public void setDiscountFloat(String discountFloat) {
+        this.discountFloat = discountFloat;
     }
 }

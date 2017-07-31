@@ -95,7 +95,7 @@
                       <el-table-column prop="realname" label="报单员姓名"></el-table-column>
                       <el-table-column label="注册时间">
                         <template scope="scope">
-                          {{ scope.row.createTimes | datetime }}
+                          {{ scope.row.createTimes }}
                         </template>
                       </el-table-column>
                       <el-table-column prop="cellphone" label="注册手机号"></el-table-column>

@@ -3,6 +3,7 @@ package com.jkm.hss.controller.wx;
 
 import com.aliyun.oss.OSSClient;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
@@ -129,7 +130,7 @@ public class LoginController extends BaseController {
     public String reg(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
         boolean isRedirect = false;
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
@@ -140,7 +141,7 @@ public class LoginController extends BaseController {
         model.addAttribute("oemNo",oemNo);
         if(!super.isLogin(request)){
             String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-            if(oemNo!=null&&!"".equals(oemNo)){//分公司
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//分公司
                 log.info("oemNo:"+oemNo);
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 if(oemInfoOptional.isPresent()){
@@ -162,27 +163,27 @@ public class LoginController extends BaseController {
                     if (merchantId != null && merchantId != 0){
                         Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
 
-                        if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
                             if(result.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
                                 Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
                                 if(oemInfoOptional.isPresent()){
                                     if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
-                                        CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                        return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                                        model.addAttribute("message","请求参数有误");
+                                        return "/message";
                                     }
                                 }else{
                                     log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
                                     model.addAttribute("message","分公司尚未配置");
-                                    return "redirect:/sqb/message";
+                                    return "/message";
                                 }
                             }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
-                                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                                model.addAttribute("message","该微信号已被注册，请用其他微信号注册");
+                                return "/message";
                             }
                         }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
                             if(result.get().getOemId()>0){//分公司商户
-                                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
+                                model.addAttribute("message","该微信号已被注册，请用其他微信号注册");
+                                return "/message";
                             }
                         }
 
@@ -278,7 +279,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -315,7 +316,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -346,16 +347,16 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/prompt",method = RequestMethod.GET)
     public String prompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
-        String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
-        model.addAttribute("oemNo",oemNo);
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            model.addAttribute("oemNo", oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemName","好收收");
+            model.addAttribute("oemNo", "");
+        }
         String res = merchantInfoCheckRecordService.selectById(userInfoOptional.get().getMerchantId());
         if (result.get().getStatus()==EnumMerchantStatus.UNPASSED.getId()){
             model.addAttribute("res",res);
@@ -381,7 +382,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -415,7 +416,7 @@ public class LoginController extends BaseController {
         String oemNo = request.getParameter("oemNo");
         String appId = WxConstants.APP_ID;
         String appSecret = WxConstants.APP_KEY;
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             appId=oemInfoOptional.get().getAppId();
             appSecret = oemInfoOptional.get().getAppSecret();
@@ -456,7 +457,7 @@ public class LoginController extends BaseController {
                          @RequestParam(value = "name", required = true) String name,
                          @RequestParam(value = "money", required = true) String money) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -479,93 +480,99 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/wallet", method = RequestMethod.GET)
     public String wallet(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
+//        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
+//            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+//            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+//        }else{
+//            model.addAttribute("oemName","好收收");
+//        }
         if(!super.isLogin(request)){
-            model.addAttribute("avaliable", "0.00");
-            model.addAttribute("oemNo", oemNo);
-            if(oemNo!=null&&!"".equals(oemNo)){
-                model.addAttribute("showRecommend", 2);
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
+                Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                model.addAttribute("oemNo", oemNo);
+                model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             }else{
-                model.addAttribute("showRecommend", 1);
+                model.addAttribute("oemNo", "");
+                model.addAttribute("oemName","好收收");
             }
+            model.addAttribute("avaliable", "0.00");
+            model.addAttribute("showRecommend", 1);
         }else{
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.isPresent()){//存在
-                if(userInfoOptional.get().getMerchantId()!=0){
-                    Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-
-                    if(oemNo!=null&&!"".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
-                        if(merchantInfo.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
-                            Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
-                            if(oemInfoOptional.isPresent()){
-                                if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
-                                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                                    return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                                }
-                            }else{
-                                log.info("当前商户应为分公司商户,但是分公司配置不正确，分公司尚未配置O单");
-                                model.addAttribute("message","分公司尚未配置");
-                                return "redirect:/sqb/message";
-                            }
-                        }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
-                            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+                Preconditions.checkState(merchantInfo.isPresent(), "商户注册信息有误，只有用户没有商户！");
+                if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){//当前商户应为分公司商户:1.如果为总公司，清除cookie 2.如果为分公司，判断是否是同一个分公司，是：继续，不是：清除cookie
+                    if(merchantInfo.get().getOemId()>0){//说明有分公司，判断是否为同一分公司
+                        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+                        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        if(!(oemInfoOptional.get().getOemNo()).equals(oemNo)){//不同一分公司
+                            Optional<OemInfo> oemInfoOptional1 =  oemInfoService.selectByOemNo(oemNo);
+                            Preconditions.checkState(oemInfoOptional1.isPresent(), "分公司尚未配置");
+                            model.addAttribute("oemNo", oemNo);
+                            model.addAttribute("oemName",oemInfoOptional1.get().getBrandName());
                             CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            String encoderUrl = URLEncoder.encode(request.getAttribute(ApplicationConsts.REQUEST_URL).toString(), "UTF-8");
-                            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+oemInfoOptional.get().getAppId()+"&redirect_uri=http%3a%2f%2fhss.qianbaojiajia.com%2fwx%2ftoOemSkip&response_type=code&scope=snsapi_base&state="+encoderUrl+"#wechat_redirect";
+                            return "/wallet";
+                        }else{
+                            model.addAttribute("oemNo", oemNo);
+                            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
                         }
-                    }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
-                        if(merchantInfo.get().getOemId()>0){//分公司商户
-                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                            return "redirect:"+request.getAttribute(ApplicationConsts.REQUEST_URL).toString();
-                        }
+                    }else{//无分公司，清除当前总公司cookie,重新跳转获取分公司cookie
+                        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        model.addAttribute("oemNo", oemNo);
+                        model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+                        CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                        return "/wallet";
                     }
-
-                    if(merchantInfo.isPresent()){
-                        final Optional<Account> accountOptional = this.accountService.getById(merchantInfo.get().getAccountId());
-                        if(!accountOptional.isPresent()){
-                            model.addAttribute("avaliable", "0.00");
+                }else{//当前商户应为总公司商户：1.如果为分公司，清除cookie 2.总公司商户，不做处理
+                    if(merchantInfo.get().getOemId()>0){//分公司商户
+                        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+                        Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                        if(!(WxConstants.APP_ID).equals(oemInfoOptional.get().getAppId())){
+                            model.addAttribute("oemNo", "");
+                            model.addAttribute("oemName","好收收");
+                            CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                            return "/wallet";
                         }else{
-                            final Account account = accountOptional.get();
-                            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                            model.addAttribute("avaliable", account.getTotalAmount()==null?"0.00":decimalFormat.format(account.getTotalAmount()));
-                        }
-                        //是否显示推荐和升级
-                        if(merchantInfo.get().getIsUpgrade()== EnumIsUpgrade.CANUPGRADE.getId()){//显示升级
-                            model.addAttribute("showRecommend", 1);//显示升级
-                        }else{
-                            model.addAttribute("showRecommend", 2);//不显示升级
+                            model.addAttribute("oemNo", oemNo);
+                            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
                         }
                     }else{
-                        if(oemNo!=null&&!"".equals(oemNo)){
-                            model.addAttribute("showRecommend", 2);
-                        }else{
-                            model.addAttribute("showRecommend", 1);
-                        }
-                        model.addAttribute("avaliable", "0.00");
+                        model.addAttribute("oemNo", "");
+                        model.addAttribute("oemName","好收收");
                     }
-                }else{
-                    if(oemNo!=null&&!"".equals(oemNo)){
-                        model.addAttribute("showRecommend", 2);
-                    }else{
-                        model.addAttribute("showRecommend", 1);
-                    }
+                }
+                final Optional<Account> accountOptional = this.accountService.getById(merchantInfo.get().getAccountId());
+                if(!accountOptional.isPresent()){
                     model.addAttribute("avaliable", "0.00");
+                }else{
+                    final Account account = accountOptional.get();
+                    DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                    model.addAttribute("avaliable", account.getTotalAmount()==null?"0.00":decimalFormat.format(account.getTotalAmount()));
+                }
+                //是否显示推荐和升级
+                if(merchantInfo.get().getIsUpgrade()== EnumIsUpgrade.CANUPGRADE.getId()){//显示升级
+                    model.addAttribute("showRecommend", 1);//显示升级
+                }else{
+                    model.addAttribute("showRecommend", 2);//不显示升级
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                if(oemNo!=null&&!"".equals(oemNo)){
-                    model.addAttribute("showRecommend", 2);
-                }else{
-                    model.addAttribute("showRecommend", 1);
-                }
+                model.addAttribute("showRecommend", 1);
                 model.addAttribute("avaliable", "0.00");
+
+                if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
+                    Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
+                    Preconditions.checkState(oemInfoOptional.isPresent(), "分公司尚未配置");
+                    model.addAttribute("oemNo", oemNo);
+                    model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+                }else{
+                    model.addAttribute("oemNo", "");
+                    model.addAttribute("oemName","好收收");
+                }
             }
-            model.addAttribute("oemNo", oemNo);
         }
         return "/wallet";
     }
@@ -581,7 +588,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/collection", method = RequestMethod.GET)
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -638,7 +645,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
     public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "isSelf") int isSelf) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -664,7 +671,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
     public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -699,7 +706,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/tradeRecord", method = RequestMethod.GET)
     public String tradRecord(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -720,7 +727,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/bank", method = RequestMethod.GET)
     public String bank(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -739,7 +746,7 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/bankBranch/{bankId}", method = RequestMethod.GET)
-    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId) throws IOException {
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId,@RequestParam(value = "source", required = false) Integer source) throws IOException {
             Optional<AccountBank> accountBankOptional = accountBankService.selectById(bankId);
             if(!accountBankOptional.isPresent()){
                 model.addAttribute("message","查询不到默认银行卡信息");
@@ -748,8 +755,10 @@ public class LoginController extends BaseController {
             if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
                 String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
                 model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                model.addAttribute("realBankNo",bankNo);
             }else{
                 model.addAttribute("bankNo","");
+                model.addAttribute("realBankNo","");
             }
             if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
                 String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
@@ -758,13 +767,14 @@ public class LoginController extends BaseController {
                 model.addAttribute("mobile","");
             }
             String oemNo = request.getParameter("oemNo");
-            if(oemNo!=null&&!"".equals(oemNo)){
+            if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
                 Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
                 model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             }else{
                 model.addAttribute("oemName","好收收");
             }
             model.addAttribute("oemNo", oemNo);
+            model.addAttribute("source", source);
             model.addAttribute("bankName", accountBankOptional.get().getBankName());
             model.addAttribute("bankBin",accountBankOptional.get().getBankBin());
             model.addAttribute("provinceCode",accountBankOptional.get().getBranchProvinceCode());
@@ -799,7 +809,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.GET)
     public String creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
         }else{
@@ -820,7 +830,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "mobile", required = false) String mobile) throws IOException {
         String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
+        if(oemNo!=null&&!"".equals(oemNo)&&!"null".equals(oemNo)){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
             model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
             model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
@@ -842,45 +852,25 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/invite/{id}", method = RequestMethod.GET)
     public String invite(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
-        boolean isRedirect = false;
-        String ul = request.getRequestURI();
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                model.addAttribute("message","您已经注册过了\n" +
-                        "不能再被邀请注册");
-                url = "/message";
-            }else {
-                Optional<UserInfo> uiOptional = userInfoService.selectById(id);
-                if(uiOptional.isPresent()){
-                    Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(uiOptional.get().getMerchantId());
-                    if(merchantInfoOptional.isPresent()){
-                        if(merchantInfoOptional.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfoOptional.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-                            model.addAttribute("message","推荐商户未审核通过");
-                            url = "/message";
-                        }else{
-                            model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
-                            url = "/reg";
-                        }
-                    }else{
-                        model.addAttribute("message","推荐商户不存在");
-                        url = "/message";
-                    }
-                }else{
-                    model.addAttribute("message","推荐用户不存在");
-                    url = "/message";
-                }
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        Preconditions.checkState(!userInfoOptional.isPresent(), "您已经注册过了\n不能再被邀请注册");
+        Optional<UserInfo> uiOptional = userInfoService.selectById(id);
+        Preconditions.checkState(!uiOptional.isPresent(), "推荐用户不存在");
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(uiOptional.get().getMerchantId());
+        Preconditions.checkState(!merchantInfoOptional.isPresent(), "推荐用户不存在");
+        Preconditions.checkState(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.PASSED.getId()||merchantInfoOptional.get().getStatus()== EnumMerchantStatus.FRIEND.getId(), "推荐商户未审核通过");
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectById(merchantInfoOptional.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            model.addAttribute("wechatCode",oemInfoOptional.get().getWechatCode());
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemName","好收收");
+            model.addAttribute("wechatCode","HAOSHOUSHOU");
+            model.addAttribute("oemNo","");
         }
-
+        model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
+        return "/reg";
     }
     /**
      * 推荐好友页面
@@ -897,7 +887,13 @@ public class LoginController extends BaseController {
         BigDecimal totalProfit = partnerShallProfitDetailService.selectTotalProfitByMerchantId(result.get().getId());
         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
         model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
-        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        String oemNo = "";
+        Optional<OemInfo> oemInfoOptional =  oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            oemNo = oemInfoOptional.get().getOemNo();
+        }
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return "/myRecommend";
 
     }
@@ -930,7 +926,17 @@ public class LoginController extends BaseController {
     public String upgradeMax(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId(),WxConstants.APP_ID,WxConstants.APP_KEY);
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
+        if(oemInfoOptional.isPresent()){
+            appId = oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
+        }
+        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId(),appId,appSecret);
         if(map==null){
             model.addAttribute("headimgUrl","");
         }else{
@@ -942,7 +948,7 @@ public class LoginController extends BaseController {
         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
         model.addAttribute("level",result.get().getLevel());
         Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(productOptional.get().getId());
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(result.get().getOemId(),productOptional.get().getId());
         model.addAttribute("upgradeArray",partnerRuleSettingResponses);
         return "/upgradeMax";
     }
@@ -957,9 +963,18 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/upgradeMin", method = RequestMethod.GET)
     public String upgradeMin(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        Long merchantId = userInfoOptional.get().getMerchantId();
-        Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId(),WxConstants.APP_ID,WxConstants.APP_KEY);
+        Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        String appId = WxConstants.APP_ID;
+        String appSecret = WxConstants.APP_KEY;
+        if(oemInfoOptional.isPresent()){
+            appId = oemInfoOptional.get().getAppId();
+            appSecret = oemInfoOptional.get().getAppSecret();
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
+        }
+        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId(),appId,appSecret);
         if(map==null){
             model.addAttribute("headimgUrl","");
         }else{
@@ -971,7 +986,7 @@ public class LoginController extends BaseController {
         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
         model.addAttribute("level",result.get().getLevel());
         Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(productOptional.get().getId());
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(result.get().getOemId(),productOptional.get().getId());
         model.addAttribute("upgradeArray",partnerRuleSettingResponses);
         return "/upgradeMin";
     }
@@ -999,33 +1014,39 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/toUpgrade", method = RequestMethod.GET)
     public String toUpgrade(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-            Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-            List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(productOptional.get().getId());
-            List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
-            int hasCount = recommendService.selectFriendCount(result.get().getId());
-            if(upgradeRules.size()>0){
-                for(int i=0;i<upgradeRules.size();i++){
-                    CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
-                    BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRules.get(i).getType());
-                    currentRulesResponse.setId(upgradeRules.get(i).getId());
-                    currentRulesResponse.setName(upgradeRules.get(i).getName());
-                    currentRulesResponse.setType(upgradeRules.get(i).getType());
-                    currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
-                    currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
-                    currentRulesResponse.setNeedMoney(needMoney);
-                    list.add(currentRulesResponse);
-                }
-            }else{
-                model.addAttribute("message","信息配置有误");
-                return "/500";
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(productOptional.get().getId());
+        List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
+        int hasCount = recommendService.selectFriendCount(result.get().getId());
+        if(upgradeRules.size()>0){
+            for(int i=0;i<upgradeRules.size();i++){
+                CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
+                BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRules.get(i).getType());
+                currentRulesResponse.setId(upgradeRules.get(i).getId());
+                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                currentRulesResponse.setType(upgradeRules.get(i).getType());
+                currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
+                currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
+                currentRulesResponse.setNeedMoney(needMoney);
+                list.add(currentRulesResponse);
             }
-            model.addAttribute("currentLevel",result.get().getLevel());
-            model.addAttribute("upgradeRules",list);
-            model.addAttribute("merchantId",result.get().getId());
-            model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
-            return "/toUpgerde";
+        }else{
+            model.addAttribute("message","信息配置有误");
+            return "/500";
+        }
+        model.addAttribute("currentLevel",result.get().getLevel());
+        model.addAttribute("upgradeRules",list);
+        model.addAttribute("merchantId",result.get().getId());
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        String oemNo = "";
+        if(oemInfoOptional.isPresent()){
+            oemNo = oemInfoOptional.get().getOemNo();
+        }
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
+        return "/toUpgerde";
     }
 
 
@@ -1052,16 +1073,16 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/authentication", method = RequestMethod.GET)
     public String authentication(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
-        String oemNo = request.getParameter("oemNo");
-        if(oemNo!=null&&!"".equals(oemNo)){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(oemNo);
-            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
-        }else{
-            model.addAttribute("oemName","好收收");
-        }
-        model.addAttribute("oemNo", oemNo);
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemName",oemInfoOptional.get().getBrandName());
+            model.addAttribute("oemNo", oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemName","好收收");
+            model.addAttribute("oemNo", "");
+        }
         model.addAttribute("merchantName",result.get().getMerchantName());
         if(result.get().getProvinceName()==null||"".equals(result.get().getProvinceName())){
             model.addAttribute("district","");
@@ -1110,81 +1131,39 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/toBuy/{id}", method = RequestMethod.GET)
     public String toBuy(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
-        boolean isRedirect = false;
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
-                        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
-                        if(!upgradeRulesOptional.isPresent()){//不存在
-                            model.addAttribute("message","没有此级别合伙人");
-                            url = "/message";
-                        }else{
-                            BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
-                            UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
-                            upgradePayRecord.setMerchantId(merchantId);
-                            upgradePayRecord.setProductId(result.get().getProductId());
-                            upgradePayRecord.setBeforeLevel(result.get().getLevel());
-                            upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
-                            upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
-                            upgradePayRecord.setAmount(needMoney);
-                            upgradePayRecord.setLevel(upgradeRulesOptional.get().getType());
-                            upgradePayRecord.setUpgradeRulesId(id);
-                            upgradePayRecord.setNote("充值升级");
-                            upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
-                            upgradePayRecordService.insert(upgradePayRecord);
-                            String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
-                            Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
-                            log.info("返回left:{}",pair.getLeft());
-                            log.info("返回right:{}",pair.getRight());
-                            if(pair.getLeft()==0){
-                                isRedirect= true;
-                                String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
-                                url = "/toBuy";
-                                model.addAttribute("payUrl",payUrl);
-                                model.addAttribute("amount",needMoney);
-                            }else{
-                                model.addAttribute("message",pair.getRight());
-                                url = "/message";
-                            }
-                        }
-                    }
-                }else{
-                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                log.info("直接跳转{}",url);
-                return url;
-            }else{
-                return url;
-            }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
+        Preconditions.checkState(upgradeRulesOptional.isPresent(), "没有此级别合伙人");
+        BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
+        UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
+        upgradePayRecord.setMerchantId(userInfoOptional.get().getMerchantId());
+        upgradePayRecord.setProductId(result.get().getProductId());
+        upgradePayRecord.setBeforeLevel(result.get().getLevel());
+        upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
+        upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
+        upgradePayRecord.setAmount(needMoney);
+        upgradePayRecord.setLevel(upgradeRulesOptional.get().getType());
+        upgradePayRecord.setUpgradeRulesId(id);
+        upgradePayRecord.setNote("充值升级");
+        upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
+        upgradePayRecordService.insert(upgradePayRecord);
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(result.get().getOemId());
+        if(oemInfoOptional.isPresent()){
+            model.addAttribute("oemNo",oemInfoOptional.get().getOemNo());
+        }else{
+            model.addAttribute("oemNo","");
+        }
+        String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
+        Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
+        if(pair.getLeft()==0){
+            String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
+            model.addAttribute("payUrl",payUrl);
+            model.addAttribute("amount",needMoney);
+            return "/toBuy";
+        }else{
+            model.addAttribute("message",pair.getRight());
+            return "/message";
         }
     }
 
@@ -1213,5 +1192,127 @@ public class LoginController extends BaseController {
         return "/buySuccess";
     }
 
+    /**
+     * 地区选择
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/districtSelect", method = RequestMethod.GET)
+    public String districtSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                                 @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                                 @RequestParam(value = "provinceName", required = false) String provinceName,
+                                 @RequestParam(value = "cityCode", required = false) String cityCode,
+                                 @RequestParam(value = "cityName", required = false) String cityName,
+                                 @RequestParam(value = "countyCode", required = false) String countyCode,
+                                 @RequestParam(value = "countyName", required = false) String countyName,
+                                 @RequestParam(value = "bankNo", required = false) String bankNo,
+                                 @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
+        model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
+        return  "/district";
+    }
 
+    /**
+     * 支行选择
+     * @param request
+     * @param response
+     * @param model
+     * @param bankNo
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/branchSelect", method = RequestMethod.GET)
+    public String branchSelect(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                               @RequestParam(value = "bankNo", required = false) String bankNo,
+                               @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                               @RequestParam(value = "provinceName", required = false) String provinceName,
+                               @RequestParam(value = "cityCode", required = false) String cityCode,
+                               @RequestParam(value = "cityName", required = false) String cityName,
+                               @RequestParam(value = "countyCode", required = false) String countyCode,
+                               @RequestParam(value = "countyName", required = false) String countyName,
+                               @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
+        model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
+        return  "/branch";
+    }
+    /**
+     * 添加支行
+     * @param request
+     * @param response
+     * @param model
+     * @param countyCode
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/addBranch", method = RequestMethod.GET)
+    public String addBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "countyCode", required = false) String countyCode,
+                            @RequestParam(value = "oemNo", required = false) String oemNo) throws IOException {
+        model.addAttribute("countyCode", countyCode);
+        model.addAttribute("oemNo",oemNo);
+        return  "/addBranch";
+    }
+
+    /**
+     * 支行选择
+     * @param request
+     * @param response
+     * @param model
+     * @param bankNo
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/branchSelect2", method = RequestMethod.GET)
+    public String branchSelect2(final HttpServletRequest request, final HttpServletResponse response,final Model model,
+                               @RequestParam(value = "bankNo", required = false) String bankNo,
+                               @RequestParam(value = "provinceCode", required = false) String provinceCode,
+                               @RequestParam(value = "provinceName", required = false) String provinceName,
+                               @RequestParam(value = "cityCode", required = false) String cityCode,
+                               @RequestParam(value = "cityName", required = false) String cityName,
+                               @RequestParam(value = "countyCode", required = false) String countyCode,
+                               @RequestParam(value = "countyName", required = false) String countyName,
+                               @RequestParam(value = "oemNo", required = false) String oemNo,
+                                @RequestParam(value = "source", required = false) Integer source) throws IOException {
+        model.addAttribute("provinceCode",provinceCode);
+        model.addAttribute("provinceName",provinceName);
+        model.addAttribute("cityCode",cityCode);
+        model.addAttribute("cityName",cityName);
+        model.addAttribute("countyCode",countyCode);
+        model.addAttribute("countyName",countyName);
+        model.addAttribute("bankNo", bankNo);
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("source",source);
+        return  "/branch2";
+    }
+    /**
+     * 添加支行
+     * @param request
+     * @param response
+     * @param model
+     * @param countyCode
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/addBranch2", method = RequestMethod.GET)
+    public String addBranch2(final HttpServletRequest request, final HttpServletResponse response,final Model model,@RequestParam(value = "countyCode", required = false) String countyCode,
+                            @RequestParam(value = "oemNo", required = false) String oemNo,@RequestParam(value = "source", required = false) Integer source) throws IOException {
+        model.addAttribute("countyCode", countyCode);
+        model.addAttribute("oemNo",oemNo);
+        model.addAttribute("source",source);
+        return  "/addBranch2";
+    }
 }

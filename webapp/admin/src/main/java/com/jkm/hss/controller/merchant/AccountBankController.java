@@ -11,7 +11,9 @@ import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
+import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -32,6 +34,8 @@ public class AccountBankController extends BaseController {
     private BankCardBinService bankCardBinService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
 
 
     /**
@@ -62,11 +66,22 @@ public class AccountBankController extends BaseController {
         if(!merchantInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
-        Optional<AccountBank> accountBankOptional = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
-        if(accountBankOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
+//        Optional<AccountBank> accountBankOptional = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
+//        if(accountBankOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
+//        }
+        final JSONObject jsonObject = merchantChannelRateService.updateKmBankInfo(merchantInfoOptional.get().getAccountId(), merchantInfoOptional.get().getId(), changeBankCardRequest.getBankNo());
+        final int code = jsonObject.getInt("code");
+        if (code==1) {
+            accountBankService.changeBankCard(merchantInfoOptional.get(), changeBankCardRequest.getBankNo(), changeBankCardRequest.getReserveMobile(),
+                    changeBankCardRequest.getBranchCityCode(),changeBankCardRequest.getBranchCityName(),
+                    changeBankCardRequest.getBranchCountyCode(),changeBankCardRequest.getBranchCountyName(),
+                    changeBankCardRequest.getBranchProvinceCode(),changeBankCardRequest.getBranchProvinceName(),changeBankCardRequest.getBranchName());
+        }else {
+            final String msg = jsonObject.getString("msg");
+            return CommonResponse.simpleResponse(-1, msg);
+
         }
-        accountBankService.changeBankCard(merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改成功");
     }
 

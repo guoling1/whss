@@ -27,7 +27,7 @@ public interface OrderDao {
      *
      * @param order
      */
-    void insert(Order order);
+    long insert(Order order);
 
     /**
      * 更新
@@ -513,7 +513,7 @@ public interface OrderDao {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdList") List<Long> accountIdList, @Param("accountId") long accountId);
 
     /**
      * 统计订单金额
@@ -662,4 +662,36 @@ public interface OrderDao {
     String getAmountCountBranch(OrderTradeRequest req);
 
     String getAmountCountBranch1(OrderTradeRequest req);
+
+    String getAmountCountHss(OrderTradeRequest req);
+
+    String getAmountCountsHsy(OrderTradeRequest req);
+
+    String getAmountCountHss1(OrderTradeRequest req);
+
+    String getAmountCountsHsy1(OrderTradeRequest req);
+
+    int markOrder2SettlementIngBySettleChannel(@Param("settleDate") Date settleDate, @Param("accountId") long accountId,
+                                               @Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus,
+                                               @Param("upperChannel") int upperChannel, @Param("settleChannel") int settleChannel);
+
+    List<Order> selectOrderListByCount(@Param("accountId") long accountId, @Param("count") int count,
+                                       @Param("status") int status, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
+
+    Order selectOrderBySn(String sn);
+
+    void markOrder2SettleFail(@Param("settlementRecordId") long settlementRecordId, @Param("settleStatus") int settleStatus, @Param("oriSettleStatus") int oriSettleStatus);
+
+    long selectWithdrawOrderCountByParam(long accountId);
+
+    List<Order> selectWithdrawOrdersByParam(@Param("accountId") long accountId, @Param("firstIndex") int firstIndex, @Param("pageSize") int pageSize);
+
+    List<Order> selectWithdrawingOrderByAccountId(@Param("accountId") long accountId, @Param("begin") String begin, @Param("end") String end);
+
+    void updateOrdersBySns(@Param("sns") List<String> sns, @Param("settleStatus") int settleStatus, @Param("settleId") long settleId);
+
+    void updateOrdersBySns2Withdraw(@Param("sns") List<String> sns, @Param("status") int status);
+
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 }

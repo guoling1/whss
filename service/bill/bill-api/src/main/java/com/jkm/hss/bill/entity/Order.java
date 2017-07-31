@@ -4,6 +4,7 @@ import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
+import com.jkm.hss.bill.enums.EnumWithdrawOrderStatus;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -60,6 +61,11 @@ public class Order extends BaseEntity {
      * 交易订单号
      */
     private String orderNo;
+
+    /**
+     * 结算单id
+     */
+    private long settlementRecordId;
 
     /**
      * 流水号
@@ -204,6 +210,10 @@ public class Order extends BaseEntity {
      */
     private int payChannelSign;
 
+    /**
+     * 子通道标识
+     */
+    private int childChannelSign;
     /**
      * 支付渠道
      *
@@ -399,5 +409,10 @@ public class Order extends BaseEntity {
      */
     public boolean isRefundPart() {
         return EnumOrderRefundStatus.REFUND_PART.getId() == this.refundStatus;
+    }
+
+    public boolean isWithDrawComplete() {
+        return EnumOrderStatus.WITHDRAW_SUCCESS.getId() == this.status ||
+                EnumOrderStatus.WITHDRAW_FAIL.getId()== this.status;
     }
 }

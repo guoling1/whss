@@ -23,11 +23,12 @@ import java.util.*;
  */
 public class ActiveControllerTester {
 //    public static String url="http://192.168.1.99:8080/hsy/active/rest";
-    public static String url="http://localhost:8080/active/rest";
-//    public static String url="http://hsy.qianbaojiajia.com/active/rest";
+//    public static String url="http://192.168.1.20:8072/active/rest";
+//    public static String url="http://localhost:8080/active/rest";
+    public static String url="http://hsy.qianbaojiajia.com/active/rest";
     
     public static String v="v1.7";
-    public static String accessToken="76b2bf0a5b08edda6b02047f49b14016";
+    public static String accessToken="19d50c8ba348d48e6ebc124df510553b";
 
     @Test
     public void testInsertHsyUser()throws Exception{

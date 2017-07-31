@@ -82,4 +82,6 @@ public interface MerchantChannelRateDao {
      * @return
      */
     List<Long> selectFailMerchantInfo(@Param("entId") int entId);
+
+    void updateKmRate(@Param("merchantId") long merchantId, @Param("msg") String msg);
 }

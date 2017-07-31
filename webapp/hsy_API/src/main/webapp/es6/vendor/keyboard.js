@@ -28,7 +28,22 @@ _require.register("keyboard", (module, exports, _require, global) => {
       this.input = document.getElementById(object.inputId);
       // 键盘最外层div id
       this.keyboard = document.getElementById(object.keyboardId);
-
+      //打折数
+      this.rebate = document.getElementById('rebate').innerHTML;
+      //减免金额
+      this.minus = document.getElementById('minus').innerHTML;
+       //实际付款金额
+      this.realNum = document.getElementById('realNum').innerHTML;
+      //计算折扣
+      const calculate = function (num,rebate) {
+          if((num*(rebate/10)).toFixed(2)< 0.01&&num>0){
+              document.getElementById('realNum').innerHTML = 0.01;
+          }else {
+              document.getElementById('realNum').innerHTML = (num*(rebate/10)).toFixed(2)
+          }
+        document.getElementById('minus').innerHTML = (num-(document.getElementById('realNum').innerHTML)).toFixed(2);
+        // document.getElementById('realNum').innerHTML = (num - (document.getElementById('minus').innerHTML)).toFixed(2);
+      }
       // 改变微信title
       const changeTitle = function (title) {
         let body = document.getElementsByTagName('body')[0];
@@ -80,6 +95,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
           num = 10000;
           message.prompt_show('收款金额不能超过10000');
         }
+        calculate(num,this.rebate)
         return num;
       };
 
@@ -160,49 +176,136 @@ _require.register("keyboard", (module, exports, _require, global) => {
         };
 
         // 获取输入的功能键 delete quick wx-zfb
+
+        //原价支付
         let keyCtrl = getKeyValue(ev, 'keyCtrl');
-        if (keyCtrl) {
-          switch (keyCtrl) {
-            case 'delete':
-              let a = oldValue.substr(0, oldValue.length - 1);
-              this.input.value = a;
-              this.span.innerHTML = a;
-              break;
-            case 'wx-pay':
-              if (oldValue > 0) {
-                message.load_show('正在支付');
-                http.post('/trade/scReceipt', {
-                  totalFee: oldValue,
-                  hsyOrderId: pageData.hsyOrderId
-                }, function (data) {
-                  http.post(data.payUrl, {}, function (data) {
-                    message.load_hide();
-                    onWeixinJSBridge(data);
-                  });
-                });
-              } else {
-                message.prompt_show('请输入正确的支付金额');
-              }
-              break;
-            case 'ali-pay':
-              if (oldValue > 0) {
-                message.load_show('正在支付');
-                http.post('/trade/scReceipt', {
-                  totalFee: oldValue,
-                  hsyOrderId: pageData.hsyOrderId
-                }, function (data) {
-                  http.post(data.payUrl, {}, function (data) {
-                    message.load_hide();
-                    onAlipayJSBridge(data);
-                  });
-                });
-              } else {
-                message.prompt_show('请输入正确的支付金额');
-              }
-              break;
-          }
+        // 无会员卡唤起支付
+        if(pageData.type=='noMember'){
+            if (keyCtrl) {
+                let realNum = document.getElementById('key-span').innerHTML;
+                switch (keyCtrl) {
+                    case 'delete':
+                        let a = oldValue.substr(0, oldValue.length - 1);
+                        this.input.value = a;
+                        this.span.innerHTML = a;
+                        calculate(a,this.rebate);
+                        break;
+                    case 'wx-pay':
+                        if (realNum > 0) {
+                            message.load_show('正在支付');
+                            http.post('/trade/scReceipt', {
+                                totalFee: realNum,
+                                hsyOrderId: pageData.hsyOrderId,
+                                isMemberCardPay:0,
+                                discountFee:realNum
+                            }, function (data) {
+                                http.post(data.payUrl, {}, function (data) {
+                                    message.load_hide();
+                                    onWeixinJSBridge(data);
+                                });
+                            });
+                        } else {
+                            message.prompt_show('请输入正确的支付金额');
+                        }
+                        break;
+                    case 'ali-pay':
+                        if (realNum > 0) {
+                            message.load_show('正在支付');
+                            http.post('/trade/scReceipt', {
+                                totalFee: realNum,
+                                hsyOrderId: pageData.hsyOrderId,
+                                isMemberCardPay:0,
+                                discountFee:realNum
+                            }, function (data) {
+                                http.post(data.payUrl, {}, function (data) {
+                                    message.load_hide();
+                                    onAlipayJSBridge(data);
+                                });
+                            });
+                        } else {
+                            message.prompt_show('请输入正确的支付金额');
+                        }
+                        break;
+                }
+            }
+        }else {
+            if (keyCtrl) {
+                let realNum = document.getElementById('realNum').innerHTML;
+                let totalFee = document.getElementById('key-span').innerHTML;
+                switch (keyCtrl) {
+                    case 'delete':
+                        let a = oldValue.substr(0, oldValue.length - 1);
+                        this.input.value = a;
+                        this.span.innerHTML = a;
+                        calculate(a,this.rebate);
+                        break;
+                    case 'wx-pay':
+                        if (realNum > 0) {
+                            mask.style.opacity = 0;
+                            mask.style.display = 'none';
+                            message.load_show('正在支付');
+                            http.post('/trade/scReceipt', {
+                                totalFee: totalFee,
+                                hsyOrderId: pageData.hsyOrderId,
+                                isMemberCardPay:0,
+                                discountFee:realNum,
+                                cid: pageData.cid,
+                                mcid: pageData.mcid,
+                                mid: pageData.id
+                            }, function (data) {
+                                http.post(data.payUrl, {}, function (data) {
+                                    message.load_hide();
+                                    onWeixinJSBridge(data);
+                                });
+                            });
+                        } else {
+                            message.prompt_show('请输入正确的支付金额');
+                        }
+                        break;
+                    case 'ali-pay':
+                        if (realNum > 0) {
+                            mask.style.opacity = 0;
+                            mask.style.display = 'none';
+                            message.load_show('正在支付');
+                            http.post('/trade/scReceipt', {
+                                totalFee: totalFee,
+                                hsyOrderId: pageData.hsyOrderId,
+                                isMemberCardPay:0,
+                                discountFee:realNum,
+                                cid: pageData.cid,
+                                mcid: pageData.mcid,
+                                mid: pageData.id
+                            }, function (data) {
+                                http.post(data.payUrl, {}, function (data) {
+                                    message.load_hide();
+                                    onAlipayJSBridge(data);
+                                });
+                            });
+                        } else {
+                            message.prompt_show('请输入正确的支付金额');
+                        }
+                        break;
+                }
+            }
+
         }
       };
+
+      const payFun = function (phone) {
+          message.load_show('正在支付');
+          http.post('/trade/scReceipt', {
+              totalFee: totalFee,
+              hsyOrderId: pageData.hsyOrderId,
+              isMemberCardPay:0,
+              discountFee:realNum,
+              cid: pageData.cid,
+              mcid: pageData.mcid,
+              mid: pageData.id,
+              consumerCellphone: phone
+          }, function (data) {
+              window.location.href = '/trade/success/' + jsonData.orderId;
+          });
+      }
 
       // 注册监听事件
       this.keyboard.addEventListener('touchstart', touchStart);

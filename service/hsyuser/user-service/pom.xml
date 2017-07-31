@@ -290,6 +290,10 @@
             <groupId>com.jkm</groupId>
             <artifactId>hss-product-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-push-api</artifactId>
+        </dependency>
         <!-- mybatis release___________________________end -->
     </dependencies>
 </project>

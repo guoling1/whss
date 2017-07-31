@@ -278,6 +278,8 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
             HsyMerchantAuditResponse province = hsyMerchantAuditDao.getCode(city.getParentCode());
             paramsMap.put("province",province.getAName());
         }
+        Optional<UserWithdrawRate> userWithdrawRateOptional = userWithdrawRateService.selectByUserId(userId);
+        paramsMap.put("remitD0",userWithdrawRateOptional.get().getWithdrawRateD0().toString());
         paramsMap.put("address",appBizShop.getAddress());
         log.info("收银家修改商户进件参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBaseInfoModify(), paramsMap);

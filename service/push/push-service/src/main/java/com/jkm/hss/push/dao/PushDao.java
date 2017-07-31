@@ -46,4 +46,26 @@ public interface PushDao {
      * @return
      */
     int getTransactionNumber(@Param("transactionNumber") String transactionNumber);
+
+
+    /**
+     * 更改密码发送下线通知
+     * @param uid
+     * @param accessToken
+     * @return
+     */
+    List<Map> selectUserByUid(@Param("uid") String uid,@Param("accessToken") String accessToken);
+
+    /**
+     * 禁用推送
+     * @param uid
+     * @return
+     */
+    List<Map> selectCid(@Param("uid") String uid);
+
+    /**
+     * 更新
+     * @param push
+     */
+    void updatePush(Push push);
 }

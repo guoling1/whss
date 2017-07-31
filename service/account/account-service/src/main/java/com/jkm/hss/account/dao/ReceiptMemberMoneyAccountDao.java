@@ -37,6 +37,15 @@ public interface ReceiptMemberMoneyAccountDao {
     int increaseIncomeAmount(@Param("id") long id, @Param("income") BigDecimal income);
 
     /**
+     * 收入总金额减少
+     *
+     * @param id
+     * @param income
+     * @return
+     */
+    int decreaseIncomeAmount(@Param("id") long id, @Param("income") BigDecimal income);
+
+    /**
      * 充值金额增加
      *
      * @param id

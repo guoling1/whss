@@ -55,7 +55,7 @@ public class HsyOrder{
     private BigDecimal amount;
     private BigDecimal poundage;
     private String qrcode;
-    private Integer cashierid;
+    private long cashierid;
     private String cashiername;
     /**
      * 第三方交易流水号
@@ -110,9 +110,16 @@ public class HsyOrder{
     private Long uid;
     private Long accountid;
     private Long dealerid;
+    private Long cid;
+    private Long mcid;
+    private Long mid;
+    private Integer isMemberCardPay;
 
     private Date createTime;
     private Date updateTime;
+
+    private Integer currentPage;
+    private String consumerCellphone;
 
     /**
      * 是否是 已经退款成功

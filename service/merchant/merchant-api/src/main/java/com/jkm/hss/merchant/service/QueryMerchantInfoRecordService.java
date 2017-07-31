@@ -1,9 +1,6 @@
 package com.jkm.hss.merchant.service;
 
-import com.jkm.hss.merchant.entity.LogResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
-import com.jkm.hss.merchant.entity.ReferralResponse;
-import com.jkm.hss.merchant.entity.SettleResponse;
+import com.jkm.hss.merchant.entity.*;
 
 import java.text.ParseException;
 import java.util.List;
@@ -50,4 +47,30 @@ public interface QueryMerchantInfoRecordService {
      * @return
      */
     MerchantInfoResponse getrecommenderInfo(long id);
+
+    /**
+     * hss补填联行号
+     * @param req
+     */
+    void saveNo(SaveLineNoRequest req);
+
+    /**
+     * hss补填联行号（除审核通过之外）
+     * @param req
+     */
+    void saveNo1(SaveLineNoRequest req);
+
+    /**
+     * 查状态
+     * @param id
+     * @return
+     */
+    int getStatus(long id);
+
+    /**
+     * 查找账户id
+     * @param id
+     * @return
+     */
+    int getAccountId(long id);
 }

@@ -7,11 +7,9 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.service.HSYTradeService;
-import com.jkm.hss.bill.service.HSYTransactionService;
-import com.jkm.hss.bill.service.HsyBalanceAccountEmailService;
-import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.*;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.CreateOrderRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
@@ -19,6 +17,8 @@ import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.service.HsyCmbcService;
@@ -58,7 +58,10 @@ public class TradeController extends BaseController {
     private HSYTransactionService hsyTransactionService;
     @Autowired
     private HsyBalanceAccountEmailService hsyBalanceAccountEmailService;
-
+    @Autowired
+    private PushService pushService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
     /**
      * 创建好收银订单
      *
@@ -84,14 +87,25 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
-        final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId());
-        if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
-                    .addParam("subMerName", resultPair.getRight())
-                    .addParam("amount", payRequest.getTotalFee()).build();
+        log.info("扫码牌支付-参数[{}]", payRequest);
+        if(payRequest.getIsMemberCardPay()==1) {
+            Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrderMember(payRequest.getTotalFee(), payRequest.getHsyOrderId(),payRequest.getDiscountFee(),payRequest.getIsMemberCardPay(),payRequest.getCid(),payRequest.getMcid(),payRequest.getMid(),payRequest.getConsumerCellphone());
+            if (0 == resultPair.getLeft()) {
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("tradeNO", resultPair.getMiddle())
+                        .addParam("orderId", Long.parseLong(resultPair.getRight())).build();
+            }
+            return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
+        }else{
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(payRequest.getTotalFee(), payRequest.getHsyOrderId(),payRequest.getDiscountFee(),payRequest.getIsMemberCardPay(),payRequest.getCid(),payRequest.getMcid(),payRequest.getMid());
+            if (0 == resultPair.getLeft()) {
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                        .addParam("subMerName", resultPair.getRight())
+                        .addParam("amount", payRequest.getDiscountFee()).build();
+            }
+            return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getMiddle());
     }
 
 
@@ -189,6 +203,15 @@ public class TradeController extends BaseController {
             model.addAttribute("sn", order.getOrderNo());
             model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
+
+            //调支付推送
+            try {
+                final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(order.getOrderNo()).get();
+                this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
+                        hsyOrder.getAmount().doubleValue(), hsyOrder.getValidationcode(), hsyOrder.getOrderno());
+            } catch (final Throwable e) {
+                log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
+            }
             return "/success";
         }
     }

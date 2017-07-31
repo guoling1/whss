@@ -8,6 +8,7 @@ import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -336,15 +337,29 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
         long oemId = 0;
+        final String mobile = codeRequest.getMobile();
         if(codeRequest.getOemNo()!=null&&!"".equals(codeRequest.getOemNo())){
             Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(codeRequest.getOemNo());
             if(!oemInfoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
-        }
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+            if(merchantInfoList.size()>0){
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()==0){
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                    }else{
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if(WxConstants.APP_ID.equals(oemInfoOptional1.get().getAppId())){
+                            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                        }
+                    }
+                }
+            }
 
-        final String mobile = codeRequest.getMobile();
+        }
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
         }
@@ -566,7 +581,6 @@ public class WxPubController extends BaseController {
         if(!ui.isPresent()){//根据openId找不到商户
             //②根据mobile判断有没有用户
             Optional<MerchantInfo> merchantInfoOptional1 = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
-//            Optional<UserInfo> uoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
             if(merchantInfoOptional1.isPresent()){//有
                 return CommonResponse.simpleResponse(2, "该商户已注册，请直接登录");
             }else{//没有，走注册
@@ -591,12 +605,9 @@ public class WxPubController extends BaseController {
                     mi.setLevel(EnumUpGradeType.COMMON.getId());
                     mi.setHierarchy(0);
                     mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
-                    if(oemId>0){
-                        mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
-                    }
                     mi.setOemId(oemId);
                     //判断是否能升级
-                    if(mi.getFirstDealerId()>0&&oemId==0){
+                    if(mi.getFirstDealerId()>0){
                         Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
                         if(dealerOptional.isPresent()){
                             int recommendBtn = dealerOptional.get().getRecommendBtn();
@@ -932,7 +943,6 @@ public class WxPubController extends BaseController {
         if(userInfoOptional.isPresent()){//用户存在
             int returnCount = userInfoService.cleanOpenId(userInfoOptional.get().getId());
             if(returnCount>0){
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "解绑成功");
             }else{
                 return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "解绑失败，请重试");
@@ -955,6 +965,18 @@ public class WxPubController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "分公司不存在");
             }
             oemId = oemInfoOptional.get().getDealerId();
+        }else{
+            List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
+            if(merchantInfoList.size()>0){
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()>0){
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if((WxConstants.APP_ID).equals(oemInfoOptional1.get().getAppId())){
+                            oemId = merchantInfoList.get(i).getOemId();
+                        }
+                    }
+                }
+            }
         }
         if (StringUtils.isBlank(directLoginRequest.getMobile())) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -1215,10 +1237,6 @@ public class WxPubController extends BaseController {
         if(accountBank==null){
             return CommonResponse.simpleResponse(-1, "您暂未设置默认银行卡");
         }
-//        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
-//                &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
-//            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
-//        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1248,9 +1266,6 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(continueBankInfoRequest.getCountyName())){
             return CommonResponse.simpleResponse(-1, "请选择县");
         }
-        if(StringUtils.isBlank(continueBankInfoRequest.getBranchCode())){
-            return CommonResponse.simpleResponse(-1, "请选择支行");
-        }
         if(StringUtils.isBlank(continueBankInfoRequest.getBranchName())){
             return CommonResponse.simpleResponse(-1, "请选择支行");
         }
@@ -1278,10 +1293,7 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
-//        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
-//                &&merchantInfo.get().getCreditCard()!=null&&!"".equals(merchantInfo.get().getCreditCard())){
-//            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
-//        }
+        merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1469,6 +1481,11 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
+        if(checkMerchantInfoRequest.getChannelTypeSign()==EnumPayChannelSign.MB_UNIONPAY_DO.getId()){
+            boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
+            if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在09:00至22:25使用");
+        }
+
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
         merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());
@@ -1482,9 +1499,9 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
+        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
         //hlb通道结算卡拦截
         if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
-            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
             final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
             if (!channelSupportDebitCardOptional.isPresent()){
                 //通道结算卡不可用
@@ -1508,6 +1525,10 @@ public class WxPubController extends BaseController {
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNSUPPORT.getId()){
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "无需入网");
         }
+
+        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",accountBank.getId());
+        }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENTING.getId()){
             log.info("商户入网中");
             return CommonResponse.simpleResponse(-1, "入网申请中");
@@ -1523,6 +1544,16 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
+            // 活动通道卡盟需更新一次上游结算费率
+            if ( (merchantChannelRate.getRemarks() == null) || (! merchantChannelRate.getRemarks().equals("已同步"))){
+                log.info("去卡盟上游同步费率");
+                final JSONObject jo = this.merchantChannelRateService.updateKmMerchantRateInfo(merchantInfo.get().getAccountId(), merchantInfo.get().getId(), merchantInfo.get().getProductId(), checkMerchantInfoRequest.getChannelTypeSign());
+                if(jo.getInt("code")==-1){
+                    return CommonResponse.simpleResponse(-1, "请稍后再试");
+                }else{
+                    return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+                }
+            }
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "商户已入网");
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
@@ -1597,7 +1628,15 @@ public class WxPubController extends BaseController {
         toUpgradeResponse.setMerchantId(merchantInfo.get().getId());
         toUpgradeResponse.setCurrentLevel(merchantInfo.get().getLevel());
         toUpgradeResponse.setUpgradeRules(list);
-        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+        String oemNo = "";
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+        if(!oemInfoOptional.isPresent()&&merchantInfo.get().getOemId()>0){
+            return CommonResponse.simpleResponse(-1, "分公司信息配置有误");
+        }
+        if(oemInfoOptional.isPresent()){
+            oemNo = oemInfoOptional.get().getOemNo();
+        }
+        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", toUpgradeResponse);
     }
 }

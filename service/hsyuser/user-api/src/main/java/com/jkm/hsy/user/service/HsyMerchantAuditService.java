@@ -158,4 +158,9 @@ public interface HsyMerchantAuditService {
      * @return
      */
     List<ShopInfoResponse> getShopInfo(Long id);
+    /**
+     * 修改商户d0提现
+     * @param userD0WithdrawReques
+     */
+    int modifyD0withdraw(UserD0WithdrawRequest userD0WithdrawReques);
 }

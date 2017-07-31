@@ -29,6 +29,7 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +102,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         placeOrderRequest.setNotifyUrl(placeOrderParams.getNotifyUrl());
         placeOrderRequest.setMerName(order.getGoodsName());
         placeOrderRequest.setMerNo(placeOrderParams.getMerchantNo());
-        placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
+        placeOrderRequest.setTotalAmount(order.getRealPayAmount().toPlainString());
         placeOrderRequest.setChannel(order.getPayType());
         placeOrderRequest.setWxAppId(placeOrderParams.getWxAppId());
         placeOrderRequest.setMemberId(order.getPayAccount());
@@ -187,10 +188,11 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public PayResponse memberPayImpl(final long orderId) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
+        final Order order = this.orderService.getById(orderId).get();
         final PayResponse payResponse = new PayResponse();
         payResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         payResponse.setTradeOrderNo(order.getOrderNo());
+        payResponse.setTradeOrderId(orderId);
         if (order.isDuePay()) {
             final MemberAccount memberAccount = this.memberAccountService.getByIdWithLock(order.getMemberAccountId()).get();
             final ReceiptMemberMoneyAccount receiptMemberMoneyAccount = this.receiptMemberMoneyAccountService.getByIdWithLock(order.getMerchantReceiveAccountId()).get();
@@ -219,7 +221,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             memberAccountFlow.setRemark("消费减少");
             this.memberAccountFlowService.add(memberAccountFlow);
             //商户收会员款账户增加
-            this.receiptMemberMoneyAccountService.increaseIncomeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount().subtract(order.getPoundage()));
+            this.receiptMemberMoneyAccountService.increaseIncomeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount());
             //商户收会员款账户增加-添加流水
             final ReceiptMemberMoneyAccountFlow receiptMemberMoneyAccountFlow = new ReceiptMemberMoneyAccountFlow();
             receiptMemberMoneyAccountFlow.setAccountId(receiptMemberMoneyAccount.getId());
@@ -235,12 +237,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             this.receiptMemberMoneyAccountFlowService.add(receiptMemberMoneyAccountFlow);
             //更新交易
             final Order updateOrder = new Order();
+            updateOrder.setId(orderId);
             updateOrder.setPaySuccessTime(new Date());
             updateOrder.setRemark("会员卡支付成功");
             updateOrder.setSn("");
             updateOrder.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
             //TODO
             updateOrder.setSettleTime(new Date());
+            updateOrder.setSuccessSettleTime(new Date());
             updateOrder.setSettleStatus(EnumSettleStatus.SETTLED.getId());
             this.orderService.update(updateOrder);
 
@@ -349,7 +353,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setSettleTime(this.baseSettlementDateService.getSettlementDate(order.getAppId(), updateOrder.getPaySuccessTime(), order.getSettleType(), enumPayChannelSign.getUpperChannel()));
         //TODO  hss-hsy
         if (EnumServiceType.APPRECIATION_PAY.getId() != order.getServiceType()) {
-            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()),
+            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.of(order.getAppId()),
                     order.getPayee(), enumPayChannelSign.getId());
             final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate,
                     order.getPayChannelSign());
@@ -403,6 +407,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
             MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW_D0, 20000);
         }
         //TODO 通知业务
+        log.info("业务方[{}]-交易订单[{}]，支付成功, 开始通知业务", order.getAppId(), order.getOrderNo());
         final CallbackResponse callbackResponse = new CallbackResponse();
         callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
         callbackResponse.setTradeOrderNo(order.getOrderNo());
@@ -437,7 +442,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
         updateOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
         //TODO  hss-hsy
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.of(order.getAppId()), order.getPayee(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         updateOrder.setPoundage(merchantPayPoundage);
         updateOrder.setPayRate(merchantPayPoundageRate);
@@ -450,8 +455,17 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         this.record(order.getId());
         //会员账户增加
         this.memberAccountIncrease(order);
-        //TODO
-        //通知业务
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setSn(updateOrder.getSn());
+        callbackResponse.setSuccessTime(updateOrder.getPaySuccessTime());
+        callbackResponse.setTradeAmount(order.getTradeAmount());
+        callbackResponse.setPoundage(updateOrder.getPoundage());
+        callbackResponse.setCode(EnumBasicStatus.SUCCESS.getId());
+        callbackResponse.setMessage(updateOrder.getRemark());
+        this.hsyTransactionService.handleRechargeCallbackMsg(callbackResponse);
     }
 
     /**
@@ -503,8 +517,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         updateOrder.setStatus(EnumOrderStatus.RECHARGE_FAIL.getId());
         updateOrder.setRemark(paymentSdkPayCallbackResponse.getMessage());
         this.orderService.update(updateOrder);
-        //TODO
-        //通知业务
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setSn(updateOrder.getSn());
+        callbackResponse.setCode(EnumBasicStatus.FAIL.getId());
+        callbackResponse.setMessage(updateOrder.getRemark());
+        this.hsyTransactionService.handleRechargeCallbackMsg(callbackResponse);
     }
 
     /**
@@ -536,6 +556,14 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Transactional
     public void markRechargeHandling(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         this.orderService.updateRemark(order.getId(), paymentSdkPayCallbackResponse.getMessage());
+
+        //TODO 通知业务
+        final CallbackResponse callbackResponse = new CallbackResponse();
+        callbackResponse.setBusinessOrderNo(order.getBusinessOrderNo());
+        callbackResponse.setTradeOrderNo(order.getOrderNo());
+        callbackResponse.setCode(EnumBasicStatus.HANDLING.getId());
+        callbackResponse.setMessage("处理中");
+        this.hsyTransactionService.handleRechargeCallbackMsg(callbackResponse);
     }
 
     /**
@@ -546,9 +574,12 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Override
     @Transactional
     public long record(final long orderId) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         log.info("交易单[{}], 进行入账操作", order.getOrderNo());
         if ((order.isPaySuccess() || order.isRechargeSuccess()) && order.isDueSettle()) {
+            log.info("交易单[{}], 入账开始", order.getOrderNo());
             //手续费账户--可用余额
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
@@ -614,6 +645,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
                 this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
                 return settlementRecordId;
             }
+            stopWatch.stop();
+            log.info("交易单[{}], 入账结束, 用时[{}]", order.getOrderNo(), stopWatch.getTime());
         }
         return 0;
     }
@@ -649,6 +682,69 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         this.memberAccountFlowService.add(memberAccountFlow);
         //商户收会员款账户充值总额增加
         this.receiptMemberMoneyAccountService.increaseRechargeAmount(receiptMemberMoneyAccount.getId(), order.getTradeAmount().add(order.getMarketingAmount()));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param order
+     */
+    @Override
+    @Transactional
+    public void memberAccountDecrease(Order order) {
+        final MemberAccount memberAccount = this.memberAccountService.getByIdWithLock(order.getMemberAccountId()).get();
+        final ReceiptMemberMoneyAccount receiptMemberMoneyAccount = this.receiptMemberMoneyAccountService.getByIdWithLock(order.getMerchantReceiveAccountId()).get();
+
+        //会员账户额度增加
+        final MemberAccount updateMemberAccount = new MemberAccount();
+        updateMemberAccount.setId(memberAccount.getId());
+        updateMemberAccount.setConsumeTotalAmount(memberAccount.getConsumeTotalAmount().subtract(order.getRealPayAmount()));
+        updateMemberAccount.setAvailable(memberAccount.getAvailable().add(order.getRealPayAmount()));
+        this.memberAccountService.update(updateMemberAccount);
+        //会员账户额度增加-添加流水
+        final MemberAccountFlow memberAccountFlow = new MemberAccountFlow();
+        memberAccountFlow.setAccountId(memberAccount.getId());
+        memberAccountFlow.setFlowNo(this.memberAccountFlowService.getFlowNo());
+        memberAccountFlow.setOrderNo(order.getOrderNo());
+        memberAccountFlow.setBeforeAmount(memberAccount.getAvailable());
+        memberAccountFlow.setAfterAmount(memberAccount.getAvailable().add(order.getRealPayAmount()));
+        memberAccountFlow.setIncomeAmount(order.getRealPayAmount());
+        memberAccountFlow.setOutAmount(new BigDecimal("0.00"));
+        memberAccountFlow.setChangeTime(new Date());
+        memberAccountFlow.setType(EnumAccountFlowType.INCREASE.getId());
+        memberAccountFlow.setRemark("退款增加");
+        this.memberAccountFlowService.add(memberAccountFlow);
+        //商户收会员款账户减少
+        this.receiptMemberMoneyAccountService.decreaseIncomeAmount(receiptMemberMoneyAccount.getId(), order.getRealPayAmount());
+        //商户收会员款账户增加-添加流水
+        final ReceiptMemberMoneyAccountFlow receiptMemberMoneyAccountFlow = new ReceiptMemberMoneyAccountFlow();
+        receiptMemberMoneyAccountFlow.setAccountId(receiptMemberMoneyAccount.getId());
+        receiptMemberMoneyAccountFlow.setFlowNo(this.receiptMemberMoneyAccountFlowService.getFlowNo());
+        receiptMemberMoneyAccountFlow.setOrderNo(order.getOrderNo());
+        receiptMemberMoneyAccountFlow.setBeforeAmount(receiptMemberMoneyAccount.getIncomeToTalAmount());
+        receiptMemberMoneyAccountFlow.setAfterAmount(receiptMemberMoneyAccount.getIncomeToTalAmount().subtract(order.getRealPayAmount()));
+        receiptMemberMoneyAccountFlow.setIncomeAmount(new BigDecimal("0.00"));
+        receiptMemberMoneyAccountFlow.setOutAmount(order.getRealPayAmount());
+        receiptMemberMoneyAccountFlow.setChangeTime(new Date());
+        receiptMemberMoneyAccountFlow.setType(EnumAccountFlowType.DECREASE.getId());
+        receiptMemberMoneyAccountFlow.setRemark("退款减少");
+        this.receiptMemberMoneyAccountFlowService.add(receiptMemberMoneyAccountFlow);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param payOrder
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> memberRefund(final Order payOrder) {
+        this.memberAccountDecrease(payOrder);
+        this.orderService.updateRefundInfo(payOrder.getId(), payOrder.getRealPayAmount(), EnumOrderRefundStatus.REFUND_SUCCESS);
+        this.orderService.updateRemark(payOrder.getId(), "已退款");
+        return Pair.of(0, "退款成功");
     }
 
     /**

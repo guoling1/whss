@@ -9,7 +9,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>${oemName}</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.21.css">--%>
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.23.css">
+  <%--<link rel="stylesheet" href="../../css/hss/style.2.2.22.css">--%>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <script>
       function aysnLoadCss(url,cburl) {
@@ -114,6 +115,18 @@
         <div class="btn" id="bankShow">支持的银行</div>
       </div>
       <div class="group">
+        <div class="name">支行</div>
+        <a class="weui-cell weui-cell_access" style="padding: 0;text-align: left;">
+          <div class="weui-cell__bd" style="width: 80%">
+            <%--<input type="text" class="ipt" placeholder="点击选择" id="branch">--%>
+            <p style="width:100%;color: #ccc;font-size: 14px;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="branch">点击选择</p>
+          </div>
+          <div class="weui-cell__ft">
+          </div>
+        </a>
+        <%--<input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">--%>
+      </div>
+      <div class="group">
         <div class="name">照片</div>
         <a href="javascript:void(0);" class="file" id="chooseImage">
           <span id="bankText">点击上传结算卡正面照</span>
@@ -203,5 +216,6 @@
   });
 </script>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.31/material.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/material.min.js"></script>
+<%--<script src="../js/hss/2.2.32/material.min.js"></script>--%>
 </html>

@@ -10,10 +10,6 @@
           <!--筛选-->
           <ul class="search">
             <li class="same">
-              <label>业务订单号:</label>
-              <el-input style="width: 193px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
               <label>提现单号:</label>
               <el-input style="width: 193px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
@@ -63,14 +59,9 @@
               </template>
             </el-table-column>
             <el-table-column prop="userType" label="用户类型"></el-table-column>
-            <el-table-column label="业务订单号">
+            <el-table-column prop="realPayAmount" label="提现金额" align="right">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="tradeAmount" label="提现金额" align="right">
-              <template scope="scope">
-                <span>{{scope.row.tradeAmount|toFix}}</span>
+                <span>{{scope.row.realPayAmount|toFix}}</span>
               </template>
             </el-table-column>
             <el-table-column label="手续费" align="right">

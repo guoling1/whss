@@ -88,4 +88,23 @@ public interface MerchantChannelRateService {
      * 商户入网
      */
     JSONObject enterInterNet1(long accountId,long productId, long merchantId, String channelCompany);
+    /**
+     * 修改商户入网
+     */
+    void updateInterNet(long accountId,long merchantId);
+    /**
+     * 修改银行卡信息
+     */
+    JSONObject updateKmBankInfo(long accountId,long merchantId,String bankNo);
+    /**
+     * 修改卡盟联行号
+     */
+    void updateKmBranchInfo(long accountId,long merchantId);
+
+    /**
+     * 修改卡盟费率
+     * @param accountId
+     * @param merchantId
+     */
+    JSONObject updateKmMerchantRateInfo(long accountId,long merchantId, long productId, int channelTypeSign);
 }

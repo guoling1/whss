@@ -3,33 +3,36 @@
 <mapper namespace="com.jkm.hss.push.dao.PushDao">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_push_message_record
+        INSERT INTO tb_push_message_record_new
         (
-        id,
         title,
         content,
         temp_type,
         push_type,
-        task_id,
-        client_id,
         targets,
         transaction_number,
-        status
+        voice
         )
         VALUES
         (
-        #{pid},
         #{title},
         #{content},
         #{tempType},
-        #{pushType},
-        #{taskId},
-        #{clientId},
+        2,
         #{targets},
         #{transactionNumber},
-        #{status}
+        #{voice}
         )
     </insert>
+
+    <update id="updatePush">
+        UPDATE tb_push_message_record_new
+        SET
+        task_id = #{taskId},
+        push_type = #{pushType},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
 
     <update id="update">
         UPDATE tb_account
@@ -47,7 +50,7 @@
 
 
     <select id="selectUserAppBySid" resultType="Map">
-        select   DISTINCT  CLIENTID,  APPTYPE
+        select   DISTINCT  CLIENTID,  APPTYPE,ISAVOIDINGTONE
         from app_au_user_token aut, app_au_token aat ,app_biz_shop_user_role bsur
         where aut.TID=aat.ID  and bsur.UID=aut.UID and bsur.SID=#{sid} AND aut.`STATUS`=1
     </select>
@@ -61,5 +64,18 @@
         SELECT COUNT(0) FROM tb_push_message_record WHERE transaction_number=#{transactionNumber}
     </select>
 
+    <select id="selectUserByUid" resultType="Map">
+        SELECT a.CLIENTID,a.APPTYPE
+        FROM app_au_token a
+        LEFT JOIN app_au_user_token b ON a.ID=b.TID
+        WHERE b.UID=#{uid} AND b.`STATUS`=1 AND a.ACCESSTOKEN != #{accessToken}
+    </select>
+
+    <select id="selectCid" resultType="Map">
+        SELECT a.CLIENTID,a.APPTYPE
+        FROM app_au_token a
+        LEFT JOIN app_au_user_token b ON a.ID=b.TID
+        WHERE b.UID=#{uid} AND b.`STATUS`=1
+    </select>
 
 </mapper>

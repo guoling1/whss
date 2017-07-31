@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.settle.dao.SettleExceptionRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_settle_exception_record
+        (settle_target_no,
+        withdraw_order_id,
+        settle_target_name,
+        settle_target_type,
+        begin_time,
+        end_time,
+        remarks,
+        status
+        )VALUES(
+        #{settleTargetNo},
+        #{withdrawOrderId},
+        #{settleTargetName},
+        #{settleTargetType},
+        #{beginTime},
+        #{endTime},
+        #{remarks},
+        #{status}
+        )
+    </insert>
+    <update id="update">
+        UPDATE tb_settle_exception_record
+        SET settle_target_no = #{settleTargetNo},
+        settle_target_name = #{settleTargetName},
+        settle_target_type = #{settleTargetType},
+        begin_time = #{beginTime},
+        end_time = #{endTime},
+        remarks = #{remarks},
+        status = #{status}
+    </update>
+    <select id="selectCountByParam" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_settle_exception_record
+        <where>
+            <if test="userNo != null">
+                AND settle_target_no = #{userNo}
+            </if>
+            <if test="userName != null">
+                AND settle_target_name like "%"#{userName}"%"
+            </if>
+            <if test="userType > 0">
+                AND settle_target_type = #{userType}
+            </if>
+            <if test="settleExceptionStatus > 0">
+                AND status = #{settleExceptionStatus}
+            </if>
+            <if test="startDate != null">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </select>
+    <select id="selectByParam" resultType="com.jkm.hss.settle.entity.SettleExceptionRecord">
+        SELECT * FROM tb_settle_exception_record
+        <where>
+            <if test="userNo != null">
+                AND settle_target_no = #{userNo}
+            </if>
+            <if test="userName != null">
+                AND settle_target_name like "%"#{userName}"%"
+            </if>
+            <if test="userType > 0">
+                AND settle_target_type = #{userType}
+            </if>
+            <if test="settleExceptionStatus > 0">
+                AND status = #{settleExceptionStatus}
+            </if>
+            <if test="startDate != null">
+                AND create_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.settle.entity.SettleExceptionRecord">
+        SELECT * FROM tb_settle_exception_record WHERE id = #{id} FOR UPDATE
+    </select>
+
+</mapper>

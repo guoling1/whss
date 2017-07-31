@@ -38,7 +38,7 @@ public interface PartnerRuleSettingDao{
      * 升级降费率升级页
      * @return
      */
-    List<PartnerRuleSettingResponse> selectAllItemByProductId(@Param("productId") long productId);
+    List<PartnerRuleSettingResponse> selectAllItemByProductId(@Param("dealerId") long dealerId,@Param("productId") long productId);
 
     /**
      * 查询

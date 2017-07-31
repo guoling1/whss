@@ -1,6 +1,7 @@
 package com.jkm.hss.schedule;
 
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class Task {
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     /**
      * 更新结算审核记录状态
@@ -44,5 +47,15 @@ public class Task {
         final Date settleDate = DateFormatUtil.parse("2017-06-20" , DateFormatUtil.yyyy_MM_dd);
         this.accountSettleAuditRecordService.handleSettleAuditRecordTask(settleDate);
         log.info("更新结算审核记录状态定时任务（2017-06-20）-临时策略-end");
+    }
+
+    /**
+     * 卡盟 修改入网信息定时任务
+     */
+    @Scheduled(cron = "0 5 14,15 * * ?")
+    public void handleKmUpdateNetTask() {
+        log.info("修改入网信息定时任务定时任务--start");
+        this.merchantInfoService.handleKmUpdateStatus();
+        log.info("修改入网信息定时任务定时任务--end");
     }
 }

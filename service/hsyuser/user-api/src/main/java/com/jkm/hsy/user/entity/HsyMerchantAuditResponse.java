@@ -29,6 +29,7 @@ public class HsyMerchantAuditResponse {
     private String username;//报单员真实姓名
     private String createTimes;
     private String branchCode;//联行号
+    private String branchDistrictCode;//联行地区代码
     /**
      * 所属分公司
      */
@@ -38,11 +39,15 @@ public class HsyMerchantAuditResponse {
     private String proxyName; //所属一级代理商
     private String proxyName1; //所属二级代理商
     private String code;//省市码
+    private String codes;//省码
+    private String codes1;//市码
     private String cardNO;//卡号
     private String cardAccountName;//开户名
     private String cardBank;//开户行
     private String bankAddress;//开户行支行
     private String aName;
+    private String aNames;
+    private String aNames1;
     private String parentCode;
     private String idcard;//身份证号码
     private String idcardf;//身份证正面照
@@ -97,5 +102,12 @@ public class HsyMerchantAuditResponse {
     private String hxbRemarks;//华夏入驻信息
     private Integer hxbOpenProduct;//华夏开通产品状态
     private String hxbOpenProductRemarks;//华夏开通产品信息
+
+    //活动编码
+    private String hxWx;
+    private String msWx;
+    private String hxZfb;
+    private String msZfb;
+    private Integer isOpenD0;//是否开通D0提现
 
 }

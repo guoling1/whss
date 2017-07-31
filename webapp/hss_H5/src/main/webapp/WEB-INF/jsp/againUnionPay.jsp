@@ -72,7 +72,7 @@
 </head>
 <body>
 
-<div id="_againUnionPay" style="opacity: 0">
+<div id="_againUnionPay">
   <div class="space-title">确认订单信息</div>
   <div class="order-info">
     <div class="left">${merchantName}</div>
@@ -167,5 +167,5 @@
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>--%>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.31/againUnionPay.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.32/againUnionPay.min.js"></script>--%>
 </html>

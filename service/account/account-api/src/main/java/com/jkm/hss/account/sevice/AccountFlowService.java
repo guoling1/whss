@@ -76,4 +76,14 @@ public interface AccountFlowService {
      * @return
      */
     PageModel<AccountFlow> selectByParamToMerchantFlow(int pageNo, int pageSize, long accountId);
+
+    /**
+     * 添加待结算流水变更记录
+     * @param id
+     * @param orderNo
+     * @param amount
+     * @param msg
+     * @param type
+     */
+    void addAccountFlowToSettle(long id, String orderNo, BigDecimal amount, String msg, EnumAccountFlowType type);
 }

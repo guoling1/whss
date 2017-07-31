@@ -1,15 +1,22 @@
 package com.jkm.hss.controller.active;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.common.base.Optional;
+import com.google.gson.*;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
+import com.jkm.base.common.util.Page;
+import com.jkm.base.common.util.PageUtils;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.account.sevice.ReceiptMemberMoneyAccountService;
+import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.helper.RechargeParams;
+import com.jkm.hss.bill.service.HsyOrderScanService;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.TradeService;
 import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.entity.AuthParam;
@@ -39,9 +46,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +78,10 @@ public class MembershipController {
     private ReceiptMemberMoneyAccountService receiptMemberMoneyAccountService;
     @Autowired
     private TradeService tradeService;
+    @Autowired
+    private HsyOrderScanService hsyOrderScanService;
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("getAuth/{operate}/{uidEncode}")
     public String getAuth(HttpServletRequest request, HttpServletResponse response,Model model,@PathVariable String uidEncode,@PathVariable String operate){
@@ -169,62 +182,87 @@ public class MembershipController {
             return "/tips";
         }
 
-        if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
-            Long uid;
-            try {
-                String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
-                String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
-                uid = Long.parseLong(uidAES.trim());
-            } catch (Exception e) {
-                log.info("http转义失败");
-                model.addAttribute("tips", "请稍后再试！");
-                return "/tips";
-            }
+        if(OperateType.VIEW.key.equals(authInfo.getOperate())){
+            model.addAttribute("openID",authInfo.getOpenID());
+            model.addAttribute("userID",authInfo.getUserID());
+            model.addAttribute("source",authInfo.getSource());
+            return "redirect:/membership/toMemberList";
+        }
 
-            List<AppPolicyMembershipCard> cardList = hsyMembershipService.findMemberCardByUID(uid);
-            if (cardList == null || cardList.size() == 0) {
-                model.addAttribute("tips", "该店铺没有会员卡！");
-                return "/tips";
-            }
+        Long uid;
+        try {
+            String uidHttp = URLDecoder.decode(authInfo.getUidEncode(), AppPolicyConstant.enc);
+            uidHttp=uidHttp.replace("<>","/");
+            String uidAES = AppAesUtil.decryptCBC_NoPaddingFromBase64String(uidHttp, AppPolicyConstant.enc, AppPolicyConstant.secretKey, AppPolicyConstant.ivKey);
+            uid = Long.parseLong(uidAES.trim());
+        } catch (Exception e) {
+            log.info("http转义失败");
+            model.addAttribute("tips", "请稍后再试！");
+            return "/tips";
+        }
 
-            model.addAttribute("cardList", cardList);
+        List<AppPolicyMembershipCard> cardList = hsyMembershipService.findMemberCardByUID(uid);
+        if (cardList == null || cardList.size() == 0) {
+            model.addAttribute("tips", "该店铺没有会员卡！");
+            return "/tips";
+        }
 
-            AppPolicyConsumer appPolicyConsumer = null;
-            if (authInfo.getSource().equals("WX")) {
-                appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
-                if (appPolicyConsumer == null) {
-                    model.addAttribute("authInfo", authInfo);
-                    return "/createMember";
-                }
-            } else if (authInfo.getSource().equals("ZFB")) {
-                appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
-                if (appPolicyConsumer == null) {
-                    model.addAttribute("authInfo", authInfo);
-                    return "/createMember";
-                }
-            } else {
-                model.addAttribute("tips", "请使用微信或支付宝");
-                return "/tips";
-            }
-
-            AppPolicyMember appPolicyMember = hsyMembershipService.findMemberByCIDAndUID(appPolicyConsumer.getId(), uid);
-            if (appPolicyMember == null) {
+        AppPolicyConsumer appPolicyConsumer = null;
+        if (authInfo.getSource().equals("WX")) {
+            appPolicyConsumer = hsyMembershipService.findConsumerByOpenID(authInfo.getOpenID());
+            if (appPolicyConsumer == null) {
                 model.addAttribute("authInfo", authInfo);
-                model.addAttribute("appPolicyConsumer", appPolicyConsumer);
+                model.addAttribute("cardList", cardList);
                 return "/createMember";
             }
-
-            if (appPolicyMember.getStatus() == 2) {
-                model.addAttribute("mid", appPolicyMember.getId());
-                model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
-                model.addAttribute("source", authInfo.getSource());
-                return "/needRecharge";
+        } else if (authInfo.getSource().equals("ZFB")) {
+            appPolicyConsumer = hsyMembershipService.findConsumerByUserID(authInfo.getUserID());
+            if (appPolicyConsumer == null) {
+                model.addAttribute("authInfo", authInfo);
+                model.addAttribute("cardList", cardList);
+                return "/createMember";
             }
+        } else {
+            model.addAttribute("tips", "请使用微信或支付宝");
+            return "/tips";
+        }
 
+        AppPolicyMember appPolicyMember = hsyMembershipService.findMemberByCIDAndUID(appPolicyConsumer.getId(), uid);
+        if (appPolicyMember == null) {
+            model.addAttribute("authInfo", authInfo);
+            model.addAttribute("appPolicyConsumer", appPolicyConsumer);
+            model.addAttribute("cardList", cardList);
+            return "/createMember";
+        }
+
+        if (appPolicyMember.getStatus() == 2) {
             model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
+            model.addAttribute("source", authInfo.getSource());
+            return "redirect:/sqb/needRecharge";
+        }
+
+        if(OperateType.CREATE.key.equals(authInfo.getOperate())) {
+            model.addAttribute("cardList", cardList);
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("source", authInfo.getSource());
             return "redirect:/membership/createMemberSuccess";
         }else if(OperateType.RECHARGE.key.equals(authInfo.getOperate())){
-            return "";
+            if(appPolicyMember.getIsDeposited()==0){
+                model.addAttribute("tips", "该会员卡没有储值功能");
+                return "/tips";
+            }
+
+            if(appPolicyMember.getCanRecharge()==0){
+                model.addAttribute("tips", "该会员卡无法继续储值");
+                return "/tips";
+            }
+
+//            model.addAttribute("appPolicyMember",appPolicyMember);
+//            model.addAttribute("type", RechargeValidType.RECHARGE.key);
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("source", authInfo.getSource());
+            return "redirect:/sqb/toRecharge";
         }
         else{
             model.addAttribute("tips","找不到该操作！");
@@ -239,21 +277,21 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","手机号不能为空！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if (!ValidateUtils.isMobile(appPolicyConsumer.getConsumerCellphone()))
         {
             map.put("flag","fail");
             map.put("result","请填写正确的手机号！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if(!(vcode!=null&&!vcode.equals("")))
         {
             map.put("flag","fail");
             map.put("result","验证码不能为空！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         AppAuVerification verification=hsyMembershipService.findRightVcode(appPolicyConsumer.getConsumerCellphone());
@@ -261,14 +299,14 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","验证码未发送或已失效！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if(!verification.getCode().equals(vcode))
         {
             map.put("flag","fail");
             map.put("result","验证码错误！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
 
@@ -284,6 +322,24 @@ public class MembershipController {
             AppPolicyConsumer consumerCheck=hsyMembershipService.findConsumerByCellphone(appPolicyConsumer.getConsumerCellphone());
             if(consumerCheck!=null){//判断微信或支付宝以前是否注册过消费者
                 appPolicyConsumer.setId(consumerCheck.getId());
+                if(appPolicyConsumer.getOpenID()!=null&&!appPolicyConsumer.getOpenID().equals("")&&consumerCheck.getOpenID()!=null&&!consumerCheck.getOpenID().equals("")) {
+                    if(!appPolicyConsumer.getOpenID().equals(consumerCheck.getOpenID())){
+                        map.put("flag","fail");
+                        map.put("result","该手机号已注册！");
+                        writeJsonToResponse(map,response,pw);
+                        return;
+                    }
+                }
+
+                if(appPolicyConsumer.getUserID()!=null&&!appPolicyConsumer.getUserID().equals("")&&consumerCheck.getUserID()!=null&&!consumerCheck.getUserID().equals("")) {
+                    if(!appPolicyConsumer.getUserID().equals(consumerCheck.getUserID())){
+                        map.put("flag","fail");
+                        map.put("result","该手机号已注册！");
+                        writeJsonToResponse(map,response,pw);
+                        return;
+                    }
+                }
+
                 hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
                 appPolicyMember=hsyMembershipService.findMemberByCIDAndMCID(appPolicyConsumer.getId(),mcid);
                 if(appPolicyMember==null)//判断是否有该店会员卡
@@ -291,11 +347,20 @@ public class MembershipController {
                     Long accountID= memberAccountService.init();
                     Long receiptAccountID=receiptMemberMoneyAccountService.init();
                     appPolicyMember = hsyMembershipService.saveMember(appPolicyConsumer.getId(), mcid, status,accountID,receiptAccountID);
+                    map.put("flag","success");
+                    map.put("mid",appPolicyMember.getId()+"");
+                    writeJsonToResponse(map,response,pw);
+                    return;
                 }
-                map.put("flag","success");
-                map.put("mid",appPolicyMember.getId()+"");
-                writeJsonToRrsponse(map,response,pw);
-                return;
+                else
+                {
+                    map.put("flag","memberInfo");
+                    map.put("mid",appPolicyMember.getId()+"");
+                    map.put("source", source);
+                    writeJsonToResponse(map,response,pw);
+                    return;
+                }
+
             }
         }
         hsyMembershipService.insertOrUpdateConsumer(appPolicyConsumer);
@@ -305,20 +370,55 @@ public class MembershipController {
         map.put("flag","success");
         map.put("mid",appPolicyMember.getId()+"");
         map.put("status",status+"");
-        writeJsonToRrsponse(map,response,pw);
+        writeJsonToResponse(map,response,pw);
         return;
     }
 
     @RequestMapping("createMemberSuccess")
-    public String createMemberSuccess(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+    public String createMemberSuccess(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         model.addAttribute("mid",mid);
+        model.addAttribute("source",source);
+        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        model.addAttribute("appPolicyMember",appPolicyMember);
         return "/createMemberSuccess";
     }
 
     @RequestMapping("memberInfo")
-    public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+    public String memberInfo(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        if(appPolicyMember.getStatus()==MemberStatus.NOT_ACTIVE_FOR_RECHARGE.key)
+        {
+//            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+//            if(appPolicyRechargeOrder==null) {
+            model.addAttribute("mid", appPolicyMember.getId());
+            model.addAttribute("cellphone", appPolicyMember.getConsumerCellphone());
+            model.addAttribute("source", source);
+            return "redirect:/sqb/needRecharge";
+//            }
+        }
+
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+//        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(appPolicyMember.getMcid());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+//        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+//        if(appPolicyMember.getIsDeposited()==0) {
+            BigDecimal totalAmount=hsyMembershipService.findConsumeOrderSum(appPolicyMember.getMcid(),appPolicyMember.getId());
+            appPolicyMember.setConsumeTotalAmount(totalAmount);
+//        }
+
+        DecimalFormat a=new DecimalFormat("0.0");
+        String discountStr=a.format(appPolicyMember.getDiscount());
+        String discountInt=discountStr.split("\\.")[0];
+        String discountFloat=discountStr.split("\\.")[1];
+
         model.addAttribute("appPolicyMember",appPolicyMember);
+        model.addAttribute("source",source);
+        model.addAttribute("discountInt",discountInt);
+        model.addAttribute("discountFloat",discountFloat);
+//        model.addAttribute("appBizShopList",appBizShopList);
         return "/memberInfo";
     }
 
@@ -331,9 +431,21 @@ public class MembershipController {
     }
 
     @RequestMapping("toRecharge")
-    public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+    public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
         AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        DecimalFormat a=new DecimalFormat("0.0");
+        String discountStr=a.format(appPolicyMember.getDiscount());
+        String discountInt=discountStr.split("\\.")[0];
+        String discountFloat=discountStr.split("\\.")[1];
         model.addAttribute("appPolicyMember",appPolicyMember);
+        model.addAttribute("type", RechargeValidType.RECHARGE.key);
+        model.addAttribute("discountInt",discountInt);
+        model.addAttribute("discountFloat",discountFloat);
+        model.addAttribute("source", source);
         return "/toRecharge";
     }
 
@@ -345,24 +457,128 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","查不到该会员");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
+        }
+        if(appPolicyMember.getCanRecharge()==0&&type!=null&&type.equals(RechargeValidType.RECHARGE.key))
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡无法自助充值");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
+        if(appPolicyMember.getCardStatus()!=null&&appPolicyMember.getCardStatus()==CardStatus.HALT_USING.key)
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡已停办无法继续充值");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
+
+        if(type!=null&&type.equals(RechargeValidType.ACTIVATE.key)) {
+            AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+            if(appPolicyRechargeOrder!=null) {
+                if (appPolicyRechargeOrder.getStatus() == OrderStatus.HAS_REQUSET_TRADE.key) {
+//                    map.put("flag", "fail");
+//                    map.put("result", "正在交易中请稍后");
+//                    writeJsonToResponse(map, response, pw);
+//                    return;
+                } else if (appPolicyRechargeOrder.getStatus() == OrderStatus.RECHARGE_SUCCESS.key) {
+                    map.put("flag", "memberInfo");
+                    map.put("result", "您已经成功开通会员卡");
+                    writeJsonToResponse(map, response, pw);
+                    return;
+                }
+            }
         }
         AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.saveOrder(appPolicyMember,type,source,amount);
         RechargeParams rechargeParams=createRechargeParams(appPolicyRechargeOrder);
         PayResponse payResponse=tradeService.recharge(rechargeParams);
-        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId());
+        hsyMembershipService.updateOrder(appPolicyRechargeOrder,payResponse.getTradeOrderNo(),payResponse.getTradeOrderId(),OrderStatus.HAS_REQUSET_TRADE.key);
         if(payResponse.getCode()!= EnumBasicStatus.SUCCESS.getId())
         {
             map.put("flag","fail");
             map.put("result",payResponse.getMessage());
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         map.put("flag","success");
         map.put("payResponse",payResponse);
-        writeJsonToRrsponse(map,response,pw);
+        writeJsonToResponse(map,response,pw);
         return;
+    }
+
+    @RequestMapping("consumeListByPage")
+    public void consumeListByPage(HttpServletRequest request, HttpServletResponse response, PrintWriter pw, HsyOrder hsyOrder){
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(hsyOrder.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<HsyOrder> pageAll=new Page<HsyOrder>();
+        pageAll.setObjectT(hsyOrder);
+        pageAll.setPage(page);
+        pageAll= hsyOrderScanService.findConsumeOrderListByPage(pageAll);
+        writeJsonToResponse(pageAll,response,pw);
+        return;
+    }
+
+    @RequestMapping("rechargeListByPage")
+    public void rechargeListByPage(HttpServletRequest request, HttpServletResponse response, PrintWriter pw, AppPolicyRechargeOrder appPolicyRechargeOrder){
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(appPolicyRechargeOrder.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<AppPolicyRechargeOrder> pageAll=new Page<AppPolicyRechargeOrder>();
+        appPolicyRechargeOrder.setMemberID(appPolicyRechargeOrder.getMid());
+        pageAll.setObjectT(appPolicyRechargeOrder);
+        pageAll.setPage(page);
+        pageAll= hsyMembershipService.findRechargeOrderListByPage(pageAll);
+        writeJsonToResponse(pageAll,response,pw);
+        return;
+    }
+
+    @RequestMapping("toMemberList")
+    public String toMembershipCardList(HttpServletRequest request, HttpServletResponse response, Model model, String userID,String openID,String source){
+        AppPolicyConsumer appPolicyConsumer=new AppPolicyConsumer();
+        appPolicyConsumer.setOpenID(openID);
+        appPolicyConsumer.setUserID(userID);
+        List<AppPolicyMember> memberList=hsyMembershipService.findMemberListByOUID(appPolicyConsumer);
+        model.addAttribute("memberList",memberList);
+        model.addAttribute("source",source);
+        return "/memberList";
+    }
+
+    @RequestMapping("toShopList")
+    public String toShopList(HttpServletRequest request, HttpServletResponse response,Model model,Long mcid){
+        List<AppBizShop> appBizShopList=hsyMembershipService.findSuitShopByMCID(mcid);
+        model.addAttribute("appBizShopList",appBizShopList);
+        return "/store";
+    }
+
+    @RequestMapping("toConsumeList")
+    public String toConsumeList(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+        model.addAttribute("mid",mid);
+        return "/consumeList";
+    }
+
+    @RequestMapping("toRechargeList")
+    public String toRechargeList(HttpServletRequest request, HttpServletResponse response,Model model,Long mid){
+        model.addAttribute("mid",mid);
+        return "/rechargeList";
+    }
+
+    @RequestMapping(value = "success/{id}")
+    public String paySuccessPage(final Model model, @PathVariable("id") long id,Long mid,String source) {
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+        if(!orderOptional.isPresent()){
+            return "/500.jsp";
+        }else{
+            final Order order = orderOptional.get();
+            model.addAttribute("sn", order.getOrderNo());
+            model.addAttribute("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            model.addAttribute("money", order.getRealPayAmount().toPlainString());
+            model.addAttribute("mid", mid);
+            model.addAttribute("source", source);
+            return "/successRecharge";
+        }
     }
 
     @RequestMapping("sendVcode")
@@ -372,14 +588,14 @@ public class MembershipController {
         {
             map.put("flag","fail");
             map.put("result","手机号不能为空！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
         if (!ValidateUtils.isMobile(cellphone))
         {
             map.put("flag","fail");
             map.put("result","请填写正确的手机号！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
 
@@ -403,7 +619,7 @@ public class MembershipController {
         }catch(Exception e){
             map.put("flag","fail");
             map.put("result","发送验证码失败，请稍后再试！");
-            writeJsonToRrsponse(map,response,pw);
+            writeJsonToResponse(map,response,pw);
             return;
         }
 
@@ -418,7 +634,7 @@ public class MembershipController {
         hsyMembershipService.insertVcode(sn,code,cellphone, VerificationCodeType.MEMBER_REGISTER.verificationCodeKey);
         map.put("flag","success");
         map.put("result","发送成功！");
-        writeJsonToRrsponse(map,response,pw);
+        writeJsonToResponse(map,response,pw);
     }
 
     public RechargeParams createRechargeParams(AppPolicyRechargeOrder appPolicyRechargeOrder){
@@ -427,7 +643,7 @@ public class MembershipController {
         rechargeParams.setChannel(appPolicyRechargeOrder.getPayChannelSign());
         rechargeParams.setMerchantPayType(EnumMerchantPayType.MERCHANT_JSAPI);
         rechargeParams.setAppId("hsy");
-        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getTradeAmount());
+        rechargeParams.setTradeAmount(appPolicyRechargeOrder.getRealPayAmount());
         rechargeParams.setRealPayAmount(appPolicyRechargeOrder.getRealPayAmount());
         rechargeParams.setMarketingAmount(appPolicyRechargeOrder.getMarketingAmount());
         rechargeParams.setPayeeAccountId(appPolicyRechargeOrder.getPayeeAccountID());
@@ -441,9 +657,21 @@ public class MembershipController {
         return rechargeParams;
     }
 
-    public void writeJsonToRrsponse(Object obj,HttpServletResponse response,PrintWriter pw){
+    public void writeJsonToResponse(Object obj,HttpServletResponse response,PrintWriter pw){
         response.setContentType("application/json;charset=utf-8");
-        Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                if(date==null)
+                    return null;
+                return new JsonPrimitive(AppDateUtil.formatDate(date,"yyyy-MM-dd HH:mm:ss"));
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                if(json.getAsJsonPrimitive()==null)
+                    return null;
+                return AppDateUtil.parseDate(json.getAsJsonPrimitive().getAsString());
+            }
+        }).create();
         String json=gson.toJson(obj);
         pw.write(json);
     }

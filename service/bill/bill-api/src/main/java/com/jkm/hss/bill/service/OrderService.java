@@ -1,10 +1,13 @@
 package com.jkm.hss.bill.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumOrderRefundStatus;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.WithdrawParams;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
@@ -15,7 +18,9 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.GeTuiResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
+import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,7 +38,7 @@ public interface OrderService {
      *
      * @param order
      */
-    void add(Order order);
+    long add(Order order);
 
     /**
      * 创建提现单
@@ -177,7 +182,7 @@ public interface OrderService {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate, List<Long> list,long accountId);
 
     /**
      * 查询交易列表
@@ -662,12 +667,53 @@ public interface OrderService {
     String getAmountCountBranch1(OrderTradeRequest req);
 
     /**
+     * 获取支付成功
+     * @param count
+     * @param status
+     * @return
+     */
+    List<Order> selectOrderListByCount(long accountId, int count, EnumOrderStatus status, String payTime);
+
+
+    /**
+     * 二级代理商交易统计
+     * @param req
+     * @return
+     */
+    String getAmountCounts(OrderTradeRequest req);
+
+    /**
+     * 二级代理商交易统计
+     * @param req
+     * @return
+     */
+    String getAmountCounts1(OrderTradeRequest req);
+
+    void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus);
+
+    long selectWithdrawOrderCountByParam(long accountId);
+
+    List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize);
+
+    List<Order> selectWithdrawingOrderByAccountId(long id, String date);
+
+    void updateOrdersBySns(List<String> sns, int settleStatus,long settlementRecordId);
+
+    void updateOrdersBySns2Withdraw(List<String> sns, int status);
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return
      */
 //    MerchantTradeResponse selectOrderListByPageAll(OrderListRequest orderRecord);
 
-
+    /**
+     * 根据支付流水查询
+     * @return
+     */
+    Order getBySn(String sn);
 
 }

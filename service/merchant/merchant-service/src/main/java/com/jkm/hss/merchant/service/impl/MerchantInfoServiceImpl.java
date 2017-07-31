@@ -150,7 +150,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public long regByWx(MerchantInfo merchantInfo) {
         merchantInfoDao.insertSelective(merchantInfo);
-        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getProductId(), EnumQRCodeSysType.HSS.getId());
+        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getProductId(), EnumQRCodeSysType.HSS.getId(),merchantInfo.getOemId());
         merchantInfo.setCode(qrCode.getCode());
         merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
         merchantInfoDao.updateBySelective(merchantInfo);
@@ -193,8 +193,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      * @param mobile
      */
     @Override
-    public Optional<MerchantInfo> selectByMobile(String mobile) {
-        return Optional.fromNullable(this.merchantInfoDao.selectByMobile(mobile));
+    public List<MerchantInfo> selectByMobile(String mobile) {
+        return this.merchantInfoDao.selectByMobile(mobile);
     }
 
     /**
@@ -550,12 +550,6 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      */
     @Override
     public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
-        MerchantInfo merchantInfo = merchantInfoDao.selectById(continueBankInfoRequest.getId());
-        if(merchantInfo.getProvinceCode()!=null&&!"".equals(merchantInfo.getProvinceCode())
-                &&merchantInfo.getCityCode()!=null&&!"".equals(merchantInfo.getCityCode())
-                &&merchantInfo.getCountyCode()!=null&&!"".equals(merchantInfo.getCountyCode())){
-            return 0;
-        }
         return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
     }
 
@@ -580,6 +574,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     public void changeDealer(String code,ChangeDealerRequest changeDealerRequest) {
         merchantInfoDao.updateDealerInfo(changeDealerRequest);
         qrCodeService.updateDealerInfo(code,changeDealerRequest.getFirstDealerId(),changeDealerRequest.getSecondDealerId());
+    }
+
+    /**
+     * 处理卡盟修改入网信息
+     */
+    @Override
+    public void handleKmUpdateStatus() {
+        List<MerchantInfo> merchantInfoList = merchantInfoDao.selectByKmNetStatus();
+        for(int i=0;i<merchantInfoList.size();i++){
+            merchantChannelRateService.updateInterNet(merchantInfoList.get(i).getAccountId(),merchantInfoList.get(i).getId());
+        }
     }
 
 }
