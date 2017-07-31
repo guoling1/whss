@@ -44,6 +44,7 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
     public void pushAndSendPrintMsg(final String tradeOrderNo, final Date successTime) {
         final HsyOrder hsyOrder = this.hsyOrderService.selectByOrderNo(tradeOrderNo).get();
         try {
+            log.info("店铺[{}], 订单[{}], 交易[{}], app推送", hsyOrder.getShopid(), hsyOrder.getId(), hsyOrder.getOrderno());
             this.pushService.pushCashMsg(hsyOrder.getShopid(), EnumPaymentChannel.of(hsyOrder.getPaymentChannel()).getValue(),
                     hsyOrder.getAmount().doubleValue(), tradeOrderNo.substring(tradeOrderNo.length() - 4), hsyOrder.getOrderno());
         } catch (final Throwable e) {
