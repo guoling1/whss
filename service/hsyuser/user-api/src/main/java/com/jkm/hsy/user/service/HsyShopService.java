@@ -47,7 +47,9 @@ public interface HsyShopService {
      * @param districtCode
      * @param bankAddress
      */
-    void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress, Long id, String branchCode);
+    void changeSettlementCard(String cardNo, String bankName,
+                              String districtCode, String bankAddress,
+                              Long id, String branchCode, String cardAccountName);
 
     /**
      * 修改对公或者对私

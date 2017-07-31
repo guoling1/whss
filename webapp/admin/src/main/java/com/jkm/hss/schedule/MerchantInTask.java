@@ -161,12 +161,13 @@ public class MerchantInTask {
     @Autowired
     private HsyShopDao hsyShopDao;
 
-    //@Scheduled(cron = "0 59 * * * ?")
+    //@Scheduled(cron = "0 36 * * * ?")
     public void updateSyjMerchantRate() {
 
         List<Long> userIds = this.userChannelPolicyService.selectUserIdsBySignAndNetStatus(EnumPayChannelSign.SYJ_WECHAT.getId(), EnumNetStatus.SUCCESS.getId());
         final ArrayList<Pair<Long,String>> list = new ArrayList<>();
         for (Long userId : userIds){
+            userId = 645L;
             try{
                 final AppBizShop appBizShop = new AppBizShop();
                 appBizShop.setType(1);

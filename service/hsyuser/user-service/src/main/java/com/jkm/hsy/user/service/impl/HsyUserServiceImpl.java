@@ -1517,7 +1517,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         /**参数验证*/
         if(!(appAuToken.getIsAvoidingTone()!=null&&!appAuToken.getIsAvoidingTone().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"是否消除提示音");
-        if(!(appAuToken.getIsAvoidingTone()==0||appAuToken.getIsAvoidingTone()==1))
+        if(!(appAuToken.getIsAvoidingTone()==0||appAuToken.getIsAvoidingTone()==1||appAuToken.getIsAvoidingTone()==2))
             throw new ApiHandleException(ResultCode.STATUS_NOT_EXSIT);
         if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
