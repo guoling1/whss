@@ -165,15 +165,12 @@
                   <el-select style="width: 188px" clearable v-model="queryHsy.orderstatus" size="small">
                     <el-option label="全部" value=""></el-option>
                     <el-option label="待支付" value="1"></el-option>
-                    <el-option label="支付中" value="2"></el-option>
+                    <el-option label="收款成功" value="2"></el-option>
                     <el-option label="支付失败" value="3"></el-option>
-                    <el-option label="支付成功" value="4"></el-option>
-                    <el-option label="提现中" value="5"></el-option>
-                    <el-option label="提现成功" value="6"></el-option>
-                    <el-option label="充值成功" value="7"></el-option>
-                    <el-option label="充值失败" value="8"></el-option>
-                    <el-option label="待提现" value="9"></el-option>
-                    <el-option label="提现失败" value="10"></el-option>
+                    <el-option label="退款中" value="4"></el-option>
+                    <el-option label="部分退款" value="5"></el-option>
+                    <el-option label="全部退款" value="6"></el-option>
+                    <el-option label="退款失败" value="7"></el-option>
                   </el-select>
                 </li>
                 <li class="same">
