@@ -1,11 +1,11 @@
-package com.jkm.hsy.user.util;
+package com.jkm.base.common.util;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 public class AppAesUtil {
 
@@ -20,7 +20,7 @@ public class AppAesUtil {
 	 * @return 返回加密的二进制
 	 */
 	public static byte[] encryptCBC_NoPadding(String data,String encode,String secretkey,String ivkey)throws Exception{
-		Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		int blockSize = cipher.getBlockSize();
 		byte[] dataBytes = data.getBytes(encode);
 		int plaintextLength = dataBytes.length;
@@ -49,13 +49,13 @@ public class AppAesUtil {
 	 * @return base64组成的字符串
 	 */
 	public static String encryptCBC_NoPaddingToBase64String(String data,String encode,String secretkey,String ivkey)throws Exception{
-		Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		int blockSize = cipher.getBlockSize();
 		byte[] dataBytes = data.getBytes(encode);
 		int plaintextLength = dataBytes.length;
-		if (plaintextLength % blockSize != 0) {
-			plaintextLength = plaintextLength + (blockSize - (plaintextLength % blockSize));
-		}
+//		if (plaintextLength % blockSize != 0) {
+//			plaintextLength = plaintextLength + (blockSize - (plaintextLength % blockSize));
+//		}
 		byte[] plaintext = new byte[plaintextLength];
 		System.arraycopy(dataBytes, 0, plaintext, 0, dataBytes.length);
 
@@ -92,7 +92,7 @@ public class AppAesUtil {
 	 * @return 编码格式为encode的字符串
 	 */
 	public static String decryptCBC_NoPaddingFromByte(byte[] dataByte,String encode,String secretkey,String ivkey)throws Exception{
-		Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		SecretKeySpec keySpec = new SecretKeySpec(secretkey.getBytes(encode), "AES");
 		IvParameterSpec iv = new IvParameterSpec(ivkey.getBytes(encode));
 		cipher.init(Cipher.DECRYPT_MODE, keySpec, iv);
@@ -100,19 +100,19 @@ public class AppAesUtil {
 	}
 
 	public static void main(String[] args)throws Exception{
-		String data="{\"mobiles\":[\"13521691431\"],\"message\":\"您的验证码是:334455,不管任何人进行索取,请勿泄露,请及时验证!\",\"provider\":9}";
-		String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");
-		String base65D= AppAesUtil.decryptCBC_NoPaddingFromBase64String(base64E, "utf-8", "61243d4fa76d5a64", "1234567812345678");
-		System.out.println("加密前---"+data);
+		String param="{\"deviceId\":\"865873032687208\",\"deviceName\":\"Xiaomi MI 6\",\"osVersion\":\"7.1.1\",\"appVersion\":\"1.0.0\",\"appChannel\":\"web\",\"appCode\":\"hss\"}";
+//		String data="{\"mobiles\":[\"13521691431\"],\"message\":\"您的验证码是:334455,不管任何人进行索取,请勿泄露,请及时验证!\",\"provider\":9}";
+		String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", "6w3W8OOgnRZrkBGS", "2AdpFTpOykcUsvfI");
+		String base65D= AppAesUtil.decryptCBC_NoPaddingFromBase64String(base64E, "utf-8", "6w3W8OOgnRZrkBGS", "2AdpFTpOykcUsvfI");
+		System.out.println("加密前---"+param);
 		System.out.println("加密后---"+base64E);
 		System.out.println("解密后---"+base65D);
 
-		String x="Jc9uE0nI63Wf1G7Wl+jbQEicKOitaFmvdZXky3Vr7MfOtwgHILK+6dB1dQg4YEjs\n" +
-				"DDqQMHku1NidjZ4yQfNFU61RyM7yOhAh7dchFNNmkgO/1N+K93A+8EYZsOZR1zXV\n" +
-				"rHlC5VZJZDwzuVDF20qhZaRGyGNu653Qmm2WF5hAUK7qADGhhjPy3ktr7XraG4fg\n" +
-				"XQVa88S9+d42IXddD4g52R9nsNIOZOosc3EP3kgb+UA=";
-		String y=AppAesUtil.decryptCBC_NoPaddingFromBase64String(x, "utf-8", "61243d4fa76d5a64", "1234567812345678");
-		System.out.println(y);
-		System.out.println(AppAesUtil.encryptCBC_NoPaddingToBase64String(y, "utf-8", "61243d4fa76d5a64", "1234567812345678"));
+//		String x="v6m8brrmT1/5CMCuoKHtxjjSf1AjC0gsO/sfgPTHZUN04dRfLbFItnHQnF/XnX2Qs5TYseCL6GVV\n" +
+//				"ODcb9cRZIgyzbJz9gmOG3cxzC 9YqN12aDa5TqHqEXn6K5hadQU086VoiBYA5k3Rf3MnlSbTEryo\n" +
+//				"0A2TA9ARf8UA2olT4j567HBsZrLJvFEf7O7RfmJD";
+//		String y= AppAesUtil.decryptCBC_NoPaddingFromBase64String(x, "utf-8", "6w3W8OOgnRZrkBGS", "2AdpFTpOykcUsvfI");
+//		System.out.println(y);
+//		System.out.println(AppAesUtil.encryptCBC_NoPaddingToBase64String(y, "utf-8", "61243d4fa76d5a64", "1234567812345678"));
 	}
 }

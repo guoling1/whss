@@ -179,4 +179,14 @@ public final class DateUtil {
         c.add(calendarField, distance);
         return c.getTime();
     }
+
+    /**
+     * 格式化一个日期数据.
+     * @param date 需要格式的时间类型
+     * @param formatStr 自定义格式
+     * @return string
+     */
+    public static String formatDate(Date date,String formatStr) {
+        return new SimpleDateFormat(formatStr).format(date);
+    }
 }

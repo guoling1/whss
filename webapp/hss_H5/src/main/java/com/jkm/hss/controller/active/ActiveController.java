@@ -2,6 +2,7 @@ package com.jkm.hss.controller.active;
 
 import com.google.gson.Gson;
 import com.jkm.base.common.spring.core.SpringContextHolder;
+import com.jkm.base.common.util.AppAesUtil;
 import com.jkm.hss.merchant.entity.AppAuUserToken;
 import com.jkm.hss.merchant.exception.ApiHandleException;
 import com.jkm.hss.merchant.exception.ResultCode;
@@ -10,7 +11,6 @@ import com.jkm.hss.merchant.service.AppAuTokenService;
 import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hss.version.ExcludeServiceCode;
 import com.jkm.hss.version.VersionMapper;
-import com.jkm.hsy.user.util.AppAesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -106,20 +106,10 @@ public class ActiveController {
         }
         try {
             if(appParam.getRequestData()!=null&&!"".equals(appParam.getRequestData())){
-                if("ios".equals(appParam.getAppType())){
-                    log.info("请求参数为："+appParam.getRequestData());
-                    String base64String = AppAesUtil.decryptCBC_NoPaddingFromBase64String(appParam.getRequestData(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-                    log.info("Base64解密参数为："+base64String);
-                    appParam.setRequestData(base64String);
-                }else{
-                    log.info("请求参数为："+appParam.getRequestData());
-                    String httpDecode= URLDecoder.decode(appParam.getRequestData(),"utf-8");
-                    log.info("Decode解码参数为："+httpDecode);
-                    String base64String = AppAesUtil.decryptCBC_NoPaddingFromBase64String(httpDecode, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-                    log.info("Base64解密参数为："+base64String);
-                    appParam.setRequestData(base64String);
-                }
-
+                log.info("请求参数为："+appParam.getRequestData());
+                String base64String = AppAesUtil.decryptCBC_NoPaddingFromBase64String(appParam.getRequestData(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
+                log.info("Base64解密参数为："+base64String);
+                appParam.setRequestData(base64String.trim());
             }
         } catch (Exception e) {
             log.error("解密[{}]异常", e.getMessage());
@@ -164,7 +154,8 @@ public class ActiveController {
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
         log.info("明文返回结果是："+appResult);
         if(appResult!=null&&!"".equals(appResult)){
-            String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
+            String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult.toString(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
+            log.info("返回密文结果是："+base64E);
             result.setEncryptDataResult(base64E);
         }
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());

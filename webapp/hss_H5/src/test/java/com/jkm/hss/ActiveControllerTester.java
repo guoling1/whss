@@ -1,10 +1,10 @@
 package com.jkm.hss;
 
 import com.google.gson.Gson;
+import com.jkm.base.common.util.AppAesUtil;
+import com.jkm.base.common.util.DateUtil;
 import com.jkm.hss.merchant.helper.AppParam;
 import com.jkm.hss.push.entity.AppResult;
-import com.jkm.hsy.user.util.AppAesUtil;
-import com.jkm.hsy.user.util.AppDateUtil;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -22,20 +22,20 @@ public class ActiveControllerTester {
     public static String url="http://localhost:8081/active/rest";
     public static String v="v1.0.0";
     public static String privateKey = "6w3W8OOgnRZrkBGS2AdpFTpOykcUsvfI";
+    public static String accessToken = "b2068198baf4c479221b03f615c4fbf1";
 
     @Test
     public void testInsertTokenDeviceClientInfoAndReturnKey()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001001");
-        p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setAppType("ios");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
-        p.setAppType("android");
         p.setDeviceId("865873032687208");
-        String param="{\"deviceId\":\"865873032687208\",\"deviceName\":\"Xiaomi MI 6\",\"osVersion\":\"7.1.1\",\"appVersion\":\"1.0.0\",\"appChannel\":\"web\",\"appCode\":\"hss\"}";
+        String param="{\"deviceId\":\"865873032687208\",\"deviceName\":\"Xiaomi MI 6\",\"osVersion\":\"7.1.1\",\"appVersion\":\"1.0.0\",\"appChannel\":\"web\",\"appCode\":\"hss\",\"oemNo\":\"\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -43,15 +43,15 @@ public class ActiveControllerTester {
     public void testUpdateClientID()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001002");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"clientId\":\"clientid12345678\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -59,15 +59,15 @@ public class ActiveControllerTester {
     public void testFindVersionDetail()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001003");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"versionCode\":1,\"appSort\":\"hssJkm\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -75,15 +75,15 @@ public class ActiveControllerTester {
     public void testGetAppVersion()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001004");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"versionCode\":1,\"appSort\":\"hssJkm\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -91,15 +91,15 @@ public class ActiveControllerTester {
     public void testGetCode()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001005");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"mobile\":\"13146716739\",\"oemNo\":\"\",\"type\":2}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -107,15 +107,15 @@ public class ActiveControllerTester {
     public void testRegister()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001006");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"mobile\":\"13146716739\",\"code\":\"123456\",\"inviteCode\":\"13146716739\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -123,15 +123,15 @@ public class ActiveControllerTester {
     public void testLogin()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001007");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         String param="{\"mobile\":\"13146716739\",\"code\":\"267069\",\"oemNo\":\"\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
-        String httpEncode= URLEncoder.encode(base64E,"utf-8");
-        p.setRequestData(httpEncode);
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
         ActiveControllerTester.testRest(p);
     }
 
@@ -139,9 +139,9 @@ public class ActiveControllerTester {
     public void testLogout()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSS001008");
-        p.setAccessToken("c1bec574ef95ba380d92cc55fa180233");
+        p.setAccessToken(accessToken);
         p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
         ActiveControllerTester.testRest(p);
