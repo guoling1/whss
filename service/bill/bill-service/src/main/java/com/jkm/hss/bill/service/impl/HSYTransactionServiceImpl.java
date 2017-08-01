@@ -38,7 +38,6 @@ import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -105,6 +104,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
         final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setPaymentTerminal(EnumPaymentTerminal.CELLPHONE.getId());
         hsyOrder.setShopid(shopId);
         hsyOrder.setShopname(shop.getShortName());
         hsyOrder.setMerchantNo(appAuUser.getGlobalID());
@@ -143,6 +143,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
         final AppAuUser currentUser = this.hsyUserDao.findAppAuUserByID(currentUid).get(0);
         final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setPaymentTerminal(EnumPaymentTerminal.PC.getId());
         hsyOrder.setShopid(shopId);
         hsyOrder.setAmount(amount);
         hsyOrder.setRealAmount(amount);

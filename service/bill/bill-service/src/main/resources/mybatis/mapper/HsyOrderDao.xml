@@ -31,7 +31,9 @@
         uid,
         accountid,
         dealerid,
-        remark)
+        remark,
+        payment_terminal
+        )
         VALUES
         (
         #{ordernumber},
@@ -60,7 +62,9 @@
         #{uid},
         #{accountid},
         #{dealerid},
-        #{remark});
+        #{remark},
+        #{paymentTerminal}
+        );
     </insert>
 
     <update id="update">
