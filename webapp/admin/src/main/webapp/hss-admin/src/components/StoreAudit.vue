@@ -502,8 +502,8 @@
           children: 'cities'
         },
         form:{
-          branchProvince_name:'',
-          branchProvince_code:'',
+          branchProvinceName:'',
+          branchProvinceCode:'',
           branchCityCode:'',
           branchCityName:'',
           branchCountyCode:'',
@@ -605,8 +605,8 @@
       },
       wad:function () {
         this.form = {
-          branchProvince_name:'',
-          branchProvince_code:'',
+          branchProvinceName:'',
+          branchProvinceCode:'',
           branchCityCode:'',
           branchCityName:'',
           branchCountyCode:'',
@@ -622,8 +622,8 @@
             .then(res=>{
             for(let i=0;i<this.options2.length;i++){
             if(this.options2[i].value==val[0]){
-              this.form.branchProvince_name = this.options2[i].aname;
-              this.form.branchProvince_code = this.options2[i].value;
+              this.form.branchProvinceName = this.options2[i].aname;
+              this.form.branchProvinceCode = this.options2[i].value;
               this.bankQuery.branchProvinceName = this.options2[i].aname;
               this.bankQuery.branchProvinceCode = this.options2[i].value;
                 for(let j=0;j<res.data.length;j++){
@@ -722,6 +722,7 @@
             message: '请补全信息',
             type: 'success'
           });
+          console.log(this.form)
         }else{
           this.btnLoad = true;
           this.$http.post('/admin/QueryMerchantInfoRecord/saveNo',this.form)
