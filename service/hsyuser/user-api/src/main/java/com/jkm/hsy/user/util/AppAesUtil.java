@@ -100,19 +100,16 @@ public class AppAesUtil {
 	}
 
 	public static void main(String[] args)throws Exception{
-		String data="{\"mobiles\":[\"13521691431\"],\"message\":\"您的验证码是:334455,不管任何人进行索取,请勿泄露,请及时验证!\",\"provider\":9}";
-		String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");
-		String base65D= AppAesUtil.decryptCBC_NoPaddingFromBase64String(base64E, "utf-8", "61243d4fa76d5a64", "1234567812345678");
-		System.out.println("加密前---"+data);
-		System.out.println("加密后---"+base64E);
-		System.out.println("解密后---"+base65D);
+//		String data="{\"mobiles\":[\"13521691431\"],\"message\":\"您的验证码是:334455,不管任何人进行索取,请勿泄露,请及时验证!\",\"provider\":9}";
+//		String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(data, "utf-8", "61243d4fa76d5a64", "1234567812345678");
+//		String base65D= AppAesUtil.decryptCBC_NoPaddingFromBase64String(base64E, "utf-8", "61243d4fa76d5a64", "1234567812345678");
+//		System.out.println("加密前---"+data);
+//		System.out.println("加密后---"+base64E);
+//		System.out.println("解密后---"+base65D);
 
-		String x="Jc9uE0nI63Wf1G7Wl+jbQEicKOitaFmvdZXky3Vr7MfOtwgHILK+6dB1dQg4YEjs\n" +
-				"DDqQMHku1NidjZ4yQfNFU61RyM7yOhAh7dchFNNmkgO/1N+K93A+8EYZsOZR1zXV\n" +
-				"rHlC5VZJZDwzuVDF20qhZaRGyGNu653Qmm2WF5hAUK7qADGhhjPy3ktr7XraG4fg\n" +
-				"XQVa88S9+d42IXddD4g52R9nsNIOZOosc3EP3kgb+UA=";
-		String y=AppAesUtil.decryptCBC_NoPaddingFromBase64String(x, "utf-8", "61243d4fa76d5a64", "1234567812345678");
+		String x="6PERNNWOVb9/b6fKcEbxWJ9wpOSX0d5dpvW/gPT9oXoUCyILv3DfAIyFwcDdH1B6j36E6vXeCSJI83Mtugy3jxYjg8wIr8VW0K/+Vbx/hcMZIQF4xO0crbkO8qghsbLXxRTuAEkYYRbBOZnU0UU6Eg==";
+		String y=AppAesUtil.decryptCBC_NoPaddingFromBase64String(x, "utf-8", "6w3W8OOgnRZrkBGS", "2AdpFTpOykcUsvfI");
 		System.out.println(y);
-		System.out.println(AppAesUtil.encryptCBC_NoPaddingToBase64String(y, "utf-8", "61243d4fa76d5a64", "1234567812345678"));
+//		System.out.println(AppAesUtil.encryptCBC_NoPaddingToBase64String(y, "utf-8", "61243d4fa76d5a64", "1234567812345678"));
 	}
 }
