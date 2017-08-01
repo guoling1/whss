@@ -121,6 +121,11 @@
             <el-tab-pane label="好收银" name="second">
               <ul class="search">
                 <li class="same">
+                  <label>成功时间:</label>
+                  <el-date-picker :clearable="false" style="width: 193px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" @change="datetimeSelectHsy">
+                  </el-date-picker>
+                </li>
+                <li class="same">
                   <label>订单号:</label>
                   <el-input style="width: 188px" v-model="queryHsy.ordernumber" placeholder="请输入内容" size="small"></el-input>
                 </li>
@@ -129,8 +134,16 @@
                   <el-input style="width: 188px" v-model="queryHsy.orderno" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>商户编号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.merchantNo" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
                   <label>商户名称:</label>
                   <el-input style="width: 188px" v-model="queryHsy.merchantName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>店铺编号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.shortNo" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>店铺名称:</label>
@@ -200,8 +213,10 @@
                 <el-table-column prop="proxyName1" label="二级代理" min-width="90"></el-table-column>
                 <el-table-column prop="username" label="报单员"></el-table-column>
                 <el-table-column prop="realname" label="报单员姓名" min-width="110"></el-table-column>
+                <el-table-column prop="merchantNo" label="商户编号" min-width="123"></el-table-column>
                 <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
-                <el-table-column prop="shortName" label="店铺名称"></el-table-column>
+                <el-table-column prop="shortNo" label="店铺编号" min-width="123"></el-table-column>
+                <el-table-column prop="shortName" label="店铺名称" min-width="123"></el-table-column>
                 <el-table-column label="交易单号" min-width="112">
                   <template scope="scope">
                     <span class="td" :data-clipboard-text="scope.row.orderno" style="cursor: pointer" title="点击复制">{{scope.row.orderno|changeHide}}</span>
@@ -294,6 +309,7 @@
         pageTotalHss1: 0,
         addTotalHss: 0,
         addTotalHss1: 0,
+        dateHsy: '',
         dateHss: '',
         dateHss1: '',
         queryHsy: {
@@ -308,7 +324,9 @@
           username:'',
           paymentChannel:'',
           orderstatus:'',
-          source:''
+          source:'',
+          startTime: '',
+          endTime: ''
         },
         recordsHss: [],
         recordsHsy: [],
@@ -347,11 +365,32 @@
           this.queryHss.endTime = str;
         }
       }
+      this.dateHsy = [time,time];
+      for (var j = 0; j < this.dateHsy.length; j++) {
+        var str = this.dateHsy[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.queryHsy.startTime = str;
+        } else {
+          this.queryHsy.endTime = str;
+        }
+      }
       this.getDataHss();
       this.getDataHsy()
       this.getAddTotalHss();
     },
     methods: {
+      datetimeSelectHsy: function (val) {
+        let format = val.split(' - ');
+        this.queryHsy.startTime = format[0];
+        this.queryHsy.endTime = format[1];
+      },
       datetimeSelect: function (val) {
         let format = val.split(' - ');
         this.queryHss.startTime = format[0];
