@@ -475,7 +475,9 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         heads.add("报单员");
         heads.add("报单员姓名");
         heads.add("商户名称");
+        heads.add("商户编号");
         heads.add("店铺名称");
+        heads.add("店铺编号");
         heads.add("交易单号");
         heads.add("支付流水号");
         heads.add("支付方式");
@@ -493,7 +495,9 @@ public class HSYOrderServiceImpl implements HSYOrderService {
                 columns.add(list.get(i).getUsername());
                 columns.add(list.get(i).getRealname());
                 columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getMerchantNo());
                 columns.add(list.get(i).getShortName());
+                columns.add(list.get(i).getShortNo());
                 columns.add(list.get(i).getOrderno());
                 columns.add(list.get(i).getPaysn());
                 columns.add(list.get(i).getPaymentChannels());

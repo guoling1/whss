@@ -377,6 +377,8 @@
             a.amount,
             a.poundage,
             a.orderstatus,
+            shop.GLOBALID AS shortNo,
+            au.GLOBALID AS merchantNo,
             (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=1) AS proxyName,
             (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=2) AS proxyName1,
             (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS username,
@@ -388,6 +390,7 @@
         LEFT JOIN app_au_user users ON users.ID=a.uid
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
         WHERE 1=1
         <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
         <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
@@ -412,6 +415,7 @@
         LEFT JOIN app_au_user users ON users.ID=a.uid
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
         WHERE 1=1
         <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
         <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
@@ -435,6 +439,7 @@
         LEFT JOIN app_au_user users ON users.ID=a.uid
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
         WHERE 1=1
         <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
         <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
@@ -458,6 +463,7 @@
         LEFT JOIN app_au_user users ON users.ID=a.uid
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
         WHERE 1=1
         <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
         <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
@@ -483,6 +489,8 @@
         a.amount,
         a.poundage,
         a.orderstatus,
+        shop.GLOBALID AS shortNo,
+        au.GLOBALID AS merchantNo,
         (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=1) AS proxyName,
         (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=2) AS proxyName1,
         (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS username,
@@ -494,6 +502,7 @@
         LEFT JOIN app_au_user users ON users.ID=a.uid
         LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
         LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
         WHERE 1=1
         <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
         <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
