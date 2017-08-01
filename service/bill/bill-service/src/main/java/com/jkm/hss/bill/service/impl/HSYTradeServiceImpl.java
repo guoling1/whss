@@ -341,6 +341,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @return
      */
     @Override
+    @Deprecated
     public String appReceipt(final String paramData, final AppParam appParam) {
         final JSONObject result = new JSONObject();
         final JSONObject paramJo = JSONObject.parseObject(paramData);
@@ -903,6 +904,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @return
      */
     @Override
+    @Deprecated
     public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId, final String memberId,final String code) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
@@ -974,6 +976,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
+    @Deprecated
     public Pair<Integer, String> handlePlaceOrder(final AppBizShop shop, final String channelCode, final Order order) {
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, shop,

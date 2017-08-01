@@ -122,6 +122,13 @@ public class HsyOrder{
     private String consumerCellphone;
 
     /**
+     * 支付终端
+     *
+     * {@link com.jkm.hss.bill.enums.EnumPaymentTerminal}
+     */
+    private int paymentTerminal;
+
+    /**
      * 是否是 已经退款成功
      *
      * @return
