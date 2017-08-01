@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,9 +56,7 @@ public class ActiveController {
             this.writeJsonToRrsponse(result, response, pw,startTime,"");
             return;
         }
-        log.info(">>>>--"+appParam.getServiceCode()+"--start-->>>>业务代码为："+appParam.getServiceCode()+"--版本号为："+appParam.getV()+"--token为："+appParam.getAccessToken()+"--appType为："+appParam.getAppType());
-        log.info("加密请求参数是："+appParam.getRequestData());
-
+        log.info("请求参数为{}",appParam);
         Map<String,String[]> bizMapper= VersionMapper.versionMap.get(appParam.getV());
         if(bizMapper==null)
         {
@@ -113,7 +112,7 @@ public class ActiveController {
             log.error("解密[{}]异常", e.getMessage());
             throw new Exception("解密异常");
         }
-        log.info("解密之后请求参数是："+appParam.getRequestData());
+        log.info("解密之后参数是{}",appParam);
         ApplicationContext ac=SpringContextHolder.getApplicationContext();
         Object obj=ac.getBean(strs[0]);
         Class<? extends Object> clazz = obj.getClass();
@@ -154,8 +153,10 @@ public class ActiveController {
         log.info("明文返回结果是："+appResult);
         if(appResult!=null&&!"".equals(appResult)){
             String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-            log.info("加密返回结果是："+base64E);
-            result.setEncryptDataResult(base64E);
+            log.info("加密返回结果是{}",base64E);
+            String httpEncode= URLEncoder.encode(base64E,"utf-8");
+            log.info("URLEncode之后返回结果是："+httpEncode);
+            result.setEncryptDataResult(httpEncode);
         }
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
         return;

@@ -47,8 +47,9 @@ public class AppParam {
 				+"timeStamp:"+this.timeStamp+","
 				+"v:"+this.v+","
 				+"appType:"+this.appType+","
-				+"requestData:"+this.requestData+","
-				+"deviceId:"+this.deviceId;
+				+"deviceId:"+this.deviceId+","
+				+"requestData:"+this.requestData;
+
 	}
 
 
