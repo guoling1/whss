@@ -94,6 +94,11 @@ public class AccountBankController extends BaseController {
                 return CommonResponse.simpleResponse(-1, msg);
 
             }
+        }else{
+            accountBankService.changeBankCard(merchantInfoOptional.get(), changeBankCardRequest.getBankNo(), changeBankCardRequest.getReserveMobile(),
+                    changeBankCardRequest.getBranchCityCode(),changeBankCardRequest.getBranchCityName(),
+                    changeBankCardRequest.getBranchCountyCode(),changeBankCardRequest.getBranchCountyName(),
+                    changeBankCardRequest.getBranchProvinceCode(),changeBankCardRequest.getBranchProvinceName(),changeBankCardRequest.getBranchName());
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改成功");
     }
