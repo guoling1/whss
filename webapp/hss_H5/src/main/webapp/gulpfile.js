@@ -91,7 +91,7 @@ gulp.task('replace-hss', function () {
     .pipe(replace('vendor.1.0.9.11.min.js', 'vendor.1.0.9.13.min.js'))
     .pipe(replace('style.2.2.16.css', 'style.2.2.17.css'))
     .pipe(replace('style.2.0.2.css', 'style.2.0.3.css'))
-    .pipe(replace('/hss/2.2.30/', '/hss/2.2.32/'))
+    .pipe(replace('/hss/2.2.32/', '/hss/2.2.33/'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 

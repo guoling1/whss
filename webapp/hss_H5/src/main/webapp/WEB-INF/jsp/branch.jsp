@@ -13,7 +13,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>填写支行</title>
     <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.23.css">
-    <%--<link rel="stylesheet" href="../css/hss/style.2.2.22.css">--%>
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -51,5 +50,4 @@
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.2.33/branch.min.js"></script>
-<%--<script src="../js/hss/2.2.32/branch.min.js"></script>--%>
 </html>

@@ -29,12 +29,12 @@
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
-          script.src = "http://static.jinkaimen.cn/hss/2.2.31/notisDetails.min.js";
+          script.src = "http://static.jinkaimen.cn/hss/2.2.33/notisDetails.min.js";
           script.type = "text/javascript";
           document.head.appendChild(script);
           script.onerror = function () {
               var script = document.createElement('script');
-              script.src = '/js/hss/2.2.31/notisDetails.min.js';
+              script.src = '/js/hss/2.2.33/notisDetails.min.js';
               script.type = "text/javascript";
               document.head.appendChild(script);
           }
@@ -74,5 +74,5 @@
 </div>
 </body>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.32/notisDetails.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/notisDetails.min.js"></script>--%>
 </html>

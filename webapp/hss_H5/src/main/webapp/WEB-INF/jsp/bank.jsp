@@ -31,16 +31,17 @@
           }
           link.onload = function () {
               document.getElementById('bankList').style.opacity='1'
+              document.getElementById('layer').style.opacity='1'
           }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
-          script.src = "http://static.jinkaimen.cn/hss/2.2.31/bank.min.js";
+          script.src = "http://static.jinkaimen.cn/hss/2.2.33/bank.min.js";
           script.type = "text/javascript";
           document.head.appendChild(script);
           script.onerror = function () {
               var script = document.createElement('script');
-              script.src = '/js/hss/2.2.31/bank.min.js';
+              script.src = '/js/hss/2.2.33/bank.min.js';
               script.type = "text/javascript";
               document.head.appendChild(script);
           }
@@ -76,7 +77,7 @@
   <%-- 动态添加 --%>
 </div>
 
-<div class="message-space" id="layer">
+<div class="message-space" id="layer" style="opacity: 0">
   <div class="message-box">
     <div class="message-box-head">提示</div>
     <div class="message-box-body">
@@ -102,6 +103,5 @@
   };
 </script>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.12.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.33/bank.min.js"></script>
-<%--<script src="../../js/hss/2.2.32/bank.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/bank.min.js"></script>--%>
 </html>

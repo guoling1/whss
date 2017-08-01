@@ -32,12 +32,12 @@
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
-          script.src = "http://static.jinkaimen.cn/hss/2.2.31/charge.min.js";
+          script.src = "http://static.jinkaimen.cn/hss/2.2.33/charge.min.js";
           script.type = "text/javascript";
           document.head.appendChild(script);
           script.onerror = function () {
               var script = document.createElement('script');
-              script.src = '/js/hss/2.2.31/charge.min.js';
+              script.src = '/js/hss/2.2.33/charge.min.js';
               script.type = "text/javascript";
               document.head.appendChild(script);
           }
@@ -120,5 +120,5 @@
 </script>
 <%--<script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>--%>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>--%>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.32/charge.min.js"></script>--%>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.33/charge.min.js"></script>--%>
 </html>

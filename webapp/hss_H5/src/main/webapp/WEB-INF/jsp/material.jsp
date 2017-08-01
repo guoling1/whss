@@ -9,8 +9,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>${oemName}</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.23.css">
-  <%--<link rel="stylesheet" href="../../css/hss/style.2.2.22.css">--%>
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.23.css">--%>
   <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">--%>
   <script>
       function aysnLoadCss(url,cburl) {
@@ -30,12 +29,12 @@
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
-          script.src = "http://static.jinkaimen.cn/hss/2.2.31/material.min.js";
+          script.src = "http://static.jinkaimen.cn/hss/2.2.33/material.min.js";
           script.type = "text/javascript";
           document.head.appendChild(script);
           script.onerror = function () {
               var script = document.createElement('script');
-              script.src = '/js/hss/2.2.31/material.min.js';
+              script.src = '/js/hss/2.2.33/material.min.js';
               script.type = "text/javascript";
               document.head.appendChild(script);
           }
@@ -216,6 +215,5 @@
   });
 </script>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.33/material.min.js"></script>
-<%--<script src="../js/hss/2.2.32/material.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/material.min.js"></script>--%>
 </html>

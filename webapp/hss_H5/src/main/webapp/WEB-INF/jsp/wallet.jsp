@@ -37,12 +37,12 @@
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
-          script.src = "http://static.jinkaimen.cn/hss/2.2.31/wallet.min.js";
+          script.src = "http://static.jinkaimen.cn/hss/2.2.33/wallet.min.js";
           script.type = "text/javascript";
           document.head.appendChild(script);
           script.onerror = function () {
               var script = document.createElement('script');
-              script.src = '/js/hss/2.2.31/wallet.min.js';
+              script.src = '/js/hss/2.2.33/wallet.min.js';
               script.type = "text/javascript";
               document.head.appendChild(script);
           }
@@ -170,5 +170,5 @@
   };
 </script>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.32/wallet.min.js"></script>--%>
+<script src="http://static.jinkaimen.cn/hss/2.2.33/wallet.min.js"></script>--%>
 </html>

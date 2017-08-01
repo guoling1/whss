@@ -27,17 +27,17 @@
               document.head.appendChild(link);
           }
           link.onload = function () {
-              document.getElementById('channel').style.opacity='1'
+              document.getElementById('channelList').style.opacity='1'
           }
       }
       function aysnLoadcb () {
           var script = document.createElement('script');
-          script.src = "http://static.jinkaimen.cn/hss/2.2.31/channelList.min.js";
+          script.src = "http://static.jinkaimen.cn/hss/2.2.33/channelList.min.js";
           script.type = "text/javascript";
           document.head.appendChild(script);
           script.onerror = function () {
               var script = document.createElement('script');
-              script.src = '/js/hss/2.2.31/channelList.min.js';
+              script.src = '/js/hss/2.2.33/channelList.min.js';
               script.type = "text/javascript";
               document.head.appendChild(script);
           }
@@ -69,7 +69,7 @@
 </head>
 <body>
 
-<div class="channel" style="opacity:0;">
+<div class="channel" id="channelList" style="opacity:0;">
   <div class="channel-box" id="channelBox">
     <div class="channel-space top" style="margin-bottom: 3px">
       <div class="channel-group" style="border: none">
@@ -121,6 +121,5 @@
 </script>
 </body>
 <%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
-<%--<script src="../../js/hss/2.2.32/channelList.min.js"></script>--%>
-<script src="http://static.jinkaimen.cn/hss/2.2.33/channelList.min.js"></script>--%>
+<%--<script src="../../js/hss/2.2.33/channelList.min.js"></script>--%>
 </html>
