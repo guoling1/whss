@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,7 +106,8 @@ public class ActiveController {
         }
         try {
             if(appParam.getRequestData()!=null&&!"".equals(appParam.getRequestData())){
-                appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(appParam.getRequestData(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32)));
+                String httpDecoder = URLDecoder.decode(appParam.getRequestData(),"utf-8");
+                appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(httpDecoder, "utf-8", "6w3W8OOgnRZrkBGS", "2AdpFTpOykcUsvfI"));
             }
         } catch (Exception e) {
             log.error("解密[{}]异常", e.getMessage());
