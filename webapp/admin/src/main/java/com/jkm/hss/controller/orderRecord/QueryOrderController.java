@@ -13,7 +13,6 @@ import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,6 +121,14 @@ public class QueryOrderController extends BaseController {
     public CommonResponse queryHsyOrderList(@RequestBody QueryHsyOrderRequest req) throws ParseException {
         final PageModel<QueryHsyOrderResponse> pageModel = new PageModel<QueryHsyOrderResponse>(req.getPage(), req.getSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         List<QueryHsyOrderResponse> orderList = this.hsyOrderService.queryHsyOrderList(req);
         int count = this.hsyOrderService.queryHsyOrderListCount(req);
         pageModel.setRecords(orderList);
@@ -136,7 +143,15 @@ public class QueryOrderController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/getHsyOrderCount ",method = RequestMethod.POST)
-    public CommonResponse getHsyOrderCount(@RequestBody QueryHsyOrderRequest req){
+    public CommonResponse getHsyOrderCount(@RequestBody QueryHsyOrderRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         String totalPayment = this.hsyOrderService.getHsyOrderCounts(req);
         String totalPoundage = this.hsyOrderService.getHsyOrderCounts1(req);
         JSONObject jsonObject = new JSONObject();
@@ -152,8 +167,15 @@ public class QueryOrderController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/downLoadHsyOrder",method = RequestMethod.POST)
     private CommonResponse downLoadHsyOrder(@RequestBody QueryHsyOrderRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         final String fileZip = this.hsyOrderService.downLoadHsyOrder(req, ApplicationConsts.getApplicationConfig().ossBucke());
-
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");
         meta.setExpirationTime(new DateTime().plusYears(1).toDate());

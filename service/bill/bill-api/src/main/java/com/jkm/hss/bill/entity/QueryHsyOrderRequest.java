@@ -14,11 +14,16 @@ public class QueryHsyOrderRequest {
     private String realname;//报单员
     private String username;//报单员真实姓名
     private String merchantName;//商户名称
+    private String merchantNo;//商户编号
     private String shortName;//店铺名称
+    private String shortNo;//店铺编号
     private String orderno;//交易订单
     private String paysn;//第三方交易流水号
     private Integer orderstatus;//订单状态
     private int source;//来源
+    private String startTime;
+    private String endTime;
+
     /**
      * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      * 支付方式
