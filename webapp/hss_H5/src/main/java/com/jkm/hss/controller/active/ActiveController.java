@@ -107,7 +107,7 @@ public class ActiveController {
         try {
             if(appParam.getRequestData()!=null&&!"".equals(appParam.getRequestData())){
                 String httpDecoder = URLDecoder.decode(appParam.getRequestData(),"utf-8");
-                appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(httpDecoder, "utf-8", "6w3W8OOgnRZrkBGS", "2AdpFTpOykcUsvfI"));
+                appParam.setRequestData(AppAesUtil.decryptCBC_NoPaddingFromBase64String(httpDecoder, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32)));
             }
         } catch (Exception e) {
             log.error("解密[{}]异常", e.getMessage());
