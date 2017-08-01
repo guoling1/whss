@@ -1678,7 +1678,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //判断交易时间 9:00 -22:00
         int isInDate = EnumBoolean.TRUE.getCode();
         String dateMsg= "";
-        if(!DateUtil.isInDate(new Date(),"09:00:00","22:00:00")){
+        if(!DateUtil.isInDate(new Date(),"09:00:00","21:59:59")){
             isInDate = EnumBoolean.FALSE.getCode();
             dateMsg = "提现时间每日9:00-22:00";
         }

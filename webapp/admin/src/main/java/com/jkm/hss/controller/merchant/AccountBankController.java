@@ -6,13 +6,17 @@ import com.jkm.hss.admin.helper.requestparam.ChangeBankCardRequest;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankCardBin;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
+import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,17 +74,26 @@ public class AccountBankController extends BaseController {
 //        if(accountBankOptional.isPresent()){
 //            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
 //        }
-        final JSONObject jsonObject = merchantChannelRateService.updateKmBankInfo(merchantInfoOptional.get().getAccountId(), merchantInfoOptional.get().getId(), changeBankCardRequest.getBankNo());
-        final int code = jsonObject.getInt("code");
-        if (code==1) {
-            accountBankService.changeBankCard(merchantInfoOptional.get(), changeBankCardRequest.getBankNo(), changeBankCardRequest.getReserveMobile(),
-                    changeBankCardRequest.getBranchCityCode(),changeBankCardRequest.getBranchCityName(),
-                    changeBankCardRequest.getBranchCountyCode(),changeBankCardRequest.getBranchCountyName(),
-                    changeBankCardRequest.getBranchProvinceCode(),changeBankCardRequest.getBranchProvinceName(),changeBankCardRequest.getBranchName());
-        }else {
-            final String msg = jsonObject.getString("msg");
-            return CommonResponse.simpleResponse(-1, msg);
+        //判断商户是否入网
+        final MerchantChannelRateRequest request = new MerchantChannelRateRequest();
+        request.setProductId(6);
+        request.setMerchantId(merchantInfoOptional.get().getId());
+        request.setChannelTypeSign(EnumPayChannelSign.KM_WECHAT.getId());
+        final MerchantChannelRate merchantChannelRate =
+                this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(request).get();
+        if (merchantChannelRate.getEnterNet() == EnumEnterNet.HASENT.getId()){
+            final JSONObject jsonObject = merchantChannelRateService.updateKmBankInfo(merchantInfoOptional.get().getAccountId(), merchantInfoOptional.get().getId(), changeBankCardRequest.getBankNo());
+            final int code = jsonObject.getInt("code");
+            if (code==1) {
+                accountBankService.changeBankCard(merchantInfoOptional.get(), changeBankCardRequest.getBankNo(), changeBankCardRequest.getReserveMobile(),
+                        changeBankCardRequest.getBranchCityCode(),changeBankCardRequest.getBranchCityName(),
+                        changeBankCardRequest.getBranchCountyCode(),changeBankCardRequest.getBranchCountyName(),
+                        changeBankCardRequest.getBranchProvinceCode(),changeBankCardRequest.getBranchProvinceName(),changeBankCardRequest.getBranchName());
+            }else {
+                final String msg = jsonObject.getString("msg");
+                return CommonResponse.simpleResponse(-1, msg);
 
+            }
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改成功");
     }
