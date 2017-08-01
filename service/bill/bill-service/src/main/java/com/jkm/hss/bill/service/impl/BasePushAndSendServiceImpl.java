@@ -6,6 +6,7 @@ import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.HsyOrderPrintTicketRecord;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
+import com.jkm.hss.bill.enums.EnumPaymentTerminal;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HsyOrderPrintTicketRecordService;
@@ -60,7 +61,7 @@ public class BasePushAndSendServiceImpl implements BasePushAndSendService {
 
         //打印
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(hsyOrder.getShopid()).get(0);
-        if (EnumBoolean.TRUE.getCode() == shop.getOpenScanPrint()) {
+        if (EnumBoolean.TRUE.getCode() == shop.getOpenScanPrint() && EnumPaymentTerminal.CELLPHONE.getId() == hsyOrder.getPaymentTerminal()) {
             try {
                 final String discountAmount = hsyOrder.getRealAmount().subtract(hsyOrder.getAmount()).toPlainString();
                 final JSONObject jo = new JSONObject();

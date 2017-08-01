@@ -6,10 +6,7 @@ import com.jkm.base.common.util.PageUtils;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hss.bill.enums.EnumBasicStatus;
-import com.jkm.hss.bill.enums.EnumHsySourceType;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumServiceType;
+import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PayParams;
 import com.jkm.hss.bill.helper.PayResponse;
 import com.jkm.hss.bill.service.HsyOrderScanService;
@@ -24,7 +21,6 @@ import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.dao.UserCurrentChannelPolicyDao;
-import com.jkm.hsy.user.dao.UserTradeRateDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
@@ -86,7 +82,7 @@ public class HsyOrderScanServiceImpl implements HsyOrderScanService {
         AppAuUser appAuUser=userList.get(0);
 
         Date date=new Date();
-
+        hsyOrder.setPaymentTerminal(EnumPaymentTerminal.CELLPHONE.getId());
         hsyOrder.setOrderstatus(EnumOrderStatus.DUE_PAY.getId());
         hsyOrder.setShopname(appBizShop.getShortName());
         hsyOrder.setMerchantNo(appAuUser.getGlobalID());
