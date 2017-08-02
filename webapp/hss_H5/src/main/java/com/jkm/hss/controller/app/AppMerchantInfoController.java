@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
@@ -18,6 +19,7 @@ import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
+import com.jkm.hss.helper.response.AuthenticationResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -94,6 +96,8 @@ public class AppMerchantInfoController extends BaseController {
     private VerifyIdService verifyIdService;
     @Autowired
     private SendMessageService sendMessageService;
+    @Autowired
+    private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
     /**
      * HSSH5001002 注册
      *
@@ -563,7 +567,7 @@ public class AppMerchantInfoController extends BaseController {
     }
 
     /**
-     * HSSH5001007 上传资料
+     * HSSH5001008 查询商户状态
      * @param request
      * @param response
      * @return
@@ -573,8 +577,63 @@ public class AppMerchantInfoController extends BaseController {
     public CommonResponse getMerchanStatus(final HttpServletRequest request, final HttpServletResponse response){
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
         Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
+        String msg = "查询成功";
+        if (merchantInfoOptional.get().getStatus()==EnumMerchantStatus.UNPASSED.getId()){
+            String res = merchantInfoCheckRecordService.selectById(merchantInfoOptional.get().getId());
+            msg = res;
+        }if (merchantInfoOptional.get().getStatus()==EnumMerchantStatus.REVIEW.getId()){
+            msg = "您的资料已经提交，我们将在一个工作日内处理";
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,msg,merchantInfoOptional.get().getStatus());
+    }
 
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"照片添加成功");
+    /**
+     * HSSH5001009 查询商户认证状态及信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/authentication", method = RequestMethod.POST)
+    public CommonResponse authentication(final HttpServletRequest request, final HttpServletResponse response){
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        if(merchantInfoOptional.get().getStatus()>0){
+            authenticationResponse.setIsMerchantAuthen(1);
+            authenticationResponse.setMerchantName(merchantInfoOptional.get().getMerchantName());
+            if(merchantInfoOptional.get().getProvinceName()!=null&&!"".equals(merchantInfoOptional.get().getProvinceName())){
+                if("110000,120000,310000,500000".contains(merchantInfoOptional.get().getCityCode())){
+                    authenticationResponse.setDistrict((merchantInfoOptional.get().getProvinceName()==null?"":merchantInfoOptional.get().getProvinceName())+(merchantInfoOptional.get().getCountyName()==null?"":merchantInfoOptional.get().getCountyName()));
+                }else{
+                    authenticationResponse.setDistrict((merchantInfoOptional.get().getProvinceName()==null?"":merchantInfoOptional.get().getProvinceName())+(merchantInfoOptional.get().getCityName()==null?"":merchantInfoOptional.get().getCityName()));
+                }
+            }
+            authenticationResponse.setAddress(merchantInfoOptional.get().getAddress());
+            authenticationResponse.setCreateTime(merchantInfoOptional.get().getCreateTime()==null?"": DateFormatUtil.format(merchantInfoOptional.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            String name = merchantInfoOptional.get().getName();
+            String tempName = "";
+            if(name!=null&&!"".equals(name)){
+                for(int i=0;i<name.length()-1;i++){
+                    tempName+="*";
+                }
+                tempName+=name.substring(name.length()-1,name.length());
+            }
+            authenticationResponse.setName(tempName);
+            if(merchantInfoOptional.get().getIdentity()!=null&&!"".equals(merchantInfoOptional.get().getIdentity())){
+                String idCard = MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity());
+                authenticationResponse.setIdCard(idCard.substring(0,3)+"*************"+idCard.substring(idCard.length()-2,idCard.length()));
+            }
+        }else{
+            authenticationResponse.setIsMerchantAuthen(0);
+        }
+        if(merchantInfoOptional.get().getCreditCard()!=null&&!"".equals(merchantInfoOptional.get().getCreditCard())){
+            authenticationResponse.setIsCreditAuthen(1);
+            authenticationResponse.setCreditCardName(merchantInfoOptional.get().getCreditCardName());
+            authenticationResponse.setCreditCardShort(merchantInfoOptional.get().getCreditCardShort());
+        }else{
+            authenticationResponse.setIsCreditAuthen(0);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",authenticationResponse);
     }
 
     /**

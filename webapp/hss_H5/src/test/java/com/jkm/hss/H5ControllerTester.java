@@ -25,9 +25,13 @@ import java.util.Map;
  */
 @Slf4j
 public class H5ControllerTester {
+    public static String accessToken = "b2068198baf4c479221b03f615c4fbf1";
     public static String HSSH5001001="http://localhost:8081/wx/getCode";
     public static String HSSH5001002="http://localhost:8081/appMerchantInfo/register";
     public static String HSSH5001003="http://localhost:8081/appMerchantInfo/getRecommendInfo";
+    public static String HSSH5001006="http://localhost:8081/appMerchantInfo/sendVerifyCode";
+    public static String HSSH5001008="http://localhost:8081/appMerchantInfo/getMerchanStatus";
+    public static String HSSH5001009="http://localhost:8081/appMerchantInfo/authentication";
 
     @Test
     public void testGetRegisterCode()throws Exception{
@@ -54,7 +58,28 @@ public class H5ControllerTester {
         H5ControllerTester.testRest(map,HSSH5001003);
     }
 
+    @Test
+    public void testSendVerifyCode()throws Exception{
+        Map<String, String> map = new JSONObject();
+        map.put("","6226220117842210");
+        map.put("bankNo","6226220117842210");
+        map.put("name","邢留杰");
+        map.put("identity","411082198805113634");
+        map.put("reserveMobile","13146716739");
+        H5ControllerTester.testRest(map,HSSH5001006);
+    }
 
+    @Test
+    public void testGetMerchanStatus()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001008);
+    }
+
+    @Test
+    public void testAuthentication()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001009);
+    }
 
 
 
