@@ -238,7 +238,13 @@ public class MembershipController {
         if (appPolicyMember.getStatus() == 2) {
             model.addAttribute("mid", appPolicyMember.getId());
             model.addAttribute("cellphone", appPolicyConsumer.getConsumerCellphone());
+            model.addAttribute("successFlag", authInfo.isSuccessFlag());
+            model.addAttribute("infoDetail", authInfo.getInfoDetail());
+            model.addAttribute("uidEncode", authInfo.getUidEncode());
             model.addAttribute("source", authInfo.getSource());
+            model.addAttribute("userID", authInfo.getUserID());
+            model.addAttribute("openID", authInfo.getOpenID());
+            model.addAttribute("operate", authInfo.getOperate());
             return "redirect:/sqb/needRecharge";
         }
 
@@ -372,6 +378,32 @@ public class MembershipController {
         map.put("status",status+"");
         writeJsonToResponse(map,response,pw);
         return;
+    }
+
+    @RequestMapping("abandonMember")
+    public void abandonMember(HttpServletRequest request, HttpServletResponse response,PrintWriter pw,Long mid){
+        Map<String,String> map=new HashMap<String,String>();
+        AppPolicyRechargeOrder appPolicyRechargeOrder=hsyMembershipService.findRechargeOrderAboutRechargeStatus(mid);
+        if(appPolicyRechargeOrder!=null)
+        {
+            map.put("flag","fail");
+            map.put("result","该会员卡已请求交易，无法放弃该会员卡！");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
+        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        if(appPolicyMember!=null) {
+            hsyMembershipService.updateMemberForAbandon(appPolicyMember.getId());
+            map.put("flag","success");
+            map.put("result","已成功注销该会员卡！");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }else{
+            map.put("flag","fail");
+            map.put("result","不存在该会员卡！");
+            writeJsonToResponse(map,response,pw);
+            return;
+        }
     }
 
     @RequestMapping("createMemberSuccess")

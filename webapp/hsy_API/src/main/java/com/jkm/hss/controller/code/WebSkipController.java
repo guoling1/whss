@@ -10,6 +10,7 @@ import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.entity.AuthInfo;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
@@ -237,10 +238,11 @@ public class WebSkipController extends BaseController {
     }
 
     @RequestMapping("needRecharge")
-    public String needRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String cellphone,String source){
+    public String needRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String cellphone,String source,AuthInfo authInfo){
         model.addAttribute("mid",mid);
         model.addAttribute("cellphone",cellphone);
         model.addAttribute("source",source);
+        model.addAttribute("authInfo", authInfo);
         return "/needRecharge";
     }
 
