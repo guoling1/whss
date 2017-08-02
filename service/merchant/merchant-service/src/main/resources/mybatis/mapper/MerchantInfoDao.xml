@@ -505,6 +505,6 @@
     </update>
 
     <select id="selectByKmNetStatus" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info where km_net_status=2;
+        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info where km_net_status=2 and account_id in (SELECT account_id  FROM tb_account_bank WHERE status=0 and is_default =1 and card_type =0 and branch_code!='')
     </select>
 </mapper>
