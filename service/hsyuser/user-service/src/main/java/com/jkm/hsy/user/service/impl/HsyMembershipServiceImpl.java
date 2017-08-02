@@ -953,4 +953,11 @@ public class HsyMembershipServiceImpl implements HsyMembershipService {
         return hsyMembershipDao.findConsumeOrderSum(mcid,mid);
     }
 
+    public void updateMemberForAbandon(Long mid){
+        AppPolicyMember appPolicyMemberUp=new AppPolicyMember();
+        appPolicyMemberUp.setId(mid);
+        appPolicyMemberUp.setStatus(MemberStatus.CANCEL.key);
+        hsyMembershipDao.updateMember(appPolicyMemberUp);
+    }
+
 }

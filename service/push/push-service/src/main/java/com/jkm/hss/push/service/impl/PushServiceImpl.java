@@ -235,9 +235,6 @@ public class PushServiceImpl implements PushService {
         final AppResult  appResult=new AppResult() ;
         appResult.setResultCode(200);
         appResult.setResultMessage(content);
-        log.info("订单[{}],推送开始", transactionNumber);
-        final StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
         if (!CollectionUtils.isEmpty(clients)) {
             Push push= new Push();
             push.setTitle("have voice");
@@ -248,24 +245,27 @@ public class PushServiceImpl implements PushService {
             push.setVoice(EnumBoolean.TRUE.getCode());
             try {
                 pushDao.insert(push);
-                final Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
-                Push updatePush= new Push();
-                updatePush.setPushType("2");
-                if(ret.containsValue("result=ok")){
-                    updatePush.setStatus(1);
-                }else{
-                    updatePush.setStatus(0);
+                if (push.getId() > 0) {
+                    final StopWatch stopWatch = new StopWatch();
+                    stopWatch.start();
+                    log.info("订单[{}],有声推送开始", transactionNumber);
+                    final Map ret = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients,transactionNumber);
+                    Push updatePush= new Push();
+                    updatePush.setPushType("2");
+                    if(ret.containsValue("result=ok")){
+                        updatePush.setStatus(1);
+                    }else{
+                        updatePush.setStatus(0);
+                    }
+                    updatePush.setTaskId((String) ret.get("taskId"));
+                    updatePush.setId(push.getId());
+                    pushDao.updatePush(updatePush);
+                    log.info("订单[{}],有声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
                 }
-                updatePush.setTaskId((String) ret.get("taskId"));
-                updatePush.setId(push.getId());
-                pushDao.updatePush(updatePush);
-                log.info("订单[{}],有声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
             } catch (final Throwable e) {
-                log.error("请勿重复插入");
+                log.error("有声推送异常", e);
             }
         }
-        stopWatch.reset();
-        stopWatch.start();
         if (!CollectionUtils.isEmpty(clients1)) {
             Push push= new Push();
             push.setTitle("no voice");
@@ -276,20 +276,26 @@ public class PushServiceImpl implements PushService {
             push.setVoice(EnumBoolean.FALSE.getCode());
             try {
                 pushDao.insert(push);
-                final Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
-                Push updatePush= new Push();
-                updatePush.setPushType("2");
-                if(ret.containsValue("result=ok")){
-                    updatePush.setStatus(1);
-                }else{
-                    updatePush.setStatus(0);
+                if (push.getId() > 0) {
+                    final StopWatch stopWatch = new StopWatch();
+                    stopWatch.start();
+                    log.info("订单[{}],无声推送开始", transactionNumber);
+
+                    final Map ret = this.pushTransmissionMsgTask0(2, JSON.toJSONString(appResult), "2", null, clients1,transactionNumber);
+                    Push updatePush= new Push();
+                    updatePush.setPushType("2");
+                    if(ret.containsValue("result=ok")){
+                        updatePush.setStatus(1);
+                    }else{
+                        updatePush.setStatus(0);
+                    }
+                    updatePush.setTaskId((String) ret.get("taskId"));
+                    updatePush.setId(push.getId());
+                    pushDao.updatePush(updatePush);
+                    log.info("订单[{}],无声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
                 }
-                updatePush.setTaskId((String) ret.get("taskId"));
-                updatePush.setId(push.getId());
-                pushDao.updatePush(updatePush);
-                log.info("订单[{}],无声推送结束-时间[{}]", transactionNumber, stopWatch.getTime());
             } catch (final Throwable e) {
-                log.error("请勿重复插入");
+                log.error("无声推送异常", e);
             }
         }
         return null;

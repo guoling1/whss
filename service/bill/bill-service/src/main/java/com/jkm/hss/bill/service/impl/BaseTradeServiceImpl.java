@@ -72,6 +72,8 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     @Autowired
     private BaseSettlementService baseSettlementService;
     @Autowired
+    private BasePushAndSendService basePushAndSendService;
+    @Autowired
     private SettlementRecordService settlementRecordService;
     @Autowired
     private SettleAccountFlowService settleAccountFlowService;
@@ -79,6 +81,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
     private MemberAccountFlowService memberAccountFlowService;
     @Autowired
     private BaseSettlementDateService baseSettlementDateService;
+
     @Autowired
     private UpgradeRecommendRulesService upgradeRecommendRulesService;
     @Autowired
@@ -250,6 +253,10 @@ public class BaseTradeServiceImpl implements BaseTradeService {
 
             payResponse.setCode(EnumBasicStatus.SUCCESS.getId());
             payResponse.setMessage("支付成功");
+
+            //推送 打印
+            this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), order.getPaymentChannel(), updateOrder.getPaySuccessTime());
+
             return payResponse;
         }
         payResponse.setCode(EnumBasicStatus.FAIL.getId());
@@ -290,6 +297,13 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         switch (status) {
             case SUCCESS:
                 log.info("业务方[{}]-交易单[{}], 支付成功回调处理", order.getAppId(), order.getOrderNo());
+
+                //推送，打印
+                if (EnumProductType.HSY.getId().equalsIgnoreCase(order.getAppId())) {
+                    this.basePushAndSendService.pushAndSendPrintMsg(order.getBusinessOrderNo(), order.getOrderNo(), order.getPaymentChannel(),
+                            new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
+                }
+
                 this.markPaySuccess(paymentSdkPayCallbackResponse, order);
                 break;
             case FAIL:

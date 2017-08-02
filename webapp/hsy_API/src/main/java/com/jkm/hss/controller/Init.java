@@ -1,6 +1,5 @@
 package com.jkm.hss.controller;
 
-import com.jkm.hss.admin.service.AdminUserInitService;
 import com.jkm.hss.notifier.service.MessageTemplateInitService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ public class Init {
     @Autowired
     private MessageTemplateInitService messageTemplateInitService;
 
-    @Autowired
-    private AdminUserInitService adminUserInitService;
-
     @PostConstruct
     public void initSystem() {
         log.info("######################初始化系统--start##########################");
@@ -34,7 +30,6 @@ public class Init {
     private void initSmsTemplate() {
         log.info("######################初始化模板--start##########################");
         this.messageTemplateInitService.initTemplate();
-        log.info("######################初始化模板--start##########################");
+        log.info("######################初始化模板--end##########################");
     }
-
 }

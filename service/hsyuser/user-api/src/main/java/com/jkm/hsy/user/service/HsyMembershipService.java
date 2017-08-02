@@ -66,6 +66,7 @@ public interface HsyMembershipService {
     public AppPolicyRechargeOrder findRechargeOrderAboutRechargeStatus(Long mid);
     public List<AppPolicyMembershipCardShop> getMembershipCardShop(Long mcid);
     public BigDecimal findConsumeOrderSum(Long mcid, Long mid);
+    public void updateMemberForAbandon(Long mid);
 
     /**
      * 商户列表（会员卡）

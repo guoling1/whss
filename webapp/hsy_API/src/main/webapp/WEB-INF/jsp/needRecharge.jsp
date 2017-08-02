@@ -16,6 +16,8 @@
     <p class="content">您的会员卡还差一步即可开通成功，请您点击下方的【继续开卡】</p>
     <div id="recharge" class="weui-btn weui-btn_primary">继续开卡</div>
     <div id="abandon" class="weui-btn weui-btn_primary">放弃开卡</div>
+    <div id="abandonMember"><a href="<%=basePath%>membership/abandonMember?mid=${mid}">放弃开卡</a></div>
+    <div><a href="<%=basePath%>membership/checkMember?successFlag=${authInfo.successFlag}&infoDetail=${authInfo.infoDetail}&uidEncode=${authInfo.uidEncode}&source=${authInfo.source}&userID=${authInfo.userID}&openID=${authInfo.openID}&operate=${authInfo.operate}">放弃开卡后成功跳转到开卡页面</a></div>
     <div class="js_dialog" id="iosDialog2" style="display: none">
         <div class="weui-mask"></div>
         <div class="weui-dialog">

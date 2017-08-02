@@ -164,4 +164,12 @@ public interface HSYOrderService {
     String getHsyOrderCounts1(QueryHsyOrderRequest req);
 
     String downLoadHsyOrder(QueryHsyOrderRequest req, String baseUrl);
+
+    /**
+     * 按订单号那好查询
+     *
+     * @param orderNumber
+     * @return
+     */
+    Optional<HsyOrder> getByOrderNumber(String orderNumber);
 }

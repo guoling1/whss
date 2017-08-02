@@ -2,9 +2,9 @@ package com.jkm.hss.controller.pc;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.PcUserLoginRequest;
 import com.jkm.hsy.user.constant.AppConstant;
@@ -135,13 +135,21 @@ public class PcUserController extends BaseController {
         final long uid = getPcUserPassport().getUid();
         final AppBizShop appBizShop = new AppBizShop();
         appBizShop.setUid(uid);
-        final List<AppBizShop> shopList=hsyShopDao.findShopList(appBizShop);
+        final List<AppBizShop> shopList = hsyShopDao.findShopList(appBizShop);
         final List<JSONObject> shops = new ArrayList<>(shopList.size());
+        final List<Long> updateScanPrintShopIds = new ArrayList<>();
         for (AppBizShop shop : shopList) {
             final JSONObject jo = new JSONObject();
             shops.add(jo);
             jo.put("shopId", shop.getId());
             jo.put("shopName", shop.getShortName());
+            if (EnumBoolean.FALSE.getCode() == shop.getOpenScanPrint()) {
+                updateScanPrintShopIds.add(shop.getId());
+            }
+        }
+        if (!CollectionUtils.isEmpty(updateScanPrintShopIds)) {
+            log.info("店铺[{}],开启扫码打印小票功能", updateScanPrintShopIds);
+            this.hsyShopDao.updateOpenScanPrintByShopIds(updateScanPrintShopIds);
         }
         final AppAuUser appAuUser = this.hsyUserDao.findAppAuUserByID(uid).get(0);
         final JSONObject result = new JSONObject();
@@ -152,5 +160,4 @@ public class PcUserController extends BaseController {
         result.put("roleName", appAuUser.getRoleName());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
-
 }

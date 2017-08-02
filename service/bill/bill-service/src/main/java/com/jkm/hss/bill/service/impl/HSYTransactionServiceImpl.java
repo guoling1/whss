@@ -2,10 +2,8 @@ package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.hss.account.entity.MemberAccount;
-import com.google.common.base.Optional;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
@@ -13,10 +11,7 @@ import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.bill.dao.HsyOrderDao;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.*;
-import com.jkm.hss.bill.helper.CallbackResponse;
-import com.jkm.hss.bill.helper.PayParams;
-import com.jkm.hss.bill.helper.PayResponse;
-import com.jkm.hss.bill.helper.SplitProfitParams;
+import com.jkm.hss.bill.helper.*;
 import com.jkm.hss.bill.helper.util.VerifyAuthCodeUtil;
 import com.jkm.hss.bill.service.HSYOrderService;
 import com.jkm.hss.bill.service.HSYTransactionService;
@@ -32,23 +27,18 @@ import com.jkm.hss.notifier.service.SendMqMsgService;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
-import com.jkm.hsy.user.Enum.*;
 import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.constant.MemberStatus;
 import com.jkm.hsy.user.constant.OrderStatus;
 import com.jkm.hsy.user.dao.HsyMembershipDao;
-import com.jkm.hsy.user.Enum.*;
-import com.jkm.hsy.user.Enum.EnumPolicyType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.*;
-import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
-import com.jkm.hsy.user.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -301,14 +291,6 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                 final HsyOrder updateOrder = new HsyOrder();
                 switch (status) {
                     case SUCCESS:
-                        //推送
-                        try {
-                            this.pushService.pushCashMsg(hsyOrder1.getShopid(), EnumPaymentChannel.of(hsyOrder1.getPaymentChannel()).getValue(),
-                                    hsyOrder1.getAmount().doubleValue(), hsyOrder1.getValidationcode(), hsyOrder1.getOrderno());
-                        } catch (final Throwable e) {
-                            log.error("订单[" + hsyOrder1.getOrderno() + "]，支付成功，推送异常", e);
-                        }
-
                         updateOrder.setId(hsyOrder1.getId());
                         updateOrder.setOrderstatus(EnumHsyOrderStatus.PAY_SUCCESS.getId());
                         updateOrder.setPoundage(callbackResponse.getPoundage());
@@ -316,6 +298,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                         updateOrder.setPaysuccesstime(callbackResponse.getSuccessTime());
                         updateOrder.setRemark(callbackResponse.getMessage());
                         this.hsyOrderService.update(updateOrder);
+
                         //生成分润消息记录
                         final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
                         consumeMsgSplitProfitRecord.setHsyOrderId(hsyOrder1.getId());
@@ -347,6 +330,8 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         }
     }
 
+
+
     @Transactional
     public void handleRechargeCallbackMsg(final CallbackResponse callbackResponse) {
         List<AppPolicyRechargeOrder> rechargeOrderList=hsyOrderDao.findRechargeOrderInfoByOrderNO(callbackResponse.getBusinessOrderNo());
@@ -376,6 +361,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
                     appPolicyRechargeOrderUpdate.setRemark(callbackResponse.getMessage());
                     appPolicyRechargeOrderUpdate.setUpdateTime(date);
                     hsyMembershipDao.updateRechargeOrder(appPolicyRechargeOrderUpdate);
+
                     //生成分润消息记录
                     final ConsumeMsgSplitProfitRecord consumeMsgSplitProfitRecord = new ConsumeMsgSplitProfitRecord();
                     consumeMsgSplitProfitRecord.setHsyRechargeOrderId(appPolicyRechargeOrder.getId());

@@ -1010,6 +1010,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
+    @Deprecated
     public void handleHsyPayCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
         final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNoAndTradeType(orderNo, EnumTradeType.PAY.getId());
@@ -1056,6 +1057,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
+    @Deprecated
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order) {
         order.setPayType(paymentSdkPayCallbackResponse.getPayType());
         order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
@@ -1092,8 +1094,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //=============================================================================
         //推送
         try {
-            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(),
-                    order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4), order.getOrderNo());
+//            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(),
+//                    order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4), order.getOrderNo());
         } catch (final Throwable e) {
             log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
         }
