@@ -128,6 +128,8 @@ abandon.addEventListener('click',function () {
         success: function (data) {
             if(data.flag=='success'){
                 location.href = '/membership/checkMember?successFlag='+pageData.successFlag+'&infoDetail='+pageData.infoDetail+'&uidEncode='+pageData.uidEncode+'&source='+pageData.source+'&userID='+pageData.userID+'&openID='+pageData.openID+'&operate='+pageData.operate;
+            }else{
+                message.prompt_show(data.result);
             }
         }
     });
