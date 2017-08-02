@@ -43,30 +43,24 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
     public String insertTokenDeviceClientInfoAndReturnKey(String dataParam, AppParam appParam)throws ApiHandleException {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         AppAuToken appAuToken=null;
-        AppAuTokenRequest appAuTokenRequest = null;
         try{
-            appAuTokenRequest=gson.fromJson(dataParam, AppAuTokenRequest.class);
+            appAuToken=gson.fromJson(dataParam, AppAuToken.class);
         } catch(Exception e){
             throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
         }
-        if(!(appAuTokenRequest.getDeviceId()!=null&&!appAuTokenRequest.getDeviceId().equals("")))
+        if(!(appAuToken.getDeviceId()!=null&&!appAuToken.getDeviceId().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"设备号");
-        if(!(appAuTokenRequest.getDeviceName()!=null&&!appAuTokenRequest.getDeviceName().equals("")))
+        if(!(appAuToken.getDeviceName()!=null&&!appAuToken.getDeviceName().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"设备名");
-        if(!(appAuTokenRequest.getOsVersion()!=null&&!appAuTokenRequest.getOsVersion().equals("")))
+        if(!(appAuToken.getOsVersion()!=null&&!appAuToken.getOsVersion().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"系统版本号");
-        if(!(appAuTokenRequest.getAppVersion()!=null&&!appAuTokenRequest.getAppVersion().equals("")))
+        if(!(appAuToken.getAppVersion()!=null&&!appAuToken.getAppVersion().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"app版本号");
-        if(!(appAuTokenRequest.getAppCode()!=null&&!appAuTokenRequest.getAppCode().equals("")))
+        if(!(appAuToken.getAppCode()!=null&&!appAuToken.getAppCode().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"APP编号");
         appAuToken.setAppType(appParam.getAppType());
         Date date=new Date();
-        appAuToken.setDeviceId(appAuTokenRequest.getDeviceId());
-        appAuToken.setDeviceName(appAuTokenRequest.getDeviceName());
-        appAuToken.setOsVersion(appAuTokenRequest.getOsVersion());
-        appAuToken.setAppVersion(appAuTokenRequest.getAppVersion());
-        appAuToken.setAppChannel(appAuTokenRequest.getAppChannel());
-        appAuToken.setAppCode(appAuTokenRequest.getAppCode());
+        appAuToken.setAppCode(appAuToken.getAppCode());
         appAuToken.setIsAvoidingTone(0);
         appAuToken.setCreateTime(date);
         appAuToken.setUpdateTime(date);
@@ -74,15 +68,7 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
         appAuToken.setAccessToken(ShaUtil.shaEncode(appAuToken.getId()+AppConstant.SHA_KEY).substring(0, 32));
         appAuToken.setEncryptKey(RandomStringUtils.randomAlphanumeric(32));
         appAuTokenDao.update(appAuToken);
-        String oemName="好收收";
-        String wechatCode = "HAOSHOUSHOU";
-        if(!"".equals(appAuTokenRequest.getOemNo())){
-            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(appAuTokenRequest.getOemNo());
-            if(!oemInfoOptional.isPresent())throw new ApiHandleException(ResultCode.OEM_NOT_EXSIT);
-            oemName = oemInfoOptional.get().getBrandName();
-            wechatCode = oemInfoOptional.get().getWechatCode();
-        }
-        return "{\"accessToken\":\""+appAuToken.getAccessToken()+"\",\"encryptKey\":\""+appAuToken.getEncryptKey()+"\",\"oemName\":\"" + oemName + "\",\"wechatCode\":\"" + wechatCode + "\"}";
+        return "{\"accessToken\":\""+appAuToken.getAccessToken()+"\",\"encryptKey\":\""+appAuToken.getEncryptKey()+"\"}";
     }
 
     /**
@@ -116,6 +102,31 @@ public class AppAuTokenServiceImpl implements AppAuTokenService {
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
         return "";
+    }
+    /**
+     * HSS001009 启动获取APP信息
+     * @param dataParam
+     * @param appParam
+     * @return
+     * @throws ApiHandleException
+     */
+    public String getInitOemInfo(String dataParam, AppParam appParam)throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        AppAuTokenRequest appAuTokenRequest=null;
+        try{
+            appAuTokenRequest=gson.fromJson(dataParam, AppAuTokenRequest.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+        String oemName="好收收";
+        String wechatCode = "HAOSHOUSHOU";
+        if(!"".equals(appAuTokenRequest.getOemNo())){
+            Optional<OemInfo> oemInfoOptional =  oemInfoService.selectByOemNo(appAuTokenRequest.getOemNo());
+            if(!oemInfoOptional.isPresent())throw new ApiHandleException(ResultCode.OEM_NOT_EXSIT);
+            oemName = oemInfoOptional.get().getBrandName();
+            wechatCode = oemInfoOptional.get().getWechatCode();
+        }
+        return "{\"oemName\":\"" + oemName + "\",\"wechatCode\":\"" + wechatCode + "\"}";
     }
 
     public AppAuUserToken findLoginInfoByAccessToken(String accessToken){

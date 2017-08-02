@@ -11,5 +11,6 @@ public interface AppAuTokenService {
     String insertTokenDeviceClientInfoAndReturnKey(String dataParam, AppParam appParam)throws ApiHandleException;
     String updateClientID(String dataParam, AppParam appParam)throws ApiHandleException;
     AppAuUserToken findLoginInfoByAccessToken(String accessToken);
+    String getInitOemInfo(String dataParam, AppParam appParam)throws ApiHandleException;
 
 }

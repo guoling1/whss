@@ -76,7 +76,7 @@ public class ActiveController {
             return;
         }
 
-        if(!appParam.getServiceCode().equals("HSS001001"))
+        if(!(appParam.getServiceCode().equals("HSS001001")||appParam.getServiceCode().equals("HSS001009")))
         {
             if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().trim().equals("")))
             {

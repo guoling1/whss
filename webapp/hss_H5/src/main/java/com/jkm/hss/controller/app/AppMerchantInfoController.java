@@ -563,6 +563,21 @@ public class AppMerchantInfoController extends BaseController {
     }
 
     /**
+     * HSSH5001007 上传资料
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getMerchanStatus", method = RequestMethod.POST)
+    public CommonResponse getMerchanStatus(final HttpServletRequest request, final HttpServletResponse response){
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
+
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"照片添加成功");
+    }
+
+    /**
      * 校验身份4要素
      *
      * @return
