@@ -69,20 +69,20 @@
         update app_au_user_token set status=2 where TID=${tid} and uid!=#{uid} and status=1
     </update>
 
-    <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hss.merchant.entity.AppAuToken" resultType="com.jkm.hss.merchant.entity.AppAuToken">
+    <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hss.merchant.entity.AppAuUserToken" resultType="com.jkm.hss.merchant.entity.AppAuUserToken">
         select UID,TID,STATUS,LOGINTIME,OUTTIME
         from app_au_user_token
         where 1=1
         <if test="uid!=null and uid!=''">and UID=#{uid}</if>
         <if test="tid!=null and tid!=''">and TID=#{tid}</if>
     </select>
-    <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+    <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hss.merchant.entity.AppAuUserToken">
         update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime},OUTTIME=#{outTime} where UID=#{uid} and TID=#{tid}
     </update>
-    <insert id="insertAppAuUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.AppAuToken">
+    <insert id="insertAppAuUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.AppAuUserToken">
         insert into app_au_user_token(UID,TID,STATUS,LOGINTIME,OUTTIME) values(#{uid},#{tid},#{status},#{loginTime},#{outTime})
     </insert>
-    <select id="findLoginInfoByAccessToken" resultType="com.jkm.hss.merchant.entity.AppAuToken">
+    <select id="findLoginInfoByAccessToken" resultType="com.jkm.hss.merchant.entity.AppAuUserToken">
         select
         ut.UID,ut.TID,ut.STATUS,ut.LOGINTIME,ut.OUTTIME
         from app_au_token token left join app_au_user_token ut on token.ID=ut.TID

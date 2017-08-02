@@ -9,6 +9,13 @@ import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hsy.user.util.AppDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -61,7 +68,6 @@ public class H5ControllerTester {
     @Test
     public void testSendVerifyCode()throws Exception{
         Map<String, String> map = new JSONObject();
-        map.put("","6226220117842210");
         map.put("bankNo","6226220117842210");
         map.put("name","邢留杰");
         map.put("identity","411082198805113634");
@@ -83,8 +89,37 @@ public class H5ControllerTester {
 
 
 
-    public static void testRest(Map<String, String> map,String url)throws Exception{
-        String result = SmPost.post(url,map);
-        log.info(result);
+    public static void testRest(Map<String, String> paramsMap,String url)throws Exception{
+        CloseableHttpClient client = HttpClients.createDefault();
+        String responseText = "";
+        CloseableHttpResponse response = null;
+        try {
+            HttpPost method = new HttpPost(url);
+            method.addHeader("Content-type", "application/json; charset=utf-8");
+            method.setHeader("Accept", "application/json");
+            method.setHeader("accessToken",accessToken);
+            if (paramsMap != null) {
+                JSONObject jsonParam = new JSONObject();
+                for (Map.Entry<String, String> param : paramsMap.entrySet()) {
+                    jsonParam.put(param.getKey(), param.getValue());
+                }
+                method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
+
+            }
+            response = client.execute(method);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                responseText = EntityUtils.toString(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                response.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        log.info(responseText);
     }
 }

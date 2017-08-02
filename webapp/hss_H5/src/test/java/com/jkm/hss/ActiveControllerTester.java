@@ -128,7 +128,7 @@ public class ActiveControllerTester {
         p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("4707D3CA-EB83-4064-81CD-21E84933F5CB");
-        String param="{\"mobile\":\"13146716739\",\"code\":\"267069\",\"oemNo\":\"\"}";
+        String param="{\"mobile\":\"13146716739\",\"code\":\"595919\",\"oemNo\":\"\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
         String encodeUrl = URLEncoder.encode(base64E,"utf-8");
         p.setRequestData(encodeUrl);

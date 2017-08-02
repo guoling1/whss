@@ -45,7 +45,7 @@ public class AppInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getParameter("accessToken");
+        String token = request.getHeader("accessToken");
         final Triple<Integer, String, MerchantInfo> checkResult = this.checkToken(token);
         if (0 != checkResult.getLeft()) {
             ResponseWriter.writeJsonResponse(response, CommonResponse.simpleResponse(checkResult.getLeft(), checkResult.getMiddle()));
