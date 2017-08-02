@@ -60,11 +60,19 @@
 </body>
 <script>
     var pageData={
-        consumeCellphone:'${appPolicyConsumer.consumerCellphone}'
+        consumeCellphone:'${appPolicyConsumer.consumerCellphone}',
+        successFlag:'${authInfo.successFlag}',
+        infoDetail:'${authInfo.infoDetail}',
+        uidEncode:'${authInfo.uidEncode}',
+        userID:'${authInfo.userID}',
+        openID:'${authInfo.openID}',
+        operate:'${authInfo.operate}',
+        source:'${authInfo.source}'
     }
 </script>
 <script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>
 <script src="../../js/swiper-3.4.2.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.13.min.js"></script>
+<%--<script src="../js/2.0.2.1/createMember.min.js"></script>--%>
 <script src="http://static.jinkaimen.cn/hsy/js/2.0.2.1/createMember.min.js"></script>
 </html>

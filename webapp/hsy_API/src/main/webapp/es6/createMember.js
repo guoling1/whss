@@ -120,7 +120,7 @@ submit.addEventListener('click', ()=> {
                         if(data.status==1)
                             location.href="/membership/createMemberSuccess?mid="+data.mid;
                         else
-                            location.href="/sqb/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+$("#source").val();
+                            location.href="/sqb/needRecharge?mid="+data.mid+"&cellphone="+mobile.value+"&source="+pageData.source+'&successFlag='+pageData.successFlag+'&infoDetail='+pageData.infoDetail+'&uidEncode='+pageData.uidEncode+'&userID='+pageData.userID+'&openID='+pageData.openID+'&operate='+pageData.operate;
                     }else if(data.flag=="memberInfo"){
                         location.href = "/membership/memberInfo?mid="+data.mid+"&source="+$("#source").val();
                     }
