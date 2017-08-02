@@ -505,6 +505,7 @@
     </update>
 
     <select id="selectByKmNetStatus" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info where km_net_status=2 and account_id in (SELECT account_id  FROM tb_account_bank WHERE status=0 and is_default =1 and card_type =0 and branch_code!='')
+        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info
+        where km_net_status=2 and account_id in (SELECT account_id  FROM tb_account_bank WHERE status=0 and is_default =1 and card_type =0 and branch_code!='') and id in (SELECT DISTINCT(merchant_id)  FROM tb_merchant_channel_rate WHERE channel_company ='卡盟' and enter_net =2 and status =0)
     </select>
 </mapper>
