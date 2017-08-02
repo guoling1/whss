@@ -35,5 +35,5 @@
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/memberList.min.js"></script>
+<script src="http://static.jinkaimen.cn/hsy/js/2.0.2.1/memberList.min.js"></script>
 </html>

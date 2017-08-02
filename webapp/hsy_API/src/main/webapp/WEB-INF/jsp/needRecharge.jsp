@@ -15,9 +15,9 @@
     <p class="title">尊敬的 ${cellphone}准会员：</p>
     <p class="content">您的会员卡还差一步即可开通成功，请您点击下方的【继续开卡】</p>
     <div id="recharge" class="weui-btn weui-btn_primary">继续开卡</div>
-    <div id="abandon" class="weui-btn weui-btn_primary">放弃开卡</div>
-    <div id="abandonMember"><a href="<%=basePath%>membership/abandonMember?mid=${mid}">放弃开卡</a></div>
-    <div><a href="<%=basePath%>membership/checkMember?successFlag=${authInfo.successFlag}&infoDetail=${authInfo.infoDetail}&uidEncode=${authInfo.uidEncode}&source=${authInfo.source}&userID=${authInfo.userID}&openID=${authInfo.openID}&operate=${authInfo.operate}">放弃开卡后成功跳转到开卡页面</a></div>
+    <div id="abandon" class="weui-btn weui-btn_plain-primary">放弃开卡</div>
+    <%--<div id="abandonMember"><a href="<%=basePath%>membership/abandonMember?mid=${mid}">放弃开卡</a></div>
+    <div><a href="<%=basePath%>membership/checkMember?successFlag=${authInfo.successFlag}&infoDetail=${authInfo.infoDetail}&uidEncode=${authInfo.uidEncode}&source=${authInfo.source}&userID=${authInfo.userID}&openID=${authInfo.openID}&operate=${authInfo.operate}">放弃开卡后成功跳转到开卡页面</a></div>--%>
     <div class="js_dialog" id="iosDialog2" style="display: none">
         <div class="weui-mask"></div>
         <div class="weui-dialog">
@@ -33,12 +33,19 @@
     var pageData = {
         type : 'activate',
         source : '${source}',
-        mid　: '${mid}'
+        mid　: '${mid}',
+        successFlag:'${authInfo.successFlag}',
+        infoDetail:'${authInfo.infoDetail}',
+        uidEncode:'${authInfo.uidEncode}',
+        userID:'${authInfo.userID}',
+        openID:'${authInfo.openID}',
+        operate:'${authInfo.operate}'
     }
 </script>
 <script src="http://static.jinkaimen.cn/hsy/js/jquery-2.2.3.min.js"></script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.2.0.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hsy/js/2.0.2/needRecharge.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hsy/js/2.0.2.1/needRecharge.min.js"></script>--%>
+<script src="..//js/2.0.2.1/needRecharge.min.js"></script>
 </html>

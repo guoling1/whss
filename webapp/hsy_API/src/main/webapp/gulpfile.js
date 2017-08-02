@@ -51,13 +51,13 @@ gulp.task('es', () => {
     .pipe(uglify())
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/2.0.2'));
+    .pipe(gulp.dest('js/2.0.2.1'));
 });
 
 gulp.task('replace', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
     .pipe(replace('style.css', 'style.2.0.0.css'))
-    .pipe(replace('/2.0.2/', '/2.0.2/'))
+    .pipe(replace('/2.0.2/', '/2.0.2.1/'))
     .pipe(replace('vendor.2.0.2.min.js', 'vendor.2.0.2.min.js'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });

@@ -117,10 +117,8 @@ recharge.addEventListener('click',function () {
 abandon.addEventListener('click',function () {
     $.ajax({
         type: "get",
-        url: '/membership/recharge',
+        url: '/membership/abandonMember',
         data:{
-            type: pageData.type,
-            source: pageData.source,
             mid: pageData.mid
         },
         dataType: "json",
@@ -128,7 +126,9 @@ abandon.addEventListener('click',function () {
             alert("请求失败")
         },
         success: function (data) {
-
+            if(data.flag=='success'){
+                location.href = '/membership/checkMember?successFlag='+pageData.successFlag+'&infoDetail='+pageData.infoDetail+'&uidEncode='+pageData.uidEncode+'&source='+pageData.source+'&userID='+pageData.userID+'&openID='+pageData.openID+'&operate='+pageData.operate;
+            }
         }
     });
 })
