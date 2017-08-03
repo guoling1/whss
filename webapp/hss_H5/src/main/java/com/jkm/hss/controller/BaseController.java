@@ -40,7 +40,7 @@ public class BaseController {
     /**
      * 经销商 登录缓存
      */
-    private static final DataBind<Dealer> APP_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.REQUEST_USER_INFO_DATA_BIND_APP);
+    private static final DataBind<MerchantInfo> APP_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.REQUEST_USER_INFO_DATA_BIND_APP);
 
     /**
      * 日期处理
@@ -90,7 +90,7 @@ public class BaseController {
      *
      * @return
      */
-    protected Optional<Dealer> getAppMerchantInfo() {
+    protected Optional<MerchantInfo> getAppMerchantInfo() {
         return Optional.fromNullable(APP_USER_INFO_DATA_BIND.get());
     }
 

@@ -38,7 +38,10 @@ public class H5ControllerTester {
     public static String HSSH5001003="http://localhost:8081/appMerchantInfo/getRecommendInfo";
     public static String HSSH5001006="http://localhost:8081/appMerchantInfo/sendVerifyCode";
     public static String HSSH5001008="http://localhost:8081/appMerchantInfo/getMerchanStatus";
-    public static String HSSH5001009="http://localhost:8081/appMerchantInfo/authentication";
+    public static String HSSH5001009="http://localhost:8081/appMerchantInfo/getAuthenInfo";
+    public static String HSSH5001010="http://localhost:8081/appMerchantInfo/creditCardAuthen";
+    public static String HSSH5001011="http://localhost:8081/appMerchantInfo/myCardList";
+    public static String HSSH5001012="http://localhost:8081/appMerchantInfo/cardDetail";
 
     @Test
     public void testGetRegisterCode()throws Exception{
@@ -82,12 +85,30 @@ public class H5ControllerTester {
     }
 
     @Test
-    public void testAuthentication()throws Exception{
+    public void testGetAuthenInfo()throws Exception{
         Map<String, String> map = new JSONObject();
         H5ControllerTester.testRest(map,HSSH5001009);
     }
 
+    @Test
+    public void testAuthentication()throws Exception{
+        Map<String, String> map = new JSONObject();
+        map.put("creditCard","6259655533117715");
+        H5ControllerTester.testRest(map,HSSH5001010);
+    }
 
+    @Test
+    public void testMyCardList()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001011);
+    }
+
+    @Test
+    public void testCardDetail()throws Exception{
+        Map<String, String> map = new JSONObject();
+        map.put("bankId","2455");
+        H5ControllerTester.testRest(map,HSSH5001012);
+    }
 
     public static void testRest(Map<String, String> paramsMap,String url)throws Exception{
         CloseableHttpClient client = HttpClients.createDefault();

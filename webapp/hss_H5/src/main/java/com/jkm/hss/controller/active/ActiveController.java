@@ -134,6 +134,7 @@ public class ActiveController {
                 if(ahe.getMsg()!=null)
                     msg=":"+ahe.getMsg();
                 if(ahe.getResultCode().resultCode==ResultCode.CUSTOM_EXCEPTION.resultCode){
+                    msg=ahe.getMsg();
                     result.setResultMessage(msg);
                 }else{
                     result.setResultMessage(ahe.getResultCode().resultMessage+msg);

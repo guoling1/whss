@@ -113,7 +113,10 @@
             <mvc:mapping path="/appMerchantInfo/sendVerifyCode"/>
             <mvc:mapping path="/appMerchantInfo/savePic"/>
             <mvc:mapping path="/appMerchantInfo/getMerchanStatus"/>
-            <mvc:mapping path="/appMerchantInfo/authentication"/>
+            <mvc:mapping path="/appMerchantInfo/getAuthenInfo"/>
+            <mvc:mapping path="/appMerchantInfo/creditCardAuthen"/>
+            <mvc:mapping path="/appMerchantInfo/myCardList"/>
+            <mvc:mapping path="/appMerchantInfo/branchInfo"/>
             <bean id="appInterceptor" class="com.jkm.hss.interceptor.AppInterceptor">
                 <property name="appAuTokenService" ref="appAuTokenService"/>
                 <property name="merchantInfoService" ref="merchantInfoServiceImpl"/>

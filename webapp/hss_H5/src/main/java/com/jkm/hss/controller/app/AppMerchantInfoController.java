@@ -18,13 +18,18 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.helper.request.CardDetailRequest;
+import com.jkm.hss.helper.request.CreditCardAuthenRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
 import com.jkm.hss.helper.response.AuthenticationResponse;
+import com.jkm.hss.helper.response.CardDetailResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
+import com.jkm.hss.merchant.helper.response.BankListResponse;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -98,6 +103,8 @@ public class AppMerchantInfoController extends BaseController {
     private SendMessageService sendMessageService;
     @Autowired
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
+    @Autowired
+    private AccountBankService accountBankService;
     /**
      * HSSH5001002 注册
      *
@@ -594,8 +601,8 @@ public class AppMerchantInfoController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/authentication", method = RequestMethod.POST)
-    public CommonResponse authentication(final HttpServletRequest request, final HttpServletResponse response){
+    @RequestMapping(value = "/getAuthenInfo", method = RequestMethod.POST)
+    public CommonResponse getAuthenInfo(final HttpServletRequest request, final HttpServletResponse response){
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         if(merchantInfoOptional.get().getStatus()>0){
@@ -636,6 +643,131 @@ public class AppMerchantInfoController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",authenticationResponse);
     }
 
+    /**
+     * HSSH5001010 信用卡认证
+     * @param creditCardAuthenRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "creditCardAuthen", method = RequestMethod.POST)
+    public CommonResponse creditCardAuthen(@RequestBody final CreditCardAuthenRequest creditCardAuthenRequest) {
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        if(StringUtils.isBlank(creditCardAuthenRequest.getCreditCard())){
+            return CommonResponse.simpleResponse(-1, "请输入信用卡号");
+        }
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(creditCardAuthenRequest.getCreditCard());
+        if(!bankCardBinOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "信用卡号错误");
+        }
+        if(Integer.parseInt(bankCardBinOptional.get().getCardTypeCode())!=1){
+            return CommonResponse.simpleResponse(-1, "只能输入信用卡");
+        }
+        String creditCardNo = creditCardAuthenRequest.getCreditCard();
+        String creditCardShort = creditCardNo.substring(creditCardNo.length()-4,creditCardNo.length());
+        merchantInfoService.updateCreditCard(MerchantSupport.encryptBankCard(creditCardAuthenRequest.getCreditCard()),bankCardBinOptional.get().getBankName(),creditCardShort,merchantInfo.get().getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * HSSH5001011 银行卡列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "myCardList", method = RequestMethod.POST)
+    public CommonResponse myCardList() {
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        List<BankListResponse> accountBankList = accountBankService.selectAll(merchantInfo.get().getAccountId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", accountBankList);
+    }
+
+    /**
+     * HSSH5001012 银行卡详情
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "cardDetail", method = RequestMethod.POST)
+    public CommonResponse cardDetail(@RequestBody final CardDetailRequest cardDetailRequest) {
+        Optional<AccountBank> accountBankOptional = accountBankService.selectById(cardDetailRequest.getBankId());
+        Preconditions.checkState(accountBankOptional.isPresent(), "查询不到默认银行卡信息");
+        CardDetailResponse cardDetailResponse = new CardDetailResponse();
+        if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
+            String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
+            cardDetailResponse.setBankNo(bankNo.substring(bankNo.length()-4,bankNo.length()));
+            cardDetailResponse.setRealBankNo(bankNo);
+        }
+        if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
+            String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
+            cardDetailResponse.setMobile(mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+        }
+        cardDetailResponse.setBankName(accountBankOptional.get().getBankName());
+        cardDetailResponse.setBankBin(accountBankOptional.get().getBankBin());
+        cardDetailResponse.setProvinceCode(accountBankOptional.get().getBranchProvinceCode());
+        cardDetailResponse.setProvinceName(accountBankOptional.get().getBranchProvinceName());
+        cardDetailResponse.setCityCode(accountBankOptional.get().getBranchCityCode());
+        cardDetailResponse.setCityName(accountBankOptional.get().getBranchCityName());
+        cardDetailResponse.setCountyCode(accountBankOptional.get().getBranchCountyCode());
+        cardDetailResponse.setCountyName(accountBankOptional.get().getBranchCountyName());
+        cardDetailResponse.setBranchCode(accountBankOptional.get().getBranchCode());
+        if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
+            String tempBranchName = accountBankOptional.get().getBranchName();
+            if(tempBranchName.length()>12){
+                tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
+            }
+            cardDetailResponse.setBranchShortName(tempBranchName);
+            cardDetailResponse.setBranchName(accountBankOptional.get().getBranchName());
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", cardDetailResponse);
+    }
+
+    /**
+     * HSSH5001013 保存支行信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "saveBranchInfo", method = RequestMethod.POST)
+    public CommonResponse branchInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final ContinueBankInfoRequest continueBankInfoRequest) {
+        if(StringUtils.isBlank(continueBankInfoRequest.getProvinceCode())){
+            return CommonResponse.simpleResponse(-1, "请选择省份");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getProvinceName())){
+            return CommonResponse.simpleResponse(-1, "请选择省份");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCityCode())){
+            return CommonResponse.simpleResponse(-1, "请选择城市");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCityName())){
+            return CommonResponse.simpleResponse(-1, "请选择城市");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCountyCode())){
+            return CommonResponse.simpleResponse(-1, "请选择县");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCountyName())){
+            return CommonResponse.simpleResponse(-1, "请选择县");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getBranchName())){
+            return CommonResponse.simpleResponse(-1, "请选择支行");
+        }
+        if(continueBankInfoRequest.getBankId()<=0){
+            return CommonResponse.simpleResponse(-1, "银行卡参数输入有误");
+        }
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
+        if(accountBank==null){
+            return CommonResponse.simpleResponse(-1, "您暂未设置默认银行卡");
+        }
+        continueBankInfoRequest.setId(merchantInfo.get().getId());
+        merchantInfoService.updateBranchInfo(continueBankInfoRequest);
+        accountBankService.updateBranchInfo(continueBankInfoRequest);
+        merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
     /**
      * 校验身份4要素
      *
