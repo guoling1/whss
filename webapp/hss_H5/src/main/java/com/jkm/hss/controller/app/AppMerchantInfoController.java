@@ -18,6 +18,7 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.helper.request.AppRecommendRequest;
 import com.jkm.hss.helper.request.CardDetailRequest;
 import com.jkm.hss.helper.request.CreditCardAuthenRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
@@ -29,6 +30,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
+import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.helper.response.BankListResponse;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -767,6 +769,34 @@ public class AppMerchantInfoController extends BaseController {
         accountBankService.updateBranchInfo(continueBankInfoRequest);
         merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * HSSH5001014 我的客户
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "myRecommend", method = RequestMethod.POST)
+    public CommonResponse myRecommend(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final AppRecommendRequest appRecommendRequest ) {
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        RecommendAndMerchant recommendAndMerchant = null;
+        if(appRecommendRequest.getType()==1){
+            RecommendRequest recommendRequest = new RecommendRequest();
+            recommendRequest.setMerchantId(merchantInfo.get().getId());
+            recommendAndMerchant = recommendService.selectRecommend(recommendRequest);
+        }
+        if(appRecommendRequest.getType()==2){
+            RecommendRequest recommendRequest = new RecommendRequest();
+            recommendRequest.setMerchantId(merchantInfo.get().getSuperDealerId());
+            if(merchantInfo.get().getSuperDealerId()!=null&&merchantInfo.get().getSuperDealerId()>0){
+                recommendAndMerchant = recommendService.selectSuperRecommend(recommendRequest);
+            }else{
+                recommendAndMerchant = new RecommendAndMerchant();
+            }
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
     }
     /**
      * 校验身份4要素

@@ -130,6 +130,46 @@ public class RecommendServiceImpl implements RecommendService{
         return recommendAndMerchant;
     }
 
+    /**
+     * 按分页查询超级合伙人客户
+     *
+     * @param recommendRequest
+     * @return
+     */
+    @Override
+    public RecommendAndMerchant selectSuperRecommend(RecommendRequest recommendRequest) {
+        int direct = 0;
+        int indirect = 0;
+        List<RecommendShort> list = recommendDao.selectSuperRecommendByPage(recommendRequest);
+        RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){//间接推广人
+                    if(list.get(i).getName()!=null&&!"".equals(list.get(i).getName())){
+                        list.get(i).setName("*"+list.get(i).getName().substring(list.get(i).getName().length()-1,list.get(i).getName().length()));
+                    }else{
+                        String mobile = MerchantSupport.decryptMobile(list.get(i).getMobile());
+                        list.get(i).setName(mobile.substring(0,3)+"****"+mobile.substring(mobile.length()-4,mobile.length()));
+                    }
+                    list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
+                    indirect++;
+                }else{//直接推广人
+                    if(list.get(i).getName()!=null&&!"".equals(list.get(i).getName())){
+                        list.get(i).setName(list.get(i).getName());
+                    }else{
+                        String mobile = MerchantSupport.decryptMobile(list.get(i).getMobile());
+                        list.get(i).setName(mobile);
+                    }
+                    list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
+                    direct++;
+                }
+            }
+        }
+        recommendAndMerchant.setRecommends(list);
+        recommendAndMerchant.setDirectCount(direct);
+        recommendAndMerchant.setIndirectCount(indirect);
+        return recommendAndMerchant;
+    }
     private String getStatusName(int status){
         String name = "";
         if(status==EnumMerchantStatus.LOGIN.getId()){

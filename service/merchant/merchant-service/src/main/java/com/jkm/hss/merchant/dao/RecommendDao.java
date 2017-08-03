@@ -64,6 +64,11 @@ public interface RecommendDao {
      */
     List<RecommendShort> selectRecommendByPage(RecommendRequest recommendRequest);
     /**
+     * 按分页查询超级合伙人客户
+     * @return
+     */
+    List<RecommendShort> selectSuperRecommendByPage(RecommendRequest recommendRequest);
+    /**
      * 按分页查询好友列表总条数
      * @return
      */

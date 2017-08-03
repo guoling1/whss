@@ -57,6 +57,11 @@ public interface RecommendService {
      */
     RecommendAndMerchant selectRecommend(RecommendRequest recommendRequest);
     /**
+     * 按分页查询超级合伙人客户
+     * @return
+     */
+    RecommendAndMerchant selectSuperRecommend(RecommendRequest recommendRequest);
+    /**
      * 按分页查询好友列表总条数
      * @return
      */
