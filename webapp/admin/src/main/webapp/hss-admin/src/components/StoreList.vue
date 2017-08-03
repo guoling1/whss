@@ -178,7 +178,7 @@
                 </li>
                 <li class="same">
                   <label>审核状态:</label>
-                  <el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 188px" v-model="queryHsy.withDrawStatus" clearable placeholder="请选择" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="注册中" value="2">注册中</el-option>
                     <el-option label="待审核" value="3">待审核</el-option>
@@ -231,8 +231,8 @@
                 <el-table-column prop="stat" label="状态"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" v-if="recordsHsy[scope.$index].stat=='待审核'" type="text" size="small">审核</el-button>
-                    <el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_detail')" v-if="recordsHsy[scope.$index].stat!='待审核'" type="text" size="small">查看详情</el-button>
+                    <el-button @click="_$power(scope.row.id,scope.row.withDrawStatus,auditHsy,'boss_merchant_check')" v-if="recordsHsy[scope.$index].stat=='待审核'" type="text" size="small">审核</el-button>
+                    <el-button @click="_$power(scope.row.id,scope.row.withDrawStatus,auditHsy,'boss_merchant_detail')" v-if="recordsHsy[scope.$index].stat!='待审核'" type="text" size="small">查看详情</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -327,7 +327,7 @@
           proxyName1:'',
           cellphone:'',
           username:'',
-          status:'',
+          withDrawStatus:'',
           startTime:'',
           endTime:'',
           auditTime:'',
@@ -396,7 +396,7 @@
             proxyName1:'',
             cellphone:'',
             username:'',
-            status:'',
+            withDrawStatus:'',
             startTime:'',
             endTime:'',
             auditTime:'',
