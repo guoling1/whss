@@ -1083,6 +1083,14 @@ public class OrderServiceImpl implements OrderService {
                     String dates = sdf.format(list.get(i).getUpdateTime());
                     list.get(i).setUpdateTimes(dates);
                 }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==10){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_FAIL.getValue());
+                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    list.get(i).setUpdateTimes(dates);
+                }
                 if (list.get(i).getPayChannelSign()!=0) {
                     list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getUpperChannel().getValue());
                 }
