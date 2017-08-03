@@ -404,6 +404,15 @@
         <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
         <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
         <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
         ORDER BY a.pay_success_time DESC LIMIT #{offset},#{size}
     </select>
 
@@ -429,6 +438,15 @@
         <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
         <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
         <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
     </select>
 
     <select id="getHsyOrderCounts"  resultType="java.lang.String">
@@ -453,6 +471,15 @@
         <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
         <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
         <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
     </select>
 
     <select id="getHsyOrderCounts1"  resultType="java.lang.String">
@@ -477,6 +504,15 @@
         <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
         <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
         <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
     </select>
 
     <select id="selectHsyOrderList"  resultType="com.jkm.hss.bill.entity.QueryHsyOrderResponse">
@@ -516,6 +552,15 @@
         <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
         <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
         <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
         ORDER BY a.pay_success_time DESC
     </select>
 
