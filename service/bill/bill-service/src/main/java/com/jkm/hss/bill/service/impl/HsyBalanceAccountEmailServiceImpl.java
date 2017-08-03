@@ -195,23 +195,16 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         final List<HsyOrder> hsyOrders = this.hsyOrderService.getByMerchantNoAndTime(merchantNo, startTime, endTime);
         List<AppPolicyRechargeOrder> appPolicyRechargeOrderList=hsyMembershipDao.findAppPolicyRechargeOrderByParam(uid, startTime, endTime);
         log.info("商户【{}】，发送对账邮件【{}】，【{}】-【{}】交易个数【{}】", merchantNo, email, startTime, endTime, hsyOrders.size());
-        if (CollectionUtils.isEmpty(hsyOrders)&&CollectionUtils.isEmpty(appPolicyRechargeOrderList)) {
+        if (CollectionUtils.isEmpty(hsyOrders) && CollectionUtils.isEmpty(appPolicyRechargeOrderList)) {
             return;
         }
-        String[] urls = new String[2];
-
-        String hsyOrdersFileUrl=null;
+        final ArrayList<String> urlList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(hsyOrders)) {
-            hsyOrdersFileUrl = this.generateExcelSheet(hsyOrders, merchantNo);
-            urls[0]=hsyOrdersFileUrl;
+            urlList.add(this.generateExcelSheet(hsyOrders, merchantNo));
         }
-
-        String appPolicyRechargeOrderFileUrl=null;
         if(!CollectionUtils.isEmpty(appPolicyRechargeOrderList)){
-            appPolicyRechargeOrderFileUrl=generateExcelSheetAppPolicyRechargeOrder(appPolicyRechargeOrderList,merchantNo);
-            urls[1]=appPolicyRechargeOrderFileUrl;
+            urlList.add(generateExcelSheetAppPolicyRechargeOrder(appPolicyRechargeOrderList,merchantNo));
         }
-
         final BaseEmailInfo baseEmailInfo = new BaseEmailInfo();
         baseEmailInfo.setServerHost(ApplicationConsts.getApplicationConfig().emailServerHost());
         baseEmailInfo.setServerPort(ApplicationConsts.getApplicationConfig().emailServerPort());
@@ -221,7 +214,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         baseEmailInfo.setFromAddress(ApplicationConsts.getApplicationConfig().emailFromAddress());
         baseEmailInfo.setToAddress(email);
         baseEmailInfo.setSubject("钱包++ 对账单");
-        baseEmailInfo.setAttachFileNames(urls);
+        baseEmailInfo.setAttachFileNames(urlList);
         final String startDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(startTime);
         final String endDate = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA).format(endTime);
         String tradeDate;
@@ -271,8 +264,8 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
                 .append("</body></html>");
         baseEmailInfo.setContent(emailStr.toString());
         EmailUtil.sendEmail(baseEmailInfo);
-        final String[] attachFileNames = baseEmailInfo.getAttachFileNames();
-        if (!ArrayUtils.isEmpty(attachFileNames)) {
+        final List<String> attachFileNames = baseEmailInfo.getAttachFileNames();
+        if (!CollectionUtils.isEmpty(attachFileNames)) {
             for (String fileUrl : attachFileNames) {
                 FileUtils.deleteQuietly(new File(fileUrl));
             }
