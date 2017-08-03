@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class HsyMerchantAuditRequest {
 
-
+    private Integer withDrawStatus; //审核状态
     private String changePhone;//更改后的手机号
     private String branchCode;//联行号
     private String bankName;//银行名称

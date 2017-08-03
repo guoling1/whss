@@ -72,6 +72,7 @@ public class HsyMerchantAuditResponse {
     private String contactCellphone;//联系人手机号
     private String cellphone;//注册手机号
     private Integer status;//状态：1 正常 99禁用
+    private Integer withDrawStatus; //审核状态
     private String stat;
     private Integer isPublic;//是否对公1是 2否'
     private String checkErrorInfo;//审核错误原因

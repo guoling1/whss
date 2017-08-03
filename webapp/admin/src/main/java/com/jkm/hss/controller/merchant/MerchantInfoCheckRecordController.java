@@ -110,7 +110,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
     }
 
-        @ResponseBody
+    @ResponseBody
         @RequestMapping(value = "/auditFailure",method = RequestMethod.POST)
         public CommonResponse<BaseEntity> auditFailure(@RequestBody final RequestMerchantInfo requestMerchantInfo){
 
@@ -142,24 +142,5 @@ public class MerchantInfoCheckRecordController extends BaseController {
 
         }
 
-
-//    @ResponseBody
-//    @RequestMapping(value = "/test",method = RequestMethod.POST)
-//    public CommonResponse<BaseEntity> test(){
-//        String mobile="13301129906";
-//        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.MERCHANT_NO_AUDIT);
-//        if (1 == verifyCode.getLeft()) {
-//            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
-//            this.sendMessageService.sendMessage(SendMessageParams.builder()
-//                    .mobile(mobile)
-//                    .uid("")
-//                    .data(params)
-//                    .userType(EnumUserType.BACKGROUND_USER)
-//                    .noticeType(EnumNoticeType.MERCHANT_NO_AUDIT)
-//                    .build()
-//            );
-//        }
-//        return null;
-//    }
 
 }

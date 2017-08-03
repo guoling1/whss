@@ -57,8 +57,8 @@
         <if test="endTime!=null and endTime!=''">
             AND a.CREATETIME <![CDATA[ <= ]]> #{endTime}
         </if>
-        <if test="status!=null and status!=''">
-        AND a.`STATUS` = #{status}
+        <if test="withDrawStatus!=null and withDrawStatus!=''">
+            AND a.WITHDRAWSTATUS = #{withDrawStatus}
         </if>
         <if test="cellphone!=null and cellphone!=''">
             AND c.CELLPHONE=#{cellphone}
@@ -97,7 +97,7 @@
             a.PARENTID,
             a.CONTACTNAME,
             a.CONTACTCELLPHONE,
-            a.`STATUS`,
+            a.WITHDRAWSTATUS,
             a.ISPUBLIC,
             a.CHECKERRORINFO,
             a.AUDITTIME,
@@ -166,8 +166,8 @@
         <if test="auditTime1!=null and auditTime1!=''">
             AND a.AUDITTIME <![CDATA[ <= ]]> #{auditTime1}
         </if>
-        <if test="status!=null and status!=''">
-            AND a.`STATUS` = #{status}
+        <if test="withDrawStatus!=null and withDrawStatus!=''">
+            AND a.WITHDRAWSTATUS = #{withDrawStatus}
         </if>
         ORDER BY
             a.CREATETIME DESC
@@ -191,7 +191,7 @@
             a.PARENTID,
             a.CONTACTNAME,
             a.CONTACTCELLPHONE,
-            a.`STATUS`,
+            a.WITHDRAWSTATUS,
             a.ISPUBLIC,
             a.CHECKERRORINFO,
             a.AUDITTIME,
@@ -263,8 +263,8 @@
         <if test="cellphone!=null and cellphone!=''">
             AND c.CELLPHONE=#{cellphone}
         </if>
-        <if test="status!=null and status!=''">
-            AND a.`STATUS` = #{status}
+        <if test="withDrawStatus!=null and withDrawStatus!=''">
+            AND a.WITHDRAWSTATUS = #{withDrawStatus}
         </if>
         ORDER BY
         a.CREATETIME DESC
@@ -276,7 +276,7 @@
         SELECT a.*,c.CELLPHONE FROM app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
         LEFT JOIN app_au_user c ON c.ID=b.UID
-        where b.ROLE=1 AND a.`STATUS`=2
+        where b.ROLE=1 AND a.WITHDRAWSTATUS=3
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>

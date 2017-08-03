@@ -8,6 +8,7 @@ import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.constant.IndustryCodeType;
+import com.jkm.hsy.user.constant.WithdrawStatus;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.dao.UserChannelPolicyDao;
 import com.jkm.hsy.user.entity.*;
@@ -45,18 +46,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.size()>0){
-                    if (list.get(i).getStatus()==1){
-                        list.get(i).setStat("审核已通过");
-                    }
-                    if (list.get(i).getStatus()==2){
-                        list.get(i).setStat("待审核");
-                    }
-                    if (list.get(i).getStatus()==3){
-                        list.get(i).setStat("审核未通过");
-                    }
-                    if (list.get(i).getStatus()==4){
-                        list.get(i).setStat("商户已注册");
-                    }
+                    list.get(i).setStat(WithdrawStatus.of(list.get(i).getWithDrawStatus()).getValue());
                 }
                 String districtCode =list.get(i).getDistrictCode();
                 if (districtCode!=null&&!districtCode.equals("")){
@@ -124,18 +114,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             res.setHxbOpenProduct(res.getHxbOpenProduct());
         }
         if (res!=null){
-            if (res.getStatus()==1){
-                res.setStat("审核已通过");
-            }
-            if (res.getStatus()==2){
-                res.setStat("待审核");
-            }
-            if (res.getStatus()==3){
-                res.setStat("审核未通过");
-            }
-            if (res.getStatus()==4){
-                res.setStat("商户已注册");
-            }
+            res.setStat(WithdrawStatus.of(res.getStatus()).getValue());
         }
         if (res.getBranchDistrictCode()!=null){
             HsyMerchantAuditResponse resul = hsyMerchantAuditDao.getResul(res.getBranchDistrictCode());
@@ -260,8 +239,8 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.size()>0){
-                    if (list.get(i).getStatus()==2){
-                        list.get(i).setStat("待审核");
+                    if (list.get(i).getWithDrawStatus()==3){
+                        list.get(i).setStat("提交结算待审核");
                     }
                 }
                 String districtCode =list.get(i).getDistrictCode();
@@ -497,18 +476,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.size()>0){
-                    if (list.get(i).getStatus()==1){
-                        list.get(i).setStat("审核已通过");
-                    }
-                    if (list.get(i).getStatus()==2){
-                        list.get(i).setStat("待审核");
-                    }
-                    if (list.get(i).getStatus()==3){
-                        list.get(i).setStat("审核未通过");
-                    }
-                    if (list.get(i).getStatus()==4){
-                        list.get(i).setStat("商户已注册");
-                    }
+                    list.get(i).setStat(WithdrawStatus.of(list.get(i).getWithDrawStatus()).getValue());
                 }
                 String districtCode =list.get(i).getDistrictCode();
                 if (districtCode!=null&&!districtCode.equals("")){
@@ -552,8 +520,6 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 }
             }
         }
-        System.out.print("++++++++++++++");
-        System.out.print(new Date());
         return list;
     }
 
