@@ -198,7 +198,7 @@ public class HsyBalanceAccountEmailServiceImpl implements HsyBalanceAccountEmail
         if (CollectionUtils.isEmpty(hsyOrders)&&CollectionUtils.isEmpty(appPolicyRechargeOrderList)) {
             return;
         }
-        String[] urls=new String[2];
+        String[] urls = new String[2];
 
         String hsyOrdersFileUrl=null;
         if(!CollectionUtils.isEmpty(hsyOrders)) {
