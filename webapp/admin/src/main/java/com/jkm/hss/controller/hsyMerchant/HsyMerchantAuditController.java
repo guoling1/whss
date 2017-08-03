@@ -17,6 +17,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.Enum.*;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.constant.WithdrawStatus;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -136,7 +137,7 @@ public class HsyMerchantAuditController extends BaseController {
     @RequestMapping(value = "/throughAuditNew",method = RequestMethod.POST)
     public CommonResponse throughAuditNew(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
         int tat = this.hsyMerchantAuditService.getStatuts(hsyMerchantAuditRequest.getId());
-        if (tat==1||tat==3){
+        if (tat==3){
             return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
         }
         final HsyMerchantAuditResponse hsyMerchantAudit = this.hsyMerchantAuditService.selectById(hsyMerchantAuditRequest.getId());
@@ -150,25 +151,9 @@ public class HsyMerchantAuditController extends BaseController {
         if(userTradeRateList.size()==0){
             return CommonResponse.simpleResponse(-1, "商户费率为空");
         }
-//        AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
-//        if (acct!=null){
-//            accountService.delAcct(acct.getAccountID());
-//        }
-
-        final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
-        hsyMerchantAuditRequest.setAccountID(accountId);
         hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());
-        hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_NORMAL);
+        hsyMerchantAuditRequest.setWithDrawStatus(WithdrawStatus.NORMAL.getKey());
         hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);
-        pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),true);
-
-        //审核通过发短信
-        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
-                .uid("")
-                .userType(EnumUserType.BACKGROUND_USER)
-                .noticeType(EnumNoticeType.PASS_MESSAGE)
-                .build()
-        );
         //入网
         merchantIn(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId(),super.getAdminUser().getId());
         hsyMerchantAuditRequest.setStat(0);

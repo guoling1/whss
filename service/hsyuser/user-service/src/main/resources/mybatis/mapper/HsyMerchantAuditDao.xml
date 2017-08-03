@@ -392,7 +392,7 @@
 
     <!-- 审核通过 -->
     <update id="updateAuditPass">
-      UPDATE app_biz_shop SET STATUS=#{status},AUDITTIME=#{auditTime} WHERE ID=#{id}
+      UPDATE app_biz_shop SET WITHDRAWSTATUS=#{withDrawStatus},AUDITTIME=#{auditTime} WHERE ID=#{id}
     </update>
 
     <!-- 审核不通过 -->
@@ -696,7 +696,7 @@
 
 
     <select id="getStatuts" resultType="java.lang.Integer">
-        SELECT `STATUS` FROM app_biz_shop WHERE ID=#{id}
+        SELECT WITHDRAWSTATUS FROM app_biz_shop WHERE ID=#{id}
     </select>
 
     <!-- 店铺详情 -->
