@@ -270,7 +270,7 @@ public class HSYOrderServiceImpl implements HSYOrderService {
             hsyTradeListResponse.setOrderstatusName(EnumHsyOrderStatus.of(hsyOrder.getOrderstatus()).getValue());
             hsyTradeListResponse.setRefundAmount(hsyOrder.getRefundamount());
             hsyTradeListResponse.setChannel(hsyOrder.getPaymentChannel());
-            hsyTradeListResponse.setTime(hsyOrder.getCreateTime());
+            hsyTradeListResponse.setTime(hsyOrder.getPaysuccesstime());
             hsyTradeListResponse.setOrderNumber(hsyOrder.getOrdernumber());
             hsyTradeListResponse.setValidationCode(hsyOrder.getValidationcode());
             hsyTradeListResponse.setOrderId(hsyOrder.getOrderid());
