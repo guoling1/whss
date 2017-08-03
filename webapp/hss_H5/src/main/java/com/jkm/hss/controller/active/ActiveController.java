@@ -125,7 +125,6 @@ public class ActiveController {
             appResult = (String) method.invoke(obj, appParam.getRequestData(), appParam);
         } catch (Exception e) {
             log.error("调用接口异常", e);
-            e.printStackTrace();
             if(e.getCause() instanceof ApiHandleException)
             {
                 ApiHandleException ahe=((ApiHandleException)e.getCause());

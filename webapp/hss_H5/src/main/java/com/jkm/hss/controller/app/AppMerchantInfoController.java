@@ -726,7 +726,7 @@ public class AppMerchantInfoController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "saveBranchInfo", method = RequestMethod.POST)
-    public CommonResponse branchInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final ContinueBankInfoRequest continueBankInfoRequest) {
+    public CommonResponse saveBranchInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final ContinueBankInfoRequest continueBankInfoRequest) {
         if(StringUtils.isBlank(continueBankInfoRequest.getProvinceCode())){
             return CommonResponse.simpleResponse(-1, "请选择省份");
         }

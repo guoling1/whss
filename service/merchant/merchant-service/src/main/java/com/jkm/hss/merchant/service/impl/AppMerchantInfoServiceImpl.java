@@ -1,9 +1,11 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateUtil;
@@ -566,6 +568,7 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
         return gson.toJson(map);
     }
 
+
     /**
      * HSS001008 退出登录
      * @param dataParam
@@ -584,5 +587,54 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
         return "";
+    }
+
+    /**
+     * HSS001010 获取分享信息
+     * @param dataParam
+     * @param appParam
+     * @return
+     * @throws ApiHandleException
+     */
+    public String getShareInfo(String dataParam, AppParam appParam) throws ApiHandleException {
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+        List<AppAuUserToken> appAuUserTokens = appAuTokenDao.findLoginInfoByAccessToken(appParam.getAccessToken());
+        String shareUrl = "";
+        String name = "";
+        String inviteCode = "";
+        String oemNo = "";
+        if (appAuUserTokens != null && appAuUserTokens.size() != 0)
+        {
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(appAuUserTokens.get(0).getUid());
+            if(!merchantInfoOptional.isPresent()){
+                throw new ApiHandleException(ResultCode.USER_NOT_EXIST);
+            }
+            if(merchantInfoOptional.get().getName()!=null&&!"".equals(merchantInfoOptional.get().getName())){
+                name = merchantInfoOptional.get().getName();
+            }else{
+                String mobile = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
+                name = mobile.substring(0,3)+mobile.substring(mobile.length()-4,mobile.length());
+            }
+            if(merchantInfoOptional.get().getOemId()>0){
+                Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfoOptional.get().getOemId());
+                if(!oemInfoOptional.isPresent()){
+                    throw new ApiHandleException(ResultCode.OEM_NOT_EXSIT);
+                }
+                oemNo = oemInfoOptional.get().getOemNo();
+            }
+            inviteCode = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
+            if(merchantInfoOptional.get().getSuperDealerId()!=null&&merchantInfoOptional.get().getSuperDealerId()>0){
+                Optional<Dealer> dealerOptional = dealerService.getById(merchantInfoOptional.get().getSuperDealerId());
+                if(!dealerOptional.isPresent()){
+                    throw new ApiHandleException(ResultCode.INVITECODE_NOT_EXSIT);
+                }
+                inviteCode = dealerOptional.get().getInviteCode();
+            }
+            shareUrl = "http://hss.qianbaojiajia.com/share?oemNo="+oemNo+"&inviteCode="+inviteCode;
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+        return "{\"shareUrl\":\""+shareUrl+"\",\"name\":\""+name+"\"}";
     }
 }

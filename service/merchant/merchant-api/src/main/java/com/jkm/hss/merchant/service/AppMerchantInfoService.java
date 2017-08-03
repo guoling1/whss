@@ -10,4 +10,6 @@ public interface AppMerchantInfoService {
     public String getCode(String dataParam, AppParam appParam) throws ApiHandleException;
     public String register(String dataParam, AppParam appParam) throws ApiHandleException;
     public String login(String dataParam, AppParam appParam) throws ApiHandleException;
+    public String logout(String dataParam, AppParam appParam) throws ApiHandleException;
+    public String getShareInfo(String dataParam, AppParam appParam) throws ApiHandleException;
 }
