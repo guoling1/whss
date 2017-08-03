@@ -151,12 +151,11 @@ public class HsyMerchantAuditController extends BaseController {
         if(userTradeRateList.size()==0){
             return CommonResponse.simpleResponse(-1, "商户费率为空");
         }
-        hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());
         hsyMerchantAuditRequest.setWithDrawStatus(WithdrawStatus.NORMAL.getKey());
         hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);
         //入网
         merchantIn(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId(),super.getAdminUser().getId());
-        hsyMerchantAuditRequest.setStat(0);
+        hsyMerchantAuditRequest.setStat(1);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
 
