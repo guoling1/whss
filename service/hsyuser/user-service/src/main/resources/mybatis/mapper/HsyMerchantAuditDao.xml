@@ -395,8 +395,13 @@
       UPDATE app_biz_shop SET WITHDRAWSTATUS=#{withDrawStatus},AUDITTIME=#{auditTime} WHERE ID=#{id}
     </update>
 
-    <!-- 审核不通过 -->
+    <!-- 审核不通过驳回重填 -->
     <update id="updateAuditNotPass">
+        UPDATE app_biz_shop SET STATUS=#{status},CHECKERRORINFO=#{checkErrorInfo} WHERE ID=#{id}
+    </update>
+
+    <!-- 审核不通过不能交易 -->
+    <update id="noTrading">
         UPDATE app_biz_shop SET STATUS=#{status},CHECKERRORINFO=#{checkErrorInfo} WHERE ID=#{id}
     </update>
 

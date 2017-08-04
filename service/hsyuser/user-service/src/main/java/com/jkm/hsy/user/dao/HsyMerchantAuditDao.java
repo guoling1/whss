@@ -205,4 +205,10 @@ public interface HsyMerchantAuditDao {
      * @param uid
      */
     void updatQuota(@Param("uid") Long uid);
+
+    /**
+     * 审核拒绝不能交易
+     * @param hsyMerchantAuditRequest
+     */
+    void noTrading(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }

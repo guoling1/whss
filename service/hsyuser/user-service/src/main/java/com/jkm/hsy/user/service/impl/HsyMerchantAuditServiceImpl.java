@@ -665,6 +665,11 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         this.hsyMerchantAuditDao.updatQuota(uid);
     }
 
+    @Override
+    public void noTrading(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        this.hsyMerchantAuditDao.noTrading(hsyMerchantAuditRequest);
+    }
+
     /**
      * 获取临时路径
      *

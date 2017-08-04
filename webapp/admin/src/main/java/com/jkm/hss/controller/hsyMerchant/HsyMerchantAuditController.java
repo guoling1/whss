@@ -138,7 +138,11 @@ public class HsyMerchantAuditController extends BaseController {
 
     }
 
-
+    /**
+     * 审核通过
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/throughAuditNew",method = RequestMethod.POST)
     public CommonResponse throughAuditNew(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -226,6 +230,11 @@ public class HsyMerchantAuditController extends BaseController {
 
     }
 
+    /**
+     * 审核驳回
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/rejectToExaminenew",method = RequestMethod.POST)
     public CommonResponse rejectToExaminenew(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -244,6 +253,30 @@ public class HsyMerchantAuditController extends BaseController {
             hsyMerchantAuditService.stepChange(uid);
         }
         hsyMerchantAuditRequest.setWithDrawStatus(1);
+        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getWithDrawStatus());
+        return CommonResponse.simpleResponse(1,"审核未通过");
+
+    }
+
+    /**
+     * 审核不通过禁止交易
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/noTrading",method = RequestMethod.POST)
+    public CommonResponse noTrading(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+
+        if (hsyMerchantAuditRequest.getCheckErrorInfo()==null||hsyMerchantAuditRequest.getCheckErrorInfo().equals("")){
+            return CommonResponse.simpleResponse(-1,"请填写错误信息");
+        }
+        int tat = this.hsyMerchantAuditService.getStatuts(hsyMerchantAuditRequest.getId());
+        if (tat==1||tat==3){
+            return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
+        }
+        hsyMerchantAuditRequest.setWithDrawStatus(WithdrawStatus.REJECT.getKey());
+        hsyMerchantAuditService.noTrading(hsyMerchantAuditRequest);
+        hsyMerchantAuditRequest.setWithDrawStatus(5);
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getWithDrawStatus());
         return CommonResponse.simpleResponse(1,"审核未通过");
 
