@@ -24,6 +24,7 @@ import com.jkm.hss.helper.request.CreditCardAuthenRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
 import com.jkm.hss.helper.response.AuthenticationResponse;
 import com.jkm.hss.helper.response.CardDetailResponse;
+import com.jkm.hss.helper.response.UpgradeMaxResponse;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -45,6 +46,7 @@ import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
+import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.PartnerRuleSettingService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
@@ -797,6 +799,46 @@ public class AppMerchantInfoController extends BaseController {
             }
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
+    }
+    /**
+     * HSSH5001015 升级降费率
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "upgrade", method = RequestMethod.POST)
+    public CommonResponse upgrade(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final AppRecommendRequest appRecommendRequest ) {
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(super.getAppMerchantInfo().get().getId());
+        UpgradeMaxResponse upgradeMaxResponse = new UpgradeMaxResponse();
+        String phone = MerchantSupport.decryptMobile(merchantInfo.get().getMobile());
+        phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
+        upgradeMaxResponse.setHeadimgUrl(userInfoOptional.get().getHeadImgUrl());
+        upgradeMaxResponse.setLevel(merchantInfo.get().getLevel());
+        upgradeMaxResponse.setMobile(phone);
+        upgradeMaxResponse.setName(getNameByLevel(merchantInfo.get().getLevel()));
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(merchantInfo.get().getOemId(),productOptional.get().getId());
+        upgradeMaxResponse.setPartnerRuleSettingResponses(partnerRuleSettingResponses);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", upgradeMaxResponse);
+    }
+
+    private String getNameByLevel(int level){
+        String name = "";
+        if(level==0){
+            name="普通";
+        }
+        if(level==1){
+            name="店员";
+        }
+        if(level==2){
+            name="店长";
+        }
+        if(level==3){
+            name="老板";
+        }
+        return name;
     }
     /**
      * 校验身份4要素

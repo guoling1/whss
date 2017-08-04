@@ -44,6 +44,7 @@ public class H5ControllerTester {
     public static String HSSH5001012="http://localhost:8081/appMerchantInfo/cardDetail";
     public static String HSSH5001013="http://localhost:8081/appMerchantInfo/saveBranchInfo";
     public static String HSSH5001014="http://localhost:8081/appMerchantInfo/myRecommend";
+    public static String HSSH5001015="http://localhost:8081/appMerchantInfo/upgrade";
 
     @Test
     public void testGetRegisterCode()throws Exception{
@@ -123,6 +124,12 @@ public class H5ControllerTester {
         Map<String, String> map = new JSONObject();
         map.put("type","1");
         H5ControllerTester.testRest(map,HSSH5001014);
+    }
+
+    @Test
+    public void testUpgrade()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001015);
     }
 
     public static void testRest(Map<String, String> paramsMap,String url)throws Exception{
