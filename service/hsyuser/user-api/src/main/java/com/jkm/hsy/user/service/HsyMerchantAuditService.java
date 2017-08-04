@@ -101,7 +101,7 @@ public interface HsyMerchantAuditService {
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
 
 
-    void saveLog(String username, Long id, String checkErrorInfo,int stat);
+    void saveLog(String username, Long id, String checkErrorInfo,int withDrawStatus);
 
     /**
      * 查日志

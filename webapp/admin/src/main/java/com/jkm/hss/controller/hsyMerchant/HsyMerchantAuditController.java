@@ -4,15 +4,11 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.sevice.AccountService;
-import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.service.MerchantInfoCheckRecordService;
-import com.jkm.hss.notifier.enums.EnumNoticeType;
-import com.jkm.hss.notifier.enums.EnumUserType;
-import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -142,6 +138,7 @@ public class HsyMerchantAuditController extends BaseController {
 
     }
 
+
     @ResponseBody
     @RequestMapping(value = "/throughAuditNew",method = RequestMethod.POST)
     public CommonResponse throughAuditNew(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -170,10 +167,67 @@ public class HsyMerchantAuditController extends BaseController {
 
     }
 
+    /**
+     * hsy旧版审核不通过
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
 
     @ResponseBody
     @RequestMapping(value = "/rejectToExamine",method = RequestMethod.POST)
     public CommonResponse rejectToExamine(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+
+//        if (hsyMerchantAuditRequest.getCheckErrorInfo()==null||hsyMerchantAuditRequest.getCheckErrorInfo().equals("")){
+//            return CommonResponse.simpleResponse(-1,"请填写错误信息");
+//        }
+//        int tat = this.hsyMerchantAuditService.getStatuts(hsyMerchantAuditRequest.getId());
+//        if (tat==1||tat==3){
+//            return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
+//        }
+//        hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
+//        hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
+//        long uid=hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
+//        if (uid!=0){
+//            hsyMerchantAuditService.stepChange(uid);
+//        }
+//        pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
+//
+//        //审核未通过发短信
+//        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
+//                .uid("")
+//                .userType(EnumUserType.BACKGROUND_USER)
+//                .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
+//                .build()
+//        );
+//        if(!"".equals(hsyMerchantAuditRequest.getMobile())&&hsyMerchantAuditRequest.getMobile()!=null){
+//            String mobile = hsyMerchantAuditRequest.getMobile();
+////            MerchantSupport.decryptMobile(mobile);
+////            AdminUserSupporter.decryptMobile(0, mobile);
+//            String name = hsyMerchantAuditRequest.getName();
+//            String shopName="："+name+"，";
+//            Map map = new HashMap();
+//            map.put("name",shopName);
+//            //审核未通过给报单员发短信
+//            this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(AdminUserSupporter.decryptMobile(0, mobile))
+//                    .uid("")
+//                    .data(map)
+//                    .userType(EnumUserType.BACKGROUND_USER)
+//                    .noticeType(EnumNoticeType.NOT_PASS_MESSAGE_EMPLOYEE)
+//                    .build()
+//            );
+//        }
+//
+//
+//        hsyMerchantAuditRequest.setStat(1);
+//        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
+//
+        return CommonResponse.simpleResponse(1,"审核未通过");
+
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/rejectToExaminenew",method = RequestMethod.POST)
+    public CommonResponse rejectToExaminenew(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
 
         if (hsyMerchantAuditRequest.getCheckErrorInfo()==null||hsyMerchantAuditRequest.getCheckErrorInfo().equals("")){
             return CommonResponse.simpleResponse(-1,"请填写错误信息");
@@ -182,42 +236,14 @@ public class HsyMerchantAuditController extends BaseController {
         if (tat==1||tat==3){
             return CommonResponse.simpleResponse(-1, "该商户已审核，请勿重复审核");
         }
-        hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
+        hsyMerchantAuditRequest.setWithDrawStatus(WithdrawStatus.COMMIT_NOT_PASS.getKey());
         hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
         long uid=hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
         if (uid!=0){
             hsyMerchantAuditService.stepChange(uid);
         }
-        pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
-
-        //审核未通过发短信
-        this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(hsyMerchantAuditRequest.getCellphone())
-                .uid("")
-                .userType(EnumUserType.BACKGROUND_USER)
-                .noticeType(EnumNoticeType.NOT_PASS_MESSAGE)
-                .build()
-        );
-        if(!"".equals(hsyMerchantAuditRequest.getMobile())&&hsyMerchantAuditRequest.getMobile()!=null){
-            String mobile = hsyMerchantAuditRequest.getMobile();
-//            MerchantSupport.decryptMobile(mobile);
-//            AdminUserSupporter.decryptMobile(0, mobile);
-            String name = hsyMerchantAuditRequest.getName();
-            String shopName="："+name+"，";
-            Map map = new HashMap();
-            map.put("name",shopName);
-            //审核未通过给报单员发短信
-            this.sendMessageService.sendMessage(SendMessageParams.builder() .mobile(AdminUserSupporter.decryptMobile(0, mobile))
-                    .uid("")
-                    .data(map)
-                    .userType(EnumUserType.BACKGROUND_USER)
-                    .noticeType(EnumNoticeType.NOT_PASS_MESSAGE_EMPLOYEE)
-                    .build()
-            );
-        }
-
-
-        hsyMerchantAuditRequest.setStat(1);
-        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
+        hsyMerchantAuditRequest.setWithDrawStatus(1);
+        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getWithDrawStatus());
         return CommonResponse.simpleResponse(1,"审核未通过");
 
     }

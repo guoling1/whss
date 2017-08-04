@@ -618,7 +618,7 @@
         #{username},
         #{id},
         #{checkErrorInfo},
-        #{stat}
+        #{withDrawStatusc}
         );
     </insert>
 

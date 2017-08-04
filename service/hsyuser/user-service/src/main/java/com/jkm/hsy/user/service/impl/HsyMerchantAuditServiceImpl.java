@@ -443,8 +443,8 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     @Override
-    public void saveLog(String username, Long id, String checkErrorInfo,int stat) {
-        this.hsyMerchantAuditDao.saveLog(username,id,checkErrorInfo,stat);
+    public void saveLog(String username, Long id, String checkErrorInfo,int withDrawStatus) {
+        this.hsyMerchantAuditDao.saveLog(username,id,checkErrorInfo,withDrawStatus);
     }
 
     @Override

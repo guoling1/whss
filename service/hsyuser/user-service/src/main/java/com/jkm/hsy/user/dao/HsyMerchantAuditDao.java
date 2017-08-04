@@ -127,7 +127,7 @@ public interface HsyMerchantAuditDao {
      * @param id
      * @param checkErrorInfo
      */
-    void saveLog(@Param("username") String username,@Param("id") Long id,@Param("checkErrorInfo") String checkErrorInfo,@Param("stat") int stat);
+    void saveLog(@Param("username") String username,@Param("id") Long id,@Param("checkErrorInfo") String checkErrorInfo,@Param("withDrawStatus") int withDrawStatus);
 
     /**
      * 查日志
