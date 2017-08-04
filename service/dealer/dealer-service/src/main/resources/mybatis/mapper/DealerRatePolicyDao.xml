@@ -158,4 +158,29 @@
         FROM app_dealer_rate_policy
         WHERE dealer_id=#{dealerId} and policy_type = #{policyType} and status = 1;
     </select>
+
+    <update id="updateByPolicyAndDealer">
+        UPDATE app_dealer_rate_policy
+        <set>
+            <if test="merchantMinRateT1 != null">
+                merchant_min_rate_t1 = #{merchantMinRateT1},
+            </if>
+            <if test="merchantMaxRateT1 != null">
+                merchant_max_rate_t1 = #{merchantMaxRateT1},
+            </if>
+            <if test="merchantMinRateD1 != null">
+                merchant_min_rate_d1 = #{merchantMinRateD1},
+            </if>
+            <if test="merchantMaxRateD1 != null">
+                merchant_max_rate_d1 = #{merchantMaxRateD1},
+            </if>
+            <if test="merchantMinRateD0 != null">
+                merchant_min_rate_d0 = #{merchantMinRateD0},
+            </if>
+            <if test="merchantMaxRateD0 != null">
+                merchant_max_rate_d0 = #{merchantMaxRateD0},
+            </if>
+        </set>
+        WHERE dealer_id in (select id from tb_dealer where first_level_dealer_id=#{dealerId}) and policy_type = #{policyType}
+    </update>
 </mapper>
