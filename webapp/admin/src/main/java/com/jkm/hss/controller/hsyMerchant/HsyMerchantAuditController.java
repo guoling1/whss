@@ -162,6 +162,7 @@ public class HsyMerchantAuditController extends BaseController {
         //入网
         merchantInNew(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId(),super.getAdminUser().getId());
         hsyMerchantAuditRequest.setStat(1);
+        this.hsyMerchantAuditService.updatQuota(hsyMerchantAuditRequest.getUid());
         this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
 

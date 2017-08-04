@@ -199,4 +199,10 @@ public interface HsyMerchantAuditDao {
      * @param userD0WithdrawReques
      */
     int modifyD0withdraw(UserD0WithdrawRequest userD0WithdrawReques);
+
+    /**
+     * 更改限额
+     * @param uid
+     */
+    void updatQuota(@Param("uid") Long uid);
 }

@@ -163,4 +163,10 @@ public interface HsyMerchantAuditService {
      * @param userD0WithdrawReques
      */
     int modifyD0withdraw(UserD0WithdrawRequest userD0WithdrawReques);
+
+    /**
+     * 修改限额
+     * @param uid
+     */
+    void updatQuota(Long uid);
 }

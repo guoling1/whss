@@ -725,4 +725,9 @@
         </set>
         WHERE ID=#{userId}
     </update>
+
+    <!-- 更新商户限额 -->
+    <update id="updatQuota">
+        UPDATE app_au_user SET TRADELIMITAMOUNT=20000,TRADELIMITAMOUNTTOTAL=50000 WHERE ID=#{uid}
+    </update>
 </mapper>

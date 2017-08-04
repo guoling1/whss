@@ -660,6 +660,11 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return this.hsyMerchantAuditDao.modifyD0withdraw(userD0WithdrawReques);
     }
 
+    @Override
+    public void updatQuota(Long uid) {
+        this.hsyMerchantAuditDao.updatQuota(uid);
+    }
+
     /**
      * 获取临时路径
      *
