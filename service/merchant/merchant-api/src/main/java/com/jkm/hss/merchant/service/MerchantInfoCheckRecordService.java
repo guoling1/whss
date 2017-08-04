@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.service;
 
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 
 /**
@@ -50,4 +51,13 @@ public interface MerchantInfoCheckRecordService {
      * @return
      */
     int getId(long merchantId);
+
+    /**
+     * 查询是否有驳回记录
+     * @param merchantId
+     * @param sid
+     * @return
+     */
+    MerchantInfoCheckRecord selectByMerchantId(long merchantId,long sid);
+
 }

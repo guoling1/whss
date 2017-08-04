@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.MerchantInfoCheckRecordDao;
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoCheckRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,18 @@ public class MerchantInfoCheckRecordServiceImpl implements MerchantInfoCheckReco
     @Override
     public int getId(long merchantId) {
         return this.merchantInfoCheckRecordDao.getId(merchantId);
+    }
+
+    /**
+     * 查询是否有驳回记录
+     *
+     * @param merchantId
+     * @param sid
+     * @return
+     */
+    @Override
+    public MerchantInfoCheckRecord selectByMerchantId(long merchantId, long sid) {
+        return this.merchantInfoCheckRecordDao.selectByMerchantId(merchantId,sid);
     }
 
 

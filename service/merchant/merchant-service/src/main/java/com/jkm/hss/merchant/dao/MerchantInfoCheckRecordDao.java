@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.AccountInfo;
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -75,4 +76,12 @@ public interface MerchantInfoCheckRecordDao {
      * @return
      */
     int queryOemId(@Param("touser") String touser);
+
+    /**
+     * 查询是否有驳回记录
+     * @param merchantId
+     * @param sid
+     * @return
+     */
+    MerchantInfoCheckRecord selectByMerchantId(@Param("merchantId") long merchantId,@Param("sid") long sid);
 }
