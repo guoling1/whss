@@ -610,10 +610,11 @@
             </tr>
             <tr>
               <th style="text-align: right">
-                <el-button type="danger" @click="unAudit" :disabled="auditClick">不 通 过</el-button>
+                <el-button type="danger" @click="unAudit" :disabled="auditClick">驳 回</el-button>
               </th>
               <td>
                 <el-button type="success" @click="audit($event)" :disabled="auditClick">通 过</el-button>
+                <el-button type="danger" @click="prohibit" :disabled="auditClick">禁止交易</el-button>
               </td>
             </tr>
             </tbody>
@@ -1707,7 +1708,7 @@
           return;
         }else{
           this.auditClick = true;
-          this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
+          this.$http.post('/admin/hsyMerchantAudit/throughAuditNew', {
             id: this.id,
             uid: this.msg.uid,
             name: this.msg.name,
@@ -1729,9 +1730,33 @@
           })
         }
       },
+      prohibit:function () {
+        this.auditClick = true;
+        this.$http.post('/admin/hsyMerchantAudit/noTrading', {
+          id: this.id,
+          uid: this.msg.uid,
+          name: this.msg.name,
+          checkErrorInfo: this.reason,
+          cellphone: this.msg.cellphone,
+          mobile: this.msg.mobile
+        })
+          .then(function (res) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
+            })
+            this.auditClick = false;
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.auditClick = false;
+          })
+      },
       unAudit: function () {
         this.auditClick = true;
-        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine', {
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExaminenew', {
           id: this.id,
           uid: this.msg.uid,
           name: this.msg.name,
