@@ -96,7 +96,7 @@
             b.open_id = #{touser}
     </select>
 
-    <select id="selectByMerchantId" resultType="import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord">
+    <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantInfoCheckRecord">
         SELECT * FROM tb_merchant_info_check_record WHERE merchant_id=#{merchantId} and sid=#{sid} and status=4 order by create_time desc limit 0,1
     </select>
 </mapper>
