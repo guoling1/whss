@@ -202,7 +202,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());//银行联行号
         paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());//开户行地址
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
-        paramsMap.put("district",district.getAName());//商户地址区
+        if (district.getAName().equals("神农架林区")){
+            paramsMap.put("district","房县");//商户地址区
+        }else {
+            paramsMap.put("district",district.getAName());//商户地址区
+        }
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
         paramsMap.put("city",city.getAName());//商户地址市
         if("110000,120000,310000,500000".contains(city.getCode())){
@@ -269,7 +273,11 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());
         paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
-        paramsMap.put("district",district.getAName());
+        if (district.getAName().equals("神农架林区")){
+            paramsMap.put("district","房县");//商户地址区
+        }else {
+            paramsMap.put("district",district.getAName());//商户地址区
+        }
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
         paramsMap.put("city",city.getAName());
         if("110000,120000,310000,500000".contains(city.getCode())){
@@ -403,8 +411,16 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());
         paramsMap.put("bankAccountAddress",appBizCard.getBankAddress());
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
-        paramsMap.put("district",district.getAName());
-        paramsMap.put("districtCode",district.getCode());
+        if (district.getAName().equals("神农架林区")){
+            paramsMap.put("district","房县");//商户地址区
+        }else {
+            paramsMap.put("district",district.getAName());//商户地址区
+        }
+        if (district.getCode().equals("429021")){
+            paramsMap.put("districtCode","420325");
+        }else {
+            paramsMap.put("districtCode",district.getCode());
+        }
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
         paramsMap.put("city",city.getAName());
         if("110000".equals(city.getCode())){
@@ -469,8 +485,16 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("bankAccountLineNo",appBizCard.getBranchCode());//银行联行号
         //联系人地址信息-addressInfo
         HsyMerchantAuditResponse district = hsyMerchantAuditDao.getCode(appBizShop.getDistrictCode());
-        paramsMap.put("district",district.getAName());//商户地址区
-        paramsMap.put("districtCode",district.getCode());//商户地址区
+        if (district.getAName().equals("神农架林区")){
+            paramsMap.put("district","房县");//商户地址区
+        }else {
+            paramsMap.put("district",district.getAName());//商户地址区
+        }
+        if (district.getCode().equals("429021")){
+            paramsMap.put("districtCode","420325");
+        }else {
+            paramsMap.put("districtCode",district.getCode());
+        }
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
         paramsMap.put("city",city.getAName());//商户地址市
         if("110000".equals(city.getCode())){
