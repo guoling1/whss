@@ -14,6 +14,7 @@ import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.PartnerRuleSetting;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -67,6 +69,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
+    @Autowired
+    private AgentApplicationRecordService agentApplicationRecordService;
 
 
 //    @Override
@@ -409,64 +413,83 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         if(upgradePayRecord!=null){
             if(!EnumUpgradePayResult.SUCCESS.getId().equals(upgradePayRecord.getPayResult())){
                 upgradePayRecordService.updatePayResult(result,reqSn);
-                List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAll(upgradePayRecord.getProductId());
-                if(partnerRuleSettingResponses.size()>0){
-                    merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradePayRecord.getLevel());
-                    for(int j=0;j<partnerRuleSettingResponses.size();j++){
-                        MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
-                        merchantChannelRateRequest.setMerchantId(upgradePayRecord.getMerchantId());
-                        merchantChannelRateRequest.setProductId(upgradePayRecord.getProductId());
-                        merchantChannelRateRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
-                        Optional<MerchantChannelRate> merchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
-                        if(!merchantChannelRateOptional.isPresent()){
-                            log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"费率不存在");
-                        }else{
-                            if(upgradePayRecord.getLevel()==EnumUpGradeType.CLERK.getId()){
-                                if((merchantChannelRateOptional.get().getMerchantPayRate()).compareTo(partnerRuleSettingResponses.get(j).getClerkRate())>0){
-                                    MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
-                                    merchantUpgradeRequest.setProductId(upgradePayRecord.getProductId());
-                                    merchantUpgradeRequest.setMerchantId(upgradePayRecord.getMerchantId());
-                                    merchantUpgradeRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
-                                    merchantUpgradeRequest.setRate(partnerRuleSettingResponses.get(j).getClerkRate());
-                                    merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
-                                }else{
-                                    log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"当前费率是"+merchantChannelRateOptional.get().getMerchantPayRate()+
-                                            "小于店长费率"+partnerRuleSettingResponses.get(j).getClerkRate()+",不升级费率");
-                                }
-                            }else if(upgradePayRecord.getLevel()==EnumUpGradeType.SHOPOWNER.getId()){
-                                if((merchantChannelRateOptional.get().getMerchantPayRate()).compareTo(partnerRuleSettingResponses.get(j).getShopownerRate())>0){
-                                    MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
-                                    merchantUpgradeRequest.setProductId(upgradePayRecord.getProductId());
-                                    merchantUpgradeRequest.setMerchantId(upgradePayRecord.getMerchantId());
-                                    merchantUpgradeRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
-                                    merchantUpgradeRequest.setRate(partnerRuleSettingResponses.get(j).getShopownerRate());
-                                    merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
-                                }else{
-                                    log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"当前费率是"+merchantChannelRateOptional.get().getMerchantPayRate()+
-                                            "小于店长费率"+partnerRuleSettingResponses.get(j).getShopownerRate()+",不升级费率");
-                                }
-                            }else if(upgradePayRecord.getLevel()==EnumUpGradeType.BOSS.getId()){
-                                if((merchantChannelRateOptional.get().getMerchantPayRate()).compareTo(partnerRuleSettingResponses.get(j).getBossRate())>0){
-                                    MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
-                                    merchantUpgradeRequest.setProductId(upgradePayRecord.getProductId());
-                                    merchantUpgradeRequest.setMerchantId(upgradePayRecord.getMerchantId());
-                                    merchantUpgradeRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
-                                    merchantUpgradeRequest.setRate(partnerRuleSettingResponses.get(j).getBossRate());
-                                    merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
-                                }else{
-                                    log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"当前费率是"+merchantChannelRateOptional.get().getMerchantPayRate()+
-                                            "小于店长费率"+partnerRuleSettingResponses.get(j).getBossRate()+",不升级费率");
-                                }
+                if(upgradePayRecord.getUpgradeRulesId()>0){
+                    List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAll(upgradePayRecord.getProductId());
+                    if(partnerRuleSettingResponses.size()>0){
+                        merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradePayRecord.getLevel());
+                        for(int j=0;j<partnerRuleSettingResponses.size();j++){
+                            MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
+                            merchantChannelRateRequest.setMerchantId(upgradePayRecord.getMerchantId());
+                            merchantChannelRateRequest.setProductId(upgradePayRecord.getProductId());
+                            merchantChannelRateRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
+                            Optional<MerchantChannelRate> merchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
+                            if(!merchantChannelRateOptional.isPresent()){
+                                log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"费率不存在");
                             }else{
-                                log.info("升级级别错误：升级级别为"+upgradePayRecord.getLevel());
+                                if(upgradePayRecord.getLevel()==EnumUpGradeType.CLERK.getId()){
+                                    if((merchantChannelRateOptional.get().getMerchantPayRate()).compareTo(partnerRuleSettingResponses.get(j).getClerkRate())>0){
+                                        MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                                        merchantUpgradeRequest.setProductId(upgradePayRecord.getProductId());
+                                        merchantUpgradeRequest.setMerchantId(upgradePayRecord.getMerchantId());
+                                        merchantUpgradeRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
+                                        merchantUpgradeRequest.setRate(partnerRuleSettingResponses.get(j).getClerkRate());
+                                        merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                                    }else{
+                                        log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"当前费率是"+merchantChannelRateOptional.get().getMerchantPayRate()+
+                                                "小于店长费率"+partnerRuleSettingResponses.get(j).getClerkRate()+",不升级费率");
+                                    }
+                                }else if(upgradePayRecord.getLevel()==EnumUpGradeType.SHOPOWNER.getId()){
+                                    if((merchantChannelRateOptional.get().getMerchantPayRate()).compareTo(partnerRuleSettingResponses.get(j).getShopownerRate())>0){
+                                        MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                                        merchantUpgradeRequest.setProductId(upgradePayRecord.getProductId());
+                                        merchantUpgradeRequest.setMerchantId(upgradePayRecord.getMerchantId());
+                                        merchantUpgradeRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
+                                        merchantUpgradeRequest.setRate(partnerRuleSettingResponses.get(j).getShopownerRate());
+                                        merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                                    }else{
+                                        log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"当前费率是"+merchantChannelRateOptional.get().getMerchantPayRate()+
+                                                "小于店长费率"+partnerRuleSettingResponses.get(j).getShopownerRate()+",不升级费率");
+                                    }
+                                }else if(upgradePayRecord.getLevel()==EnumUpGradeType.BOSS.getId()){
+                                    if((merchantChannelRateOptional.get().getMerchantPayRate()).compareTo(partnerRuleSettingResponses.get(j).getBossRate())>0){
+                                        MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                                        merchantUpgradeRequest.setProductId(upgradePayRecord.getProductId());
+                                        merchantUpgradeRequest.setMerchantId(upgradePayRecord.getMerchantId());
+                                        merchantUpgradeRequest.setChannelTypeSign(partnerRuleSettingResponses.get(j).getChannelTypeSign());
+                                        merchantUpgradeRequest.setRate(partnerRuleSettingResponses.get(j).getBossRate());
+                                        merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                                    }else{
+                                        log.info("通道"+partnerRuleSettingResponses.get(j).getChannelTypeSign()+"当前费率是"+merchantChannelRateOptional.get().getMerchantPayRate()+
+                                                "小于店长费率"+partnerRuleSettingResponses.get(j).getBossRate()+",不升级费率");
+                                    }
+                                }else{
+                                    log.info("升级级别错误：升级级别为"+upgradePayRecord.getLevel());
+                                }
                             }
-                        }
 
+                        }
                     }
-                }
-                Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(upgradePayRecord.getMerchantId());
-                if(userInfoOptional.isPresent()){//存在
-                    sendMsgService.sendChargeMessage(upgradePayRecord.getAmount()+"",getNameByLevel(upgradePayRecord.getLevel()),userInfoOptional.get().getOpenId());
+                    Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(upgradePayRecord.getMerchantId());
+                    if(userInfoOptional.isPresent()){//存在
+                        sendMsgService.sendChargeMessage(upgradePayRecord.getAmount()+"",getNameByLevel(upgradePayRecord.getLevel()),userInfoOptional.get().getOpenId());
+                    }
+                }else{
+                    MerchantInfo merchantInfo = merchantInfoDao.selectById(upgradePayRecord.getMerchantId());
+                    if(merchantInfo!=null){
+                        AgentApplicationRecord agentApplicationRecord = new AgentApplicationRecord();
+                        agentApplicationRecord.setMerchantId(merchantInfo.getId());
+                        agentApplicationRecord.setMobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()));
+                        agentApplicationRecord.setMerchantName(merchantInfo.getMerchantName());
+                        agentApplicationRecord.setMarkCode(merchantInfo.getMarkCode());
+                        agentApplicationRecord.setOemId(merchantInfo.getOemId());
+                        agentApplicationRecord.setFirstDealerId(merchantInfo.getFirstDealerId());
+                        agentApplicationRecord.setSecondDealerId(merchantInfo.getSecondMerchantId());
+                        agentApplicationRecord.setPayTime(new Date());
+                        agentApplicationRecord.setPayAmount(agentApplicationRecord.getPayAmount());
+                        agentApplicationRecord.setLevel(agentApplicationRecord.getLevel());
+                        agentApplicationRecord.setIsDeal(0);
+                        agentApplicationRecordService.insert(agentApplicationRecord);
+                    }
                 }
             }
         }else{
@@ -487,20 +510,24 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
             log.info("升级分润有误");
             return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
         }else{
-            Optional<UpgradeRules> upgradeRulesOptional1 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getBeforeLevel());//当前级别对应的升级费
-            Optional<UpgradeRules> upgradeRulesOptional2 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getLevel());//升级后对应的升级费
-            if(!upgradeRulesOptional1.isPresent()){
-                log.info("======普通会员===========");
-                BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall());
-                BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall());
-                log.info("直接差值{}，间接差值{}",left,right);
-                return Pair.of(left, right);
+            if(upgradePayRecord.getUpgradeRulesId()>0){
+                Optional<UpgradeRules> upgradeRulesOptional1 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getBeforeLevel());//当前级别对应的升级费
+                Optional<UpgradeRules> upgradeRulesOptional2 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getLevel());//升级后对应的升级费
+                if(!upgradeRulesOptional1.isPresent()){
+                    log.info("======普通会员===========");
+                    BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall());
+                    BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall());
+                    log.info("直接差值{}，间接差值{}",left,right);
+                    return Pair.of(left, right);
+                }else{
+                    log.info("======店员、店长、老板===========");
+                    BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
+                    BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
+                    log.info("直接差值{}，间接差值{}",left,right);
+                    return Pair.of(left, right);
+                }
             }else{
-                log.info("======店员、店长、老板===========");
-                BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
-                BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
-                log.info("直接差值{}，间接差值{}",left,right);
-                return Pair.of(left, right);
+                return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
             }
         }
     }

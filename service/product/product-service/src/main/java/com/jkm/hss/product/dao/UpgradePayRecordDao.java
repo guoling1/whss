@@ -27,4 +27,11 @@ public interface UpgradePayRecordDao {
      * @return
      */
     int updatePayResult(@Param("payResult") String payResult,@Param("reqSn") String reqSn);
+
+    /**
+     * 根据merchantId查询
+     * @param merchantId
+     * @return
+     */
+    UpgradePayRecord selectByMerchantId(@Param("merchantId") Long merchantId);
 }

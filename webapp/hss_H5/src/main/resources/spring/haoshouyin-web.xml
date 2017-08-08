@@ -121,6 +121,8 @@
             <mvc:mapping path="/appMerchantInfo/upgrade"/>
             <mvc:mapping path="/appMerchantInfo/toUpgrade"/>
             <mvc:mapping path="/appMerchantInfo/toBuy"/>
+            <mvc:mapping path="/appMerchantInfo/agentApplication"/>
+            <mvc:mapping path="/appMerchantInfo/agentApplicationStatus"/>
             <bean id="appInterceptor" class="com.jkm.hss.interceptor.AppInterceptor">
                 <property name="appAuTokenService" ref="appAuTokenService"/>
                 <property name="merchantInfoService" ref="merchantInfoServiceImpl"/>

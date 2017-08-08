@@ -91,4 +91,12 @@
         WHERE req_sn = #{reqSn}
     </update>
 
+    <!-- 查询（根据merchantId查询） -->
+    <select id="selectByMerchantId" resultType="com.jkm.hss.product.entity.UpgradePayRecord">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_pay_record
+        WHERE merchant_id = #{merchantId} and status=1 and upgrade_rules_id=0  ORDER  by create_time desc limit 0,1
+    </select>
+
 </mapper>

@@ -910,6 +910,67 @@ public class AppMerchantInfoController extends BaseController {
         }
     }
 
+    /**
+     * HSSH5001018 升级为合伙人或超级合伙人
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "agentApplication", method = RequestMethod.POST)
+    public CommonResponse agentApplication(@RequestBody final AgentApplicationRequest agentApplicationRequest) throws UnsupportedEncodingException {
+        if(agentApplicationRequest.getLevel()!=1&&agentApplicationRequest.getLevel()!=2){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE,"参数有误");
+        }
+        BigDecimal needMoney = null;
+
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+
+        UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
+        upgradePayRecord.setMerchantId(merchantInfo.get().getId());
+        upgradePayRecord.setProductId(merchantInfo.get().getProductId());
+        upgradePayRecord.setBeforeLevel(0);
+        upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
+        upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
+        upgradePayRecord.setLevel(agentApplicationRequest.getLevel());
+        upgradePayRecord.setUpgradeRulesId(0);
+        if(agentApplicationRequest.getLevel()==1){
+            needMoney = new BigDecimal("9800.00");
+            upgradePayRecord.setNote("升级为超级合伙人");
+        }
+        if(agentApplicationRequest.getLevel()==2){
+            needMoney = new BigDecimal("365.00");
+            upgradePayRecord.setNote("升级为合伙人");
+        }
+        upgradePayRecord.setAmount(needMoney);
+        upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
+        upgradePayRecordService.insert(upgradePayRecord);
+        String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
+        Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
+        if(pair.getLeft()==0){
+            String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
+            ToBuyResponse toBuyResponse = new ToBuyResponse();
+            toBuyResponse.setPayUrl(payUrl);
+            toBuyResponse.setAmount(needMoney);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "下单成功", toBuyResponse);
+        }else{
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE,pair.getRight());
+        }
+    }
+
+    /**
+     * HSSH5001019 升级为合伙人或超级合伙人进度
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "agentApplicationStatus", method = RequestMethod.POST)
+    public CommonResponse agentApplicationStatus() {
+        String  result = "N";
+        UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByMerchantId(super.getAppMerchantInfo().get().getId());
+        if(upgradePayRecord!=null){
+            result = upgradePayRecord.getPayResult();
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+    }
+
     private BigDecimal needMoney(long productId,int currentLevel,int needLevel){
         BigDecimal needMoney = null;
         //所升级别需付费
