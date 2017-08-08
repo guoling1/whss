@@ -852,8 +852,6 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/invite/{id}", method = RequestMethod.GET)
     public String invite(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        Preconditions.checkState(!userInfoOptional.isPresent(), "您已经注册过了\n不能再被邀请注册");
         Optional<UserInfo> uiOptional = userInfoService.selectById(id);
         Preconditions.checkState(!uiOptional.isPresent(), "推荐用户不存在");
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(uiOptional.get().getMerchantId());

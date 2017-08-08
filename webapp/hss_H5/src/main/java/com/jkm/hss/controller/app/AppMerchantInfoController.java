@@ -8,7 +8,9 @@ import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.GlobalID;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -18,13 +20,9 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
-import com.jkm.hss.helper.request.AppRecommendRequest;
-import com.jkm.hss.helper.request.CardDetailRequest;
-import com.jkm.hss.helper.request.CreditCardAuthenRequest;
-import com.jkm.hss.helper.request.MerchantLoginRequest;
-import com.jkm.hss.helper.response.AuthenticationResponse;
-import com.jkm.hss.helper.response.CardDetailResponse;
-import com.jkm.hss.helper.response.UpgradeMaxResponse;
+import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.request.*;
+import com.jkm.hss.helper.response.*;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -40,17 +38,13 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.entity.PartnerRuleSetting;
-import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
+import com.jkm.hss.product.enums.EnumUpgrade;
+import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
-import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hss.product.servcie.PartnerRuleSettingService;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -63,6 +57,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +107,12 @@ public class AppMerchantInfoController extends BaseController {
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
     @Autowired
     private AccountBankService accountBankService;
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
+    @Autowired
+    private UpgradePayRecordService upgradePayRecordService;
+    @Autowired
+    private PayService payService;
     /**
      * HSSH5001002 注册
      *
@@ -801,7 +805,7 @@ public class AppMerchantInfoController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
     }
     /**
-     * HSSH5001015 升级降费率
+     * HSSH5001015 升级降费率(网关)
      * @param request
      * @param response
      * @return
@@ -822,6 +826,102 @@ public class AppMerchantInfoController extends BaseController {
         List<PartnerRuleSettingResponse> partnerRuleSettingResponses = partnerRuleSettingService.selectAllItemByProductId(merchantInfo.get().getOemId(),productOptional.get().getId());
         upgradeMaxResponse.setPartnerRuleSettingResponses(partnerRuleSettingResponses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", upgradeMaxResponse);
+    }
+
+    /**
+     * HSSH5001016 我要升级（套餐）
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "toUpgrade", method = RequestMethod.POST)
+    public CommonResponse toUpgrade(final HttpServletRequest request, final HttpServletResponse response) {
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(super.getAppMerchantInfo().get().getId());
+        ToUpgradeResponse toUpgradeResponse = new ToUpgradeResponse();
+        List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(merchantInfo.get().getProductId());
+        List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
+        int hasCount = recommendService.selectFriendCount(merchantInfo.get().getId());
+        if(upgradeRules.size()>0){
+            for(int i=0;i<upgradeRules.size();i++){
+                CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
+                BigDecimal needMoney = needMoney(merchantInfo.get().getProductId(),merchantInfo.get().getLevel(),upgradeRules.get(i).getType());
+                currentRulesResponse.setId(upgradeRules.get(i).getId());
+                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                currentRulesResponse.setType(upgradeRules.get(i).getType());
+                currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
+                currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
+                currentRulesResponse.setNeedMoney(needMoney);
+                currentRulesResponse.setUpgradeCost(upgradeRules.get(i).getUpgradeCost());
+                list.add(currentRulesResponse);
+            }
+        }
+        toUpgradeResponse.setMerchantId(merchantInfo.get().getId());
+        toUpgradeResponse.setCurrentLevel(merchantInfo.get().getLevel());
+        toUpgradeResponse.setUpgradeRules(list);
+        String oemNo = "";
+        Optional<OemInfo> oemInfoOptional = oemInfoService.selectOemInfoByDealerId(merchantInfo.get().getOemId());
+        if(!oemInfoOptional.isPresent()&&merchantInfo.get().getOemId()>0){
+            return CommonResponse.simpleResponse(-1, "分公司信息配置有误");
+        }
+        if(oemInfoOptional.isPresent()){
+            oemNo = oemInfoOptional.get().getOemNo();
+        }
+        toUpgradeResponse.setShareUrl("http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId()+"?oemNo="+oemNo);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", toUpgradeResponse);
+    }
+
+    /**
+     * HSSH5001017 立即升级
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "toBuy", method = RequestMethod.POST)
+    public CommonResponse toBuy(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final UpgradeRulesIdRequest upgradeRulesIdRequest) throws UnsupportedEncodingException {
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(upgradeRulesIdRequest.getId());
+        Preconditions.checkState(upgradeRulesOptional.isPresent(), "没有此级别合伙人");
+        BigDecimal needMoney = needMoney(merchantInfo.get().getProductId(),merchantInfo.get().getLevel(),upgradeRulesOptional.get().getType());
+        UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
+        upgradePayRecord.setMerchantId(merchantInfo.get().getId());
+        upgradePayRecord.setProductId(merchantInfo.get().getProductId());
+        upgradePayRecord.setBeforeLevel(merchantInfo.get().getLevel());
+        upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
+        upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
+        upgradePayRecord.setAmount(needMoney);
+        upgradePayRecord.setLevel(upgradeRulesOptional.get().getType());
+        upgradePayRecord.setUpgradeRulesId(upgradeRulesIdRequest.getId());
+        upgradePayRecord.setNote("充值升级");
+        upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
+        upgradePayRecordService.insert(upgradePayRecord);
+        String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
+        Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
+        if(pair.getLeft()==0){
+            String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
+            ToBuyResponse toBuyResponse = new ToBuyResponse();
+            toBuyResponse.setPayUrl(payUrl);
+            toBuyResponse.setAmount(needMoney);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "下单成功", toBuyResponse);
+        }else{
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE,pair.getRight());
+        }
+    }
+
+    private BigDecimal needMoney(long productId,int currentLevel,int needLevel){
+        BigDecimal needMoney = null;
+        //所升级别需付费
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,needLevel);
+        //当前级别需付费
+        Optional<UpgradeRules> currentUpgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,currentLevel);
+        if(!currentUpgradeRulesOptional.isPresent()){
+            needMoney = upgradeRulesOptional.get().getUpgradeCost();
+        }else{
+            needMoney = upgradeRulesOptional.get().getUpgradeCost().subtract(currentUpgradeRulesOptional.get().getUpgradeCost());
+        }
+        return needMoney;
     }
 
     private String getNameByLevel(int level){
