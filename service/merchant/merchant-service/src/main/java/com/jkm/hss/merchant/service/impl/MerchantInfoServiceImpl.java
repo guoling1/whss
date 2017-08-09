@@ -10,10 +10,7 @@ import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.*;
-import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.enums.EnumPayMethod;
-import com.jkm.hss.merchant.enums.EnumStatus;
-import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
+import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.service.*;
@@ -488,6 +485,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                         agentApplicationRecord.setPayAmount(agentApplicationRecord.getPayAmount());
                         agentApplicationRecord.setLevel(agentApplicationRecord.getLevel());
                         agentApplicationRecord.setIsDeal(0);
+                        agentApplicationRecord.setStatus(EnumCommonStatus.NORMAL.getId());
                         agentApplicationRecordService.insert(agentApplicationRecord);
                     }
                 }
@@ -623,6 +621,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public Optional<MerchantInfo> selectBySuperDealerId(long superDealerId) {
         return Optional.fromNullable(merchantInfoDao.selectBySuperDealerId(superDealerId));
+    }
+
+    /**
+     * 根据编码修改超级合伙人编码
+     *
+     * @param superDealerId
+     * @param merchantId
+     */
+    @Override
+    public int updateSuperDealerIdById(Long superDealerId, Long merchantId) {
+        return merchantInfoDao.updateSuperDealerIdById(superDealerId,merchantId);
     }
 
 }

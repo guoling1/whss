@@ -1,4 +1,4 @@
-package com.jkm.hss.merchant.entity;
+package com.jkm.hss.merchant.helper.response;
 
 import com.jkm.base.common.entity.BaseEntity;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by xingliujie on 2017/8/8.
  */
 @Data
-public class AgentApplicationRecord extends BaseEntity {
+public class AgentApplicationRecordResponse extends BaseEntity {
     /**
      * 商户编码
      */
@@ -32,13 +32,25 @@ public class AgentApplicationRecord extends BaseEntity {
      */
     private Long oemId;
     /**
+     * 分公司名称
+     */
+    private String oemName;
+    /**
      * 一级代理编码
      */
     private Long firstDealerId;
     /**
+     * 一级代理名称
+     */
+    private String firstDealerName;
+    /**
      * 二级代理编码
      */
     private Long secondDealerId;
+    /**
+     * 二级代理名称
+     */
+    private String secondDealerName;
     /**
      * 支付时间
      */

@@ -145,7 +145,7 @@ public class H5ControllerTester {
     @Test
     public void testToBuy()throws Exception{
         Map<String, String> map = new JSONObject();
-        map.put("id","60");
+        map.put("id","61");
         H5ControllerTester.testRest(map,HSSH5001017);
     }
 

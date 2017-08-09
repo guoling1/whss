@@ -208,4 +208,9 @@ public interface MerchantInfoDao {
      * 根据超级合伙人查询
      */
     MerchantInfo selectBySuperDealerId(@Param("superDealerId") long superDealerId);
+    /**
+     * 根据编码修改超级合伙人编码
+     * @return
+     */
+    int updateSuperDealerIdById(@Param("superDealerId") Long superDealerId, @Param("merchantId") Long merchantId);
 }
