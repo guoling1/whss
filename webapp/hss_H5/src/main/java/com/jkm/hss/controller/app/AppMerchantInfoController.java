@@ -968,6 +968,12 @@ public class AppMerchantInfoController extends BaseController {
         if(upgradePayRecord!=null){
             result = upgradePayRecord.getPayResult();
         }
+        if("S".equals(result)){
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(upgradePayRecord.getMerchantId());
+            if(merchantInfoOptional.isPresent()&&merchantInfoOptional.get().getSuperDealerId()>0){
+                result = "FS";
+            }
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
     }
 
