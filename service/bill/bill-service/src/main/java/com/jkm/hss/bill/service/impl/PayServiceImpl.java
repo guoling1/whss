@@ -31,8 +31,10 @@ import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hss.product.servcie.UpgradePayRecordService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +94,8 @@ public class PayServiceImpl implements PayService {
     private MergeTableSettlementDateService mergeTableSettlementDateService;
     @Autowired
     private BusinessOrderService businessOrderService;
+    @Autowired
+    private UpgradePayRecordService upgradePayRecordService;
 
     /**
      * {@inheritDoc}
@@ -317,6 +321,25 @@ public class PayServiceImpl implements PayService {
             this.orderService.update(order);
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
             final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
+            //商户升级代理商特殊处理
+            try {
+                UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByReqSn(orderOptional.get().getBusinessOrderNo());
+                if (null != upgradePayRecord && 0 == upgradePayRecord.getUpgradeRulesId()) {
+                    //账户
+                    final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();
+                    this.accountService.increaseTotalAmount(jkmAccount.getId(), order.getTradeAmount());
+                    this.accountService.increaseAvailableAmount(jkmAccount.getId(), order.getTradeAmount());
+                    //可用余额流水增加
+                    this.accountFlowService.addAccountFlow(jkmAccount.getId(), order.getOrderNo(), order.getTradeAmount(),
+                            "商户升级代理商", EnumAccountFlowType.INCREASE);
+
+                    this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "S");
+                    return;
+                }
+            } catch (final Throwable e) {
+                log.error("##############升级支付成功，回调商户升级业务异常##############", e);
+                return;
+            }
             if (orderOptional.get().isPaySuccess() && orderOptional.get().isDueSettle()) {
                 this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
                 log.info("商户升级-交易订单号[{}], 进行手续费结算操作", order.getOrderNo());
