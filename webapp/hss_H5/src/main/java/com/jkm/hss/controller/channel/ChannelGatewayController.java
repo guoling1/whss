@@ -114,14 +114,15 @@ public class ChannelGatewayController extends BaseController {
             if (merchantChannelRate == null){
                 continue;
             }
-            final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+            final BasicChannel parentChannel = this.basicChannelService.selectParentChannel(channelSign);
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
-            merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getValue());
+            //log.info("》》》》》》》》》》》》》》" + parentChannel.toString());
+            merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(parentChannel.getChannelTypeSign()).getPaymentChannel().getValue());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
             merchantChannelResponse.setChannelRate(merchantChannelRate.getMerchantPayRate().toString());
             merchantChannelResponse.setFee(merchantChannelRate.getMerchantWithdrawFee().toString());
             merchantChannelResponse.setChannelSign(channelSign);
-            merchantChannelResponse.setLimitAmount(basicChannel.getLimitAmount().toString());
+            merchantChannelResponse.setLimitAmount(parentChannel.getLimitAmount().toString());
             merchantChannelResponse.setSettleType(merchantChannelRate.getMerchantBalanceType());
             merchantChannelResponse.setRecommend(productChannelGateway.getRecommend());
             merchantChannelResponseList.add(merchantChannelResponse);

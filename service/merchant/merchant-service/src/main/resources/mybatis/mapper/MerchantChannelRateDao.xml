@@ -91,7 +91,7 @@
         <include refid="Base_Column_List" />
         FROM tb_merchant_channel_rate
         WHERE
-        merchant_id=#{merchantId} and product_id=#{productId} and channel_company=#{channelCompany} and status=0
+        merchant_id=#{merchantId} and product_id=#{productId} and channel_company=#{channelCompany} and status=0 ORDER by id desc
     </select>
     <select id="selectFailMerchantInfo" resultType="java.lang.Long">
         SELECT
@@ -104,5 +104,10 @@
         UPDATE tb_merchant_channel_rate
         SET merchant_pay_rate = #{rate}
         WHERE merchant_id = #{merchantId} and product_id=#{productId} and channel_type_sign=#{channelTypeSign}
+    </update>
+    <update id="updateKmRate">
+        UPDATE tb_merchant_channel_rate
+        SET remarks = #{msg}
+        WHERE merchant_id = #{merchantId} AND channel_type_sign in (208,209)
     </update>
 </mapper>

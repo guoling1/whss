@@ -17,10 +17,8 @@ import com.jkm.hsy.user.Enum.EnumNetStatus;
 import com.jkm.hsy.user.Enum.EnumOpenProductStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.UserChannelPolicy;
-import com.jkm.hsy.user.entity.UserCurrentChannelPolicy;
+import com.jkm.hsy.user.entity.*;
+import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import com.jkm.hsy.user.service.UserCurrentChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +58,9 @@ public class CodeController extends BaseController {
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
 
+    @Autowired
+    private HsyMembershipService hsyMembershipService;
+
 
     /**
      * 扫码
@@ -67,24 +68,22 @@ public class CodeController extends BaseController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
+    @RequestMapping(value = "**", method = RequestMethod.GET)
     public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) throws UnsupportedEncodingException {
         boolean isRedirect = true;
         final String code = request.getParameter("code");
-        final String sign = request.getParameter("sign");
+        String url = "";
         if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
-            return "redirect:http://hss.qianbaojiajia.com/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
+            model.addAttribute("message", "二维码不属于该系统");
+            url = "/message";
         }
-        log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "二维码不存在");
         Preconditions.checkState((qrCodeOptional.get().getSysType()).equals(EnumQRCodeSysType.HSY.getId()), "二维码不属于该系统");
         final QRCode qrCode = qrCodeOptional.get();
-        Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
         final String agent = request.getHeader("User-Agent").toLowerCase();
         log.info("User-Agent is [{}]",agent);
-        String url = "";
         if (qrCode.isActivate()) {//已激活
             log.info("code[{}] is activate", code);
             List<AppBizShop> appBizShops = hsyShopDao.findAppBizShopByID(merchantId);
@@ -93,8 +92,7 @@ public class CodeController extends BaseController {
             Preconditions.checkState(appBizShops.get(0).getStatus()==AppConstant.SHOP_STATUS_NORMAL, "商户未通过审核");
             List<AppAuUser> appAuUsers = hsyShopDao.findCorporateUserByShopID(merchantId);
             Preconditions.checkState(appAuUsers!=null&&appAuUsers.size()>0, "商户不存在");
-            String merchantName = hsyShopDao.findShopNameByID(merchantId);
-            model.addAttribute("name", merchantName);
+            model.addAttribute("merchantId", merchantId);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
             Optional<UserCurrentChannelPolicy> userCurrentChannelPolicyOptional = userCurrentChannelPolicyService.selectByUserId(appAuUsers.get(0).getId());
             Preconditions.checkState(userCurrentChannelPolicyOptional.isPresent(), "商户使用中通道未设置");
@@ -128,6 +126,8 @@ public class CodeController extends BaseController {
 
                 final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign(),merchantId,openId,code);
                 model.addAttribute("hsyOrderId",hsyOrderId);
+                model.addAttribute("openId",openId);
+                model.addAttribute("userId",appAuUsers.get(0).getId());
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
@@ -152,6 +152,8 @@ public class CodeController extends BaseController {
                 }
                 final long hsyOrderId = hsyTransactionService.createOrder(userCurrentChannelPolicyOptional.get().getAlipayChannelTypeSign(),merchantId,openId,code);
                 model.addAttribute("hsyOrderId",hsyOrderId);
+                model.addAttribute("openId",openId);
+                model.addAttribute("userId",appAuUsers.get(0).getId());
                 url = "/sqb/paymentZfb";
             }
         } else {

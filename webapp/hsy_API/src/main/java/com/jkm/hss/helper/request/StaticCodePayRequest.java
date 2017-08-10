@@ -2,6 +2,8 @@ package com.jkm.hss.helper.request;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Created by yulong.zhang on 2016/12/24.
  */
@@ -17,4 +19,34 @@ public class StaticCodePayRequest {
      * 总金额
      */
     private String totalFee;
+
+    /**
+     * 折扣金额
+     */
+    private BigDecimal discountFee;
+
+    /**
+     * 是否会员卡支付
+     */
+    private Integer isMemberCardPay=0;
+
+    /**
+     * 消费者ID
+     */
+    private Long cid;
+
+    /**
+     * 会员卡ID
+     */
+    private Long mcid;
+
+    /**
+     * 会员ID
+     */
+    private Long mid;
+
+    /**
+     * 消费者手机后六位
+     */
+    private String consumerCellphone;
 }

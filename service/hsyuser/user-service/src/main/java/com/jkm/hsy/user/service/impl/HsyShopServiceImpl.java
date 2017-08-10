@@ -5,6 +5,8 @@ import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
+import com.jkm.base.common.util.Page;
+import com.jkm.base.common.util.PageUtils;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -750,8 +752,10 @@ public class HsyShopServiceImpl implements HsyShopService {
     }
 
     @Override
-    public void changeSettlementCard(String cardNo, String bankName, String districtCode, String bankAddress, Long id, String branchCode) {
-        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress,id,branchCode);
+    public void changeSettlementCard(String cardNo, String bankName,
+                                     String districtCode, String bankAddress,
+                                     Long id, String branchCode, String cardAccountName) {
+        this.hsyShopDao.changeSettlementCard(cardNo,bankName,districtCode,bankAddress,id,branchCode,cardAccountName);
     }
 
     @Override

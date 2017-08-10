@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.helper.request;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**

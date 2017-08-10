@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.helper.AccountConstants;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -89,7 +90,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantPayPoundageRate(EnumProductType type,final long merchantId, final int channelSign) {
+    public BigDecimal getMerchantPayPoundageRate(Order order, EnumProductType type, final long merchantId, final int channelSign) {
         //hss活动
         final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date endDate = DateFormatUtil.parse("2017-05-31 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
@@ -101,8 +102,9 @@ public class CalculateServiceImpl implements CalculateService {
 
         if (type.getId().equals(EnumProductType.HSS.getId())){
             //hss
+            final int childChannelSign = order.getChildChannelSign();
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-            return getMerchantRate(channelSign, merchant);
+            return getMerchantRate(childChannelSign, merchant);
 
         }else{
             //hsy
@@ -135,7 +137,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantWithdrawPoundage(EnumProductType type,final long merchantId, final int channelSign) {
+    public BigDecimal getMerchantWithdrawPoundage(Order order,EnumProductType type,final long merchantId, final int channelSign) {
         final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date endDate = DateFormatUtil.parse("2017-05-31 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date currentDate = new Date();
@@ -146,14 +148,9 @@ public class CalculateServiceImpl implements CalculateService {
 
         if (type.getId().equals(EnumProductType.HSS.getId())){
             //HSS
+            final int childChannelSign = order.getChildChannelSign();
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-            final Product product = this.productService.selectByType(type.getId()).get();
-            /*if (0 == merchant.getDealerId()) {
-
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
-                return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
-            }*/
-            return this.getMerchantWithdrawFee(merchant, channelSign);
+            return this.getMerchantWithdrawFee(merchant, childChannelSign);
 
         }else {
             //HSY
@@ -197,11 +194,12 @@ public class CalculateServiceImpl implements CalculateService {
     //按照通道计算商户手续费，
     private BigDecimal calculateMerchantFee(BigDecimal totalFee, BigDecimal waitOriginMoney, int channelSign) {
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(channelSign);
         if (basicChannel.getIsSpecial() == EnumBoolean.TRUE.getCode()){
             return new BigDecimal("0.00");
         }
         BigDecimal waitMoney;
-        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
+        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel();
         switch (upperChannel){
             case SAOMI:
                 if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
@@ -435,7 +433,6 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
-
         final MerchantChannelRateRequest request = new MerchantChannelRateRequest();
         request.setMerchantId(merchantInfo.getId());
         request.setProductId(merchantInfo.getProductId());

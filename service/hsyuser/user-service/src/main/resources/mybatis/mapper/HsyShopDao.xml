@@ -91,7 +91,9 @@
 
     <select id="findShopList" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select
-        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,
+        shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,
+        shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME, shop.OPENSCANPRINT,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
@@ -183,7 +185,9 @@
 
     <select id="findAppBizShopByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
-        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,
+        shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,
+        shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME, shop.OPENSCANPRINT
         from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on user.ID=sur.UID
         where shop.ID=#{id}
     </select>
@@ -257,7 +261,7 @@
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
-          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID,user.ISOPEND0
         from app_au_user user
         where user.ACCOUNTID=#{accountID}
         order by user.UPDATETIME desc
@@ -354,7 +358,10 @@
             </if>
 
             <if test="branchCode != null and branchCode != ''">
-                BRANCHCODE = #{branchCode}
+                BRANCHCODE = #{branchCode},
+            </if>
+            <if test="cardAccountName != null and cardAccountName != ''">
+                CARDACCOUNTNAME = #{cardAccountName}
             </if>
         </set>
         WHERE SID = #{id}
@@ -368,6 +375,14 @@
             </if>
         </set>
         WHERE ID = #{id}
+    </update>
+
+    <update id="updateOpenScanPrintByShopIds">
+        UPDATE app_biz_shop SET OPENSCANPRINT = 1
+        WHERE ID IN
+        <foreach collection="updateScanPrintShopIds" item="item" open="(" close=")" separator="," index="index">
+            #{item}
+        </foreach>
     </update>
 
 </mapper>

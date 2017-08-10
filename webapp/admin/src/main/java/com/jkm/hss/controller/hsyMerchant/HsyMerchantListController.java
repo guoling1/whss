@@ -113,6 +113,13 @@ public class HsyMerchantListController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             hsyMerchantAuditRequest.setEndTime(sdfs.format(rightNow.getTime()));
         }
+        if(hsyMerchantAuditRequest.getAuditTime1()!=null&&!"".equals(hsyMerchantAuditRequest.getAuditTime1())){
+            Date dt = sdfs.parse(hsyMerchantAuditRequest.getAuditTime1());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            hsyMerchantAuditRequest.setAuditTime1(sdfs.format(rightNow.getTime()));
+        }
         final String fileZip = this.hsyMerchantAuditService.downLoadHsyMerchant(hsyMerchantAuditRequest, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -395,6 +402,9 @@ public class HsyMerchantListController extends BaseController {
         if ("".equals(hsyMerchantAuditRequest.getBranchCode())&&hsyMerchantAuditRequest.getBranchCode()==null){
             return CommonResponse.simpleResponse(-1, "联行号不能为空");
         }
+        if ("".equals(hsyMerchantAuditRequest.getCardAccountName())&&hsyMerchantAuditRequest.getCardAccountName()==null){
+            return CommonResponse.simpleResponse(-1, "开户名不能为空");
+        }
         try {
             long userId = hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
 
@@ -403,7 +413,8 @@ public class HsyMerchantListController extends BaseController {
                     hsyMerchantAuditRequest.getDistrictCode(),
                     hsyMerchantAuditRequest.getBankAddress(),
                     hsyMerchantAuditRequest.getId(),
-                    hsyMerchantAuditRequest.getBranchCode());
+                    hsyMerchantAuditRequest.getBranchCode(),
+                    hsyMerchantAuditRequest.getCardAccountName());
             this.hsyShopService.changeStatus(hsyMerchantAuditRequest.getIsPublic(),hsyMerchantAuditRequest.getId());
 
             boolean b = hsyCmbcService.merchantInfoModify(userId, hsyMerchantAuditRequest.getId(),super.getAdminUser().getId(), EnumOpt.MODIFYDEFAULTCARD.getMsg());
@@ -460,6 +471,27 @@ public class HsyMerchantListController extends BaseController {
         try {
             this.hsyMerchantAuditService.updateModifyInfo(hsyMerchantAuditRequest);
             return CommonResponse.simpleResponse(1,"SUCCESS");
+        }catch (Exception e){
+            log.debug("修改失败");
+            throw e;
+        }
+    }
+
+    /**
+     * 修改d0提现
+     * @param userD0WithdrawRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/modifyD0withdraw",method = RequestMethod.POST)
+    public CommonResponse modifyD0withdraw(@RequestBody final UserD0WithdrawRequest userD0WithdrawRequest){
+        try {
+            int backCount = this.hsyMerchantAuditService.modifyD0withdraw(userD0WithdrawRequest);
+            if(backCount>0){
+                return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"修改成功");
+            }else{
+                return CommonResponse.simpleResponse(-1,"修改失败");
+            }
         }catch (Exception e){
             log.debug("修改失败");
             throw e;

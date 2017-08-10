@@ -16,8 +16,17 @@ import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hsy.user.Enum.EnumNetStatus;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.dao.HsyUserDao;
+import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.UserChannelPolicy;
+import com.jkm.hsy.user.help.requestparam.CmbcResponse;
+import com.jkm.hsy.user.service.HsyCmbcService;
+import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -141,5 +150,44 @@ public class MerchantInTask {
 
             log.info("商户入网提交定时任务--send");
         }
+    }
+
+    @Autowired
+    private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private HsyCmbcService hsyCmbcService;
+    @Autowired
+    private HsyUserDao hsyUserDao;
+    @Autowired
+    private HsyShopDao hsyShopDao;
+
+    //@Scheduled(cron = "0 36 * * * ?")
+    public void updateSyjMerchantRate() {
+
+        List<Long> userIds = this.userChannelPolicyService.selectUserIdsBySignAndNetStatus(EnumPayChannelSign.SYJ_WECHAT.getId(), EnumNetStatus.SUCCESS.getId());
+        final ArrayList<Pair<Long,String>> list = new ArrayList<>();
+        for (Long userId : userIds){
+            userId = 645L;
+            try{
+                final AppBizShop appBizShop = new AppBizShop();
+                appBizShop.setType(1);
+                appBizShop.setUid(userId);
+                final AppBizShop shop = this.hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop).get(0);
+
+                final CmbcResponse cmbcResponse = this.hsyCmbcService.merchantBaseInfoModify(userId, shop.getId());
+                if (cmbcResponse.getCode() != 1){
+                    log.info("更新商户打款费用失败,商户ID:" + userId);
+                }
+                Thread.sleep(500);
+                final CmbcResponse cmbcResponse1 = this.hsyCmbcService.merchantUpdateBindChannel(userId);
+                if (cmbcResponse1.getCode() != 1){
+                    log.info("更新商户费率失败,商户ID:" + userId);
+                }
+                Thread.sleep(500);
+            }catch (Throwable throwable){
+                list.add(Pair.of(userId,throwable.getMessage()));
+            }
+        }
+        System.out.print("1");
     }
 }

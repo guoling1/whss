@@ -61,8 +61,8 @@
                   </el-select>
                 </li>
                 <li class="same">
-                  <div class="btn btn-primary" @click="search('hss')">筛选</div>
-                  <div class="btn btn-primary" @click="reset('hss')">重置</div>
+                  <el-button type="primary" size="small" @click="search('hss')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hss')">重置</el-button>
                 </li>
               </ul>
               <!--表格-->
@@ -119,115 +119,147 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="好收银" name="second">
-              <!--<ul class="search">-->
-                <!--<li class="same">-->
-                  <!--<label>商户编号:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.globalID" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>商户名称:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>注册手机号:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.cellphone" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>注册时间:</label>-->
-                  <!--<el-date-picker style="width: 188px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">-->
-                  <!--</el-date-picker>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>审核时间:</label>-->
-                  <!--<el-date-picker style="width: 188px" v-model="dateHsy1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">-->
-                  <!--</el-date-picker>-->
-                <!--</li>-->
-                <!--&lt;!&ndash;<li class="same">-->
-                  <!--<label>所属分公司:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>&ndash;&gt;-->
-                <!--<li class="same">-->
-                  <!--<label>所属一级代理:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>所属二级代理:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>报单员:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>姓名:</label>-->
-                  <!--<el-input style="width: 188px" v-model="queryHsy.realname" placeholder="请输入内容" size="small"></el-input>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<label>审核状态:</label>-->
-                  <!--<el-select style="width: 188px" v-model="queryHsy.status" clearable placeholder="请选择" size="small">-->
-                    <!--<el-option label="全部" value="">全部</el-option>-->
-                    <!--<el-option label="已注册" value="0">已注册</el-option>-->
-                    <!--<el-option label="已提交基本资料" value="1">已提交基本资料</el-option>-->
-                    <!--<el-option label="待审核" value="2">待审核</el-option>-->
-                    <!--<el-option label="审核通过" value="3">审核通过</el-option>-->
-                    <!--<el-option label="审核未通过" value="4">审核未通过</el-option>-->
-                  <!--</el-select>-->
-                <!--</li>-->
-                <!--<li class="same">-->
-                  <!--<div class="btn btn-primary" @click="search('hsy')">筛选</div>-->
-                  <!--<div class="btn btn-primary" @click="reset('hsy')">重置</div>-->
-                <!--</li>-->
-                <!--<li class="same" style="float: right">-->
-                  <!--<span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>-->
-                <!--</li>-->
-              <!--</ul>-->
-              <!--<el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>-->
-                <!--<el-table-column type="index" width="62" label="序号"></el-table-column>-->
-                <!--<el-table-column prop="globalID" label="商户编号"></el-table-column>-->
-                <!--<el-table-column prop="shortName" label="商户名称"></el-table-column>-->
-                <!--&lt;!&ndash;<el-table-column prop="proxyNames" label="所属分公司"></el-table-column>&ndash;&gt;-->
-                <!--<el-table-column prop="proxyName" label="所属一级代理"></el-table-column>-->
-                <!--<el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>-->
-                <!--<el-table-column prop="username" label="报单员"></el-table-column>-->
-                <!--<el-table-column prop="realname" label="姓名"></el-table-column>-->
-                <!--&lt;!&ndash;<el-table-column prop="proxyNames" label="所属代理商"></el-table-column>&ndash;&gt;-->
-                <!--<el-table-column label="注册时间">-->
-                  <!--<template scope="scope">-->
-                    <!--<span>{{scope.row.createTime|changeTime}}</span>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-                <!--<el-table-column label="提交时间">-->
-                  <!--<template scope="scope">-->
-                    <!--<span>{{scope.row.commitTime|changeTime}}</span>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-                <!--<el-table-column label="审核时间">-->
-                  <!--<template scope="scope">-->
-                    <!--<span>{{scope.row.auditTime|changeTime}}</span>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-                <!--<el-table-column prop="cellphone" label="注册手机号"></el-table-column>-->
-                <!--<el-table-column prop="districtCode" label="省市"></el-table-column>-->
-                <!--<el-table-column prop="industryCode" label="行业"></el-table-column>-->
-                <!--<el-table-column prop="stat" label="状态"></el-table-column>-->
-                <!--<el-table-column label="操作" width="100">-->
-                  <!--<template scope="scope">-->
-                    <!--<el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" v-if="recordsHsy[scope.$index].stat=='待审核'" type="text" size="small">审核</el-button>-->
-                    <!--<el-button @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_detail')" v-if="recordsHsy[scope.$index].stat!='待审核'" type="text" size="small">查看详情</el-button>-->
-                  <!--</template>-->
-                <!--</el-table-column>-->
-              <!--</el-table>-->
-              <!--<div class="block" style="text-align: right">-->
-                <!--<el-pagination @size-change="handleSizeChangeHsy"-->
-                               <!--@current-change="handleCurrentChangeHsy"-->
-                               <!--:current-page="queryHsy.pageNo"-->
-                               <!--:page-sizes="[10, 20, 50]"-->
-                               <!--:page-size="queryHsy.pageSize"-->
-                               <!--layout="total, sizes, prev, pager, next, jumper"-->
-                               <!--:total="countHsy">-->
-                <!--</el-pagination>-->
-              <!--</div>-->
+              <ul class="search">
+                <li class="same">
+                  <label>成功时间:</label>
+                  <el-date-picker :clearable="false" style="width: 193px" v-model="dateHsy" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small" @change="datetimeSelectHsy">
+                  </el-date-picker>
+                </li>
+                <li class="same">
+                  <label>订单号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.ordernumber" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>交易单号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.orderno" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>商户编号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.merchantNo" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>商户名称:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.merchantName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>店铺编号:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.shortNo" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>店铺名称:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.shortName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>一级代理:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>二级代理:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>报单员:</label>
+                  <el-input style="width: 188px" v-model="queryHsy.username" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
+                  <label>支付方式：</label>
+                  <el-select style="width: 188px" v-model="queryHsy.paymentChannel" size="small">
+                    <el-option label="全部" value="">全部</el-option>
+                    <el-option label="微信支付" value="1"></el-option>
+                    <el-option label="支付宝支付" value="2"></el-option>
+                    <el-option label="快捷支付" value="3"></el-option>
+                    <el-option label="QQ钱包" value="4"></el-option>
+                    <el-option label="会员卡" value="5"></el-option>
+                    <el-option label="银联扫码" value="6"></el-option>
+                  </el-select>
+                </li>
+                <li class="same">
+                  <label>订单状态：</label>
+                  <el-select style="width: 188px" clearable v-model="queryHsy.orderstatus" size="small">
+                    <el-option label="全部" value=""></el-option>
+                    <el-option label="待支付" value="1"></el-option>
+                    <el-option label="收款成功" value="2"></el-option>
+                    <el-option label="支付失败" value="3"></el-option>
+                    <el-option label="退款中" value="4"></el-option>
+                    <el-option label="部分退款" value="5"></el-option>
+                    <el-option label="全部退款" value="6"></el-option>
+                    <el-option label="退款失败" value="7"></el-option>
+                  </el-select>
+                </li>
+                <li class="same">
+                  <label>交易来源:</label>
+                  <el-select style="width: 188px" v-model="queryHsy.source" clearable placeholder="请选择" size="small">
+                    <el-option label="全部" value=""></el-option>
+                    <el-option label="直销" value="1"></el-option>
+                    <el-option label="渠道" value="2"></el-option>
+                  </el-select>
+                </li>
+                <li class="same">
+                  <el-button type="primary" size="small" @click="search('hsy')">筛选</el-button>
+                  <el-button type="primary" size="small" @click="reset('hsy')">重置</el-button>
+                </li>
+                <li class="same rightBtn">
+                  <el-button @click="onloadHsy" type="primary" :loading="isLoading" size="small">导出</el-button>
+                </li>
+              </ul>
+              <el-table v-loading.body="hsyLoading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>
+                <el-table-column type="index" width="62" label="序号"></el-table-column>
+                <el-table-column label="订单号" min-width="112">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.ordernumber" style="cursor: pointer" title="点击复制">{{scope.row.ordernumber|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="proxyName" label="一级代理" min-width="90"></el-table-column>
+                <el-table-column prop="proxyName1" label="二级代理" min-width="90"></el-table-column>
+                <el-table-column prop="username" label="报单员"></el-table-column>
+                <el-table-column prop="realname" label="报单员姓名" min-width="110"></el-table-column>
+                <el-table-column prop="merchantNo" label="商户编号" min-width="123"></el-table-column>
+                <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
+                <el-table-column prop="shortNo" label="店铺编号" min-width="123"></el-table-column>
+                <el-table-column prop="shortName" label="店铺名称" min-width="123"></el-table-column>
+                <el-table-column label="交易单号" min-width="112">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.orderno" style="cursor: pointer" title="点击复制">{{scope.row.orderno|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="支付流水号" min-width="112">
+                  <template scope="scope">
+                    <span class="td" :data-clipboard-text="scope.row.paysn" style="cursor: pointer" title="点击复制">{{scope.row.paysn|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="paymentChannels" label="支付方式" min-width="155"></el-table-column>
+                <el-table-column prop="paysuccesstimes" label="成功时间" min-width="155"></el-table-column>
+                <el-table-column prop="amount" label="订单金额" min-width="90" align="right"></el-table-column>
+                <el-table-column prop="poundage" label="手续费金额"  min-width="110" align="right"></el-table-column>
+                <el-table-column prop="orderstatuss" label="订单状态"></el-table-column>
+              </el-table>
+              <div class="block" style="text-align: right">
+                <el-pagination @size-change="handleSizeChangeHsy"
+                               @current-change="handleCurrentChangeHsy"
+                               :current-page="queryHsy.page"
+                               :page-sizes="[10, 20, 50]"
+                               :page-size="queryHsy.size"
+                               layout="total, sizes, prev, pager, next, jumper"
+                               :total="countHsy">
+                </el-pagination>
+              </div>
             </el-tab-pane>
+            <div class="box box-info mask el-message-box" v-if="isMask">
+              <div class="maskCon">
+                <div class="head">
+                  <div class="title">消息</div>
+                  <i class="el-icon-close" @click="isMask=false"></i>
+                </div>
+                <div class="body">
+                  <div>确定导出列表吗？</div>
+                </div>
+                <div class="foot">
+                  <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+                  <a :href="'http://'+loadUrlHsy" @click="isMask=false"
+                     class="el-button el-button-default el-button--primary ">下载</a>
+                </div>
+              </div>
+            </div>
           </el-tabs>
         </div>
         <!-- /.box-body -->
@@ -258,7 +290,6 @@
         isMask: false,
         activeName: 'first', //选项卡选中第一个
         url: '/admin/queryOrder/queryOrderList',
-        fromName: '',
         queryHss: {
           page: 1,
           size: 10,
@@ -278,18 +309,33 @@
         pageTotalHss1: 0,
         addTotalHss: 0,
         addTotalHss1: 0,
+        dateHsy: '',
         dateHss: '',
         dateHss1: '',
         queryHsy: {
-          pageNo: 1,
-          pageSize: 10,
+          page: 1,
+          size: 10,
+          ordernumber:'',
+          orderno:'',
+          merchantName:'',
+          shortName:'',
+          proxyName:'',
+          proxyName1:'',
+          username:'',
+          paymentChannel:'',
+          orderstatus:'',
+          source:'',
+          startTime: '',
+          endTime: ''
         },
         recordsHss: [],
         recordsHsy: [],
         countHss: 0,
         countHsy: 0,
-        currentPage: 1,
         loading: false,
+        hsyLoading: false,
+        isLoading: false,
+        loadUrlHsy:''
       }
     },
     created: function () {
@@ -319,11 +365,32 @@
           this.queryHss.endTime = str;
         }
       }
+      this.dateHsy = [time,time];
+      for (var j = 0; j < this.dateHsy.length; j++) {
+        var str = this.dateHsy[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.queryHsy.startTime = str;
+        } else {
+          this.queryHsy.endTime = str;
+        }
+      }
       this.getDataHss();
-//      this.getDataHsy()
+      this.getDataHsy()
       this.getAddTotalHss();
     },
     methods: {
+      datetimeSelectHsy: function (val) {
+        let format = val.split(' - ');
+        this.queryHsy.startTime = format[0];
+        this.queryHsy.endTime = format[1];
+      },
       datetimeSelect: function (val) {
         let format = val.split(' - ');
         this.queryHss.startTime = format[0];
@@ -333,6 +400,23 @@
         let format = val.split(' - ');
         this.queryHss.paySuccessTime = format[0];
         this.queryHss.paySuccessTime1 = format[1];
+      },
+      onloadHsy: function () {
+        this.isLoading = true
+        this.$http.post('/admin/queryOrder/downLoadHsyOrder',this.queryHsy)
+          .then(res=>{
+          this.isLoading = false;
+          this.loadUrlHsy = res.data[0].url;
+          this.isMask = true;
+        })
+        .catch(err=>{
+          this.isLoading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       },
       reset: function (val) {
         if(val == 'hss'){
@@ -371,30 +455,20 @@
           this.dateHsy='';
           this.dateHsy1='';
           this.queryHsy = {
-            page:1,
-            size:10,
+            page: 1,
+            size: 10,
+            ordernumber:'',
+            orderno:'',
+            merchantName:'',
             shortName:'',
-            globalID:'',
             proxyName:'',
             proxyName1:'',
-            cellphone:'',
             username:'',
-            status:'',
-            startTime:'',
-            endTime:'',
-            auditTime:'',
-            auditTime1:'',
-            realname:''
+            paymentChannel:'',
+            orderstatus:'',
+            source:''
           }
         }
-      },
-      auditHsy: function (id,status) {
-//        this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
-        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAuditHSY?id='+id+'&status='+status);
-      },
-      audit: function (id,status) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAudit?id='+id+'&status='+status);
-//        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       getDataHss: function () {
         this.loading = true;
@@ -449,14 +523,24 @@
           })
       },
       getDataHsy: function () {
-      },
-      onload: function () {
-        if(this.activeName == 'first'){
-          this.$data.loadUrl = this.loadUrlHss;
-        }else if(this.activeName == 'second'){
-          this.$data.loadUrl = this.loadUrlHsy;
-        }
-        this.$data.isMask = true;
+        this.hsyLoading = true;
+        this.$http.post('/admin/queryOrder/queryHsyOrderList',this.queryHsy)
+          .then(function (res) {
+            setTimeout(()=>{
+              this.hsyLoading = false;
+              this.recordsHsy = res.data.records;
+            },1000)
+            this.countHsy = res.data.count;
+          }, function (err) {
+            setTimeout(()=>{
+              this.hsyLoading = false;
+            },1000)
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       search(val){
         if(val == 'hss'){
@@ -509,5 +593,79 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+
+    .maskCon {
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+
+      .head {
+        position: relative;
+        padding: 20px 20px 0;
+
+        .title {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+
+        i {
+          font-family: element-icons !important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+
+      }
+      .body {
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+
+        div {
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot {
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
   }
 </style>

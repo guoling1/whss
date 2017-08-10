@@ -43,6 +43,15 @@ public class AppPolicyMember {
 
     private String discountInt;
     private String discountFloat;
+    private Integer cardStatus;
+
+    public Integer getCardStatus() {
+        return cardStatus;
+    }
+
+    public void setCardStatus(Integer cardStatus) {
+        this.cardStatus = cardStatus;
+    }
 
     public Long getId() {
         return id;

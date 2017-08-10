@@ -25,6 +25,21 @@ public class MemberManagementController {
     @Autowired
     private HsyMembershipService hsyMembershipService;
 
+
+    @ResponseBody
+    @RequestMapping(value = "/getMerchantMemberList",method = RequestMethod.POST)
+    public CommonResponse getMerchantMemberList(@RequestBody MemberRequest request){
+
+        final PageModel<MemberResponse> pageModel = new PageModel<MemberResponse>(request.getPageNo(), request.getPageSize());
+        request.setOffset(pageModel.getFirstIndex());
+//        List<MemberResponse> list = this.hsyMembershipService.getMerchantMemberList(request);
+//        int count = this.hsyMembershipService.getMerchantMemberListCount(request);
+//
+//        pageModel.setCount(count);
+//        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1, "success", pageModel);
+    }
+
     @ResponseBody
     @RequestMapping(value = "/getMemberList",method = RequestMethod.POST)
     public CommonResponse getMemberList(@RequestBody MemberRequest request){

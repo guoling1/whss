@@ -347,8 +347,18 @@ public class WxPubController extends BaseController {
         }else{
             List<MerchantInfo> merchantInfoList = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
             if(merchantInfoList.size()>0){
-                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                for(int i=0;i<merchantInfoList.size();i++){
+                    if(merchantInfoList.get(i).getOemId()==0){
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                    }else{
+                        Optional<OemInfo> oemInfoOptional1 = oemInfoService.selectOemInfoByDealerId(merchantInfoList.get(i).getOemId());
+                        if(WxConstants.APP_ID.equals(oemInfoOptional1.get().getAppId())){
+                            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+                        }
+                    }
+                }
             }
+
         }
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -1227,10 +1237,6 @@ public class WxPubController extends BaseController {
         if(accountBank==null){
             return CommonResponse.simpleResponse(-1, "您暂未设置默认银行卡");
         }
-//        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
-//                &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
-//            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
-//        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1260,9 +1266,6 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(continueBankInfoRequest.getCountyName())){
             return CommonResponse.simpleResponse(-1, "请选择县");
         }
-        if(StringUtils.isBlank(continueBankInfoRequest.getBranchCode())){
-            return CommonResponse.simpleResponse(-1, "请选择支行");
-        }
         if(StringUtils.isBlank(continueBankInfoRequest.getBranchName())){
             return CommonResponse.simpleResponse(-1, "请选择支行");
         }
@@ -1290,10 +1293,7 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         accountBankService.updateBranchInfo(continueBankInfoRequest);
-//        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
-//                &&merchantInfo.get().getCreditCard()!=null&&!"".equals(merchantInfo.get().getCreditCard())){
-//            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
-//        }
+        merchantChannelRateService.updateInterNet(merchantInfo.get().getAccountId(),merchantInfo.get().getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1485,6 +1485,7 @@ public class WxPubController extends BaseController {
             boolean b = DateUtil.isInDate(new Date(),"09:00:00","22:25:00");
             if(!b)return CommonResponse.simpleResponse(-1, "本通道只可在09:00至22:25使用");
         }
+
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
         merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());
@@ -1498,9 +1499,9 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
+        final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
         //hlb通道结算卡拦截
         if (checkMerchantInfoRequest.getChannelTypeSign() == EnumPayChannelSign.HE_LI_UNIONPAY.getId()){
-            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.get().getAccountId());
             final Optional<ChannelSupportDebitCard> channelSupportDebitCardOptional = this.channelSupportDebitCardService.selectByBankCode(accountBank.getBankBin());
             if (!channelSupportDebitCardOptional.isPresent()){
                 //通道结算卡不可用
@@ -1524,6 +1525,10 @@ public class WxPubController extends BaseController {
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNSUPPORT.getId()){
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "无需入网");
         }
+
+        if(accountBank.getBranchCode()==null||"".equals(accountBank.getBranchCode())){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",accountBank.getId());
+        }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENTING.getId()){
             log.info("商户入网中");
             return CommonResponse.simpleResponse(-1, "入网申请中");
@@ -1539,6 +1544,16 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
             log.info("商户已入网");
+            // 活动通道卡盟需更新一次上游结算费率
+            if ( (merchantChannelRate.getRemarks() == null) || (! merchantChannelRate.getRemarks().equals("已同步"))){
+                log.info("去卡盟上游同步费率");
+                final JSONObject jo = this.merchantChannelRateService.updateKmMerchantRateInfo(merchantInfo.get().getAccountId(), merchantInfo.get().getId(), merchantInfo.get().getProductId(), checkMerchantInfoRequest.getChannelTypeSign());
+                if(jo.getInt("code")==-1){
+                    return CommonResponse.simpleResponse(-1, "请稍后再试");
+                }else{
+                    return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
+                }
+            }
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "商户已入网");
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {

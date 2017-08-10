@@ -49,4 +49,11 @@ public class OrderBalanceStatistics {
      * {@link com.jkm.hss.product.enums.EnumUpperChannel}
      */
     private int upperChannel;
+
+    /**
+     * 结算通道
+     *
+     * {@link com.jkm.hss.bill.enums.EnumSettleChannel}
+     */
+    private int settleChannel;
 }

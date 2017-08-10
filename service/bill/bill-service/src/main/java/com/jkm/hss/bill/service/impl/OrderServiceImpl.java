@@ -7,10 +7,7 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
-import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.base.common.util.DateTimeUtil;
-import com.jkm.base.common.util.ExcelUtil;
-import com.jkm.base.common.util.SnGenerator;
+import com.jkm.base.common.util.*;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
@@ -43,8 +40,13 @@ import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
+import com.jkm.hss.product.enums.*;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.service.UserTradeRateService;
+import com.jkm.hsy.user.service.UserWithdrawRateService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -61,6 +63,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -93,6 +96,14 @@ public class OrderServiceImpl implements OrderService {
     private PayService payService;
     @Autowired
     private HttpClientFacade httpClientFacade;
+    @Autowired
+    private UserTradeRateService userTradeRateService;
+    @Autowired
+    private UserWithdrawRateService userWithdrawRateService;
+    @Autowired
+    private HsyShopDao hsyShopDao;
+    @Autowired
+    private BasicChannelService basicChannelService;
 
     /**
      * {@inheritDoc}
@@ -101,8 +112,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public void add(final Order order) {
-        this.orderDao.insert(order);
+    public long add(final Order order) {
+        return this.orderDao.insert(order);
     }
 
     /**
@@ -134,7 +145,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(payOrder.getAppId());
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payOrder.getPayChannelSign());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage( payOrder,EnumProductType.HSS, merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
         playMoneyOrder.setGoodsDescribe(merchant.getMerchantName());
@@ -172,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(null,EnumProductType.HSY, shop.getId(), channel);
         Preconditions.checkState(amount.compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(shop.getName());
@@ -314,7 +325,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(withdrawParams.getAppId());
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, withdrawParams.getAccountId(), withdrawParams.getChannel());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(null,EnumProductType.HSY, withdrawParams.getAccountId(), withdrawParams.getChannel());
         Preconditions.checkState(withdrawParams.getWithdrawAmount().compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(withdrawParams.getNote());
@@ -477,8 +488,10 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate) {
-        return this.orderDao.statisticsPendingBalanceOrder(settleDate);
+    public List<OrderBalanceStatistics> statisticsPendingBalanceOrder(final Date settleDate, List<Long> accountIdlist,long accountId) {
+        final List<OrderBalanceStatistics> list = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.XMMS_BANK.getId(), accountIdlist, accountId);
+        final List<OrderBalanceStatistics> list1 = this.orderDao.statisticsPendingBalanceOrder(settleDate, EnumUpperChannel.SYJ.getId(),accountIdlist,accountId);
+        return list.addAll(list1) == true ? list : Collections.EMPTY_LIST;
     }
 
 
@@ -527,7 +540,9 @@ public class OrderServiceImpl implements OrderService {
 //                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
-                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                        final int payChannelSign = list.get(i).getPayChannelSign();
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(payChannelSign);
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
@@ -707,7 +722,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(list.getPayChannelSign());
+                        list.setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
@@ -763,7 +779,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (list.getPayType()!=null&&!list.getPayType().equals("")) {
                     if (list.getPayChannelSign()!=0) {
-                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(list.getPayChannelSign());
+                        list.setPayType(EnumPayChannelSign.idOf(parentChannelSign).getPaymentChannel().getValue());
                     }
 
                 }
@@ -1066,8 +1083,16 @@ public class OrderServiceImpl implements OrderService {
                     String dates = sdf.format(list.get(i).getUpdateTime());
                     list.get(i).setUpdateTimes(dates);
                 }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==10){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_FAIL.getValue());
+                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    list.get(i).setUpdateTimes(dates);
+                }
                 if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getUpperChannel().getValue());
                 }
             }
         }
@@ -1385,6 +1410,19 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param
+     * @param status
+     * @return
+     */
+    @Override
+    public List<Order> selectOrderListByCount(long accountId, int count, EnumOrderStatus status, String payTime) {
+        final List<Order> orderList = this.orderDao.selectOrderListByCount(accountId, count, status.getId(), payTime + " 00:00:00", payTime + " 23:59:59");
+        return CollectionUtils.isEmpty(orderList) ? Collections.EMPTY_LIST : orderList;
+    }
+
+
     @Override
     public String getAmountCounts(OrderTradeRequest req) {
 
@@ -1413,6 +1451,47 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return null;
+    }
+
+    @Override
+    public void markOrder2SettleFail(long settlementRecordId, int settleStatus, int oriSettleStatus) {
+         this.orderDao.markOrder2SettleFail(settlementRecordId, settleStatus, oriSettleStatus);
+    }
+
+    @Override
+    public long selectWithdrawOrderCountByParam(long accountId) {
+        return this.orderDao.selectWithdrawOrderCountByParam(accountId);
+    }
+
+    @Override
+    public List<Order> selectWithdrawOrdersByParam(long accountId, int firstIndex, int pageSize) {
+        return this.orderDao.selectWithdrawOrdersByParam(accountId, firstIndex, pageSize);
+    }
+
+    @Override
+    public List<Order> selectWithdrawingOrderByAccountId(long accountId, String payTime) {
+
+        return this.orderDao.selectWithdrawingOrderByAccountId(accountId, payTime + " 00:00:00", payTime + " 23:59:59");
+    }
+
+    @Override
+    public void updateOrdersBySns(List<String> sns,int settleStatus,long settlementRecordId) {
+        this.orderDao.updateOrdersBySns(sns,settleStatus,settlementRecordId);
+    }
+
+    @Override
+    public void updateOrdersBySns2Withdraw(List<String> sns, int status) {
+        this.orderDao.updateOrdersBySns2Withdraw(sns, status);
+    }
+
+    @Override
+    public List<Order> selectWithdrawingOrderByBefore(Date date) {
+        return this.orderDao.selectWithdrawingOrderByBefore(date);
+    }
+
+    @Override
+    public Order getBySn(String sn) {
+        return this.orderDao.selectOrderBySn(sn);
     }
 
     @Override
@@ -1635,6 +1714,11 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public int markOrder2SettlementIng(final Date settleDate, final long accountId, final long settlementRecordId, final int settleStatus, final int upperChannel) {
+        //根据结算单更新 需要判断 通道  民生 2个结算单
+        if (EnumUpperChannel.XMMS_BANK.getId() == upperChannel){
+            final SettlementRecord settlementRecord = this.settlementRecordService.getById(settlementRecordId).get();
+            return this.orderDao.markOrder2SettlementIngBySettleChannel(settleDate, accountId, settlementRecordId, settleStatus, upperChannel, settlementRecord.getSettleChannel());
+        }
         return this.orderDao.markOrder2SettlementIng(settleDate, accountId, settlementRecordId, settleStatus, upperChannel);
     }
 

@@ -2,16 +2,18 @@ package com.jkm.hss.bill.service;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.jkm.hss.bill.entity.HsyOrder;
-import com.jkm.hss.bill.entity.HsyRefundOrder;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.RefundOrder;
+import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.product.enums.EnumUpperChannel;
+import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/1/17.
@@ -252,5 +254,48 @@ public interface HSYTradeService {
      */
     void withdrawSplitAccount(Order order, AppBizShop shop);
 
+    /**
+     * 获取账户信息
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String getAccount(String dataParam, AppParam appParam);
+
+    /**
+     * 提现
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String withdraw(String dataParam, AppParam appParam);
+
+    /**
+     *  提现记录
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String withdrawOrderList(String dataParam, AppParam appParam);
+
+    /**
+     * D0提现
+     * @param account
+     * @return
+     */
+    JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo, AppBizCard appBizCard);
+
+    /**
+     * 确认提现
+     * @param withDrawOrderId
+     * @return
+     */
+    Pair<Integer, String> confirmWithdraw(long withDrawOrderId);
+
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 
 }

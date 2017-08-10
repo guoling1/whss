@@ -48,10 +48,10 @@
               </el-date-picker>
             </li>
             <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
+              <el-button type="primary" size="small" @click="search">筛选</el-button>
             </li>
             <li class="same" style="float: right">
-              <div @click="_$power(onload,'boss_trade_export')" download="打款记录" class="btn btn-primary" style="margin-top: 17px;">导出</div>
+              <el-button type="primary" size="small" :loading="loadClick" @click="_$power(onload,'boss_trade_export')" style="margin-top: 17px;">导出</el-button>
             </li>
           </ul>
           <!--表格-->
@@ -152,6 +152,7 @@
     name: 'withDrawal',
     data(){
       return {
+        loadClick:false,
         pickerOptions: {
           onPick:function({ maxDate, minDate }){
             console.log({maxDate,minDate})
@@ -195,7 +196,7 @@
         /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount'*/
+        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',*/
       }
     },
     created: function () {
@@ -311,14 +312,17 @@
         }
       },
       onload:function () {
-        this.$data.isMask = true;
+        this.loadClick = true;
         this.$http.post(this.$data.excelUrl,this.$data.query)
           .then(function (res) {
+            this.loadClick = false;
             this.$data.url = res.data.url;
+            this.isMask = true;
           },function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
+            this.loadClick = false;
             this.$data.isMask = false;
           })
       },

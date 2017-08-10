@@ -29,7 +29,7 @@
     </update>
 
     <insert id="insertMembershipCardShop" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
-        insert into app_policy_membership_card(MCID,SID)
+        insert into app_policy_membership_card_shop(MCID,SID)
         values(#{mcid},#{sid})
     </insert>
 
@@ -120,7 +120,7 @@
 
     <select id="findMemberInfoByID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
         select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
-        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        card.status cardStatus,card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
@@ -133,9 +133,9 @@
 
     <select id="findMemberCardList" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME,
-        (select count(*) from app_policy_member member where mcid=card.ID) memberCount,
+        (select count(*) from app_policy_member member where mcid=card.ID and status=1) memberCount,
         (select COALESCE(sum(TRADEAMOUNT),0) from app_policy_recharge_order where mcid=card.ID and status=1) rechargeSum,
-        (select COALESCE(sum(realAmount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3) consumeSum
+        (select COALESCE(sum(amount),0) from tb_hsy_order where mcid=card.ID and orderstatus!=1 and orderstatus!=3 and orderstatus!=8 and (isMemberCardPay=1 or (isMemberCardPay=0 and amount!=realAmount))) consumeSum
         from app_policy_membership_card card where UID=#{uid}
     </select>
 
@@ -145,15 +145,15 @@
     </select>
 
     <select id="findShopNameAndGlobalID" resultType="com.jkm.hsy.user.entity.AppAuUser">
-        select user.GLOBALID globalID,shop.name shopName
+        select user.GLOBALID globalID,shop.name shopName,user.accountID accountID
         from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
         left join app_biz_shop shop on shop.ID=sur.sid
         where sur.TYPE=1 and user.ID=#{uid}
     </select>
 
     <insert id="insertRechargeOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
-        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,CREATETIME,UPDATETIME)
-        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{cid},#{mcid},#{uid},#{merchantReceiveAccountID},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{source},#{createTime},#{updateTime})
+        insert into app_policy_recharge_order(ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,MEMBERSHIPNAME,CONSUMERCELLPHONE,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,POUNDAGE,REMARK,SETTLETYPE,CREATETIME,UPDATETIME)
+        values(#{orderNO},#{tradeNO},#{tradeID},#{tradeAmount},#{realPayAmount},#{marketingAmount},#{payeeAccountID},#{ouid},#{memberID},#{memberAccountID},#{cid},#{mcid},#{uid},#{merchantReceiveAccountID},#{membershipName},#{consumerCellphone},#{goodsName},#{goodsDescribe},#{merchantName},#{merchantNO},#{paySN},#{payChannelSign},#{paySuccessTime},#{status},#{type},#{source},#{poundage},#{remark},#{settleType},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateRechargeOrder" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
@@ -173,6 +173,8 @@
             <if test="mcid!=null">MCID=#{mcid},</if>
             <if test="uid!=null">UID=#{uid},</if>
             <if test="merchantReceiveAccountID!=null">MERCHANTRECEIVEACCOUNTID=#{merchantReceiveAccountID},</if>
+            <if test="membershipName!=null and membershipName!=''">MEMBERSHIPNAME=#{membershipName},</if>
+            <if test="consumerCellphone!=null and consumerCellphone!=''">CONSUMERCELLPHONE=#{consumerCellphone},</if>
             <if test="goodsName!=null and goodsName!=''">GOODSNAME=#{goodsName},</if>
             <if test="goodsDescribe!=null and goodsDescribe!=''">GOODSDESCRIBE=#{goodsDescribe},</if>
             <if test="merchantName!=null and merchantName!=''">MERCHANTNAME=#{merchantName},</if>
@@ -183,6 +185,9 @@
             <if test="status!=null">STATUS=#{status},</if>
             <if test="type!=null">TYPE=#{type},</if>
             <if test="source!=null">SOURCE=#{source},</if>
+            <if test="poundage!=null">POUNDAGE=#{poundage},</if>
+            <if test="remark!=null">REMARK=#{remark},</if>
+            <if test="settleType!=null">SETTLETYPE=#{settleType},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -191,17 +196,17 @@
     <select id="findMemberCardByID" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
         select ID,UID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,DISCOUNT,ISDEPOSITED,DEPOSITAMOUNT,ISPRESENTEDVIAACTIVATE,PRESENTAMOUNT,CANRECHARGE,ISPRESENTEDVIARECHARGE,RECHARGELIMITAMOUNT,RECHARGEPRESENTAMOUNT,WEIGHT,STATUS,CREATETIME,UPDATETIME
         from app_policy_membership_card
-        where ID=#{id}
+        where status=1 and ID=#{id}
     </select>
 
     <select id="findMemberCardCountByMCID" resultType="java.lang.Integer">
-      select count(1) from app_policy_member where mcid=#{mcid}
+      select count(1) from app_policy_member where mcid=#{mcid} and status=1
     </select>
 
     <select id="findMemberCardCascadeCountByUID" resultType="java.lang.Integer">
         select count(1) from app_policy_member member
         left join app_policy_membership_card card on member.mcid=card.id
-        where card.UID=#{uid}
+        where card.UID=#{uid} and member.status=1
         <if test="startTime!=null">
             AND member.CREATETIME >=#{startTime}
         </if>
@@ -216,7 +221,7 @@
     </select>
 
     <select id="findSuitShopByMCID" resultType="com.jkm.hsy.user.entity.AppBizShop">
-        select shop.NAME,shop.SHORTNAME,shop.ADDRESS,shop.CONTACTCELLPHONE from app_biz_shop shop
+        select shop.ID,shop.NAME,shop.SHORTNAME,shop.ADDRESS,shop.CONTACTCELLPHONE from app_biz_shop shop
         left join app_policy_membership_card_shop mcs on mcs.sid=shop.id
         where mcs.MCID=${mcid}
     </select>
@@ -227,9 +232,12 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where card.UID=#{objectT.uid}
+        where card.UID=#{objectT.uid} and member.status=1
         <if test="objectT.param!=null and objectT.param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{objectT.param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{objectT.param},'%'))
+        </if>
+        <if test="objectT.mcid!=null">
+            AND mcid=#{objectT.mcid}
         </if>
         order by member.UPDATETIME desc
     </select>
@@ -241,9 +249,12 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where card.UID=#{uid}
+        where card.UID=#{uid} and member.status=1
         <if test="param!=null and param!=''">
             AND (consumer.CONSUMERCELLPHONE LIKE CONCAT('%',#{param},'%') or card.MEMBERSHIPNAME LIKE CONCAT('%',#{param},'%'))
+        </if>
+        <if test="mcid!=null">
+            AND mcid=#{mcid}
         </if>) x
     </select>
 
@@ -262,7 +273,7 @@
         <if test="objectT.mcid!=null and objectT.mcid!=''">
             AND MCID=#{objectT.mcid}
         </if>
-        order by rorder.UPDATETIME desc
+        order by rorder.CREATETIME desc
     </select>
 
     <select id="findRechargeOrderListByPageCount" parameterType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder" resultType="java.lang.Integer">
@@ -290,8 +301,8 @@
     </select>
 
     <select id="findMemberConsumeStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMemberStatistic">
-        select count(1) consumeCount,COALESCE(sum(realAmount),0) consumeSum from tb_hsy_order
-        where uid=#{uid} and mcid is not null and orderstatus!=1 and orderstatus!=3
+        select count(1) consumeCount,COALESCE(sum(amount),0) consumeSum from tb_hsy_order
+        where uid=#{uid} and orderstatus!=1 and orderstatus!=3 and orderstatus!=8 and (isMemberCardPay=1 or (isMemberCardPay=0 and amount!=realAmount))
         <if test="startTime!=null">
             AND pay_success_time >=#{startTime}
         </if>
@@ -301,7 +312,7 @@
     </select>
 
     <select id="findMemberCardAndStatistic" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCard">
-        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID) memberCount
+        select ID,MEMBERSHIPNAME,MEMBERSHIPSHOPNAME,(select count(1) from app_policy_member where MCID=card.ID and status=1) memberCount
         from app_policy_membership_card card where uid=#{uid}
     </select>
 
@@ -311,9 +322,41 @@
         from app_policy_member member
         left join app_policy_consumer consumer on member.CID=consumer.ID
         left join app_policy_membership_card card on member.MCID=card.ID
-        where 1=1
+        where 1=1 and member.status=1
         <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
         <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
+    </select>
+
+    <select id="findMemberListByOUIDAndUID" resultType="com.jkm.hsy.user.entity.AppPolicyMember">
+        select distinct member.ID,member.CID,member.MCID,member.ACCOUNTID,member.RECEIPTACCOUNTID,member.MEMBERCARDNO,member.STATUS,member.CREATETIME,member.UPDATETIME,consumer.CONSUMERCELLPHONE,consumer.USERID,consumer.OPENID,
+        card.MEMBERSHIPNAME,card.MEMBERSHIPSHOPNAME,card.DISCOUNT,card.ISDEPOSITED,card.UID,card.DEPOSITAMOUNT,card.ISPRESENTEDVIAACTIVATE,card.PRESENTAMOUNT,card.CANRECHARGE,card.ISPRESENTEDVIARECHARGE,card.RECHARGELIMITAMOUNT,card.RECHARGEPRESENTAMOUNT
+        from app_policy_member member
+        left join app_policy_consumer consumer on member.CID=consumer.ID
+        left join app_policy_membership_card card on member.MCID=card.ID
+        where 1=1 and card.UID=#{uid}
+        <if test="status!=null">and member.status=#{status}</if>
+        <if test="userID!=null and userID!=''">and consumer.USERID=#{userID}</if>
+        <if test="openID!=null and openID!=''">and consumer.OPENID=#{openID}</if>
+    </select>
+
+    <select id="findLastConsumeTime" resultType="java.util.Date">
+        select pay_success_time from tb_hsy_order where mid=#{mid} order by pay_success_time desc limit 1
+    </select>
+
+    <select id="findAppPolicyRechargeOrderByParam" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select ORDERNO,MEMBERSHIPNAME,CONSUMERCELLPHONE,TRADEAMOUNT,REALPAYAMOUNT,
+        (case when source='wechat' then '微信'
+        when source='alipay' then '支付宝' else '' end) source,PAYSUCCESSTIME from app_policy_recharge_order
+        where 1=1
+        <if test="uid!=null">and UID=#{uid}</if>
+        <if test="startTime!=null">and PAYSUCCESSTIME>#{startTime}</if>
+        <if test="endTime!=null"><![CDATA[ and PAYSUCCESSTIME<#{endTime}]]></if>
+    </select>
+
+    <select id="findRechargeOrderAboutRechargeStatus" resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select ID,ORDERNO,MEMBERSHIPNAME,CONSUMERCELLPHONE,TRADEAMOUNT,REALPAYAMOUNT,STATUS,PAYSUCCESSTIME from app_policy_recharge_order
+        where (status=1 or status=3) and MEMBERID=#{mid} and (type=1 or type=2)
+        order by PAYSUCCESSTIME
     </select>
 
     <select id="getMemberList" resultType="com.jkm.hsy.user.entity.MemberResponse">
@@ -355,6 +398,149 @@
         app_policy_member a
         LEFT JOIN app_policy_consumer b ON a.CID = b.ID
         WHERE 1=1
+    </select>
+
+    <select id="getMembershipCardShop" resultType="com.jkm.hsy.user.entity.AppPolicyMembershipCardShop">
+        select MCID,SID from app_policy_membership_card_shop
+        where MCID=#{mcid}
+    </select>
+
+    <select id="findConsumeOrderSum" resultType="java.math.BigDecimal">
+        select
+          sum(corder.amount)
+        from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8 and (corder.isMemberCardPay=1 or (corder.isMemberCardPay=0 and corder.amount!=corder.realAmount))
+        <if test="mcid!=null and mcid!=''">
+            AND MCID=#{mcid}
+        </if>
+        <if test="mid!=null and mid!=''">
+            AND MID=#{mid}
+        </if>
+    </select>
+
+    <!--  -->
+    <select id="getMerchantMemberList" resultType="com.jkm.hsy.user.entity.MerchantMemberResponse">
+        SELECT
+            u.ID,
+            u.GLOBALID,
+            s.SHORTNAME AS REALNAME,
+            t.count as cardCount,
+            (
+                SELECT
+                    IFNULL(sum(TRADEAMOUNT), 0)
+                FROM
+                    app_policy_recharge_order
+                WHERE
+                    UID = t.UID AND `STATUS`=1
+            ) AS total
+        FROM
+            app_au_user u
+        LEFT JOIN app_biz_shop_user_role r ON r.UID=u.ID AND r.TYPE=1 AND r.ROLE=1 AND r.`STATUS`=1
+        LEFT JOIN app_biz_shop s ON s.ID = r.SID
+        RIGHT JOIN (
+            SELECT
+                UID,
+                count(1) AS count
+            FROM
+                app_policy_membership_card WHERE `STATUS`=1
+            GROUP BY
+                UID
+        ) AS t ON u.ID = t.UID WHERE 1=1
+        <if test="realname!=null and realname!=''"> and u.REALNAME=#{realname}</if>
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getMerchantMemberLists" resultType="com.jkm.hsy.user.entity.MerchantMemberResponse">
+        SELECT
+        u.ID,
+        u.GLOBALID,
+        u.REALNAME,
+        t.count as cardCount,
+        (
+        SELECT
+        IFNULL(sum(TRADEAMOUNT), 0)
+        FROM
+        app_policy_recharge_order
+        WHERE
+        UID = t.UID AND `STATUS`=1
+        ) AS total
+        FROM
+        app_au_user u
+        RIGHT JOIN (
+        SELECT
+        UID,
+        count(1) AS count
+        FROM
+        app_policy_membership_card WHERE `STATUS`=1
+        GROUP BY
+        UID
+        ) AS t ON u.ID = t.UID WHERE 1=1
+        <if test="realname!=null and realname!=''"> and u.REALNAME=#{realname}</if>
+    </select>
+
+    <select id="getMemberShipList" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+        SELECT
+            a.ID,
+            a.UID,
+            a.MEMBERSHIPNAME,
+            a.MEMBERSHIPSHOPNAME,
+            a.DEPOSITAMOUNT,
+            a.DISCOUNT,
+            a.ISPRESENTEDVIAACTIVATE,
+            a.RECHARGEPRESENTAMOUNT,
+            (SELECT COUNT(*) FROM app_policy_member WHERE MCID=a.ID) AS cardCount
+        FROM
+          app_policy_membership_card a WHERE a.UID=#{uid}
+        GROUP BY a.UID,a.ID
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getMemberShipLists" resultType="com.jkm.hsy.user.entity.MerchantMemberShipResponse">
+        SELECT DISTINCT b.*,a.UID,d.SHORTNAME FROM app_policy_membership_card a
+        LEFT JOIN app_policy_membership_card_shop b ON b.MCID=a.ID
+        LEFT JOIN app_biz_shop_user_role c ON c.SID = b.SID
+        LEFT JOIN app_biz_shop d ON d.ID=c.SID WHERE a.UID=#{uid}
+    </select>
+
+    <select id="getcardList" resultType="com.jkm.hsy.user.entity.CardNoResponse">
+      SELECT
+        b.CONSUMERCELLPHONE,
+        c.MEMBERSHIPNAME,
+        e.SHORTNAME,
+        IFNULL((SELECT SUM(TRADEAMOUNT) FROM app_policy_recharge_order WHERE `STATUS`=1 AND MEMBERID=a.ID),0) AS tradeAmount,
+      IFNULL((SELECT SUM(amount) FROM tb_hsy_order WHERE (orderstatus!=1 OR orderstatus!=3 OR orderstatus!=8) AND mid=a.ID),0) AS amount
+    FROM
+        app_policy_member a
+    LEFT JOIN app_policy_consumer b ON b.ID = a.CID
+    LEFT JOIN app_policy_membership_card c ON c.ID = a.MCID
+    LEFT JOIN app_biz_shop_user_role d ON d.UID = c.UID
+    AND d.ROLE = 1
+    AND d.`STATUS` = 1
+    AND d.TYPE = 1
+    LEFT JOIN app_biz_shop e ON e.ID = d.SID
+    WHERE 1=1
+    <if test="consumerCellphone!=null and consumerCellphone!=''"> and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
+    LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getcardLists" resultType="com.jkm.hsy.user.entity.CardNoResponse">
+        SELECT
+        b.CONSUMERCELLPHONE,
+        c.MEMBERSHIPNAME,
+        e.SHORTNAME,
+        IFNULL((SELECT SUM(TRADEAMOUNT) FROM app_policy_recharge_order WHERE `STATUS`=1 AND MEMBERID=a.ID),0) AS tradeAmount,
+        IFNULL((SELECT SUM(amount) FROM tb_hsy_order WHERE (orderstatus!=1 OR orderstatus!=3 OR orderstatus!=8) AND mid=a.ID),0) AS amount
+        FROM
+        app_policy_member a
+        LEFT JOIN app_policy_consumer b ON b.ID = a.CID
+        LEFT JOIN app_policy_membership_card c ON c.ID = a.MCID
+        LEFT JOIN app_biz_shop_user_role d ON d.UID = c.UID
+        AND d.ROLE = 1
+        AND d.`STATUS` = 1
+        AND d.TYPE = 1
+        LEFT JOIN app_biz_shop e ON e.ID = d.SID
+        WHERE 1=1
+        <if test="consumerCellphone!=null and consumerCellphone!=''"> and b.CONSUMERCELLPHONE=#{consumerCellphone}</if>
     </select>
 
 </mapper>

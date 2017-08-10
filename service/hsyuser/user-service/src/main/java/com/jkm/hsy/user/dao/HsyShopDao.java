@@ -1,6 +1,6 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.constant.Page;
+import com.jkm.base.common.util.Page;
 import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -57,7 +57,10 @@ public interface HsyShopDao {
      */
     void changeSettlementCard(@Param("cardNo") String cardNo,@Param("bankName") String bankName,
                               @Param("districtCode") String districtCode,
-                              @Param("bankAddress") String bankAddress,@Param("id") Long id,@Param("branchCode") String branchCode);
+                              @Param("bankAddress") String bankAddress,
+                              @Param("id") Long id,
+                              @Param("branchCode") String branchCode,
+                              @Param("cardAccountName") String cardAccountName);
 
     /**
      * 修改对公或者对私
@@ -65,4 +68,12 @@ public interface HsyShopDao {
      * @param id
      */
     void changeStatus(@Param("isPublic") String isPublic,@Param("id") Long id);
+
+    /**
+     * 开启店铺的扫码打印小票功能
+     *
+     * @param updateScanPrintShopIds
+     * @return
+     */
+    int updateOpenScanPrintByShopIds(@Param("updateScanPrintShopIds") List<Long> updateScanPrintShopIds);
 }

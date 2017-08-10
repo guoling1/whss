@@ -40,4 +40,9 @@ public interface DealerRatePolicyService {
      * @return
      */
     Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(long dealerId,String policyType);
+    /**
+     * 修改
+     * @param dealerRatePolicy
+     */
+    void updateByPolicyAndDealer(DealerRatePolicy dealerRatePolicy);
 }

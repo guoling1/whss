@@ -10,7 +10,7 @@ public class AppBizShop {
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称
-    private String shortName;//店铺简称
+    private String shortName;
     private String industryCode;//行业代码
     private String districtCode;//行政区代码
     private String address;//地址
@@ -54,6 +54,13 @@ public class AppBizShop {
     private String industryName;//行业名称
     private String districtName;//行政区名称
     private String email="";
+
+    /**
+     * 扫码支付没打印小票
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
+     */
+    private int openScanPrint;
 
     public Long getId() {
         return id;

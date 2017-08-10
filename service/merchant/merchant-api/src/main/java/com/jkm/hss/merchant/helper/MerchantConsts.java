@@ -88,6 +88,14 @@ public class MerchantConsts {
         @DefaultValue("")
         String merchantIN();
 
+        @Key("merchant.update")
+        @DefaultValue("")
+        String merchantUpdate();
+
+        @Key("merchant.updateRate")
+        @DefaultValue("")
+        String merchantUpdateRate();
+
         @Key("merchant.baseInfo.reg")
         @DefaultValue("")
         String merchantBaseInfoReg();

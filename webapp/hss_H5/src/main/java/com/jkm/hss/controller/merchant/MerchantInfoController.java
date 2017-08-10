@@ -131,6 +131,12 @@ public class MerchantInfoController extends BaseController {
         if (!ValidateUtils.isMobile(reserveMobile)) {
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
+        if (StringUtils.isBlank(merchantInfo.getDistrictCode())) {
+            return CommonResponse.simpleResponse(-1, "请选择支行所在地区");
+        }
+        if (StringUtils.isBlank(merchantInfo.getBranchName())) {
+            return CommonResponse.simpleResponse(-1, "请填写支行信息");
+        }
         if (!ValidateUtils.verifyCodeCheck(verifyCode)) {
             return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
         }

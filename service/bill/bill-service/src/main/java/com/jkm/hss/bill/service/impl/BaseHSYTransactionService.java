@@ -1,7 +1,6 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.jkm.hss.bill.entity.HsyOrder;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.math.BigDecimal;
@@ -28,4 +27,13 @@ public interface BaseHSYTransactionService {
      * @return
      */
     Triple<Integer, String, String> placeOrderImpl(HsyOrder hsyOrder, BigDecimal amount);
+
+    /**
+     * 下单实现（会员卡）
+     *
+     * @param hsyOrder
+     * @param amount
+     * @return
+     */
+    Triple<Integer, String, String> placeOrderMemberImpl(HsyOrder hsyOrder, BigDecimal amount,Long accountID,Long reciptAccountID);
 }
