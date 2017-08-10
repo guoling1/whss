@@ -171,7 +171,7 @@
       </div>
       <div class="box box-primary">
         <span class="lead" style="display: inline-block">默认结算卡</span>
-        <a href="javascript:;" @click="changeBank = true" v-if="!isShow">修改默认结算卡</a>
+        <a href="javascript:;" @click="_$power(bankChange,'boss_modify_bank_card')" v-if="!isShow">修改默认结算卡</a>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">结算卡开户名：<span>{{$msg.name}}</span></div>
@@ -502,8 +502,8 @@
           children: 'cities'
         },
         form:{
-          branchProvince_name:'',
-          branchProvince_code:'',
+          branchProvinceName:'',
+          branchProvinceCode:'',
           branchCityCode:'',
           branchCityName:'',
           branchCountyCode:'',
@@ -567,6 +567,9 @@
         });
     },
     methods: {
+      bankChange: function () {
+        this.changeBank = true
+      },
       changeBankFn: function () {
         this.changeBank = true;
         this.bankQuery = {
@@ -602,8 +605,8 @@
       },
       wad:function () {
         this.form = {
-          branchProvince_name:'',
-          branchProvince_code:'',
+          branchProvinceName:'',
+          branchProvinceCode:'',
           branchCityCode:'',
           branchCityName:'',
           branchCountyCode:'',
@@ -619,8 +622,8 @@
             .then(res=>{
             for(let i=0;i<this.options2.length;i++){
             if(this.options2[i].value==val[0]){
-              this.form.branchProvince_name = this.options2[i].aname;
-              this.form.branchProvince_code = this.options2[i].value;
+              this.form.branchProvinceName = this.options2[i].aname;
+              this.form.branchProvinceCode = this.options2[i].value;
               this.bankQuery.branchProvinceName = this.options2[i].aname;
               this.bankQuery.branchProvinceCode = this.options2[i].value;
                 for(let j=0;j<res.data.length;j++){
@@ -696,8 +699,8 @@
       submit: function () {
         for(let i=0; i<this.citys.length;i++){
             if(this.citys[i].value == this.cityCode[2]){
-              this.form.branchCountyCode = this.citys[i].aname;
-              this.form.branchCountyName = this.citys[i].value;
+              this.form.branchCountyCode = this.citys[i].value;
+              this.form.branchCountyName = this.citys[i].aname;
             }
         }
         this.form.id = this.id;
@@ -706,17 +709,20 @@
         this.form.status = this.status;
         var flag=false;
         for(let k in this.form){
-            if(this.form[k]==''){
+            if(this.form[k]===''){
                 flag = true;
+                console.log(k)
                 break;
             }
         }
+
         if(flag){
           this.$message({
             showClose: true,
             message: '请补全信息',
             type: 'success'
           });
+          console.log(this.form)
         }else{
           this.btnLoad = true;
           this.$http.post('/admin/QueryMerchantInfoRecord/saveNo',this.form)
@@ -1043,8 +1049,8 @@
         this.bankDis = true;
         for(let i=0; i<this.citys.length;i++){
           if(this.citys[i].value == this.cityCode[2]){
-            this.bankQuery.branchCountyCode = this.citys[i].aname;
-            this.bankQuery.branchCountyName = this.citys[i].value;
+            this.bankQuery.branchCountyCode = this.citys[i].value;
+            this.bankQuery.branchCountyName = this.citys[i].aname;
           }
         }
         this.bankQuery.merchantId = this.id;

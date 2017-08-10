@@ -8,6 +8,7 @@ import com.jkm.hss.helper.request.QueryChannelSupportBankRequest;
 import com.jkm.hss.helper.response.QueryChannelSupportBankResponse;
 import com.jkm.hss.product.entity.ChannelSupportCreditBank;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ChannelSupportCreditBankService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -32,7 +33,8 @@ public class ChannelController extends BaseController {
 
     @Autowired
     private ChannelSupportCreditBankService channelSupportCreditBankService;
-
+    @Autowired
+    private BasicChannelService basicChannelService;
     /**
      * 查询当前快捷通道支持的信用卡银行列表
      *
@@ -42,8 +44,9 @@ public class ChannelController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "queryChannelSupportBank", method = RequestMethod.POST)
     public CommonResponse queryChannelSupportBank(@RequestBody final QueryChannelSupportBankRequest queryChannelSupportBankRequest) {
+        final int parentChannelSign = this.basicChannelService.selectParentChannelSign(queryChannelSupportBankRequest.getChannelSign());
         final List<ChannelSupportCreditBank> channelSupportCreditBankList =
-                this.channelSupportCreditBankService.getByUpperChannel(EnumPayChannelSign.idOf(queryChannelSupportBankRequest.getChannelSign()).getUpperChannel().getId());
+                this.channelSupportCreditBankService.getByUpperChannel(EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel().getId());
         if (CollectionUtils.isEmpty(channelSupportCreditBankList)) {
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", Collections.emptyList());
         }

@@ -7,6 +7,7 @@ public enum OrderStatus {
     NEED_RECHARGE(0,"待充值"),
     RECHARGE_SUCCESS(1,"充值成功"),
     RECHARGE_FAIL(2,"充值失败"),
+    HAS_REQUSET_TRADE(3,"已请求交易"),
     ;
     public int key;
     public String value;

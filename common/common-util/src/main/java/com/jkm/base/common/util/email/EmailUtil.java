@@ -2,6 +2,7 @@ package com.jkm.base.common.util.email;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -11,8 +12,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -53,8 +54,8 @@ public final class EmailUtil {
             messageBodyPart.setContent(baseEmailInfo.getContent(),"text/html; charset=utf-8");
             mainPart.addBodyPart(messageBodyPart);
             //存在附件
-            final String[] filePaths = baseEmailInfo.getAttachFileNames();
-            if (filePaths != null && filePaths.length > 0) {
+            final List<String> filePaths = baseEmailInfo.getAttachFileNames();
+            if (!CollectionUtils.isEmpty(filePaths)) {
                 for(String filePath : filePaths){
                     final File file = new File(filePath);
                     if(file.exists()){//附件存在磁盘中

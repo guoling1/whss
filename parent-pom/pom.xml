@@ -45,6 +45,7 @@
         <hsy.api.version>${hss.project.version}</hsy.api.version>
         <hsy.push.version>${hss.project.version}</hsy.push.version>
         <dealer.version>${hss.project.version}</dealer.version>
+        <socket.service.version>${hss.project.version}</socket.service.version>
     </properties>
 
     <dependencyManagement>
@@ -204,6 +205,16 @@
                 <groupId>com.jkm</groupId>
                 <artifactId>hss-push-service</artifactId>
                 <version>${hsy.push.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>qbjj-socket-api</artifactId>
+                <version>${socket.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>qbjj-socket-service</artifactId>
+                <version>${socket.service.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

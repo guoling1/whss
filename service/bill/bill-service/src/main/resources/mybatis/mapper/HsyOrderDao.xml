@@ -31,7 +31,9 @@
         uid,
         accountid,
         dealerid,
-        remark)
+        remark,
+        payment_terminal
+        )
         VALUES
         (
         #{ordernumber},
@@ -60,7 +62,9 @@
         #{uid},
         #{accountid},
         #{dealerid},
-        #{remark});
+        #{remark},
+        #{paymentTerminal}
+        );
     </insert>
 
     <update id="update">
@@ -126,6 +130,21 @@
             <if test="paytype!=null">
                 pay_type=#{paytype},
             </if>
+            <if test="cid!=null">
+                cid=#{cid},
+            </if>
+            <if test="mcid!=null">
+                mcid=#{mcid},
+            </if>
+            <if test="mid!=null">
+                mid=#{mid},
+            </if>
+            <if test="isMemberCardPay!=null">
+                isMemberCardPay=#{isMemberCardPay},
+            </if>
+            <if test="amount!=null">
+                amount=#{amount},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}
             </if>
@@ -150,33 +169,7 @@
     </select>
 
     <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.HsyOrder">
-        SELECT id,
-        ordernumber,
-        shopid,
-        shopname,
-        merchantname,
-        order_no,
-        order_id,
-        orderstatus,
-        sourcetype,
-        validationcode,
-        amount,
-        poundage,
-        qrcode,
-        cashierid,
-        cashiername,
-        pay_sn,
-        pay_type,
-        pay_channel_sign,
-        pay_success_time,
-        refund_amount,
-        refund_status,
-        refund_time,
-        goods_name,
-        goods_describe,
-        remark,
-        create_time,
-        update_time
+        SELECT *
         FROM tb_hsy_order
         WHERE order_no = #{orderNo}
     </select>
@@ -323,16 +316,16 @@
 
     <select id="findConsumeOrderListByPage" parameterType="page" resultType="com.jkm.hss.bill.entity.HsyOrder">
         select
-          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
+          corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
-        where orderstatus!=1 and orderstatus!=3
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8 and (corder.isMemberCardPay=1 or (corder.isMemberCardPay=0 and corder.amount!=corder.realAmount))
         <if test="objectT.mcid!=null and objectT.mcid!=''">
             AND MCID=#{objectT.mcid}
         </if>
         <if test="objectT.mid!=null and objectT.mid!=''">
             AND MID=#{objectT.mid}
         </if>
-        order by corder.update_time desc
+        order by corder.create_time desc
     </select>
 
     <select id="findConsumeOrderListByPageCount" parameterType="com.jkm.hss.bill.entity.HsyOrder" resultType="java.lang.Integer">
@@ -340,7 +333,7 @@
         corder.id,corder.shopname,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time
         createTime,corder.update_time updateTime,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
-        where orderstatus!=1 and orderstatus!=3
+        where orderstatus!=1 and orderstatus!=3 and orderstatus!=8
         <if test="mcid!=null and mcid!=''">
             AND MCID=#{mcid}
         </if>
@@ -354,6 +347,225 @@
         corder.id,corder.orderstatus,corder.ordernumber,corder.amount,corder.realAmount,corder.create_time createTime,corder.update_time updateTime,corder.pay_type payType,consumer.CONSUMERCELLPHONE
         from tb_hsy_order corder left join app_policy_consumer consumer on corder.cid=consumer.id
         where corder.id=#{id}
+    </select>
+
+    <select id="findRechargeOrderInfoByOrderNO"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+        rorder.ID,rorder.ORDERNO,rorder.TRADENO,rorder.TRADEID,rorder.TRADEAMOUNT,rorder.REALPAYAMOUNT,rorder.MARKETINGAMOUNT,rorder.PAYEEACCOUNTID,rorder.OUID,rorder.MEMBERID,rorder.MEMBERACCOUNTID,rorder.CID,rorder.MCID,rorder.UID,rorder.MERCHANTRECEIVEACCOUNTID,rorder.GOODSNAME,rorder.GOODSDESCRIBE,rorder.MERCHANTNAME,rorder.MERCHANTNO,rorder.PAYSN,rorder.PAYCHANNELSIGN,rorder.PAYSUCCESSTIME,rorder.STATUS,rorder.TYPE,rorder.SOURCE,rorder.POUNDAGE,rorder.REMARK,
+        (case when rorder.TYPE=1 then '开卡充值'
+        when rorder.TYPE=2 then '开卡送'
+        when rorder.TYPE=3 then '充值'
+        when rorder.TYPE=4 then '充值送' else '' end) TYPENAME,rorder.CREATETIME,rorder.UPDATETIME,consumer.CONSUMERCELLPHONE
+        from app_policy_recharge_order rorder left join app_policy_consumer consumer on rorder.cid=consumer.id
+        where rorder.ORDERNO=#{orderNO}
+    </select>
+
+    <select id="findRechargeOrderInfoByID"  resultType="com.jkm.hsy.user.entity.AppPolicyRechargeOrder">
+        select
+          ID,ORDERNO,TRADENO,TRADEID,TRADEAMOUNT,REALPAYAMOUNT,MARKETINGAMOUNT,PAYEEACCOUNTID,OUID,MEMBERID,MEMBERACCOUNTID,CID,MCID,UID,MERCHANTRECEIVEACCOUNTID,GOODSNAME,GOODSDESCRIBE,MERCHANTNAME,MERCHANTNO,PAYSN,PAYCHANNELSIGN,PAYSUCCESSTIME,STATUS,TYPE,SOURCE,POUNDAGE,REMARK,SETTLETYPE,CREATETIME,UPDATETIME
+        from app_policy_recharge_order
+        where ID=#{id}
+    </select>
+
+    <select id="queryHsyOrderList"  resultType="com.jkm.hss.bill.entity.QueryHsyOrderResponse">
+        SELECT
+            a.ordernumber,
+            a.order_no,
+            a.pay_sn,
+            a.payment_channel,
+            a.pay_success_time,
+            a.amount,
+            a.poundage,
+            a.orderstatus,
+            shop.GLOBALID AS shortNo,
+            au.GLOBALID AS merchantNo,
+            (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=1) AS proxyName,
+            (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=2) AS proxyName1,
+            (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS username,
+            (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS realname,
+            users.REALNAME AS merchantName,
+            shop.SHORTNAME
+        FROM
+            tb_hsy_order a
+        LEFT JOIN app_au_user users ON users.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
+        WHERE 1=1
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND users.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND users.DEALERID = 0</if>
+        <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
+        ORDER BY a.pay_success_time DESC LIMIT #{offset},#{size}
+    </select>
+
+    <select id="queryHsyOrderListCount"  resultType="java.lang.Integer">
+        SELECT
+            COUNT(a.id)
+        FROM
+            tb_hsy_order a
+        LEFT JOIN app_au_user users ON users.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
+        WHERE 1=1
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND users.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND users.DEALERID = 0</if>
+        <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
+    </select>
+
+    <select id="getHsyOrderCounts"  resultType="java.lang.String">
+        SELECT
+        COUNT(a.amount)
+        FROM
+        tb_hsy_order a
+        LEFT JOIN app_au_user users ON users.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
+        WHERE 1=1
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND users.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND users.DEALERID = 0</if>
+        <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
+    </select>
+
+    <select id="getHsyOrderCounts1"  resultType="java.lang.String">
+        SELECT
+        COUNT(a.poundage)
+        FROM
+        tb_hsy_order a
+        LEFT JOIN app_au_user users ON users.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
+        WHERE 1=1
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND users.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND users.DEALERID = 0</if>
+        <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
+    </select>
+
+    <select id="selectHsyOrderList"  resultType="com.jkm.hss.bill.entity.QueryHsyOrderResponse">
+        SELECT
+        a.ordernumber,
+        a.order_no,
+        a.pay_sn,
+        a.payment_channel,
+        a.pay_success_time,
+        a.amount,
+        a.poundage,
+        a.orderstatus,
+        shop.GLOBALID AS shortNo,
+        au.GLOBALID AS merchantNo,
+        (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=1) AS proxyName,
+        (SELECT proxy_name FROM tb_dealer WHERE id=a.dealerid AND `level`=2) AS proxyName1,
+        (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS username,
+        (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid) AS realname,
+        users.REALNAME AS merchantName,
+        shop.SHORTNAME
+        FROM
+        tb_hsy_order a
+        LEFT JOIN app_au_user users ON users.ID=a.uid
+        LEFT JOIN app_biz_shop_user_role role ON role.UID=a.uid AND role.ROLE=1 AND role.`STATUS`=1 AND role.TYPE=1
+        LEFT JOIN app_biz_shop shop ON shop.ID=role.SID
+        LEFT JOIN app_au_user au ON au.ID=role.UID
+        WHERE 1=1
+        <if test="ordernumber!=null and ordernumber!=''"> AND a.ordernumber=#{ordernumber}</if>
+        <if test="orderno!=null and orderno!=''"> AND a.order_no=#{orderno}</if>
+        <if test="merchantName!=null and merchantName!=''"> AND users.REALNAME LIKE CONCAT('%',#{merchantName},'%')</if>
+        <if test="shortName!=null and shortName!=''"> AND shop.SHORTNAME LIKE CONCAT('%',#{shortName},'%')</if>
+        <if test="paymentChannel!=null and paymentChannel!=''"> AND a.payment_channel=#{paymentChannel}</if>
+        <if test="orderstatus!=null and orderstatus!=''"> AND a.orderstatus=#{orderstatus}</if>
+        <if test="proxyName!=null and proxyName!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE (`level`=1  AND id=a.dealerid) OR id = (SELECT first_level_dealer_id FROM tb_dealer WHERE id = a.dealerid AND `level`=2)  ) LIKE CONCAT('%',#{proxyName},'%')</if>
+        <if test="proxyName1!=null and proxyName1!=''"> AND (SELECT proxy_name FROM tb_dealer WHERE id = a.dealerid AND `level`=2 ) LIKE CONCAT('%',#{proxyName1},'%')</if>
+        <if test="source==1"> AND users.DEALERID = 0</if>
+        <if test="source==2"> AND users.DEALERID <![CDATA[ > ]]> 0 </if>
+        <if test="username!=null and username!=''"> AND (SELECT username FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{username}</if>
+        <if test="realname!=null and realname!=''"> AND (SELECT realname FROM tb_admin_user au LEFT JOIN app_au_user_admin aua ON aua.AUID=au.id WHERE aua.UID=a.uid)=#{realname}</if>
+        <if test="startTime != null and endTime != null">
+            AND a.pay_success_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="shortNo!=null and shortNo!=''">
+            AND shop.GLOBALID = #{shortNo}
+        </if>
+        <if test="merchantNo!=null and merchantNo!=''">
+            AND au.GLOBALID = #{merchantNo}
+        </if>
+        ORDER BY a.pay_success_time DESC
+    </select>
+
+    <select id="selectByOrderNumber" resultType="com.jkm.hss.bill.entity.HsyOrder">
+        SELECT * FROM tb_hsy_order WHERE ordernumber = #{orderNumber}
     </select>
 
 </mapper>

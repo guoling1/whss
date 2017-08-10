@@ -25,6 +25,7 @@ const ProfitAccountDet = r => require.ensure([], () => r(require('components/Pro
 const T1Audit = r => require.ensure([], () => r(require('components/T1Audit')), 'group-record');
 const TAuditDealer = r => require.ensure([], () => r(require('components/TAuditDealer')), 'group-record');
 const TAuditStore = r => require.ensure([], () => r(require('components/TAuditStore')), 'group-record');
+const Exception = r => require.ensure([], () => r(require('components/Exception')), 'group-record');
 // 渠道交易
 const PayQuery = r => require.ensure([], () => r(require('components/PayQuery')), 'group-record');
 const NewWithdrawalQuery = r => require.ensure([], () => r(require('components/newVersion/NewWithdrawalQuery')), 'group-record');
@@ -102,6 +103,10 @@ const FilialePro = r => require.ensure([], () => r(require('components/filiale/F
 const FilialeRole = r => require.ensure([], () => r(require('components/filiale/FilialeRole')), 'group-record');
 const FilialeRoleAdd = r => require.ensure([], () => r(require('components/filiale/FilialeRoleAdd')), 'group-record');
 const ConfigureOem = r => require.ensure([], () => r(require('components/filiale/ConfigureOem')), 'group-record');
+// 会员管理
+const Merchant = r => require.ensure([], () => r(require('components/member/Merchant')), 'group-record');
+const MerchantDetail = r => require.ensure([], () => r(require('components/member/MerchantDetail')), 'group-record');
+const Member = r => require.ensure([], () => r(require('components/member/Member')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
   {path: '/admin/login', component: Login},
@@ -109,7 +114,11 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'exception', name: 'Exception', component: Exception},
       {path: 'achievement', name: 'Achievement', component: Achievement},
+      {path: 'member', name: 'Member', component: Member},
+      {path: 'merchant', name: 'Merchant', component: Merchant},
+      {path: 'merchantDetail', name: 'MerchantDetail', component: MerchantDetail},
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'unionLine', name: 'UnionLine', component: UnionLine},
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
@@ -199,6 +208,9 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'exception', name: 'Exception', component: Exception},
+      {path: 'member', name: 'Member', component: Member},
+      {path: 'merchant', name: 'Merchant', component: Merchant},
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},

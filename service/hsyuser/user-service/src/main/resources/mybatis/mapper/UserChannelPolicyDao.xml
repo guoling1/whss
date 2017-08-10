@@ -114,4 +114,8 @@
         WHERE channel_type_sign = #{channelSign} AND settle_type = #{type} AND user_id IN
         <foreach collection="userIds" index="index" item="item" open="(" separator="," close=")"> #{item} </foreach>
     </select>
+    <select id="selectUserIdsBySignAndNetStatus" resultType="java.lang.Long">
+        SELECT user_id FROM app_user_channel_policy
+        WHERE channel_type_sign = #{sign} AND net_status = #{netStatus}
+    </select>
 </mapper>

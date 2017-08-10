@@ -37,6 +37,6 @@
     </select>
 
     <select id="selectCountByFlowNo" resultType="java.lang.Integer">
-         SELECT * FROM tb_receipt_member_money_account_flow WHERE flow_no = #{flowNo}
+         SELECT COUNT(0) FROM tb_receipt_member_money_account_flow WHERE flow_no = #{flowNo}
     </select>
 </mapper>

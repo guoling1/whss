@@ -1,9 +1,7 @@
 package com.jkm.hss.bill.dao;
 
-import com.google.common.base.Optional;
 import com.jkm.hss.account.entity.SplitAccountRefundRecord;
 import com.jkm.hss.bill.entity.*;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.requestparam.OrderBalanceStatistics;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
@@ -515,7 +513,7 @@ public interface OrderDao {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdlist") List<Long> accountIdlist);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(@Param("settleDate") Date settleDate, @Param("upperChannel") int upperChannel, @Param("accountIdList") List<Long> accountIdList, @Param("accountId") long accountId);
 
     /**
      * 统计订单金额
@@ -690,7 +688,10 @@ public interface OrderDao {
 
     List<Order> selectWithdrawingOrderByAccountId(@Param("accountId") long accountId, @Param("begin") String begin, @Param("end") String end);
 
-    void updateOrdersBySns(@Param("sns") List<String> sns, @Param("status") int status, @Param("settleStatus") int settleStatus, @Param("settleId") long settleId, @Param("settleTime") Date settleTime);
+    void updateOrdersBySns(@Param("sns") List<String> sns, @Param("settleStatus") int settleStatus, @Param("settleId") long settleId);
 
     void updateOrdersBySns2Withdraw(@Param("sns") List<String> sns, @Param("status") int status);
+
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 }

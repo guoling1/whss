@@ -39,7 +39,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
      * @param payChannel
      * @return
      */
-    @Cacheable(cacheName="channelCache")
+    //@Cacheable(cacheName="channelCache")
     @Override
     public Optional<BasicChannel> selectByChannelTypeSign(int payChannel) {
         return Optional.fromNullable(this.basicChannelDao.selectByChannelTypeSign(payChannel));
@@ -78,7 +78,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
      * {@inheritDoc}
      * @param basicChannel
      */
-    @TriggersRemove(cacheName="channelCache",  removeAll=true)
+    //@TriggersRemove(cacheName="channelCache",  removeAll=true)
     @Override
     public void update(BasicChannel basicChannel) {
         this.basicChannelDao.update(basicChannel);
@@ -142,6 +142,31 @@ public class BasicChannelServiceImpl implements BasicChannelService {
     @Override
     public List<BasicChannel> selectHsyAll() {
         return this.basicChannelDao.selectHsyAll();
+    }
+
+    @Override
+    public int selectParentChannelSign(int channelSign) {
+        final BasicChannel basicChannel = this.basicChannelDao.selectByChannelTypeSign(channelSign);
+        final int parentChannelSign = basicChannel.getParentChannelSign();
+        if (parentChannelSign == 0){
+            return channelSign;
+        }
+        return parentChannelSign;
+    }
+
+    @Override
+    public BasicChannel selectParentChannel(int channelSign) {
+        final BasicChannel basicChannel = this.basicChannelDao.selectByChannelTypeSign(channelSign);
+        final int parentChannelSign = basicChannel.getParentChannelSign();
+        if (parentChannelSign == 0){
+            return basicChannel;
+        }
+        return this.basicChannelDao.selectByChannelTypeSign(parentChannelSign);
+    }
+
+    @Override
+    public List<BasicChannel> selectAllForGateWay() {
+        return this.basicChannelDao.selectAllForGateWay();
     }
 //    @Override
 //    public List<BasicChannel> selectListChannel() {

@@ -9,15 +9,13 @@ import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
-import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.base.common.util.DateTimeUtil;
-import com.jkm.base.common.util.HttpClientPost;
-import com.jkm.base.common.util.SnGenerator;
+import com.jkm.base.common.util.*;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.dao.HsyOrderDao;
+import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
@@ -123,6 +121,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private HsyOrderDao hsyOrderDao;
     @Autowired
     private BankCardBinService bankCardBinService;
+    @Autowired
+    private BaseTradeService baseTradeService;
+    @Autowired
+    private OrderDao orderDao;
     /**
      * {@inheritDoc}
      *
@@ -339,6 +341,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @return
      */
     @Override
+    @Deprecated
     public String appReceipt(final String paramData, final AppParam appParam) {
         final JSONObject result = new JSONObject();
         final JSONObject paramJo = JSONObject.parseObject(paramData);
@@ -533,7 +536,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //        }
         final Date payDate = DateFormatUtil.parse(DateFormatUtil.format(payOrder.getPaySuccessTime(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
         final Date refundDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
-        if (payOrder.isSettled() || payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
+        if (payOrder.isRefundSuccess() || payDate.compareTo(refundDate) != 0) {
             result.put("code", -1);
             result.put("msg", "只可以退当日订单");
             return result;
@@ -625,6 +628,49 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public Pair<Integer, String> refundImpl(final RefundOrder refundOrder, final Order payOrder,final HsyRefundOrder hsyRefundOrder,final HsyOrder hsyOrder) {
+        if (EnumPayChannelSign.MEMBER.getId() == payOrder.getPayChannelSign()) {
+            final Pair<Integer, String> result = this.baseTradeService.memberRefund(payOrder);
+            if (0 == result.getLeft()) {
+                final RefundOrder refundOrder2 = new RefundOrder();
+                refundOrder2.setId(refundOrder.getId());
+                refundOrder2.setStatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                refundOrder2.setRemark("退款成功");
+                refundOrder2.setMessage("退款成功");
+                refundOrder2.setFinishTime(new Date());
+                this.refundOrderService.update(refundOrder2);
+                //add by wayne 2017/05/20
+                if(hsyRefundOrder!=null&&hsyRefundOrder.getId()>0) {
+                    hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUND_SUCCESS.getId());
+                    hsyRefundOrder.setRemark("退款成功");
+                    hsyRefundOrder.setRefundtime(new Date());
+                    this.hsyRefundOrderService.update(hsyRefundOrder);
+                }
+                if(hsyOrder!=null&&hsyOrder.getId()>0){
+                    hsyOrder.setOrderstatus(EnumHsyOrderStatus.REFUND_SUCCESS.getId());
+                    hsyOrder.setRefundtime(new Date());
+                    this.hsyOrderService.update(hsyOrder);
+                }
+                return Pair.of(0, "退款成功");
+            }
+
+            final RefundOrder refundOrder1 = new RefundOrder();
+            refundOrder1.setId(refundOrder.getId());
+            refundOrder1.setStatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+            refundOrder1.setRemark("退款失败");
+            refundOrder1.setMessage("退款失败");
+            this.refundOrderService.update(refundOrder1);
+            //add by wayne 2017/05/20
+            if(hsyRefundOrder!=null&&hsyRefundOrder.getId()>0) {
+                hsyRefundOrder.setRefundstatus(EnumRefundOrderStatus.REFUND_FAIL.getId());
+                hsyRefundOrder.setRemark("退款失败");
+                this.hsyRefundOrderService.update(hsyRefundOrder);
+            }
+            if(hsyOrder!=null&&hsyOrder.getId()>0){
+                hsyOrder.setOrderstatus(EnumHsyOrderStatus.REFUND_FAIL.getId());
+                this.hsyOrderService.update(hsyOrder);
+            }
+            return Pair.of(0, "退款失败");
+        }
         //退款到手续费账户
         this.refund2Poundage(refundOrder, payOrder);
         //退商户款
@@ -858,6 +904,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @return
      */
     @Override
+    @Deprecated
     public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId, final String memberId,final String code) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
@@ -929,6 +976,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
+    @Deprecated
     public Pair<Integer, String> handlePlaceOrder(final AppBizShop shop, final String channelCode, final Order order) {
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, shop,
@@ -965,6 +1013,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
+    @Deprecated
     public void handleHsyPayCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
         final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNoAndTradeType(orderNo, EnumTradeType.PAY.getId());
@@ -1011,6 +1060,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
+    @Deprecated
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order) {
         order.setPayType(paymentSdkPayCallbackResponse.getPayType());
         order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
@@ -1022,7 +1072,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         log.info("hsy业务返回的通道是[{}]", order.getPayType());
         log.info("交易订单[{}]，处理hsy支付回调业务", order.getOrderNo());
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSY, shop.getId(), enumPayChannelSign.getId());
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.HSY, shop.getId(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
@@ -1047,8 +1097,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //=============================================================================
         //推送
         try {
-            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(),
-                    order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4), order.getOrderNo());
+//            this.pushService.pushCashMsg(pushShopId, enumPayChannelSign.getPaymentChannel().getValue(),
+//                    order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4), order.getOrderNo());
         } catch (final Throwable e) {
             log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
         }
@@ -1399,7 +1449,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public void handleHsyWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
-        final Order order = this.orderService.getByOrderNoAndTradeType(paymentSdkWithdrawCallbackResponse.getOrderNo(), EnumTradeType.WITHDRAW.getId()).get();
+        final Order order = this.orderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
         if (order.isWithDrawing()) {
             this.handleWithdrawResult(order.getId(), order.getPayer(), paymentSdkWithdrawCallbackResponse);
         }
@@ -1518,7 +1568,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 return result.toJSONString();
             }
             if (appAuUser.getIsOpenD0() != null && appAuUser.getIsOpenD0() == EnumBoolean.TRUE.getCode()) {
-                JSONObject jsonObject = this.orderService.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
+                JSONObject jsonObject = this.d0WithDrawImpl(account, appAuUser.getId(), appAuUser.getGlobalID(), card);
                 result.put("canWithdraw", EnumBoolean.TRUE.getCode());
                 result.put("cardNo", cardNO.substring(cardNO.length() - 4, cardNO.length()));
                 result.put("bankName", cardBank);
@@ -1529,6 +1579,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 result.put("receiveAmount", receiveAmount);
                 result.put("withDrawOrderId", jsonObject.getString("withDrawOrderId"));
                 result.put("isFirst", jsonObject.getString("isFirst"));
+                result.put("isInDate", jsonObject.getString("isInDate"));
+                result.put("dateMsg", jsonObject.getString("dateMsg"));
             }else{
                 result.put("canWithdraw", EnumBoolean.FALSE.getCode());
                 result.put("phone", appAuUser.getCellphone());
@@ -1553,7 +1605,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long withDrawOrderId = dataJo.getLongValue("withDrawOrderId");
         //拦截提现时间
 
-        Pair<Integer, String> pair =  this.orderService.confirmWithdraw(withDrawOrderId);
+        Pair<Integer, String> pair = this.confirmWithdraw(withDrawOrderId);
         if (pair.getLeft() == 1){
             result.put("code", 1);
             result.put("msg", pair.getRight());
@@ -1602,7 +1654,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             response.setBankName(order.getBankName());
             response.setCardNo(order.getTradeCardNo().substring(order.getTradeCardNo().length() - 4, order.getTradeCardNo().length()));
             response.setStatus(order.getStatus());
-            response.setOrderNo(order.getSn());
+            response.setOrderNo(order.getOrderNo());
             response.setPoundage(order.getPoundage().toString());
             response.setBankPic(this.getBankPic(order.getTradeCardNo()));
             orderList.add(response);
@@ -1615,6 +1667,266 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         return result.toJSONString();
     }
 
+    /**
+     * {@inheritDoc}
+     * @param account
+     * @return
+     */
+    @Transactional
+    @Override
+    public JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo, AppBizCard appBizCard) {
+        //查询商户当天的可以提现的订单 每次限制75个
+        final List<Order> orderList =
+                this.orderService.selectOrderListByCount(account.getId(), 75, EnumOrderStatus.PAY_SUCCESS, DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+        //判断交易时间 9:00 -22:00
+        int isInDate = EnumBoolean.TRUE.getCode();
+        String dateMsg= "";
+        if(!DateUtil.isInDate(new Date(),"09:00:00","21:59:59")){
+            isInDate = EnumBoolean.FALSE.getCode();
+            dateMsg = "提现时间每日9:00-22:00";
+        }
+        //判断当天是否已经提现
+        List<Order> withdrawOrders =  this.orderService.selectWithdrawingOrderByAccountId(account.getId(), DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+        int isFirst = EnumBoolean.TRUE.getCode();
+        if (withdrawOrders.size() > 0){
+            isFirst = EnumBoolean.FALSE.getCode();
+        }
+        //判断提现
+        if(CollectionUtils.isEmpty(orderList)){
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("withDrawOrderId", 0);
+            jsonObject.put("avaWithdraw",new BigDecimal("0"));
+            jsonObject.put("fee",new BigDecimal("0"));
+            jsonObject.put("isFirst",isFirst);
+            jsonObject.put("isInDate",isInDate);
+            return jsonObject;
+        }
+  /*      final BigDecimal wechatTradeRate =
+                this.userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.WECHAT.getId()).get().getTradeRateD0();
+        final BigDecimal alipayTradeRate =
+                this.userTradeRateService.selectByUserIdAndPolicyType(userId, EnumPolicyType.ALIPAY.getId()).get().getTradeRateD0();
+        final UserWithdrawRate userWithdrawRate = this.userWithdrawRateService.selectByUserId(userId).get();*/
+        //统计待结算金额
+        BigDecimal sumAmount = new BigDecimal("0");
+        //统计T1手续费
+        BigDecimal sumT1Fee = new BigDecimal("0");
+        //统计DO手续费
+        BigDecimal sumD0Fee = new BigDecimal("0");
+        //统计交易金额
+        BigDecimal tradeAmount = new BigDecimal("0");
+        StringBuffer sns = new StringBuffer();
+        for (Order order : orderList){
+            tradeAmount = tradeAmount.add(order.getTradeAmount());
+            sns = sns.append(order.getSn() + ",");
+            sumAmount= sumAmount.add(order.getTradeAmount().subtract(order.getPoundage()));
+            sumT1Fee = sumT1Fee.add(order.getPoundage());
+            /*BigDecimal d0PayRate = null;
+            if (EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
+                d0PayRate = wechatTradeRate;
+            }else if (EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
+                d0PayRate = alipayTradeRate;
+            }
+            sumD0Fee = sumD0Fee.add(this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), d0PayRate,order.getPayChannelSign()));*/
+        }
+        final BigDecimal avaWithdraw = sumAmount;
+        final BigDecimal fee = sumD0Fee;
+
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("avaWithdraw",avaWithdraw);
+        jsonObject.put("fee",fee);
+        jsonObject.put("tradeAmount", tradeAmount);
+        jsonObject.put("merchantNo", merchantNo);
+        //初始化提现单
+        final long withDrawOrderId = this.initD0WithDrawOrder(jsonObject, sns.toString(), account, appBizCard);
+        jsonObject.put("withDrawOrderId",withDrawOrderId);
+        jsonObject.put("isFirst",isFirst);
+        jsonObject.put("isInDate",isInDate);
+        jsonObject.put("dateMsg",dateMsg);
+        return jsonObject;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param withDrawOrderId
+     * @return
+     */
+    @Transactional
+    @Override
+    public Pair<Integer, String> confirmWithdraw(long withDrawOrderId) {
+
+        final Order withdrawOrder = this.orderService.getByIdWithLock(withDrawOrderId).get();
+        final AppBizShop appBizShop =
+                this.hsyShopDao.findPrimaryAppBizShopByAccountID(withdrawOrder.getPayer()).get(0);
+        final AppBizCard appCard = new AppBizCard();
+        appCard.setSid(appBizShop.getId());
+        final AppBizCard appBizCard = this.hsyShopDao.findAppBizCardByParam(appCard).get(0);
+        //请求提现
+        if (withdrawOrder.getStatus() == EnumOrderStatus.WAIT_WITHDRAW.getId()) {
+            final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
+            paymentSdkDaiFuRequest.setAppId(withdrawOrder.getAppId());
+            paymentSdkDaiFuRequest.setOrderNo(withdrawOrder.getOrderNo());
+            paymentSdkDaiFuRequest.setTotalAmount(withdrawOrder.getRealPayAmount().subtract(withdrawOrder.getPoundage()).toPlainString());
+            paymentSdkDaiFuRequest.setTradeType("D0");
+            paymentSdkDaiFuRequest.setIsCompany("0");
+            paymentSdkDaiFuRequest.setMobile("");
+            paymentSdkDaiFuRequest.setBankName(appBizCard.getCardBank());
+            paymentSdkDaiFuRequest.setAccountName(appBizCard.getCardAccountName());
+            paymentSdkDaiFuRequest.setAccountNumber(appBizCard.getCardNO());
+            paymentSdkDaiFuRequest.setIdCard(appBizCard.getIdcardNO());
+            paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SYJ.getId());
+            paymentSdkDaiFuRequest.setNote("");
+            paymentSdkDaiFuRequest.setSystemCode(withdrawOrder.getAppId());
+            paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
+            paymentSdkDaiFuRequest.setPayOrderSn("");
+            paymentSdkDaiFuRequest.setOrders(withdrawOrder.getGoodsDescribe());
+            paymentSdkDaiFuRequest.setMerchantNo(withdrawOrder.getMerchantNo());
+            //请求网关
+            PaymentSdkDaiFuResponse response = null;
+            try {
+                final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
+                        SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
+                response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
+            } catch (final Throwable e) {
+                log.error("交易订单[" + withdrawOrder.getOrderNo() + "], 请求网关支付异常", e);
+               // withdrawOrder.setRemarks("请求网关支付异常");
+                withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+                this.orderService.update(withdrawOrder);
+            }
+            return this.handleHsyD0WithdrawResult(withdrawOrder, response);
+        }
+        withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+        this.orderService.update(withdrawOrder);
+        return Pair.of(-1, "银行受理失败");
+    }
+
+
+    @Override
+    public List<Order> selectWithdrawingOrderByBefore(Date date) {
+        return this.orderService.selectWithdrawingOrderByBefore(date);
+    }
+
+    private Pair<Integer,String> handleHsyD0WithdrawResult(Order withdrawOrder, PaymentSdkDaiFuResponse response) {
+
+        //判断代付是否受理成功
+        final int status = response.getStatus();
+        if (status == EnumBasicStatus.SUCCESS.getId()){
+            //代付受理成功
+
+            final String orders = withdrawOrder.getGoodsDescribe();
+            final String[] split = orders.split(",");
+            final List<String> sns = Arrays.asList(split);
+
+            final Order firstOrder = this.orderDao.selectOrderBySn(split[0]);
+            final Order lastOrder = this.orderDao.selectOrderBySn(split[split.length -1]);
+            final Account account = this.accountService.getByIdWithLock(withdrawOrder.getPayer()).get();
+            final BigDecimal withdrawAmount = withdrawOrder.getRealPayAmount();
+            //结算 ，  冻结
+            this.accountService.decreaseSettleAmount(account.getId(), withdrawAmount);
+            this.accountService.increaseFrozenAmount(account.getId(), withdrawAmount);
+            final FrozenRecord frozenRecord = new FrozenRecord();
+            frozenRecord.setAccountId(account.getId());
+            frozenRecord.setFrozenAmount(withdrawAmount);
+            frozenRecord.setBusinessNo(withdrawOrder.getOrderNo());
+            frozenRecord.setFrozenTime(new Date());
+            frozenRecord.setRemark("Hsy商户提现");
+            this.frozenRecordService.add(frozenRecord);
+            //添加账户流水--减少
+            this.accountFlowService.addAccountFlowToSettle(account.getId(), withdrawOrder.getOrderNo(), withdrawAmount,
+                    "提现", EnumAccountFlowType.DECREASE);
+            //创建结算单
+            //生成结算单
+            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(account.getId()).get(0);
+            final SettlementRecord settlementRecord = new SettlementRecord();
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
+            settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(settlementRecord.getAccountUserType(), settlementRecord.getSettleDestination()));
+            settlementRecord.setSettleAuditRecordId(0);
+            settlementRecord.setAccountId(withdrawOrder.getPayer());
+            settlementRecord.setUserNo(shop.getGlobalID());
+            settlementRecord.setUserName(shop.getShortName());
+            settlementRecord.setAppId(EnumAppType.HSY.getId());
+            settlementRecord.setSettleDate(withdrawOrder.getCreateTime());
+            settlementRecord.setTradeNumber(split.length);
+            settlementRecord.setTradeAmount(withdrawOrder.getTradeAmount());
+            settlementRecord.setSettleAmount(withdrawOrder.getRealPayAmount());
+            settlementRecord.setSettlePoundage(withdrawOrder.getPoundage());
+            settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+            settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
+            settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+            settlementRecord.setUpperChannel(EnumUpperChannel.SYJ.getId());
+            settlementRecord.setBalanceStartTime(firstOrder.getPaySuccessTime());
+            settlementRecord.setBalanceEndTime(lastOrder.getPaySuccessTime());
+            settlementRecord.setSettleChannel(EnumSettleChannel.ALL.getId());
+            this.settlementRecordService.add(settlementRecord);
+            //更新交易订单为， 结算中
+            this.orderDao.updateOrdersBySns(sns, EnumSettleStatus.SETTLE_ING.getId(), settlementRecord.getId());
+            //this.markOrder2SettlementIng(playMoneyOrder.getSettleTime(), playMoneyOrder.getPayer(), settlementRecordId, EnumSettleStatus.SETTLE_ING.getId(), playMoneyOrder.getUpperChannel());
+            withdrawOrder.setSn(response.getSn());
+            withdrawOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+            withdrawOrder.setSettlementRecordId(settlementRecord.getId());
+            //withdrawOrder.setRemarks("提现受理成功");
+            this.orderService.update(withdrawOrder);
+            return Pair.of(1, "银行受理成功");
+
+        }else if (status == EnumBasicStatus.FAIL.getId()){
+            //代付失败
+            withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+           // withdrawOrder.setRemarks("提现失败");
+            this.orderService.update(withdrawOrder);
+            return Pair.of(-1, "银行受理失败");
+        }
+        withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
+        //withdrawOrder.setRemarks("提现失败");
+        this.orderService.update(withdrawOrder);
+        return Pair.of(-1, "银行受理失败");
+    }
+
+    private long initD0WithDrawOrder(JSONObject jsonObject, String sns, Account account, AppBizCard appBizCard) {
+        final String orders = sns.substring(0, sns.lastIndexOf(","));
+        /*final WithdrawOrder withdrawOrder = new WithdrawOrder();
+        withdrawOrder.setAppId(EnumAppType.HSY.getId());
+        withdrawOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        withdrawOrder.setSn("");
+        withdrawOrder.setTradeAmount(new BigDecimal(jsonObject.getString("tradeAmount")));
+        withdrawOrder.setWithdrawAmount(new BigDecimal(jsonObject.getString("avaWithdraw")));
+        withdrawOrder.setWithdrawUserType(EnumWithdrawUserType.HSY_MERCHANT.getType());
+        withdrawOrder.setWithdrawUserNo(jsonObject.getString("merchantNo"));
+        withdrawOrder.setWithdrawUserName(account.getUserName());
+        withdrawOrder.setWithdrawUserAccountId(account.getId());
+        withdrawOrder.setUpperChannel(EnumUpperChannel.SYJ.getId());
+        withdrawOrder.setApplyTime(new Date());
+        withdrawOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
+        withdrawOrder.setTradeOrders(orders);
+        withdrawOrder.setBankName(appBizCard.getCardBank());
+        withdrawOrder.setBankCardNo(appBizCard.getCardNO());
+        withdrawOrder.setRemarks("待提现");
+        withdrawOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.getId());*/
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setAppId(EnumAppType.HSY.getId());
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(new BigDecimal(jsonObject.getString("tradeAmount")));
+        playMoneyOrder.setRealPayAmount(new BigDecimal(jsonObject.getString("avaWithdraw")));
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(EnumPayChannelSign.SYJ_WECHAT.getId());
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(account.getId());
+        playMoneyOrder.setAppId(EnumAppType.HSY.getId());
+        playMoneyOrder.setMerchantNo(jsonObject.getString("merchantNo"));
+        playMoneyOrder.setBankName(appBizCard.getCardBank());
+        playMoneyOrder.setTradeCardNo(appBizCard.getCardNO());
+        //手续费
+        playMoneyOrder.setPoundage(new BigDecimal(jsonObject.getString("fee")));
+        playMoneyOrder.setGoodsName(account.getUserName());
+        playMoneyOrder.setMerchantName(account.getUserName());
+        playMoneyOrder.setGoodsDescribe(orders);
+        playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setStatus(EnumOrderStatus.WAIT_WITHDRAW.getId());
+        playMoneyOrder.setRemark("");
+        this.orderService.add(playMoneyOrder);
+
+        return playMoneyOrder.getId();
+    }
 
     /**
      * 处理提现结果
@@ -1659,16 +1971,16 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     private void markWithdrawSuccess(final long orderId, final long accountId,
                                      final PaymentSdkDaiFuResponse response) {
-        final Order playMoneyOrder = this.orderService.getByIdWithLock(orderId).get();
-        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(playMoneyOrder.getSettlementRecordId()).get();
-        if (playMoneyOrder.isWithDrawing()) {
+        final Order withdrawOrder = this.orderService.getByIdWithLock(orderId).get();
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(withdrawOrder.getSettlementRecordId()).get();
+        if (withdrawOrder.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额
             final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
             unFrozenRecord.setAccountId(account.getId());
             unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
-            unFrozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+            unFrozenRecord.setBusinessNo(withdrawOrder.getOrderNo());
             unFrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
             unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
             unFrozenRecord.setUnfrozenTime(new Date());
@@ -1683,15 +1995,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             //待结算金额减少
             this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId(), EnumSettleStatus.SETTLE_ING.getId());
             //更新交易订单为提现成功
-            final String orders = playMoneyOrder.getGoodsDescribe();
+            final String orders = withdrawOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns(sns, EnumOrderStatus.WITHDRAW_SUCCESS.getId(), EnumSettleStatus.SETTLED.getId(),settlementRecord.getId(), playMoneyOrder.getSettleTime());
+            this.orderService.updateOrdersBySns(sns, EnumSettleStatus.SETTLED.getId(),settlementRecord.getId());
 
-            playMoneyOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
-            playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            playMoneyOrder.setRemark(response.getMessage());
-            this.orderService.update(playMoneyOrder);
+            withdrawOrder.setPaySuccessTime(new DateTime(Long.valueOf(response.getWithdrawSuccessTime())).toDate());
+            withdrawOrder.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
+            this.orderService.update(withdrawOrder);
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLED.getId());
 
             //this.orderService.markOrder2SettlementSuccess(settlementRecord.getId(),EnumSettleStatus.SETTLED.getId(),EnumSettleStatus.SETTLE_ING.getId());
@@ -1746,11 +2057,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.increaseSettleAmount(accountId, frozenRecord.getFrozenAmount());
-            //更新交易订单
+            /*//更新交易订单
             final String orders = playMoneyOrder.getGoodsDescribe();
             final String[] split = orders.split(",");
             final List<String> sns = Arrays.asList(split);
-            this.orderService.updateOrdersBySns2Withdraw(sns, EnumOrderStatus.PAY_SUCCESS.getId());
+            this.orderService.updateOrdersBySns2Withdraw(sns, EnumOrderStatus.PAY_SUCCESS.getId());*/
             //更新结算单
             //待结算金额减少
             playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAW_FAIL.getId());
@@ -1759,7 +2070,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
             this.settlementRecordService.updateSettleStatus(settlementRecord.getId(), EnumSettleStatus.SETTLE_FAIL.getId());
 
-            this.orderService.markOrder2SettleFail(settlementRecord.getId(),  EnumSettleStatus.SETTLE_FAIL.getId(),  EnumSettleStatus.SETTLE_ING.getId());
+            this.orderService.markOrder2SettleFail(settlementRecord.getId(),  EnumSettleStatus.DUE_SETTLE.getId(),  EnumSettleStatus.SETTLE_ING.getId());
         }
     }
 

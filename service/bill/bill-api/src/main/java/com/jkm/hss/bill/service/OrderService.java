@@ -182,7 +182,7 @@ public interface OrderService {
      * @param settleDate
      * @return
      */
-    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate, List<Long> list);
+    List<OrderBalanceStatistics> statisticsPendingBalanceOrder(Date settleDate, List<Long> list,long accountId);
 
     /**
      * 查询交易列表
@@ -674,19 +674,6 @@ public interface OrderService {
      */
     List<Order> selectOrderListByCount(long accountId, int count, EnumOrderStatus status, String payTime);
 
-    /**
-     * D0提现
-     * @param account
-     * @return
-     */
-    JSONObject d0WithDrawImpl(Account account, long userId, String merchantNo, AppBizCard appBizCard);
-
-    /**
-     * 确认提现
-     * @param withDrawOrderId
-     * @return
-     */
-    Pair<Integer, String> confirmWithdraw(long withDrawOrderId);
 
     /**
      * 二级代理商交易统计
@@ -710,9 +697,11 @@ public interface OrderService {
 
     List<Order> selectWithdrawingOrderByAccountId(long id, String date);
 
-    void updateOrdersBySns(List<String> sns, int status, int settleStatus,long settlementRecordId,Date settleTime);
+    void updateOrdersBySns(List<String> sns, int settleStatus,long settlementRecordId);
 
     void updateOrdersBySns2Withdraw(List<String> sns, int status);
+
+    List<Order> selectWithdrawingOrderByBefore(Date date);
 
     /**
      * 查询交易详情
@@ -721,6 +710,10 @@ public interface OrderService {
      */
 //    MerchantTradeResponse selectOrderListByPageAll(OrderListRequest orderRecord);
 
-
+    /**
+     * 根据支付流水查询
+     * @return
+     */
+    Order getBySn(String sn);
 
 }

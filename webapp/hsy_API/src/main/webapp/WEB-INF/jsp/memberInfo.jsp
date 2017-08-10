@@ -7,7 +7,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="format-detection" content="telephone=no"/>
     <title>会员卡</title>
-    <link rel="stylesheet" href="../../css/style.1.0.0.css">
+    <link rel="stylesheet" href="../../css/style.2.0.2.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
         <div class="card">
             <span class="name">${appPolicyMember.membershipShopName}</span>
             <span class="type">${appPolicyMember.membershipName}</span>
-            <span class="discount"><span>${discountInt}</span>.${discountFloat}折</span>
+            <span class="discount" <c:if test="${discountInt==10}">style="display:none;"</c:if> ><span>${discountInt}</span>.${discountFloat}折</span>
         </div>
         <div class="phone">手机号：${appPolicyMember.consumerCellphone}</div>
         <c:if test="${appPolicyMember.isDeposited==1}">
@@ -24,7 +24,9 @@
         <div class="price">￥<span>${appPolicyMember.remainingSum}</span></div>
         </c:if>
     </div>
-    <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
+    <c:if test="${appPolicyMember.canRecharge==1}">
+    <a class="weui-btn weui-btn_primary" style="margin: 14px 15px 0" href="<%=basePath%>sqb/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a>
+    </c:if>
     <div class="weui-cells">
         <%--<a class="weui-cell weui-cell_access" href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">--%>
         <a class="weui-cell weui-cell_access" href="<%=basePath%>membership/toConsumeList?mid=${appPolicyMember.id}">
@@ -87,23 +89,5 @@
         </div>
     </div>
 </div>
-   <%-- <h1 style="font-size: 40px;">
-        会员卡页面<br>
-        会员卡名称:${appPolicyMember.membershipName}<br>
-        会员卡上显示的店铺名称:${appPolicyMember.membershipShopName}<br>
-        手机号:${appPolicyMember.consumerCellphone}<br>
-        会员卡号:${appPolicyMember.memberCardNO}<br>
-        会员卡折扣(折):${appPolicyMember.discount}<br>
-        <c:if test="${appPolicyMember.isDeposited==1}">
-            余额：${appPolicyMember.remainingSum}<br>
-            <a href="<%=basePath%>membership/consumeListByPage?mid=${appPolicyMember.id}&currentPage=1">累计消费：${appPolicyMember.consumeTotalAmount}</a><br>
-            <a href="<%=basePath%>membership/rechargeListByPage?mid=${appPolicyMember.id}&currentPage=1">累计充值：${appPolicyMember.rechargeTotalAmount}</a><br>
-            <a href="<%=basePath%>membership/toRecharge?mid=${appPolicyMember.id}&source=${source}">充值</a><br>
-        </c:if>
-
-        <c:forEach items="${appBizShopList}" var="shop">
-            <c:out value="${shop.shortName}"></c:out><br>
-        </c:forEach>
-    </h1>--%>
 </body>
 </html>

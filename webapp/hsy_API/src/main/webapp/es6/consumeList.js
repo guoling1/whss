@@ -57,12 +57,13 @@ let getData = function (e, page) {
                 let span = document.createElement('span');
                 span.innerHTML="￥";
                 let span1 = document.createElement('span');
-                span1.innerHTML=data.list[i].realAmount;
+                span1.innerHTML=data.list[i].amount;
                 div_list_right.appendChild(span)
                 div_list_right.appendChild(span1)
                 div_list.appendChild(div_list_left);
                 div_list.appendChild(div_list_right);
-                weuiCells.insertBefore(div_list, weuiCells.childNodes[0]);
+                // weuiCells.insertBefore(div_list, weuiCells.childNodes[0]);
+                weuiCells.appendChild(div_list);
             }
             if (data.page.totalPage != nowPage) {
                 more.style.display = 'block';

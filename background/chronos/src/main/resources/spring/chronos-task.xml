@@ -113,4 +113,14 @@
               overwrite="true"
               monitorExecution="true"/>
 
+    <job:bean id="payBindInfoTask"
+              class="com.jkm.chronos.task.PayBindInfoTask"
+              description="民生信息同步任务"
+              regCenter="regCenter"
+              cron="0 0 18 * * ?"
+              shardingTotalCount="1"
+              failover="true"
+              overwrite="true"
+              monitorExecution="true"/>
+
 </beans>

@@ -2,6 +2,7 @@ package com.jkm.base.common.util.email;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -48,7 +49,7 @@ public class BaseEmailInfo {
     /**
      * 附件名称
      */
-    private String[] attachFileNames;
+    private List<String> attachFileNames;
 
 
     public Properties getProperties() {

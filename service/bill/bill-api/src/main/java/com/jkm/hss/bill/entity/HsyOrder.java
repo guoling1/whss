@@ -110,14 +110,23 @@ public class HsyOrder{
     private Long uid;
     private Long accountid;
     private Long dealerid;
+    private Long cid;
     private Long mcid;
     private Long mid;
+    private Integer isMemberCardPay;
 
     private Date createTime;
     private Date updateTime;
 
     private Integer currentPage;
     private String consumerCellphone;
+
+    /**
+     * 支付终端
+     *
+     * {@link com.jkm.hss.bill.enums.EnumPaymentTerminal}
+     */
+    private int paymentTerminal;
 
     /**
      * 是否是 已经退款成功

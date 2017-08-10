@@ -584,6 +584,11 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     public void handleKmUpdateStatus() {
         List<MerchantInfo> merchantInfoList = merchantInfoDao.selectByKmNetStatus();
         for(int i=0;i<merchantInfoList.size();i++){
+            try {
+                Thread.currentThread().sleep(30000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             merchantChannelRateService.updateInterNet(merchantInfoList.get(i).getAccountId(),merchantInfoList.get(i).getId());
         }
     }

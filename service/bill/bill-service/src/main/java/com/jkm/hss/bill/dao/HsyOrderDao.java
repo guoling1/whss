@@ -1,10 +1,14 @@
 package com.jkm.hss.bill.dao;
 
+import com.jkm.base.common.util.Page;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.entity.QueryHsyOrderRequest;
+import com.jkm.hss.bill.entity.QueryHsyOrderResponse;
 import com.jkm.hss.bill.helper.AppStatisticsOrder;
 import com.jkm.hss.bill.helper.responseparam.HsyOrderSTResponse;
+import com.jkm.hsy.user.entity.AppPolicyRechargeOrder;
 import com.jkm.hss.bill.helper.responseparam.PcStatisticsOrder;
-import com.jkm.hsy.user.constant.Page;
+import com.jkm.hsy.user.entity.AppPolicyRechargeOrder;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -161,4 +165,49 @@ public interface HsyOrderDao {
     public List<HsyOrder> findConsumeOrderListByPage(Page<HsyOrder> entity);
     public Integer findConsumeOrderListByPageCount(HsyOrder entity);
     public List<HsyOrder> findConsumeOrderInfo(@Param("id")Long id);
+    public List<AppPolicyRechargeOrder> findRechargeOrderInfoByOrderNO(@Param("orderNO")String orderNO);
+    public List<AppPolicyRechargeOrder> findRechargeOrderInfoByID(@Param("id")Long id);
+
+    /**
+     * hsy订单
+     * @param req
+     * @return
+     */
+    List<QueryHsyOrderResponse> queryHsyOrderList(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单总数
+     * @param req
+     * @return
+     */
+    int queryHsyOrderListCount(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单支付金额统计
+     * @param req
+     * @return
+     */
+    String getHsyOrderCounts(QueryHsyOrderRequest req);
+
+    /**
+     * hsy订单支付手续费
+     * @param req
+     * @return
+     */
+    String getHsyOrderCounts1(QueryHsyOrderRequest req);
+
+    /**
+     * 下载hsy订单
+     * @param req
+     * @return
+     */
+    List<QueryHsyOrderResponse> selectHsyOrderList(QueryHsyOrderRequest req);
+
+    /**
+     * 按订单号查询
+     *
+     * @param orderNumber
+     * @return
+     */
+    HsyOrder selectByOrderNumber(@Param("orderNumber") String orderNumber);
 }

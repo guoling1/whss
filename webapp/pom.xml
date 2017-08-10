@@ -17,5 +17,6 @@
         <module>hss_H5</module>
         <module>dealer_PC</module>
         <module>hsy_API</module>
+        <module>socket_service</module>
     </modules>
 </project>

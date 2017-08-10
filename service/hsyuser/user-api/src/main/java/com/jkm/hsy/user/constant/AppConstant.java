@@ -45,7 +45,7 @@ public class AppConstant {
     public static int VERIFICATION_NOTICE_TYPE_ID_VOICE=708;
 
     public static int PAGE_SIZE=10;
-    public static String QR_URL="http://hsy.qianbaojiajia.com/code/scanCode";
+    public static String QR_URL="http://hsy.qianbaojiajia.com/code";
 
     public final static String MD5(String s) {
         try {

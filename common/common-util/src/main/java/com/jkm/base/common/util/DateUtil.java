@@ -153,10 +153,10 @@ public final class DateUtil {
         if (strDateH > strDateBeginH && strDateH < strDateEndH) {
             return true;
             // 当前时间小时数等于开始时间小时数，分钟数在开始和结束之间
-        } else if (strDateH == strDateBeginH && strDateM >= strDateBeginM&& strDateM <= strDateEndM) {
+        } else if (strDateH == strDateBeginH && strDateM >= strDateBeginM) {
             return true;
             // 当前时间小时数等于开始时间小时数，分钟数等于开始时间分钟数，秒数在开始和结束之间
-        } else if (strDateH == strDateBeginH && strDateM == strDateBeginM&& strDateS >= strDateBeginS && strDateS <= strDateEndS) {
+        } else if (strDateH == strDateBeginH && strDateM == strDateBeginM&& strDateS >= strDateBeginS) {
             return true;
         }
             // 当前时间小时数大等于开始时间小时数，等于结束时间小时数，分钟数小等于结束时间分钟数
@@ -189,4 +189,5 @@ public final class DateUtil {
     public static String formatDate(Date date,String formatStr) {
         return new SimpleDateFormat(formatStr).format(date);
     }
+
 }

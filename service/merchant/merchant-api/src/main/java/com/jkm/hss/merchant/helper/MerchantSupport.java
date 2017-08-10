@@ -1,9 +1,12 @@
 package com.jkm.hss.merchant.helper;
 
 import com.jkm.base.common.util.AESUtil;
+import com.jkm.base.common.util.DateFormatUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2016/11/23.
@@ -168,13 +171,14 @@ public class MerchantSupport {
         return DigestUtils.sha256Hex(password + salt);
     }
     public static void main(String[] args ){
-        //System.out.println(decryptMobile("B3sItZYv_xR2FGOBZqzPpg"));
+        final Date date = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        System.out.println(decryptMobile("HEFDx-muDsJUg6H5i9i0qMzEm32_Uho8bnQngq3mgXg"));
        System.out.println(decryptBankCard("UI0zwGFqacS-F0JTa4YBp0-XIgl6ix3Qhuw7WeTfnCw"));
  //       System.out.println(decryptIdentity(""));
 //        System.out.println("=============================================");
 //        String mobile = encryptMobile("13597634925");
 //        String bankCard = encryptBankCard("6222620130005705891");
-      String Identity = encryptIdenrity("140932198808296252");
+      String Identity = encryptIdenrity("622208020001762098");
 //        System.out.println(bankCard);
 //        System.out.println(bankCard);
         System.out.println(Identity);

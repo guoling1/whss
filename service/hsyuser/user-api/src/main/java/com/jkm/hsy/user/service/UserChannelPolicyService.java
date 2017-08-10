@@ -83,4 +83,5 @@ public interface UserChannelPolicyService {
      */
     String selectAppSecretByAppId(String appId);
 
+    List<Long> selectUserIdsBySignAndNetStatus(int sign, int netStatus);
 }

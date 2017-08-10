@@ -56,7 +56,6 @@ public class PaymentSdkCallbackController extends BaseController {
     public Object handlePayCallbackMsg(@RequestBody final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
         log.info("收到支付中心的支付回调请求，订单号[{}], 参数[{}]", paymentSdkPayCallbackResponse.getOrderNo(), paymentSdkPayCallbackResponse);
         this.tradeService.handlePayOrRechargeCallbackMsg(paymentSdkPayCallbackResponse);
-//        this.hsyTradeService.handleHsyPayCallbackMsg(paymentSdkPayCallbackResponse);
         return "success";
     }
 

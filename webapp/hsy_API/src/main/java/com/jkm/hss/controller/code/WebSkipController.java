@@ -2,14 +2,22 @@ package com.jkm.hss.controller.code;
 
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
+import com.jkm.hss.account.entity.MemberAccount;
+import com.jkm.hss.account.sevice.MemberAccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hsy.user.constant.RechargeValidType;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppPolicyMember;
+import com.jkm.hsy.user.entity.AppPolicyMembershipCardShop;
+import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
 import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
@@ -25,6 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +50,12 @@ public class WebSkipController extends BaseController {
     private AlipayOauthService alipayOauthService;
     @Autowired
     private UserChannelPolicyService userChannelPolicyService;
+    @Autowired
+    private HsyMembershipService hsyMembershipService;
+    @Autowired
+    private MemberAccountService memberAccountService;
+    @Autowired
+    private HsyShopDao hsyShopDao;
     /**
      * 支付升级成功页面
      * @param request
@@ -62,14 +78,30 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId, @RequestParam(value = "name") String name) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "merchantId") Long merchantId) throws IOException {
         model.addAttribute("hsyOrderId", hsyOrderId);
-        model.addAttribute("merchantName", name);
+        String merchantName = hsyShopDao.findShopNameByID(merchantId);
+        model.addAttribute("merchantName", merchantName);
+        AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(openId,null,userId);
+        if(appPolicyMember!=null){
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            List<AppPolicyMembershipCardShop> cardShopList=hsyMembershipService.getMembershipCardShop(appPolicyMember.getMcid());
+            boolean viewFlag=false;
+            for(AppPolicyMembershipCardShop appPolicyMembershipCardShop:cardShopList){
+                if(appPolicyMembershipCardShop.getSid().equals(merchantId))
+                {
+                    viewFlag=true;
+                    break;
+                }
+            }
+            if(viewFlag)
+                model.addAttribute("appPolicyMember",appPolicyMember);
+        }
         return "/payment-wx";
     }
 
@@ -78,14 +110,30 @@ public class WebSkipController extends BaseController {
      * @param request
      * @param response
      * @param model
-     * @param name
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "name") String name) throws IOException {
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "hsyOrderId", required = true) long hsyOrderId,@RequestParam(value = "openId") String openId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "merchantId") Long merchantId) throws IOException {
         model.addAttribute("hsyOrderId", hsyOrderId);
-        model.addAttribute("merchantName", name);
+        String merchantName = hsyShopDao.findShopNameByID(merchantId);
+        model.addAttribute("merchantName", merchantName);
+        AppPolicyMember appPolicyMember = hsyMembershipService.findAppPolicyMember(null,openId,userId);
+        if(appPolicyMember!=null){
+            Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+            appPolicyMember.setRemainingSum(account.get().getAvailable());
+            List<AppPolicyMembershipCardShop> cardShopList=hsyMembershipService.getMembershipCardShop(appPolicyMember.getMcid());
+            boolean viewFlag=false;
+            for(AppPolicyMembershipCardShop appPolicyMembershipCardShop:cardShopList){
+                if(appPolicyMembershipCardShop.getSid().equals(merchantId))
+                {
+                    viewFlag=true;
+                    break;
+                }
+            }
+            if(viewFlag)
+                model.addAttribute("appPolicyMember",appPolicyMember);
+        }
         return "/payment-zfb";
     }
 
@@ -186,6 +234,33 @@ public class WebSkipController extends BaseController {
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode";
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
+    }
+
+    @RequestMapping("needRecharge")
+    public String needRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String cellphone,String source){
+        model.addAttribute("mid",mid);
+        model.addAttribute("cellphone",cellphone);
+        model.addAttribute("source",source);
+        return "/needRecharge";
+    }
+
+    @RequestMapping("toRecharge")
+    public String toRecharge(HttpServletRequest request, HttpServletResponse response,Model model,Long mid,String source){
+        AppPolicyMember appPolicyMember=hsyMembershipService.findMemberInfoByID(mid);
+        Optional<MemberAccount> account=memberAccountService.getById(appPolicyMember.getAccountID());
+        appPolicyMember.setRemainingSum(account.get().getAvailable());
+        appPolicyMember.setRechargeTotalAmount(account.get().getRechargeTotalAmount());
+        appPolicyMember.setConsumeTotalAmount(account.get().getConsumeTotalAmount());
+        DecimalFormat a=new DecimalFormat("0.0");
+        String discountStr=a.format(appPolicyMember.getDiscount());
+        String discountInt=discountStr.split("\\.")[0];
+        String discountFloat=discountStr.split("\\.")[1];
+        model.addAttribute("appPolicyMember",appPolicyMember);
+        model.addAttribute("type", RechargeValidType.RECHARGE.key);
+        model.addAttribute("discountInt",discountInt);
+        model.addAttribute("discountFloat",discountFloat);
+        model.addAttribute("source", source);
+        return "/toRecharge";
     }
 
 }
