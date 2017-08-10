@@ -35,7 +35,6 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.UserInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumCheckType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
