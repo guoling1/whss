@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class MerchantChannelResponse {
 
+    private int payMethodCode;
 
     private String payMethod;
 

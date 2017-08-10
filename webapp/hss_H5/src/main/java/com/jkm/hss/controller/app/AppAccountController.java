@@ -112,6 +112,7 @@ public class AppAccountController extends BaseController {
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
             //log.info("》》》》》》》》》》》》》》" + parentChannel.toString());
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(parentChannel.getChannelTypeSign()).getPaymentChannel().getValue());
+            merchantChannelResponse.setPayMethodCode(EnumPayChannelSign.idOf(parentChannel.getChannelTypeSign()).getPaymentChannel().getId());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
             merchantChannelResponse.setChannelRate(merchantChannelRate.getMerchantPayRate().toString());
             merchantChannelResponse.setFee(merchantChannelRate.getMerchantWithdrawFee().toString());
