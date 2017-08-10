@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.HsyPartnerRulesDao">
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,	oem_profit,	first_dealer_profit,second_dealer_profit,direct_recommend_profit,indirect_recommend_profit,baodan_profit,status,create_time,	update_time
+    </sql>
+    <select id="selectTop1" resultType="com.jkm.hss.merchant.entity.HsyPartnerRules">
+        select <include refid="Base_Column_List"/> from tb_hsy_partner_rules limit 0,1
+    </select>
+    <!-- 添加 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.HsyPartnerRules">
+        INSERT INTO tb_hsy_partner_rules (
+        oem_profit,
+        first_dealer_profit,
+        second_dealer_profit,
+        direct_recommend_profit,
+        indirect_recommend_profit,
+        baodan_profit,
+        status
+        )VALUES (
+        #{oemProfit},
+        #{firstDealerProfit},
+        #{secondDealerProfit},
+        #{directRecommendProfit},
+        #{indirectRecommendProfit},
+        #{baodanProfit},
+        #{status}
+        )
+    </insert>
+    <!-- 添加 -->
+    <update id="update" parameterType="com.jkm.hss.merchant.entity.HsyPartnerRules">
+        UPDATE tb_hsy_partner_rules
+        SET
+        oem_profit=#{oemProfit},
+        first_dealer_profit=#{firstDealerProfit},
+        second_dealer_profit=#{secondDealerProfit},
+        direct_recommend_profit=#{directRecommendProfit},
+        indirect_recommend_profit=#{indirectRecommendProfit},
+        baodan_profit=#{baodanProfit}
+    </update>
+</mapper>

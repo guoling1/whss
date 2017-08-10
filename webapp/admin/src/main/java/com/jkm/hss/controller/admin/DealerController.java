@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.StringUtil;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.RevokeQrCodeRecord;
@@ -45,9 +46,14 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.request.RevokeQrCodeRequest;
 import com.jkm.hss.helper.response.*;
+import com.jkm.hss.merchant.entity.AgentApplicationRecord;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.enums.EnumPlatformType;
 import com.jkm.hss.merchant.enums.EnumStatus;
+import com.jkm.hss.merchant.helper.request.AppliationListRequest;
+import com.jkm.hss.merchant.helper.response.AgentApplicationRecordResponse;
+import com.jkm.hss.merchant.service.AgentApplicationRecordService;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.*;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.*;
@@ -115,6 +121,12 @@ public class DealerController extends BaseController {
 
     @Autowired
     private OemInfoService oemInfoService;
+
+    @Autowired
+    private AgentApplicationRecordService agentApplicationRecordService;
+
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -1725,5 +1737,60 @@ public class DealerController extends BaseController {
         }
         oemInfoService.addOrUpdate(addOrUpdateOemRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "配置成功");
+    }
+
+    /**
+     * 代理商申请列表
+     * @param appliationListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/appliationList", method = RequestMethod.POST)
+    public CommonResponse appliationList (@RequestBody AppliationListRequest appliationListRequest) {
+        PageModel<AgentApplicationRecordResponse> agentList = agentApplicationRecordService.agentList(appliationListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",agentList);
+    }
+
+    /**
+     * 获取代理商信息
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getDealerInfoByMarkCode", method = RequestMethod.POST)
+    public CommonResponse getDealerInfoByMarkCode(@RequestBody DealerMarkCodeRequest request) {
+        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(request.getMarkCode());
+        if(dealerOptional.isPresent()){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerOptional.get());
+        }else{
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", "");
+        }
+    }
+
+    /**
+     * 关联
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "relation", method = RequestMethod.POST)
+    public CommonResponse relation(@RequestBody DealerRelationRequest request) {
+        if(StringUtils.isBlank(request.getMarkCode())){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "代理商编号不存在");
+        }
+        if(request.getId()<=0){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "记录编码不能为空");
+        }
+        Optional<AgentApplicationRecord> agentApplicationRecordOptional = agentApplicationRecordService.getById(request.getId());
+        if(!agentApplicationRecordOptional.isPresent()){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "申请记录不存在");
+        }
+        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(request.getMarkCode());
+        if(!dealerOptional.isPresent()){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "代理商不存在");
+        }
+        agentApplicationRecordService.updateById(request.getId());
+        merchantInfoService.updateSuperDealerIdById(dealerOptional.get().getId(),agentApplicationRecordOptional.get().getMerchantId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "关联成功");
     }
 }

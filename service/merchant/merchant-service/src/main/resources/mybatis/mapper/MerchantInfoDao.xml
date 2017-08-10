@@ -515,4 +515,11 @@
         FROM tb_merchant_info
         WHERE super_dealer_id = #{superDealerId}
     </select>
+
+    <update id="updateSuperDealerIdById">
+        UPDATE tb_merchant_info
+        SET
+        super_dealer_id=#{superDealerId}
+        WHERE id=#{merchantId}
+    </update>
 </mapper>

@@ -44,6 +44,11 @@ public class H5ControllerTester {
     public static String HSSH5001012="http://localhost:8081/appMerchantInfo/cardDetail";
     public static String HSSH5001013="http://localhost:8081/appMerchantInfo/saveBranchInfo";
     public static String HSSH5001014="http://localhost:8081/appMerchantInfo/myRecommend";
+    public static String HSSH5001015="http://localhost:8081/appMerchantInfo/upgrade";
+    public static String HSSH5001016="http://localhost:8081/appMerchantInfo/toUpgrade";
+    public static String HSSH5001017="http://localhost:8081/appMerchantInfo/toBuy";
+    public static String HSSH5001018="http://localhost:8081/appMerchantInfo/agentApplication";
+    public static String HSSH5001019="http://localhost:8081/appMerchantInfo/agentApplicationStatus";
 
     @Test
     public void testGetRegisterCode()throws Exception{
@@ -123,6 +128,38 @@ public class H5ControllerTester {
         Map<String, String> map = new JSONObject();
         map.put("type","1");
         H5ControllerTester.testRest(map,HSSH5001014);
+    }
+
+    @Test
+    public void testUpgrade()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001015);
+    }
+
+    @Test
+    public void testToUpgrade()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001016);
+    }
+
+    @Test
+    public void testToBuy()throws Exception{
+        Map<String, String> map = new JSONObject();
+        map.put("id","61");
+        H5ControllerTester.testRest(map,HSSH5001017);
+    }
+
+    @Test
+    public void testAgentApplication()throws Exception{
+        Map<String, String> map = new JSONObject();
+        map.put("level","1");
+        H5ControllerTester.testRest(map,HSSH5001018);
+    }
+
+    @Test
+    public void testAgentApplicationStatus()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001019);
     }
 
     public static void testRest(Map<String, String> paramsMap,String url)throws Exception{

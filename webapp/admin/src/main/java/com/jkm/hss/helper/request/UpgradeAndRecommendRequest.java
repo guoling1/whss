@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.request;
 
+import com.jkm.hss.merchant.entity.HsyPartnerRules;
 import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.helper.request.UpgradeRulesRequest;
@@ -37,6 +38,11 @@ public class UpgradeAndRecommendRequest {
      *
      */
     private List<UpgradeRulesRequest> upgradeRulesRequestList;
+
+    /**
+     * 好收银升级规则
+     */
+    private HsyPartnerRules hsyPartnerRules;
 
 
 }

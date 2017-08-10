@@ -216,5 +216,10 @@ public interface MerchantInfoService {
      * 根据超级合伙人查询
      */
     Optional<MerchantInfo> selectBySuperDealerId(long superDealerId);
+    /**
+     * 根据编码修改超级合伙人编码
+     * @param
+     */
+    int updateSuperDealerIdById(Long superDealerId,Long merchantId);
 
 }

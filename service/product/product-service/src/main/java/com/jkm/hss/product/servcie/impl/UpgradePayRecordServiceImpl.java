@@ -45,4 +45,15 @@ public class UpgradePayRecordServiceImpl implements UpgradePayRecordService {
         return upgradePayRecordDao.updatePayResult(payResult,reqSn);
     }
 
+    /**
+     * 根据merchantId查询
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public UpgradePayRecord selectByMerchantId(Long merchantId) {
+        return upgradePayRecordDao.selectByMerchantId(merchantId);
+    }
+
 }
