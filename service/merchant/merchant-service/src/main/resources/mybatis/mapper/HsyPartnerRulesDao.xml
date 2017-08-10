@@ -39,5 +39,6 @@
         direct_recommend_profit=#{directRecommendProfit},
         indirect_recommend_profit=#{indirectRecommendProfit},
         baodan_profit=#{baodanProfit}
+        where id=#{id}
     </update>
 </mapper>

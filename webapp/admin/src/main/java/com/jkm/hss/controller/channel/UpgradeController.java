@@ -176,12 +176,6 @@ public class UpgradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "addOrUpdate", method = RequestMethod.POST)
     public CommonResponse addOrUpdate(@RequestBody final UpgradeAndRecommendRequest req) {
-        if(req.getPartnerRuleSettingList()==null||req.getPartnerRuleSettingList().size()==0){
-            return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
-        }
-        if(req.getUpgradeRulesRequestList()==null||req.getUpgradeRulesRequestList().size()==0){
-            return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
-        }
         Optional<Product> productOptional = productService.selectById(req.getProductId());
         if(!productOptional.isPresent()){
             return CommonResponse.simpleResponse(-1,"该产品不存在");
@@ -190,6 +184,7 @@ public class UpgradeController extends BaseController {
         if((EnumProductType.HSY.getId()).equals(productOptional.get().getType())){
             HsyPartnerRules hsyPartnerRules = hsyPartnerRulesService.selectTop1();
             HsyPartnerRules hp = new HsyPartnerRules();
+
             hp.setOemProfit(req.getHsyPartnerRules().getOemProfit().divide(b1));
             hp.setFirstDealerProfit(req.getHsyPartnerRules().getFirstDealerProfit().divide(b1));
             hp.setSecondDealerProfit(req.getHsyPartnerRules().getSecondDealerProfit().divide(b1));
@@ -199,9 +194,16 @@ public class UpgradeController extends BaseController {
             if(hsyPartnerRules==null){
                 hsyPartnerRulesService.insert(hp);
             }else{
+                hp.setId(hsyPartnerRules.getId());
                 hsyPartnerRulesService.update(hp);
             }
         }else{
+            if(req.getPartnerRuleSettingList()==null||req.getPartnerRuleSettingList().size()==0){
+                return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
+            }
+            if(req.getUpgradeRulesRequestList()==null||req.getUpgradeRulesRequestList().size()==0){
+                return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
+            }
             final CommonResponse commonResponse = this.rewardJudge(req);
             if (1 != commonResponse.getCode()) {
                 return commonResponse;
