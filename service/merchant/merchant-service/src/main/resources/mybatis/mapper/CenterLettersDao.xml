@@ -64,7 +64,7 @@
     </update>
 
     <select id="getLettersList" parameterType="com.jkm.hss.merchant.helper.request.GetLettersListRequest" resultType="com.jkm.hss.merchant.helper.response.LettersListResponse">
-        SELECT id,(select username from tb_admin_user where id=admin_id) as adminName,title,content,status
+        SELECT id,(select username from tb_admin_user where id=admin_id) as adminName,title,content,status,create_time
         FROM tb_center_letters
         WHERE status=0
         <if test="startTime!=null and startTime!=''">
