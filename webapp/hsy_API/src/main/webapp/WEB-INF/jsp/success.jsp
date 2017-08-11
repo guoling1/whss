@@ -27,8 +27,8 @@
     <div class="left">付款金额</div>
     <div class="right">${money}元</div>
   </div>
-  <a href="https://www.yumilc.com/hd/m/redpackage/receiveRedpackage?inviterId=472&from=singlemessage" class="ad">
-    <img src="http://static.jinkaimen.cn/hsy/assets/ym-ad1.png" alt="">
+  <a href="http://openapi.haodai.com/wap/sdwap?ref=sd_h5001_qbjj001" class="ad">
+    <img src="http://static.jinkaimen.cn/hsy/assets/ym-ad2.jpeg" alt="">
   </a>
 </div>
 
