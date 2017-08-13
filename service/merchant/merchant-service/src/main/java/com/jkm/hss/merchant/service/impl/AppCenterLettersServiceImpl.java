@@ -1,8 +1,9 @@
 package com.jkm.hss.merchant.service.impl;
 
 
+import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.PolicyConditions;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
@@ -86,9 +87,20 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
                 List<String> orgUrls = new ArrayList<>();
                 for(int j=0;j<centerImages.size();j++){
                     Date expiration = new Date(new Date().getTime() + 30*60*1000);
-                    URL url = ossClient.generatePresignedUrl("jkm-security", centerImages.get(j).getImgUrl(),expiration);
-                    thumbnailUrls.add(url.toString()+"&x-oss-process=style/avatar_300");
-                    orgUrls.add(url.toString()+"&x-oss-process=style/avatar_300");
+                    String style = "style/avatar_300";
+                    GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest("jkm-security", centerImages.get(j).getImgUrl(), HttpMethod.GET);
+                    req.setExpiration(expiration);
+                    req.setProcess(style);
+                    URL url = ossClient.generatePresignedUrl(req);
+
+                    String style1 = "style/mobile_750";
+                    GeneratePresignedUrlRequest req1 = new GeneratePresignedUrlRequest("jkm-security", centerImages.get(j).getImgUrl(), HttpMethod.GET);
+                    req1.setExpiration(expiration);
+                    req1.setProcess(style1);
+                    URL url1 = ossClient.generatePresignedUrl(req1);
+
+                    thumbnailUrls.add(url.toString());
+                    orgUrls.add(url1.toString());
                 }
                 appCenterLettersDetailResponse1.setThumbnailUrls(thumbnailUrls);
                 appCenterLettersDetailResponse1.setOrgUrls(orgUrls);
