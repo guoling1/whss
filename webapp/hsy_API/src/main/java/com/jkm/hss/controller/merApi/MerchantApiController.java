@@ -79,6 +79,7 @@ public class MerchantApiController extends BaseApiController {
      * @param createApiOrderRequest
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/code/jsapi", method = RequestMethod.POST)
     public String createApiOrder(@RequestBody final CreateApiOrderRequest createApiOrderRequest) {
         log.info("【商户[{}]API下单】开始", createApiOrderRequest.getMerchantNo());
@@ -126,7 +127,7 @@ public class MerchantApiController extends BaseApiController {
         //结果返回
         //createApiOrderResponse = afterComplete();
         Long endTime = System.currentTimeMillis();
-        log.info("#【快捷预下单结束】merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        log.info("#【API下单】merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
 		return JSONObject.toJSONString(createApiOrderResponse);
     }
 
