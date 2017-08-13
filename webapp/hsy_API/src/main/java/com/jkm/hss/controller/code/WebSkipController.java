@@ -4,13 +4,19 @@ import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
+import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.service.HSYOrderService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.request.CreateApiOrderRequest;
+import com.jkm.hss.helper.response.CreateApiOrderResponse;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hsy.user.constant.RechargeValidType;
@@ -20,18 +26,18 @@ import com.jkm.hsy.user.entity.AppPolicyMembershipCardShop;
 import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Triple;
 import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -56,6 +62,10 @@ public class WebSkipController extends BaseController {
     private MemberAccountService memberAccountService;
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private HSYTransactionService hsyTransactionService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
     /**
      * 支付升级成功页面
      * @param request
@@ -261,6 +271,21 @@ public class WebSkipController extends BaseController {
         model.addAttribute("discountFloat",discountFloat);
         model.addAttribute("source", source);
         return "/toRecharge";
+    }
+
+    /**
+     * 扫固定码微信支付页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/wxapi", method = RequestMethod.GET)
+    public String wxapi(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "payInfo", required = true) long payInfo, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ) throws IOException {
+        model.addAttribute("hsyOrderId", hsyOrderId);
+        model.addAttribute("payInfo", payInfo);
+        return "/payment-wx-api";
     }
 
 }
