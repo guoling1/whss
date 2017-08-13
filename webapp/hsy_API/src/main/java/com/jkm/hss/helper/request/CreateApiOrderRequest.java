@@ -62,7 +62,7 @@ public class CreateApiOrderRequest {
     }
 
     public void validate() {
-        if (StringUtils.isEmpty(trxType) || !"WX_SCANCODE_JSAPI".equals(trxType) || !"Alipay_SCANCODE_JSAPI".equals(trxType)){
+        if (StringUtils.isEmpty(trxType)){
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "1接口类型错误");
         }
         if (StringUtils.isEmpty(merchantNo)){

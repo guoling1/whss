@@ -3,6 +3,8 @@ package com.jkm.hss.controller.merApi;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
+import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.service.*;
@@ -73,6 +75,14 @@ public class MerchantApiController extends BaseApiController {
     private HsyShopDao hsyShopDao;
     @Autowired
     private UserCurrentChannelPolicyService userCurrentChannelPolicyService;
+    @Autowired
+    private AlipayOauthService alipayOauthService;
+
+    @RequestMapping(value = "toJsp", method = RequestMethod.GET)
+    public String toJsp() {
+
+        return "/api";
+    }
     /**
      * 商户API 下单
      *
@@ -115,11 +125,14 @@ public class MerchantApiController extends BaseApiController {
             final long hsyOrderId = this.hsyTransactionService.
                     createOrderToApi(channel , priShop.getId(), createApiOrderRequest.getOrderNum(),createApiOrderRequest.getAmount(),createApiOrderRequest.getGoodsName(),createApiOrderRequest.getCallbackUrl());
             //获取openID
-            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/merchantApi%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
+            if (createApiOrderRequest.getTrxType().equals("WX_SCANCODE_JSAPI")){
+                return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/merchantApi%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
+            }else if (createApiOrderRequest.getTrxType().equals("Alipay_SCANCODE_JSAPI")){
+                return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+AlipayServiceConstants.APP_ID+"&state="+hsyOrderId+"&scope=auth_base&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/merchantApi%2fuserIdBack";
+            }
 
         } catch (JKMTradeServiceException e) {
             log.error("#【API下单】controller.createApiOrder.JKMTradeServiceException", e);
-            e.getJKMTradeErrorCode().setErrorMessage("");
             createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
         } catch (Exception e) {
             log.error("#【API下单】controller.createApiOrder.Exception", e);
@@ -163,6 +176,73 @@ public class MerchantApiController extends BaseApiController {
             Preconditions.checkState(ret.get("openid")!=null&&!"".equals(ret.get("openid")), "微信授权失败");
             final HsyOrder hsyOrder = this.hsyOrderService.getById(Integer.valueOf(state)).get();
             hsyOrder.setMemberId(ret.get("openid"));
+            this.hsyOrderService.update(hsyOrder);
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(hsyOrder.getAmount().toString(), hsyOrder.getId(),hsyOrder.getAmount(),null,null,null,null);
+            if (0 == resultPair.getLeft()) {
+                //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                //下单成功
+                createApiOrderResponse.setAmount(hsyOrder.getAmount().toString());
+                createApiOrderResponse.setOrderNum(hsyOrder.getOrdernumber());
+                createApiOrderResponse.setTradeOrderNo(hsyOrder.getOrderno());
+                createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/wxapi?payInfo="+URLDecoder.decode(resultPair.getMiddle(), "UTF-8")+ "&hsyOrderId=" + hsyOrder.getId());
+                createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
+                createApiOrderResponse.setReturnMsg("下单成功");
+            }else{
+                //下单失败
+                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
+                createApiOrderResponse.setReturnMsg("下单失败");
+            }
+
+        } catch (JKMTradeServiceException e) {
+            log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.JKMTradeServiceException", e);
+            createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
+        } catch (Exception e) {
+            log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.Exception", e);
+            createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
+        }
+        //结果返回
+        createApiOrderResponse = afterComplete();
+        Long endTime = System.currentTimeMillis();
+        log.info("#【微信回调获取OPENID并下单】merchantOrderNo:" + createApiOrderResponse.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        return createApiOrderResponse;
+    }
+
+    /**
+     * userid
+     *
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userIdBack", method = RequestMethod.GET)
+    public CreateApiOrderResponse payUserIdOrder(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws UnsupportedEncodingException {
+        Long startTime = System.currentTimeMillis();
+        log.info("支付宝回调获取USERID");
+        CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
+        try{
+            Preconditions.checkState(request.getQueryString() != null, "支付宝授权失败");
+            String getQueryString = "";
+            if(request.getQueryString() == null){
+                getQueryString="";
+            }else{
+                getQueryString = request.getQueryString();
+            }
+            String[] arr = getQueryString.split("&");
+            String authcode="";
+            String state = "";
+            for(int i =0;i<arr.length;i++){
+                if("auth_code".equals(arr[i].split("=")[0])){
+                    authcode = arr[i].split("=")[1];
+                    log.info("authcode是:{}",authcode);
+                }
+                if("state".equals(arr[i].split("=")[0])){
+                    state = arr[i].split("=")[2];
+                    log.info("state参数是:{}",state);
+                }
+            }
+            String userId = alipayOauthService.getUserId(authcode);
+            final HsyOrder hsyOrder = this.hsyOrderService.getById(Integer.valueOf(state)).get();
+            hsyOrder.setMemberId(userId);
             this.hsyOrderService.update(hsyOrder);
             final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(hsyOrder.getAmount().toString(), hsyOrder.getId(),hsyOrder.getAmount(),null,null,null,null);
             if (0 == resultPair.getLeft()) {
