@@ -147,6 +147,9 @@
             <if test="amount!=null">
                 amount=#{amount},
             </if>
+            <if test="memberId != null and remark != ''">
+                member_id = #{memberId},
+            </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}
             </if>

@@ -341,7 +341,8 @@ public class WebSkipController extends BaseController {
                 createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/wxapi?payInfo="+URLDecoder.decode(resultPair.getMiddle(), "UTF-8")+ "&hsyOrderId=" + hsyOrder.getId());
                 createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
                 createApiOrderResponse.setReturnMsg("下单成功");
-                return "/success";
+                model.addAttribute("payUrl",URLDecoder.decode(resultPair.getMiddle(), "UTF-8"));
+                return "/api-wx";
             }else{
                 //下单失败
                 createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
