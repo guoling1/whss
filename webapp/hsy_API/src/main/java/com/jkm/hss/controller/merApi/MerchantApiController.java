@@ -124,13 +124,16 @@ public class MerchantApiController extends BaseApiController {
             }
             final long hsyOrderId = this.hsyTransactionService.
                     createOrderToApi(channel , priShop.getId(), createApiOrderRequest.getOrderNum(),createApiOrderRequest.getAmount(),createApiOrderRequest.getGoodsName(),createApiOrderRequest.getCallbackUrl());
-            //获取openID
-            if (createApiOrderRequest.getTrxType().equals("WX_SCANCODE_JSAPI")){
-                return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/merchantApi%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
-            }else if (createApiOrderRequest.getTrxType().equals("Alipay_SCANCODE_JSAPI")){
-                return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+AlipayServiceConstants.APP_ID+"&state="+hsyOrderId+"&scope=auth_base&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/merchantApi%2fuserIdBack";
-            }
 
+            final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
+            //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                //下单成功
+                createApiOrderResponse.setAmount(hsyOrder.getAmount().toString());
+                createApiOrderResponse.setOrderNum(hsyOrder.getOrdernumber());
+                createApiOrderResponse.setTradeOrderNo(hsyOrder.getOrderno());
+                createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/codeapi?payInfo=oCSt1wQtuV7G_GQ_qCyWf0qN"+ "&hsyOrderId=" + hsyOrder.getId());
+                createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
+                createApiOrderResponse.setReturnMsg("下单成功");
         } catch (JKMTradeServiceException e) {
             log.error("#【API下单】controller.createApiOrder.JKMTradeServiceException", e);
             createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
@@ -145,67 +148,6 @@ public class MerchantApiController extends BaseApiController {
 		return JSONObject.toJSONString(createApiOrderResponse);
     }
 
-    /**
-     * openid
-     *
-     * @param
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/openIdBack", method = RequestMethod.GET)
-    public CreateApiOrderResponse payOpenIdOrder(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws UnsupportedEncodingException {
-        Long startTime = System.currentTimeMillis();
-        log.info("微信回调获取OPENID");
-        CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
-        try{
-
-            Preconditions.checkState(request.getQueryString() != null, "微信授权失败");
-            String getQueryString = request.getQueryString();
-            String[] arr = getQueryString.split("&");
-            String code="";
-            String state="";
-            for(int i =0;i<arr.length;i++){
-                if("code".equals(arr[i].split("=")[0])){
-                    code = arr[i].split("=")[1];
-                }
-                if("state".equals(arr[i].split("=")[0])){
-                    state = arr[i].split("=")[1];
-                }
-            }
-            Map<String,String> ret = WxPubUtil.getOpenid(code, WxConstants.APP_HSY_ID,WxConstants.APP_HSY_SECRET);
-            Preconditions.checkState(ret.get("openid")!=null&&!"".equals(ret.get("openid")), "微信授权失败");
-            final HsyOrder hsyOrder = this.hsyOrderService.getById(Integer.valueOf(state)).get();
-            hsyOrder.setMemberId(ret.get("openid"));
-            this.hsyOrderService.update(hsyOrder);
-            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(hsyOrder.getAmount().toString(), hsyOrder.getId(),hsyOrder.getAmount(),null,null,null,null);
-            if (0 == resultPair.getLeft()) {
-                //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
-                //下单成功
-                createApiOrderResponse.setAmount(hsyOrder.getAmount().toString());
-                createApiOrderResponse.setOrderNum(hsyOrder.getOrdernumber());
-                createApiOrderResponse.setTradeOrderNo(hsyOrder.getOrderno());
-                createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/wxapi?payInfo="+URLDecoder.decode(resultPair.getMiddle(), "UTF-8")+ "&hsyOrderId=" + hsyOrder.getId());
-                createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
-                createApiOrderResponse.setReturnMsg("下单成功");
-            }else{
-                //下单失败
-                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
-                createApiOrderResponse.setReturnMsg("下单失败");
-            }
-
-        } catch (JKMTradeServiceException e) {
-            log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.JKMTradeServiceException", e);
-            createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
-        } catch (Exception e) {
-            log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.Exception", e);
-            createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
-        }
-        //结果返回
-        createApiOrderResponse = afterComplete();
-        Long endTime = System.currentTimeMillis();
-        log.info("#【微信回调获取OPENID并下单】merchantOrderNo:" + createApiOrderResponse.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
-        return createApiOrderResponse;
-    }
 
     /**
      * userid
