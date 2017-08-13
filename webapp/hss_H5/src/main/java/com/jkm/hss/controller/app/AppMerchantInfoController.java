@@ -10,7 +10,9 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.bill.helper.responseparam.HssAppTotalProfitResponse;
 import com.jkm.hss.bill.service.PayService;
+import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -46,6 +48,7 @@ import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,6 +116,8 @@ public class AppMerchantInfoController extends BaseController {
     private UpgradePayRecordService upgradePayRecordService;
     @Autowired
     private PayService payService;
+    @Autowired
+    private ProfitService profitService;
     /**
      * HSSH5001002 注册
      *
@@ -972,6 +977,29 @@ public class AppMerchantInfoController extends BaseController {
             }
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+    }
+
+    /**
+     * HSSH5001020 获取商户分润
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getTotalProfit", method = RequestMethod.POST)
+    public CommonResponse getTotalProfit() {
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        List<Long> accountIds = new ArrayList<Long>();
+        if(merchantInfoOptional.get().getAccountId()>0){
+            accountIds.add(merchantInfoOptional.get().getAccountId());
+        }
+        if(merchantInfoOptional.get().getSuperDealerId()!=null&&merchantInfoOptional.get().getSuperDealerId()>0){
+            Optional<Dealer> dealerOptional = dealerService.getById(merchantInfoOptional.get().getSuperDealerId());
+            accountIds.add(dealerOptional.get().getAccountId());
+        }
+        if(CollectionUtils.isEmpty(accountIds)){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "此用户没有账户");
+        }
+        HssAppTotalProfitResponse hssAppTotalProfitResponse = profitService.getTotalProfit(accountIds);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", hssAppTotalProfitResponse);
     }
 
     private BigDecimal needMoney(long productId,int currentLevel,int needLevel){

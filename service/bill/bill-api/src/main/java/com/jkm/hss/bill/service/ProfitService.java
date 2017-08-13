@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.ProfitResponse;
+import com.jkm.hss.bill.helper.responseparam.HssAppTotalProfitResponse;
 import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 
 import java.util.List;
@@ -46,4 +47,10 @@ public interface ProfitService {
      * @return
      */
     String downloadExcel(ProfitDetailsRequest req, String baseUrl);
+    /**
+     * 获取好收收APP昨日，进入，总计分润
+     * @param accountIds
+     * @return
+     */
+    HssAppTotalProfitResponse getTotalProfit(List<Long> accountIds);
 }

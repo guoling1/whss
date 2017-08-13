@@ -60,6 +60,13 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
         return "";
     }
 
+    /**
+     * HSS001012 文案库列表
+     * @param dataParam
+     * @param appParam
+     * @return
+     * @throws ApiHandleException
+     */
     public String getCenterLettersList(String dataParam, AppParam appParam) throws ApiHandleException {
         JSONObject jo = JSONObject.fromObject(dataParam);
         int pageNo = jo.getInt("pageNo");
@@ -86,20 +93,19 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
                 List<String> thumbnailUrls = new ArrayList<>();
                 List<String> orgUrls = new ArrayList<>();
                 for(int j=0;j<centerImages.size();j++){
-                    Date expiration = new Date(new Date().getTime() + 30*60*1000);
                     String style = "style/avatar_300";
+                    Date expiration = new Date(new Date().getTime() + 30*60*1000);
                     GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest("jkm-security", centerImages.get(j).getImgUrl(), HttpMethod.GET);
                     req.setExpiration(expiration);
                     req.setProcess(style);
                     URL url = ossClient.generatePresignedUrl(req);
+                    thumbnailUrls.add(url.toString());
 
                     String style1 = "style/mobile_750";
                     GeneratePresignedUrlRequest req1 = new GeneratePresignedUrlRequest("jkm-security", centerImages.get(j).getImgUrl(), HttpMethod.GET);
                     req1.setExpiration(expiration);
                     req1.setProcess(style1);
                     URL url1 = ossClient.generatePresignedUrl(req1);
-
-                    thumbnailUrls.add(url.toString());
                     orgUrls.add(url1.toString());
                 }
                 appCenterLettersDetailResponse1.setThumbnailUrls(thumbnailUrls);
