@@ -119,6 +119,7 @@ public class MerchantApiController extends BaseApiController {
 
         } catch (JKMTradeServiceException e) {
             log.error("#【API下单】controller.createApiOrder.JKMTradeServiceException", e);
+            e.getJKMTradeErrorCode().setErrorMessage("");
             createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
         } catch (Exception e) {
             log.error("#【API下单】controller.createApiOrder.Exception", e);

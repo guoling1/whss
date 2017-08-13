@@ -66,7 +66,7 @@ public class CreateApiOrderRequest {
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "接口类型错误");
         }
         if (StringUtils.isEmpty(merchantNo)){
-            throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "商户编号不能为空");
+            throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "null");
         }
         if (StringUtils.isEmpty(orderNum)){
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "商户订单号不能为空");
