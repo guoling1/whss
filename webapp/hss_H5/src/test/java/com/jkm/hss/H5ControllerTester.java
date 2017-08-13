@@ -120,6 +120,10 @@ public class H5ControllerTester {
     @Test
     public void testSaveBranchInfo()throws Exception{
         Map<String, String> map = new JSONObject();
+        map.put("bankNo","6226220117842210");
+        map.put("name","邢留杰");
+        map.put("identity","411082198805113634");
+        map.put("reserveMobile","13146716739");
         H5ControllerTester.testRest(map,HSSH5001013);
     }
 

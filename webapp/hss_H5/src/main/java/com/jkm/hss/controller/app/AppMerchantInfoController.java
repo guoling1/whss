@@ -759,9 +759,6 @@ public class AppMerchantInfoController extends BaseController {
         if(continueBankInfoRequest.getBankId()<=0){
             return CommonResponse.simpleResponse(-1, "银行卡参数输入有误");
         }
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
