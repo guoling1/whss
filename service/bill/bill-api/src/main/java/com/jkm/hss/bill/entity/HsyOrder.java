@@ -121,6 +121,7 @@ public class HsyOrder{
     private Integer currentPage;
     private String consumerCellphone;
 
+    private String callBackUrl;
     /**
      * 支付终端
      *

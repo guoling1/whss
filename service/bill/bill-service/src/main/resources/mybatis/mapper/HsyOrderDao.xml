@@ -32,7 +32,8 @@
         accountid,
         dealerid,
         remark,
-        payment_terminal
+        payment_terminal,
+        call_back_url
         )
         VALUES
         (
@@ -63,7 +64,8 @@
         #{accountid},
         #{dealerid},
         #{remark},
-        #{paymentTerminal}
+        #{paymentTerminal},
+        #{callBackUrl}
         );
     </insert>
 

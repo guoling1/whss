@@ -124,7 +124,7 @@ public class MerchantApiController extends BaseApiController {
             createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
-        createApiOrderResponse = afterComplete();
+        //createApiOrderResponse = afterComplete();
         Long endTime = System.currentTimeMillis();
         log.info("#【快捷预下单结束】merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
 		return JSONObject.toJSONString(createApiOrderResponse);

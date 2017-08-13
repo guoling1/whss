@@ -159,7 +159,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setDealerid(appAuUser.getDealerID());
         hsyOrder.setPoundage(new BigDecimal("0.00"));
         hsyOrder.setAmount(new BigDecimal(amount));
-        hsyOrder.setRemark(callbackUrl);
+        hsyOrder.setCallBackUrl(callbackUrl);
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }
