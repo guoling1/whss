@@ -287,18 +287,18 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/codeapi", method = RequestMethod.GET)
-    public String wxapi(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "payInfo", required = true) long payInfo, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ) throws IOException {
+    public String wxapi(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "payInfo", required = true) String payInfo, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ) throws IOException {
         final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
         final int paymentChannel = hsyOrder.getPaymentChannel();
         //获取openID
         if (paymentChannel == EnumPaymentChannel.WECHAT_PAY.getId()){
-            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/sqb%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
+            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
         }else if (paymentChannel == EnumPaymentChannel.ALIPAY.getId()){
             return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+ AlipayServiceConstants.APP_ID+"&state="+hsyOrderId+"&scope=auth_base&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/sqb%2fuserIdBack";
         }
         model.addAttribute("hsyOrderId", hsyOrderId);
         model.addAttribute("payInfo", payInfo);
-        return "/payment-wx-api";
+        return "/500";
     }
 
     /**
@@ -337,7 +337,7 @@ public class WebSkipController extends BaseController {
                 //下单成功
                 final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
                 final String payInfo = order.getPayInfo();
-                final String[] split = payInfo.split("|");
+                final String[] split = payInfo.split("\\|");
                 final JSONObject jsonObject = new JSONObject();
                 jsonObject.put("appId", split[0]);
                 jsonObject.put("timeStamp", split[1]);

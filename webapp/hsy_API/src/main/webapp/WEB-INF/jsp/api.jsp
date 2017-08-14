@@ -21,12 +21,12 @@
     http.post('/merchantApi/code/jsapi', {
               trxType: 'WX_SCANCODE_JSAPI',
               merchantNo: '110000000093',
-              orderNum: 'q1234',
-              amount: '10.00',
-                goodsName: '1234',
-                callbackUrl: '12345',
-                              orderIp: '110000000093',
-                              sign: '110000000093'
+              orderNum: 'API2017080211161011',
+              amount: '0.01',
+                goodsName: '烟酒食品',
+                callbackUrl: 'https://www.baidu.com',
+                              pageCallbackUrl: 'https://www.baidu.com',
+                              sign: '5713A322B490BDDAD5B45CFE1B4052BB'
             }, function (data) {
               message.load_hide();
               if (data.errorCode == 1) {

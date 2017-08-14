@@ -16,8 +16,6 @@ public class QueryApiOrderRequest {
 
     private String orderNum;
 
-    private String amount;
-
     private String sign;
 
     public boolean isSignCorrect(JSONObject jsonObject, String md5Key, String sign){

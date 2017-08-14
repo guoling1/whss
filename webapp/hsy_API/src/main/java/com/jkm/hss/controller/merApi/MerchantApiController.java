@@ -101,7 +101,9 @@ public class MerchantApiController extends BaseApiController {
                createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
                createApiOrderResponse.setQrCode("");
                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
-               createApiOrderResponse.setReturnMsg(JkmApiErrorCode.FAIL.getErrorMessage());
+               createApiOrderResponse.setReturnMsg("签名错误");
+               final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiContants.DEALER_SIGN_KEY);
+               createApiOrderResponse.setSign(sign);
                return createApiOrderResponse;
            }
            //参数校验
@@ -141,7 +143,7 @@ public class MerchantApiController extends BaseApiController {
             createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
-        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderRequest), JkmApiContants.DEALER_SIGN_KEY);
+        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiContants.DEALER_SIGN_KEY);
         createApiOrderResponse.setSign(sign);
         Long endTime = System.currentTimeMillis();
         log.info("#【API下单】merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
@@ -176,9 +178,10 @@ public class MerchantApiController extends BaseApiController {
             log.info("#【订单查询】--merchantNo:" + request.getMerchantNo() + ",merchantOrderNo:" + request.getOrderNum() +",startLong:" + startTime);
             //查询
             final HsyOrder hsyOrder = this.hsyOrderService.getByOrderNumber(request.getOrderNum()).get();
+            response.setTrxType(request.getTrxType());
+            response.setAmount(hsyOrder.getAmount().toString());
             response.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
             response.setReturnMsg(JkmApiErrorCode.SUCCESS.getErrorMessage());
-            response.setTrxType(request.getTrxType());
             response.setAmount(hsyOrder.getAmount().toString());
             response.setStatus("1");
         } catch (JKMTradeServiceException e) {
@@ -189,7 +192,7 @@ public class MerchantApiController extends BaseApiController {
             response.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
-        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(request), JkmApiContants.DEALER_SIGN_KEY);
+        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiContants.DEALER_SIGN_KEY);
         response.setSign(sign);
         Long endTime = System.currentTimeMillis();
         log.info("#【订单查询】merchantNo:" + request.getMerchantNo() + ",merchantOrderNo:" + request.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
