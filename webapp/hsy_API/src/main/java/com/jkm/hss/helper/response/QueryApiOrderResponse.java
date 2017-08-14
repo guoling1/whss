@@ -4,35 +4,27 @@ import com.jkm.hss.helper.JkmApiErrorCode;
 import lombok.Data;
 
 /**
- * Created by yuxiang on 2017-08-13.
+ * Created by yuxiang on 2017-08-14.
  */
 @Data
-public class CreateApiOrderResponse {
+public class QueryApiOrderResponse {
 
-    /**
-     *
-     */
-    private String amount;
-    /**
-     *
-     */
+    private String trxType;
+
+    private String returnCode;
+
+
+    private String returnMsg;
+
+
     private String orderNum;
 
-    /**
-     *
-     */
-    private String qrCode;
-    /**
-     *
-     */
-    private String returnCode;
-    /**
-     *
-     */
-    private String returnMsg;
-    /**
-     *
-     */
+
+    private String amount;
+
+
+    private String status;
+
     private String sign;
 
     public void setResponse(JkmApiErrorCode errorCode){

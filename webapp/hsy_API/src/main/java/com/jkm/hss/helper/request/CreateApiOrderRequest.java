@@ -1,11 +1,16 @@
 package com.jkm.hss.helper.request;
 
+import com.alibaba.fastjson.JSONObject;
+import com.jkm.base.common.util.ApiMD5Util;
 import com.jkm.hss.helper.JKMTradeServiceException;
 import com.jkm.hss.helper.JkmApiErrorCode;
 import com.jkm.hss.helper.ValidateUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Created by yuxiang on 2017-08-13.
@@ -46,19 +51,16 @@ public class CreateApiOrderRequest {
      */
     private String callbackUrl;
 
-    /**
-     * 用户支付IP
-     */
-    private String orderIp;
+    private String pageCallbackUrl;
 
     /**
      * 签名
      */
     private String sign;
 
-    public boolean isSignTrue(final String dealerSignKey){
+    public boolean isSignCorrect(JSONObject jsonObject, String md5Key, String sign){
 
-        return true;
+        return ApiMD5Util.verifySign(jsonObject,md5Key,sign);
     }
 
     public void validate() {
@@ -80,7 +82,7 @@ public class CreateApiOrderRequest {
         if (StringUtils.isEmpty(callbackUrl)){
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "6支付通知地址不能为空");
         }
-        if (StringUtils.isEmpty(orderIp)){
+        if (StringUtils.isEmpty(pageCallbackUrl)){
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "7用户支付IP不能为空");
         }
         if (StringUtils.isEmpty(sign)){

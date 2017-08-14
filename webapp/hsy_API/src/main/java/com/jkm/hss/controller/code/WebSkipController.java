@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.code;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.google.common.base.Optional;
@@ -310,7 +311,6 @@ public class WebSkipController extends BaseController {
     public String payOpenIdOrder(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws UnsupportedEncodingException {
         Long startTime = System.currentTimeMillis();
         log.info("微信回调获取OPENID");
-        CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
         try{
 
             Preconditions.checkState(request.getQueryString() != null, "微信授权失败");
@@ -335,31 +335,33 @@ public class WebSkipController extends BaseController {
             if (0 == resultPair.getLeft()) {
                 //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
                 //下单成功
-                createApiOrderResponse.setAmount(hsyOrder.getAmount().toString());
-                createApiOrderResponse.setOrderNum(hsyOrder.getOrdernumber());
-                createApiOrderResponse.setTradeOrderNo(hsyOrder.getOrderno());
-                createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/wxapi?payInfo="+URLDecoder.decode(resultPair.getMiddle(), "UTF-8")+ "&hsyOrderId=" + hsyOrder.getId());
-                createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
-                createApiOrderResponse.setReturnMsg("下单成功");
-                model.addAttribute("payUrl",URLDecoder.decode(resultPair.getMiddle(), "UTF-8"));
+                final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
+                final String payInfo = order.getPayInfo();
+                final String[] split = payInfo.split("|");
+                final JSONObject jsonObject = new JSONObject();
+                jsonObject.put("appId", split[0]);
+                jsonObject.put("timeStamp", split[1]);
+                jsonObject.put("nonceStr", split[2]);
+                jsonObject.put("package", split[3]);
+                jsonObject.put("signType", split[4]);
+                jsonObject.put("paySign", split[5]);
+                model.addAttribute("payUrl",jsonObject.toJSONString());
                 return "/api-wx";
             }else{
                 //下单失败
-                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
-                createApiOrderResponse.setReturnMsg("下单失败");
             }
 
         } catch (JKMTradeServiceException e) {
             log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.JKMTradeServiceException", e);
-            createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
+
         } catch (Exception e) {
             log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.Exception", e);
-            createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
+
         }
         //结果返回
         //createApiOrderResponse = afterComplete();
         Long endTime = System.currentTimeMillis();
-        log.info("#【微信回调获取OPENID并下单】merchantOrderNo:" + createApiOrderResponse.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        log.info("#【微信回调获取OPENID并下单】merchantOrderNo:"  + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
         return "";
     }
 

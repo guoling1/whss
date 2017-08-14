@@ -2,24 +2,21 @@ package com.jkm.hss.controller.merApi;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Preconditions;
-import com.jkm.base.common.entity.CommonResponse;
-import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
+import com.jkm.base.common.util.ApiMD5Util;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.bill.service.impl.BaseHSYTransactionService;
 import com.jkm.hss.bill.service.impl.BasePushAndSendService;
-import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.controller.userShop.BaseApiController;
 import com.jkm.hss.helper.JKMTradeServiceException;
 import com.jkm.hss.helper.JkmApiContants;
 import com.jkm.hss.helper.JkmApiErrorCode;
 import com.jkm.hss.helper.request.CreateApiOrderRequest;
-import com.jkm.hss.helper.request.CreateOrderRequest;
+import com.jkm.hss.helper.request.QueryApiOrderRequest;
 import com.jkm.hss.helper.response.CreateApiOrderResponse;
-import com.jkm.hss.merchant.helper.WxConstants;
-import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.helper.response.QueryApiOrderResponse;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -91,18 +88,21 @@ public class MerchantApiController extends BaseApiController {
      */
     @ResponseBody
     @RequestMapping(value = "/code/jsapi", method = RequestMethod.POST)
-    public String createApiOrder(@RequestBody final CreateApiOrderRequest createApiOrderRequest) {
+    public CreateApiOrderResponse createApiOrder(@RequestBody final CreateApiOrderRequest createApiOrderRequest) {
         log.info("【商户[{}]API下单】开始", createApiOrderRequest.getMerchantNo());
         Long startTime = System.currentTimeMillis();
         CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
         try{
            //校验签名
-           final boolean signTrue = createApiOrderRequest.isSignTrue(JkmApiContants.DEALER_SIGN_KEY);
+            final boolean signTrue = createApiOrderRequest.isSignCorrect((JSONObject) JSONObject.toJSON(createApiOrderRequest),JkmApiContants.DEALER_SIGN_KEY, createApiOrderRequest.getSign());
            if (!signTrue){
                //签名错误
+               createApiOrderResponse.setAmount(createApiOrderRequest.getAmount());
+               createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
+               createApiOrderResponse.setQrCode("");
                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
                createApiOrderResponse.setReturnMsg(JkmApiErrorCode.FAIL.getErrorMessage());
-               return JSONObject.toJSONString(createApiOrderResponse);
+               return createApiOrderResponse;
            }
            //参数校验
            createApiOrderRequest.validate();
@@ -130,7 +130,6 @@ public class MerchantApiController extends BaseApiController {
                 //下单成功
                 createApiOrderResponse.setAmount(hsyOrder.getAmount().toString());
                 createApiOrderResponse.setOrderNum(hsyOrder.getOrdernumber());
-                createApiOrderResponse.setTradeOrderNo(hsyOrder.getOrderno());
                 createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/codeapi?payInfo=oCSt1wQtuV7G_GQ_qCyWf0qN"+ "&hsyOrderId=" + hsyOrder.getId());
                 createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
                 createApiOrderResponse.setReturnMsg("下单成功");
@@ -142,12 +141,60 @@ public class MerchantApiController extends BaseApiController {
             createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
-        //createApiOrderResponse = afterComplete();
+        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderRequest), JkmApiContants.DEALER_SIGN_KEY);
+        createApiOrderResponse.setSign(sign);
         Long endTime = System.currentTimeMillis();
         log.info("#【API下单】merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
-		return JSONObject.toJSONString(createApiOrderResponse);
+		return createApiOrderResponse;
     }
 
+
+    /**
+     * 商户API 订单查询
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/code/query", method = RequestMethod.POST)
+    public QueryApiOrderResponse query(@RequestBody final QueryApiOrderRequest request) {
+        log.info("【商户[{}]订单查询】开始", request.getMerchantNo());
+        Long startTime = System.currentTimeMillis();
+        QueryApiOrderResponse response = new QueryApiOrderResponse();
+        try{
+            //校验签名
+            final boolean signTrue = request.isSignCorrect((JSONObject) JSONObject.toJSON(request),JkmApiContants.DEALER_SIGN_KEY, request.getSign());
+            if (!signTrue){
+                //签名错误
+                response.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
+                response.setReturnMsg(JkmApiErrorCode.FAIL.getErrorMessage());
+                return response;
+            }
+            //参数校验
+            request.validate();
+
+            log.info("#【订单查询】--merchantNo:" + request.getMerchantNo() + ",merchantOrderNo:" + request.getOrderNum() +",startLong:" + startTime);
+            //查询
+            final HsyOrder hsyOrder = this.hsyOrderService.getByOrderNumber(request.getOrderNum()).get();
+            response.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
+            response.setReturnMsg(JkmApiErrorCode.SUCCESS.getErrorMessage());
+            response.setTrxType(request.getTrxType());
+            response.setAmount(hsyOrder.getAmount().toString());
+            response.setStatus("1");
+        } catch (JKMTradeServiceException e) {
+            log.error("#【订单查询】controller.queryApiOrder.JKMTradeServiceException", e);
+            response.setResponse(e.getJKMTradeErrorCode());
+        } catch (Exception e) {
+            log.error("#【订单查询】controller.queryApiOrder.Exception", e);
+            response.setResponse(JkmApiErrorCode.SYS_ERROR);
+        }
+        //结果返回
+        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(request), JkmApiContants.DEALER_SIGN_KEY);
+        response.setSign(sign);
+        Long endTime = System.currentTimeMillis();
+        log.info("#【订单查询】merchantNo:" + request.getMerchantNo() + ",merchantOrderNo:" + request.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        return response;
+    }
 
     /**
      * userid
@@ -192,7 +239,6 @@ public class MerchantApiController extends BaseApiController {
                 //下单成功
                 createApiOrderResponse.setAmount(hsyOrder.getAmount().toString());
                 createApiOrderResponse.setOrderNum(hsyOrder.getOrdernumber());
-                createApiOrderResponse.setTradeOrderNo(hsyOrder.getOrderno());
                 createApiOrderResponse.setQrCode("http://hsy.qianbaojiajia.com/sqb/wxapi?payInfo="+URLDecoder.decode(resultPair.getMiddle(), "UTF-8")+ "&hsyOrderId=" + hsyOrder.getId());
                 createApiOrderResponse.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
                 createApiOrderResponse.setReturnMsg("下单成功");
@@ -210,7 +256,6 @@ public class MerchantApiController extends BaseApiController {
             createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
-        createApiOrderResponse = afterComplete();
         Long endTime = System.currentTimeMillis();
         log.info("#【微信回调获取OPENID并下单】merchantOrderNo:" + createApiOrderResponse.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
         return createApiOrderResponse;

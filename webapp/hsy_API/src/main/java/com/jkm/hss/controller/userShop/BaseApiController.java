@@ -56,9 +56,4 @@ public class BaseApiController {
             throw Throwables.propagate(e);
         }
     }
-
-    public CreateApiOrderResponse afterComplete() {
-        return null;
-    }
-
 }

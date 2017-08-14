@@ -142,6 +142,8 @@ public class PayParams {
      */
     private String settleNotifyUrl;
 
+    private String apiCallBackUrl;
+
     public long getPayeeAccountId() {
         if (EnumServiceType.APPRECIATION_PAY.getId() == this.serviceType) {
             return AccountConstants.POUNDAGE_ACCOUNT_ID;
