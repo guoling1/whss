@@ -28,7 +28,7 @@ public interface HSYTransactionService {
      *
      * @return
      */
-    long createOrderToApi(int channel, long shopId, String orderNum, String amount, String goodsName,String callbackUrl);
+    long createOrderToApi(int channel, long shopId, String orderNum, String amount, String goodsName,String callbackUrl,String pageCallBackUrl);
 
     /**
      * 创建订单

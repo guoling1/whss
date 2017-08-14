@@ -290,14 +290,29 @@ public class WebSkipController extends BaseController {
     public String wxapi(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "payInfo", required = true) String payInfo, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ) throws IOException {
         final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
         final int paymentChannel = hsyOrder.getPaymentChannel();
+        //重复请求
+        if (hsyOrder.isNeedCreateNew()){
+            //已经请求交易了
+            final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
+            final String payMsg = order.getPayInfo();
+            final String[] split = payMsg.split("\\|");
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("appId", split[0]);
+            jsonObject.put("timeStamp", split[1]);
+            jsonObject.put("nonceStr", split[2]);
+            jsonObject.put("package", split[3]);
+            jsonObject.put("signType", split[4]);
+            jsonObject.put("paySign", split[5]);
+            model.addAttribute("payUrl",jsonObject.toJSONString());
+            model.addAttribute("page",hsyOrder.getPageCallBackUrl());
+            return "/api-wx";
+        }
         //获取openID
         if (paymentChannel == EnumPaymentChannel.WECHAT_PAY.getId()){
             return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
         }else if (paymentChannel == EnumPaymentChannel.ALIPAY.getId()){
-            return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+ AlipayServiceConstants.APP_ID+"&state="+hsyOrderId+"&scope=auth_base&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2f/sqb%2fuserIdBack";
+            return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+ AlipayServiceConstants.APP_ID+"&state="+hsyOrderId+"&scope=auth_base&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2fuserIdBack";
         }
-        model.addAttribute("hsyOrderId", hsyOrderId);
-        model.addAttribute("payInfo", payInfo);
         return "/500";
     }
 
@@ -346,6 +361,7 @@ public class WebSkipController extends BaseController {
                 jsonObject.put("signType", split[4]);
                 jsonObject.put("paySign", split[5]);
                 model.addAttribute("payUrl",jsonObject.toJSONString());
+                model.addAttribute("page",hsyOrder.getPageCallBackUrl());
                 return "/api-wx";
             }else{
                 //下单失败

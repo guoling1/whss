@@ -130,7 +130,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
     }
 
     @Override
-    public long createOrderToApi(int channel, long shopId, String orderNum, String amount, String goodsName, String callbackUrl) {
+    public long createOrderToApi(int channel, long shopId, String orderNum, String amount, String goodsName, String callbackUrl,String pageCallBackUrl) {
         log.info("用户[{}]在店铺[{}]扫静态码创建订单，通道[{}]", "", shopId, channel);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
@@ -160,6 +160,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         hsyOrder.setPoundage(new BigDecimal("0.00"));
         hsyOrder.setAmount(new BigDecimal(amount));
         hsyOrder.setCallBackUrl(callbackUrl);
+        hsyOrder.setPageCallBackUrl(pageCallBackUrl);
         this.hsyOrderService.insert(hsyOrder);
         return hsyOrder.getId();
     }

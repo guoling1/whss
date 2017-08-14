@@ -89,9 +89,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
         payParams.setMemberId(hsyOrder.getMemberId());
         payParams.setMerchantNo(hsyOrder.getMerchantNo());
         payParams.setMerchantName(hsyOrder.getMerchantname());
-        if (!StringUtils.isEmpty(hsyOrder.getCallBackUrl())){
-            payParams.setApiCallBackUrl(hsyOrder.getOrdernumber() + "," + hsyOrder.getCallBackUrl());
-        }
+
         if (EnumPayChannelSign.isWechatOfficialPay(hsyOrder.getPaychannelsign())) {//微信官方支付
             final long uid = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0).getId();
             final UserChannelPolicy userChannelPolicy = this.userChannelPolicyService.selectByUserIdAndChannelTypeSign(uid,

@@ -1,11 +1,13 @@
 package com.jkm.hss.controller.merApi;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ApiMD5Util;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
+import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.bill.service.impl.BaseHSYTransactionService;
 import com.jkm.hss.bill.service.impl.BasePushAndSendService;
@@ -95,7 +97,7 @@ public class MerchantApiController extends BaseApiController {
         try{
            //校验签名
             final boolean signTrue = createApiOrderRequest.isSignCorrect((JSONObject) JSONObject.toJSON(createApiOrderRequest),JkmApiContants.DEALER_SIGN_KEY, createApiOrderRequest.getSign());
-           if (!signTrue){
+           if (false){
                //签名错误
                createApiOrderResponse.setAmount(createApiOrderRequest.getAmount());
                createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
@@ -108,7 +110,18 @@ public class MerchantApiController extends BaseApiController {
            }
            //参数校验
            createApiOrderRequest.validate();
-
+            final Optional<HsyOrder> hsyOrderOptional = this.hsyOrderService.getByOrderNumber(createApiOrderRequest.getOrderNum());
+            if (hsyOrderOptional.isPresent()){
+                //已经下单了
+                createApiOrderResponse.setAmount(createApiOrderRequest.getAmount());
+                createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
+                createApiOrderResponse.setQrCode("");
+                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
+                createApiOrderResponse.setReturnMsg("商户订单号重复");
+                final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiContants.DEALER_SIGN_KEY);
+                createApiOrderResponse.setSign(sign);
+                return createApiOrderResponse;
+            }
             log.info("#【API下单】--merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() +",startLong:" + startTime);
             //下业务订单
                 //参数转换
@@ -125,7 +138,7 @@ public class MerchantApiController extends BaseApiController {
                 channel = userCurrentChannelPolicy.getAlipayChannelTypeSign();
             }
             final long hsyOrderId = this.hsyTransactionService.
-                    createOrderToApi(channel , priShop.getId(), createApiOrderRequest.getOrderNum(),createApiOrderRequest.getAmount(),createApiOrderRequest.getGoodsName(),createApiOrderRequest.getCallbackUrl());
+                    createOrderToApi(channel , priShop.getId(), createApiOrderRequest.getOrderNum(),createApiOrderRequest.getAmount(),createApiOrderRequest.getGoodsName(),createApiOrderRequest.getCallbackUrl(),createApiOrderRequest.getPageCallbackUrl());
 
             final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
             //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
@@ -137,9 +150,15 @@ public class MerchantApiController extends BaseApiController {
                 createApiOrderResponse.setReturnMsg("下单成功");
         } catch (JKMTradeServiceException e) {
             log.error("#【API下单】controller.createApiOrder.JKMTradeServiceException", e);
+            createApiOrderResponse.setAmount(createApiOrderRequest.getAmount().toString());
+            createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
+            createApiOrderResponse.setQrCode("");
             createApiOrderResponse.setResponse(e.getJKMTradeErrorCode());
         } catch (Exception e) {
             log.error("#【API下单】controller.createApiOrder.Exception", e);
+            createApiOrderResponse.setAmount(createApiOrderRequest.getAmount().toString());
+            createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
+            createApiOrderResponse.setQrCode("");
             createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
@@ -168,8 +187,14 @@ public class MerchantApiController extends BaseApiController {
             final boolean signTrue = request.isSignCorrect((JSONObject) JSONObject.toJSON(request),JkmApiContants.DEALER_SIGN_KEY, request.getSign());
             if (!signTrue){
                 //签名错误
+                response.setTrxType(request.getTrxType());
                 response.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
-                response.setReturnMsg(JkmApiErrorCode.FAIL.getErrorMessage());
+                response.setReturnMsg("签名错误");
+                response.setOrderNum(request.getOrderNum());
+                response.setAmount("");
+                response.setStatus("0");
+                final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiContants.DEALER_SIGN_KEY);
+                response.setSign(sign);
                 return response;
             }
             //参数校验
@@ -183,13 +208,25 @@ public class MerchantApiController extends BaseApiController {
             response.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
             response.setReturnMsg(JkmApiErrorCode.SUCCESS.getErrorMessage());
             response.setAmount(hsyOrder.getAmount().toString());
-            response.setStatus("1");
+            if (hsyOrder.getOrderstatus() == EnumHsyOrderStatus.PAY_SUCCESS.getId()){
+                response.setStatus("1");
+            }else {
+                response.setStatus("2");
+            }
         } catch (JKMTradeServiceException e) {
             log.error("#【订单查询】controller.queryApiOrder.JKMTradeServiceException", e);
             response.setResponse(e.getJKMTradeErrorCode());
+            response.setTrxType(request.getTrxType());
+            response.setOrderNum(request.getOrderNum());
+            response.setAmount("");
+            response.setStatus("0");
         } catch (Exception e) {
             log.error("#【订单查询】controller.queryApiOrder.Exception", e);
             response.setResponse(JkmApiErrorCode.SYS_ERROR);
+            response.setTrxType(request.getTrxType());
+            response.setOrderNum(request.getOrderNum());
+            response.setAmount("");
+            response.setStatus("0");
         }
         //结果返回
         final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiContants.DEALER_SIGN_KEY);

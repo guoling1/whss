@@ -177,9 +177,7 @@
 <script src="http://static.jinkaimen.cn/hsy/js/vendor.2.0.2.min.js"></script>
 <script src="http://static.jinkaimen.cn/hsy/js/2.0.2/payment.min.js"></script>
 <script>
-    console.log(${payUrl});
     var jsonData =${payUrl};
-    alert("234");
     document.addEventListener('WeixinJSBridgeReady', function () {
             WeixinJSBridge.invoke(
                             'getBrandWCPayRequest', {
@@ -195,7 +193,7 @@
                               if (res.err_msg == "get_brand_wcpay_request:cancel") {
                                 console.log('取消支付')
                               } else if (res.err_msg == "get_brand_wcpay_request:ok") {
-                                window.location.href = '/trade/success/' + jsonData.orderId;
+                                window.location.href = jsonData.pageCallBackUrl;
                               } else {
                                 alert(res.err_code + res.err_desc + res.err_msg);
                               }

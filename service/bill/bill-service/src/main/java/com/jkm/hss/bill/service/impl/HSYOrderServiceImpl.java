@@ -59,7 +59,6 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     @Transactional
     public void insert(HsyOrder hsyOrder) {
-        hsyOrder.setOrdernumber("");
         hsyOrderDao.insert(hsyOrder);
         //开始生成订单号：
         String idStr=String.valueOf(hsyOrder.getId());

@@ -173,17 +173,10 @@ public class TradeServiceImpl implements TradeService {
             //从卡扣钱
             return this.baseTradeService.memberPayImpl(order.getId());
         } else {
-            //获取支付url
-            String payBackUrl;
-            if (StringUtils.isEmpty(payParams.getApiCallBackUrl())){
-                payBackUrl = payParams.getApiCallBackUrl();
-            }else{
-                payBackUrl = PaymentSdkConstants.SDK_PAY_NOTIFY_URL;
-            }
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()
                     .merchantNo(payParams.getMerchantNo())
                     .returnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId())
-                    .notifyUrl(payBackUrl)
+                    .notifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL)
                     .wxAppId(payParams.getWxAppId())
                     .memberId(payParams.getMemberId())
                     .subAppId(payParams.getSubAppId())
@@ -195,6 +188,7 @@ public class TradeServiceImpl implements TradeService {
                     .realName(payParams.getRealName())
                     .idCard(payParams.getIdCard())
                     .settleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL)
+                    .businessOrderNo(payParams.getBusinessOrderNo())
                     .build();
             final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
             return this.baseTradeService.handlePlaceOrderResult(paymentSdkPlaceOrderResponse, payParams.getMerchantPayType(), order);
