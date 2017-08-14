@@ -13,7 +13,7 @@ import com.jkm.hss.bill.service.impl.BaseHSYTransactionService;
 import com.jkm.hss.bill.service.impl.BasePushAndSendService;
 import com.jkm.hss.controller.userShop.BaseApiController;
 import com.jkm.hss.helper.JKMTradeServiceException;
-import com.jkm.hss.helper.JkmApiContants;
+import com.jkm.hss.helper.JkmApiMerConstants;
 import com.jkm.hss.helper.JkmApiErrorCode;
 import com.jkm.hss.helper.request.CreateApiOrderRequest;
 import com.jkm.hss.helper.request.QueryApiOrderRequest;
@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Map;
 
 /**
  * Created by yuxiang on 2017-08-13.
@@ -96,7 +95,7 @@ public class MerchantApiController extends BaseApiController {
         CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
         try{
            //校验签名
-            final boolean signTrue = createApiOrderRequest.isSignCorrect((JSONObject) JSONObject.toJSON(createApiOrderRequest),JkmApiContants.DEALER_SIGN_KEY, createApiOrderRequest.getSign());
+            final boolean signTrue = createApiOrderRequest.isSignCorrect((JSONObject) JSONObject.toJSON(createApiOrderRequest), JkmApiMerConstants.keyOf(createApiOrderRequest.getMerchantNo()), createApiOrderRequest.getSign());
            if (false){
                //签名错误
                createApiOrderResponse.setAmount(createApiOrderRequest.getAmount());
@@ -104,7 +103,7 @@ public class MerchantApiController extends BaseApiController {
                createApiOrderResponse.setQrCode("");
                createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
                createApiOrderResponse.setReturnMsg("签名错误");
-               final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiContants.DEALER_SIGN_KEY);
+               final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiMerConstants.keyOf(createApiOrderRequest.getMerchantNo()));
                createApiOrderResponse.setSign(sign);
                return createApiOrderResponse;
            }
@@ -118,7 +117,7 @@ public class MerchantApiController extends BaseApiController {
                 createApiOrderResponse.setQrCode("");
                 createApiOrderResponse.setReturnCode(JkmApiErrorCode.FAIL.getErrorCode());
                 createApiOrderResponse.setReturnMsg("商户订单号重复");
-                final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiContants.DEALER_SIGN_KEY);
+                final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiMerConstants.keyOf(createApiOrderRequest.getMerchantNo()));
                 createApiOrderResponse.setSign(sign);
                 return createApiOrderResponse;
             }
@@ -162,7 +161,7 @@ public class MerchantApiController extends BaseApiController {
             createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
         }
         //结果返回
-        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiContants.DEALER_SIGN_KEY);
+        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiMerConstants.keyOf(createApiOrderRequest.getMerchantNo()));
         createApiOrderResponse.setSign(sign);
         Long endTime = System.currentTimeMillis();
         log.info("#【API下单】merchantNo:" + createApiOrderRequest.getMerchantNo() + ",merchantOrderNo:" + createApiOrderRequest.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
@@ -184,7 +183,7 @@ public class MerchantApiController extends BaseApiController {
         QueryApiOrderResponse response = new QueryApiOrderResponse();
         try{
             //校验签名
-            final boolean signTrue = request.isSignCorrect((JSONObject) JSONObject.toJSON(request),JkmApiContants.DEALER_SIGN_KEY, request.getSign());
+            final boolean signTrue = request.isSignCorrect((JSONObject) JSONObject.toJSON(request), JkmApiMerConstants.keyOf(request.getMerchantNo()), request.getSign());
             if (!signTrue){
                 //签名错误
                 response.setTrxType(request.getTrxType());
@@ -193,7 +192,7 @@ public class MerchantApiController extends BaseApiController {
                 response.setOrderNum(request.getOrderNum());
                 response.setAmount("");
                 response.setStatus("0");
-                final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiContants.DEALER_SIGN_KEY);
+                final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiMerConstants.keyOf(request.getMerchantNo()));
                 response.setSign(sign);
                 return response;
             }
@@ -229,7 +228,7 @@ public class MerchantApiController extends BaseApiController {
             response.setStatus("0");
         }
         //结果返回
-        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiContants.DEALER_SIGN_KEY);
+        final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(response), JkmApiMerConstants.keyOf(request.getMerchantNo()));
         response.setSign(sign);
         Long endTime = System.currentTimeMillis();
         log.info("#【订单查询】merchantNo:" + request.getMerchantNo() + ",merchantOrderNo:" + request.getOrderNum() + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
