@@ -26,5 +26,6 @@
         <module>hsyuser</module>
         <module>push</module>
         <module>socket</module>
+        <module>interface</module>
     </modules>
 </project>
