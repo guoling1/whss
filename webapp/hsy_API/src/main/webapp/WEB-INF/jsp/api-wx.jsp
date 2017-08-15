@@ -56,35 +56,40 @@
 </script>
 <script>
   const message = _require('message');
+  var jsonData = JSON.parse(pageData.payUrl);
   var pay = function () {
     if (pageData.status == 'success') {
-      document.addEventListener('WeixinJSBridgeReady', function () {
-        WeixinJSBridge.invoke(
-          'getBrandWCPayRequest', {
-            "appId": pageData.payUrl.appId, //公众号名称，由商户传入
-            "timeStamp": pageData.payUrl.timeStamp, //时间戳，自 1970 年以来的 秒数
-            "nonceStr": pageData.payUrl.nonceStr, //随机串
-            "package": pageData.payUrl.package,
-            "signType": pageData.payUrl.signType, //微信签名方式:
-            "paySign": pageData.payUrl.paySign //微信签名
-          },
-          // 使用以上方式判断前端返回,微信团队郑重提示:res.err_msg 将在用户支付成功后返回ok，但并不保证它绝对可靠。
-          function (res) {
-            if (res.err_msg == "get_brand_wcpay_request:cancel") {
-              console.log('取消支付')
-            } else if (res.err_msg == "get_brand_wcpay_request:ok") {
-              console.log('支付成功')
-            } else {
-              alert(res.err_code + res.err_desc + res.err_msg);
-            }
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', {
+          "appId": jsonData.appId, //公众号名称，由商户传入
+          "timeStamp": jsonData.timeStamp, //时间戳，自 1970 年以来的 秒数
+          "nonceStr": jsonData.nonceStr, //随机串
+          "package": jsonData.package,
+          "signType": jsonData.signType, //微信签名方式:
+          "paySign": jsonData.paySign //微信签名
+        },
+        // 使用以上方式判断前端返回,微信团队郑重提示:res.err_msg 将在用户支付成功后返回ok，但并不保证它绝对可靠。
+        function (res) {
+          if (res.err_msg == "get_brand_wcpay_request:cancel") {
+            console.log('取消支付')
+          } else if (res.err_msg == "get_brand_wcpay_request:ok") {
+            console.log('支付成功')
+          } else {
+            alert(res.err_code + res.err_desc + res.err_msg);
           }
-        );
-      }, false);
+        }
+      );
     } else {
       message.prompt_show('网络异常');
     }
   }
   document.getElementById('submit').onclick = pay;
-  pay();
+  if (typeof WeixinJSBridge === "undefined") {
+    if (document.addEventListener) {
+      document.addEventListener('WeixinJSBridgeReady', pay, false);
+    }
+  } else {
+    pay();
+  }
 </script>
 </html>
