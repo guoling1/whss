@@ -31,6 +31,15 @@
     <img src="http://static.jinkaimen.cn/hsy/assets/ym-ad2.jpeg" alt="">
   </a>
 </div>
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?7089764f9496288c924af64a3297a93a";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 </body>
 </html>
