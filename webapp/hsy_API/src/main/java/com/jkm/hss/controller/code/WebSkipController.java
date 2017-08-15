@@ -303,6 +303,7 @@ public class WebSkipController extends BaseController {
             jsonObject.put("package", split[3]);
             jsonObject.put("signType", split[4]);
             jsonObject.put("paySign", split[5]);
+            jsonObject.put("pageCallBackUrl",hsyOrder.getPageCallBackUrl());
             model.addAttribute("payUrl",jsonObject.toJSONString());
             model.addAttribute("page",hsyOrder.getPageCallBackUrl());
             return "/api-wx";
@@ -360,8 +361,8 @@ public class WebSkipController extends BaseController {
                 jsonObject.put("package", split[3]);
                 jsonObject.put("signType", split[4]);
                 jsonObject.put("paySign", split[5]);
+                jsonObject.put("pageCallBackUrl",hsyOrder.getPageCallBackUrl());
                 model.addAttribute("payUrl",jsonObject.toJSONString());
-                model.addAttribute("page",hsyOrder.getPageCallBackUrl());
                 return "/api-wx";
             }else{
                 //下单失败
@@ -378,7 +379,72 @@ public class WebSkipController extends BaseController {
         //createApiOrderResponse = afterComplete();
         Long endTime = System.currentTimeMillis();
         log.info("#【微信回调获取OPENID并下单】merchantOrderNo:"  + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
-        return "";
+        return "/500";
+    }
+
+    /**
+     * userid
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/userIdBack", method = RequestMethod.GET)
+    public String payUserIdOrder(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws UnsupportedEncodingException {
+        Long startTime = System.currentTimeMillis();
+        log.info("支付宝回调获取USERID");
+        CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
+        try{
+            Preconditions.checkState(request.getQueryString() != null, "支付宝授权失败");
+            String getQueryString = "";
+            if(request.getQueryString() == null){
+                getQueryString="";
+            }else{
+                getQueryString = request.getQueryString();
+            }
+            String[] arr = getQueryString.split("&");
+            String authcode="";
+            String state = "";
+            for(int i =0;i<arr.length;i++){
+                if("auth_code".equals(arr[i].split("=")[0])){
+                    authcode = arr[i].split("=")[1];
+                    log.info("authcode是:{}",authcode);
+                }
+                if("state".equals(arr[i].split("=")[0])){
+                    state = arr[i].split("=")[2];
+                    log.info("state参数是:{}",state);
+                }
+            }
+            String userId = alipayOauthService.getUserId(authcode);
+            final HsyOrder hsyOrder = this.hsyOrderService.getById(Integer.valueOf(state)).get();
+            hsyOrder.setMemberId(userId);
+            this.hsyOrderService.update(hsyOrder);
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(hsyOrder.getAmount().toString(), hsyOrder.getId(),hsyOrder.getAmount(),null,null,null,null);
+            if (0 == resultPair.getLeft()) {
+                //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                //下单成功
+                final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
+                final String payInfo = order.getPayInfo();
+                final JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tradeNo", payInfo);
+                model.addAttribute("payUrl",jsonObject.toJSONString());
+                model.addAttribute("page",hsyOrder.getPageCallBackUrl());
+                return "/api-zfb";
+            }else{
+                //下单失败
+            }
+
+        } catch (JKMTradeServiceException e) {
+            log.error("#【支付宝回调获取USERID并下单】controller.payUserIdOrder.JKMTradeServiceException", e);
+
+        } catch (Exception e) {
+            log.error("#【支付宝回调获取USERID并下单】controller.payUserIdOrder.Exception", e);
+
+        }
+        //结果返回
+        //createApiOrderResponse = afterComplete();
+        Long endTime = System.currentTimeMillis();
+        log.info("#【支付宝回调获取USERID并下单】merchantOrderNo:"  + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        return "/500";
     }
 
 }

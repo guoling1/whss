@@ -20,8 +20,8 @@
     const http = _require('http');
     http.post('/merchantApi/code/jsapi', {
               trxType: 'WX_SCANCODE_JSAPI',
-              merchantNo: '110000000093',
-              orderNum: 'API20170802111610191',
+              merchantNo: '1100000000931',
+              orderNum: 'API20170802111610192',
               amount: '0.01',
                 goodsName: '烟酒食品',
                 callbackUrl: 'http://192.168.1.20:8072/callback',
