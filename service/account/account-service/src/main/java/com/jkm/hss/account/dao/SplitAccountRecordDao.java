@@ -100,4 +100,8 @@ public interface SplitAccountRecordDao {
      * @return
      */
     int getCountDetailsNo(ProfitCountRequest req);
+
+    long selectCountByMerchantId(Long accountId);
+
+    List<SplitAccountRecord> selectByMerchantIdAndId(@Param("accountId") Long accountId, @Param("shallId") long shallId, @Param("pageSize") int pageSize);
 }

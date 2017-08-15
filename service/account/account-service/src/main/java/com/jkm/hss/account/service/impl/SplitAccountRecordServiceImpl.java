@@ -14,6 +14,7 @@ import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.SplitAccountRecordService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -284,6 +286,21 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Override
     public int getCountDetailsNo(ProfitCountRequest req) {
         return this.splitAccountRecordDao.getCountDetailsNo(req);
+    }
+
+    @Override
+    public PageModel<SplitAccountRecord> getDealerShallProfitList(Long accountId, long shallId, int pageNo, int pageSize) {
+        final PageModel<SplitAccountRecord> page = new PageModel<>(pageNo, pageSize);
+
+        final long count = splitAccountRecordDao.selectCountByMerchantId(accountId);
+        final List<SplitAccountRecord> detailList = splitAccountRecordDao.selectByMerchantIdAndId(accountId, shallId, pageSize);
+        if (CollectionUtils.isEmpty(detailList)) {
+            page.setRecords(Collections.<SplitAccountRecord>emptyList());
+        } else {
+            page.setRecords(detailList);
+        }
+        page.setCount(count);
+        return page;
     }
 
 

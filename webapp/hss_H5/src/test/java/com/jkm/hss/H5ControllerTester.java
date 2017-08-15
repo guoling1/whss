@@ -49,7 +49,7 @@ public class H5ControllerTester {
     public static String HSSH5001017="http://localhost:8081/appMerchantInfo/toBuy";
     public static String HSSH5001018="http://localhost:8081/appMerchantInfo/agentApplication";
     public static String HSSH5001019="http://localhost:8081/appMerchantInfo/agentApplicationStatus";
-
+    public static String HSSH5001025="http://localhost:8081/appAccount/queryShall";
     @Test
     public void testGetRegisterCode()throws Exception{
         Map<String, String> map = new JSONObject();
