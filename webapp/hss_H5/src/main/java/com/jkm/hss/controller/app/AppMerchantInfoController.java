@@ -846,11 +846,17 @@ public class AppMerchantInfoController extends BaseController {
         List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
         int hasCount = recommendService.selectFriendCount(merchantInfo.get().getId());
         if(upgradeRules.size()>0){
-            for(int i=0;i<upgradeRules.size();i++){
+            for(int i=0;i<upgradeRules.size()-1;i++){
                 CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
                 BigDecimal needMoney = needMoney(merchantInfo.get().getProductId(),merchantInfo.get().getLevel(),upgradeRules.get(i).getType());
                 currentRulesResponse.setId(upgradeRules.get(i).getId());
-                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                if(upgradeRules.get(i).getType()==1){
+                    currentRulesResponse.setName("店长");
+                }else if(upgradeRules.get(i).getType()==2){
+                    currentRulesResponse.setName("老板");
+                }else{
+                    currentRulesResponse.setName(upgradeRules.get(i).getName());
+                }
                 currentRulesResponse.setType(upgradeRules.get(i).getType());
                 currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
                 currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
