@@ -94,7 +94,7 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
                 List<String> thumbnailUrls = new ArrayList<>();
                 List<String> orgUrls = new ArrayList<>();
                 for(int j=0;j<centerImages.size();j++){
-                    String style = "style/avatar_30";
+                    String style = "style/avatar_100";
                     Date expiration = new Date(new Date().getTime() + 30*60*1000);
                     GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest("jkm-security", centerImages.get(j).getImgUrl(), HttpMethod.GET);
                     req.setExpiration(expiration);
