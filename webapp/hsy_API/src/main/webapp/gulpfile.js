@@ -19,7 +19,7 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(rename({basename: "style.2.0.2"}))
+    .pipe(rename({basename: "style.2.0.3"}))
     .pipe(gulp.dest('css'));
 });
 

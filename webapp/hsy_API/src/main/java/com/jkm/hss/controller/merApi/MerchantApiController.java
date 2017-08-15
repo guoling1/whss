@@ -79,7 +79,7 @@ public class MerchantApiController extends BaseApiController {
     @RequestMapping(value = "toJsp", method = RequestMethod.GET)
     public String toJsp() {
 
-        return "/api";
+        return "/api-wx";
     }
     /**
      * 商户API 下单
