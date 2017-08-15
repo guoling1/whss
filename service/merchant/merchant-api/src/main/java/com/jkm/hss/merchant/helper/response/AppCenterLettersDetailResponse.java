@@ -16,4 +16,5 @@ public class AppCenterLettersDetailResponse {
     private Date createTime;
     private List<String> thumbnailUrls;
     private List<String> orgUrls;
+    private Long downloadCount;
 }

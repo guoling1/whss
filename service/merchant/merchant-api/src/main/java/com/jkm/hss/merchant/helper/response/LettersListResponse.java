@@ -15,4 +15,5 @@ public class LettersListResponse {
     private String adminName;
     private Integer status;
     private Date createTime;
+    private Long downloadCount;
 }

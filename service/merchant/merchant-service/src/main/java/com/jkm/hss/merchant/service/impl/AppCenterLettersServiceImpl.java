@@ -89,6 +89,7 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
                 appCenterLettersDetailResponse1.setTitle(lettersListResponses.get(i).getTitle());
                 appCenterLettersDetailResponse1.setContent(lettersListResponses.get(i).getContent());
                 appCenterLettersDetailResponse1.setCreateTime(lettersListResponses.get(i).getCreateTime());
+                appCenterLettersDetailResponse1.setDownloadCount(lettersListResponses.get(i).getDownloadCount());
                 List<CenterImage> centerImages = centerLettersDao.getImageList(lettersListResponses.get(i).getId());
                 List<String> thumbnailUrls = new ArrayList<>();
                 List<String> orgUrls = new ArrayList<>();
