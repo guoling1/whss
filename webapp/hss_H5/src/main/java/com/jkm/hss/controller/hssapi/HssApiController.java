@@ -42,10 +42,13 @@ public class HssApiController extends BaseController {
         }
         try {
             final PreQuickPayRequest request = JSON.parseObject(readParam, PreQuickPayRequest.class);
-            request.validate();
+            request.validateParam();
 
 
-
+            if (request.verifySign("")) {
+                log.error("商户号[{}]-商户订单号[{}]-预下单签名错误", 1, 2);
+                return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
+            }
 
 
         } catch (final Throwable e) {
