@@ -36,49 +36,49 @@ public class MerchantServiceImpl implements MerchantService {
     public CommonResponse merchantIn(MerchantRequest apiMerchantRequest) {
         long oemId = 0;
         if (StringUtils.isBlank(apiMerchantRequest.getMerchantName())) {
-            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL);
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"商户名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "手机号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"手机号不能为空");
         }
         if (!ValidateUtils.isMobile(apiMerchantRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.FORMAT_ERROR,"手机号格式错误");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getProvinceCode())) {
-            return CommonResponse.simpleResponse(-1, "省份编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"省份编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getProvinceName())) {
-            return CommonResponse.simpleResponse(-1, "省份名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"省份名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCityCode())) {
-            return CommonResponse.simpleResponse(-1, "市编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"市编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCityName())) {
-            return CommonResponse.simpleResponse(-1, "市名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"市名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCountyCode())) {
-            return CommonResponse.simpleResponse(-1, "县编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"县编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCountyName())) {
-            return CommonResponse.simpleResponse(-1, "县名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"县名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getAddress())) {
-            return CommonResponse.simpleResponse(-1, "地址不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"地址不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getBranchCode())) {
-            return CommonResponse.simpleResponse(-1, "联行号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"联行号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getBranchName())) {
-            return CommonResponse.simpleResponse(-1, "支行名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"支行名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getDistrictCode())) {
-            return CommonResponse.simpleResponse(-1, "支行所在地区编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"支行所在地区编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getDealerMarkCode())) {
-            return CommonResponse.simpleResponse(-1, "代理商编号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"代理商编号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getBankNo())) {
-            return CommonResponse.simpleResponse(-1, "银行卡号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"银行卡号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getName())) {
             return CommonResponse.simpleResponse(-1, "真实姓名不能为空");
