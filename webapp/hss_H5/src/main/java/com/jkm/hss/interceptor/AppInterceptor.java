@@ -8,6 +8,7 @@ import com.jkm.base.common.util.ResponseWriter;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AppAuUserToken;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.service.AppAuTokenService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.Setter;
@@ -70,6 +71,9 @@ public class AppInterceptor extends HandlerInterceptorAdapter {
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(appAuUserToken.getUid());
         if(!merchantInfoOptional.isPresent()){
             return Triple.of(-1, "商户不存在", null);
+        }
+        if(!(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.FRIEND.getId()||merchantInfoOptional.get().getStatus()==EnumMerchantStatus.PASSED.getId())){
+            return Triple.of(-3, merchantInfoOptional.get().getStatus()+"",null);
         }
         return Triple.of(0, "", merchantInfoOptional.get());
     }
