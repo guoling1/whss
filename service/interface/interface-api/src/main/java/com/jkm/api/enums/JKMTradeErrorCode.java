@@ -65,6 +65,8 @@ public enum JKMTradeErrorCode {
     DEALER_NOT_EXIST("E1051","代理商不存在"),
     MCT_EXIST("E1052","商户已入网"),
     PRODUCT_NOT_EXIST("E1053","产品不存在"),
+    FOUR_FACTOR_AUTHEN("E1054","四要素鉴权不通过"),
+    DEALER_RETE_ERROR("E1055","代理商费率信息配置错误"),
 
 
     /**数据库*/
