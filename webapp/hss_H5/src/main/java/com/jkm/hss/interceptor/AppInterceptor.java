@@ -83,7 +83,7 @@ public class AppInterceptor extends HandlerInterceptorAdapter {
                 add("/appMerchantInfo/getAuthenInfo");
             }
         };
-        if(list.contains(request.getRequestURI())){
+        if(!list.contains(request.getRequestURI())){
             if(!(merchantInfoOptional.get().getStatus()== EnumMerchantStatus.FRIEND.getId()||merchantInfoOptional.get().getStatus()==EnumMerchantStatus.PASSED.getId())){
                 return Triple.of(-3, merchantInfoOptional.get().getStatus()+"",null);
             }
