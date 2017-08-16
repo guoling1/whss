@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.hssapi;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Optional;
 import com.jkm.api.enums.EnumApiOrderSettleStatus;
 import com.jkm.api.enums.EnumApiOrderStatus;
 import com.jkm.api.enums.JKMTradeErrorCode;
@@ -10,6 +11,8 @@ import com.jkm.api.helper.responseparam.PreQuickPayResponse;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
 import com.jkm.api.service.QuickPayService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.service.DealerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,9 +28,11 @@ import java.io.IOException;
  */
 @Slf4j
 @Controller
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/hss")
 public class HssApiController extends BaseController {
 
+    @Autowired
+    private DealerService dealerService;
     @Autowired
     private QuickPayService quickPayService;
 
@@ -42,21 +47,30 @@ public class HssApiController extends BaseController {
     public Object preQuickPay(final HttpServletRequest httpServletRequest) {
         final PreQuickPayResponse preQuickPayResponse = new PreQuickPayResponse();
         String readParam;
+        PreQuickPayRequest request;
         try {
             readParam = super.read(httpServletRequest);
+            request = JSON.parseObject(readParam, PreQuickPayRequest.class);
         } catch (final IOException e) {
             log.error("商户号[{}]-商户订单号[{}]-预下单读取数据流异常", e);
-
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorCode());
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorMessage());
             return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
         }
+        log.info("商户号[{}]-商户订单号[{}]-预下单-参数[{}]", request.getMerchantNo(), request.getOrderNo(), request);
+        preQuickPayResponse.setMerchantNo(request.getMerchantNo());
+        preQuickPayResponse.setOrderNo(request.getOrderNo());
+        preQuickPayResponse.setMerchantReqTime(request.getMerchantReqTime());
+        preQuickPayResponse.setOrderAmount(request.getOrderAmount());
+        preQuickPayResponse.setCardNo(request.getCardNo());
+        preQuickPayResponse.setDealerMarkCode(request.getDealerMarkCode());
         try {
-            final PreQuickPayRequest request = JSON.parseObject(readParam, PreQuickPayRequest.class);
-            log.info("商户号[{}]-商户订单号[{}]-预下单-参数[{}]", request.getMerchantNo(), request.getOrderNo(), request);
-            preQuickPayResponse.setMerchantNo(request.getMerchantNo());
-            preQuickPayResponse.setOrderNo(request.getOrderNo());
-            preQuickPayResponse.setMerchantReqTime(request.getMerchantReqTime());
-            preQuickPayResponse.setOrderAmount(request.getOrderAmount());
-            preQuickPayResponse.setCardNo(request.getCardNo());
+            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+            if (!dealerOptional.isPresent()) {
+//                throw new JKMTradeServiceException()
+            }
+            final Dealer dealer = dealerOptional.get();
+            //取秘钥
             //参数校验
             request.validateParam();
             if (request.verifySign("")) {

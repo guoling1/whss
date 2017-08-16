@@ -13,6 +13,10 @@ import lombok.Data;
 public class PreQuickPayResponse {
 
     /**
+     * 代理商编号
+     */
+    private String dealerMarkCode;
+    /**
      * 商户编号
      */
     private String merchantNo;
