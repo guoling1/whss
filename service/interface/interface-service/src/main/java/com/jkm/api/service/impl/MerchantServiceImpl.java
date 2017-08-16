@@ -1,14 +1,16 @@
-package com.jkm.hss.merchant.service.impl;
+package com.jkm.api.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.api.helper.requestparam.MerchantRequest;
+import com.jkm.api.service.MerchantService;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.merchant.helper.request.ApiMerchantRequest;
-import com.jkm.hss.merchant.service.ApiMerchantService;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,18 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class ApiMerchantServiceImpl implements ApiMerchantService{
+public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private DealerService dealerService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
     /**
      * 商户入网
      *
      * @return
      */
     @Override
-    public CommonResponse merchantIn(ApiMerchantRequest apiMerchantRequest) {
+    public CommonResponse merchantIn(MerchantRequest apiMerchantRequest) {
         long oemId = 0;
         if (StringUtils.isBlank(apiMerchantRequest.getMerchantName())) {
             return CommonResponse.simpleResponse(-1, "商户名称不能为空");
@@ -87,48 +91,12 @@ public class ApiMerchantServiceImpl implements ApiMerchantService{
         if (!dealerOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(apiMerchantRequest.getMobile()),oemId);
+        if (merchantInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该商户已入网");
+        }
 
-//        if (!StringUtils.isBlank(loginRequest.getInviteCode())) {
-//            if (loginRequest.getInviteCode().length()!=6&&loginRequest.getInviteCode().length()!=11) {
-//                return CommonResponse.simpleResponse(-1, "邀请码必须是6位或11位");
-//            }
-//            if(loginRequest.getInviteCode().length()==6){
-//                Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
-//                if(!dealerOptional.isPresent()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(StringUtils.isBlank(dealerOptional.get().getInviteCode())){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(dealerOptional.get().getInviteBtn()== EnumInviteBtn.OFF.getId()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(dealerOptional.get().getRecommendBtn()== EnumRecommendBtn.OFF.getId()){
-//                    return CommonResponse.simpleResponse(-1, "邀请码无效");
-//                }
-//                oemId = dealerOptional.get().getOemId();
-//            }else{
-//                if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
-//                    return CommonResponse.simpleResponse(-1, "不能邀请自己");
-//                }
-//                Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(loginRequest.getInviteCode()),oemId);
-//                if(!miOptional.isPresent()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(miOptional.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&miOptional.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(miOptional.get().getIsUpgrade()== EnumIsUpgrade.CANNOTUPGRADE.getId()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                oemId = miOptional.get().getOemId();
-//            }
-//        }
-//        final Pair<Integer, String> checkResult =
-//                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
-//        if (1 != checkResult.getLeft()) {
-//            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-//        }
+
 //        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
 //        if(!productOptional.isPresent()){
 //            return CommonResponse.simpleResponse(-1, "产品信息有误");

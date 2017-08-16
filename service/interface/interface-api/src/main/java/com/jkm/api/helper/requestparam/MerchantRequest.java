@@ -1,4 +1,4 @@
-package com.jkm.hss.merchant.helper.request;
+package com.jkm.api.helper.requestparam;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by xingliujie on 2017/8/16.
  */
 @Data
-public class ApiMerchantRequest {
+public class MerchantRequest {
     private String merchantName;//商户名称
     private String mobile;//商户注册手机号
     private String provinceCode;//省份编码
