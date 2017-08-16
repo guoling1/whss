@@ -156,6 +156,15 @@
 
 </body>
 <script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?7089764f9496288c924af64a3297a93a";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+<script>
   var pageData = {
       hsyOrderId: '${hsyOrderId}',
       remainingSum:'${appPolicyMember.remainingSum}',
@@ -170,7 +179,6 @@
   }else {
       pageData.type ='member'
   }
-
 </script>
 <script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
