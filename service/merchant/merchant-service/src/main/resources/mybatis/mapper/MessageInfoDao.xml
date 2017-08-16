@@ -11,7 +11,7 @@
         <if test="objectT.uid!=null">
             AND UID=#{objectT.uid}
         </if>
-        order by UPDATETIME desc
+        order by CREATETIME desc
     </select>
 
     <select id="findMessageInfoListByPageCount" parameterType="com.jkm.hss.merchant.entity.MessageInfo" resultType="java.lang.Integer">
