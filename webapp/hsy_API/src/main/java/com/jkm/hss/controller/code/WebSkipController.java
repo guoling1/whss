@@ -1,11 +1,7 @@
 package com.jkm.hss.controller.code;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.response.AlipayUserInfoShareResponse;
-import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.account.entity.MemberAccount;
@@ -18,8 +14,6 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.JKMTradeServiceException;
-import com.jkm.hss.helper.JkmApiErrorCode;
-import com.jkm.hss.helper.request.CreateApiOrderRequest;
 import com.jkm.hss.helper.response.CreateApiOrderResponse;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
@@ -31,8 +25,8 @@ import com.jkm.hsy.user.entity.AppPolicyMembershipCardShop;
 import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Triple;
-import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -303,9 +296,12 @@ public class WebSkipController extends BaseController {
             jsonObject.put("package", split[3]);
             jsonObject.put("signType", split[4]);
             jsonObject.put("paySign", split[5]);
-            jsonObject.put("pageCallBackUrl",hsyOrder.getPageCallBackUrl());
-            model.addAttribute("payUrl",jsonObject.toJSONString());
-            model.addAttribute("page",hsyOrder.getPageCallBackUrl());
+            model.addAttribute("status","success");
+            model.addAttribute("amount",hsyOrder.getAmount());
+            model.addAttribute("merchantName",hsyOrder.getMerchantname());
+            model.addAttribute("subject", hsyOrder.getGoodsname());
+            model.addAttribute("payUrl",jsonObject.toString());
+            model.addAttribute("pageCallBackUrl",hsyOrder.getPageCallBackUrl());
             return "/api-wx";
         }
         //获取openID
@@ -355,17 +351,27 @@ public class WebSkipController extends BaseController {
                 final String payInfo = order.getPayInfo();
                 final String[] split = payInfo.split("\\|");
                 final JSONObject jsonObject = new JSONObject();
+                model.addAttribute("status","success");
+                model.addAttribute("amount",hsyOrder.getAmount());
+                model.addAttribute("merchantName",hsyOrder.getMerchantname());
+                model.addAttribute("subject", hsyOrder.getGoodsname());
                 jsonObject.put("appId", split[0]);
                 jsonObject.put("timeStamp", split[1]);
                 jsonObject.put("nonceStr", split[2]);
                 jsonObject.put("package", split[3]);
                 jsonObject.put("signType", split[4]);
                 jsonObject.put("paySign", split[5]);
-                jsonObject.put("pageCallBackUrl",hsyOrder.getPageCallBackUrl());
-                model.addAttribute("payUrl",jsonObject.toJSONString());
+                model.addAttribute("payUrl",jsonObject.toString());
+                model.addAttribute("pageCallBackUrl", hsyOrder.getPageCallBackUrl());
                 return "/api-wx";
             }else{
                 //下单失败
+                model.addAttribute("status", "fail");
+                model.addAttribute("amount",hsyOrder.getAmount());
+                model.addAttribute("merchantName",hsyOrder.getMerchantname());
+                model.addAttribute("subject", hsyOrder.getGoodsname());
+                model.addAttribute("pageCallBackUrl", hsyOrder.getPageCallBackUrl());
+                return "/api-wx";
             }
 
         } catch (JKMTradeServiceException e) {
@@ -426,7 +432,7 @@ public class WebSkipController extends BaseController {
                 final String payInfo = order.getPayInfo();
                 final JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tradeNo", payInfo);
-                model.addAttribute("payUrl",jsonObject.toJSONString());
+                model.addAttribute("payUrl",jsonObject.toString());
                 model.addAttribute("page",hsyOrder.getPageCallBackUrl());
                 return "/api-zfb";
             }else{

@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.base.common.util.ApiMD5Util;
+import com.jkm.base.common.util.ResponseWriter;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
@@ -18,6 +19,7 @@ import com.jkm.hss.helper.JkmApiErrorCode;
 import com.jkm.hss.helper.request.CreateApiOrderRequest;
 import com.jkm.hss.helper.request.QueryApiOrderRequest;
 import com.jkm.hss.helper.response.CreateApiOrderResponse;
+import com.jkm.hss.helper.response.MerApiCallBackResp;
 import com.jkm.hss.helper.response.QueryApiOrderResponse;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -79,7 +82,7 @@ public class MerchantApiController extends BaseApiController {
     @RequestMapping(value = "toJsp", method = RequestMethod.GET)
     public String toJsp() {
 
-        return "/api-wx";
+        return "/api";
     }
     /**
      * 商户API 下单
@@ -236,5 +239,17 @@ public class MerchantApiController extends BaseApiController {
     }
 
 
+    /**
+     * 回调
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/callBack", method = RequestMethod.POST)
+    public void callback(@RequestBody final MerApiCallBackResp request, final HttpServletResponse response) throws IOException {
 
+        final boolean sign = ApiMD5Util.verifySign((JSONObject) JSONObject.toJSON(request), JkmApiMerConstants.keyOf("110000000093"), request.getSign());
+        log.info("收到支付中心的回调:回调信息:" + request.toString() + "<<<<<<<<<<" + sign);
+        ResponseWriter.writeTxtResponse(response, "success");
+    }
 }

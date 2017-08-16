@@ -34,7 +34,7 @@
         remark,
         payment_terminal,
         call_back_url,
-        page_call_back_rl
+        page_call_back_url
         )
         VALUES
         (

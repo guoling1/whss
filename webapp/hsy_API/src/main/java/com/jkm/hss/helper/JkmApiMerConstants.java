@@ -15,6 +15,7 @@ public class JkmApiMerConstants {
     static {
         final ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<>();
             builder.put("110000000093", "X1w8LsNHoluMlnF8jxG3J2Mw0ZTR5qyu");
+            builder.put("110000000132", "X1w8LsNHoluMlnF8jxG3J2Mw0ZTR5q32");
             INIT_MAP = builder.build();
     }
 
