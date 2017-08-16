@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -111,9 +112,11 @@ public class CommonController extends BaseController {
             log.error("上传文件失败", e);
             CommonResponse.simpleResponse(-1, "图片上传失败");
         }
-
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName,expiration);
         return CommonResponse.builder4MapResult(0, "success")
-                .addParam("url", ApplicationConsts.getApplicationConfig().ossBindHost() + "/" + fileName).build();
+                .addParam("url",  fileName)
+                .addParam("showUrl",url.toString()).build();
     }
     /**
      * 获取随机文件名
