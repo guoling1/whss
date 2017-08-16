@@ -212,4 +212,11 @@ public interface MerchantInfoService {
      */
     void handleKmUpdateStatus();
 
+    /**
+     * 按商户编号查询
+     *
+     * @param merchantNo
+     * @return
+     */
+    Optional<MerchantInfo> getByMarkCode(String merchantNo);
 }

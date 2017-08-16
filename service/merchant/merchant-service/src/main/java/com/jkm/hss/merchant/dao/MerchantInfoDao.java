@@ -204,4 +204,12 @@ public interface MerchantInfoDao {
      * @return
      */
     List<MerchantInfo> selectByKmNetStatus();
+
+    /**
+     * 按商户编号查询
+     *
+     * @param merchantNo
+     * @return
+     */
+    MerchantInfo selectByMarkCode(@Param("merchantNo") String merchantNo);
 }

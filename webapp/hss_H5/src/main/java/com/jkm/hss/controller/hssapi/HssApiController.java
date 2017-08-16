@@ -1,6 +1,8 @@
 package com.jkm.hss.controller.hssapi;
 
 import com.alibaba.fastjson.JSON;
+import com.jkm.api.enums.JKMTradeErrorCode;
+import com.jkm.api.exception.JKMTradeServiceException;
 import com.jkm.api.helper.requestparam.PreQuickPayRequest;
 import com.jkm.api.helper.responseparam.PreQuickPayResponse;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
@@ -29,7 +31,7 @@ public class HssApiController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "pay", method = RequestMethod.POST)
+    @RequestMapping(value = "preQuickPay", method = RequestMethod.POST)
     public Object preQuickPay(final HttpServletRequest httpServletRequest) {
         final PreQuickPayResponse preQuickPayResponse = new PreQuickPayResponse();
         String readParam;
@@ -42,20 +44,36 @@ public class HssApiController extends BaseController {
         }
         try {
             final PreQuickPayRequest request = JSON.parseObject(readParam, PreQuickPayRequest.class);
+            log.info("商户号[{}]-商户订单号[{}]-预下单-参数[{}]", request.getMerchantNo(), request.getOrderNo(), request);
+            preQuickPayResponse.setMerchantNo(request.getMerchantNo());
+            preQuickPayResponse.setOrderNo(request.getOrderNo());
+            preQuickPayResponse.setMerchantReqTime(request.getMerchantReqTime());
+            preQuickPayResponse.setOrderAmount(request.getOrderAmount());
+            preQuickPayResponse.setCardNo(request.getCardNo());
+            //参数校验
             request.validateParam();
-
-
             if (request.verifySign("")) {
                 log.error("商户号[{}]-商户订单号[{}]-预下单签名错误", 1, 2);
+                preQuickPayResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
+                preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
+                preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
                 return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
             }
 
-
+            preQuickPayResponse.setOrderStatus("");
+            preQuickPayResponse.setSettleStatus("");
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.ACCEPT_SUCCESS.getErrorCode());
+            preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.ACCEPT_SUCCESS.getErrorMessage());
+        } catch (final JKMTradeServiceException e) {
+            log.error("商户号[{}]-商户订单号[{}]-预下单异常", e);
+            preQuickPayResponse.setReturnCode(e.getErrorCode());
+            preQuickPayResponse.setReturnCode(e.getErrorMessage());
         } catch (final Throwable e) {
-
+            log.error("商户号[{}]-商户订单号[{}]-预下单异常", e);
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
-
-
+        preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
         return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
     }
 }
