@@ -1,5 +1,7 @@
 package com.jkm.hss.merchant.service;
 
+import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.merchant.helper.request.ApiMerchantRequest;
 import net.sf.json.JSONObject;
 
 /**
@@ -10,6 +12,6 @@ public interface ApiMerchantService {
      * 商户入网
      * @return
      */
-    JSONObject merchantIIn();
+    CommonResponse merchantIn(ApiMerchantRequest apiMerchantRequest);
 
 }
