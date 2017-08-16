@@ -104,6 +104,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
         final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setOrdernumber("");
         hsyOrder.setPaymentTerminal(EnumPaymentTerminal.CELLPHONE.getId());
         hsyOrder.setShopid(shopId);
         hsyOrder.setShopname(shop.getShortName());
