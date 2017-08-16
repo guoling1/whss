@@ -93,7 +93,7 @@ public class MerchantApiController extends BaseApiController {
     @ResponseBody
     @RequestMapping(value = "/code/jsapi", method = RequestMethod.POST)
     public CreateApiOrderResponse createApiOrder(@RequestBody final CreateApiOrderRequest createApiOrderRequest) {
-        log.info("【商户[{}]API下单】开始", createApiOrderRequest.getMerchantNo());
+        log.info("【商户[{}]API下单】开始,请求参数:" + createApiOrderRequest.toString(), createApiOrderRequest.getMerchantNo());
         Long startTime = System.currentTimeMillis();
         CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
         try{
