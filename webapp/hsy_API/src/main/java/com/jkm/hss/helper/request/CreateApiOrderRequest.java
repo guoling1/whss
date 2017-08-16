@@ -16,7 +16,6 @@ import java.util.Set;
 /**
  * Created by yuxiang on 2017-08-13.
  */
-@Slf4j
 @Data
 public class CreateApiOrderRequest {
 

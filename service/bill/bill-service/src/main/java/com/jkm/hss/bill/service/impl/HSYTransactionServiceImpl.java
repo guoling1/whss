@@ -180,6 +180,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
         final AppAuUser currentUser = this.hsyUserDao.findAppAuUserByID(currentUid).get(0);
         final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setOrdernumber("");
         hsyOrder.setPaymentTerminal(EnumPaymentTerminal.PC.getId());
         hsyOrder.setShopid(shopId);
         hsyOrder.setAmount(amount);
