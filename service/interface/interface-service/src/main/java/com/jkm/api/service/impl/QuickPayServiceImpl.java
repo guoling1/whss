@@ -12,9 +12,11 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.service.BusinessOrderService;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -22,6 +24,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,8 @@ import java.math.BigDecimal;
 @Service
 public class QuickPayServiceImpl implements QuickPayService {
 
+    @Autowired
+    private PayService payService;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -92,12 +97,12 @@ public class QuickPayServiceImpl implements QuickPayService {
         businessOrder.setMerchantId(merchant.getId());
         businessOrder.setGoodsName(StringUtils.isEmpty(request.getSubject()) ? merchant.getMerchantName() : request.getSubject());
         businessOrder.setGoodsDescribe(merchant.getMerchantName());
-        businessOrder.setRemark("创建订单成功");
+        businessOrder.setRemark("api创建订单成功");
         businessOrder.setStatus(EnumBusinessOrderStatus.DUE_PAY.getId());
-        businessOrder.setTradeOrderNo("");
         businessOrder.setPayChannelSign(enumPayChannelSign.getId());
-
-        this.businessOrderService.add(businessOrder);
+        businessOrder.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
+        businessOrder.setPayAccount(merchant.getName());
+        businessOrder.setBankName(accountBank.getBankName());
 
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrder.getOrderNo());
@@ -118,22 +123,26 @@ public class QuickPayServiceImpl implements QuickPayService {
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
+        order.setBankExpireDate(!StringUtils.isNumeric(request.getExpireDate()) ? "" : request.getExpireDate());
+        order.setCvv(!StringUtils.isNumeric(request.getCvv()) ? "" : MerchantSupport.encryptCvv(request.getCvv()));
         order.setPayAccount(merchant.getName());
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+
+        businessOrder.setTradeOrderNo(order.getOrderNo());
+        this.businessOrderService.add(businessOrder);
         this.orderService.add(order);
-        final BusinessOrder updateBusinessOrder = new BusinessOrder();
-//        updateBusinessOrder.setId(businessOrderId);
-        updateBusinessOrder.setTradeOrderNo(order.getOrderNo());
-//        updateBusinessOrder.setPayChannelSign(parentChannelSign);
-        updateBusinessOrder.setRemark("请求交易成功");
-        updateBusinessOrder.setTradeCardNo(accountBank.getBankNo());
-        updateBusinessOrder.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
-        updateBusinessOrder.setPayAccount(merchant.getName());
-        updateBusinessOrder.setBankName(accountBank.getBankName());
-        this.businessOrderService.update(updateBusinessOrder);
-
-
+        //请求支付
+        final Pair<Integer, String> resultPair = this.payService.unionPay(order.getId(), merchant.getId(), order.getTradeAmount().toPlainString(),
+                enumPayChannelSign.getId(), accountBank.getId(), order.getAppId());
+        if (-1 == resultPair.getLeft()) {
+            log.error("商户编号[{}]-商户订单号[{}]，预下单，下单失败-系统异常", request.getMerchantNo(), request.getOrderNo());
+            throw new JKMTradeServiceException(JKMTradeErrorCode.SERVICE_ERROR);
+        } else if (-2 == resultPair.getLeft()) {
+            log.error("商户编号[{}]-商户订单号[{}]，预下单，下单失败-网关下单失败-[{}]", request.getMerchantNo(), request.getOrderNo(), resultPair.getRight());
+            throw new JKMTradeServiceException(JKMTradeErrorCode.SERVICE_ERROR, resultPair.getRight());
+        }
+        log.info("商户编号[{}]-商户订单号[{}]，预下单，成功", request.getMerchantNo(), request.getOrderNo());
     }
 }

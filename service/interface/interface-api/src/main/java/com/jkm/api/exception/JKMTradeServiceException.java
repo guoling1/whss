@@ -17,4 +17,10 @@ public class JKMTradeServiceException extends RuntimeException {
         this.errorCode = jkmTradeErrorCode.getErrorCode();
         this.errorMessage = jkmTradeErrorCode.getErrorMessage();
     }
+
+    public JKMTradeServiceException(final JKMTradeErrorCode jkmTradeErrorCode, final String errorMessage){
+        super();
+        this.errorCode = jkmTradeErrorCode.getErrorCode();
+        this.errorMessage = errorMessage;
+    }
 }

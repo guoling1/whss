@@ -79,4 +79,9 @@ public class PaymentSdkUnionPayRequest {
      * 手机号
      */
     private String mobile;
+
+    /**
+     * 银联token
+     */
+    private String token;
 }

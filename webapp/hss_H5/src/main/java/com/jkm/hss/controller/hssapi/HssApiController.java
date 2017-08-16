@@ -1,13 +1,17 @@
 package com.jkm.hss.controller.hssapi;
 
 import com.alibaba.fastjson.JSON;
+import com.jkm.api.enums.EnumApiOrderSettleStatus;
+import com.jkm.api.enums.EnumApiOrderStatus;
 import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
 import com.jkm.api.helper.requestparam.PreQuickPayRequest;
 import com.jkm.api.helper.responseparam.PreQuickPayResponse;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
+import com.jkm.api.service.QuickPayService;
 import com.jkm.hss.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +27,9 @@ import java.io.IOException;
 @Controller
 @RequestMapping(value = "/api")
 public class HssApiController extends BaseController {
+
+    @Autowired
+    private QuickPayService quickPayService;
 
     /**
      * 快捷预下单
@@ -59,9 +66,11 @@ public class HssApiController extends BaseController {
                 preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
                 return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
             }
+            //请求
+            this.quickPayService.preQuickPay(request);
 
-            preQuickPayResponse.setOrderStatus("");
-            preQuickPayResponse.setSettleStatus("");
+            preQuickPayResponse.setOrderStatus(EnumApiOrderStatus.INIT.getCode());
+            preQuickPayResponse.setSettleStatus(EnumApiOrderSettleStatus.WAIT.getCode());
             preQuickPayResponse.setReturnCode(JKMTradeErrorCode.ACCEPT_SUCCESS.getErrorCode());
             preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.ACCEPT_SUCCESS.getErrorMessage());
         } catch (final JKMTradeServiceException e) {

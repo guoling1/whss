@@ -22,6 +22,7 @@
     <mvc:annotation-driven validator="validator"/>
     <mvc:default-servlet-handler />
     <context:component-scan base-package="com.jkm.hss"/>
+    <context:component-scan base-package="com.jkm.api"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>

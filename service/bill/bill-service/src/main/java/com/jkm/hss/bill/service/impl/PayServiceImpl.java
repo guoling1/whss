@@ -1141,15 +1141,16 @@ public class PayServiceImpl implements PayService {
                 (StringUtils.isEmpty(order.getCvv()) ? "" : MerchantSupport.decryptCvv(order.getCvv())) : MerchantSupport.decryptCvv(accountBank.getCvv()));
         paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
-        final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));
-        log.info("商户[{}], 订单号[{}],  快捷预下单结果[{}]", merchantId, order.getOrderNo(), resultStr);
+        paymentSdkUnionPayRequest.setToken("");
         PaymentSdkUnionPayResponse paymentSdkUnionPayResponse;
         try {
+            final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));
+            log.info("商户[{}], 订单号[{}],  快捷预下单结果[{}]", merchantId, order.getOrderNo(), resultStr);
             paymentSdkUnionPayResponse = JSONObject.parseObject(resultStr, PaymentSdkUnionPayResponse.class);
         } catch (final Throwable e) {
-            log.error("商户[ " + merchantId +" ], 订单号[{ " + order.getOrderNo() + " ], 下单失败", e);
-            this.orderService.updateRemark(order.getId(), "下单失败");
-            this.businessOrderService.updateRemarkByOrderNo("下单失败", order.getBusinessOrderNo());
+            log.error("商户[ " + merchantId +" ], 订单号[{ " + order.getOrderNo() + " ]下单失败,请求网关异常", e);
+            this.orderService.updateRemark(order.getId(), "下单失败,请求网关异常");
+            this.businessOrderService.updateRemarkByOrderNo("下单失败,请求网关异常", order.getBusinessOrderNo());
             return Pair.of(-1, "稍后请重试");
         }
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkUnionPayResponse.getCode());
@@ -1166,8 +1167,8 @@ public class PayServiceImpl implements PayService {
                 this.orderService.update(order);
 
                 this.businessOrderService.updateRemarkByOrderNo(paymentSdkUnionPayResponse.getMessage(), order.getBusinessOrderNo());
-                log.info("订单[{}], 下单失败", order.getId());
-                return Pair.of(-1, "稍后请重试");
+                log.info("订单[{}], 下单失败-message[{}]", order.getId(), paymentSdkUnionPayResponse.getMessage());
+                return Pair.of(-2, paymentSdkUnionPayResponse.getMessage());
         }
         return Pair.of(-1, "下单失败");
     }
