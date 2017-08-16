@@ -36,7 +36,7 @@ public interface MerchantInfoDao {
      * @param openId
      * @return
      */
-    MerchantInfo selectByOpenId(@Param("openId") String openId);
+//    MerchantInfo selectByOpenId(@Param("openId") String openId);
 
 
     /**

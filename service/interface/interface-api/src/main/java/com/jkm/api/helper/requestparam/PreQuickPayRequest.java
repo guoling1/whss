@@ -66,6 +66,10 @@ public class PreQuickPayRequest {
      */
     private String cerNumber;
     /**
+     * 银行预留手机号
+     */
+    private String mobile;
+    /**
      * 订单标题
      */
     private String subject;

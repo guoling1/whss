@@ -298,4 +298,14 @@ public enum EnumPayChannelSign {
     public static boolean isWechatOfficialPay(final int channelSign) {
         return WECHAT_PAY.getId() == channelSign;
     }
+
+    /**
+     * 是否需要需要保持银行卡（部分渠道需要卡流程已经保存，部分只有支付成功才保存）
+     *
+     * @param channelSign
+     * @return
+     */
+    public static boolean isNotNeedSaveBankCard(final int channelSign) {
+        return true;
+    }
 }
