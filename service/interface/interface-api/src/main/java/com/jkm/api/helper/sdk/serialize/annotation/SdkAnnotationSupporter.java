@@ -1,6 +1,7 @@
 package com.jkm.api.helper.sdk.serialize.annotation;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 
@@ -14,6 +15,22 @@ public class SdkAnnotationSupporter {
         if (aliasAnnotation == null) {
             return field.getName();
         }
-        return aliasAnnotation.name();
+        return StringUtils.isEmpty(aliasAnnotation.name()) ? field.getName() : aliasAnnotation.name();
+    }
+
+    public static int getFieldSignSort(final Field field) {
+        final SdkSerializeAlias aliasAnnotation = field.getAnnotation(SdkSerializeAlias.class);
+        if (aliasAnnotation == null) {
+            return 0;
+        }
+        return aliasAnnotation.signSort();
+    }
+
+    public static boolean getFieldNeedSign(final Field field) {
+        final SdkSerializeAlias aliasAnnotation = field.getAnnotation(SdkSerializeAlias.class);
+        if (aliasAnnotation == null) {
+            return false;
+        }
+        return aliasAnnotation.needSign();
     }
 }

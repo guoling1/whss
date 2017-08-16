@@ -1,11 +1,8 @@
 package com.jkm.api.helper.responseparam;
 
-import com.jkm.base.common.util.BytesHexConverterUtil;
-import com.jkm.base.common.util.Md5Util;
+import com.jkm.api.helper.sdk.serialize.SdkSignUtil;
+import com.jkm.api.helper.sdk.serialize.annotation.SdkSerializeAlias;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
-
-import java.nio.charset.Charset;
 
 /**
  * Created by yulong.zhang on 2017/8/15.
@@ -18,46 +15,57 @@ public class PreQuickPayResponse {
     /**
      * 代理商编号
      */
+    @SdkSerializeAlias(signSort = 3, needSign = true)
     private String dealerMarkCode;
     /**
      * 商户编号
      */
+    @SdkSerializeAlias(signSort = 4, needSign = true)
     private String merchantNo;
     /**
      * 商户订单号
      */
+    @SdkSerializeAlias(signSort = 5, needSign = true)
     private String orderNo;
     /**
      * 交易订单号
      */
+    @SdkSerializeAlias(signSort = 6, needSign = true)
     private String tradeOrderNo;
     /**
      * 商户请求时间
      */
+    @SdkSerializeAlias(signSort = 7, needSign = true)
     private String merchantReqTime;
     /**
      * 订单金额
      */
+    @SdkSerializeAlias(signSort = 8, needSign = true)
     private String orderAmount;
     /**
      * 卡号
      */
+    @SdkSerializeAlias(signSort = 9, needSign = true)
     private String cardNo;
     /**
      * 订单状态
      */
+    @SdkSerializeAlias(signSort = 10, needSign = true)
     private String orderStatus;
     /**
      * 结算状态
      */
+    @SdkSerializeAlias(signSort = 11, needSign = true)
     private String settleStatus;
     /**
      * 错误码
      */
+    @SdkSerializeAlias(signSort = 1, needSign = true)
     private String returnCode;
     /**
      * 错误描述
      */
+    @SdkSerializeAlias(signSort = 2, needSign = true)
     private String returnMsg;
     /**
      * 签名
@@ -65,22 +73,6 @@ public class PreQuickPayResponse {
     private String sign;
 
     public String createSign(final String key) {
-        final String needSignStr = new StringBuilder()
-                .append("dealerMarkCode").append("=").append(StringUtils.isEmpty(this.dealerMarkCode) ? "" : this.dealerMarkCode).append("&")
-                .append("merchantNo").append("=").append(StringUtils.isEmpty(this.merchantNo) ? "" : this.merchantNo).append("&")
-                .append("orderNo").append("=").append(StringUtils.isEmpty(this.orderNo) ? "" : this.orderNo).append("&")
-                .append("tradeOrderNo").append("=").append(StringUtils.isEmpty(this.tradeOrderNo) ? "" : this.tradeOrderNo).append("&")
-                .append("merchantReqTime").append("=").append(StringUtils.isEmpty(this.merchantReqTime) ? "" : this.merchantReqTime).append("&")
-                .append("orderAmount").append("=").append(StringUtils.isEmpty(this.orderAmount) ? "" : this.orderAmount).append("&")
-                .append("cardNo").append("=").append(StringUtils.isEmpty(this.cardNo) ? "" : this.cardNo).append("&")
-                .append("orderStatus").append("=").append(StringUtils.isEmpty(this.orderStatus) ? "" : this.orderStatus).append("&")
-                .append("settleStatus").append("=").append(StringUtils.isEmpty(this.settleStatus) ? "" : this.settleStatus).append("&")
-                .append("returnCode").append("=").append(StringUtils.isEmpty(this.returnCode) ? "" : this.returnCode).append("&")
-                .append("returnMsg").append("=").append(StringUtils.isEmpty(this.returnMsg) ? "" : this.returnMsg).append("&")
-                .append("key").append("=").append(key)
-                .toString();
-        final String sign = BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
-                .getBytes(Charset.forName("utf-8"))));
-        return sign;
+        return SdkSignUtil.sign2(this, key);
     }
 }

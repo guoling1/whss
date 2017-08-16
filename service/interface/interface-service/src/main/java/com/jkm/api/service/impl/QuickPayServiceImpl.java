@@ -146,4 +146,9 @@ public class QuickPayServiceImpl implements QuickPayService {
         log.info("商户编号[{}]-商户订单号[{}]，预下单，成功", request.getMerchantNo(), request.getOrderNo());
         return order.getOrderNo();
     }
+    public static void main (String[] args) {
+        final PreQuickPayRequest preQuickPayRequest = new PreQuickPayRequest();
+        preQuickPayRequest.verifySign("123");
+    }
+
 }

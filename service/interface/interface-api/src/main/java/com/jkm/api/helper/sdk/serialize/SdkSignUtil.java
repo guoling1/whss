@@ -1,17 +1,18 @@
 package com.jkm.api.helper.sdk.serialize;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.*;
 import com.google.common.collect.Lists;
+import com.jkm.api.helper.sdk.serialize.annotation.SdkAnnotationSupporter;
 import com.jkm.base.common.util.BytesHexConverterUtil;
 import com.jkm.base.common.util.Md5Util;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Objects;
 
 /**
@@ -22,6 +23,30 @@ import java.util.Objects;
 public class SdkSignUtil {
 
     public static final String SIGN_KEY = "sign";
+
+    public static <T> String sign2(final T obj, final String key) {
+        final List<Field> fields = FieldUtils.getAllFieldsList(obj.getClass());
+        final Map<Integer, Field> signMap = new HashMap<>();
+        for (final Field field : fields) {
+            if (SdkAnnotationSupporter.getFieldNeedSign(field)) {
+                signMap.put(SdkAnnotationSupporter.getFieldSignSort(field), field);
+            }
+        }
+        final List<Integer> paramsKeyList = Lists.newArrayList(signMap.keySet());
+        Collections.sort(paramsKeyList);
+        final StringBuilder content = new StringBuilder();
+        for (final Integer paramsKey : paramsKeyList) {
+            final Field field = signMap.get(paramsKey);
+            final String fieldKey = SdkAnnotationSupporter.getFieldAlias(field);
+            final Object fieldValue = getFieldValue(field, obj);
+            content.append(fieldKey).append("=").append(Objects.equals(fieldValue, null) ? "" : fieldValue.toString()).append("&");
+        }
+        content.append("key=").append(key);
+        log.debug("签名字符串:[{}]", content.toString());
+        return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(content.toString()
+                .getBytes(Charset.forName("utf-8"))));
+    }
+
 
 
     public static String sign(@NonNull final Map<String, String> requestParamMap, @NonNull final String key) {
@@ -51,5 +76,14 @@ public class SdkSignUtil {
         }
         content.append("key=").append(key);
         return content.toString();
+    }
+
+    private static final Object getFieldValue(final Field field,
+                                              final Object target) {
+        try {
+            return FieldUtils.readField(field, target, true);
+        } catch (IllegalAccessException e) {
+            throw Throwables.propagate(e);
+        }
     }
 }

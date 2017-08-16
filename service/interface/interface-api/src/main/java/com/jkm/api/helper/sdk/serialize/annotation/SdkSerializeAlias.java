@@ -12,4 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SdkSerializeAlias {
     String name() default "";
+
+    int signSort() default 0;
+
+    boolean needSign() default false;
 }

@@ -5,6 +5,7 @@ import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
 import com.jkm.api.helper.sdk.serialize.SdkSignUtil;
+import com.jkm.api.helper.sdk.serialize.annotation.SdkSerializeAlias;
 import com.jkm.base.common.util.BytesHexConverterUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.Md5Util;
@@ -26,84 +27,104 @@ import java.util.Date;
 public class PreQuickPayRequest {
 
     /**
-     * 代理商编号
-     */
-    private String dealerMarkCode;
-    /**
      * 商户编号
      */
+    @SdkSerializeAlias(signSort = 1, needSign = true)
     private String merchantNo;
+    /**
+     * 代理商编号
+     */
+    @SdkSerializeAlias(signSort = 2, needSign = true)
+    private String dealerMarkCode;
     /**
      * 商户订单号
      */
+    @SdkSerializeAlias(signSort = 3, needSign = true)
     private String orderNo;
     /**
      * 商户请求时间
      */
+    @SdkSerializeAlias(signSort = 4, needSign = true)
     private String merchantReqTime;
     /**
      * 通道编码
      */
+    @SdkSerializeAlias(signSort = 5, needSign = true)
     private String channelCode;
     /**
      * 订单币种
      */
+    @SdkSerializeAlias(signSort = 6, needSign = true)
     private String orderCurrency;
     /**
      * 订单金额
      */
+    @SdkSerializeAlias(signSort = 7, needSign = true)
     private String orderAmount;
     /**
      * 持卡人姓名
      */
+    @SdkSerializeAlias(signSort = 8, needSign = true)
     private String cardByName;
     /**
      * 卡号
      */
+    @SdkSerializeAlias(signSort = 9, needSign = true)
     private String cardNo;
     /**
      * 卡类型
      */
+    @SdkSerializeAlias(signSort = 10, needSign = true)
     private String cardType;
     /**
      * 有效期
      */
+    @SdkSerializeAlias(signSort = 11, needSign = true)
     private String expireDate;
     /**
      * cvv2
      */
+    @SdkSerializeAlias(signSort = 12, needSign = true)
     private String cvv;
     /**
      * 证件类型
      */
+    @SdkSerializeAlias(signSort = 13, needSign = true)
     private String cerType;
     /**
      * 证件号
      */
+    @SdkSerializeAlias(signSort = 14, needSign = true)
     private String cerNumber;
     /**
      * 银行预留手机号
      */
+    @SdkSerializeAlias(signSort = 15, needSign = true)
     private String mobile;
     /**
      * 订单标题
      */
+    @SdkSerializeAlias(signSort = 16, needSign = true)
     private String subject;
     /**
      * 订单详情
      */
+    @SdkSerializeAlias(signSort = 17, needSign = true)
     private String goodsDetail;
     /**
      * 页面通知地址
      */
+    @SdkSerializeAlias(signSort = 18, needSign = true)
     private String pageNotifyUrl;
     /**
      * 后台回调地址
      */
+    @SdkSerializeAlias(signSort = 19, needSign = true)
     private String callbackUrl;
     /**
      * 结算通知地址
      */
+    @SdkSerializeAlias(signSort = 20, needSign = true)
     private String settleNotifyUrl;
     /**
      * 签名
@@ -210,25 +231,6 @@ public class PreQuickPayRequest {
      * @param key
      */
     public boolean verifySign(final String key) {
-        final String needSignStr = new StringBuilder()
-                .append("dealerMarkCode").append("=").append(this.dealerMarkCode).append("&")
-                .append("merchantNo").append("=").append(this.merchantNo).append("&")
-                .append("orderNo").append("=").append(this.orderNo).append("&")
-                .append("merchantReqTime").append("=").append(this.merchantReqTime).append("&")
-                .append("channelCode").append("=").append(this.channelCode).append("&")
-                .append("orderCurrency").append("=").append(this.orderCurrency).append("&")
-                .append("orderAmount").append("=").append(this.orderAmount).append("&")
-                .append("cardByName").append("=").append(this.cardByName).append("&")
-                .append("cardNo").append("=").append(this.cardNo).append("&")
-                .append("cardType").append("=").append(this.cardType).append("&")
-                .append("cerType").append("=").append(this.cerType).append("&")
-                .append("cerNumber").append("=").append(this.cerNumber).append("&")
-                .append("mobile").append("=").append(this.mobile).append("&")
-                .append("callbackUrl").append("=").append(this.callbackUrl).append("&")
-                .append("key").append("=").append(key)
-                .toString();
-        final String sign = BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
-                .getBytes(Charset.forName("utf-8"))));
-        return Objects.equal(sign, this.sign);
+        return Objects.equal(SdkSignUtil.sign2(this, key), this.sign);
     }
 }

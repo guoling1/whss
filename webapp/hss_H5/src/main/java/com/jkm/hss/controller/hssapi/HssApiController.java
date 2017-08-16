@@ -72,7 +72,7 @@ public class HssApiController extends BaseController {
             final Dealer dealer = dealerOptional.get();
             //取秘钥
             //参数校验
-            request.validateParam();
+//            request.validateParam();
             if (request.verifySign("")) {
                 log.error("商户号[{}]-商户订单号[{}]-预下单签名错误", 1, 2);
                 preQuickPayResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
@@ -99,4 +99,5 @@ public class HssApiController extends BaseController {
         preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
         return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
     }
+
 }
