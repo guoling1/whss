@@ -31,6 +31,7 @@ public enum ResultCode {
 	TOKEN_CAN_NOT_BE_NULL(2024,"token为空"),
 	USER_NOT_LOGIN(2025,"用户未登录"),
 	USER_LOGIN_OUTTIME(2026,"用户登录超时请重新登录"),
+	CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO(2027,"页数必须大于零"),
 	;
 
 	public int resultCode;

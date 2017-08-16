@@ -21,5 +21,7 @@ public class V1o1o1Mapper {
         bizMapper.put("HSS001010", new String[]{"appMerchantInfoService","getShareInfo"});
         bizMapper.put("HSS001011", new String[]{"appCenterLettersService","plusDownLoad","更新成功"});
         bizMapper.put("HSS001012", new String[]{"appCenterLettersService","getCenterLettersList"});
+        bizMapper.put("HSS001013", new String[]{"appMessageService","getMessageList"});
+        bizMapper.put("HSS001014", new String[]{"appMessageService","updateReadStatus"});
     }
 }

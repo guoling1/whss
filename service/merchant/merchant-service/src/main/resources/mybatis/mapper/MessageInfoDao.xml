@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.MessageInfoDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.MessageInfo">
+        insert into tb_message_info (UID,TITLE,CONTENT,STATUS,TYPE,READSTATUS,CREATETIME,UPDATETIME) values (#{uid},#{title},#{content},#{status},#{type},#{readStatus},#{createTime},#{updateTime})
+    </insert>
+
+    <select id="findMessageInfoListByPage" parameterType="page" resultType="com.jkm.hss.merchant.entity.MessageInfo">
+        select ID,UID,TITLE,CONTENT,STATUS,TYPE,READSTATUS,CREATETIME,UPDATETIME from tb_message_info
+        where 1=1
+        <if test="objectT.uid!=null">
+            AND UID=#{objectT.uid}
+        </if>
+        order by UPDATETIME desc
+    </select>
+
+    <select id="findMessageInfoListByPageCount" parameterType="com.jkm.hss.merchant.entity.MessageInfo" resultType="java.lang.Integer">
+        select count(*) from tb_message_info
+        where 1=1
+        <if test="uid!=null">
+            AND UID=#{uid}
+        </if>
+    </select>
+
+    <update id="updateReadStatusBeyondTime" parameterType="com.jkm.hss.merchant.entity.MessageInfo">
+        update tb_message_info set READSTATUS=1,UPDATETIME=#{createTime} where UID=#{uid} and READSTATUS=0 and <![CDATA[CREATETIME<=#{createTime}]]>
+    </update>
+</mapper>
