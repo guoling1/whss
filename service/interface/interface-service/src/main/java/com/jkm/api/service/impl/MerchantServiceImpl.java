@@ -1,6 +1,8 @@
 package com.jkm.api.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.api.enums.JKMTradeErrorCode;
+import com.jkm.api.exception.JKMTradeServiceException;
 import com.jkm.api.helper.requestparam.MerchantRequest;
 import com.jkm.api.service.MerchantService;
 import com.jkm.base.common.entity.CommonResponse;
@@ -34,7 +36,7 @@ public class MerchantServiceImpl implements MerchantService {
     public CommonResponse merchantIn(MerchantRequest apiMerchantRequest) {
         long oemId = 0;
         if (StringUtils.isBlank(apiMerchantRequest.getMerchantName())) {
-            return CommonResponse.simpleResponse(-1, "商户名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL);
         }
         if (StringUtils.isBlank(apiMerchantRequest.getMobile())) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");

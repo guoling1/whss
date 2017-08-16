@@ -60,6 +60,7 @@ public enum JKMTradeErrorCode {
     QUERY_LATER("E1046","支付时间未超5分钟，请稍后查询"),
     INIT_QUERY_LATER("E1047","订单初始化中，请稍后查询"),
     MER_IS_FROZEN("E1048","商户被冻结"),
+    PARAM_NOT_NULL("E1049","参数不能为空"),
 
 
     /**数据库*/
