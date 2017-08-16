@@ -12,6 +12,9 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ public class MerchantServiceImpl implements MerchantService {
     private DealerService dealerService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private ProductService productService;
     /**
      * 商户入网
      *
@@ -81,28 +86,29 @@ public class MerchantServiceImpl implements MerchantService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"银行卡号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getName())) {
-            return CommonResponse.simpleResponse(-1, "真实姓名不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"真实姓名不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getIdentity())) {
-            return CommonResponse.simpleResponse(-1, "身份证号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"身份证号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getReserveMobile())) {
-            return CommonResponse.simpleResponse(-1, "预留手机号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"预留手机号不能为空");
         }
         Optional<Dealer> dealerOptional =  dealerService.getDealerByMarkCode(apiMerchantRequest.getDealerMarkCode());
         if (!dealerOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
         }
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(apiMerchantRequest.getMobile()),oemId);
         if (merchantInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该商户已入网");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.MCT_EXIST);
         }
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        if(!productOptional.isPresent()){
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PRODUCT_NOT_EXIST);
+        }
+        MerchantInfo mi = new MerchantInfo();
 
 
-//        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-//        if(!productOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "产品信息有误");
-//        }
 //        long productId = productOptional.get().getId();
 //        Optional<MerchantInfo> merchantInfoOptional1 = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
 //        if(merchantInfoOptional1.isPresent()){
