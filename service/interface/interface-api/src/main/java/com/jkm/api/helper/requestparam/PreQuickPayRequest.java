@@ -5,13 +5,16 @@ import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
 import com.jkm.api.helper.sdk.serialize.SdkSignUtil;
+import com.jkm.base.common.util.BytesHexConverterUtil;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.Md5Util;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.Date;
 
 /**
@@ -138,7 +141,7 @@ public class PreQuickPayRequest {
                 throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "channelCode不合法");
             }
         }
-        if ("CNY".equals(this.orderCurrency)) {
+        if (!"CNY".equals(this.orderCurrency)) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "orderCurrency不合法");
         }
         if (StringUtils.isEmpty(this.orderAmount)) {
@@ -158,7 +161,7 @@ public class PreQuickPayRequest {
         if (StringUtils.isEmpty(this.cardNo)) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cardNo不能为空");
         }
-        if ("CREDIT_CARD".equals(this.cardType)) {
+        if (!"CREDIT_CARD".equals(this.cardType)) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cardType不合法");
         }
         if (!StringUtils.isEmpty(this.expireDate)) {
@@ -177,12 +180,8 @@ public class PreQuickPayRequest {
                 throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cvv不合法");
             }
         }
-        if (StringUtils.isEmpty(this.cerType)) {
-            throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cerType不能为空");
-        } else {
-            if ("ID_CARD".equals(this.cerType)) {
-                throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cerType不合法");
-            }
+        if (!"ID_CARD".equals(this.cerType)) {
+            throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cerType不合法");
         }
         if (StringUtils.isEmpty(this.cerNumber)) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR, "cerNumber不能为空");
@@ -211,7 +210,25 @@ public class PreQuickPayRequest {
      * @param key
      */
     public boolean verifySign(final String key) {
-        final String sign = SdkSignUtil.sign(SdkSerializeUtil.convertObjToMap(this), key);
+        final String needSignStr = new StringBuilder()
+                .append("dealerMarkCode").append("=").append(this.dealerMarkCode).append("&")
+                .append("merchantNo").append("=").append(this.merchantNo).append("&")
+                .append("orderNo").append("=").append(this.orderNo).append("&")
+                .append("merchantReqTime").append("=").append(this.merchantReqTime).append("&")
+                .append("channelCode").append("=").append(this.channelCode).append("&")
+                .append("orderCurrency").append("=").append(this.orderCurrency).append("&")
+                .append("orderAmount").append("=").append(this.orderAmount).append("&")
+                .append("cardByName").append("=").append(this.cardByName).append("&")
+                .append("cardNo").append("=").append(this.cardNo).append("&")
+                .append("cardType").append("=").append(this.cardType).append("&")
+                .append("cerType").append("=").append(this.cerType).append("&")
+                .append("cerNumber").append("=").append(this.cerNumber).append("&")
+                .append("mobile").append("=").append(this.mobile).append("&")
+                .append("callbackUrl").append("=").append(this.callbackUrl).append("&")
+                .append("key").append("=").append(key)
+                .toString();
+        final String sign = BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
+                .getBytes(Charset.forName("utf-8"))));
         return Objects.equal(sign, this.sign);
     }
 }

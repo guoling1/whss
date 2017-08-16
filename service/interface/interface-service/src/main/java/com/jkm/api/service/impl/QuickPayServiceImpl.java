@@ -58,7 +58,7 @@ public class QuickPayServiceImpl implements QuickPayService {
      * @param request
      */
     @Override
-    public void preQuickPay(final PreQuickPayRequest request) {
+    public String preQuickPay(final PreQuickPayRequest request) {
         final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.getByMarkCode(request.getMerchantNo());
         if (!merchantInfoOptional.isPresent()) {
             log.error("商户编号[{}]-商户订单号[{}]，预下单，商户不存在", request.getMerchantNo(), request.getOrderNo());
@@ -144,5 +144,6 @@ public class QuickPayServiceImpl implements QuickPayService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.SERVICE_ERROR, resultPair.getRight());
         }
         log.info("商户编号[{}]-商户订单号[{}]，预下单，成功", request.getMerchantNo(), request.getOrderNo());
+        return order.getOrderNo();
     }
 }

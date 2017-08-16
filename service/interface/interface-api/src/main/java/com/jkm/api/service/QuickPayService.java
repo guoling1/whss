@@ -11,6 +11,7 @@ public interface QuickPayService {
      * 快捷预下单
      *
      * @param request
+     * @return
      */
-    void preQuickPay(PreQuickPayRequest request);
+    String preQuickPay(PreQuickPayRequest request);
 }
