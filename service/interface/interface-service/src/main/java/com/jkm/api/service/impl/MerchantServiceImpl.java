@@ -10,11 +10,15 @@ import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse2;
+import com.jkm.hss.admin.service.AppBizDistrictService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
@@ -36,6 +40,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,6 +69,14 @@ public class MerchantServiceImpl implements MerchantService {
     private UserInfoService userInfoService;
     @Autowired
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
+    @Autowired
+    private BankCardBinService bankCardBinService;
+    @Autowired
+    private AppBizDistrictService appBizDistrictService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private AccountBankService accountBankService;
     /**
      * 商户入网
      *
@@ -141,7 +154,29 @@ public class MerchantServiceImpl implements MerchantService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.FOUR_FACTOR_AUTHEN,pair.getRight());
         }
         MerchantInfo mi = new MerchantInfo();
-
+        mi.setMerchantChangeName(apiMerchantRequest.getMerchantName());
+        mi.setMerchantName(apiMerchantRequest.getMerchantName());
+        mi.setAddress(apiMerchantRequest.getAddress());
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(apiMerchantRequest.getBankNo());
+        mi.setBankNo(MerchantSupport.encryptBankCard(apiMerchantRequest.getBankNo()));
+        mi.setBankBin(bankCardBinOptional.get().getShorthand());
+        mi.setBankName(bankCardBinOptional.get().getBankName());
+        mi.setBankNoShort(apiMerchantRequest.getBankNo().substring((apiMerchantRequest.getBankNo()).length()-4,(apiMerchantRequest.getBankNo()).length()));
+        mi.setName(apiMerchantRequest.getName());
+        mi.setIdentity(MerchantSupport.encryptIdenrity(apiMerchantRequest.getIdentity()));
+        mi.setReserveMobile(MerchantSupport.encryptMobile(apiMerchantRequest.getReserveMobile()));
+        mi.setProvinceCode(apiMerchantRequest.getProvinceCode());
+        AppBizDistrictResponse2 p1 = appBizDistrictService.getByCode(apiMerchantRequest.getProvinceCode());
+        mi.setProvinceName(p1.getAname());
+        mi.setCityCode(apiMerchantRequest.getCityCode());
+        AppBizDistrictResponse2 p2 = appBizDistrictService.getByCode(apiMerchantRequest.getProvinceCode());
+        mi.setCityName(p2.getAname());
+        mi.setCountyCode(apiMerchantRequest.getCountyCode());
+        AppBizDistrictResponse2 p3 = appBizDistrictService.getByCode(apiMerchantRequest.getProvinceCode());
+        mi.setCountyName(p3.getAname());
+        mi.setBranchCode(apiMerchantRequest.getBranchCode());
+        mi.setBranchName(apiMerchantRequest.getBranchName());
+        mi.setDistrictCode(apiMerchantRequest.getBankCountryCode());
         mi.setStatus(EnumMerchantStatus.PASSED.getId());
         mi.setMobile(MerchantSupport.encryptMobile(apiMerchantRequest.getMobile()));
         mi.setMdMobile(MerchantSupport.passwordDigest(apiMerchantRequest.getMobile(),"JKM"));
@@ -159,7 +194,6 @@ public class MerchantServiceImpl implements MerchantService {
         }
         mi.setFirstMerchantId(0);
         mi.setSecondMerchantId(0);
-        mi.setAccountId(0);
         mi.setLevel(EnumUpGradeType.COMMON.getId());
         mi.setHierarchy(0);
         mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
@@ -168,7 +202,13 @@ public class MerchantServiceImpl implements MerchantService {
         if(dealerChannelRateList.size()<=0){
             throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_RETE_ERROR);
         }
+        final long accountId = this.accountService.initAccount(mi.getMerchantName());
+        mi.setAccountId(accountId);
+        mi.setCheckedTime(new Date());
+        //初始化商户
         merchantInfoService.regByWx(mi);
+        //初始化账户
+        accountBankService.initAccountBank(mi.getId(),accountId);
         //初始化费率
         for(int i=0;i<dealerChannelRateList.size();i++){
             MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
@@ -220,8 +260,7 @@ public class MerchantServiceImpl implements MerchantService {
         requestMerchantInfo.setDescr("审核通过");
         requestMerchantInfo.setMerchantId(mi.getId());
         this.merchantInfoCheckRecordService.save(requestMerchantInfo);
-
-        return null;
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"入网成功","{\"merchantNo\":\"1\",\"merchantStatus\":\"1\"}");
     }
 
 }
