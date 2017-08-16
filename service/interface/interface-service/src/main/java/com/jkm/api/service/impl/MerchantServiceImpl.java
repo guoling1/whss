@@ -1,14 +1,21 @@
-package com.jkm.hss.merchant.service.impl;
+package com.jkm.api.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.api.enums.JKMTradeErrorCode;
+import com.jkm.api.exception.JKMTradeServiceException;
+import com.jkm.api.helper.requestparam.MerchantRequest;
+import com.jkm.api.service.MerchantService;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.merchant.helper.request.ApiMerchantRequest;
-import com.jkm.hss.merchant.service.ApiMerchantService;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,121 +25,90 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class ApiMerchantServiceImpl implements ApiMerchantService{
+public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private DealerService dealerService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
+    @Autowired
+    private ProductService productService;
     /**
      * 商户入网
      *
      * @return
      */
     @Override
-    public CommonResponse merchantIn(ApiMerchantRequest apiMerchantRequest) {
+    public CommonResponse merchantIn(MerchantRequest apiMerchantRequest) {
         long oemId = 0;
         if (StringUtils.isBlank(apiMerchantRequest.getMerchantName())) {
-            return CommonResponse.simpleResponse(-1, "商户名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"商户名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "手机号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"手机号不能为空");
         }
         if (!ValidateUtils.isMobile(apiMerchantRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.FORMAT_ERROR,"手机号格式错误");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getProvinceCode())) {
-            return CommonResponse.simpleResponse(-1, "省份编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"省份编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getProvinceName())) {
-            return CommonResponse.simpleResponse(-1, "省份名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"省份名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCityCode())) {
-            return CommonResponse.simpleResponse(-1, "市编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"市编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCityName())) {
-            return CommonResponse.simpleResponse(-1, "市名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"市名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCountyCode())) {
-            return CommonResponse.simpleResponse(-1, "县编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"县编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getCountyName())) {
-            return CommonResponse.simpleResponse(-1, "县名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"县名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getAddress())) {
-            return CommonResponse.simpleResponse(-1, "地址不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"地址不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getBranchCode())) {
-            return CommonResponse.simpleResponse(-1, "联行号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"联行号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getBranchName())) {
-            return CommonResponse.simpleResponse(-1, "支行名称不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"支行名称不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getDistrictCode())) {
-            return CommonResponse.simpleResponse(-1, "支行所在地区编码不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"支行所在地区编码不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getDealerMarkCode())) {
-            return CommonResponse.simpleResponse(-1, "代理商编号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"代理商编号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getBankNo())) {
-            return CommonResponse.simpleResponse(-1, "银行卡号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"银行卡号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getName())) {
-            return CommonResponse.simpleResponse(-1, "真实姓名不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"真实姓名不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getIdentity())) {
-            return CommonResponse.simpleResponse(-1, "身份证号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"身份证号不能为空");
         }
         if (StringUtils.isBlank(apiMerchantRequest.getReserveMobile())) {
-            return CommonResponse.simpleResponse(-1, "预留手机号不能为空");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"预留手机号不能为空");
         }
         Optional<Dealer> dealerOptional =  dealerService.getDealerByMarkCode(apiMerchantRequest.getDealerMarkCode());
         if (!dealerOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
+            throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
         }
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(apiMerchantRequest.getMobile()),oemId);
+        if (merchantInfoOptional.isPresent()){
+            throw new JKMTradeServiceException(JKMTradeErrorCode.MCT_EXIST);
+        }
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        if(!productOptional.isPresent()){
+            throw new JKMTradeServiceException(JKMTradeErrorCode.PRODUCT_NOT_EXIST);
+        }
+        MerchantInfo mi = new MerchantInfo();
 
-//        if (!StringUtils.isBlank(loginRequest.getInviteCode())) {
-//            if (loginRequest.getInviteCode().length()!=6&&loginRequest.getInviteCode().length()!=11) {
-//                return CommonResponse.simpleResponse(-1, "邀请码必须是6位或11位");
-//            }
-//            if(loginRequest.getInviteCode().length()==6){
-//                Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
-//                if(!dealerOptional.isPresent()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(StringUtils.isBlank(dealerOptional.get().getInviteCode())){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(dealerOptional.get().getInviteBtn()== EnumInviteBtn.OFF.getId()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(dealerOptional.get().getRecommendBtn()== EnumRecommendBtn.OFF.getId()){
-//                    return CommonResponse.simpleResponse(-1, "邀请码无效");
-//                }
-//                oemId = dealerOptional.get().getOemId();
-//            }else{
-//                if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
-//                    return CommonResponse.simpleResponse(-1, "不能邀请自己");
-//                }
-//                Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(loginRequest.getInviteCode()),oemId);
-//                if(!miOptional.isPresent()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(miOptional.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&miOptional.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                if(miOptional.get().getIsUpgrade()== EnumIsUpgrade.CANNOTUPGRADE.getId()){
-//                    return CommonResponse.simpleResponse(-1, "您的朋友没有开通分享功能");
-//                }
-//                oemId = miOptional.get().getOemId();
-//            }
-//        }
-//        final Pair<Integer, String> checkResult =
-//                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
-//        if (1 != checkResult.getLeft()) {
-//            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-//        }
-//        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-//        if(!productOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "产品信息有误");
-//        }
+
 //        long productId = productOptional.get().getId();
 //        Optional<MerchantInfo> merchantInfoOptional1 = merchantInfoService.selectByMobileAndOemId(MerchantSupport.encryptMobile(mobile),oemId);
 //        if(merchantInfoOptional1.isPresent()){
