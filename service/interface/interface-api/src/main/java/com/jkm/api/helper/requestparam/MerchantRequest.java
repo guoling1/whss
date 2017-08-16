@@ -7,19 +7,18 @@ import lombok.Data;
  */
 @Data
 public class MerchantRequest {
+    private String dealerMarkCode;//代理商编号
     private String merchantName;//商户名称
     private String mobile;//商户注册手机号
     private String provinceCode;//省份编码
-    private String provinceName;//省份名称
     private String cityCode;//市编码
-    private String cityName;//市名称
     private String countyCode;//县编码
-    private String countyName;//县名称
     private String address;//地址
     private String branchCode;//联行号
     private String branchName;//支行名称
-    private String districtCode;//支行所在地区编码
-    private String dealerMarkCode;//代理商编号
+    private String bankProvinceCode;//支行所在地省份编码
+    private String bankCityCode;//支行所在地市编码
+    private String bankCountryCode;//支行所在地区县编码
     private String bankNo;//银行卡号
     private String name;//姓名
     private String identity;//身份证号
