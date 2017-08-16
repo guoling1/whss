@@ -35,6 +35,7 @@ import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.PartnerRuleSettingService;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/8/16.
@@ -83,7 +85,8 @@ public class MerchantServiceImpl implements MerchantService {
      * @return
      */
     @Override
-    public CommonResponse merchantIn(MerchantRequest apiMerchantRequest) {
+    public Map<String,String> merchantIn(MerchantRequest apiMerchantRequest) {
+        Map map = new HashedMap();
         long oemId = 0;
         if (StringUtils.isBlank(apiMerchantRequest.getMerchantName())) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"商户名称不能为空");
@@ -260,7 +263,22 @@ public class MerchantServiceImpl implements MerchantService {
         requestMerchantInfo.setDescr("审核通过");
         requestMerchantInfo.setMerchantId(mi.getId());
         this.merchantInfoCheckRecordService.save(requestMerchantInfo);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"入网成功","{\"merchantNo\":\"1\",\"merchantStatus\":\"1\"}");
+        map.put("merchantNo",mi.getMarkCode());
+        map.put("merchantStatus",getStatus(mi.getStatus()));
+        return map;
     }
 
+    private String getStatus(int status){
+        String result = "";
+        if(EnumMerchantStatus.PASSED.getId()==status||EnumMerchantStatus.FRIEND.getId()==status){
+            result = "ACTIVE";
+        }else if(EnumMerchantStatus.DISABLE.getId()==status){
+            result = "FROZEN";
+        }else if(EnumMerchantStatus.REVIEW.getId()==status||EnumMerchantStatus.ONESTEP.getId()==status||EnumMerchantStatus.INIT.getId()==status){
+            result = "WAIT_EXAM";
+        }else if(EnumMerchantStatus.UNPASSED.getId()==status){
+            result = "EXAM_FAL";
+        }
+        return result;
+    }
 }
