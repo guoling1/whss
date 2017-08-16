@@ -99,7 +99,7 @@ public class MerchantApiController extends BaseApiController {
         try{
            //校验签名
             final boolean signTrue = createApiOrderRequest.isSignCorrect((JSONObject) JSONObject.toJSON(createApiOrderRequest), JkmApiMerConstants.keyOf(createApiOrderRequest.getMerchantNo()), createApiOrderRequest.getSign());
-           if (false){
+           if (signTrue){
                //签名错误
                createApiOrderResponse.setAmount(createApiOrderRequest.getAmount());
                createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
