@@ -1,6 +1,5 @@
 package com.jkm.hss.bill.entity;
 
-import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.bill.enums.EnumHsyOrderStatus;
 import lombok.Data;
 
@@ -121,6 +120,8 @@ public class HsyOrder{
     private Integer currentPage;
     private String consumerCellphone;
 
+    private String callBackUrl;
+    private String pageCallBackUrl;
     /**
      * 支付终端
      *

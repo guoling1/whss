@@ -32,7 +32,9 @@
         accountid,
         dealerid,
         remark,
-        payment_terminal
+        payment_terminal,
+        call_back_url,
+        page_call_back_url
         )
         VALUES
         (
@@ -63,7 +65,9 @@
         #{accountid},
         #{dealerid},
         #{remark},
-        #{paymentTerminal}
+        #{paymentTerminal},
+        #{callBackUrl},
+        #{pageCallBackUrl}
         );
     </insert>
 
@@ -144,6 +148,9 @@
             </if>
             <if test="amount!=null">
                 amount=#{amount},
+            </if>
+            <if test="memberId != null and remark != ''">
+                member_id = #{memberId},
             </if>
             <if test="remark != null and remark != ''">
                 remark = #{remark}

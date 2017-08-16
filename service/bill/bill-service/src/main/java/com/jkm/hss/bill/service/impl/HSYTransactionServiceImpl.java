@@ -104,6 +104,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
         final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setOrdernumber("");
         hsyOrder.setPaymentTerminal(EnumPaymentTerminal.CELLPHONE.getId());
         hsyOrder.setShopid(shopId);
         hsyOrder.setShopname(shop.getShortName());
@@ -129,6 +130,42 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         return hsyOrder.getId();
     }
 
+    @Override
+    public long createOrderToApi(int channel, long shopId, String orderNum, String amount, String goodsName, String callbackUrl,String pageCallBackUrl) {
+        log.info("用户[{}]在店铺[{}]扫静态码创建订单，通道[{}]", "", shopId, channel);
+        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
+        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
+        final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setOrdernumber(orderNum);
+        hsyOrder.setPaymentTerminal(EnumPaymentTerminal.CELLPHONE.getId());
+        hsyOrder.setShopid(shopId);
+        hsyOrder.setShopname(shop.getShortName());
+        hsyOrder.setMerchantNo(appAuUser.getGlobalID());
+        hsyOrder.setMerchantname(shop.getName());
+        hsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+        hsyOrder.setSourcetype(EnumHsySourceType.QRCODE.getId());
+        hsyOrder.setValidationcode("");
+        hsyOrder.setPaychannelsign(channel);
+        hsyOrder.setPaytype(channelCode);
+        hsyOrder.setMemberId("");
+        hsyOrder.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
+        hsyOrder.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
+        hsyOrder.setGoodsname(goodsName);
+        hsyOrder.setGoodsdescribe(goodsName);
+        hsyOrder.setSettleType(EnumBalanceTimeType.T1.getType());
+        hsyOrder.setUid(appAuUser.getId());
+        hsyOrder.setAccountid(appAuUser.getAccountID());
+        hsyOrder.setDealerid(appAuUser.getDealerID());
+        hsyOrder.setPoundage(new BigDecimal("0.00"));
+        hsyOrder.setAmount(new BigDecimal(amount));
+        hsyOrder.setCallBackUrl(callbackUrl);
+        hsyOrder.setPageCallBackUrl(pageCallBackUrl);
+        this.hsyOrderService.insert(hsyOrder);
+        return hsyOrder.getId();
+    }
+
     /**
      * 创建订单
      *
@@ -143,6 +180,7 @@ public class HSYTransactionServiceImpl implements HSYTransactionService {
         final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
         final AppAuUser currentUser = this.hsyUserDao.findAppAuUserByID(currentUid).get(0);
         final HsyOrder hsyOrder = new HsyOrder();
+        hsyOrder.setOrdernumber("");
         hsyOrder.setPaymentTerminal(EnumPaymentTerminal.PC.getId());
         hsyOrder.setShopid(shopId);
         hsyOrder.setAmount(amount);

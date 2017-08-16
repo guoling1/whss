@@ -80,6 +80,68 @@ input:focus {
   border: none;
 }
 
+// api 接口
+#api {
+  width: 100%;
+  height: 100%;
+  padding: 20px 15px;
+  background-color: #f4f5f8;
+  .space {
+    width: 100%;
+    height: auto;
+    padding: 30px 5px 0;
+    border-radius: 5px;
+    background-color: #FFF;
+    .head {
+      font-size: 14px;
+      color: #bebebe;
+    }
+    .amount {
+      font-size: 36px;
+      color: #333;
+      margin: 10px auto 20px;
+      .money {
+        font-size: 24px;
+        color: #333;
+      }
+    }
+    .group {
+      width: 100%;
+      height: 60px;
+      padding: 0 15px;
+      overflow: hidden;
+      line-height: 60px;
+      border-top: 1px solid #e9ebf1;
+      .babel {
+        float: left;
+        font-size: 15px;
+        color: #bebebe;
+        margin-right: 15px;
+      }
+      .info {
+        float: left;
+        width: 100%;
+        font-size: 15px;
+        color: #333;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+  .submit {
+    width: 100%;
+    height: 50px;
+    margin-top: 25px;
+    line-height: 50px;
+    border-radius: 5px;
+    background-color: #29ad5c;
+    font-size: 16px;
+    color: #FFF;
+  }
+}
+
 // 商户 注册 reg
 #reg {
   overflow: auto;
@@ -814,18 +876,18 @@ input:focus {
         }
       }
     }
-    .sale{
+    .sale {
       padding-top: 12px;
       height: 32px;
       line-height: 32px;
       text-align: left;
-      img{
+      img {
         margin-right: 12px;
         vertical-align: text-bottom;
         width: 70px;
         height: 20px;
       }
-      .right{
+      .right {
         float: right;
         color: #f94949;
       }
@@ -851,10 +913,10 @@ input:focus {
       line-height: 21px;
       padding: 15px;
       border-bottom: 1px solid #e8eaf3;
-      span{
+      span {
         display: inline-block;
       }
-      img{
+      img {
         display: inline-block;
         vertical-align: middle;
         width: 29px;
@@ -865,7 +927,7 @@ input:focus {
         font-size: 14px;
         /*margin-right: 12px;*/
       }
-      .weui-btn{
+      .weui-btn {
         overflow: inherit;
         margin-left: 27px;
         padding: 0 12px;
@@ -985,7 +1047,7 @@ input:focus {
           font-size: 16px;
           color: #FFF;
           background-color: #29ad5c;
-          p span{
+          p span {
             font-size: 24px;
           }
         }
@@ -1003,13 +1065,13 @@ input:focus {
       }
     }
   }
-  .js_dialog{
-    .weui-dialog{
+  .js_dialog {
+    .weui-dialog {
       border-radius: 10px;
     }
-    .weui-dialog__hd{
+    .weui-dialog__hd {
       position: relative;
-      img{
+      img {
         padding: 10px;
         position: absolute;
         left: 8px;
@@ -1019,22 +1081,22 @@ input:focus {
       }
 
     }
-    .weui-dialog__bd{
+    .weui-dialog__bd {
       padding: 0;
-      .weui-cells{
+      .weui-cells {
         margin-top: 0;
         text-align: left;
         font-size: 16px;
         color: #333;
-        .weui-cell{
+        .weui-cell {
           height: 60px;
-          .weui-cell__hd{
+          .weui-cell__hd {
             width: 43px;
-            img{
+            img {
               width: 29px;
               height: 15px;
               box-shadow: 0px 2px 5px #dbc6b5;
-              &.wx{
+              &.wx {
                 width: 19px;
                 height: 18px;
                 box-shadow: 0 0 0;
@@ -1045,14 +1107,14 @@ input:focus {
       }
     }
   }
-  .js_dialog2{
-    .weui-dialog{
+  .js_dialog2 {
+    .weui-dialog {
       border-radius: 10px;
     }
-    .weui-dialog__hd{
+    .weui-dialog__hd {
       position: relative;
       border-bottom: 1px solid #abd6ad;
-      img{
+      img {
         position: absolute;
         left: 15px;
         top: 28px;
@@ -1061,22 +1123,22 @@ input:focus {
       }
 
     }
-    .weui-dialog__price{
+    .weui-dialog__price {
       height: 80px;
       line-height: 80px;
       font-size: 32px;
     }
-    .weui-dialog__bd{
+    .weui-dialog__bd {
       margin-bottom: 17px;
-      .weui-cells{
+      .weui-cells {
         margin-top: 0;
         font-size: 18px;
         color: #333;
-        .weui-cell{
+        .weui-cell {
           height: 43px;
-          .weui-cell__bd{
+          .weui-cell__bd {
             width: 43px;
-            img{
+            img {
               display: inline-block;
               margin-right: 8px;
               width: 28px;
@@ -1084,24 +1146,24 @@ input:focus {
               box-shadow: 0px 2px 5px #dbc6b5;
             }
           }
-          .weui-cell__ft{
+          .weui-cell__ft {
             color: #333;
           }
         }
       }
     }
-    .wrap{
-      p{
+    .wrap {
+      p {
         padding: 13px 0 12px;
         font-size: 13px;
         color: #999;
       }
-      .inputBoxContainer{
+      .inputBoxContainer {
         width: 250px;
         height: 42px;
         margin: 0 auto;
         position: relative;
-        .bogusInput{
+        .bogusInput {
           width: 100%;
           height: 100%;
           border: #eaeaea 1px solid;
@@ -1111,11 +1173,11 @@ input:focus {
           overflow: hidden;
           position: absolute;
           z-index: 20;
-          input{
+          input {
             padding: 0;
             width: 16.6%;
             height: 100%;
-            float:left;
+            float: left;
             border-radius: 0;
             background: #ffffff;
             color: #000;
@@ -1123,22 +1185,22 @@ input:focus {
             font-size: 20px;
             border: none;
             border-right: #eaeaea 2px solid;
-            &:last-child{
+            &:last-child {
               border: none;
             }
           }
         }
-        .realInput{
+        .realInput {
           width: 100%;
           height: 100%;
           position: absolute;
-          top:0;
+          top: 0;
           left: 0;
           z-index: 1;
-          filter:alpha(opacity=0);
-          color:transparent;
-          -moz-opacity:0;
-          opacity:0;
+          filter: alpha(opacity=0);
+          color: transparent;
+          -moz-opacity: 0;
+          opacity: 0;
         }
       }
     }
@@ -1705,7 +1767,7 @@ input:focus {
   background: #333;
   height: 100%;
   color: #fff;
-  .hide{
+  .hide {
     display: none;
   }
   .navbar {
@@ -1716,14 +1778,14 @@ input:focus {
     height: 46px;
     border-top: 1px solid #f4f5f8;
     font-size: 16px;
-    div{
+    div {
       width: 49%;
       display: inline-block;
-      span{
+      span {
         display: inline-block;
         height: 45px;
         line-height: 44px;
-        &.active{
+        &.active {
           color: #f49530;
           border-bottom: 1px solid #f49530;
         }
@@ -1737,7 +1799,7 @@ input:focus {
     padding-top: 46px;
     li {
       position: relative;
-      margin:20px auto;
+      margin: 20px auto;
       padding: 16px;
       width: 285px;
       height: 149px;
@@ -1761,7 +1823,7 @@ input:focus {
         right: 16px;
         bottom: 16px;
         font-size: 36px;
-        span{
+        span {
           font-size: 50px;
           font-weight: bold;
         }
@@ -1770,7 +1832,7 @@ input:focus {
   }
 }
 
-#memberInfo{
+#memberInfo {
   background: #f4f5f8;
   min-height: 100%;
   .top {
@@ -1780,7 +1842,7 @@ input:focus {
     color: #fff;
     .card {
       position: relative;
-      margin:0 auto 16px;
+      margin: 0 auto 16px;
       padding: 16px;
       width: 285px;
       height: 149px;
@@ -1791,7 +1853,7 @@ input:focus {
       font-weight: bold;
       text-align: left;
       .name {
-        font-weight:bold;
+        font-weight: bold;
       }
       .type {
         color: #b36112;
@@ -1806,56 +1868,56 @@ input:focus {
         bottom: 0px;
         font-weight: bold;
         font-size: 36px;
-        span{
+        span {
           font-size: 50px;
           font-weight: bold;
         }
       }
     }
-    .phone,.title{
+    .phone, .title {
       color: #999;
       font-size: 14px;
     }
-    .title{
+    .title {
       font-size: 15px;
       padding: 25px 0 12px;
     }
-    .price{
+    .price {
       color: #fff;
       font-size: 15px;
       padding-bottom: 21px;
-      span{
+      span {
         font-size: 18px;
       }
     }
   }
-  .weui-cells{
+  .weui-cells {
     font-size: 16px;
     text-align: left;
-    .weui-cell_access{
+    .weui-cell_access {
       height: 50px;
     }
   }
-  .bottom{
+  .bottom {
     padding: 26px 0 20px;
     color: #333;
     height: 130px;
-    div{
+    div {
       display: inline-block;
       margin: 0 18px;
     }
-    .icon{
+    .icon {
       width: 24px;
       height: 24px;
     }
-    .type{
+    .type {
       font-size: 12px;
     }
   }
 
 }
 
-#toRecharge{
+#toRecharge {
   background: #f4f5f8;
   min-height: 100%;
   .top {
@@ -1865,7 +1927,7 @@ input:focus {
     color: #fff;
     .card {
       position: relative;
-      margin:0 auto 16px;
+      margin: 0 auto 16px;
       padding: 16px;
       width: 285px;
       height: 149px;
@@ -1891,47 +1953,47 @@ input:focus {
         bottom: 0px;
         font-weight: bold;
         font-size: 36px;
-        span{
+        span {
           font-size: 50px;
           font-weight: bold;
         }
       }
     }
-    .phone,.title{
+    .phone, .title {
       color: #999;
       font-size: 14px;
     }
-    .title{
+    .title {
       font-size: 15px;
       padding: 25px 0 12px;
     }
-    .price{
+    .price {
       color: #fff;
       font-size: 15px;
       padding-bottom: 21px;
-      span{
+      span {
         font-size: 18px;
       }
     }
   }
-  .weui-cells{
+  .weui-cells {
     margin-top: 30px;
     font-size: 16px;
     text-align: left;
-    .weui-cell_access{
+    .weui-cell_access {
       height: 50px;
     }
   }
-  p{
+  p {
     padding: 10px 15px 0;
     margin-bottom: -5px;
     font-size: 14px;
     text-align: left;
-    span{
+    span {
       color: #f49530;
     }
   }
-  .toRecord{
+  .toRecord {
     display: inline-block;
     padding-top: 20px;
     font-size: 14px;
@@ -1939,7 +2001,7 @@ input:focus {
   }
 }
 
-#createMem{
+#createMem {
   background: #f4f5f8;
   min-height: 100%;
   .top {
@@ -1951,7 +2013,7 @@ input:focus {
     color: #fff;
     .card {
       position: relative;
-      margin:0 auto;
+      margin: 0 auto;
       padding: 16px;
       width: 100%;
       height: 150px;
@@ -1961,7 +2023,7 @@ input:focus {
       font-size: 18px;
       font-weight: bold;
       text-align: left;
-      .name{
+      .name {
         font-weight: bold;
       }
       .type {
@@ -1977,23 +2039,23 @@ input:focus {
         bottom: 0px;
         font-size: 36px;
         font-weight: bold;
-        span{
+        span {
           font-size: 50px;
           font-weight: bold;
         }
       }
     }
   }
-  .weui-cells{
+  .weui-cells {
     font-size: 16px;
     text-align: left;
-    .weui-cell{
+    .weui-cell {
       height: 50px;
       font-size: 16px;
-      .weui-cell__ft{
+      .weui-cell__ft {
         margin-right: 15px;
       }
-      .btnCode{
+      .btnCode {
         /*width: 84px;*/
         height: 34px;
         line-height: 34px;
@@ -2001,37 +2063,37 @@ input:focus {
       }
     }
   }
-  .bottom{
+  .bottom {
     padding: 26px 0 20px;
     color: #333;
-    div{
+    div {
       display: inline-block;
       margin: 0 18px;
     }
-    .icon{
+    .icon {
       width: 24px;
       height: 24px;
     }
-    .type{
+    .type {
       font-size: 12px;
     }
   }
-  p{
+  p {
     padding: 29px 0 15px;
     font-size: 15px;
   }
-  .open{
-    height:50px;
-    line-height:50px;
+  .open {
+    height: 50px;
+    line-height: 50px;
     margin: 0 15px 0;
   }
 }
 
-#createMemberSuccess{
+#createMemberSuccess {
   background: #f4f5f8;
   min-height: 100%;
   padding-top: 70px;
-  img{
+  img {
     width: 88px;
     height: 88px;
   }
@@ -2039,13 +2101,13 @@ input:focus {
     padding: 30px 0 0;
     font-size: 18px;
   }
-  .toRecord{
+  .toRecord {
     display: inline-block;
     padding: 70px 0 34px;
     font-size: 15px;
     color: #333;
   }
-  .back{
+  .back {
     font-size: 16px;
     width: 119px;
     height: 29px;
@@ -2053,7 +2115,7 @@ input:focus {
   }
 }
 
-#record{
+#record {
   width: 100%;
   height: 100%;
   background: #f4f5f8;
@@ -2064,22 +2126,22 @@ input:focus {
 
       padding: 12px 15px;
       height: 60px;
-      .weui-cell__bd{
+      .weui-cell__bd {
         position: relative;
-        p{
+        p {
           font-size: 15px;
         }
-        .time{
+        .time {
           margin-top: 9px;
           font-size: 13px;
-          color:#999;
+          color: #999;
         }
       }
 
-      .weui-cell__ft{
+      .weui-cell__ft {
         font-size: 16px;
         color: #191c1a;
-        img{
+        img {
           width: 25px;
           height: 25px;
         }
@@ -2091,37 +2153,37 @@ input:focus {
   }
 }
 
-#needRecharge{
+#needRecharge {
   padding: 0 15px;
   width: 100%;
   height: 100%;
   background: #f4f5f8;
-  img{
+  img {
     display: inline-block;
     padding-top: 70px;
     padding-bottom: 30px;
     width: 115px;
     height: 215px;
   }
-  p{
+  p {
     text-align: left;
     font-size: 15px;
     color: #333;
     &.title {
       line-height: 30px;
     }
-    &.content{
+    &.content {
       padding-bottom: 53px;
     }
   }
 
 }
 
-#rechargeResults{
+#rechargeResults {
   background: #f4f5f8;
   min-height: 100%;
   padding-top: 39px;
-  img{
+  img {
     width: 88px;
     height: 88px;
   }
@@ -2129,18 +2191,18 @@ input:focus {
     padding: 28px 0 0;
     font-size: 18px;
   }
-  .errCode{
+  .errCode {
     padding-top: 16px;
     font-size: 14px;
     color: #999;
   }
-  .toRecord{
+  .toRecord {
     display: inline-block;
     padding: 48px 0 29px;
     font-size: 15px;
     color: #333;
   }
-  .back{
+  .back {
     font-size: 16px;
     width: 119px;
     height: 29px;
@@ -2148,7 +2210,7 @@ input:focus {
   }
 }
 
-#tips{
+#tips {
   padding-top: 50%;
   text-align: center;
   height: 100%;
