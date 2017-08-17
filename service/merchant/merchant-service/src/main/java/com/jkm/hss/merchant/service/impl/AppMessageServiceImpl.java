@@ -16,6 +16,7 @@ import com.jkm.hss.merchant.service.AppAuTokenService;
 import com.jkm.hss.merchant.service.AppMessageService;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.entity.SmsTemplate;
+import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class AppMessageServiceImpl implements AppMessageService {
     private MessageInfoDao messageInfoDao;
     @Autowired
     private AppAuTokenService appAuTokenService;
+    @Autowired
+    private PushService pushService;
 
     /**
      * 得到消息列表  HSS001013
@@ -144,6 +147,12 @@ public class AppMessageServiceImpl implements AppMessageService {
         messageInfo.setCreateTime(date);
         messageInfo.setUpdateTime(date);
         messageInfoDao.insert(messageInfo);
+
+        try {
+            pushService.pushMessage(uid, content);
+        }catch(Exception e){
+            log.info("发送消息失败"+e.getMessage());
+        }
 
     }
 }

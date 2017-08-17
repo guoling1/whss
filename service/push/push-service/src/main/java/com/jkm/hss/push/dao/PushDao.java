@@ -68,4 +68,6 @@ public interface PushDao {
      * @param push
      */
     void updatePush(Push push);
+
+    List<Map> selectCidhss(@Param("uid") Long uid);
 }

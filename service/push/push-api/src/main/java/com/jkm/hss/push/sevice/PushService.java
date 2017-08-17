@@ -124,4 +124,6 @@ public interface PushService {
      */
     public String pushDisable(Long uid);
 
+    public String pushMessage(Long uid,String content);
+
 }

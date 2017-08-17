@@ -64,6 +64,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,6 +119,20 @@ public class AppMerchantInfoController extends BaseController {
     private PayService payService;
     @Autowired
     private ProfitService profitService;
+
+    @Autowired
+    private AppMessageService appMessageService;
+
+    @RequestMapping(value = "/test")
+    public void test(HttpServletRequest request,HttpServletResponse response){
+        Long uid=1926L;
+        EnumMessageType type=EnumMessageType.BENEFIT_MESSAGE;
+        EnumMessageTemplate template=EnumMessageTemplate.SUPER_DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE;
+        Map<String,String> param=new HashMap<>();
+        param.put("amount",6.66+"");
+        appMessageService.insertMessageInfoAndPush(uid,type,template,param);
+    }
+
     /**
      * HSSH5001002 注册
      *
