@@ -21,6 +21,7 @@ import java.util.Map;
 @Slf4j
 public class ApiControllerTester {
     private static String API001="http://localhost:8081/api/hss/mctApply";
+    private static String API002="http://localhost:8081/api/hss/kuaiPayOpenCard";
 
     @Test
     public void testmctApply()throws Exception{
@@ -44,6 +45,19 @@ public class ApiControllerTester {
         String sign = SdkSignUtil.sign2(map, "");
         map.put("sign",sign);
         ApiControllerTester.testRest(map,API001);
+    }
+
+    @Test
+    public void testKuaiPayOpenCard()throws Exception{
+        Map map = new HashMap();
+        map.put("merchantNo","120000001931");
+        map.put("dealerMarkCode","320000000035");
+        map.put("frontUrl","http://www.baidu.com");
+        map.put("bindCardReqNo","1000000112");
+        map.put("cardNo","6259655533117715 ");
+        String sign = SdkSignUtil.sign2(map, "");
+        map.put("sign",sign);
+        ApiControllerTester.testRest(map,API002);
     }
 
     public static void testRest(Map<String, String> paramsMap,String url)throws Exception{

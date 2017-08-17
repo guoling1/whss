@@ -80,7 +80,7 @@ public class OpenCardServiceImpl implements OpenCardService {
         paramsMap.put("merchantOrderNo", openCardRequest.getBindCardReqNo());
         paramsMap.put("merchantReqTime", openCardRecord.getCreateTime());
         paramsMap.put("cardNo", openCardRequest.getCardNo());
-        String result = SmPost.postObject(MerchantConsts.getMerchantConfig().merchantBaseInfoReg(), paramsMap);
+        String result = SmPost.postObject(MerchantConsts.getMerchantConfig().cardOpen(), paramsMap);
         String html = "";
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
@@ -110,9 +110,13 @@ public class OpenCardServiceImpl implements OpenCardService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.CARDNO_FORMAT_ERROR);
         }
         AccountBank accountBank = accountBankService.selectCreditListByBankNo(merchantInfoOptional.get().getAccountId(),openCardQueryRequest.getCardNo());
-//        if(accountBank==null){
-//
-//        }
+        if(accountBank==null){
+            Map<String, Object> paramsMap = new HashMap<String, Object>();
+            //// TODO: 2017/8/17
+            String result = SmPost.postObject(MerchantConsts.getMerchantConfig().merchantBaseInfoReg(), paramsMap);
+        }else{
+
+        }
         return null;
     }
 }
