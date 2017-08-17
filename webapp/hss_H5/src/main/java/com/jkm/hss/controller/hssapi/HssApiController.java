@@ -6,16 +6,11 @@ import com.jkm.api.enums.EnumApiOrderSettleStatus;
 import com.jkm.api.enums.EnumApiOrderStatus;
 import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
-import com.jkm.api.helper.requestparam.ConfirmQuickPayRequest;
-import com.jkm.api.helper.requestparam.MerchantRequest;
-import com.jkm.api.helper.requestparam.OrderQueryRequest;
-import com.jkm.api.helper.requestparam.PreQuickPayRequest;
-import com.jkm.api.helper.responseparam.ConfirmQuickPayResponse;
-import com.jkm.api.helper.responseparam.MctApplyResponse;
-import com.jkm.api.helper.responseparam.OrderQueryResponse;
-import com.jkm.api.helper.responseparam.PreQuickPayResponse;
+import com.jkm.api.helper.requestparam.*;
+import com.jkm.api.helper.responseparam.*;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
 import com.jkm.api.service.MerchantService;
+import com.jkm.api.service.OpenCardService;
 import com.jkm.api.service.QuickPayService;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.Order;
@@ -53,6 +48,8 @@ public class HssApiController extends BaseController {
     private QuickPayService quickPayService;
     @Autowired
     private MerchantService merchantService;
+    @Autowired
+    private OpenCardService openCardService;
     @Autowired
     private MerchantInfoService merchantInfoService;
 
@@ -297,8 +294,8 @@ public class HssApiController extends BaseController {
             request = JSON.parseObject(readParam, MerchantRequest.class);
         } catch (final IOException e) {
             log.error("商户入网读取数据流异常", e);
-            mctApplyResponse.setReturnCode(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorCode());
-            mctApplyResponse.setReturnCode(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorMessage());
+            mctApplyResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorCode());
+            mctApplyResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorMessage());
             return SdkSerializeUtil.convertObjToMap(mctApplyResponse);
         }
         log.info("商户入网参数[{}]", JSON.toJSON(request).toString());
@@ -335,6 +332,120 @@ public class HssApiController extends BaseController {
         }
         mctApplyResponse.setSign(mctApplyResponse.createSign(""));
         return SdkSerializeUtil.convertObjToMap(mctApplyResponse);
+    }
+
+    /**
+     * H5快捷支付绑卡
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "kuaiPayOpenCard", method = RequestMethod.POST)
+    public Object kuaiPayOpenCard(final HttpServletRequest httpServletRequest) {
+        final OpenCardResponse openCardResponse = new OpenCardResponse();
+        String readParam;
+        OpenCardRequest request;
+        try {
+            readParam = super.read(httpServletRequest);
+            request = JSON.parseObject(readParam, OpenCardRequest.class);
+        } catch (final IOException e) {
+            log.error("快捷绑卡读取数据流异常", e);
+            openCardResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorCode());
+            openCardResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(openCardResponse);
+        }
+        log.info("快捷绑卡入网参数[{}]", JSON.toJSON(request).toString());
+        openCardResponse.setDealerMarkCode(request.getDealerMarkCode());
+        openCardResponse.setMerchantNo(request.getMerchantNo());
+        openCardResponse.setCardNo(request.getCardNo());
+        try {
+            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+            if (!dealerOptional.isPresent()) {
+                throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
+            }
+            final Dealer dealer = dealerOptional.get();
+            //取秘钥
+            //参数校验
+            if (request.verifySign("")) {
+                log.error("快捷绑卡签名错误");
+                openCardResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
+                openCardResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
+                openCardResponse.setSign(openCardResponse.createSign(""));
+                return SdkSerializeUtil.convertObjToMap(openCardResponse);
+            }
+            //请求
+            String html = openCardService.kuaiPayOpenCard(request);
+            openCardResponse.setHtml(html);
+            openCardResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
+            openCardResponse.setReturnMsg("绑卡成功");
+        } catch (final JKMTradeServiceException e) {
+            log.error("快捷绑卡异常", e);
+            openCardResponse.setReturnCode(e.getErrorCode());
+            openCardResponse.setReturnMsg(e.getErrorMessage());
+        } catch (final Throwable e) {
+            log.error("快捷绑卡异常", e);
+            openCardResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
+            openCardResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
+        }
+        openCardResponse.setSign(openCardResponse.createSign(""));
+        return SdkSerializeUtil.convertObjToMap(openCardResponse);
+    }
+
+
+    /**
+     * 快捷绑卡查询
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "kuaiPayOpenCardQuery", method = RequestMethod.POST)
+    public Object kuaiPayOpenCardQuery(final HttpServletRequest httpServletRequest) {
+        final OpenCardQueryResponse openCardQueryResponse = new OpenCardQueryResponse();
+        String readParam;
+        OpenCardQueryRequest request;
+        try {
+            readParam = super.read(httpServletRequest);
+            request = JSON.parseObject(readParam, OpenCardQueryRequest.class);
+        } catch (final IOException e) {
+            log.error("快捷绑卡查询读取数据流异常", e);
+            openCardQueryResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorCode());
+            openCardQueryResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
+        }
+        log.info("快捷绑卡查询入网参数[{}]", JSON.toJSON(request).toString());
+        openCardQueryResponse.setDealerMarkCode(request.getDealerMarkCode());
+        try {
+            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+            if (!dealerOptional.isPresent()) {
+                throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
+            }
+            final Dealer dealer = dealerOptional.get();
+            //取秘钥
+            //参数校验
+            if (request.verifySign("")) {
+                log.error("快捷绑卡查询签名错误");
+                openCardQueryResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
+                openCardQueryResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
+                openCardQueryResponse.setSign(openCardQueryResponse.createSign(""));
+                return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
+            }
+            //业务处理
+           // TODO: 2017/8/17
+            openCardQueryResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
+            openCardQueryResponse.setReturnMsg("查询成功");
+        } catch (final JKMTradeServiceException e) {
+            log.error("快捷绑卡查询异常", e);
+            openCardQueryResponse.setReturnCode(e.getErrorCode());
+            openCardQueryResponse.setReturnMsg(e.getErrorMessage());
+        } catch (final Throwable e) {
+            log.error("快捷绑卡查询异常", e);
+            openCardQueryResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
+            openCardQueryResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
+        }
+        openCardQueryResponse.setSign(openCardQueryResponse.createSign(""));
+        return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
     }
 
 }
