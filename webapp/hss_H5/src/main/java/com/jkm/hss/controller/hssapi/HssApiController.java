@@ -150,15 +150,15 @@ public class HssApiController extends BaseController {
             mctApplyResponse.setMerchantNo(map.get("merchantNo").toString());
             mctApplyResponse.setMerchantStatus(map.get("merchantStatus").toString());
             mctApplyResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
-            mctApplyResponse.setReturnMsg(JKMTradeErrorCode.SUCCESS.getErrorMessage());
+            mctApplyResponse.setReturnMsg("入网成功");
         } catch (final JKMTradeServiceException e) {
             log.error("商户入网异常", e);
             mctApplyResponse.setReturnCode(e.getErrorCode());
-            mctApplyResponse.setReturnCode(e.getErrorMessage());
+            mctApplyResponse.setReturnMsg(e.getErrorMessage());
         } catch (final Throwable e) {
             log.error("商户入网异常", e);
             mctApplyResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
-            mctApplyResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
+            mctApplyResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
         mctApplyResponse.setSign(mctApplyResponse.createSign(""));
         return SdkSerializeUtil.convertObjToMap(mctApplyResponse);

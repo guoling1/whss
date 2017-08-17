@@ -40,6 +40,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -84,6 +85,7 @@ public class MerchantServiceImpl implements MerchantService {
      *
      * @return
      */
+    @Transactional
     @Override
     public Map<String,String> merchantIn(MerchantRequest apiMerchantRequest) {
         Map map = new HashedMap();
@@ -151,7 +153,7 @@ public class MerchantServiceImpl implements MerchantService {
         if(!productOptional.isPresent()){
             throw new JKMTradeServiceException(JKMTradeErrorCode.PRODUCT_NOT_EXIST);
         }
-        final Pair<Integer, String> pair = this.verifyIdService.verifyID(MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile()),
+        final Pair<Integer, String> pair = this.verifyIdService.verifyID(apiMerchantRequest.getMobile(),
                 apiMerchantRequest.getBankNo(), apiMerchantRequest.getIdentity(), apiMerchantRequest.getReserveMobile(), apiMerchantRequest.getName());
         if (0 != pair.getLeft()) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.FOUR_FACTOR_AUTHEN,pair.getRight());
