@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.OpenCardRecordDao">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_open_card_record
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="bindCardReqNo != null">
+                bind_card_req_no,
+            </if>
+            <if test="merchantNo != null">
+                merchant_no,
+            </if>
+            <if test="cardNo != null">
+                card_no,
+            </if>
+            <if test="frontUrl != null">
+                front_url,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime!=null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="bindCardReqNo != null">
+                #{bindCardReqNo},
+            </if>
+            <if test="merchantNo != null">
+                #{merchantNo},
+            </if>
+            <if test="cardNo != null">
+                #{cardNo},
+            </if>
+            <if test="frontUrl!=null">
+                #{frontUrl},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+            <if test="createTime!=null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByBindCardReqNo" resultType="com.jkm.hss.merchant.entity.OpenCardRecord">
+        SELECT id,bind_card_req_no,merchant_no,card_no,front_url,status,create_time,update_time
+        FROM tb_open_card_record
+        WHERE bind_card_req_no = #{bindCardReqNo}
+    </select>
+
+    <update id="updateStatusByBindCardReqNo">
+      UPDATE tb_open_card_record SET status=#{status} WHERE bind_card_req_no = #{bindCardReqNo}
+    </update>
+
+</mapper>

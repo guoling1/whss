@@ -93,4 +93,8 @@ public class AccountBank extends BaseEntity {
      * {@link EnumCleanType}
      */
     private int updateType;
+    /**
+     * token
+     */
+    private String token;
 }

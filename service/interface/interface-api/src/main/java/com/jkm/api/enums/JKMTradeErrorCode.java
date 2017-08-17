@@ -67,6 +67,8 @@ public enum JKMTradeErrorCode {
     PRODUCT_NOT_EXIST("E1053","产品不存在"),
     FOUR_FACTOR_AUTHEN("E1054","四要素鉴权不通过"),
     DEALER_RETE_ERROR("E1055","代理商费率信息配置错误"),
+    REQSN_EXIST("E1056","流水已存在"),
+    CARDNO_FORMAT_ERROR("E1057","银行卡号格式不正确"),
 
 
     /**数据库*/
