@@ -161,7 +161,7 @@ public class MerchantApiController extends BaseApiController {
             createApiOrderResponse.setAmount(createApiOrderRequest.getAmount().toString());
             createApiOrderResponse.setOrderNum(createApiOrderRequest.getOrderNum());
             createApiOrderResponse.setQrCode("");
-            createApiOrderResponse.setResponse(JkmApiErrorCode.SYS_ERROR);
+            createApiOrderResponse.setResponse(JkmApiErrorCode.SERVICE_ERROR);
         }
         //结果返回
         final String sign = ApiMD5Util.getSign((JSONObject) JSONObject.toJSON(createApiOrderResponse), JkmApiMerConstants.keyOf(createApiOrderRequest.getMerchantNo()));
@@ -207,9 +207,9 @@ public class MerchantApiController extends BaseApiController {
             final HsyOrder hsyOrder = this.hsyOrderService.getByOrderNumber(request.getOrderNum()).get();
             response.setTrxType(request.getTrxType());
             response.setAmount(hsyOrder.getAmount().toString());
+            response.setOrderNum(hsyOrder.getOrdernumber());
             response.setReturnCode(JkmApiErrorCode.SUCCESS.getErrorCode());
-            response.setReturnMsg(JkmApiErrorCode.SUCCESS.getErrorMessage());
-            response.setAmount(hsyOrder.getAmount().toString());
+            response.setReturnMsg("查询成功");
             if (hsyOrder.getOrderstatus() == EnumHsyOrderStatus.PAY_SUCCESS.getId()){
                 response.setStatus("1");
             }else {
@@ -224,7 +224,7 @@ public class MerchantApiController extends BaseApiController {
             response.setStatus("0");
         } catch (Exception e) {
             log.error("#【订单查询】controller.queryApiOrder.Exception", e);
-            response.setResponse(JkmApiErrorCode.SYS_ERROR);
+            response.setResponse(JkmApiErrorCode.SERVICE_ERROR);
             response.setTrxType(request.getTrxType());
             response.setOrderNum(request.getOrderNum());
             response.setAmount("");
