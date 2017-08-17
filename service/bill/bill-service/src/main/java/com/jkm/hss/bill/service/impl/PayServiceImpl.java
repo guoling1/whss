@@ -1173,7 +1173,7 @@ public class PayServiceImpl implements PayService {
                 (StringUtils.isEmpty(order.getCvv()) ? "" : MerchantSupport.decryptCvv(order.getCvv())) : MerchantSupport.decryptCvv(accountBank.getCvv()));
         paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
-        paymentSdkUnionPayRequest.setToken("");
+        paymentSdkUnionPayRequest.setToken(accountBank.getToken());
         PaymentSdkUnionPayResponse paymentSdkUnionPayResponse;
         try {
             final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));
