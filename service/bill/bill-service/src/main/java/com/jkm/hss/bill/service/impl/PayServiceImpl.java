@@ -25,6 +25,8 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 
+import com.jkm.hss.merchant.enums.EnumMessageTemplate;
+import com.jkm.hss.merchant.enums.EnumMessageType;
 import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
 import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -50,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -97,6 +100,8 @@ public class PayServiceImpl implements PayService {
     private BusinessOrderService businessOrderService;
     @Autowired
     private UpgradePayRecordService upgradePayRecordService;
+    @Autowired
+    private AppMessageService appMessageService;
 
     /**
      * {@inheritDoc}
@@ -621,6 +626,24 @@ public class PayServiceImpl implements PayService {
                 //待结算--可用余额
                 this.dealerRecordedAccount(account.getId(), firstMoneyTriple.getMiddle(), order, settlementRecordId);
             }
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
+                if (dealerMerchantOptional.isPresent()) {
+                    final MerchantInfo merchant = dealerMerchantOptional.get();
+                    if (receiveMerchant.getDealerId() == dealer.getId()) {
+                        //直接
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.SUPER_DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    } else {
+                        //间接
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.SUPER_DEALER_INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    }
+
+                }
+            }
         }
         //二级代理商利润--到结算--可用余额
         if (null != secondMoneyTriple) {
@@ -641,6 +664,25 @@ public class PayServiceImpl implements PayService {
 
                 //待结算--可用余额
                 this.dealerRecordedAccount(account.getId(), secondMoneyTriple.getMiddle(), order, settlementRecordId);
+            }
+
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
+                if (dealerMerchantOptional.isPresent()) {
+                    final MerchantInfo merchant = dealerMerchantOptional.get();
+                    if (receiveMerchant.getDealerId() == dealer.getId()) {
+                        //直接
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    } else {
+                        //间接
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DEALER_INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    }
+
+                }
             }
         }
         //直推商户利润--到结算--可用余额
@@ -663,9 +705,11 @@ public class PayServiceImpl implements PayService {
                 //待结算--可用余额
                 this.merchantRecordedAccount(account.getId(), firstMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-直推");
             }
-//            if (EnumSource) {
-//
-//            }
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                final HashMap<String, String> params = new HashMap<>();
+                params.put("amount", firstMerchantMoneyTriple.getMiddle().toPlainString());
+                this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+            }
         }
         //间推商户利润--到结算--可用余额
         if (null != secondMerchantMoneyTriple) {
@@ -686,6 +730,11 @@ public class PayServiceImpl implements PayService {
 
                 //待结算--可用余额
                 this.merchantRecordedAccount(account.getId(), secondMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-间推");
+            }
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                final HashMap<String, String> params = new HashMap<>();
+                params.put("amount", secondMerchantMoneyTriple.getMiddle().toPlainString());
+                this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
             }
         }
 
