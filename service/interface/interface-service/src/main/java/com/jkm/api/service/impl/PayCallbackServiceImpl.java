@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.api.enums.EnumApiOrderStatus;
 import com.jkm.api.enums.JKMTradeErrorCode;
-import com.jkm.api.helper.requestparam.PayCallbackResponse;
+import com.jkm.api.helper.responseparam.PayCallbackResponse;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
 import com.jkm.api.service.PayCallbackService;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;

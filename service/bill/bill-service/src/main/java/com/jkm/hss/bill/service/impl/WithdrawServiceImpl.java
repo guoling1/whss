@@ -27,6 +27,7 @@ import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -241,13 +242,14 @@ public class WithdrawServiceImpl implements WithdrawService {
                 //手续费结算
                 this.merchantPoundageSettle(settlementRecord, payOrder.getPayChannelSign(), merchantWithdrawPoundage, merchant);
             }
-
-            final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
-            log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
-            final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
-            final String bankNo = accountBank.getBankNo();
-            this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
-                    merchantWithdrawPoundage, bankNo.substring(bankNo.length() - 4), user.getOpenId());
+            if (EnumSource.APIREG.getId() != merchant.getSource()) {
+                final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
+                log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
+                final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
+                final String bankNo = accountBank.getBankNo();
+                this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
+                        merchantWithdrawPoundage, bankNo.substring(bankNo.length() - 4), user.getOpenId());
+            }
         }
     }
 

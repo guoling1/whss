@@ -1,4 +1,4 @@
-package com.jkm.api.helper.requestparam;
+package com.jkm.api.helper.responseparam;
 
 import com.jkm.api.helper.sdk.serialize.SdkSignUtil;
 import com.jkm.api.helper.sdk.serialize.annotation.SdkSerializeAlias;
