@@ -62,7 +62,7 @@
     </select>
 
     <select id="selectCidhss" resultType="Map">
-        SELECT a.CLIENTID,a.APPTYPE
+        SELECT distinct a.CLIENTID,a.APPTYPE
         FROM app_au_token a
         LEFT JOIN app_hss_user_token b ON a.ID=b.TID
         WHERE b.UID=#{uid} AND b.`STATUS`=1
