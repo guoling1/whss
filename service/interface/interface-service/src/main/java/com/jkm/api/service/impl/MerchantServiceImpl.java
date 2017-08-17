@@ -186,7 +186,7 @@ public class MerchantServiceImpl implements MerchantService {
         mi.setMobile(MerchantSupport.encryptMobile(apiMerchantRequest.getMobile()));
         mi.setMdMobile(MerchantSupport.passwordDigest(apiMerchantRequest.getMobile(),"JKM"));
         mi.setProductId(productOptional.get().getId());
-        mi.setSource(EnumSource.DEALERRECOMMEND.getId());
+        mi.setSource(EnumSource.APIREG.getId());
         if(dealerOptional.get().getLevel()== EnumDealerLevel.FIRST.getId()){
             mi.setDealerId(dealerOptional.get().getId());
             mi.setFirstDealerId(dealerOptional.get().getId());
