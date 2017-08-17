@@ -630,7 +630,7 @@ public class PayServiceImpl implements PayService {
                 final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
                 if (dealerMerchantOptional.isPresent()) {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
-                    if (receiveMerchant.getDealerId() == dealer.getId()) {
+                    if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
                         final HashMap<String, String> params = new HashMap<>();
                         params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
@@ -670,7 +670,7 @@ public class PayServiceImpl implements PayService {
                 final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
                 if (dealerMerchantOptional.isPresent()) {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
-                    if (receiveMerchant.getDealerId() == dealer.getId()) {
+                    if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
                         final HashMap<String, String> params = new HashMap<>();
                         params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
