@@ -53,7 +53,7 @@ public class ApiControllerTester {
         map.put("merchantNo","120000001931");
         map.put("dealerMarkCode","320000000035");
         map.put("frontUrl","http://www.baidu.com");
-        map.put("bindCardReqNo","1000000112");
+        map.put("bindCardReqNo","1000000114");
         map.put("cardNo","6259655533117715 ");
         String sign = SdkSignUtil.sign2(map, "");
         map.put("sign",sign);

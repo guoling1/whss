@@ -28,9 +28,36 @@ public class OpenCardQueryResponse {
     @SdkSerializeAlias(signSort = 3, needSign = true)
     private String dealerMarkCode;
     /**
-     * 卡列表
+     * 开通快捷的银行卡号
      */
-    private List<Map> cardList;
+    @SdkSerializeAlias(signSort = 4, needSign = true)
+    private String cardNo;
+    /**
+     * 银行卡预留手机号
+     */
+    @SdkSerializeAlias(signSort = 5, needSign = true)
+    private String mobile;
+    /**
+     * 银行名称
+     */
+    @SdkSerializeAlias(signSort = 6, needSign = true)
+    private String bankName;
+    /**
+     * 银行编码
+     */
+    @SdkSerializeAlias(signSort = 7, needSign = true)
+    private String bankBin;
+    /**
+     * 默认银行卡
+     */
+    @SdkSerializeAlias(signSort = 8, needSign = true)
+    private String isDefault;
+    /**
+     * 绑定状态
+     */
+    @SdkSerializeAlias(signSort = 9, needSign = true)
+    private String bindStatus;
+    
 
     /**
      * 签名

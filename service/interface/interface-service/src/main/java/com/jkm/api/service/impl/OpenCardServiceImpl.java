@@ -111,11 +111,12 @@ public class OpenCardServiceImpl implements OpenCardService {
         }
         AccountBank accountBank = accountBankService.selectCreditListByBankNo(merchantInfoOptional.get().getAccountId(),openCardQueryRequest.getCardNo());
         if(accountBank==null){
+            //去查流水-查出相关参数
             Map<String, Object> paramsMap = new HashMap<String, Object>();
-            //// TODO: 2017/8/17
-            String result = SmPost.postObject(MerchantConsts.getMerchantConfig().merchantBaseInfoReg(), paramsMap);
+            //// TODO: 2017/8/17 查询
+            String result = SmPost.postObject(MerchantConsts.getMerchantConfig().cardQuery(), paramsMap);
         }else{
-
+            //直接返回
         }
         return null;
     }
