@@ -26,6 +26,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 
 import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
+import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.mq.config.MqConfig;
@@ -533,6 +534,7 @@ public class PayServiceImpl implements PayService {
     public void poundageSettle(final Order order, final long merchantId) {
         final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSS, order.getOrderNo(),
                 order.getTradeAmount(), order.getChildChannelSign(), merchantId);
+        final MerchantInfo receiveMerchant = this.merchantInfoService.selectById(merchantId).get();
         final Triple<Long, BigDecimal, BigDecimal> basicMoneyTriple = shallProfitMap.get("basicMoney");
         final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
@@ -661,6 +663,9 @@ public class PayServiceImpl implements PayService {
                 //待结算--可用余额
                 this.merchantRecordedAccount(account.getId(), firstMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-直推");
             }
+//            if (EnumSource) {
+//
+//            }
         }
         //间推商户利润--到结算--可用余额
         if (null != secondMerchantMoneyTriple) {
