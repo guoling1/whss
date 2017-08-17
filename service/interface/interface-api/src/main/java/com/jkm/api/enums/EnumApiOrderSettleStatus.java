@@ -9,6 +9,8 @@ public enum EnumApiOrderSettleStatus {
 
     WAIT("WAIT", "待结算"),
 
+    PROCESSING("PROCESSING", "处理中"),
+
     SUCCESS("SUCCESS", "成功"),
 
     FAIL("FAIL", "失败")

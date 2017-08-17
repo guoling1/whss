@@ -69,7 +69,8 @@ public interface BusinessOrderService {
      * 按订单号查询
      *
      * @param orderNo
+     * @param merchantId
      * @return
      */
-    Optional<BusinessOrder> getByOrderNo(String orderNo);
+    Optional<BusinessOrder> getByOrderNoAndMerchantId(String orderNo, long merchantId);
 }

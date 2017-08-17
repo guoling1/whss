@@ -3,7 +3,9 @@ package com.jkm.api.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
+import com.jkm.api.helper.requestparam.ConfirmQuickPayRequest;
 import com.jkm.api.helper.requestparam.PreQuickPayRequest;
+import com.jkm.api.helper.responseparam.ConfirmQuickPayResponse;
 import com.jkm.api.service.QuickPayService;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.enums.EnumBankType;
@@ -21,6 +23,7 @@ import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -48,8 +51,6 @@ public class QuickPayServiceImpl implements QuickPayService {
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
-    private BasicChannelService basicChannelService;
-    @Autowired
     private BusinessOrderService businessOrderService;
 
     /**
@@ -64,13 +65,14 @@ public class QuickPayServiceImpl implements QuickPayService {
             log.error("商户编号[{}]-商户订单号[{}]，预下单，商户不存在", request.getMerchantNo(), request.getOrderNo());
             throw new JKMTradeServiceException(JKMTradeErrorCode.MERCHANT_NOT_EXIST);
         }
-        final Optional<BusinessOrder> businessOrderOptional = this.businessOrderService.getByOrderNo(request.getOrderNo());
+        final MerchantInfo merchant = merchantInfoOptional.get();
+        final Optional<BusinessOrder> businessOrderOptional = this.businessOrderService.getByOrderNoAndMerchantId(request.getOrderNo(), merchant.getId());
         if (businessOrderOptional.isPresent()) {
             log.error("商户编号[{}]-商户订单号[{}]，预下单，商户订单号重复", request.getMerchantNo(), request.getOrderNo());
             throw new JKMTradeServiceException(JKMTradeErrorCode.MERCHANT_TRADE_NO_EXIST);
         }
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.codeOf(request.getChannelCode());
-        final MerchantInfo merchant = merchantInfoOptional.get();
+
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(request.getCardNo());
         if (!bankCardBinOptional.isPresent()) {
             log.error("商户编号[{}]-商户订单号[{}]，预下单，商户银行卡号错误", request.getMerchantNo(), request.getOrderNo());
@@ -78,7 +80,7 @@ public class QuickPayServiceImpl implements QuickPayService {
         }
         final BankCardBin bankCardBin = bankCardBinOptional.get();
         AccountBank accountBank;
-        if (!EnumPayChannelSign.isNotNeedSaveBankCard(enumPayChannelSign.getId())) {
+        if (!EnumUpperChannel.isNotNeedSaveBankCard(enumPayChannelSign.getUpperChannel().getId())) {
             final long creditBankCardId = this.accountBankService.initCreditBankCard(merchant.getAccountId(), request.getCardNo(),
                     bankCardBin.getBankName(), request.getMobile(), bankCardBin.getShorthand(), request.getExpireDate(), request.getCvv());
             accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
@@ -119,6 +121,8 @@ public class QuickPayServiceImpl implements QuickPayService {
         order.setPayType(enumPayChannelSign.getCode());
         order.setPayChannelSign(enumPayChannelSign.getId());
         order.setChildChannelSign(enumPayChannelSign.getId());
+        order.setUpperChannel(enumPayChannelSign.getUpperChannel().getId());
+        order.setPaymentChannel(enumPayChannelSign.getPaymentChannel().getId());
         order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
@@ -129,6 +133,9 @@ public class QuickPayServiceImpl implements QuickPayService {
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+        order.setNotifyUrl(request.getCallbackUrl());
+        order.setReturnUrl(request.getPageNotifyUrl());
+        order.setSettleUrl(request.getSettleNotifyUrl());
 
         businessOrder.setTradeOrderNo(order.getOrderNo());
         this.businessOrderService.add(businessOrder);
@@ -146,9 +153,50 @@ public class QuickPayServiceImpl implements QuickPayService {
         log.info("商户编号[{}]-商户订单号[{}]，预下单，成功", request.getMerchantNo(), request.getOrderNo());
         return order.getOrderNo();
     }
-    public static void main (String[] args) {
-        final PreQuickPayRequest preQuickPayRequest = new PreQuickPayRequest();
-        preQuickPayRequest.verifySign("123");
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    public void confirmQuickPay(final ConfirmQuickPayRequest request, final ConfirmQuickPayResponse response) {
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.getByMarkCode(request.getMerchantNo());
+        if (!merchantInfoOptional.isPresent()) {
+            log.error("商户编号[{}]-商户订单号[{}]，预下单，商户不存在", request.getMerchantNo(), request.getOrderNo());
+            throw new JKMTradeServiceException(JKMTradeErrorCode.MERCHANT_NOT_EXIST);
+        }
+        final MerchantInfo merchant = merchantInfoOptional.get();
+        final Optional<BusinessOrder> businessOrderOptional = this.businessOrderService.getByOrderNoAndMerchantId(request.getOrderNo(), merchant.getId());
+        if (!businessOrderOptional.isPresent()) {
+            throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
+        }
+        final BusinessOrder businessOrder = businessOrderOptional.get();
+        if (!businessOrder.getTradeCardNo().equals(request.getTradeOrderNo())) {
+            throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
+        }
+        if (new BigDecimal(request.getOrderAmount()).compareTo(businessOrder.getTradeAmount()) != 0) {
+            throw new JKMTradeServiceException(JKMTradeErrorCode.AMOUNT_NOT_SAME);
+        }
+        final Optional<Order> orderOptional = this.orderService.getByOrderNo(businessOrder.getTradeOrderNo());
+        if (orderOptional.isPresent()) {
+            throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
+        }
+        final Order order = orderOptional.get();
+        final Pair<Integer, String> resultPair = this.payService.confirmUnionPay(order.getId(), request.getSmsCode());
+        if (-1 == resultPair.getLeft()) {
+            log.error("商户[{}], 商户订单号[{}]，确认支付失败-[请勿重复确认支付]", request.getMerchantNo(), request.getOrderNo());
+            throw new JKMTradeServiceException(JKMTradeErrorCode.COMMON_ERROR, "请勿重复确认支付");
+        } else if (-2 == resultPair.getLeft()) {
+            log.error("商户[{}], 商户订单号[{}]，确认支付失败-[支付异常，结果未知]", request.getMerchantNo(), request.getOrderNo());
+            throw new JKMTradeServiceException(JKMTradeErrorCode.SERVICE_ERROR);
+        } else if (-3 == resultPair.getLeft()) {
+            log.error("商户[{}], 商户订单号[{}]，确认支付失败-[{}]", request.getMerchantNo(), request.getOrderNo(), resultPair.getRight());
+            throw new JKMTradeServiceException(JKMTradeErrorCode.FAIL, resultPair.getRight());
+        }
+        log.info("商户[{}], 商户订单号[{}]，确认支付成功", request.getMerchantNo(), request.getOrderNo());
+        response.setMerchantReqTime("");
+        response.setCardNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), order.getPayBankCard()));
     }
 
 }

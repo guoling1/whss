@@ -6,14 +6,15 @@ import com.jkm.api.enums.EnumApiOrderSettleStatus;
 import com.jkm.api.enums.EnumApiOrderStatus;
 import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
+import com.jkm.api.helper.requestparam.ConfirmQuickPayRequest;
 import com.jkm.api.helper.requestparam.MerchantRequest;
 import com.jkm.api.helper.requestparam.PreQuickPayRequest;
+import com.jkm.api.helper.responseparam.ConfirmQuickPayResponse;
 import com.jkm.api.helper.responseparam.MctApplyResponse;
 import com.jkm.api.helper.responseparam.PreQuickPayResponse;
 import com.jkm.api.helper.sdk.serialize.SdkSerializeUtil;
 import com.jkm.api.service.MerchantService;
 import com.jkm.api.service.QuickPayService;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -50,7 +51,7 @@ public class HssApiController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "preQuickPay", method = RequestMethod.POST)
+    @RequestMapping(value = "kuaiPayPreOrder", method = RequestMethod.POST)
     public Object preQuickPay(final HttpServletRequest httpServletRequest) {
         final PreQuickPayResponse preQuickPayResponse = new PreQuickPayResponse();
         String readParam;
@@ -59,9 +60,9 @@ public class HssApiController extends BaseController {
             readParam = super.read(httpServletRequest);
             request = JSON.parseObject(readParam, PreQuickPayRequest.class);
         } catch (final IOException e) {
-            log.error("商户号[{}]-商户订单号[{}]-预下单读取数据流异常", e);
-            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorCode());
-            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorMessage());
+            log.error("预下单读取数据流异常", e);
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorCode());
+            preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorMessage());
             return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
         }
         log.info("商户号[{}]-商户订单号[{}]-预下单-参数[{}]", request.getMerchantNo(), request.getOrderNo(), request);
@@ -71,17 +72,18 @@ public class HssApiController extends BaseController {
         preQuickPayResponse.setMerchantReqTime(request.getMerchantReqTime());
         preQuickPayResponse.setOrderAmount(request.getOrderAmount());
         preQuickPayResponse.setCardNo(request.getCardNo());
+        final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+        if (!dealerOptional.isPresent()) {
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorCode());
+            preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
+        }
+        final Dealer dealer = dealerOptional.get();
         try {
-            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
-            if (!dealerOptional.isPresent()) {
-                throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
-            }
-            final Dealer dealer = dealerOptional.get();
-            //取秘钥
             //参数校验
 //            request.validateParam();
-            if (request.verifySign("")) {
-                log.error("商户号[{}]-商户订单号[{}]-预下单签名错误", 1, 2);
+            if (request.verifySign(dealer.getApiKey())) {
+                log.error("商户号[{}]-商户订单号[{}]-预下单签名错误", request.getMerchantNo(), request.getOrderNo());
                 preQuickPayResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
                 preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
@@ -92,20 +94,84 @@ public class HssApiController extends BaseController {
             preQuickPayResponse.setTradeOrderNo(tradeOrderNo);
             preQuickPayResponse.setOrderStatus(EnumApiOrderStatus.INIT.getCode());
             preQuickPayResponse.setSettleStatus(EnumApiOrderSettleStatus.WAIT.getCode());
-            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.ACCEPT_SUCCESS.getErrorCode());
-            preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.ACCEPT_SUCCESS.getErrorMessage());
+            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
+            preQuickPayResponse.setReturnMsg("预下单成功");
         } catch (final JKMTradeServiceException e) {
             log.error("商户号[{}]-商户订单号[{}]-预下单异常", e);
             preQuickPayResponse.setReturnCode(e.getErrorCode());
-            preQuickPayResponse.setReturnCode(e.getErrorMessage());
+            preQuickPayResponse.setReturnMsg(e.getErrorMessage());
         } catch (final Throwable e) {
             log.error("商户号[{}]-商户订单号[{}]-预下单异常", e);
             preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
-            preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
+            preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
-        preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
+        preQuickPayResponse.setSign(preQuickPayResponse.createSign(dealer.getApiKey()));
         return SdkSerializeUtil.convertObjToMap(preQuickPayResponse);
     }
+
+    /**
+     * 快捷去人支付
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "kuaiPayConfirmOrder", method = RequestMethod.POST)
+    public Object confirmQuickPay(final HttpServletRequest httpServletRequest) {
+        final ConfirmQuickPayResponse response = new ConfirmQuickPayResponse();
+        String readParam;
+        ConfirmQuickPayRequest request;
+        try {
+            readParam = super.read(httpServletRequest);
+            request = JSON.parseObject(readParam, ConfirmQuickPayRequest.class);
+        } catch (final IOException e) {
+            log.error("确认支付读取数据流异常", e);
+            response.setReturnCode(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorCode());
+            response.setReturnMsg(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(response);
+        }
+        log.info("商户号[{}]-商户订单号[{}]-确认支付-参数[{}]", request.getMerchantNo(), request.getOrderNo(), request);
+        response.setDealerMarkCode(request.getDealerMarkCode());
+        response.setMerchantNo(request.getMerchantNo());
+        response.setOrderNo(request.getOrderNo());
+        response.setOrderAmount(request.getOrderAmount());
+        final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+        if (!dealerOptional.isPresent()) {
+            response.setReturnCode(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorCode());
+            response.setReturnMsg(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(response);
+        }
+        final Dealer dealer = dealerOptional.get();
+        try {
+            //参数校验
+//            request.validateParam();
+            if (request.verifySign(dealer.getApiKey())) {
+                log.error("商户号[{}]-商户订单号[{}]-确认支付签名错误", request.getMerchantNo(), request.getOrderNo());
+                response.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
+                response.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
+                response.setSign(response.createSign(dealer.getApiKey()));
+                return SdkSerializeUtil.convertObjToMap(response);
+            }
+            //请求
+            this.quickPayService.confirmQuickPay(request, response);
+            response.setOrderStatus(EnumApiOrderStatus.PROCESSING.getCode());
+            response.setSettleStatus(EnumApiOrderSettleStatus.WAIT.getCode());
+            response.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
+            response.setReturnMsg("确认支付成功");
+        } catch (final JKMTradeServiceException e) {
+            log.error("商户号[{}]-商户订单号[{}]-确认支付异常", e);
+            response.setReturnCode(e.getErrorCode());
+            response.setReturnMsg(e.getErrorMessage());
+        } catch (final Throwable e) {
+            log.error("商户号[{}]-商户订单号[{}]-确认支付异常", e);
+            response.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
+            response.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
+        }
+        response.setSign(response.createSign(dealer.getApiKey()));
+        return SdkSerializeUtil.convertObjToMap(response);
+    }
+
+
 
     /**
      * 商户入网
@@ -124,8 +190,8 @@ public class HssApiController extends BaseController {
             request = JSON.parseObject(readParam, MerchantRequest.class);
         } catch (final IOException e) {
             log.error("商户入网读取数据流异常", e);
-            mctApplyResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorCode());
-            mctApplyResponse.setReturnCode(JKMTradeErrorCode.REQUEST_MESSAGE_ERROR.getErrorMessage());
+            mctApplyResponse.setReturnCode(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorCode());
+            mctApplyResponse.setReturnCode(JKMTradeErrorCode.READ_PARAM_ERROR.getErrorMessage());
             return SdkSerializeUtil.convertObjToMap(mctApplyResponse);
         }
         log.info("商户入网参数[{}]", JSON.toJSON(request).toString());

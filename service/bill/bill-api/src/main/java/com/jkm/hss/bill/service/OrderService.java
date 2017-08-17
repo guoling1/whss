@@ -237,9 +237,10 @@ public interface OrderService {
      * 按下游业务订单号查询
      *
      * @param businessOrderNo
+     * @param payee
      * @return
      */
-    Optional<Order> getByBusinessOrderNo(String businessOrderNo);
+    Optional<Order> getByBusinessOrderNoAndPayee(String businessOrderNo, long payee);
 
     /**
      * 查询当前账户的交易总额
@@ -504,9 +505,10 @@ public interface OrderService {
      * 按业务订单号查询个数
      *
      * @param businessOrderNo
+     * @param payee
      * @return
      */
-    int getCountByBusinessOrder(String businessOrderNo);
+    int getCountByBusinessOrderAndPayee(String businessOrderNo, long payee);
 
     /**
      * T1 生成商户结算单后，将结算单id标记到交易中，并将交易标记为结算中

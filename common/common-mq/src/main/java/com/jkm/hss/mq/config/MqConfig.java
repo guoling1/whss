@@ -48,6 +48,11 @@ public class MqConfig {
      */
     public static final String SPLIT_PROFIT = "split_profit";
 
+    /**
+     * api商户支付回调
+     */
+    public static final String API_PAY_CALLBACK = "API_PAY_CALLBACK";
+
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();

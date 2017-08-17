@@ -1,16 +1,16 @@
-package com.jkm.api.helper.responseparam;
+package com.jkm.api.helper.requestparam;
 
 import com.jkm.api.helper.sdk.serialize.SdkSignUtil;
 import com.jkm.api.helper.sdk.serialize.annotation.SdkSerializeAlias;
 import lombok.Data;
 
 /**
- * Created by yulong.zhang on 2017/8/15.
+ * Created by yulong.zhang on 2017/8/17.
  *
- * 快捷确认支付  返回参数
+ * 支付回调参数
  */
 @Data
-public class ConfirmQuickPayResponse {
+public class PayCallbackResponse {
 
     /**
      * 代理商编号
@@ -28,30 +28,30 @@ public class ConfirmQuickPayResponse {
     @SdkSerializeAlias(signSort = 5, needSign = true)
     private String orderNo;
     /**
-     * 商户请求时间
+     * 交易单号
      */
     @SdkSerializeAlias(signSort = 6, needSign = true)
+    private String tradeOrderNo;
+    /**
+     * 商户请求时间
+     */
+    @SdkSerializeAlias(signSort = 7, needSign = true)
     private String merchantReqTime;
     /**
      * 订单金额
      */
-    @SdkSerializeAlias(signSort = 7, needSign = true)
+    @SdkSerializeAlias(signSort = 8, needSign = true)
     private String orderAmount;
     /**
      * 卡号
      */
-    @SdkSerializeAlias(signSort = 8, needSign = true)
+    @SdkSerializeAlias(signSort = 9, needSign = true)
     private String cardNo;
     /**
      * 订单状态
      */
-    @SdkSerializeAlias(signSort = 9, needSign = true)
-    private String orderStatus;
-    /**
-     * 结算状态
-     */
     @SdkSerializeAlias(signSort = 10, needSign = true)
-    private String settleStatus;
+    private String orderStatus;
     /**
      * 错误码
      */
