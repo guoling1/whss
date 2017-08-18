@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum EnumOpenCardStatus {
     SUBMIT(0,"已提交"),
     SUCCESS(1,"开通成功"),
-    FAIL(1,"开通失败");
+    FAIL(2,"开通失败");
     @Getter
     private int id;
     @Getter

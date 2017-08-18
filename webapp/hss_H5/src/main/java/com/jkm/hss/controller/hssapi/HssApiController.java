@@ -382,8 +382,8 @@ public class HssApiController extends BaseController {
             //请求
             String html = openCardService.kuaiPayOpenCard(request);
             openCardResponse.setHtml(html);
-            openCardResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
-            openCardResponse.setReturnMsg("绑卡成功");
+            openCardResponse.setReturnCode(JKMTradeErrorCode.PROCESSING.getErrorCode());
+            openCardResponse.setReturnMsg(JKMTradeErrorCode.PROCESSING.getErrorMessage());
         } catch (final JKMTradeServiceException e) {
             log.error("快捷绑卡异常", e);
             openCardResponse.setReturnCode(e.getErrorCode());

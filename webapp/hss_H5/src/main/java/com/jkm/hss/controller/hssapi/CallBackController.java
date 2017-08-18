@@ -40,23 +40,25 @@ public class CallBackController extends BaseController {
     public Object openCard(@RequestParam(value = "orderId", required = true) String orderId,
                            @RequestParam(value = "activateStatus", required = true) String activateStatus,
                            @RequestParam(value = "token", required = true) String token) {
-        OpenCardRecord openCardRecord = openCardRecordDao.selectByBindCardReqNo(orderId);
-        if(openCardRecord==null){
+        final OpenCardRecord openCardRecord = openCardRecordDao.selectByBindCardReqNo(orderId);
+        if(openCardRecord == null){
+            log.error("开卡流水号[{}]-开卡回调没有开卡记录!!!!!!!!", orderId);
             return null;
         }
         int realStatus = 0;
         if("1".equals(activateStatus)){
             realStatus = 1;
+            if(openCardRecord.getStatus()== EnumOpenCardStatus.SUBMIT.getId()){
+                openCardRecordDao.updateStatusByBindCardReqNo(orderId,realStatus);
+                Optional<MerchantInfo> mci =  merchantInfoService.getByMarkCode(openCardRecord.getMerchantNo());
+                Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(openCardRecord.getCardNo());
+                accountBankService.bindCard(mci.get().getAccountId(),openCardRecord.getCardNo(),bankCardBinOptional.get().getBankName(),
+                        mci.get().getReserveMobile(),bankCardBinOptional.get().getShorthand(),token);
+            }
         }else{
             realStatus = 2;
         }
-        if(openCardRecord.getStatus()== EnumOpenCardStatus.SUBMIT.getId()){
-            openCardRecordDao.updateStatusByBindCardReqNo(orderId,realStatus);
-            Optional<MerchantInfo> mci =  merchantInfoService.getByMarkCode(openCardRecord.getMerchantNo());
-            Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(openCardRecord.getCardNo());
-            accountBankService.bindCard(mci.get().getAccountId(),openCardRecord.getCardNo(),bankCardBinOptional.get().getBankName(),
-                    mci.get().getReserveMobile(),bankCardBinOptional.get().getShorthand(),token);
-        }
+
         String htmlTemp = openCardRecord.getFrontUrl();
         String[] arrTemp = htmlTemp.split("\\?");
         String returnUrl = "";
