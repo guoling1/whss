@@ -2,6 +2,7 @@ package com.jkm.api.service;
 
 import com.jkm.api.helper.requestparam.OpenCardQueryRequest;
 import com.jkm.api.helper.requestparam.OpenCardRequest;
+import com.jkm.api.helper.responseparam.OpenCardQueryResponse;
 
 import java.util.Map;
 
@@ -21,7 +22,8 @@ public interface OpenCardService {
      * 绑卡查询
      *
      * @param openCardQueryRequest
+     * @param response
      * @return
      */
-    Map kuaiPayOpenCardQuery(OpenCardQueryRequest openCardQueryRequest);
+    void kuaiPayOpenCardQuery(OpenCardQueryRequest openCardQueryRequest, OpenCardQueryResponse response);
 }

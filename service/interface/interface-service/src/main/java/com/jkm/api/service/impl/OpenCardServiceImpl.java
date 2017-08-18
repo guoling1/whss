@@ -8,6 +8,7 @@ import com.jkm.api.enums.JKMTradeErrorCode;
 import com.jkm.api.exception.JKMTradeServiceException;
 import com.jkm.api.helper.requestparam.OpenCardQueryRequest;
 import com.jkm.api.helper.requestparam.OpenCardRequest;
+import com.jkm.api.helper.responseparam.OpenCardQueryResponse;
 import com.jkm.api.service.OpenCardService;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.hss.merchant.dao.OpenCardRecordDao;
@@ -114,10 +115,11 @@ public class OpenCardServiceImpl implements OpenCardService {
      * {@inheritDoc}
      *
      * @param openCardQueryRequest
+     * @param response
      * @return
      */
     @Override
-    public Map kuaiPayOpenCardQuery(OpenCardQueryRequest openCardQueryRequest) {
+    public void kuaiPayOpenCardQuery(final OpenCardQueryRequest openCardQueryRequest, final OpenCardQueryResponse response) {
         if (StringUtils.isBlank(openCardQueryRequest.getCardNo())) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.PARAM_NOT_NULL,"卡号不能为空");
         }
@@ -133,7 +135,7 @@ public class OpenCardServiceImpl implements OpenCardService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.CARDNO_FORMAT_ERROR);
         }
         final AccountBank accountBank = accountBankService.selectCreditListByBankNo(merchantInfoOptional.get().getAccountId(),openCardQueryRequest.getCardNo());
-        if(accountBank==null){
+        if(accountBank == null){
             //去查流水-查出相关参数
             final Map<String, Object> paramsMap = new HashMap<String, Object>();
             //// TODO: 2017/8/17 查询
@@ -141,8 +143,6 @@ public class OpenCardServiceImpl implements OpenCardService {
         }else{
             //直接返回
 
-
         }
-        return null;
     }
 }
