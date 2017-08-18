@@ -1174,6 +1174,7 @@ public class PayServiceImpl implements PayService {
         paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
         paymentSdkUnionPayRequest.setToken(accountBank.getToken());
+        paymentSdkUnionPayRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
         PaymentSdkUnionPayResponse paymentSdkUnionPayResponse;
         try {
             final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));

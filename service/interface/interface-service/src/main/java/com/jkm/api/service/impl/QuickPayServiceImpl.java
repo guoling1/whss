@@ -7,6 +7,7 @@ import com.jkm.api.helper.requestparam.ConfirmQuickPayRequest;
 import com.jkm.api.helper.requestparam.PreQuickPayRequest;
 import com.jkm.api.helper.responseparam.ConfirmQuickPayResponse;
 import com.jkm.api.service.QuickPayService;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.enums.EnumBankType;
 import com.jkm.hss.bill.entity.BusinessOrder;
@@ -24,7 +25,6 @@ import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumUpperChannel;
-import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -195,7 +195,7 @@ public class QuickPayServiceImpl implements QuickPayService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.FAIL, resultPair.getRight());
         }
         log.info("商户[{}], 商户订单号[{}]，确认支付成功", request.getMerchantNo(), request.getOrderNo());
-        response.setMerchantReqTime("");
+        response.setMerchantReqTime(DateFormatUtil.format(order.getMerchantReqTime(), DateFormatUtil.yyyyMMddHHmmssSSS));
         response.setCardNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), order.getPayBankCard()));
     }
 

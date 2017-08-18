@@ -84,4 +84,9 @@ public class PaymentSdkUnionPayRequest {
      * 银联token
      */
     private String token;
+
+    /**
+     * 结算通知url
+     */
+    private String settleNotifyUrl;
 }
