@@ -864,7 +864,7 @@ input:focus {
 }
 #success .space {
   width: 100%;
-  padding: 60px 0;
+  padding: 15px 0;
   background-color: #FFF;
   border-bottom: 1px solid #e8eaf3;
 }
@@ -877,36 +877,36 @@ input:focus {
 }
 #success .space .text {
   font-size: 18px;
-  color: #5b648d;
-  margin-top: 25px;
+  color: #333;
+  margin-top: 15px;
 }
 #success .group {
   width: 100%;
-  height: 52px;
+  height: 40px;
   background-color: #FFF;
   border-bottom: 1px solid #e8eaf3;
-  padding: 0 15px;
+  padding: 0 10px;
 }
 #success .group .left {
-  line-height: 52px;
+  line-height: 40px;
   float: left;
   text-align: left;
   font-size: 15px;
-  color: #8c93b2;
+  color: #999;
 }
 #success .group .right {
-  line-height: 52px;
+  line-height: 40px;
   float: right;
   text-align: right;
   font-size: 15px;
-  color: #5a638c;
+  color: #333;
 }
-#success .group .right span {
-  color: #fd4f4f;
+#success .group .right.red {
+  color: #f94949;
 }
 #success .ad {
   display: block;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 #success .ad img {
   width: 100%;
