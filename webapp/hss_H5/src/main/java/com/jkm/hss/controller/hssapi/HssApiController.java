@@ -119,7 +119,7 @@ public class HssApiController extends BaseController {
     }
 
     /**
-     * 快捷去人支付
+     * 快捷确认支付
      *
      * @param httpServletRequest
      * @return
@@ -181,7 +181,7 @@ public class HssApiController extends BaseController {
     }
 
     /**
-     * 快捷去人支付
+     * 订单查询
      *
      * @param httpServletRequest
      * @return

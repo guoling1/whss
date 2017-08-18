@@ -74,12 +74,14 @@ public class PayCallbackServiceImpl implements PayCallbackService {
                 payCallbackResponse.setReturnCode(JKMTradeErrorCode.FAIL.getErrorCode());
                 payCallbackResponse.setReturnMsg(msg);
             }
+            payCallbackResponse.setSign(payCallbackResponse.createSign(dealer.getApiKey()));
             final String result = httpClientFacade.jsonPost(order.getNotifyUrl(), SdkSerializeUtil.convertObjToMap(payCallbackResponse));
             final JSONObject resultJo = JSON.parseObject(result);
-            if (!"SUCCESS".equalsIgnoreCase(resultJo.getString("returnCode"))) {
+            if ("SUCCESS".equalsIgnoreCase(resultJo.getString("returnCode"))) {
                 log.info("商户[{}]-商户订单号[{}]-交易订单号[{}],支付[{}]-通知商户成功", order.getOrderNo(), order.getBusinessOrderNo(), order.getOrderNo(), payCallbackResponse.getOrderStatus());
                 return Pair.of(0, "通知成功");
             }
+            log.error("商户[{}]-商户订单号[{}]-交易订单号[{}],支付[{}]-通知商户失败", order.getOrderNo(), order.getBusinessOrderNo(), order.getOrderNo(), payCallbackResponse.getOrderStatus());
             return Pair.of(1, "重试通知");
         } catch (final Throwable e) {
             return Pair.of(-2, "通知异常");

@@ -6,6 +6,7 @@ import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
 import com.jkm.api.service.PayCallbackService;
+import com.jkm.api.service.SettleCallbackService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.bill.service.impl.BaseTradeService;
@@ -29,6 +30,8 @@ public class MessageListenerImpl implements MessageListener {
     private BaseTradeService baseTradeService;
     @Autowired
     private PayCallbackService payCallbackService;
+    @Autowired
+    private SettleCallbackService settleCallbackService;
     /**
      * 消费消息
      *
@@ -70,6 +73,15 @@ public class MessageListenerImpl implements MessageListener {
                 if (0 != resultPair.getLeft()) {
                     this.retryNotifyPayCallbackMsg(orderId, businessOrderId, isSuccess, msg, count);
                 }
+            } else if (MqConfig.API_SETTLE_CALLBACK.equals(message.getTag())) {
+                final long orderId = body.getLongValue("orderId");
+                final long businessOrderId = body.getLongValue("businessOrderId");
+                final int count = body.getIntValue("count");
+                log.info("消费消息--交易订单[{}], api结算成功结果第[{}]次通知商户", orderId, count);
+                final Pair<Integer, String> resultPair = this.settleCallbackService.settleCallback(orderId, businessOrderId);
+                if (0 != resultPair.getLeft()) {
+                    this.retryNotifySettleCallbackMsg(orderId, businessOrderId, count);
+                }
             }
         } catch (final Throwable e) {
             log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}] key is : [{}]", message.getTopic(),
@@ -99,16 +111,50 @@ public class MessageListenerImpl implements MessageListener {
         requestJsonObject.put("msg", msg);
         requestJsonObject.put("count", count + 1);
         if (count == 0) {
+            log.info("消费消息--交易订单[{}], 支付重试通知商户", orderId);
             MqProducer.produce(requestJsonObject, MqConfig.API_PAY_CALLBACK, 3 * 1000);
         }
         if (count == 1) {
+            log.info("消费消息--交易订单[{}], 支付重试通知商户", orderId);
             MqProducer.produce(requestJsonObject, MqConfig.API_PAY_CALLBACK, 5 * 1000);
         }
         if (count == 2) {
+            log.info("消费消息--交易订单[{}], 支付重试通知商户", orderId);
             MqProducer.produce(requestJsonObject, MqConfig.API_PAY_CALLBACK, 5 * 60 * 1000);
         }
         if (count == 4) {
+            log.info("消费消息--交易订单[{}], 支付重试通知商户", orderId);
             MqProducer.produce(requestJsonObject, MqConfig.API_PAY_CALLBACK, 30 * 60 * 1000);
+        }
+    }
+
+    /**
+     * 重试通知
+     *
+     * @param orderId
+     * @param businessOrderId
+     * @param count
+     */
+    private void retryNotifySettleCallbackMsg(final long orderId, final long businessOrderId, final int count) {
+        final JSONObject requestJsonObject = new JSONObject();
+        requestJsonObject.put("orderId", orderId);
+        requestJsonObject.put("businessOrderId", businessOrderId);
+        requestJsonObject.put("count", count + 1);
+        if (count == 0) {
+            log.info("消费消息--交易订单[{}], 结算成功重试通知商户", orderId);
+            MqProducer.produce(requestJsonObject, MqConfig.API_SETTLE_CALLBACK, 3 * 1000);
+        }
+        if (count == 1) {
+            log.info("消费消息--交易订单[{}], 结算成功重试通知商户", orderId);
+            MqProducer.produce(requestJsonObject, MqConfig.API_SETTLE_CALLBACK, 5 * 1000);
+        }
+        if (count == 2) {
+            log.info("消费消息--交易订单[{}], 结算成功重试通知商户", orderId);
+            MqProducer.produce(requestJsonObject, MqConfig.API_SETTLE_CALLBACK, 5 * 60 * 1000);
+        }
+        if (count == 4) {
+            log.info("消费消息--交易订单[{}], 结算成功重试通知商户", orderId);
+            MqProducer.produce(requestJsonObject, MqConfig.API_SETTLE_CALLBACK, 30 * 60 * 1000);
         }
     }
 }

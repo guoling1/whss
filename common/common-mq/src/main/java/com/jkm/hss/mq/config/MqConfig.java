@@ -53,6 +53,11 @@ public class MqConfig {
      */
     public static final String API_PAY_CALLBACK = "API_PAY_CALLBACK";
 
+    /**
+     * api商户结算回调
+     */
+    public static final String API_SETTLE_CALLBACK = "API_SETTLE_CALLBACK";
+
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();

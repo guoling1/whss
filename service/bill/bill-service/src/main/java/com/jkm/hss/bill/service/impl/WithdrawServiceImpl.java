@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.HttpClientPost;
@@ -12,10 +13,7 @@ import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.PaymentSdkDaiFuRequest;
-import com.jkm.hss.bill.entity.PaymentSdkDaiFuResponse;
-import com.jkm.hss.bill.entity.SettlementRecord;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
@@ -33,6 +31,8 @@ import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
@@ -84,6 +84,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     private MerchantWithdrawService merchantWithdrawService;
     @Autowired
     private AccountBankService accountBankService;
+    @Autowired
+    private BusinessOrderService businessOrderService;
 
     /**
      * {@inheritDoc}
@@ -242,7 +244,20 @@ public class WithdrawServiceImpl implements WithdrawService {
                 //手续费结算
                 this.merchantPoundageSettle(settlementRecord, payOrder.getPayChannelSign(), merchantWithdrawPoundage, merchant);
             }
-            if (EnumSource.APIREG.getId() != merchant.getSource()) {
+            if (EnumSource.APIREG.getId() == merchant.getSource()) {
+                //api通知商户
+                final Optional<BusinessOrder> businessOrderOptional = this.businessOrderService.getByOrderNoAndMerchantId(payOrder.getBusinessOrderNo(), merchant.getId());
+                if (businessOrderOptional.isPresent()) {
+                    log.error("商户[{}]-商户订单号[{}]-交易订单号[{}]，结算成功，发消息-业务订单businessOrder不存在", merchant.getMarkCode(), payOrder.getBusinessOrderNo(), payOrder.getOrderNo());
+                }
+                log.info("商户[{}]-商户订单号[{}]-交易订单号[{}]，结算成功，发消息通知商户", merchant.getMarkCode(), payOrder.getBusinessOrderNo(), payOrder.getOrderNo());
+                final BusinessOrder businessOrder = businessOrderOptional.get();
+                final JSONObject requestJsonObject = new JSONObject();
+                requestJsonObject.put("orderId", payOrder.getId());
+                requestJsonObject.put("businessOrderId", businessOrder.getId());
+                requestJsonObject.put("count", 0);
+                MqProducer.produce(requestJsonObject, MqConfig.API_SETTLE_CALLBACK, 10);
+            } else {
                 final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
                 log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
                 final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
