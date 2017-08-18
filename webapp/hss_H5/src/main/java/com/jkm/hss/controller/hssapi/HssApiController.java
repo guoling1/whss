@@ -300,19 +300,21 @@ public class HssApiController extends BaseController {
         }
         log.info("商户入网参数[{}]", JSON.toJSON(request).toString());
         mctApplyResponse.setDealerMarkCode(request.getDealerMarkCode());
+        final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+        if (!dealerOptional.isPresent()) {
+            mctApplyResponse.setReturnCode(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorCode());
+            mctApplyResponse.setReturnMsg(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(mctApplyResponse);
+        }
+        final Dealer dealer = dealerOptional.get();
         try {
-            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
-            if (!dealerOptional.isPresent()) {
-                throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
-            }
-            final Dealer dealer = dealerOptional.get();
             //取秘钥
             //参数校验
-            if (request.verifySign("")) {
+            if (request.verifySign(dealer.getApiKey())) {
                 log.error("商户入网签名错误");
                 mctApplyResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 mctApplyResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
-                mctApplyResponse.setSign(mctApplyResponse.createSign(""));
+                mctApplyResponse.setSign(mctApplyResponse.createSign(dealer.getApiKey()));
                 return SdkSerializeUtil.convertObjToMap(mctApplyResponse);
             }
             //请求
@@ -330,7 +332,7 @@ public class HssApiController extends BaseController {
             mctApplyResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
             mctApplyResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
-        mctApplyResponse.setSign(mctApplyResponse.createSign(""));
+        mctApplyResponse.setSign(mctApplyResponse.createSign(dealer.getApiKey()));
         return SdkSerializeUtil.convertObjToMap(mctApplyResponse);
     }
 
@@ -359,19 +361,22 @@ public class HssApiController extends BaseController {
         openCardResponse.setDealerMarkCode(request.getDealerMarkCode());
         openCardResponse.setMerchantNo(request.getMerchantNo());
         openCardResponse.setCardNo(request.getCardNo());
+
+        final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+        if (!dealerOptional.isPresent()) {
+            openCardResponse.setReturnCode(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorCode());
+            openCardResponse.setReturnMsg(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(openCardResponse);
+        }
+        final Dealer dealer = dealerOptional.get();
         try {
-            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
-            if (!dealerOptional.isPresent()) {
-                throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
-            }
-            final Dealer dealer = dealerOptional.get();
             //取秘钥
             //参数校验
-            if (request.verifySign("")) {
+            if (request.verifySign(dealer.getApiKey())) {
                 log.error("快捷绑卡签名错误");
                 openCardResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 openCardResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
-                openCardResponse.setSign(openCardResponse.createSign(""));
+                openCardResponse.setSign(openCardResponse.createSign(dealer.getApiKey()));
                 return SdkSerializeUtil.convertObjToMap(openCardResponse);
             }
             //请求
@@ -388,7 +393,7 @@ public class HssApiController extends BaseController {
             openCardResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
             openCardResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
-        openCardResponse.setSign(openCardResponse.createSign(""));
+        openCardResponse.setSign(openCardResponse.createSign(dealer.getApiKey()));
         return SdkSerializeUtil.convertObjToMap(openCardResponse);
     }
 
@@ -416,19 +421,21 @@ public class HssApiController extends BaseController {
         }
         log.info("快捷绑卡查询入网参数[{}]", JSON.toJSON(request).toString());
         openCardQueryResponse.setDealerMarkCode(request.getDealerMarkCode());
+        final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
+        if (!dealerOptional.isPresent()) {
+            openCardQueryResponse.setReturnCode(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorCode());
+            openCardQueryResponse.setReturnMsg(JKMTradeErrorCode.DEALER_NOT_EXIST.getErrorMessage());
+            return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
+        }
+        final Dealer dealer = dealerOptional.get();
         try {
-            final Optional<Dealer> dealerOptional = this.dealerService.getDealerByMarkCode(request.getDealerMarkCode());
-            if (!dealerOptional.isPresent()) {
-                throw new JKMTradeServiceException(JKMTradeErrorCode.DEALER_NOT_EXIST);
-            }
-            final Dealer dealer = dealerOptional.get();
             //取秘钥
             //参数校验
-            if (request.verifySign("")) {
+            if (request.verifySign(dealer.getApiKey())) {
                 log.error("快捷绑卡查询签名错误");
                 openCardQueryResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 openCardQueryResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
-                openCardQueryResponse.setSign(openCardQueryResponse.createSign(""));
+                openCardQueryResponse.setSign(openCardQueryResponse.createSign(dealer.getApiKey()));
                 return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
             }
             //业务处理
@@ -444,7 +451,7 @@ public class HssApiController extends BaseController {
             openCardQueryResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
             openCardQueryResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
-        openCardQueryResponse.setSign(openCardQueryResponse.createSign(""));
+        openCardQueryResponse.setSign(openCardQueryResponse.createSign(dealer.getApiKey()));
         return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
     }
 
