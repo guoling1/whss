@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -78,6 +80,9 @@ public class CreateApiOrderRequest {
         }
         if (ValidateUtils.isNull(amount) || !ValidateUtils.isDouble(amount.toString())){
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "订单金额错误");
+        }
+        if (new BigDecimal(amount).compareTo(new BigDecimal("3000")) == 1){
+            throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "单笔支付金额超限");
         }
         if (StringUtils.isEmpty(goodsName)){
             throw new JKMTradeServiceException(JkmApiErrorCode.COMMON_ERROR, "订单描述不能为空");

@@ -57,6 +57,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
             final HsyOrder newHsyOrder = new HsyOrder();
             BeanUtils.copyProperties(hsyOrder, newHsyOrder);
             newHsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+            newHsyOrder.setOrdernumber("");
             this.hsyOrderService.insert(newHsyOrder);
             return newHsyOrder.getId();
         }

@@ -5,9 +5,9 @@ package com.jkm.hss.helper;
  */
 public enum JkmApiErrorCode {
 
-    SUCCESS("S0000", "交易成功"),
+    SUCCESS("S0000", "成功"),
     ACCEPT_SUCCESS("S0001", "接受成功"),
-    FAIL("E1001", "交易失败"),
+    FAIL("E1001", "失败"),
     REQUEST_MESSAGE_ERROR("E1002", "报文不合法"),
     MERCHANT_NOT_EXIST("E1003", "商户不存在"),
     CHECK_SIGN_FAIL("E1004", "验证签名失败"),

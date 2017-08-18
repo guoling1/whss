@@ -17,6 +17,7 @@ public class JkmApiMerConstants {
             builder.put("110000000093", "X1w8LsNHoluMlnF8jxG3J2Mw0ZTR5qyu");
             builder.put("110000000132", "X1w8LsNHoluMlnF8jxG3J2Mw0ZTR5132");
              builder.put("110000000047", "X1w8LsNHoluMlnF8jxG3J2Mw0ZTR5047");
+             builder.put("110000002657", "VusuQzlskl57jS1Vc3M34bazhHu62657");
             INIT_MAP = builder.build();
     }
 
