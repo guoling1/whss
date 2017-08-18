@@ -125,11 +125,19 @@ public class AppMerchantInfoController extends BaseController {
 
     @RequestMapping(value = "/test")
     public void test(HttpServletRequest request,HttpServletResponse response){
-        Long uid=1926L;
+        Long uid=1927L;
         EnumMessageType type=EnumMessageType.BENEFIT_MESSAGE;
-        EnumMessageTemplate template=EnumMessageTemplate.SUPER_DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE;
+        EnumMessageTemplate template=EnumMessageTemplate.VERIFY_FAILURE_TEMPLATE;
         Map<String,String> param=new HashMap<>();
-        param.put("amount",6.66+"");
+        param.put("reason","帝高阳之苗裔兮，朕皇考曰伯庸。\n" +
+                "摄提贞于孟陬兮，惟庚寅吾以降。\n" +
+                "皇览揆余初度兮，肇锡余以嘉名：\n" +
+                "名余曰正则兮，字余曰灵均。\n" +
+                "纷吾既有此内美兮，又重之以修能。\n" +
+                "扈江离与辟芷兮，纫秋兰以为佩。\n" +
+                "汨余若将不及兮，恐年岁之不吾与。\n" +
+                "朝搴阰之木兰兮，夕揽洲之宿莽。\n" +
+                "日月忽其不淹兮，春与秋其代序。");
         appMessageService.insertMessageInfoAndPush(uid,type,template,param);
     }
 
