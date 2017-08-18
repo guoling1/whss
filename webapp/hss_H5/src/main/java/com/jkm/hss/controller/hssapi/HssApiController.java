@@ -439,7 +439,7 @@ public class HssApiController extends BaseController {
                 return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
             }
             //业务处理
-           // TODO: 2017/8/17
+            this.openCardService.kuaiPayOpenCardQuery(request, openCardQueryResponse);
             openCardQueryResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
             openCardQueryResponse.setReturnMsg("查询成功");
         } catch (final JKMTradeServiceException e) {

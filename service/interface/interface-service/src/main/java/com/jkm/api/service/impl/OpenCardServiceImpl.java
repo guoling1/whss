@@ -17,7 +17,7 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OpenCardRecord;
 import com.jkm.hss.merchant.helper.MerchantConsts;
-import com.jkm.hss.merchant.helper.SmPost;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -130,19 +130,56 @@ public class OpenCardServiceImpl implements OpenCardService {
         if (!merchantInfoOptional.isPresent()){
             throw new JKMTradeServiceException(JKMTradeErrorCode.MERCHANT_NOT_EXIST);
         }
+        final MerchantInfo merchant = merchantInfoOptional.get();
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(openCardQueryRequest.getCardNo());
         if (!bankCardBinOptional.isPresent()) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.CARDNO_FORMAT_ERROR);
         }
         final AccountBank accountBank = accountBankService.selectCreditListByBankNo(merchantInfoOptional.get().getAccountId(),openCardQueryRequest.getCardNo());
         if(accountBank == null){
-            //去查流水-查出相关参数
-            final Map<String, Object> paramsMap = new HashMap<String, Object>();
-            //// TODO: 2017/8/17 查询
-            String result = SmPost.postObject(MerchantConsts.getMerchantConfig().cardQuery(), paramsMap);
+            try {
+                final Map<String, String> paramsMap = new HashMap<>();
+                final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardQuery(), paramsMap);
+                if (result != null && !"".equals(result)) {
+                    final JSONObject jo = JSON.parseObject(result);
+                    if(jo.getIntValue("code") == 1){
+                        if ("1".equals(jo.getJSONObject("result").getString("activateStatus"))) {
+                            final String token = jo.getJSONObject("result").getString("token");
+                            log.info("商户号[{}]-流水号[{}]，开卡查询成功--开卡成功-token[{}]", openCardQueryRequest.getMerchantNo(), openCardQueryRequest.getCardNo(), token);
+                            //直接返回
+                            accountBankService.bindCard(merchant.getAccountId(), openCardQueryRequest.getCardNo(), bankCardBinOptional.get().getBankName(),
+                                    merchant.getReserveMobile(), bankCardBinOptional.get().getShorthand(), token);
+                            response.setCardNo(MerchantSupport.decryptBankCard(accountBank.getBankNo()));
+                            response.setMobile(merchant.getReserveMobile());
+                            response.setBankName(accountBank.getBankName());
+                            response.setBankBin(accountBank.getBankBin());
+                            response.setIsDefault( 1 == accountBank.getIsDefault() ? "Y" : "N");
+                            response.setBindStatus("SUCCESS");
+                            return;
+                        }
+                        log.info("商户号[{}]-流水号[{}]，开卡查询成功--开卡失败", openCardQueryRequest.getMerchantNo(), openCardQueryRequest.getCardNo());
+                        response.setCardNo(openCardQueryRequest.getCardNo());
+                        response.setBindStatus("FAIL");
+                        return;
+                    }
+                    log.info("商户号[{}]-流水号[{}]，开卡查询失败", openCardQueryRequest.getMerchantNo(), openCardQueryRequest.getCardNo());
+                    response.setCardNo(openCardQueryRequest.getCardNo());
+                    response.setBindStatus("UNKNOWN");
+                    return;
+                }
+                throw new JKMTradeServiceException(JKMTradeErrorCode.SYS_ERROR);
+            } catch (final Throwable e) {
+                log.error("商户号[" + openCardQueryRequest.getMerchantNo() + "]， 卡号[" + openCardQueryRequest.getCardNo() + "]，查询网关开卡异常", e);
+                throw new JKMTradeServiceException(JKMTradeErrorCode.SYS_ERROR, "网关异常");
+            }
         }else{
             //直接返回
-
+            response.setCardNo(MerchantSupport.decryptBankCard(accountBank.getBankNo()));
+            response.setMobile(merchant.getReserveMobile());
+            response.setBankName(accountBank.getBankName());
+            response.setBankBin(accountBank.getBankBin());
+            response.setIsDefault( 1 == accountBank.getIsDefault() ? "Y" : "N");
+            response.setBindStatus("SUCCESS");
         }
     }
 }
