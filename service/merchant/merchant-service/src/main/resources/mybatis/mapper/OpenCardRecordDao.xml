@@ -52,6 +52,10 @@
         WHERE bind_card_req_no = #{bindCardReqNo}
     </select>
 
+    <select id="selectCurrentOneByCardNo" resultType="com.jkm.hss.merchant.entity.OpenCardRecord">
+        SELECT * FROM tb_open_card_record WHERE card_no = #{cardNo} ORDER BY id desc LIMIT 1
+    </select>
+
     <update id="updateStatusByBindCardReqNo">
       UPDATE tb_open_card_record SET status=#{status} WHERE bind_card_req_no = #{bindCardReqNo}
     </update>

@@ -10,6 +10,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OpenCardRecordDao {
     void insert(OpenCardRecord openCardRecord);
+
+    /**
+     * 查找最新的开卡记录
+     */
+    OpenCardRecord selectCurrentOneByCardNo(@Param("cardNo") String cardNo);
+
     OpenCardRecord selectByBindCardReqNo(@Param("bindCardReqNo") String bindCardReqNo);
+
+
     void updateStatusByBindCardReqNo(@Param("bindCardReqNo") String bindCardReqNo,@Param("status") int status);
 }

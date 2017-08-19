@@ -139,6 +139,14 @@ public class OpenCardServiceImpl implements OpenCardService {
         if(accountBank == null){
             try {
                 final Map<String, String> paramsMap = new HashMap<>();
+                final OpenCardRecord openCardRecord = this.openCardRecordDao.selectCurrentOneByCardNo(openCardQueryRequest.getCardNo());
+                if (null == openCardRecord) {
+                    response.setCardNo(openCardQueryRequest.getCardNo());
+                    throw new JKMTradeServiceException(JKMTradeErrorCode.COMMON_ERROR, "开卡记录不存在");
+                }
+                paramsMap.put("merchantNo", openCardQueryRequest.getMerchantNo());
+                paramsMap.put("merchantOrderNo", openCardRecord.getBindCardReqNo());
+                paramsMap.put("merchantReqTime",  openCardRecord.getCreateTime().getTime() + "");
                 final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardQuery(), paramsMap);
                 if (result != null && !"".equals(result)) {
                     final JSONObject jo = JSON.parseObject(result);
@@ -146,7 +154,7 @@ public class OpenCardServiceImpl implements OpenCardService {
                         if ("1".equals(jo.getJSONObject("result").getString("activateStatus"))) {
                             final String token = jo.getJSONObject("result").getString("token");
                             log.info("商户号[{}]-流水号[{}]，开卡查询成功--开卡成功-token[{}]", openCardQueryRequest.getMerchantNo(), openCardQueryRequest.getCardNo(), token);
-                            //直接返回
+                            openCardRecordDao.updateStatusByBindCardReqNo(openCardRecord.getBindCardReqNo(), 1);
                             accountBankService.bindCard(merchant.getAccountId(), openCardQueryRequest.getCardNo(), bankCardBinOptional.get().getBankName(),
                                     merchant.getReserveMobile(), bankCardBinOptional.get().getShorthand(), token);
                             response.setCardNo(MerchantSupport.decryptBankCard(accountBank.getBankNo()));
@@ -157,6 +165,7 @@ public class OpenCardServiceImpl implements OpenCardService {
                             response.setBindStatus("SUCCESS");
                             return;
                         }
+                        openCardRecordDao.updateStatusByBindCardReqNo(openCardRecord.getBindCardReqNo(), 2);
                         log.info("商户号[{}]-流水号[{}]，开卡查询成功--开卡失败", openCardQueryRequest.getMerchantNo(), openCardQueryRequest.getCardNo());
                         response.setCardNo(openCardQueryRequest.getCardNo());
                         response.setBindStatus("FAIL");
