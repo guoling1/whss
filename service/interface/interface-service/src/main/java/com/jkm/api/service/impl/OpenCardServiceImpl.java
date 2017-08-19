@@ -183,6 +183,7 @@ public class OpenCardServiceImpl implements OpenCardService {
             }
         }else{
             //直接返回
+            log.info("商户号[{}]-流水号[{}]，开卡查询成功--开卡成功-", openCardQueryRequest.getMerchantNo(), openCardQueryRequest.getCardNo());
             response.setCardNo(MerchantSupport.decryptBankCard(accountBank.getBankNo()));
             response.setMobile(merchant.getReserveMobile());
             response.setBankName(accountBank.getBankName());
