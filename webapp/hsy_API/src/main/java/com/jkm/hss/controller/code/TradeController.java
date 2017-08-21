@@ -68,8 +68,10 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "createOrder", method = RequestMethod.POST)
     public CommonResponse createOrder(@RequestBody final CreateOrderRequest createOrderRequest) {
+        /*final long hsyOrderId = this.hsyTransactionService.createOrder(createOrderRequest.getChannel(), createOrderRequest.getShopId(),
+                createOrderRequest.getMemberId(), createOrderRequest.getCode());*/
         final long hsyOrderId = this.hsyTransactionService.createOrder(createOrderRequest.getChannel(), createOrderRequest.getShopId(),
-                createOrderRequest.getMemberId(), createOrderRequest.getCode());
+                "ou2YpwXliAnG24k4N60TTxZTV4vA", createOrderRequest.getCode());
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                 .addParam("hsyOrderId", hsyOrderId)
                 .build();
