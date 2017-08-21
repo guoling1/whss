@@ -261,7 +261,8 @@ public class AppAccountController extends BaseController {
     @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
     public CommonResponse queryShall(final HttpServletRequest request, @RequestBody final PartnerShallRequest shallRequest){
 
-        final Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        //final Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        final Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(72);
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
