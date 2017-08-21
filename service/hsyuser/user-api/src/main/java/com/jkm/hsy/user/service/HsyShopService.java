@@ -1,4 +1,5 @@
 package com.jkm.hsy.user.service;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizBankBranch;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
@@ -57,4 +58,6 @@ public interface HsyShopService {
      * @param id
      */
     void changeStatus(String isPublic, Long id);
+
+    AppAuUser findUserByGlobalId(String globalId);
 }

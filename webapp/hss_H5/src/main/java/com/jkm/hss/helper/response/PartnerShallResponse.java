@@ -2,7 +2,6 @@ package com.jkm.hss.helper.response;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
 import lombok.Data;
 
 /**

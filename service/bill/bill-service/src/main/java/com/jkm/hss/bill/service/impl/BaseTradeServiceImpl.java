@@ -119,6 +119,7 @@ public class BaseTradeServiceImpl implements BaseTradeService {
         placeOrderRequest.setCardNo(placeOrderParams.getBankCardNo());
         placeOrderRequest.setPayerName(placeOrderParams.getRealName());
         placeOrderRequest.setIdCardNo(placeOrderParams.getIdCard());
+        placeOrderRequest.setBusinessOrderNo(placeOrderParams.getBusinessOrderNo());
         try {
             final String content = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
             return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
