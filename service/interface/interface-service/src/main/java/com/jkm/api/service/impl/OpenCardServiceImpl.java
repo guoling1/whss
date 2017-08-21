@@ -87,12 +87,13 @@ public class OpenCardServiceImpl implements OpenCardService {
         openCardRecord.setCardNo(openCardRequest.getCardNo());
         openCardRecord.setFrontUrl(openCardRequest.getFrontUrl());
         openCardRecord.setStatus(EnumOpenCardStatus.SUBMIT.getId());
-        openCardRecord.setCreateTime(DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss), DateFormatUtil.yyyyMMddHHmmss));
+        openCardRecord.setCreateTime(new Date());
         openCardRecordDao.insert(openCardRecord);
         final Map<String, String> paramsMap = new HashMap<>();
+        final OpenCardRecord cardRecord = this.openCardRecordDao.selectById(openCardRecord.getId());
         paramsMap.put("merchantNo", openCardRequest.getMerchantNo());
         paramsMap.put("merchantOrderNo", openCardRequest.getBindCardReqNo());
-        paramsMap.put("merchantReqTime", DateFormatUtil.format(openCardRecord.getCreateTime(), DateFormatUtil.yyyyMMddHHmmss));
+        paramsMap.put("merchantReqTime", DateFormatUtil.format(cardRecord.getCreateTime(), DateFormatUtil.yyyyMMddHHmmss));
         paramsMap.put("cardNo", openCardRequest.getCardNo());
         try {
             final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardOpen(), paramsMap);

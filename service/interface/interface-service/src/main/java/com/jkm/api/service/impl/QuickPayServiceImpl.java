@@ -105,6 +105,7 @@ public class QuickPayServiceImpl implements QuickPayService {
         businessOrder.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         businessOrder.setPayAccount(merchant.getName());
         businessOrder.setBankName(accountBank.getBankName());
+        businessOrder.setMerchantReqTime(DateFormatUtil.parse(request.getMerchantReqTime(), DateFormatUtil.yyyyMMddHHmmssSSS));
 
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrder.getOrderNo());
@@ -133,6 +134,7 @@ public class QuickPayServiceImpl implements QuickPayService {
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+        order.setMerchantReqTime(DateFormatUtil.parse(request.getMerchantReqTime(), DateFormatUtil.yyyyMMddHHmmssSSS));
         order.setNotifyUrl(request.getCallbackUrl());
         order.setReturnUrl(request.getPageNotifyUrl());
         order.setSettleUrl(request.getSettleNotifyUrl());

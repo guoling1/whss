@@ -247,7 +247,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             if (EnumSource.APIREG.getId() == merchant.getSource()) {
                 //api通知商户
                 final Optional<BusinessOrder> businessOrderOptional = this.businessOrderService.getByOrderNoAndMerchantId(payOrder.getBusinessOrderNo(), merchant.getId());
-                if (businessOrderOptional.isPresent()) {
+                if (!businessOrderOptional.isPresent()) {
                     log.error("商户[{}]-商户订单号[{}]-交易订单号[{}]，结算成功，发消息-业务订单businessOrder不存在", merchant.getMarkCode(), payOrder.getBusinessOrderNo(), payOrder.getOrderNo());
                 }
                 log.info("商户[{}]-商户订单号[{}]-交易订单号[{}]，结算成功，发消息通知商户", merchant.getMarkCode(), payOrder.getBusinessOrderNo(), payOrder.getOrderNo());

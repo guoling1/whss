@@ -12,6 +12,14 @@ public interface OpenCardRecordDao {
     void insert(OpenCardRecord openCardRecord);
 
     /**
+     * 按id查询
+     *
+     * @param id
+     * @return
+     */
+    OpenCardRecord selectById(@Param("id") long id);
+
+    /**
      * 查找最新的开卡记录
      */
     OpenCardRecord selectCurrentOneByCardNo(@Param("cardNo") String cardNo);
