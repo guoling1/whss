@@ -592,4 +592,15 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantNo
+     * @return
+     */
+    @Override
+    public Optional<MerchantInfo> getByMarkCode(final String merchantNo) {
+        return Optional.fromNullable(this.merchantInfoDao.selectByMarkCode(merchantNo));
+    }
+
 }

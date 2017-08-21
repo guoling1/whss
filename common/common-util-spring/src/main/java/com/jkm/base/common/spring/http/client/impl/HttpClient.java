@@ -54,7 +54,7 @@ public class HttpClient implements Closeable{
         entity.setContentEncoding("UTF-8");
         postRequest.setEntity(entity);
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(postRequest)) {
-            return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
+            return EntityUtils.toString(getResponseEntity(closeableHttpResponse), "UTF-8");
         } catch (Exception e) {
             Throwables.propagate(e);
         }
@@ -70,6 +70,7 @@ public class HttpClient implements Closeable{
      */
     public String jsonPost(final String uri,
                        final Map<String, String> paramMap) {
+        log.info("http-json_post 请求：url-[{}], param[{}]", uri, paramMap);
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
                 .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "UTF-8"));
@@ -77,7 +78,7 @@ public class HttpClient implements Closeable{
         requestBuilder.setEntity(new StringEntity(JSONObject.toJSONString(paramMap),
                 Charset.forName("UTF-8")));
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(requestBuilder.build())) {
-            return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
+            return EntityUtils.toString(getResponseEntity(closeableHttpResponse), "UTF-8");
         } catch (Exception e) {
             Throwables.propagate(e);
         }
@@ -93,7 +94,7 @@ public class HttpClient implements Closeable{
      */
     public String formPost(final String uri,
                            final Map<String, String> paramMap) {
-
+        log.info("http-form_post 请求：url-[{}], param[{}]", uri, paramMap);
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
                 .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "UTF-8"));
@@ -103,7 +104,7 @@ public class HttpClient implements Closeable{
         requestBuilder.setEntity(new UrlEncodedFormEntity(requestBuilder.getParameters(),
                 Charset.forName("UTF-8")));
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(requestBuilder.build())) {
-            return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
+            return EntityUtils.toString(getResponseEntity(closeableHttpResponse), "UTF-8");
         } catch (Exception e) {
             Throwables.propagate(e);
         }
@@ -131,7 +132,7 @@ public class HttpClient implements Closeable{
     public String get(final String uri) {
         final HttpGet getRequest = new HttpGet(uri);
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(getRequest)) {
-            return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
+            return EntityUtils.toString(getResponseEntity(closeableHttpResponse), "UTF-8");
         } catch (Exception e) {
             Throwables.propagate(e);
         }

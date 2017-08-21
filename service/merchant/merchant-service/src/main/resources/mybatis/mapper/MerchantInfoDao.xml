@@ -106,6 +106,9 @@
             <if test="merchantName != null">
                 merchant_name,
             </if>
+            <if test="merchantChangeName != null">
+                merchant_change_name,
+            </if>
             <if test="address != null">
                 address,
             </if>
@@ -184,6 +187,45 @@
             <if test="oemId!=null">
                 oem_id,
             </if>
+            <if test="branchCode!=null">
+                branch_code,
+            </if>
+            <if test="branchName!=null">
+                branch_name,
+            </if>
+            <if test="districtCode!=null">
+                district_code,
+            </if>
+            <if test="provinceCode!=null">
+                province_code,
+            </if>
+            <if test="provinceName!=null">
+                province_name,
+            </if>
+            <if test="cityCode!=null">
+                city_code,
+            </if>
+            <if test="cityName!=null">
+                city_name,
+            </if>
+            <if test="countyCode!=null">
+                county_code,
+            </if>
+            <if test="countyName!=null">
+                county_name,
+            </if>
+            <if test="creditCard!=null">
+                credit_card,
+            </if>
+            <if test="creditCardName!=null">
+                credit_card_name,
+            </if>
+            <if test="creditCardShort!=null">
+                credit_card_short,
+            </if>
+            <if test="isAuthen!=null">
+                is_authen,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="mobile != null">
@@ -215,6 +257,9 @@
             </if>
             <if test="merchantName!=null">
                 #{merchantName},
+            </if>
+            <if test="merchantChangeName != null">
+                #{merchantChangeName},
             </if>
             <if test="address!=null">
                 #{address},
@@ -293,6 +338,45 @@
             </if>
             <if test="oemId!=null">
                 #{oemId},
+            </if>
+            <if test="branchCode!=null">
+                #{branchCode},
+            </if>
+            <if test="branchName!=null">
+                #{branchName},
+            </if>
+            <if test="districtCode!=null">
+                #{districtCode},
+            </if>
+            <if test="provinceCode!=null">
+                #{provinceCode},
+            </if>
+            <if test="provinceName!=null">
+                #{provinceName},
+            </if>
+            <if test="cityCode!=null">
+                #{cityCode},
+            </if>
+            <if test="cityName!=null">
+                #{cityName},
+            </if>
+            <if test="countyCode!=null">
+                #{countyCode},
+            </if>
+            <if test="countyName!=null">
+                #{countyName},
+            </if>
+            <if test="creditCard!=null">
+                #{creditCard},
+            </if>
+            <if test="creditCardName!=null">
+                #{creditCardName},
+            </if>
+            <if test="creditCardShort!=null">
+                #{creditCardShort},
+            </if>
+            <if test="isAuthen!=null">
+                #{isAuthen},
             </if>
         </trim>
     </insert>
@@ -507,5 +591,9 @@
     <select id="selectByKmNetStatus" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
         SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info
         where km_net_status=2 and account_id in (SELECT account_id  FROM tb_account_bank WHERE status=0 and is_default =1 and card_type =0 and branch_code!='') and id in (SELECT DISTINCT(merchant_id)  FROM tb_merchant_channel_rate WHERE channel_company ='卡盟' and enter_net =2 and status =0)
+    </select>
+
+    <select id="selectByMarkCode" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info WHERE mark_code = #{merchantNo}
     </select>
 </mapper>

@@ -72,7 +72,8 @@ public interface BusinessOrderDao {
      * 按订单号查询
      *
      * @param orderNo
+     * @param merchantId
      * @return
      */
-    BusinessOrder selectByOrderNo(@Param("orderNo") String orderNo);
+    BusinessOrder selectByOrderNoAndMerchantId(@Param("orderNo") String orderNo, @Param("merchantId") long merchantId);
 }

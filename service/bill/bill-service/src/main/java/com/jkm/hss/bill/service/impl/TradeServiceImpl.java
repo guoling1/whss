@@ -73,7 +73,7 @@ public class TradeServiceImpl implements TradeService {
         log.info("业务方[{}],通过渠道[{}]进行充值[{}],实付金额[{}]，充值账户[{}]，收款账户[{}], 会员标识[{}], 商户号[{}]",
                 rechargeParams.getAppId(), rechargeParams.getChannel(), rechargeParams.getTradeAmount(), rechargeParams.getRealPayAmount(),
                 rechargeParams.getMemberAccountId(), rechargeParams.getPayeeAccountId(), rechargeParams.getMemberId(), rechargeParams.getMerchantNo());
-        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(rechargeParams.getBusinessOrderNo());
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNoAndPayee(rechargeParams.getBusinessOrderNo(), rechargeParams.getPayeeAccountId());
         if (orderOptional.isPresent()) {
             final PayResponse payResponse = new PayResponse();
             payResponse.setCode(EnumBasicStatus.FAIL.getId());
@@ -131,7 +131,7 @@ public class TradeServiceImpl implements TradeService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PayResponse pay(final PayParams payParams) {
         log.info("业务方[{}],通过渠道[{}]进行支付[{}],实付金额[{}]", payParams.getAppId(), payParams.getChannel(), payParams.getTradeAmount(), payParams.getRealPayAmount());
-        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(payParams.getBusinessOrderNo());
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNoAndPayee(payParams.getBusinessOrderNo(), payParams.getPayeeAccountId());
         if (orderOptional.isPresent()) {
             log.info("业务订单号重复【{}】", payParams.getBusinessOrderNo());
             final PayResponse payResponse = new PayResponse();

@@ -10,7 +10,9 @@ public enum EnumSource {
 
     RECOMMEND(1, "邀请注册"),
 
-    DEALERRECOMMEND(2, "代理商邀请注册");
+    DEALERRECOMMEND(2, "代理商邀请注册"),
+
+    APIREG(4, "接口入网");
 
     @Getter
     private int id;

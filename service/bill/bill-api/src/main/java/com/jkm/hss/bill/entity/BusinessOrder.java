@@ -141,6 +141,10 @@ public class BusinessOrder extends BaseEntity {
      * 支付宝/微信订单号
      */
     private String wechatOrAlipayOrderNo;
+    /**
+     * 商户请求时间
+     */
+    private Date merchantReqTime;
 
     /**
      * 是否是待支付

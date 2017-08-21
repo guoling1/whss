@@ -217,6 +217,15 @@ public interface OrderDao {
      * 按下游业务订单号查询
      *
      * @param businessOrderNo
+     * @param payee
+     * @return
+     */
+    Order selectByBusinessOrderNoAndPayee(@Param("businessOrderNo") String businessOrderNo, @Param("payee") long payee);
+
+    /**
+     * 按下游业务订单号查询
+     *
+     * @param businessOrderNo
      * @return
      */
     Order selectByBusinessOrderNo(@Param("businessOrderNo") String businessOrderNo);
@@ -503,9 +512,10 @@ public interface OrderDao {
      * 按业务订单号查询个数
      *
      * @param businessOrderNo
+     * @param payee
      * @return
      */
-    int selectCountByBusinessOrder(@Param("businessOrderNo") String businessOrderNo);
+    int selectCountByBusinessOrderAndPayee(@Param("businessOrderNo") String businessOrderNo, @Param("payee") long payee);
 
     /**
      * 统计指定结算日期的交易

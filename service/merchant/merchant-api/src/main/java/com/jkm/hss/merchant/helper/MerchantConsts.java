@@ -119,5 +119,13 @@ public class MerchantConsts {
         @Key("merchant.xmms.modify")
         @DefaultValue("")
         String merchantXmmsModify();
+
+        @Key("card.open")
+        @DefaultValue("")
+        String cardOpen();
+
+        @Key("card.query")
+        @DefaultValue("")
+        String cardQuery();
     }
 }

@@ -73,6 +73,11 @@
         trade_card_type,
         wechat_or_alipay_order_no,
         remark,
+        merchant_req_time,
+        notify_url,
+        return_url,
+        settle_url,
+        token,
         status
         )
         VALUES
@@ -120,6 +125,11 @@
         #{tradeCardType},
         #{wechatOrAlipayOrderNo},
         #{remark},
+        #{merchantReqTime},
+        #{notifyUrl},
+        #{returnUrl},
+        #{settleUrl},
+        #{token},
         #{status}
         );
     </insert>
@@ -2042,6 +2052,10 @@
         </if>
     </select>
 
+    <select id="selectByBusinessOrderNoAndPayee" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE business_order_no = #{businessOrderNo} and payee = #{payee}
+    </select>
+
     <select id="selectByBusinessOrderNo" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE business_order_no = #{businessOrderNo}
     </select>
@@ -2384,8 +2398,8 @@
         </if>
     </select>
 
-    <select id="selectCountByBusinessOrder" resultType="java.lang.Integer">
-        SELECT COUNT(0) FROM tb_order WHERE business_order_no = #{businessOrderNo} AND status IN (2, 3, 4)
+    <select id="selectCountByBusinessOrderAndPayee" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_order WHERE business_order_no = #{businessOrderNo} and payee = #{payee} AND status IN (2, 3, 4)
     </select>
 
     <!-- 统计金额 -->

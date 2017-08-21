@@ -836,13 +836,24 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      *
      * @param businessOrderNo
+     * @param payee
+     * @return
+     */
+    @Override
+    public Optional<Order> getByBusinessOrderNoAndPayee(final String businessOrderNo, final long payee) {
+        return Optional.fromNullable(this.orderDao.selectByBusinessOrderNoAndPayee(businessOrderNo, payee));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param businessOrderNo
      * @return
      */
     @Override
     public Optional<Order> getByBusinessOrderNo(final String businessOrderNo) {
         return Optional.fromNullable(this.orderDao.selectByBusinessOrderNo(businessOrderNo));
     }
-
     /**
      * {@inheritDoc}
      *
@@ -1695,11 +1706,12 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      *
      * @param businessOrderNo
+     * @param payee
      * @return
      */
     @Override
-    public int getCountByBusinessOrder(final String businessOrderNo) {
-        return this.orderDao.selectCountByBusinessOrder(businessOrderNo);
+    public int getCountByBusinessOrderAndPayee(final String businessOrderNo, final long payee) {
+        return this.orderDao.selectCountByBusinessOrderAndPayee(businessOrderNo, payee);
     }
 
     /**
