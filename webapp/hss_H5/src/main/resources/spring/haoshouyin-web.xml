@@ -126,6 +126,7 @@
             <mvc:mapping path="/appAccount/channelList"/>
             <mvc:mapping path="/appAccount/checkMerchantInfo1"/>
             <mvc:mapping path="/appAccount/queryShall"/>
+            <mvc:mapping path="/appMerchantInfo/getTotalProfit"/>
             <mvc:mapping path="/app/trade/**"/>
             <bean id="appInterceptor" class="com.jkm.hss.interceptor.AppInterceptor">
                 <property name="appAuTokenService" ref="appAuTokenService"/>

@@ -10,7 +10,9 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.bill.helper.responseparam.HssAppTotalProfitResponse;
 import com.jkm.hss.bill.service.PayService;
+import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -46,6 +48,7 @@ import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.helper.response.PartnerRuleSettingResponse;
 import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +64,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,6 +117,30 @@ public class AppMerchantInfoController extends BaseController {
     private UpgradePayRecordService upgradePayRecordService;
     @Autowired
     private PayService payService;
+    @Autowired
+    private ProfitService profitService;
+
+    @Autowired
+    private AppMessageService appMessageService;
+
+    @RequestMapping(value = "/test")
+    public void test(HttpServletRequest request,HttpServletResponse response){
+        Long uid=1927L;
+        EnumMessageType type=EnumMessageType.BENEFIT_MESSAGE;
+        EnumMessageTemplate template=EnumMessageTemplate.VERIFY_FAILURE_TEMPLATE;
+        Map<String,String> param=new HashMap<>();
+        param.put("reason","帝高阳之苗裔兮，朕皇考曰伯庸。\n" +
+                "摄提贞于孟陬兮，惟庚寅吾以降。\n" +
+                "皇览揆余初度兮，肇锡余以嘉名：\n" +
+                "名余曰正则兮，字余曰灵均。\n" +
+                "纷吾既有此内美兮，又重之以修能。\n" +
+                "扈江离与辟芷兮，纫秋兰以为佩。\n" +
+                "汨余若将不及兮，恐年岁之不吾与。\n" +
+                "朝搴阰之木兰兮，夕揽洲之宿莽。\n" +
+                "日月忽其不淹兮，春与秋其代序。");
+        appMessageService.insertMessageInfoAndPush(uid,type,template,param);
+    }
+
     /**
      * HSSH5001002 注册
      *
@@ -759,9 +787,6 @@ public class AppMerchantInfoController extends BaseController {
         if(continueBankInfoRequest.getBankId()<=0){
             return CommonResponse.simpleResponse(-1, "银行卡参数输入有误");
         }
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
@@ -844,11 +869,17 @@ public class AppMerchantInfoController extends BaseController {
         List<CurrentRulesResponse> list = new ArrayList<CurrentRulesResponse>();
         int hasCount = recommendService.selectFriendCount(merchantInfo.get().getId());
         if(upgradeRules.size()>0){
-            for(int i=0;i<upgradeRules.size();i++){
+            for(int i=0;i<upgradeRules.size()-1;i++){
                 CurrentRulesResponse currentRulesResponse = new CurrentRulesResponse();
                 BigDecimal needMoney = needMoney(merchantInfo.get().getProductId(),merchantInfo.get().getLevel(),upgradeRules.get(i).getType());
                 currentRulesResponse.setId(upgradeRules.get(i).getId());
-                currentRulesResponse.setName(upgradeRules.get(i).getName());
+                if(upgradeRules.get(i).getType()==1){
+                    currentRulesResponse.setName("店长");
+                }else if(upgradeRules.get(i).getType()==2){
+                    currentRulesResponse.setName("老板");
+                }else{
+                    currentRulesResponse.setName(upgradeRules.get(i).getName());
+                }
                 currentRulesResponse.setType(upgradeRules.get(i).getType());
                 currentRulesResponse.setNeedCount(upgradeRules.get(i).getPromotionNum());
                 currentRulesResponse.setRestCount(upgradeRules.get(i).getPromotionNum()-hasCount);
@@ -975,6 +1006,29 @@ public class AppMerchantInfoController extends BaseController {
             }
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+    }
+
+    /**
+     * HSSH5001020 获取商户分润
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getTotalProfit", method = RequestMethod.POST)
+    public CommonResponse getTotalProfit() {
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        List<Long> accountIds = new ArrayList<Long>();
+        if(merchantInfoOptional.get().getAccountId()>0){
+            accountIds.add(merchantInfoOptional.get().getAccountId());
+        }
+        if(merchantInfoOptional.get().getSuperDealerId()!=null&&merchantInfoOptional.get().getSuperDealerId()>0){
+            Optional<Dealer> dealerOptional = dealerService.getById(merchantInfoOptional.get().getSuperDealerId());
+            accountIds.add(dealerOptional.get().getAccountId());
+        }
+        if(CollectionUtils.isEmpty(accountIds)){
+            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "此用户没有账户");
+        }
+        HssAppTotalProfitResponse hssAppTotalProfitResponse = profitService.getTotalProfit(accountIds);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", hssAppTotalProfitResponse);
     }
 
     private BigDecimal needMoney(long productId,int currentLevel,int needLevel){

@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by Allen on 2017/1/7.
  */
 public class ActiveControllerTester {
-    public static String url="http://localhost:8081/active/rest";
+    public static String url="http://localhost:8080/active/rest";
     public static String v="v1.0.0";
     public static String privateKey = "6w3W8OOgnRZrkBGS2AdpFTpOykcUsvfI";
     public static String accessToken = "b2068198baf4c479221b03f615c4fbf1";
@@ -175,6 +175,70 @@ public class ActiveControllerTester {
         ActiveControllerTester.testRest(p);
     }
 
+    @Test
+    public void testPlusDownLoad()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001011");
+        p.setAccessToken(accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("865873032687208");
+        String param="{\"id\":\"1\"}";
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testGetCenterLettersList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001012");
+        p.setAccessToken(accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("865873032687208");
+        String param="{\"pageNo\":\"1\",\"pageSize\":\"10\"}";
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testGetMessageList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001013");
+        p.setAccessToken(accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("865873032687208");
+        String param="{\"currentPage\":1}";
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testUpdateReadStatus()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001014");
+        p.setAccessToken(accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("865873032687208");
+        String param="{}";
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
+        ActiveControllerTester.testRest(p);
+    }
+
     public static void testRest(AppParam p)throws Exception{
         HttpURLConnection httpConnection = (HttpURLConnection)new URL(url).openConnection();
         httpConnection.setDoOutput(true);
@@ -212,5 +276,9 @@ public class ActiveControllerTester {
         Gson gson=new Gson();
         AppResult result=gson.fromJson(json, AppResult.class);
         System.out.println("dataResult---"+result.getEncryptDataResult());
+        if(result.getEncryptDataResult()!=null) {
+            String resultDecrypt = AppAesUtil.decryptCBC_NoPaddingFromBase64String(result.getEncryptDataResult(), "utf-8", p.getAccessToken().substring(0, 16), p.getAccessToken().substring(16, 32));
+            System.out.println("解密后的dataResult---" + resultDecrypt);
+        }
     }
 }

@@ -112,7 +112,7 @@
     <select id="selectSuperRecommendByPage" resultType="com.jkm.hss.merchant.entity.RecommendShort">
         SELECT
         i.name,r.type,i.status,i.mobile
-        FROM tb_dealer_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
+        FROM tb_dealer_recommend as r left JOIN tb_merchant_info as i on r.recommend_merchant_id=i.id
         WHERE r.dealer_id=#{merchantId} and r.status = 1 ORDER BY r.create_time DESC
     </select>
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,6 +43,17 @@ public class CommonController extends BaseController {
     private static boolean isImage(final MultipartFile file) {
         List<String> allowType =
                 Arrays.asList("image/png; charset=UTF-8", "image/gif; charset=UTF-8", "image/jpg; charset=UTF-8", "image/jpeg; charset=UTF-8", "image/x-png; charset=UTF-8", "image/pjpeg; charset=UTF-8");
+        return allowType.contains(file.getContentType());
+    }
+
+    /**
+     * 判断文件是否是图片
+     * @param file
+     * @return
+     */
+    private static boolean isHssImage(final MultipartFile file) {
+        List<String> allowType =
+                Arrays.asList("image/png", "image/gif", "image/jpg", "image/jpeg", "image/x-png", "image/pjpeg");
         return allowType.contains(file.getContentType());
     }
 
@@ -85,7 +97,7 @@ public class CommonController extends BaseController {
     @RequestMapping("/hssPicUpload")
     public CommonResponse<BaseEntity> hssPicUpload(@RequestParam("file") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
-        Preconditions.checkArgument(isImage(file), "图片格式不正确");
+        Preconditions.checkArgument(isHssImage(file), "图片格式不正确");
 
         final String fileName = getHssFileName(file.getOriginalFilename());
 
@@ -100,9 +112,11 @@ public class CommonController extends BaseController {
             log.error("上传文件失败", e);
             CommonResponse.simpleResponse(-1, "图片上传失败");
         }
-
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName,expiration);
         return CommonResponse.builder4MapResult(0, "success")
-                .addParam("url", ApplicationConsts.getApplicationConfig().ossBindHost() + "/" + fileName).build();
+                .addParam("url",  fileName)
+                .addParam("showUrl",url.toString()).build();
     }
     /**
      * 获取随机文件名

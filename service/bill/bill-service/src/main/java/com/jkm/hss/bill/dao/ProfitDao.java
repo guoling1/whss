@@ -3,6 +3,7 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.ProfitResponse;
+import com.jkm.hss.bill.helper.responseparam.HssAppTotalProfitResponse;
 import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -49,4 +50,11 @@ public interface ProfitDao {
      * @return
      */
     List<JkmProfitDetailsResponse> getProfitDetails(ProfitDetailsRequest req);
+
+    /**
+     * 获取好收收APP昨日，进入，总计分润
+     * @param accountIds
+     * @return
+     */
+    HssAppTotalProfitResponse getTotalProfit(@Param("accountIds") List<Long> accountIds);
 }
