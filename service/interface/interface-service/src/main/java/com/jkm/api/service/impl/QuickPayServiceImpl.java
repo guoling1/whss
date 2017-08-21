@@ -136,6 +136,7 @@ public class QuickPayServiceImpl implements QuickPayService {
         order.setNotifyUrl(request.getCallbackUrl());
         order.setReturnUrl(request.getPageNotifyUrl());
         order.setSettleUrl(request.getSettleNotifyUrl());
+        order.setToken(accountBank.getToken());
 
         businessOrder.setTradeOrderNo(order.getOrderNo());
         this.businessOrderService.add(businessOrder);
@@ -172,17 +173,19 @@ public class QuickPayServiceImpl implements QuickPayService {
             throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
         }
         final BusinessOrder businessOrder = businessOrderOptional.get();
-        if (!businessOrder.getTradeCardNo().equals(request.getTradeOrderNo())) {
-            throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
-        }
         if (new BigDecimal(request.getOrderAmount()).compareTo(businessOrder.getTradeAmount()) != 0) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.AMOUNT_NOT_SAME);
         }
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(businessOrder.getTradeOrderNo());
-        if (orderOptional.isPresent()) {
+        if (!orderOptional.isPresent()) {
             throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
         }
         final Order order = orderOptional.get();
+        if (StringUtils.isEmpty(request.getTradeOrderNo())
+                || !order.getOrderNo().equals(request.getTradeOrderNo())
+                || !businessOrder.getOrderNo().equals(request.getOrderNo())) {
+            throw new JKMTradeServiceException(JKMTradeErrorCode.ORDER_NOT_EXIST);
+        }
         final Pair<Integer, String> resultPair = this.payService.confirmUnionPay(order.getId(), request.getSmsCode());
         if (-1 == resultPair.getLeft()) {
             log.error("商户[{}], 商户订单号[{}]，确认支付失败-[请勿重复确认支付]", request.getMerchantNo(), request.getOrderNo());

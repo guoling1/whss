@@ -70,6 +70,7 @@ public class HttpClient implements Closeable{
      */
     public String jsonPost(final String uri,
                        final Map<String, String> paramMap) {
+        log.info("http-json_post 请求：url-[{}], param[{}]", uri, paramMap);
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
                 .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "UTF-8"));
@@ -93,7 +94,7 @@ public class HttpClient implements Closeable{
      */
     public String formPost(final String uri,
                            final Map<String, String> paramMap) {
-
+        log.info("http-form_post 请求：url-[{}], param[{}]", uri, paramMap);
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
                 .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "UTF-8"));

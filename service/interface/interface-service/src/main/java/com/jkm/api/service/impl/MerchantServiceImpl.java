@@ -250,7 +250,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
         //初始化用户
         UserInfo uo = new UserInfo();
-        uo.setMobile(MerchantSupport.encryptMobile(apiMerchantRequest.getMobile()));
+        uo.setMobile(mi.getMobile());
         uo.setType(EnumUserInfoType.HSS.getId());
         uo.setRoleId(0);
         uo.setStatus(EnumCommonStatus.NORMAL.getId());

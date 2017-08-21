@@ -153,10 +153,11 @@ public enum EnumPayChannelSign {
      * 微信官方支付
      */
     WECHAT_PAY(1301, "wechat_pay", EnumPaymentChannel.WECHAT_PAY, "微信官方支付", EnumUpperChannel.WECHAT, false, EnumBalanceTimeType.T1, true),
+
     /**
-     *  玖和快捷
+     * 玖和快捷
      */
-    JH_UNIONPAY(1401, "jh_unionpay", EnumPaymentChannel.UNIONPAY, "玖和快捷", EnumUpperChannel.JH_UNIONPAY, false, EnumBalanceTimeType.D0, false);
+    JH_UNIONPAY(1401, "jh_unionpay", EnumPaymentChannel.UNIONPAY, "玖和快捷", EnumUpperChannel.JH_UNIONPAY, true, EnumBalanceTimeType.D0, false);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;

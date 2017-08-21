@@ -92,7 +92,7 @@ public class HssApiController extends BaseController {
             //参数校验
 //            request.validateParam();
             if (request.verifySign(dealer.getApiKey())) {
-                log.error("商户号[{}]-商户订单号[{}]-预下单签名错误", request.getMerchantNo(), request.getOrderNo());
+                log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-预下单签名错误");
                 preQuickPayResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
                 preQuickPayResponse.setSign(preQuickPayResponse.createSign(""));
@@ -106,11 +106,11 @@ public class HssApiController extends BaseController {
             preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
             preQuickPayResponse.setReturnMsg("预下单成功");
         } catch (final JKMTradeServiceException e) {
-            log.error("商户号[{}]-商户订单号[{}]-预下单异常", e);
+            log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-预下单异常", e);
             preQuickPayResponse.setReturnCode(e.getErrorCode());
             preQuickPayResponse.setReturnMsg(e.getErrorMessage());
         } catch (final Throwable e) {
-            log.error("商户号[{}]-商户订单号[{}]-预下单异常", e);
+            log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-预下单异常", e);
             preQuickPayResponse.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
             preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
@@ -155,7 +155,7 @@ public class HssApiController extends BaseController {
             //参数校验
 //            request.validateParam();
             if (request.verifySign(dealer.getApiKey())) {
-                log.error("商户号[{}]-商户订单号[{}]-确认支付签名错误", request.getMerchantNo(), request.getOrderNo());
+                log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-确认支付签名错误");
                 response.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 response.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
                 response.setSign(response.createSign(dealer.getApiKey()));
@@ -168,11 +168,11 @@ public class HssApiController extends BaseController {
             response.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
             response.setReturnMsg("确认支付成功");
         } catch (final JKMTradeServiceException e) {
-            log.error("商户号[{}]-商户订单号[{}]-确认支付异常", e);
+            log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-确认支付异常", e);
             response.setReturnCode(e.getErrorCode());
             response.setReturnMsg(e.getErrorMessage());
         } catch (final Throwable e) {
-            log.error("商户号[{}]-商户订单号[{}]-确认支付异常", e);
+            log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-确认支付异常", e);
             response.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
             response.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
@@ -216,7 +216,7 @@ public class HssApiController extends BaseController {
             //参数校验
 //            request.validateParam();
             if (request.verifySign(dealer.getApiKey())) {
-                log.error("商户号[{}]-商户订单号[{}]-订单查询签名错误", request.getMerchantNo(), request.getOrderNo());
+                log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-订单查询签名错误");
                 response.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 response.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
                 response.setSign(response.createSign(dealer.getApiKey()));
@@ -264,11 +264,11 @@ public class HssApiController extends BaseController {
             response.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
             response.setReturnMsg("查询成功");
         } catch (final JKMTradeServiceException e) {
-            log.error("商户号[{}]-商户订单号[{}]-确认支付异常", e);
+            log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-确认支付异常", e);
             response.setReturnCode(e.getErrorCode());
             response.setReturnMsg(e.getErrorMessage());
         } catch (final Throwable e) {
-            log.error("商户号[{}]-商户订单号[{}]-确认支付异常", e);
+            log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-确认支付异常", e);
             response.setReturnCode(JKMTradeErrorCode.SYS_ERROR.getErrorCode());
             response.setReturnMsg(JKMTradeErrorCode.SYS_ERROR.getErrorMessage());
         }
@@ -455,4 +455,11 @@ public class HssApiController extends BaseController {
         return SdkSerializeUtil.convertObjToMap(openCardQueryResponse);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "test", method = RequestMethod.POST)
+    public Object test(final HttpServletRequest request) throws IOException {
+        final String read = super.read(request);
+        log.info("通知商户模拟-[{}]", read);
+        return "{'returnCode': 'success'}";
+    }
 }

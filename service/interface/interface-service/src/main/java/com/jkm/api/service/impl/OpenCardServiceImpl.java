@@ -11,6 +11,7 @@ import com.jkm.api.helper.requestparam.OpenCardRequest;
 import com.jkm.api.helper.responseparam.OpenCardQueryResponse;
 import com.jkm.api.service.OpenCardService;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.merchant.dao.OpenCardRecordDao;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankCardBin;
@@ -86,12 +87,12 @@ public class OpenCardServiceImpl implements OpenCardService {
         openCardRecord.setCardNo(openCardRequest.getCardNo());
         openCardRecord.setFrontUrl(openCardRequest.getFrontUrl());
         openCardRecord.setStatus(EnumOpenCardStatus.SUBMIT.getId());
-        openCardRecord.setCreateTime(new Date());
+        openCardRecord.setCreateTime(DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss), DateFormatUtil.yyyyMMddHHmmss));
         openCardRecordDao.insert(openCardRecord);
         final Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("merchantNo", openCardRequest.getMerchantNo());
         paramsMap.put("merchantOrderNo", openCardRequest.getBindCardReqNo());
-        paramsMap.put("merchantReqTime", openCardRecord.getCreateTime().getTime() + "");
+        paramsMap.put("merchantReqTime", DateFormatUtil.format(openCardRecord.getCreateTime(), DateFormatUtil.yyyyMMddHHmmss));
         paramsMap.put("cardNo", openCardRequest.getCardNo());
         try {
             final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardOpen(), paramsMap);
@@ -146,7 +147,7 @@ public class OpenCardServiceImpl implements OpenCardService {
                 }
                 paramsMap.put("merchantNo", openCardQueryRequest.getMerchantNo());
                 paramsMap.put("merchantOrderNo", openCardRecord.getBindCardReqNo());
-                paramsMap.put("merchantReqTime",  openCardRecord.getCreateTime().getTime() + "");
+                paramsMap.put("merchantReqTime", DateFormatUtil.format(openCardRecord.getCreateTime(), DateFormatUtil.yyyyMMddHHmmss));
                 final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardQuery(), paramsMap);
                 if (result != null && !"".equals(result)) {
                     final JSONObject jo = JSON.parseObject(result);

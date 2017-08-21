@@ -305,6 +305,10 @@ public class Order extends BaseEntity {
      * 结算通知url
      */
     private String settleUrl;
+    /**
+     * 上游渠道支付token
+     */
+    private String token;
 
     /**
      * 获取签名

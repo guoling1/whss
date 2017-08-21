@@ -70,7 +70,7 @@ public enum EnumUpperChannel {
      */
     WECHAT(13, "WECHAT","微信官方支付"),
 
-    JH_UNIONPAY(14, "JH_UNIONPAY","玖和快捷");
+    JH_UNIONPAY(14, "JH_UNIONPAY", "玖和快捷");
 
     @Getter
     private int id;
@@ -86,13 +86,23 @@ public enum EnumUpperChannel {
     }
 
     /**
-     * 是否需要需要保持银行卡（部分渠道需要卡流程已经保存，部分只有支付成功才保存）
+     * 是否需要保持银行卡（部分渠道需要卡流程已经保存，部分只有支付成功才保存）
      *
-     * @param id
+     * @param channelId
      * @return
      */
-    public static boolean isNotNeedSaveBankCard(final int id) {
-        return true;
+    public static boolean isNotNeedSaveBankCard(final int channelId) {
+        return JH_UNIONPAY.getId() == channelId;
+    }
+
+    /**
+     * 是否需要计算结算金额（自动结算的渠道，部分渠道需要）
+     *
+     * @param channelId
+     * @return
+     */
+    public static boolean isNeedCalculate(final int channelId) {
+        return JH_UNIONPAY.getId() == channelId;
     }
 }
 

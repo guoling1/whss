@@ -68,6 +68,7 @@ public class SettleCallbackServiceImpl implements SettleCallbackService {
             response.setReturnCode(JKMTradeErrorCode.SUCCESS.getErrorCode());
             response.setReturnMsg(JKMTradeErrorCode.SUCCESS.getErrorMessage());
             response.setSign(response.createSign(dealer.getApiKey()));
+            log.info("商户[{}]-商户订单号[{}]-交易订单号[{}],结算通知商户，参数-[{}]", order.getOrderNo(), order.getBusinessOrderNo(), order.getOrderNo(), response);
             final String result = httpClientFacade.jsonPost(order.getNotifyUrl(), SdkSerializeUtil.convertObjToMap(response));
             final JSONObject resultJo = JSON.parseObject(result);
             if ("SUCCESS".equalsIgnoreCase(resultJo.getString("returnCode"))) {

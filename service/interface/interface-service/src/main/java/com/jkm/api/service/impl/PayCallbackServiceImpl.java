@@ -75,6 +75,7 @@ public class PayCallbackServiceImpl implements PayCallbackService {
                 payCallbackResponse.setReturnMsg(msg);
             }
             payCallbackResponse.setSign(payCallbackResponse.createSign(dealer.getApiKey()));
+            log.info("商户[{}]-商户订单号[{}]-交易订单号[{}],支付通知商户，参数-[{}]", order.getOrderNo(), order.getBusinessOrderNo(), order.getOrderNo(), payCallbackResponse);
             final String result = httpClientFacade.jsonPost(order.getNotifyUrl(), SdkSerializeUtil.convertObjToMap(payCallbackResponse));
             final JSONObject resultJo = JSON.parseObject(result);
             if ("SUCCESS".equalsIgnoreCase(resultJo.getString("returnCode"))) {

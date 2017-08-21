@@ -1154,6 +1154,7 @@ public class PayServiceImpl implements PayService {
     public Pair<Integer, String> unionPay(final long orderId, final long merchantId, final String amount, final int parentChannelSign,
                                           final long creditBankCardId, final String appId) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        final AccountBank settleAccountBank = this.accountBankService.getDefault(merchant.getAccountId());
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         final PaymentSdkUnionPayRequest paymentSdkUnionPayRequest = new PaymentSdkUnionPayRequest();
@@ -1174,7 +1175,8 @@ public class PayServiceImpl implements PayService {
         paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
         paymentSdkUnionPayRequest.setToken(accountBank.getToken());
-        paymentSdkUnionPayRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
+        paymentSdkUnionPayRequest.setSettleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
+        paymentSdkUnionPayRequest.setSettleCardNo(settleAccountBank.getBankNo());
         PaymentSdkUnionPayResponse paymentSdkUnionPayResponse;
         try {
             final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));
@@ -1224,6 +1226,15 @@ public class PayServiceImpl implements PayService {
             paymentSdkConfirmUnionPayRequest.setOrderNo(order.getOrderNo());
             paymentSdkConfirmUnionPayRequest.setCode(order.getPayType());
             paymentSdkConfirmUnionPayRequest.setYzm(code);
+            if (EnumUpperChannel.isNeedCalculate(order.getUpperChannel())) {
+                final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
+                final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(order,EnumProductType.HSS, merchant.getId(), order.getPayChannelSign());
+                final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
+                final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(order, EnumProductType.HSS, merchant.getId(), order.getPayChannelSign());
+                paymentSdkConfirmUnionPayRequest.setSettleAmount(order.getTradeAmount().subtract(merchantPayPoundage).subtract(merchantWithdrawPoundage).toPlainString());
+                paymentSdkConfirmUnionPayRequest.setToken(order.getToken());
+                log.info("订单号[{}], 快捷确认下单结算金额[{}]", order.getOrderNo(), paymentSdkConfirmUnionPayRequest.getSettleAmount());
+            }
             try {
                 final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_CONFRIM, SdkSerializeUtil.convertObjToMap(paymentSdkConfirmUnionPayRequest));
                 log.info("订单号[{}], 快捷确认下单结果[{}]", order.getOrderNo(), resultStr);

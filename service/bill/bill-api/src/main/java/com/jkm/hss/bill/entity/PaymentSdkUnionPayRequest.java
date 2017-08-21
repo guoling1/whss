@@ -89,4 +89,9 @@ public class PaymentSdkUnionPayRequest {
      * 结算通知url
      */
     private String settleNotifyUrl;
+
+    /**
+     * 结算卡号
+     */
+    private String settleCardNo;
 }
