@@ -68,7 +68,9 @@ public enum EnumUpperChannel {
     /**
      * 微信官方支付
      */
-    WECHAT(13, "WECHAT","微信官方支付");
+    WECHAT(13, "WECHAT","微信官方支付"),
+
+    JH_UNIONPAY(14, "JH_UNIONPAY","玖和快捷");
 
     @Getter
     private int id;
