@@ -1,6 +1,5 @@
 package com.jkm.api.helper.responseparam;
 
-import com.google.common.base.Objects;
 import com.jkm.api.helper.sdk.serialize.SdkSignUtil;
 import com.jkm.api.helper.sdk.serialize.annotation.SdkSerializeAlias;
 import lombok.Data;

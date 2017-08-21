@@ -91,7 +91,7 @@ public class HssApiController extends BaseController {
         try {
             //参数校验
 //            request.validateParam();
-            if (request.verifySign(dealer.getApiKey())) {
+            if (!request.verifySign(dealer.getApiKey())) {
                 log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-预下单签名错误");
                 preQuickPayResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 preQuickPayResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
@@ -154,7 +154,7 @@ public class HssApiController extends BaseController {
         try {
             //参数校验
 //            request.validateParam();
-            if (request.verifySign(dealer.getApiKey())) {
+            if (!request.verifySign(dealer.getApiKey())) {
                 log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-确认支付签名错误");
                 response.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 response.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
@@ -215,7 +215,7 @@ public class HssApiController extends BaseController {
         try {
             //参数校验
 //            request.validateParam();
-            if (request.verifySign(dealer.getApiKey())) {
+            if (!request.verifySign(dealer.getApiKey())) {
                 log.error("商户号[" + request.getMerchantNo() + "]-商户订单号[" + request.getOrderNo() + "]-订单查询签名错误");
                 response.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 response.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
@@ -310,7 +310,7 @@ public class HssApiController extends BaseController {
         try {
             //取秘钥
             //参数校验
-            if (request.verifySign(dealer.getApiKey())) {
+            if (!request.verifySign(dealer.getApiKey())) {
                 log.error("商户入网签名错误");
                 mctApplyResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 mctApplyResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
@@ -372,7 +372,7 @@ public class HssApiController extends BaseController {
         try {
             //取秘钥
             //参数校验
-            if (request.verifySign(dealer.getApiKey())) {
+            if (!request.verifySign(dealer.getApiKey())) {
                 log.error("快捷绑卡签名错误");
                 openCardResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 openCardResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
@@ -431,7 +431,7 @@ public class HssApiController extends BaseController {
         try {
             //取秘钥
             //参数校验
-            if (request.verifySign(dealer.getApiKey())) {
+            if (!request.verifySign(dealer.getApiKey())) {
                 log.error("快捷绑卡查询签名错误");
                 openCardQueryResponse.setReturnCode(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorCode());
                 openCardQueryResponse.setReturnMsg(JKMTradeErrorCode.CHECK_SIGN_FAIL.getErrorMessage());
