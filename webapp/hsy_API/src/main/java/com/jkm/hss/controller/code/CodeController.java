@@ -106,17 +106,12 @@ public class CodeController extends BaseController {
                     Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
                 }
                 String appId = WxConstants.APP_HSY_ID;
-                /*if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()==EnumPayChannelSign.WECHAT_PAY.getId()){
+                if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()==EnumPayChannelSign.WECHAT_PAY.getId()){
                     if(userChannelPolicyOptional.get().getSubAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getSubAppId())){
                         appId = userChannelPolicyOptional.get().getSubAppId();
                     }else{
                         appId = userChannelPolicyOptional.get().getAppId();
                     }
-                }*/
-                if(userChannelPolicyOptional.get().getSubAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getSubAppId())){
-                    appId = userChannelPolicyOptional.get().getSubAppId();
-                }else{
-                    appId = userChannelPolicyOptional.get().getAppId();
                 }
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
