@@ -285,13 +285,13 @@ public class AppAccountController extends BaseController {
                     if (input.getFirstMerchantId() == shallRequest.getMerchantId()){
                         jsonObject.put("type","1");
                         jsonObject.put("name",input.getMerchantName());
-                        jsonObject.put("date", input.getCreateTime());
+                        jsonObject.put("date", input.getCreateTime().getTime());
                         jsonObject.put("money", input.getFirstMerchantShallAmount());
                         jsonObject.put("shallId", input.getId());
                     }else{
                         jsonObject.put("type","2");
                         jsonObject.put("name",getInDirectName(input.getMerchantName()));
-                        jsonObject.put("date", input.getCreateTime());
+                        jsonObject.put("date", input.getCreateTime().getTime());
                         jsonObject.put("money", input.getSecondMerchantShallAmount());
                         jsonObject.put("shallId", input.getId());
                     }
@@ -333,13 +333,13 @@ public class AppAccountController extends BaseController {
                         //直属商户
                         jsonObject.put("type","1");
                         jsonObject.put("name",payMerchant.getMerchantName());
-                        jsonObject.put("date", input.getCreateTime());
+                        jsonObject.put("date", input.getCreateTime().getTime());
                         jsonObject.put("money", input.getSplitAmount());
                         jsonObject.put("shallId", input.getId());
                     }else{
                         jsonObject.put("type","2");
                         jsonObject.put("name",getInDirectName(payMerchant.getMerchantName()));
-                        jsonObject.put("date", input.getCreateTime());
+                        jsonObject.put("date", input.getCreateTime().getTime());
                         jsonObject.put("money", input.getSplitAmount());
                         jsonObject.put("shallId", input.getId());
                     }
