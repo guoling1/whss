@@ -223,6 +223,14 @@ public interface OrderDao {
     Order selectByBusinessOrderNoAndPayee(@Param("businessOrderNo") String businessOrderNo, @Param("payee") long payee);
 
     /**
+     * 按下游业务订单号查询
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    Order selectByBusinessOrderNo(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
      * 查询当前账户的交易总额
      *
      * @param accountId

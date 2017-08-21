@@ -847,6 +847,16 @@ public class OrderServiceImpl implements OrderService {
     /**
      * {@inheritDoc}
      *
+     * @param businessOrderNo
+     * @return
+     */
+    @Override
+    public Optional<Order> getByBusinessOrderNo(final String businessOrderNo) {
+        return Optional.fromNullable(this.orderDao.selectByBusinessOrderNo(businessOrderNo));
+    }
+    /**
+     * {@inheritDoc}
+     *
      * @param accountId
      * @param appId
      * @param serviceType

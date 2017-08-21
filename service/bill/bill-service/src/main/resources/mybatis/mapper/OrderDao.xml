@@ -2056,6 +2056,10 @@
         SELECT * FROM tb_order WHERE business_order_no = #{businessOrderNo} and payee = #{payee}
     </select>
 
+    <select id="selectByBusinessOrderNo" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE business_order_no = #{businessOrderNo}
+    </select>
+
     <select id="selectTotalTradeAmountByAccountId" resultType="java.math.BigDecimal">
         SELECT SUM(trade_amount) FROM tb_order WHERE app_id = #{appId} AND payee = #{accountId} AND service_type = #{serviceType} AND trade_type = 1
     </select>

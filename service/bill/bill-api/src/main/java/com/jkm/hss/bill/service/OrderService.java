@@ -243,6 +243,14 @@ public interface OrderService {
     Optional<Order> getByBusinessOrderNoAndPayee(String businessOrderNo, long payee);
 
     /**
+     * 按下游业务订单号查询
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    Optional<Order> getByBusinessOrderNo(String businessOrderNo);
+
+    /**
      * 查询当前账户的交易总额
      *
      * @param accountId
