@@ -93,7 +93,7 @@ public class OpenCardServiceImpl implements OpenCardService {
         final OpenCardRecord cardRecord = this.openCardRecordDao.selectById(openCardRecord.getId());
         paramsMap.put("merchantNo", openCardRequest.getMerchantNo());
         paramsMap.put("merchantOrderNo", openCardRequest.getBindCardReqNo());
-        paramsMap.put("merchantReqTime", DateFormatUtil.format(cardRecord.getCreateTime(), DateFormatUtil.yyyyMMddHHmmss));
+        paramsMap.put("merchantReqTime", cardRecord.getCreateTime().getTime() + "");
         paramsMap.put("cardNo", openCardRequest.getCardNo());
         try {
             final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardOpen(), paramsMap);
@@ -148,7 +148,7 @@ public class OpenCardServiceImpl implements OpenCardService {
                 }
                 paramsMap.put("merchantNo", openCardQueryRequest.getMerchantNo());
                 paramsMap.put("merchantOrderNo", openCardRecord.getBindCardReqNo());
-                paramsMap.put("merchantReqTime", DateFormatUtil.format(openCardRecord.getCreateTime(), DateFormatUtil.yyyyMMddHHmmss));
+                paramsMap.put("merchantReqTime", openCardRecord.getCreateTime().getTime() + "");
                 final String result = this.httpClientFacade.jsonPost(MerchantConsts.getMerchantConfig().cardQuery(), paramsMap);
                 if (result != null && !"".equals(result)) {
                     final JSONObject jo = JSON.parseObject(result);
