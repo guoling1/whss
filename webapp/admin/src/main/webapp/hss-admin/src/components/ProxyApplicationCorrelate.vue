@@ -14,7 +14,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="level" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="level" placeholder="请输入内容" disabled></el-input>
                 </div>
               </el-col>
             </el-row>
