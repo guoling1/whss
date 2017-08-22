@@ -41,6 +41,8 @@ const StoreNoticeDet = r => require.ensure([], () => r(require('components/Store
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
 const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
 const Achievement = r => require.ensure([], () => r(require('components/Achievement')), 'group-record');
+const CopyList = r => require.ensure([], () => r(require('components/CopyList')), 'group-record');
+const CopyListDetail = r => require.ensure([], () => r(require('components/CopyListDetail')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
@@ -52,6 +54,8 @@ const AgentPersonnel = r => require.ensure([], () => r(require('components/Agent
 const AgentPersonnelDet = r => require.ensure([], () => r(require('components/AgentPersonnelDet')), 'group-record');
 const AgentRole = r => require.ensure([], () => r(require('components/AgentRole')), 'group-record');
 const AgentRoleAdd = r => require.ensure([], () => r(require('components/AgentRoleAdd')), 'group-record');
+const ProxyApplicationList = r => require.ensure([], () => r(require('components/ProxyApplicationList')), 'group-record');
+const ProxyApplicationCorrelate = r => require.ensure([], () => r(require('components/ProxyApplicationCorrelate')), 'group-record');
 //设备
 const Issue = r => require.ensure([], () => r(require('components/Issue')), 'group-record');
 const IssueRecord = r => require.ensure([], () => r(require('components/IssueRecord')), 'group-record');
@@ -150,6 +154,7 @@ let routes = [
       {path: 'newDealDet', name: 'NewDealDet', component: NewDealDet},
       {path: 'retrieval', name: 'Retrieval', component: Retrieval},
       {path: 'retrievalDet', name: 'RetrievalDet', component: RetrievalDet},
+      {path: 'copyListDetail', name: 'CopyListDetail', component: CopyListDetail},
       {path: 'newWithdrawalQuery', name: 'NewWithdrawalQuery', component: NewWithdrawalQuery},
       {path: 'deal', name: 'DealQuery', component: DealQuery},
       {path: 'dealDet', name: 'DealDet', component: DealDet},
@@ -196,6 +201,7 @@ let routes = [
       {path: 'profitSecDet', name: 'ProfitSecDet', component: ProfitSecDet},
       {path: 'personnelList', name: 'PersonnelList', component: PersonnelList},
       {path: 'personnelAdd', name: 'PersonnelAdd', component: PersonnelAdd},
+      {path: 'proxyApplicationCorrelate', name: 'ProxyApplicationCorrelate', component: ProxyApplicationCorrelate},
       {path: 'role', name: 'Role', component: Role},
       {path: 'roleAdd', name: 'RoleAdd', component: RoleAdd},
       {path: 'test', name: 'Test', component: Test},
@@ -232,6 +238,7 @@ let routes = [
       {path: 'agentPersonnelDet', name: 'AgentPersonnelDet', component: AgentPersonnelDet},
       {path: 'agentRole', name: 'AgentRole', component: AgentRole},
       {path: 'agentRoleAdd', name: 'AgentRoleAdd', component: AgentRoleAdd},
+      {path: 'proxyApplicationList', name: 'ProxyApplicationList', component: ProxyApplicationList},
       {path: 'storeAuditHSY', name: 'StoreAuditHSY', component: StoreAuditHSY},
       {path: 't1Audit', name: 'T1Audit', component: T1Audit},
       {path: 'tAuditDealer', name: 'TAuditDealer', component: TAuditDealer},
@@ -251,6 +258,7 @@ let routes = [
       {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
       {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},
       {path: 'storeAudit', name: 'StoreAudit', component: StoreAudit},
+      {path: 'copyList', name: 'CopyList', component: CopyList},
       {path: 'agentListFir', name: 'AgentListFir', component: AgentListFir},
       {path: 'agentListSec', name: 'AgentListSec', component: AgentListSec},
       {path: 'agentAdd', name: 'AgentAdd', component: AgentAdd},

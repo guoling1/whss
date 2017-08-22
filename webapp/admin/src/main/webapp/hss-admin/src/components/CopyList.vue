@@ -3,30 +3,24 @@
     <div class="col-md-12">
       <div class="box" style="overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">银行卡限额</h3>
+          <h3 class="box-title">中央文案库</h3>
         </div>
         <div class="box-body">
           <!--筛选-->
           <ul class="search">
             <li class="same">
-              <label>通道名称:</label>
+              <label>发布日期:</label>
               <el-input style="width: 188px" v-model="query.channelName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>通道编码:</label>
-              <el-input style="width: 188px" v-model="query.channelCode" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>银行编码:</label>
-              <el-input style="width: 188px" v-model="query.bankCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
               <div class="btn btn-primary" @click="reset">重置</div>
+              <div class="btn btn-primary" @click="release">发布</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom: 15px" :data="records"
+                    border>
             <el-table-column width="62" label="序号">
               <template scope="scope">
                 <div>{{scope.$index+1}}</div>
@@ -43,7 +37,8 @@
             <el-table-column label="操作" width="90">
               <template scope="scope">
                 <a href="#" @click="_$power(1,scope.row.id,onOff,'boss_quota_enable')" v-if="scope.row.status==0">启用</a>
-                <a href="#" @click="_$power(2,scope.row.id,onOff,'boss_quota_disable')" v-if="scope.row.status==1">禁用</a>
+                <a href="#" @click="_$power(2,scope.row.id,onOff,'boss_quota_disable')"
+                   v-if="scope.row.status==1">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -69,12 +64,11 @@
     name: 'limitList',
     data(){
       return {
-        query:{
-          pageNo:1,
-          pageSize:10,
-          channelName:'',
-          channelCode:'',
-          bankCode:'',
+        query: {
+          pageNo: 1,
+          pageSize: 10,
+          startTime: '',
+          endTime: ''
         },
         records: [],
         count: 0,
@@ -87,28 +81,31 @@
       this.getData()
     },
     methods: {
+      release: function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/copyListDetail');
+      },
       reset: function () {
         this.query = {
-          pageNo:1,
-          pageSize:10,
-          channelName:'',
-          channelCode:'',
-          bankCode:'',
+          pageNo: 1,
+          pageSize: 10,
+          startTime: '',
+          endTime: ''
         };
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/channel/querySupportBank',this.$data.query)
+        this.$http.post('/admin/center/getList', this.query)
           .then(function (res) {
-            setTimeout(()=>{
+            console.log(res);
+            setTimeout(() => {
               this.loading = false;
               this.records = res.data.records;
-          },1000)
+            }, 1000)
             this.count = res.data.count;
-          },function (err) {
-            setTimeout(()=>{
+          }, function (err) {
+            setTimeout(() => {
               this.loading = false;
-          },1000)
+            }, 1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -116,32 +113,32 @@
             });
           })
       },
-      onOff(val,id){
+      onOff(val, id){
         this.loading = true;
-        this.$http.post('/admin/channel/auditSupportBank',{id:id,operation:val})
+        this.$http.post('/admin/channel/auditSupportBank', {id: id, operation: val})
           .then(function (res) {
-            for(var i=0;i<this.records.length;i++){
-              if(this.records[i].id == id){
-                if(val==1){
+            for (var i = 0; i < this.records.length; i++) {
+              if (this.records[i].id == id) {
+                if (val == 1) {
                   this.records[i].status = '1'
-                }else if(val==2){
+                } else if (val == 2) {
                   this.records[i].status = '0'
                 }
 
               }
             }
-            setTimeout(()=>{
+            setTimeout(() => {
               this.loading = false;
-          },1000)
+            }, 1000)
             this.$message({
               showClose: true,
               message: '操作成功',
               type: 'success'
             });
-          },function (err) {
-            setTimeout(()=>{
+          }, function (err) {
+            setTimeout(() => {
               this.loading = false;
-          },1000)
+            }, 1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -171,11 +168,12 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
-    margin:0;
+    margin: 0;
   }
-  .search{
-    margin-bottom:0;
-    label{
+
+  .search {
+    margin-bottom: 0;
+    label {
       display: block;
       margin-bottom: 0;
     }
@@ -186,7 +184,8 @@
     display: inline-block;
     margin: 0 15px 15px 0;
   }
-  .btn{
+
+  .btn {
     font-size: 12px;
   }
 </style>
