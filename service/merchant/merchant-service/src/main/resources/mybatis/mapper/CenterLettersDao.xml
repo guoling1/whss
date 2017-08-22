@@ -111,4 +111,24 @@
         FROM tb_center_letters
         WHERE status=0 and id = #{lettersId}
     </select>
+
+    <select id="getNewLettersCount" resultType="boolean">
+       select count(1) from tb_center_letters where create_time>(select last_time from tb_letters_watch_time where merchant_id=#{merchantId})
+    </select>
+
+    <insert id="insertWatchTime" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_letters_watch_time (merchant_id,last_time) values (#{merchantId},now());
+    </insert>
+
+    <update id="updateWatchTime">
+        UPDATE tb_letters_watch_time
+        SET last_time=now()
+        WHERE merchant_id = #{merchantId}
+    </update>
+
+    <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.LettersWatchTime">
+        SELECT id,merchant_id,last_time
+        FROM tb_letters_watch_time
+        WHERE merchant_id = #{merchantId} limit 0,1
+    </select>
 </mapper>

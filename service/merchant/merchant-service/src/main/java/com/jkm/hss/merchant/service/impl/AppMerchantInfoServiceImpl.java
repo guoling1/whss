@@ -22,6 +22,8 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.merchant.constant.AppConstant;
 import com.jkm.hss.merchant.dao.AppAuTokenDao;
+import com.jkm.hss.merchant.dao.CenterLettersDao;
+import com.jkm.hss.merchant.dao.MessageInfoDao;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.exception.ApiHandleException;
@@ -97,6 +99,10 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
     private DealerRecommendService dealerRecommendService;
     @Autowired
     private PushNoticeService pushNoticeService;
+    @Autowired
+    private CenterLettersDao centerLettersDao;
+    @Autowired
+    private MessageInfoDao messageInfoDao;
 
     /**
      * 获取验证码 HSS001005
@@ -673,5 +679,21 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return JSONObject.fromObject(pageModel).toString();
+    }
+
+    /**
+     * HSS001016 是否有红点
+     * @param dataParam
+     * @param appParam
+     * @return
+     * @throws ApiHandleException
+     */
+    public String getFlag(String dataParam, AppParam appParam) throws ApiHandleException {
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+        List<AppAuUserToken> appAuUserTokens = appAuTokenDao.findLoginInfoByAccessToken(appParam.getAccessToken());
+        boolean isShowShare = centerLettersDao.getNewLettersCount(appAuUserTokens.get(0).getUid());
+        boolean isShowMessage = messageInfoDao.isExistingTheUnreadMessage(appAuUserTokens.get(0).getUid());
+        return "{\"isShowShare\":\""+isShowShare+"\",\"isShowMessage\":\""+isShowMessage+"\"}";
     }
 }

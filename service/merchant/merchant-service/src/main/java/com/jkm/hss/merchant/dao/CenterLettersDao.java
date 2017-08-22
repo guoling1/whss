@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.CenterImage;
 import com.jkm.hss.merchant.entity.CenterLetters;
+import com.jkm.hss.merchant.entity.LettersWatchTime;
 import com.jkm.hss.merchant.helper.request.GetLettersListRequest;
 import com.jkm.hss.merchant.helper.response.LettersListResponse;
 import org.apache.ibatis.annotations.Param;
@@ -23,5 +24,9 @@ public interface CenterLettersDao {
     void PlusCount(@Param("lettersId")Long lettersId);
     void deleteImage(@Param("lettersId")Long lettersId);
     CenterLetters selectById(@Param("lettersId")Long lettersId);
+    boolean getNewLettersCount(@Param("merchantId")Long merchantId);
+    void insertWatchTime(@Param("merchantId")Long merchantId);
+    void updateWatchTime(@Param("merchantId")Long merchantId);
+    LettersWatchTime selectByMerchantId(@Param("merchantId")Long merchantId);
 
 }

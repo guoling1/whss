@@ -8,9 +8,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.merchant.constant.AppConstant;
+import com.jkm.hss.merchant.dao.AppAuTokenDao;
 import com.jkm.hss.merchant.dao.CenterLettersDao;
+import com.jkm.hss.merchant.entity.AppAuUserToken;
 import com.jkm.hss.merchant.entity.CenterImage;
 import com.jkm.hss.merchant.entity.CenterLetters;
+import com.jkm.hss.merchant.entity.LettersWatchTime;
 import com.jkm.hss.merchant.exception.ApiHandleException;
 import com.jkm.hss.merchant.exception.ResultCode;
 import com.jkm.hss.merchant.helper.AppParam;
@@ -40,6 +43,8 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
     private CenterLettersDao centerLettersDao;
     @Autowired
     private OSSClient ossClient;
+    @Autowired
+    private AppAuTokenDao appAuTokenDao;
 
     /**
      * HSS001011 下载次数加1
@@ -68,6 +73,9 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
      * @throws ApiHandleException
      */
     public String getCenterLettersList(String dataParam, AppParam appParam) throws ApiHandleException {
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+        List<AppAuUserToken> appAuUserTokens = appAuTokenDao.findLoginInfoByAccessToken(appParam.getAccessToken());
         JSONObject jo = JSONObject.fromObject(dataParam);
         int pageNo = jo.getInt("pageNo");
         int pageSize = jo.getInt("pageSize");
@@ -114,6 +122,13 @@ public class AppCenterLettersServiceImpl implements AppCenterLettersService {
                 appCenterLettersDetailResponse.add(appCenterLettersDetailResponse1);
             }
             pageModel.setRecords(appCenterLettersDetailResponse);
+        }
+
+        LettersWatchTime lettersWatchTime = centerLettersDao.selectByMerchantId(appAuUserTokens.get(0).getUid());
+        if(lettersWatchTime==null){
+            centerLettersDao.insertWatchTime(appAuUserTokens.get(0).getUid());
+        }else{
+            centerLettersDao.updateWatchTime(appAuUserTokens.get(0).getUid());
         }
         return JSONObject.fromObject(pageModel).toString();
     }

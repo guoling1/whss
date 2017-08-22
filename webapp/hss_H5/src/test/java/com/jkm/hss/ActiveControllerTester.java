@@ -255,6 +255,22 @@ public class ActiveControllerTester {
         ActiveControllerTester.testRest(p);
     }
 
+    @Test
+    public void testGetFlag()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001016");
+        p.setAccessToken(accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("865873032687208");
+        String param="{}";
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
+        ActiveControllerTester.testRest(p);
+    }
+
     public static void testRest(AppParam p)throws Exception{
         HttpURLConnection httpConnection = (HttpURLConnection)new URL(url).openConnection();
         httpConnection.setDoOutput(true);
