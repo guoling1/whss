@@ -522,4 +522,10 @@
         super_dealer_id=#{superDealerId}
         WHERE id=#{merchantId}
     </update>
+
+    <select id="findSumBenefit" resultType="java.math.BigDecimal">
+        select COALESCE(sum(split_amount),0) from tb_split_account_record
+        where (business_type='hssPay' or business_type='hssWithdraw' or business_type='hssUpgrade') and receipt_money_account_id=#{accountID}
+    </select>
+
 </mapper>
