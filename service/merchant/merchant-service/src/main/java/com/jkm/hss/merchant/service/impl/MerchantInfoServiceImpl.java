@@ -1,6 +1,5 @@
 package com.jkm.hss.merchant.service.impl;
 
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.common.filter.impl.Op;
 import com.google.common.base.Optional;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
@@ -10,11 +9,11 @@ import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.*;
-import com.jkm.hss.merchant.enums.*;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.service.*;
-import com.jkm.hss.product.entity.PartnerRuleSetting;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.entity.UpgradeRules;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -637,6 +635,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public int updateSuperDealerIdById(Long superDealerId, Long merchantId) {
         return merchantInfoDao.updateSuperDealerIdById(superDealerId,merchantId);
+    }
+
+    public BigDecimal findSumBenefit(Long accountID){
+        return merchantInfoDao.findSumBenefit(accountID);
     }
 
 }

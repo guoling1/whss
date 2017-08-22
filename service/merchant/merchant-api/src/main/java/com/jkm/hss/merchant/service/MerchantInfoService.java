@@ -222,4 +222,6 @@ public interface MerchantInfoService {
      */
     int updateSuperDealerIdById(Long superDealerId,Long merchantId);
 
+    BigDecimal findSumBenefit(Long accountID);
+
 }

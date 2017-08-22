@@ -213,4 +213,8 @@ public interface MerchantInfoDao {
      * @return
      */
     int updateSuperDealerIdById(@Param("superDealerId") Long superDealerId, @Param("merchantId") Long merchantId);
+    /**
+     * 根据账户查询分润总和
+     */
+    BigDecimal findSumBenefit(@Param("accountID")Long accountID);
 }

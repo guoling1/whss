@@ -135,4 +135,25 @@
     </select>
 
 
+    <select id="getTotalProfit" resultType="com.jkm.hss.bill.helper.responseparam.HssAppTotalProfitResponse">
+        select count(1) as count,
+        (select IFNULL(sum(split_amount),0) from tb_split_account_record where DATEDIFF(create_time,NOW()) =0 and
+        receipt_money_account_id in
+        <foreach collection="accountIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ) as todayAmount,
+        (select IFNULL(sum(split_amount),0) from tb_split_account_record where DATEDIFF(NOW(),create_time)=1 and
+        receipt_money_account_id in
+        <foreach collection="accountIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ) as yesterdayAmount,
+        (select IFNULL(sum(split_amount),0) from tb_split_account_record where receipt_money_account_id in
+        <foreach collection="accountIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ) as totalAmount
+        from tb_split_account_record
+    </select>
 </mapper>

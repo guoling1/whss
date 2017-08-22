@@ -7,6 +7,7 @@ import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.bill.dao.ProfitDao;
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.ProfitResponse;
+import com.jkm.hss.bill.helper.responseparam.HssAppTotalProfitResponse;
 import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -158,6 +159,17 @@ public class ProfitServiceImpl implements ProfitService {
             }
         }
         return "";
+    }
+
+    /**
+     * 获取好收收APP昨日，进入，总计分润
+     *
+     * @param accountIds
+     * @return
+     */
+    @Override
+    public HssAppTotalProfitResponse getTotalProfit(List<Long> accountIds) {
+        return profitDao.getTotalProfit(accountIds);
     }
 
     private ExcelSheetVO getExcelSheet(ProfitDetailsRequest req, String baseUrl) {

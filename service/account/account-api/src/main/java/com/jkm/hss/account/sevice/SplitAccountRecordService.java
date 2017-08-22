@@ -130,4 +130,6 @@ public interface SplitAccountRecordService {
      * @return
      */
     int getCountDetailsNo(ProfitCountRequest req);
+
+    PageModel<SplitAccountRecord> getDealerShallProfitList(Long accountId, long shallId, int pageNo, int pageSize);
 }

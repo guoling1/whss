@@ -459,6 +459,22 @@ public class PushServiceImpl implements PushService {
 //        impl.pushTransmissionMsgTask(1,"测试","2","86a8bca1f74ab42d9a7d119943bcdc1b",null);
     }
 
+    public String pushMessage(Long uid,String content){
+        List<Map>  list=pushDao.selectCidhss(uid);
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            if (map.get("CLIENTID")!=null) {
+                String clientid = map.get("CLIENTID").toString();
+                clients.add(clientid);
+            }
+        }
+        AppResult appResult = new AppResult();
+        appResult.setResultCode(400);
+        appResult.setResultMessage(content);
+        String ret = this.pushTransmissionMsg1(2, JSON.toJSONString(appResult), "2", null, clients);
+        return ret;
+    }
+
     @Override
     public String pushReferrals(Long uid,String accessToken) {
         List<Map>  list=pushDao.selectUserByUid(uid.toString(),accessToken);

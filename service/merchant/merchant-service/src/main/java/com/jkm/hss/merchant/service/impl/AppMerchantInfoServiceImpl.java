@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateUtil;
@@ -49,11 +50,13 @@ import com.jkm.hss.product.servcie.PartnerRuleSettingService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -92,6 +95,8 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
     private AppAuTokenDao appAuTokenDao;
     @Autowired
     private DealerRecommendService dealerRecommendService;
+    @Autowired
+    private PushNoticeService pushNoticeService;
 
     /**
      * 获取验证码 HSS001005
@@ -636,5 +641,37 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
         return "{\"shareUrl\":\""+shareUrl+"\",\"name\":\""+name+"\"}";
+    }
+    /**
+     * HSS001015 公告列表
+     * @param dataParam
+     * @param appParam
+     * @return
+     * @throws ApiHandleException
+     */
+    @Override
+    public String noticeList(String dataParam, AppParam appParam) throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        NoticeRequest noticeRequest=null;
+        try{
+            noticeRequest=gson.fromJson(dataParam, NoticeRequest.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+        noticeRequest.setProductType("hss");
+        final PageModel<NoticeResponse> pageModel = new PageModel<NoticeResponse>(noticeRequest.getPageNo(), noticeRequest.getPageSize());
+        noticeRequest.setOffset(pageModel.getFirstIndex());
+        List<NoticeResponse> list = pushNoticeService.selectList(noticeRequest);
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setPushStatus(EnumNotice.PUBLISHED.getValue());
+                }
+            }
+        }
+        int count = pushNoticeService.selectListCount(noticeRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return JSONObject.fromObject(pageModel).toString();
     }
 }

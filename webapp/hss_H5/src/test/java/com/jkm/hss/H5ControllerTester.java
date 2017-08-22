@@ -49,6 +49,9 @@ public class H5ControllerTester {
     public static String HSSH5001017="http://localhost:8081/appMerchantInfo/toBuy";
     public static String HSSH5001018="http://localhost:8081/appMerchantInfo/agentApplication";
     public static String HSSH5001019="http://localhost:8081/appMerchantInfo/agentApplicationStatus";
+    public static String HSSH5001020="http://localhost:8081/appMerchantInfo/getTotalProfit";
+
+    public static String HSSH5001023="http://localhost:8080/appBenefit/findMerchantAndDealerBenefit";
 
     @Test
     public void testGetRegisterCode()throws Exception{
@@ -120,13 +123,17 @@ public class H5ControllerTester {
     @Test
     public void testSaveBranchInfo()throws Exception{
         Map<String, String> map = new JSONObject();
+        map.put("bankNo","6226220117842210");
+        map.put("name","邢留杰");
+        map.put("identity","411082198805113634");
+        map.put("reserveMobile","13146716739");
         H5ControllerTester.testRest(map,HSSH5001013);
     }
 
     @Test
     public void testMyRecommend()throws Exception{
         Map<String, String> map = new JSONObject();
-        map.put("type","1");
+        map.put("type","2");
         H5ControllerTester.testRest(map,HSSH5001014);
     }
 
@@ -160,6 +167,18 @@ public class H5ControllerTester {
     public void testAgentApplicationStatus()throws Exception{
         Map<String, String> map = new JSONObject();
         H5ControllerTester.testRest(map,HSSH5001019);
+    }
+
+    @Test
+    public void testGetTotalProfit()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001020);
+    }
+
+    @Test
+    public void testFindMerchantAndDealerBenefit()throws Exception{
+        Map<String, String> map = new JSONObject();
+        H5ControllerTester.testRest(map,HSSH5001023);
     }
 
     public static void testRest(Map<String, String> paramsMap,String url)throws Exception{

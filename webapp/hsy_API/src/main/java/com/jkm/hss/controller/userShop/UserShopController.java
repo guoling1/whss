@@ -8,7 +8,10 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.response.UserShopResponse;
+import com.jkm.hss.merchant.enums.EnumMessageTemplate;
+import com.jkm.hss.merchant.enums.EnumMessageType;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.AppMessageService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
@@ -27,9 +30,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by longwen.jiang on 2017-01-13
@@ -45,7 +50,18 @@ public class UserShopController extends BaseController {
     @Autowired
     private SendMessageService sendMessageService;
 
+    @Autowired
+    private AppMessageService appMessageService;
 
+    @RequestMapping(value = "/test")
+    public void test(HttpServletRequest request,HttpServletResponse response){
+        Long uid=6L;
+        EnumMessageType type=EnumMessageType.BENEFIT_MESSAGE;
+        EnumMessageTemplate template=EnumMessageTemplate.SUPER_DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE;
+        Map<String,String> param=new HashMap<>();
+        param.put("amount",6.66+"");
+        appMessageService.insertMessageInfoAndPush(uid,type,template,param);
+    }
 
 
     /**
