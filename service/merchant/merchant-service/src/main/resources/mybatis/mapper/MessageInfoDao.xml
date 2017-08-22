@@ -25,4 +25,8 @@
     <update id="updateReadStatusBeyondTime" parameterType="com.jkm.hss.merchant.entity.MessageInfo">
         update tb_message_info set READSTATUS=1,UPDATETIME=#{createTime} where UID=#{uid} and READSTATUS=0 and <![CDATA[CREATETIME<=#{createTime}]]>
     </update>
+
+    <select id="isExistingTheUnreadMessage"  resultType="boolean">
+        select count(1) from tb_message_info where uid=#{uid} and readstatus=0
+    </select>
 </mapper>

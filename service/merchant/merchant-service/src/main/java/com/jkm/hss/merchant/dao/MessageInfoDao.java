@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.dao;
 
 import com.jkm.base.common.util.Page;
 import com.jkm.hss.merchant.entity.MessageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface MessageInfoDao {
     public List<MessageInfo> findMessageInfoListByPage(Page<MessageInfo> entity);
     public Integer findMessageInfoListByPageCount(MessageInfo entity);
     public void updateReadStatusBeyondTime(MessageInfo messageInfo);
+    public boolean isExistingTheUnreadMessage(@Param("uid")Long uid);
 }
