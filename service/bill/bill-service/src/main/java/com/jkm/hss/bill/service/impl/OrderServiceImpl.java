@@ -1091,7 +1091,12 @@ public class OrderServiceImpl implements OrderService {
                 }
                 if (list.get(i).getStatus()==6){
                     list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
-                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    String dates;
+                    if (null == list.get(i).getPaySuccessTime()) {
+                        dates = sdf.format(list.get(i).getUpdateTime());
+                    } else {
+                        dates = sdf.format(list.get(i).getPaySuccessTime());
+                    }
                     list.get(i).setUpdateTimes(dates);
                 }
                 if (list.get(i).getStatus()==5){
