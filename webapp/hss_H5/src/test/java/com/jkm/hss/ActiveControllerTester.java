@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by Allen on 2017/1/7.
  */
 public class ActiveControllerTester {
-    public static String url="http://localhost:8080/active/rest";
+    public static String url="http://localhost:8081/active/rest";
     public static String v="v1.0.0";
     public static String privateKey = "6w3W8OOgnRZrkBGS2AdpFTpOykcUsvfI";
     public static String accessToken = "b2068198baf4c479221b03f615c4fbf1";
@@ -233,6 +233,22 @@ public class ActiveControllerTester {
         p.setV(v);
         p.setDeviceId("865873032687208");
         String param="{}";
+        String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
+        String encodeUrl = URLEncoder.encode(base64E,"utf-8");
+        p.setRequestData(encodeUrl);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testNoticeList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSS001015");
+        p.setAccessToken(accessToken);
+        p.setAppType("android");
+        p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV(v);
+        p.setDeviceId("865873032687208");
+        String param="{\"pageNo\":\"1\",\"pageSize\":\"10\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
         String encodeUrl = URLEncoder.encode(base64E,"utf-8");
         p.setRequestData(encodeUrl);

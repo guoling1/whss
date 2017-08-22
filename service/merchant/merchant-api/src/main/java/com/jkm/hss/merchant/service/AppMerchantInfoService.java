@@ -12,4 +12,5 @@ public interface AppMerchantInfoService {
     public String login(String dataParam, AppParam appParam) throws ApiHandleException;
     public String logout(String dataParam, AppParam appParam) throws ApiHandleException;
     public String getShareInfo(String dataParam, AppParam appParam) throws ApiHandleException;
+    public String noticeList(String dataParam, AppParam appParam) throws ApiHandleException;
 }
