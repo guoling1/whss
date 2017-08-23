@@ -3,8 +3,8 @@
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
         <div class="box-header with-border" style="margin-bottom: 15px">
-          <h3 class="box-title" v-if="isShow">新增产品</h3>
-          <h3 class="box-title" v-if="!isShow">产品详情</h3>
+          <h3 class="box-title" v-if="isShow">发布中央文案</h3>
+          <h3 class="box-title" v-if="!isShow">修改中央文案</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
@@ -29,7 +29,7 @@
                 </div>
               </el-col>
             </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
+            <el-row type="flex" class="row-bg" justify="center" style="margin-top:10px">
               <el-col :span="4">
                 <div class="alignRight">上传照片:</div>
               </el-col>
@@ -38,7 +38,8 @@
                   <el-upload class="upload-demo"
                              action="/upload/picUpload"
                              :on-success="handleSuccess"
-                             :file-list="form.centerImages"
+                             :on-remove="handleRemove"
+                             :file-list="fileList"
                              list-type="picture" style="margin-bottom: 10px">
                     <el-button v-if="hasButton" style="float: left;margin-right:250px;" size="small" type="primary">
                       点击上传
@@ -47,7 +48,6 @@
                 </div>
               </el-col>
             </el-row>
-
           </div>
         </div>
         <el-row type="flex" class="row-bg" justify="center">
@@ -83,6 +83,7 @@
       return {
         hasButton: true,
         isShow: true,
+        fileList: [],
         form: {
           title: '',
           content: '',
@@ -90,15 +91,28 @@
         }
       }
     },
-    created: function () {
-
-    },
     methods: {
+      fileDeal: function (fileList) {
+        console.log(fileList);
+        this.form.centerImages = [];
+        for (let i = 0; i < fileList.length; i++) {
+          let obj = {
+            imgUrl: fileList[i].response.result.url
+          }
+          this.form.centerImages.push(obj);
+        }
+      },
       handleSuccess: function (response, file, fileList) {
-        console.log(response.result.url);
+        this.fileDeal(fileList)
+      },
+      handleRemove(file, fileList) {
+        this.fileDeal(fileList)
       },
       create: function () {
         console.log(this.form);
+        this.$http.post('/admin/center/publish', this.form).then(res => {
+          console.log(res);
+        })
       }
     },
     computed: {

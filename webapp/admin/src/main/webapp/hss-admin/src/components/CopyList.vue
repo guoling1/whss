@@ -10,7 +10,9 @@
           <ul class="search">
             <li class="same">
               <label>发布日期:</label>
-              <el-input style="width: 188px" v-model="query.channelName" placeholder="请输入内容" size="small"></el-input>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围"
+                              style="width: 193px" :clearable="false" @change="datetimeSelect"
+                              :editable="false"></el-date-picker>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -26,21 +28,22 @@
                 <div>{{scope.$index+1}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="channelName" label="通道名称"></el-table-column>
-            <el-table-column prop="channelCode" label="通道编码"></el-table-column>
-            <el-table-column prop="bankCode" label="银行编码"></el-table-column>
-            <el-table-column prop="bankName" label="银行名称"></el-table-column>
-            <el-table-column prop="cardType" label="卡类型"></el-table-column>
-            <el-table-column prop="singleLimitAmount" label="单笔限额"></el-table-column>
-            <el-table-column prop="dayLimitAmount" label="日累计限额"></el-table-column>
-            <el-table-column prop="--" label="月累计限额"></el-table-column>
-            <el-table-column label="操作" width="90">
+            <el-table-column label="标题">
               <template scope="scope">
-                <a href="#" @click="_$power(1,scope.row.id,onOff,'boss_quota_enable')" v-if="scope.row.status==0">启用</a>
-                <a href="#" @click="_$power(2,scope.row.id,onOff,'boss_quota_disable')"
-                   v-if="scope.row.status==1">禁用</a>
+                {{scope.row.title}}
               </template>
             </el-table-column>
+            <el-table-column label="发布时间">
+              <template scope="scope">
+                {{scope.row.createTime | changeTime}}
+              </template>
+            </el-table-column>
+            <el-table-column label="状态">
+              <template scope="scope">
+                {{scope.row.status | ss}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="adminName" label="发布人"></el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
@@ -64,6 +67,7 @@
     name: 'limitList',
     data(){
       return {
+        date: '',
         query: {
           pageNo: 1,
           pageSize: 10,
@@ -81,10 +85,22 @@
       this.getData()
     },
     methods: {
+      datetimeSelect: function (val) {
+        console.log(val);
+        if (val == undefined) {
+          this.query.startTime = '';
+          this.query.endTime = '';
+        } else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
+        }
+      },
       release: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/copyListDetail');
       },
       reset: function () {
+        this.date = '';
         this.query = {
           pageNo: 1,
           pageSize: 10,
@@ -113,39 +129,6 @@
             });
           })
       },
-      onOff(val, id){
-        this.loading = true;
-        this.$http.post('/admin/channel/auditSupportBank', {id: id, operation: val})
-          .then(function (res) {
-            for (var i = 0; i < this.records.length; i++) {
-              if (this.records[i].id == id) {
-                if (val == 1) {
-                  this.records[i].status = '1'
-                } else if (val == 2) {
-                  this.records[i].status = '0'
-                }
-
-              }
-            }
-            setTimeout(() => {
-              this.loading = false;
-            }, 1000)
-            this.$message({
-              showClose: true,
-              message: '操作成功',
-              type: 'success'
-            });
-          }, function (err) {
-            setTimeout(() => {
-              this.loading = false;
-            }, 1000)
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
       search(){
         this.$data.query.pageNo = 1;
         this.getData()
@@ -160,6 +143,15 @@
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
         this.getData()
+      }
+    },
+    filters: {
+      ss: function (v) {
+        if (v == 0) {
+          return '已发布'
+        } else {
+          return '已删除'
+        }
       }
     }
   }

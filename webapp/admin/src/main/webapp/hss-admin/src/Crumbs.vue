@@ -16,5 +16,7 @@
 </script>
 
 <style lang="less">
-
+  .el-upload__input {
+    opacity: 0;
+  }
 </style>
