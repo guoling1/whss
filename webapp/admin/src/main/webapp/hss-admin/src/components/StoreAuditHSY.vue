@@ -467,7 +467,7 @@
           </template>
         </div>
       </div>
-      <el-dialog title="修改商户结算卡" :visible.sync="isBank">
+      <el-dialog title="修改商户结算卡" v-model="isBank">
         <el-form :model="bankForm">
           <el-form-item label="账户类型" label-width="120px">
             <!--<span v-if="msg.isPublic==1">对公</span>
