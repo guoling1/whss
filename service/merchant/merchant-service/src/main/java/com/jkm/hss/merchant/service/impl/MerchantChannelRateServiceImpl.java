@@ -286,6 +286,9 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         paramsMap.put("bankBranch", accountBank.getBranchName());
                         paramsMap.put("bankCode", accountBank.getBranchCode());
                         paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
+                        paramsMap.put("provinceCode", accountBank.getBranchProvinceCode());
+                        paramsMap.put("cityCode", accountBank.getBranchCityCode());
+                        paramsMap.put("districtCode", accountBank.getBranchCountyCode());
                         log.info("入网参数为："+JSONObject.fromObject(paramsMap).toString());
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
                         if (result != null && !"".equals(result)) {
