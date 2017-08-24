@@ -17,6 +17,7 @@ import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
+import javafx.scene.layout.BackgroundRepeat;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,7 +288,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         paramsMap.put("bankCode", accountBank.getBranchCode());
                         paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
                         paramsMap.put("provinceCode", accountBank.getBranchProvinceCode());
-                        paramsMap.put("cityCode", accountBank.getBranchCityCode());
+                        paramsMap.put("cityCode", this.getKmCityCode(accountBank.getBranchCityCode()));
                         paramsMap.put("districtCode", accountBank.getBranchCountyCode());
                         log.info("入网参数为："+JSONObject.fromObject(paramsMap).toString());
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
@@ -329,6 +330,27 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             resultJo.put("msg","商户通道信息有误");
         }
         return resultJo;
+    }
+
+    private String getKmCityCode(String branchCityCode) {
+        String code;
+        switch (branchCityCode){
+            case "110000":
+                code = "110100";
+                break;
+            case "120000":
+                code = "120100";
+                break;
+            case "500000":
+                code = "500100";
+                break;
+            case "310000":
+                code = "310100";
+                break;
+            default:
+                code = branchCityCode;
+        }
+        return code;
     }
 
     /**
