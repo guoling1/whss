@@ -23,7 +23,6 @@
               </template>
             </el-table-column>
           </el-table>
-          </el-table>
           <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="row">
               <div class="col-sm-6"></div>
@@ -96,6 +95,8 @@
     created: function () {
       this.$http.post('/admin/product/list')
         .then(function (res) {
+          console.log(res);
+          console.log(res.data.length);
           this.$data.products = res.data;
           for (let i = 0; i < this.$data.products.length; i++) {
             for (let j = 0; j < this.$data.products[i].list.length; j++) {

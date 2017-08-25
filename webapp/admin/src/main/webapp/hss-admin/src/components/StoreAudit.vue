@@ -229,7 +229,7 @@
           <el-col :span="5">
           </el-col>
         </el-row>
-        <el-dialog title="选择支行" :visible.sync="isWad">
+        <el-dialog title="选择支行" v-model="isWad">
           <el-form :model="form">
             <el-form-item label="银行名称" label-width="120px">
               {{$msg.bankName}}
