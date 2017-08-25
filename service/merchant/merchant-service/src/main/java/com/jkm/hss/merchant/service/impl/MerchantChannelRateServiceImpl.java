@@ -17,7 +17,6 @@ import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
-import javafx.scene.layout.BackgroundRepeat;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
