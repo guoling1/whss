@@ -10,7 +10,10 @@ import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.product.entity.*;
+import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.Enum.EnumNetStatus;
@@ -61,6 +64,9 @@ public class CodeController extends BaseController {
     @Autowired
     private HsyMembershipService hsyMembershipService;
 
+    @Autowired
+    private BasicChannelService basicChannelService;
+
 
     /**
      * 扫码
@@ -106,7 +112,9 @@ public class CodeController extends BaseController {
                     Preconditions.checkState(userChannelPolicyOptional.get().getOpenProductStatus()== EnumOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
                 }
                 String appId = WxConstants.APP_HSY_ID;
-                if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()==EnumPayChannelSign.WECHAT_PAY.getId()){
+                Optional<BasicChannel> basicChannelOptional =  basicChannelService.selectByChannelTypeSign(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
+                Preconditions.checkState(basicChannelOptional.isPresent(), "通道不存在");
+                if("微信".equals(basicChannelOptional.get().getThirdCompany())){
                     if(userChannelPolicyOptional.get().getSubAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getSubAppId())){
                         appId = userChannelPolicyOptional.get().getSubAppId();
                     }else{
