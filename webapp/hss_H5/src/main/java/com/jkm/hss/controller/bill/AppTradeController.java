@@ -519,17 +519,17 @@ public class AppTradeController extends BaseController {
         }
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
-            return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "001").build();
+            return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "001").build();
         }
         final BankCardBin bankCardBin = bankCardBinOptional.get();
         if (!"1".equals(bankCardBin.getCardTypeCode())) {
-            return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
+            return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "002").build();
         }
         final boolean exist = this.channelSupportCreditBankService.
                 isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(parentChannelSign).getUpperChannel().getId(), bankCardBin.getShorthand());
         if (!bankCardBin.getShorthand().equals(firstUnionPaySendMsgRequest.getBankCode())) {
             if (!exist) {
-                return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();
+                return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "003").build();
             }
             firstUnionPaySendMsgRequest.setBankCode(bankCardBin.getShorthand());
         } else {
