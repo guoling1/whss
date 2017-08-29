@@ -59,7 +59,6 @@ public class HSYOrderServiceImpl implements HSYOrderService {
     @Override
     @Transactional
     public void insert(HsyOrder hsyOrder) {
-        hsyOrder.setOrdernumber("");
         hsyOrderDao.insert(hsyOrder);
         //开始生成订单号：
         String idStr=String.valueOf(hsyOrder.getId());
@@ -75,9 +74,11 @@ public class HSYOrderServiceImpl implements HSYOrderService {
         else {
             idStr=idStr.substring(idStr.length()-8);
         }
-        hsyOrder.setOrdernumber(DateFormatUtil.format(new Date(),"yyyyMMdd")+idStr);
+        if (StringUtils.isEmpty(hsyOrder.getOrdernumber())){
+            hsyOrder.setOrdernumber(DateFormatUtil.format(new Date(),"yyyyMMdd")+idStr);
 //        hsyOrder.setValidationcode(hsyOrder.getOrdernumber().substring(hsyOrder.getOrdernumber().length()-4));
-        hsyOrderDao.updateOrderNumber(hsyOrder.getId(), hsyOrder.getOrdernumber());
+            hsyOrderDao.updateOrderNumber(hsyOrder.getId(), hsyOrder.getOrdernumber());
+        }
     }
     private String getFixLenthString(int strLength) {
 

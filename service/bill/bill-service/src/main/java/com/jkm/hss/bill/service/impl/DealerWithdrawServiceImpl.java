@@ -33,6 +33,7 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -159,6 +160,9 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
             order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
             order.setRemark(response.getMessage());
+            if (!StringUtils.isEmpty(response.getWithdrawSuccessTime())) {
+                order.setPaySuccessTime(new Date(Long.valueOf(response.getWithdrawSuccessTime())));
+            }
             order.setSn(response.getSn());
             this.orderService.update(order);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();

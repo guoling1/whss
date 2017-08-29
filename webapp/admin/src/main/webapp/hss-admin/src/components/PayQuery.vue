@@ -98,6 +98,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="finishTime" :formatter="changeTime2" label="支付完成时间" min-width="155"></el-table-column>
+            <el-table-column prop="callbackTime" :formatter="changeTime3" label="支付回调时间" min-width="155"></el-table-column>
             <el-table-column prop="payType" label="支付方式" min-width="120"></el-table-column>
             <el-table-column prop="upperChannel" label="渠道方" min-width="85"></el-table-column>
             <el-table-column prop="payAccount" label="支付账号" min-width="90"></el-table-column>
@@ -314,6 +315,28 @@
       //格式化时间
       changeTime2: function (row, column) {
         var val = row.finishTime;
+        if (val == '' || val == null) {
+          return ''
+        } else {
+          val = new Date(val)
+          var year = val.getFullYear();
+          var month = val.getMonth() + 1;
+          var date = val.getDate();
+          var hour = val.getHours();
+          var minute = val.getMinutes();
+          var second = val.getSeconds();
+          function tod(a) {
+            if (a < 10) {
+              a = "0" + a
+            }
+            return a;
+          }
+          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
+        }
+      },
+      //格式化时间
+      changeTime3: function (row, column) {
+        var val = row.callbackTime;
         if (val == '' || val == null) {
           return ''
         } else {

@@ -79,4 +79,19 @@ public class PaymentSdkUnionPayRequest {
      * 手机号
      */
     private String mobile;
+
+    /**
+     * 银联token
+     */
+    private String token;
+
+    /**
+     * 结算通知url
+     */
+    private String settleNotifyUrl;
+
+    /**
+     * 结算卡号
+     */
+    private String settleCardNo;
 }

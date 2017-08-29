@@ -57,6 +57,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
             final HsyOrder newHsyOrder = new HsyOrder();
             BeanUtils.copyProperties(hsyOrder, newHsyOrder);
             newHsyOrder.setOrderstatus(EnumHsyOrderStatus.DUE_PAY.getId());
+            newHsyOrder.setOrdernumber("");
             this.hsyOrderService.insert(newHsyOrder);
             return newHsyOrder.getId();
         }
@@ -89,6 +90,7 @@ public class BaseHSYTransactionServiceImpl implements BaseHSYTransactionService 
         payParams.setMemberId(hsyOrder.getMemberId());
         payParams.setMerchantNo(hsyOrder.getMerchantNo());
         payParams.setMerchantName(hsyOrder.getMerchantname());
+
         if (EnumPayChannelSign.isWechatOfficialPay(hsyOrder.getPaychannelsign())) {//微信官方支付
             final long uid = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0).getId();
             final UserChannelPolicy userChannelPolicy = this.userChannelPolicyService.selectByUserIdAndChannelTypeSign(uid,

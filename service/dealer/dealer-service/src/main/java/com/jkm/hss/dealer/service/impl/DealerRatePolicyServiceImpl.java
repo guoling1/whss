@@ -71,4 +71,14 @@ public class DealerRatePolicyServiceImpl implements DealerRatePolicyService {
     public Optional<DealerRatePolicy> selectByDealerIdAndPolicyType(long dealerId, String policyType) {
         return Optional.fromNullable(dealerRatePolicyDao.selectByDealerIdAndPolicyType(dealerId,policyType));
     }
+
+    /**
+     * 修改
+     *
+     * @param dealerRatePolicy
+     */
+    @Override
+    public void updateByPolicyAndDealer(DealerRatePolicy dealerRatePolicy) {
+        dealerRatePolicyDao.updateByPolicyAndDealer(dealerRatePolicy);
+    }
 }

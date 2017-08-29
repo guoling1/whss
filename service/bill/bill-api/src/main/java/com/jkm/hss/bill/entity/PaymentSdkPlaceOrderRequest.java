@@ -121,4 +121,6 @@ public class PaymentSdkPlaceOrderRequest {
      * D0 T1
      */
     private String settleType;
+
+    private String businessOrderNo;
 }

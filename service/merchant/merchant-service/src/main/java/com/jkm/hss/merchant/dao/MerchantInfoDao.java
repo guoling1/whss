@@ -217,4 +217,12 @@ public interface MerchantInfoDao {
      * 根据账户查询分润总和
      */
     BigDecimal findSumBenefit(@Param("accountID")Long accountID);
+
+    /**
+     * 按商户编号查询
+     *
+     * @param merchantNo
+     * @return
+     */
+    MerchantInfo selectByMarkCode(@Param("merchantNo") String merchantNo);
 }

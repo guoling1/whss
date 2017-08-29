@@ -43,4 +43,9 @@ public interface DealerRatePolicyDao {
      * @return
      */
     DealerRatePolicy selectByDealerIdAndPolicyType(@Param("dealerId")long dealerId, @Param("policyType")String policyType);
+    /**
+     * 修改
+     * @param dealerRatePolicy
+     */
+    void updateByPolicyAndDealer(DealerRatePolicy dealerRatePolicy);
 }

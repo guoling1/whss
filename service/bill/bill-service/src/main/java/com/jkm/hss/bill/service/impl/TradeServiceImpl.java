@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
+import com.jkm.base.common.util.StringUtil;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
@@ -25,6 +26,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,7 +73,7 @@ public class TradeServiceImpl implements TradeService {
         log.info("业务方[{}],通过渠道[{}]进行充值[{}],实付金额[{}]，充值账户[{}]，收款账户[{}], 会员标识[{}], 商户号[{}]",
                 rechargeParams.getAppId(), rechargeParams.getChannel(), rechargeParams.getTradeAmount(), rechargeParams.getRealPayAmount(),
                 rechargeParams.getMemberAccountId(), rechargeParams.getPayeeAccountId(), rechargeParams.getMemberId(), rechargeParams.getMerchantNo());
-        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(rechargeParams.getBusinessOrderNo());
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNoAndPayee(rechargeParams.getBusinessOrderNo(), rechargeParams.getPayeeAccountId());
         if (orderOptional.isPresent()) {
             final PayResponse payResponse = new PayResponse();
             payResponse.setCode(EnumBasicStatus.FAIL.getId());
@@ -129,7 +131,7 @@ public class TradeServiceImpl implements TradeService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public PayResponse pay(final PayParams payParams) {
         log.info("业务方[{}],通过渠道[{}]进行支付[{}],实付金额[{}]", payParams.getAppId(), payParams.getChannel(), payParams.getTradeAmount(), payParams.getRealPayAmount());
-        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(payParams.getBusinessOrderNo());
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNoAndPayee(payParams.getBusinessOrderNo(), payParams.getPayeeAccountId());
         if (orderOptional.isPresent()) {
             log.info("业务订单号重复【{}】", payParams.getBusinessOrderNo());
             final PayResponse payResponse = new PayResponse();
@@ -171,7 +173,6 @@ public class TradeServiceImpl implements TradeService {
             //从卡扣钱
             return this.baseTradeService.memberPayImpl(order.getId());
         } else {
-            //获取支付url
             final PlaceOrderParams placeOrderParams = PlaceOrderParams.builder()
                     .merchantNo(payParams.getMerchantNo())
                     .returnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId())
@@ -187,6 +188,7 @@ public class TradeServiceImpl implements TradeService {
                     .realName(payParams.getRealName())
                     .idCard(payParams.getIdCard())
                     .settleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL)
+                    .businessOrderNo(payParams.getBusinessOrderNo())
                     .build();
             final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = this.baseTradeService.requestPlaceOrder(placeOrderParams, order);
             return this.baseTradeService.handlePlaceOrderResult(paymentSdkPlaceOrderResponse, payParams.getMerchantPayType(), order);

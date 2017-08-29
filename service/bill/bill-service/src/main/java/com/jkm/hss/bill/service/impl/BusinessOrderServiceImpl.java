@@ -106,10 +106,11 @@ public class BusinessOrderServiceImpl implements BusinessOrderService {
      * {@inheritDoc}
      *
      * @param orderNo
+     * @param merchantId
      * @return
      */
     @Override
-    public Optional<BusinessOrder> getByOrderNo(final String orderNo) {
-        return Optional.fromNullable(this.businessOrderDao.selectByOrderNo(orderNo));
+    public Optional<BusinessOrder> getByOrderNoAndMerchantId(final String orderNo, final long merchantId) {
+        return Optional.fromNullable(this.businessOrderDao.selectByOrderNoAndMerchantId(orderNo, merchantId));
     }
 }

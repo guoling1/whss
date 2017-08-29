@@ -286,6 +286,9 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         paramsMap.put("bankBranch", accountBank.getBranchName());
                         paramsMap.put("bankCode", accountBank.getBranchCode());
                         paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
+                        paramsMap.put("provinceCode", accountBank.getBranchProvinceCode());
+                        paramsMap.put("cityCode", this.getKmCityCode(accountBank.getBranchCityCode()));
+                        paramsMap.put("districtCode", accountBank.getBranchCountyCode());
                         log.info("入网参数为："+JSONObject.fromObject(paramsMap).toString());
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
                         if (result != null && !"".equals(result)) {
@@ -326,6 +329,27 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             resultJo.put("msg","商户通道信息有误");
         }
         return resultJo;
+    }
+
+    private String getKmCityCode(String branchCityCode) {
+        String code;
+        switch (branchCityCode){
+            case "110000":
+                code = "110100";
+                break;
+            case "120000":
+                code = "120100";
+                break;
+            case "500000":
+                code = "500100";
+                break;
+            case "310000":
+                code = "310100";
+                break;
+            default:
+                code = branchCityCode;
+        }
+        return code;
     }
 
     /**

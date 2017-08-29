@@ -1,17 +1,7 @@
 package com.jkm.hss.bill.entity;
 
-import com.jkm.hss.bill.enums.EnumOrderStatus;
 import lombok.Data;
 
-/**
- * Created by yulong.zhang on 2016/12/22.
- *
- * 交易订单
- *
- * tb_order
- *
- * {@link EnumOrderStatus}
- */
 @Data
 public class WithdrawRequest {
 

@@ -21,6 +21,7 @@ public class MerchantSupport {
      * @return
      */
     public static String encryptMobile(final String mobile) {
+        final MerchantConsts.MerchantConfig merchantConfig = MerchantConsts.getMerchantConfig();
         return AESUtil.encrypt(mobile, MerchantConsts.getMerchantConfig().tbMerchantEncryptKey());
     }
 

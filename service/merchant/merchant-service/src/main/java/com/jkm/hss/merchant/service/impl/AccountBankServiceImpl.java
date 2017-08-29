@@ -574,4 +574,47 @@ public class AccountBankServiceImpl implements AccountBankService{
         }
     }
 
+
+    /**
+     * 初始化信用卡账户
+     *
+     * @return
+     */
+    @Override
+    public void bindCard(long accountId,String bankNo,
+                                   String bankName,String reserveMobile,
+                                   String bankBin,String token) {
+        Optional<AccountBank> accountBankOptional = this.selectCreditCardByBankNo(accountId,bankNo);
+        if(!accountBankOptional.isPresent()){
+            AccountBank accountBank = new AccountBank();
+            accountBank.setAccountId(accountId);
+            accountBank.setToken(token);
+            accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
+            accountBank.setBankName(bankName);
+            accountBank.setReserveMobile(reserveMobile);
+            accountBank.setCardType(EnumAccountBank.CREDIT.getId());
+            AccountBank ab= this.getDefaultCreditCard(accountId);
+            if(ab==null){
+                accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+            }else{
+                accountBank.setIsDefault(EnumBankDefault.UNDEFALUT.getId());
+            }
+            accountBank.setBankBin(bankBin);
+            accountBank.setStatus(EnumCommonStatus.NORMAL.getId());
+            this.insert(accountBank);
+        }
+    }
+
+    /**
+     * 根据bankNo查询
+     *
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    @Override
+    public AccountBank selectCreditListByBankNo(long accountId, String bankNo) {
+        AccountBank accountBank = accountBankDao.selectCreditListByBankNo(accountId,MerchantSupport.encryptBankCard(bankNo));
+        return accountBank;
+    }
 }

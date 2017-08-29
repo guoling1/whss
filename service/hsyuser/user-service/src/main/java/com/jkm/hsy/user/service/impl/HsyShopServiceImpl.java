@@ -762,4 +762,9 @@ public class HsyShopServiceImpl implements HsyShopService {
     public void changeStatus(String isPublic, Long id) {
         this.hsyShopDao.changeStatus(isPublic,id);
     }
+
+    @Override
+    public AppAuUser findUserByGlobalId(String globalId) {
+       return this.hsyShopDao.findUserByGlobalId(globalId);
+    }
 }

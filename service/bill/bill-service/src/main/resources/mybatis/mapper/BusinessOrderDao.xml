@@ -24,6 +24,7 @@
         trade_card_no,
         wechant_or_alipay_order_no,
         remark,
+        merchant_req_time,
         status
         )
         values
@@ -48,6 +49,7 @@
         #{tradeCardNo},
         #{wechatOrAlipayOrderNo},
         #{remark},
+        #{merchantReqTime},
         #{status}
         )
     </insert>
@@ -148,8 +150,8 @@
         SELECT * FROM tb_business_order WHERE id = #{id} FOR UPDATE
     </select>
 
-    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.BusinessOrder">
-        SELECT * FROM tb_business_order WHERE order_no = #{orderNo}
+    <select id="selectByOrderNoAndMerchantId" resultType="com.jkm.hss.bill.entity.BusinessOrder">
+        SELECT * FROM tb_business_order WHERE order_no = #{orderNo} AND merchant_id = #{merchantId}
     </select>
 
 </mapper>
