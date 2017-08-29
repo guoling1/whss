@@ -114,7 +114,7 @@ public class CodeController extends BaseController {
                 String appId = WxConstants.APP_HSY_ID;
                 Optional<BasicChannel> basicChannelOptional =  basicChannelService.selectByChannelTypeSign(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign());
                 Preconditions.checkState(basicChannelOptional.isPresent(), "通道不存在");
-                if("微信".equals(basicChannelOptional.get().getThirdCompany())){
+                if(userCurrentChannelPolicyOptional.get().getWechatChannelTypeSign()==EnumPayChannelSign.WECHAT_PAY.getId()){
                     if(userChannelPolicyOptional.get().getSubAppId()!=null&&!"".equals(userChannelPolicyOptional.get().getSubAppId())){
                         appId = userChannelPolicyOptional.get().getSubAppId();
                     }else{
