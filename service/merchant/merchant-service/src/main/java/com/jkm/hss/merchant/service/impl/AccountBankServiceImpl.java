@@ -617,4 +617,9 @@ public class AccountBankServiceImpl implements AccountBankService{
         AccountBank accountBank = accountBankDao.selectCreditListByBankNo(accountId,MerchantSupport.encryptBankCard(bankNo));
         return accountBank;
     }
+
+    @Override
+    public int isHasCreditBankToken(long accountId) {
+        return accountBankDao.isHasCreditBankToken(accountId);
+    }
 }

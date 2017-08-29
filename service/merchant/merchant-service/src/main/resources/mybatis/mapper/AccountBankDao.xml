@@ -269,4 +269,9 @@
         </if>
         limit 0,1
     </select>
+    <!-- 是否有token -->
+    <select id="isHasCreditBankToken" resultType="java.lang.Integer">
+        SELECT count(id) FROM tb_account_bank
+        WHERE account_id = #{accountId} AND token is NOT NULL and status=0 and card_type=1
+    </select>
 </mapper>

@@ -163,4 +163,6 @@ public interface AccountBankDao {
      * @return
      */
     AccountBank selectCreditListByBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo);
+
+    int isHasCreditBankToken(long accountId);
 }

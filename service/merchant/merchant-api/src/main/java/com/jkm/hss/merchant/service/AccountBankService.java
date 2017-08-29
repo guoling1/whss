@@ -251,4 +251,11 @@ public interface AccountBankService {
      * @return
      */
     AccountBank selectCreditListByBankNo(long accountId,String bankNo);
+
+    /**
+     * 是否有开卡token
+     * @param accountId
+     * @return
+     */
+    int isHasCreditBankToken(long accountId);
 }
