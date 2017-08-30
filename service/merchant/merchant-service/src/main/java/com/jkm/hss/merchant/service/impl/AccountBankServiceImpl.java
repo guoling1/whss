@@ -90,18 +90,22 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setBranchCode(merchantInfo.getBranchCode());
         accountBank.setBranchName(merchantInfo.getBranchName());
         AppBizDistrictResponse2 adrCounty = appBizDistrictService.getByCode(merchantInfo.getDistrictCode());
-        accountBank.setBranchCountyCode(adrCounty.getCode());
-        accountBank.setBranchCountyName(adrCounty.getAname());
+        if (null != adrCounty) {
+            accountBank.setBranchCountyCode(adrCounty.getCode());
+            accountBank.setBranchCountyName(adrCounty.getAname());
+        }
         AppBizDistrictResponse2 adrCity = appBizDistrictService.getByCode(adrCounty.getParentCode());
-        accountBank.setBranchCityCode(adrCity.getCode());
-        accountBank.setBranchCityName(adrCity.getAname());
-        if("110000,120000,310000,500000".contains(adrCity.getCode())){
-            accountBank.setBranchProvinceCode(adrCity.getCode());
-            accountBank.setBranchProvinceName(adrCity.getAname());
-        }else{
-            AppBizDistrictResponse2 adrProvince = appBizDistrictService.getByCode(adrCity.getParentCode());
-            accountBank.setBranchProvinceCode(adrProvince.getCode());
-            accountBank.setBranchProvinceName(adrProvince.getAname());
+        if (null != adrCity) {
+            accountBank.setBranchCityCode(adrCity.getCode());
+            accountBank.setBranchCityName(adrCity.getAname());
+            if("110000,120000,310000,500000".contains(adrCity.getCode())){
+                accountBank.setBranchProvinceCode(adrCity.getCode());
+                accountBank.setBranchProvinceName(adrCity.getAname());
+            }else{
+                AppBizDistrictResponse2 adrProvince = appBizDistrictService.getByCode(adrCity.getParentCode());
+                accountBank.setBranchProvinceCode(adrProvince.getCode());
+                accountBank.setBranchProvinceName(adrProvince.getAname());
+            }
         }
         accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
         accountBank.setIsAuthen(merchantInfo.getIsAuthen());
