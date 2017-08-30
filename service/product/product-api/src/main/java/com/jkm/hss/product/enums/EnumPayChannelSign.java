@@ -292,7 +292,8 @@ public enum EnumPayChannelSign {
                 || MB_UNIONPAY_DO.getId() == channelSign
                 || EL_UNIONPAY.getId() == channelSign
                 || HE_LI_UNIONPAY.getId() == channelSign
-                || HJ_FAST_PAY.getId() == channelSign;
+                || HJ_FAST_PAY.getId() == channelSign
+                || JH_UNIONPAY.getId()== channelSign;
     }
 
     /**

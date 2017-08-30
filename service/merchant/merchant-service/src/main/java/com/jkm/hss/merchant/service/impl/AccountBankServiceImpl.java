@@ -626,4 +626,20 @@ public class AccountBankServiceImpl implements AccountBankService{
     public int isHasCreditBankToken(long accountId) {
         return accountBankDao.isHasCreditBankToken(accountId);
     }
+
+    @Override
+    public List<AccountBank> selectCreditList2Token(long accountId) {
+        List<AccountBank> accountBankList = this.selectCreditCardList2Token(accountId);
+        if(accountBankList.size()>0){
+            for(int i=0;i<accountBankList.size();i++){
+                accountBankList.get(i).setBankNo(MerchantSupport.decryptBankCard(accountId,accountBankList.get(i).getBankNo()));
+                accountBankList.get(i).setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBankList.get(i).getReserveMobile()));
+            }
+        }
+        return accountBankList;
+    }
+
+    private List<AccountBank> selectCreditCardList2Token(long accountId) {
+        return accountBankDao.selectCreditCardList2Token(accountId);
+    }
 }

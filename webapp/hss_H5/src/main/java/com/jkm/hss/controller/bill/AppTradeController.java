@@ -314,15 +314,17 @@ public class AppTradeController extends BaseController {
         }
         final int parentChannelSign = this.basicChannelService.selectParentChannelSign(unionPayRequest.getPayChannel());
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(parentChannelSign), "渠道不是快捷");
+        final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
         if (parentChannelSign == EnumPayChannelSign.JH_UNIONPAY.getId()){
             //如果是玖和快捷
             final int creditBankCount = this.accountBankService.isHasCreditBankToken(merchantInfo.getAccountId());
-            /*if (creditBankCount <= 0) {
+            if (creditBankCount <= 0) {
                 return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                         .addParam("isFirst", 1)
                         .addParam("amount", businessOrder.getTradeAmount().toPlainString())
                         .addParam("channel", unionPayRequest.getPayChannel())
                         .addParam("orderId", businessOrder.getId())
+                        .addParam("openCard", 1)
                         .build();
             }
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
@@ -330,16 +332,17 @@ public class AppTradeController extends BaseController {
                     .addParam("amount", businessOrder.getTradeAmount().toPlainString())
                     .addParam("channel", unionPayRequest.getPayChannel())
                     .addParam("orderId", businessOrder.getId())
-                    .build();*/
+                    .addParam("openCard", 1)
+                    .build();
         }
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
-        final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
         if (creditBankCount <= 0) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("isFirst", 1)
                     .addParam("amount", businessOrder.getTradeAmount().toPlainString())
                     .addParam("channel", unionPayRequest.getPayChannel())
                     .addParam("orderId", businessOrder.getId())
+                    .addParam("openCard", 0)
                     .build();
         }
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
@@ -347,6 +350,7 @@ public class AppTradeController extends BaseController {
                 .addParam("amount", businessOrder.getTradeAmount().toPlainString())
                 .addParam("channel", unionPayRequest.getPayChannel())
                 .addParam("orderId", businessOrder.getId())
+                .addParam("openCard", 0)
                 .build();
     }
 
@@ -374,6 +378,12 @@ public class AppTradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(parentChannelSign), "渠道不是快捷");
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
         final JSONObject result = new JSONObject();
+        if (parentChannelSign == EnumPayChannelSign.JH_UNIONPAY.getId()) {
+            //如果是玖和快捷
+            result.put("openCard", 1);
+        }else {
+            result.put("openCard", 0);
+        }
         if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
             result.put("showExpireDate", EnumBoolean.TRUE.getCode());
             result.put("showCvv", EnumBoolean.FALSE.getCode());

@@ -155,7 +155,7 @@ public class ActiveController {
         log.info("明文返回结果是："+appResult);
         if(appResult!=null&&!"".equals(appResult)){
             String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult.toString(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-            log.info("返回密文结果是："+base64E);
+            //log.info("返回密文结果是："+base64E);
             result.setEncryptDataResult(base64E);
         }
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
@@ -322,7 +322,7 @@ public class ActiveController {
         response.setContentType("application/json;charset=utf-8");
         Gson gson=new Gson();
         String json=gson.toJson(obj);
-        log.info("返回结果是："+json);
+        //log.info("返回结果是："+json);
         log.info("<<<<--"+serviceCode+"--end--<<<<执行时间是："+excTime+"s");
         pw.write(json);
     }
