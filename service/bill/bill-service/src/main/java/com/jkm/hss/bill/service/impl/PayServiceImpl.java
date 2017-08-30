@@ -427,6 +427,14 @@ public class PayServiceImpl implements PayService {
             } catch (final Throwable e) {
                 log.error("商户号[" + merchant.getMarkCode() + "], 交易点单号[" + order.getOrderNo() + "]支付完成，开始通知商户-通知异常", e);
             }
+
+            try {
+                final HashMap<String, String> params = new HashMap<>();
+                params.put("amount", order.getTradeAmount().toPlainString());
+                this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.PAY_MESSAGE, EnumMessageTemplate.PAY_TEMPLATE, params);
+            } catch (final Throwable e) {
+                log.error("商户号[" + merchant.getMarkCode() + "], 交易点单号[" + order.getOrderNo() + "]支付完成，记录消息异常", e);
+            }
         }
         //商户提现(发消息)
         if (!enumPayChannelSign.getAutoSettle() && !enumPayChannelSign.getSettleType().getType().equals(EnumBalanceTimeType.T1.getType())) {
@@ -659,11 +667,13 @@ public class PayServiceImpl implements PayService {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
                     if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
+                        log.info("收款商户-[{}]，直接一级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), firstMoneyTriple.getMiddle().toPlainString());
                         final HashMap<String, String> params = new HashMap<>();
                         params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
                         this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.SUPER_DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
                     } else {
                         //间接
+                        log.info("收款商户-[{}]，间接一级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), firstMoneyTriple.getMiddle().toPlainString());
                         final HashMap<String, String> params = new HashMap<>();
                         params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
                         this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.SUPER_DEALER_INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
@@ -699,11 +709,13 @@ public class PayServiceImpl implements PayService {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
                     if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
+                        log.info("收款商户-[{}]，直接二级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), secondMoneyTriple.getMiddle().toPlainString());
                         final HashMap<String, String> params = new HashMap<>();
                         params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
                         this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
                     } else {
                         //间接
+                        log.info("收款商户-[{}]，间接二级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), secondMoneyTriple.getMiddle().toPlainString());
                         final HashMap<String, String> params = new HashMap<>();
                         params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
                         this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DEALER_INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
@@ -733,6 +745,7 @@ public class PayServiceImpl implements PayService {
                 this.merchantRecordedAccount(account.getId(), firstMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-直推");
             }
             if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                log.info("收款商户-[{}]，分润直推商户-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), merchant.getMarkCode(), firstMerchantMoneyTriple.getMiddle().toPlainString());
                 final HashMap<String, String> params = new HashMap<>();
                 params.put("amount", firstMerchantMoneyTriple.getMiddle().toPlainString());
                 this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
@@ -759,6 +772,7 @@ public class PayServiceImpl implements PayService {
                 this.merchantRecordedAccount(account.getId(), secondMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-间推");
             }
             if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                log.info("收款商户-[{}]，分润间推商户-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), merchant.getMarkCode(), secondMerchantMoneyTriple.getMiddle().toPlainString());
                 final HashMap<String, String> params = new HashMap<>();
                 params.put("amount", secondMerchantMoneyTriple.getMiddle().toPlainString());
                 this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);

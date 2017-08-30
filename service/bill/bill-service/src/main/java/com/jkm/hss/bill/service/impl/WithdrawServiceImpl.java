@@ -9,7 +9,6 @@ import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.SettleAccountFlow;
-import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
@@ -25,27 +24,24 @@ import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumMessageTemplate;
+import com.jkm.hss.merchant.enums.EnumMessageType;
 import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
-import com.jkm.hss.merchant.service.AccountBankService;
-import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.SendMsgService;
-import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
-import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +82,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     private AccountBankService accountBankService;
     @Autowired
     private BusinessOrderService businessOrderService;
+    @Autowired
+    private AppMessageService appMessageService;
 
     /**
      * {@inheritDoc}
@@ -258,12 +256,25 @@ public class WithdrawServiceImpl implements WithdrawService {
                 requestJsonObject.put("count", 0);
                 MqProducer.produce(requestJsonObject, MqConfig.API_SETTLE_CALLBACK, 10);
             } else {
-                final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
-                log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
                 final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
                 final String bankNo = accountBank.getBankNo();
-                this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
-                        merchantWithdrawPoundage, bankNo.substring(bankNo.length() - 4), user.getOpenId());
+                try {
+                    final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
+                    log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
+                    this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
+                            merchantWithdrawPoundage, bankNo.substring(bankNo.length() - 4), user.getOpenId());
+                } catch (final Throwable e) {
+                    log.error("商户号[" + merchant.getMarkCode() + "], 结算单号[" + settlementRecord.getSettleNo() + "]结算完成，开始通知商户-通知异常", e);
+                }
+                try {
+                    final HashMap<String, String> params = new HashMap<>();
+                    params.put("amount", settlementRecord.getSettleAmount().toPlainString());
+                    params.put("fee", merchantWithdrawPoundage.toPlainString());
+                    params.put("lastnumber", bankNo.substring(bankNo.length() - 4));
+                    this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.WITHDRAW_MESSAGE, EnumMessageTemplate.WITHDRAW_TEMPLATE, params);
+                } catch (final Throwable e) {
+                    log.error("商户号[" + merchant.getMarkCode() + "], 结算单号[" + settlementRecord.getSettleNo() + "]结算完成，记录消息异常", e);
+                }
             }
         }
     }
@@ -285,9 +296,9 @@ public class WithdrawServiceImpl implements WithdrawService {
      */
     @Override
     @Transactional
-    public void merchantPoundageSettle(final SettlementRecord settlementRecord, final int payChannelSign, final BigDecimal poundage, final MerchantInfo merchant) {
+    public void merchantPoundageSettle(final SettlementRecord settlementRecord, final int payChannelSign, final BigDecimal poundage, final MerchantInfo receiveMerchant) {
         final Map<String, Triple<Long, BigDecimal, String>> shallProfitMap =
-                this.shallProfitDetailService.withdrawProfitCount(EnumProductType.HSS, settlementRecord.getSettleNo(), settlementRecord.getSettleAmount(), payChannelSign, merchant.getId());
+                this.shallProfitDetailService.withdrawProfitCount(EnumProductType.HSS, settlementRecord.getSettleNo(), settlementRecord.getSettleAmount(), payChannelSign, receiveMerchant.getId());
         final Triple<Long, BigDecimal, String> basicMoneyTriple = shallProfitMap.get("basicMoney");
         final Triple<Long, BigDecimal, String> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, String> productMoneyTriple = shallProfitMap.get("productMoney");
@@ -346,6 +357,26 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseAvailableAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(account.getId(), settlementRecord.getSettleNo(), firstMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
+                if (dealerMerchantOptional.isPresent()) {
+                    final MerchantInfo merchant = dealerMerchantOptional.get();
+                    if (receiveMerchant.getFirstMerchantId() > 0) {
+                        //直接
+                        log.info("hss提现商户-[{}]，直接一级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), firstMoneyTriple.getMiddle().toPlainString());
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.SUPER_DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    } else {
+                        //间接
+                        log.info("hss提现商户-[{}]，直接一级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), firstMoneyTriple.getMiddle().toPlainString());
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", firstMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.SUPER_DEALER_INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    }
+
+                }
+            }
         }
         //二级代理商利润--到结算--可用余额
         if (null != secondMoneyTriple) {
@@ -358,6 +389,26 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseAvailableAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(account.getId(), settlementRecord.getSettleNo(), secondMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+                final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
+                if (dealerMerchantOptional.isPresent()) {
+                    final MerchantInfo merchant = dealerMerchantOptional.get();
+                    if (receiveMerchant.getFirstMerchantId() > 0) {
+                        //直接
+                        log.info("hss提现商户-[{}]，直接二级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), secondMoneyTriple.getMiddle().toPlainString());
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DEALER_DIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    } else {
+                        //间接
+                        log.info("hss提现商户-[{}]，间接二级-分润代理商-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), dealer.getMarkCode(), secondMoneyTriple.getMiddle().toPlainString());
+                        final HashMap<String, String> params = new HashMap<>();
+                        params.put("amount", secondMoneyTriple.getMiddle().toPlainString());
+                        this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.BENEFIT_MESSAGE, EnumMessageTemplate.DEALER_INDIRECT_MERCHAN_BENEFIT_TEMPLATE, params);
+                    }
+
+                }
+            }
         }
     }
 

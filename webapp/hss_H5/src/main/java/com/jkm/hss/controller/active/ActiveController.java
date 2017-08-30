@@ -152,7 +152,7 @@ public class ActiveController {
             result.setResultMessage(strs[2]);
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
-        log.info("明文返回结果是："+appResult);
+//        log.info("明文返回结果是："+appResult);
         if(appResult!=null&&!"".equals(appResult)){
             String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult.toString(), "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
             //log.info("返回密文结果是："+base64E);
@@ -283,12 +283,12 @@ public class ActiveController {
             result.setResultMessage(strs[2]);
         else
             result.setResultMessage(ResultCode.SUCCESS.resultMessage);
-        log.info("明文返回结果是："+appResult);
+//        log.info("明文返回结果是："+appResult);
         if(appResult!=null&&!"".equals(appResult)){
             String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(appResult, "utf-8", privateKey.substring(0,16), privateKey.substring(16,32));
-            log.info("加密返回结果是："+base64E);
+//            log.info("加密返回结果是："+base64E);
             String httpEncode= URLEncoder.encode(base64E,"utf-8");
-            log.info("加密Encode返回结果是："+httpEncode);
+//            log.info("加密Encode返回结果是："+httpEncode);
             result.setEncryptDataResult(httpEncode);
         }
         this.writeJsonToRrsponse(result, response, pw,startTime,appParam.getServiceCode());
