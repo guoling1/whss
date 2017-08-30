@@ -818,7 +818,7 @@ public class AppMerchantInfoController extends BaseController {
         }
         if(appRecommendRequest.getType()==2){
             RecommendRequest recommendRequest = new RecommendRequest();
-            recommendRequest.setMerchantId(merchantInfo.get().getSuperDealerId());
+            recommendRequest.setMerchantId(null == merchantInfo.get().getSuperDealerId() ? 0 : merchantInfo.get().getSuperDealerId());
             if(merchantInfo.get().getSuperDealerId()!=null&&merchantInfo.get().getSuperDealerId()>0){
                 recommendAndMerchant = recommendService.selectSuperRecommend(recommendRequest);
             }else{
