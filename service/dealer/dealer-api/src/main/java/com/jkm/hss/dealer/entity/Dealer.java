@@ -162,6 +162,10 @@ public class Dealer extends BaseEntity {
      * 分公司编码
      */
     private Long oemId;
+    /**
+     * apiKey
+     */
+    private String apiKey;
 
 
 

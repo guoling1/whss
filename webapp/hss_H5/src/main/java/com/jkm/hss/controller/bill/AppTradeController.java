@@ -314,6 +314,24 @@ public class AppTradeController extends BaseController {
         }
         final int parentChannelSign = this.basicChannelService.selectParentChannelSign(unionPayRequest.getPayChannel());
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(parentChannelSign), "渠道不是快捷");
+        if (parentChannelSign == EnumPayChannelSign.JH_UNIONPAY.getId()){
+            //如果是玖和快捷
+            final int creditBankCount = this.accountBankService.isHasCreditBankToken(merchantInfo.getAccountId());
+            /*if (creditBankCount <= 0) {
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("isFirst", 1)
+                        .addParam("amount", businessOrder.getTradeAmount().toPlainString())
+                        .addParam("channel", unionPayRequest.getPayChannel())
+                        .addParam("orderId", businessOrder.getId())
+                        .build();
+            }
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("isFirst", 0)
+                    .addParam("amount", businessOrder.getTradeAmount().toPlainString())
+                    .addParam("channel", unionPayRequest.getPayChannel())
+                    .addParam("orderId", businessOrder.getId())
+                    .build();*/
+        }
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         final BusinessOrder businessOrder = this.businessOrderService.getById(unionPayRequest.getOrderId()).get();
         if (creditBankCount <= 0) {

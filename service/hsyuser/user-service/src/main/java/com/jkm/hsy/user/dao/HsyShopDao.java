@@ -76,4 +76,6 @@ public interface HsyShopDao {
      * @return
      */
     int updateOpenScanPrintByShopIds(@Param("updateScanPrintShopIds") List<Long> updateScanPrintShopIds);
+
+    AppAuUser findUserByGlobalId(@Param("globalId") String globalId);
 }

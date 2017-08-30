@@ -62,4 +62,37 @@ public class SmPost {
         }
         return responseText;
     }
+
+    public static String postObject(String url, Map<String, Object> paramsMap) {
+        CloseableHttpClient client = HttpClients.createDefault();
+        String responseText = "";
+        CloseableHttpResponse response = null;
+        try {
+            HttpPost method = new HttpPost(url);
+            method.addHeader("Content-type", "application/json; charset=utf-8");
+            method.setHeader("Accept", "application/json");
+            if (paramsMap != null) {
+                JSONObject jsonParam = new JSONObject();
+                for (Map.Entry<String, Object> param : paramsMap.entrySet()) {
+                    jsonParam.put(param.getKey(), param.getValue());
+                }
+                method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
+
+            }
+            response = client.execute(method);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                responseText = EntityUtils.toString(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                response.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return responseText;
+    }
 }

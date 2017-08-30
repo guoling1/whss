@@ -234,5 +234,28 @@ public interface AccountBankService {
      */
     void cleanCvvAndExpiryTime(long id,int type);
 
+    /**
+     * api开卡接口回调接口
+     * @param accountId
+     * @param bankNo
+     * @param bankName
+     * @param reserveMobile
+     * @param bankBin
+     * @param token
+     */
+    void bindCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String token);
 
+    /**
+     * 根据bankNo查询
+     * @param accountId
+     * @return
+     */
+    AccountBank selectCreditListByBankNo(long accountId,String bankNo);
+
+    /**
+     * 是否有开卡token
+     * @param accountId
+     * @return
+     */
+    int isHasCreditBankToken(long accountId);
 }

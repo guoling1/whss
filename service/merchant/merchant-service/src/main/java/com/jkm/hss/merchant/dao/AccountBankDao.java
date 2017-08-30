@@ -157,4 +157,12 @@ public interface AccountBankDao {
      * @param id
      */
     void cleanCvvAndExpiryTime(@Param("id") long id);
+    /**
+     * 根据bankNo查询
+     * @param accountId
+     * @return
+     */
+    AccountBank selectCreditListByBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo);
+
+    int isHasCreditBankToken(long accountId);
 }

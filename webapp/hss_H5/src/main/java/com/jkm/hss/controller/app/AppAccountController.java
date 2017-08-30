@@ -313,11 +313,12 @@ public class AppAccountController extends BaseController {
             return CommonResponse.objectResponse(1,"success", response);
         }else if (shallRequest.getType() == 2){
             final Long dealerId = merchantInfo.get().getSuperDealerId();
-            final Dealer dealer = this.dealerService.getById(dealerId).get();
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
             //合伙人分润
-            if ( dealerId == null){
+            if ( !dealerOptional.isPresent()){
                 return CommonResponse.objectResponse(-1,"未开通合伙人",null);
             }
+            final Dealer dealer = dealerOptional.get();
             PageModel<SplitAccountRecord> pageModel = this.splitAccountRecordService.
                     getDealerShallProfitList(dealer.getAccountId(), shallRequest.getShallId(),shallRequest.getPageNo() ,shallRequest.getPageSize());
 

@@ -289,6 +289,26 @@ public class Order extends BaseEntity {
      * {@link com.jkm.hss.bill.enums.EnumOrderRefundStatus}
      */
     private int refundStatus;
+    /**
+     * 商户请求时间
+     */
+    private Date merchantReqTime;
+    /**
+     * 后台通知url
+     */
+    private String notifyUrl;
+    /**
+     * 前端通知url
+     */
+    private String returnUrl;
+    /**
+     * 结算通知url
+     */
+    private String settleUrl;
+    /**
+     * 上游渠道支付token
+     */
+    private String token;
 
     /**
      * 获取签名

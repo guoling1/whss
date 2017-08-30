@@ -30,7 +30,8 @@
         email,
         dealer_belong,
         oem_type,
-        oem_id
+        oem_id,
+        api_key
         )
         VALUES
         (
@@ -60,7 +61,8 @@
         #{email},
         #{dealerBelong},
         #{oemType},
-        #{oemId}
+        #{oemId},
+        upper(replace(uuid(), '-', ''))
         );
     </insert>
     <update id="update">

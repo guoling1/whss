@@ -6,7 +6,7 @@
     <sql id="Base_Column_List">
         id,	account_id,	expiry_time,bank_no,bank_name,bank_bin,reserve_mobile,branch_code,branch_name,branch_province_code,branch_province_name,
         branch_city_code,branch_city_name,branch_county_code,branch_county_name,card_type,is_authen,is_default,
-        status,create_time,	update_time,cvv,update_type
+        status,create_time,	update_time,cvv,update_type,token
     </sql>
 
     <!-- 添加 -->
@@ -30,6 +30,7 @@
             is_authen,
             is_default,
             status,
+            token,
             cvv
         )VALUES (
             #{accountId},
@@ -50,6 +51,7 @@
             #{isAuthen},
             #{isDefault},
             #{status},
+            #{token},
             #{cvv}
         )
     </insert>
@@ -254,5 +256,22 @@
         select count(1) as count
         from tb_account_bank as b INNER JOIN tb_merchant_info as m on b.account_id=m.account_id INNER JOIN  tb_user_info as u on u.merchant_id=m.id
         where u.open_id=#{openId} and b.is_default=1
+    </select>
+
+    <!-- 根据bankNo查询 -->
+    <select id="selectCreditListByBankNo" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1
+        <if test="bankNo != null and bankNo != ''">
+            AND bank_no=#{bankNo}
+        </if>
+        limit 0,1
+    </select>
+    <!-- 是否有token -->
+    <select id="isHasCreditBankToken" resultType="java.lang.Integer">
+        SELECT count(id) FROM tb_account_bank
+        WHERE account_id = #{accountId} AND token is NOT NULL and status=0 and card_type=1
     </select>
 </mapper>

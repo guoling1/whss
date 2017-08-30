@@ -23,4 +23,13 @@ public class PaymentSdkConfirmUnionPayRequest {
      *  通道
      */
     private String code;
+
+    /**
+     * JH结算金额
+     */
+    private String settleAmount;
+    /**
+     * JHtoken
+     */
+    private String token;
 }

@@ -76,4 +76,6 @@ public class PlaceOrderParams {
      * 结算成功，回调url
      */
     private String settleNotifyUrl;
+
+    private String businessOrderNo;
 }

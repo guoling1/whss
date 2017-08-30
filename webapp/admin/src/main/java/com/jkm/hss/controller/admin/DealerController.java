@@ -1481,6 +1481,23 @@ public class DealerController extends BaseController {
                 dealerRatePolicyService.insert(dealerRatePolicyList.get(i));
             }
         }
+
+        List<DealerRatePolicy> result = dealerRatePolicyService.selectByDealerId(dealerRatePolicySaveOrUpdateRequest.getDealerId());
+        if(result.size()>0){
+            for(int k=0;k<result.size();k++){
+                DealerRatePolicy dr = new DealerRatePolicy();
+                dr.setDealerId(dealerRatePolicySaveOrUpdateRequest.getDealerId());
+                dr.setPolicyType(result.get(k).getPolicyType());
+                dr.setMerchantMinRateT1(result.get(k).getMerchantMinRateT1());
+                dr.setMerchantMaxRateT1(result.get(k).getMerchantMaxRateT1());
+                dr.setMerchantMinRateD0(result.get(k).getMerchantMinRateD0());
+                dr.setMerchantMaxRateD0(result.get(k).getMerchantMaxRateD0());
+                dr.setMerchantMinRateD1(result.get(k).getMerchantMinRateD1());
+                dr.setMerchantMaxRateD1(result.get(k).getMerchantMaxRateD1());
+                dealerRatePolicyService.updateByPolicyAndDealer(dr);
+            }
+        }
+
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 

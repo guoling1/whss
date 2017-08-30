@@ -1,18 +1,23 @@
 package com.jkm.hss.controller.code;
 
-import com.alipay.api.response.AlipayUserInfoShareResponse;
-import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.account.entity.MemberAccount;
 import com.jkm.hss.account.sevice.MemberAccountService;
+import com.jkm.hss.bill.entity.HsyOrder;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.service.HSYOrderService;
+import com.jkm.hss.bill.service.HSYTransactionService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.JKMTradeServiceException;
+import com.jkm.hss.helper.response.CreateApiOrderResponse;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hsy.user.constant.RechargeValidType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppPolicyMember;
@@ -20,18 +25,17 @@ import com.jkm.hsy.user.entity.AppPolicyMembershipCardShop;
 import com.jkm.hsy.user.service.HsyMembershipService;
 import com.jkm.hsy.user.service.UserChannelPolicyService;
 import lombok.extern.slf4j.Slf4j;
-import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -56,6 +60,10 @@ public class WebSkipController extends BaseController {
     private MemberAccountService memberAccountService;
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private HSYTransactionService hsyTransactionService;
+    @Autowired
+    private HSYOrderService hsyOrderService;
     /**
      * 支付升级成功页面
      * @param request
@@ -261,6 +269,188 @@ public class WebSkipController extends BaseController {
         model.addAttribute("discountFloat",discountFloat);
         model.addAttribute("source", source);
         return "/toRecharge";
+    }
+
+    /**
+     * 扫固定码微信支付页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/codeapi", method = RequestMethod.GET)
+    public String wxapi(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "payInfo", required = true) String payInfo, @RequestParam(value = "hsyOrderId", required = true) long hsyOrderId ) throws IOException {
+        final HsyOrder hsyOrder = this.hsyOrderService.getById(hsyOrderId).get();
+        final int paymentChannel = hsyOrder.getPaymentChannel();
+        //重复请求
+        if (hsyOrder.isNeedCreateNew()){
+            //已经请求交易了
+            final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
+            final String payMsg = order.getPayInfo();
+            final String[] split = payMsg.split("\\|");
+            final JSONObject jsonObject = new JSONObject();
+            jsonObject.put("appId", split[0]);
+            jsonObject.put("timeStamp", split[1]);
+            jsonObject.put("nonceStr", split[2]);
+            jsonObject.put("package", split[3]);
+            jsonObject.put("signType", split[4]);
+            jsonObject.put("paySign", split[5]);
+            model.addAttribute("status","success");
+            model.addAttribute("amount",hsyOrder.getAmount());
+            model.addAttribute("merchantName",hsyOrder.getMerchantname());
+            model.addAttribute("subject", hsyOrder.getGoodsname());
+            model.addAttribute("payUrl",jsonObject.toString());
+            model.addAttribute("pageCallBackUrl",hsyOrder.getPageCallBackUrl());
+            return "/api-wx";
+        }
+        //获取openID
+        if (paymentChannel == EnumPaymentChannel.WECHAT_PAY.getId()){
+            return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ WxConstants.APP_HSY_ID+"&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2fopenIdBack&response_type=code&scope=snsapi_base&state="+hsyOrderId+"#wechat_redirect";
+        }else if (paymentChannel == EnumPaymentChannel.ALIPAY.getId()){
+            return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+ AlipayServiceConstants.APP_ID+"&state="+hsyOrderId+"&scope=auth_base&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2fuserIdBack";
+        }
+        return "/500";
+    }
+
+    /**
+     * openid
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/openIdBack", method = RequestMethod.GET)
+    public String payOpenIdOrder(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws UnsupportedEncodingException {
+        Long startTime = System.currentTimeMillis();
+        log.info("微信回调获取OPENID");
+        try{
+
+            Preconditions.checkState(request.getQueryString() != null, "微信授权失败");
+            String getQueryString = request.getQueryString();
+            String[] arr = getQueryString.split("&");
+            String code="";
+            String state="";
+            for(int i =0;i<arr.length;i++){
+                if("code".equals(arr[i].split("=")[0])){
+                    code = arr[i].split("=")[1];
+                }
+                if("state".equals(arr[i].split("=")[0])){
+                    state = arr[i].split("=")[1];
+                }
+            }
+            Map<String,String> ret = WxPubUtil.getOpenid(code, WxConstants.APP_HSY_ID,WxConstants.APP_HSY_SECRET);
+            Preconditions.checkState(ret.get("openid")!=null&&!"".equals(ret.get("openid")), "微信授权失败");
+            final HsyOrder hsyOrder = this.hsyOrderService.getById(Integer.valueOf(state)).get();
+            hsyOrder.setMemberId(ret.get("openid"));
+            this.hsyOrderService.update(hsyOrder);
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(hsyOrder.getAmount().toString(), hsyOrder.getId(),hsyOrder.getAmount(),null,null,null,null);
+            if (0 == resultPair.getLeft()) {
+                //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                //下单成功
+                final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
+                final String payInfo = order.getPayInfo();
+                final String[] split = payInfo.split("\\|");
+                final JSONObject jsonObject = new JSONObject();
+                model.addAttribute("status","success");
+                model.addAttribute("amount",hsyOrder.getAmount());
+                model.addAttribute("merchantName",hsyOrder.getMerchantname());
+                model.addAttribute("subject", hsyOrder.getGoodsname());
+                jsonObject.put("appId", split[0]);
+                jsonObject.put("timeStamp", split[1]);
+                jsonObject.put("nonceStr", split[2]);
+                jsonObject.put("package", split[3]);
+                jsonObject.put("signType", split[4]);
+                jsonObject.put("paySign", split[5]);
+                model.addAttribute("payUrl",jsonObject.toString());
+                model.addAttribute("pageCallBackUrl", hsyOrder.getPageCallBackUrl());
+                return "/api-wx";
+            }else{
+                //下单失败
+                model.addAttribute("status", "fail");
+                model.addAttribute("amount",hsyOrder.getAmount());
+                model.addAttribute("merchantName",hsyOrder.getMerchantname());
+                model.addAttribute("subject", hsyOrder.getGoodsname());
+                model.addAttribute("pageCallBackUrl", hsyOrder.getPageCallBackUrl());
+                return "/api-wx";
+            }
+
+        } catch (JKMTradeServiceException e) {
+            log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.JKMTradeServiceException", e);
+
+        } catch (Exception e) {
+            log.error("#【微信回调获取OPENID并下单】controller.payOpenIdOrder.Exception", e);
+
+        }
+        //结果返回
+        //createApiOrderResponse = afterComplete();
+        Long endTime = System.currentTimeMillis();
+        log.info("#【微信回调获取OPENID并下单】merchantOrderNo:"  + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        return "/500";
+    }
+
+    /**
+     * userid
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/userIdBack", method = RequestMethod.GET)
+    public String payUserIdOrder(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws UnsupportedEncodingException {
+        Long startTime = System.currentTimeMillis();
+        log.info("支付宝回调获取USERID");
+        CreateApiOrderResponse createApiOrderResponse = new CreateApiOrderResponse();
+        try{
+            Preconditions.checkState(request.getQueryString() != null, "支付宝授权失败");
+            String getQueryString = "";
+            if(request.getQueryString() == null){
+                getQueryString="";
+            }else{
+                getQueryString = request.getQueryString();
+            }
+            String[] arr = getQueryString.split("&");
+            String authcode="";
+            String state = "";
+            for(int i =0;i<arr.length;i++){
+                if("auth_code".equals(arr[i].split("=")[0])){
+                    authcode = arr[i].split("=")[1];
+                    log.info("authcode是:{}",authcode);
+                }
+                if("state".equals(arr[i].split("=")[0])){
+                    state = arr[i].split("=")[2];
+                    log.info("state参数是:{}",state);
+                }
+            }
+            String userId = alipayOauthService.getUserId(authcode);
+            final HsyOrder hsyOrder = this.hsyOrderService.getById(Integer.valueOf(state)).get();
+            hsyOrder.setMemberId(userId);
+            this.hsyOrderService.update(hsyOrder);
+            final Triple<Integer, String, String> resultPair = this.hsyTransactionService.placeOrder(hsyOrder.getAmount().toString(), hsyOrder.getId(),hsyOrder.getAmount(),null,null,null,null);
+            if (0 == resultPair.getLeft()) {
+                //("payUrl", URLDecoder.decode(resultPair.getMiddle(), "UTF-8"))
+                //下单成功
+                final Order order = this.orderService.getByBusinessOrderNo(hsyOrder.getOrdernumber()).get();
+                final String payInfo = order.getPayInfo();
+                final JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tradeNo", payInfo);
+                model.addAttribute("payUrl",jsonObject.toString());
+                model.addAttribute("page",hsyOrder.getPageCallBackUrl());
+                return "/api-zfb";
+            }else{
+                //下单失败
+            }
+
+        } catch (JKMTradeServiceException e) {
+            log.error("#【支付宝回调获取USERID并下单】controller.payUserIdOrder.JKMTradeServiceException", e);
+
+        } catch (Exception e) {
+            log.error("#【支付宝回调获取USERID并下单】controller.payUserIdOrder.Exception", e);
+
+        }
+        //结果返回
+        //createApiOrderResponse = afterComplete();
+        Long endTime = System.currentTimeMillis();
+        log.info("#【支付宝回调获取USERID并下单】merchantOrderNo:"  + ",endTime:" + endTime + ",totalTime:" + (endTime - startTime) + "ms");
+        return "/500";
     }
 
 }

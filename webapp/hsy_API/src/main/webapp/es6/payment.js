@@ -121,3 +121,6 @@ closePay.addEventListener('click',function () {
     maskPay.style.opacity = 0;
     maskPay.style.display = 'none';
 });
+document.getElementById('inputBoxContainer').addEventListener('click',function () {
+    document.getElementsByClassName('realInput')[0].focus();
+})
