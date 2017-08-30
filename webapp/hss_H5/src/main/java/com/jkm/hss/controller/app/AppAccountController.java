@@ -313,6 +313,10 @@ public class AppAccountController extends BaseController {
             return CommonResponse.objectResponse(1,"success", response);
         }else if (shallRequest.getType() == 2){
             final Long dealerId = merchantInfo.get().getSuperDealerId();
+            //合伙人分润
+            if (dealerId == null){
+                return CommonResponse.objectResponse(-1,"未开通合伙人",null);
+            }
             final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
             //合伙人分润
             if ( !dealerOptional.isPresent()){
