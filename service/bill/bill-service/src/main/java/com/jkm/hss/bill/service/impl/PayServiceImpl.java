@@ -663,7 +663,7 @@ public class PayServiceImpl implements PayService {
             }
             if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
                 final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
-                if (dealerMerchantOptional.isPresent()) {
+                if (dealerMerchantOptional.isPresent() && new BigDecimal("0.00").compareTo(firstMoneyTriple.getMiddle()) <= 0) {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
                     if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
@@ -705,7 +705,7 @@ public class PayServiceImpl implements PayService {
 
             if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
                 final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
-                if (dealerMerchantOptional.isPresent()) {
+                if (dealerMerchantOptional.isPresent() && new BigDecimal("0.00").compareTo(secondMoneyTriple.getMiddle()) <= 0) {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
                     if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
@@ -744,7 +744,7 @@ public class PayServiceImpl implements PayService {
                 //待结算--可用余额
                 this.merchantRecordedAccount(account.getId(), firstMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-直推");
             }
-            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource() && new BigDecimal("0.00").compareTo(firstMerchantMoneyTriple.getMiddle()) <= 0) {
                 log.info("收款商户-[{}]，分润直推商户-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), merchant.getMarkCode(), firstMerchantMoneyTriple.getMiddle().toPlainString());
                 final HashMap<String, String> params = new HashMap<>();
                 params.put("amount", firstMerchantMoneyTriple.getMiddle().toPlainString());
@@ -771,7 +771,7 @@ public class PayServiceImpl implements PayService {
                 //待结算--可用余额
                 this.merchantRecordedAccount(account.getId(), secondMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-间推");
             }
-            if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
+            if (EnumSource.APIREG.getId() != receiveMerchant.getSource() && new BigDecimal("0.00").compareTo(secondMerchantMoneyTriple.getMiddle()) <= 0) {
                 log.info("收款商户-[{}]，分润间推商户-[{}]，分润金额-[{}]", receiveMerchant.getMarkCode(), merchant.getMarkCode(), secondMerchantMoneyTriple.getMiddle().toPlainString());
                 final HashMap<String, String> params = new HashMap<>();
                 params.put("amount", secondMerchantMoneyTriple.getMiddle().toPlainString());
