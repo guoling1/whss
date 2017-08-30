@@ -400,6 +400,7 @@ public class AppTradeController extends BaseController {
         final String identity = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
         result.put("bankAccountName", merchantInfo.getName());
         result.put("idCard", identity.substring(0, 3) + "************" + identity.substring(identity.length() - 3, identity.length()));
+        log.info("商户编号-[{}]首次支付返回参数-[{}]", merchantInfo.getMarkCode(), result);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
 
@@ -472,6 +473,7 @@ public class AppTradeController extends BaseController {
         result.put("bankName", accountBank.getBankName());
         result.put("shortNo", bankNo.substring(bankNo.length() - 4));
         result.put("mobile", mobile.substring(0, 2) + "**** ***" + mobile.substring(mobile.length() - 2));
+        log.info("商户编号-[{}]再次支付返回参数-[{}]", merchantInfo.getMarkCode(), result);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
 
@@ -502,9 +504,6 @@ public class AppTradeController extends BaseController {
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
             return CommonResponse.simpleResponse(-1, "有效期不能为空");
         }
-       /* if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
-        }*/
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getBankCardNo())) {
             return CommonResponse.simpleResponse(-1, "银卡卡号不能为空");
         }
