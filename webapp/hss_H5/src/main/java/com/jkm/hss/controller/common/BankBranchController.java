@@ -44,6 +44,9 @@ public class BankBranchController extends BaseController {
     public CommonResponse getBankBranch(final HttpServletRequest request, final HttpServletResponse response,@RequestBody BankBranchRequest bankBranchRequest) {
         PageModel<AppBizBankBranch> result = new PageModel<>(bankBranchRequest.getPageNo(), bankBranchRequest.getPageSize());
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankBranchRequest.getBankNo());
+        if (!bankCardBinOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "结算卡错误");
+        }
         bankBranchRequest.setBankName(bankCardBinOptional.get().getBankName());
         List<AppBizBankBranch> appBizBankBranches = bankBranchService.findBankBranchListByPage(bankBranchRequest);
         Long count = bankBranchService.findBankBranchListByPageCount(bankBranchRequest);
