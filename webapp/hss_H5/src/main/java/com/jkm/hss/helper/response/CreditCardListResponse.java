@@ -32,4 +32,8 @@ public class CreditCardListResponse {
      * 状态 0：禁用，1：启用
      */
     private int status;
+    /**
+     * 是否默认 0：非，1：是
+     */
+    private int isDefault;
 }

@@ -130,6 +130,7 @@
             <mvc:mapping path="/appMerchantInfo/getTotalProfit"/>
             <mvc:mapping path="/app/trade/**"/>
             <mvc:mapping path="/appBenefit/**"/>
+            <mvc:mapping path="/app/bankcard/**"/>
             <bean id="appInterceptor" class="com.jkm.hss.interceptor.AppInterceptor">
                 <property name="appAuTokenService" ref="appAuTokenService"/>
                 <property name="merchantInfoService" ref="merchantInfoServiceImpl"/>
