@@ -258,4 +258,6 @@ public interface AccountBankService {
      * @return
      */
     int isHasCreditBankToken(long accountId);
+
+    List<AccountBank> selectCreditList2Token(long accountId);
 }

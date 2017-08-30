@@ -274,4 +274,10 @@
         SELECT count(id) FROM tb_account_bank
         WHERE account_id = #{accountId} AND token is NOT NULL and status=0 and card_type=1
     </select>
+    <select id="selectCreditCardList2Token" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} AND token IS NOT NULL and status=0 and card_type=1
+    </select>
 </mapper>
