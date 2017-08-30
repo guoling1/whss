@@ -10,9 +10,11 @@ import com.jkm.hss.merchant.enums.EnumRecommendType;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.service.RecommendService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -101,7 +103,7 @@ public class RecommendServiceImpl implements RecommendService{
         int indirect = 0;
         List<RecommendShort> list = recommendDao.selectRecommendByPage(recommendRequest);
         RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
-        if(list.size()>0){
+        if(!CollectionUtils.isEmpty(list)){
             for(int i=0;i<list.size();i++){
                 if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){//间接推广人
                     if(list.get(i).getName()!=null&&!"".equals(list.get(i).getName())){
