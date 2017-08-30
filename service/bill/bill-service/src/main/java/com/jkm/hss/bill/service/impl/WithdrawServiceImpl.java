@@ -268,8 +268,9 @@ public class WithdrawServiceImpl implements WithdrawService {
                 }
                 try {
                     final HashMap<String, String> params = new HashMap<>();
-                    params.put("amount", settlementRecord.getSettleAmount().toPlainString());
+                    params.put("amount", settlementRecord.getSettleAmount().subtract(merchantWithdrawPoundage).toPlainString());
                     params.put("fee", merchantWithdrawPoundage.toPlainString());
+                    params.put("bank",accountBank.getBankName());
                     params.put("lastnumber", bankNo.substring(bankNo.length() - 4));
                     this.appMessageService.insertMessageInfoAndPush(merchant.getId(), EnumMessageType.WITHDRAW_MESSAGE, EnumMessageTemplate.WITHDRAW_TEMPLATE, params);
                 } catch (final Throwable e) {

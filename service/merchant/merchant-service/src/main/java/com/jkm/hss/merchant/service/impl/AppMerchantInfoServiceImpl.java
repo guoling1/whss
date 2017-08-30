@@ -642,7 +642,7 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
                 }
                 inviteCode = dealerOptional.get().getInviteCode();
             }
-            shareUrl = "http://hss.qianbaojiajia.com/share?oemNo="+oemNo+"&inviteCode="+inviteCode;
+            shareUrl = "http://hss.qianbaojiajia.com/earn/share?oemNo="+oemNo+"&inviteCode="+inviteCode;
         }
         else
             throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
