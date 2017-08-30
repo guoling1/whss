@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.app;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -1026,6 +1027,22 @@ public class AppMerchantInfoController extends BaseController {
         }
         HssAppTotalProfitResponse hssAppTotalProfitResponse = profitService.getTotalProfit(accountIds);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", hssAppTotalProfitResponse);
+    }
+
+    /**
+     * HSSH5001020 获取商户信息
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "info", method = RequestMethod.POST)
+    public CommonResponse info() {
+        Optional<MerchantInfo> info = merchantInfoService.selectById(super.getAppMerchantInfo().get().getId());
+        final MerchantInfo merchantInfo = info.get();
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("realName", merchantInfo.getName());
+        jsonObject.put("cardNo", merchantInfo.getPlainIdCard(MerchantSupport.decryptIdentity(merchantInfo.getIdentity())));
+        jsonObject.put("merchantNo", merchantInfo.getMarkCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
     }
 
     private BigDecimal needMoney(long productId,int currentLevel,int needLevel){

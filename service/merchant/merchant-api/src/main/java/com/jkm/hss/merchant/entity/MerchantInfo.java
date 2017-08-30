@@ -240,6 +240,10 @@ public class MerchantInfo extends BaseEntity{
         return phone.substring(0,3) + "****" + phone.substring(7,11);
     }
 
+    public String getPlainIdCard(String idCard){
+        return idCard.substring(0,3) + "**********" + idCard.substring(idCard.length()-4,idCard.length());
+    }
+
 
     //判断商户是否属于分公司商户
     public boolean isBelongToOem(){
