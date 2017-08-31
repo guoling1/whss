@@ -107,8 +107,8 @@
         this.$http.get('/admin/center/detail/' + query.id).then(res => {
           this.form.title = res.data.title;
           this.form.content = res.data.content;
-          this.form.centerImages = res.data.centerImages;
           for (let i = 0; i < res.data.centerImages.length; i++) {
+            this.form.centerImages[i].imgUrl = res.data.centerImages[i].imgUrl;
             res.data.centerImages[i].url = res.data.centerImages[i].showImgUrl;
           }
           this.fileList = res.data.centerImages;
