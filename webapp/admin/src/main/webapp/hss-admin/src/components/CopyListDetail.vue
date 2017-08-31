@@ -108,6 +108,7 @@
           this.form.title = res.data.title;
           this.form.content = res.data.content;
           for (let i = 0; i < res.data.centerImages.length; i++) {
+            this.form.centerImages[i] = [];
             this.form.centerImages[i].imgUrl = res.data.centerImages[i].imgUrl;
             res.data.centerImages[i].url = res.data.centerImages[i].showImgUrl;
           }
