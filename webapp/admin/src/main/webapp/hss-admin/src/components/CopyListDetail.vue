@@ -10,30 +10,30 @@
         <div class="">
           <div class="table-responsive">
             <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
+              <el-col :span="2">
                 <div class="alignRight">标题:</div>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <div class="grid-content bg-purple-light">
                   <el-input size="small" v-model="form.title" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
+              <el-col :span="2">
                 <div class="alignRight">内容:</div>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <div class="grid-content bg-purple-light">
                   <el-input type="textarea" size="small" v-model="form.content" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center" style="margin-top:10px">
-              <el-col :span="4">
+              <el-col :span="2">
                 <div class="alignRight">上传照片:</div>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <div class="grid-content bg-purple-light">
                   <el-upload class="upload-demo"
                              action="/upload/picUpload"
@@ -51,16 +51,16 @@
           </div>
         </div>
         <el-row type="flex" class="row-bg" justify="center">
-          <el-col :span="4">
+          <el-col :span="2">
             <div class="alignRight"></div>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <div class="grid-content bg-purple-light" style="width: 100%">
               <!--<div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">返回</div>-->
               <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;margin: 20px 0 100px;">
                 创 建 文 案
               </div>
-              <div class="btn btn-primary" @click="_$power(change,'boss_product_update')" v-if="!isShow"
+              <div class="btn btn-primary" @click="amend" v-if="!isShow"
                    style="width: 45%;margin: 20px 0 100px;">
                 修 改 文 案
               </div>
@@ -72,6 +72,12 @@
         </el-row>
       </div>
     </div>
+    <el-dialog title="提示" v-model="closeWindow" size="tiny" :show-close="false" :close-on-click-modal="false">
+      <span>操作完成</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeAll">关闭窗口</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -83,21 +89,41 @@
       return {
         hasButton: true,
         isShow: true,
+        closeWindow: false,
         fileList: [],
         form: {
+          id: null,
           title: '',
           content: '',
           centerImages: []
         }
       }
     },
+    created: function () {
+      let query = this.$route.query;
+      if (query.type == 2) {
+        this.isShow = false;
+        this.form.id = query.id;
+        this.$http.get('/admin/center/detail/' + query.id).then(res => {
+          this.form.title = res.data.title;
+          this.form.content = res.data.content;
+          this.form.centerImages = res.data.centerImages;
+          for (let i = 0; i < res.data.centerImages.length; i++) {
+            res.data.centerImages[i].url = res.data.centerImages[i].showImgUrl;
+          }
+          this.fileList = res.data.centerImages;
+        })
+      }
+    },
     methods: {
       fileDeal: function (fileList) {
-        console.log(fileList);
         this.form.centerImages = [];
         for (let i = 0; i < fileList.length; i++) {
-          let obj = {
-            imgUrl: fileList[i].response.result.url
+          let obj = {};
+          if (!!fileList[i].response) {
+            obj.imgUrl = fileList[i].response.result.url
+          } else {
+            obj.imgUrl = fileList[i].imgUrl
           }
           this.form.centerImages.push(obj);
         }
@@ -109,15 +135,17 @@
         this.fileDeal(fileList)
       },
       create: function () {
-        console.log(this.form);
         this.$http.post('/admin/center/publish', this.form).then(res => {
-          console.log(res);
+          this.closeWindow = true;
         })
-      }
-    },
-    computed: {
-      $channels: function () {
-        return this.channels
+      },
+      amend: function () {
+        this.$http.post('/admin/center/update', this.form).then(res => {
+          this.closeWindow = true;
+        })
+      },
+      closeAll: function () {
+        window.close()
       }
     }
   }

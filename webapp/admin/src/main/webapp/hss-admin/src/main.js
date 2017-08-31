@@ -78,7 +78,7 @@ const app = new Vue({
 import Vue from 'vue'
 import App from './Crumbs.vue'
 import ElementUI from 'element-ui'
-// import 'element-ui/lib/theme-default/index.css'
+import 'element-ui/lib/theme-default/index.css'
 import VueRouter from 'vue-router'
 import store from './store'
 import routes from './routes'
