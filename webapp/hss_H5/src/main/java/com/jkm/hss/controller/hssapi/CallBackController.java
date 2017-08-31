@@ -39,7 +39,8 @@ public class CallBackController extends BaseController {
     @RequestMapping(value = "openCard", method = RequestMethod.GET)
     public Object openCard(@RequestParam(value = "orderId", required = true) String orderId,
                            @RequestParam(value = "activateStatus", required = true) String activateStatus,
-                           @RequestParam(value = "token", required = true) String token) {
+                           @RequestParam(value = "token", required = true) String token,
+                           @RequestParam(value = "msg", required = true) String msg) {
         final OpenCardRecord openCardRecord = openCardRecordDao.selectByBindCardReqNo(orderId);
         if(openCardRecord == null){
             log.error("开卡流水号[{}]-开卡回调没有开卡记录!!!!!!!!", orderId);
@@ -63,9 +64,9 @@ public class CallBackController extends BaseController {
         String[] arrTemp = htmlTemp.split("\\?");
         String returnUrl = "";
         if(arrTemp.length>1){
-            returnUrl = htmlTemp+"?orderId="+orderId+"&activateStatus="+realStatus;
+            returnUrl = htmlTemp+"?orderId="+orderId+"&activateStatus="+realStatus+"&msg="+msg;
         }else{
-            returnUrl = htmlTemp+"?orderId="+orderId+"&activateStatus="+realStatus;
+            returnUrl = htmlTemp+"?orderId="+orderId+"&activateStatus="+realStatus+"&msg="+msg;
         }
         return "redirect:"+ returnUrl;
     }
