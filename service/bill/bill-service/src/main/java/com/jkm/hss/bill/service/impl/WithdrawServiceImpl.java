@@ -360,7 +360,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                     "提现分润", EnumAccountFlowType.INCREASE);
             if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
                 final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
-                if (dealerMerchantOptional.isPresent()) {
+                if (dealerMerchantOptional.isPresent() && new BigDecimal("0.00").compareTo(firstMoneyTriple.getMiddle()) <= 0) {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
                     if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接
@@ -392,7 +392,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                     "提现分润", EnumAccountFlowType.INCREASE);
             if (EnumSource.APIREG.getId() != receiveMerchant.getSource()) {
                 final Optional<MerchantInfo> dealerMerchantOptional = this.merchantInfoService.selectBySuperDealerId(dealer.getId());
-                if (dealerMerchantOptional.isPresent()) {
+                if (dealerMerchantOptional.isPresent() && new BigDecimal("0.00").compareTo(secondMoneyTriple.getMiddle()) <= 0) {
                     final MerchantInfo merchant = dealerMerchantOptional.get();
                     if (receiveMerchant.getFirstMerchantId() > 0) {
                         //直接

@@ -11,18 +11,18 @@ public class ApiHandleException extends Exception{
 	}
 	
 	public ApiHandleException(ResultCode resultCode) {
-		super();
+		super(resultCode.resultMessage);
 		this.resultCode = resultCode;
 	}
 
 	public ApiHandleException( ResultCode resultCode, String msg) {
-		super();
+		super(msg);
 		this.resultCode = resultCode;
 		this.msg = msg;
 	}
 
 	public ApiHandleException(String msg) {
-		super();
+		super(msg);
 		this.resultCode = ResultCode.CUSTOM_EXCEPTION;
 		this.msg = msg;
 	}
