@@ -176,6 +176,18 @@ public class AccountBankServiceImpl implements AccountBankService{
     }
 
     /**
+     * 更新token
+     *
+     * @param id
+     * @param token
+     * @return
+     */
+    @Override
+    public int updateToken(final long id, final String token) {
+        return accountBankDao.updateToken(id, token);
+    }
+
+    /**
      * 设置为默认银行卡
      *
      * @param id
@@ -589,8 +601,8 @@ public class AccountBankServiceImpl implements AccountBankService{
                                    String bankName,String reserveMobile,
                                    String bankBin,String token) {
         Optional<AccountBank> accountBankOptional = this.selectCreditCardByBankNo(accountId,bankNo);
+        final AccountBank accountBank = new AccountBank();
         if(!accountBankOptional.isPresent()){
-            AccountBank accountBank = new AccountBank();
             accountBank.setAccountId(accountId);
             accountBank.setToken(token);
             accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
@@ -606,6 +618,9 @@ public class AccountBankServiceImpl implements AccountBankService{
             accountBank.setBankBin(bankBin);
             accountBank.setStatus(EnumCommonStatus.NORMAL.getId());
             this.insert(accountBank);
+        } else {
+            log.info("账户id-[{}]，银行卡号-[{}]，记录已存在，保存token-[{}]", accountId, bankNo, token);
+            this.updateToken(accountBankOptional.get().getId(), token);
         }
     }
 

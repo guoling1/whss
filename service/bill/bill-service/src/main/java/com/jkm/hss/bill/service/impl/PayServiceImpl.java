@@ -1147,6 +1147,7 @@ public class PayServiceImpl implements PayService {
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+        order.setToken(accountBank.getToken());
         this.orderService.add(order);
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);
@@ -1214,6 +1215,7 @@ public class PayServiceImpl implements PayService {
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+        order.setToken(accountBank.getToken());
         this.orderService.add(order);
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);

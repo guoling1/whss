@@ -78,6 +78,10 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateToken">
+        UPDATE tb_account_bank SET token = #{token} WHERE id = #{id}
+    </update>
+
     <!-- 设置为默认银行卡-->
     <update id="setDefault">
         UPDATE tb_account_bank
