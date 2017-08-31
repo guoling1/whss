@@ -224,6 +224,9 @@
             <if test="remark != null and remark != ''">
                 remark = #{remark},
             </if>
+            <if test="token != null and token != ''">
+                token = #{token},
+            </if>
             <if test="status > 0">
                 status = #{status},
             </if>
