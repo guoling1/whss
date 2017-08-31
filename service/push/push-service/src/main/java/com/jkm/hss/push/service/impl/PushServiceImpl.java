@@ -471,11 +471,8 @@ public class PushServiceImpl implements PushService {
         AppResult appResult = new AppResult();
         appResult.setResultCode(400);
         appResult.setResultMessage(content);
-        final Map map = this.pushTransmissionMsgTask(2, JSON.toJSONString(appResult), "2", null, clients, "");
-        if (null != map) {
-            return JSON.toJSONString(map);
-        }
-        return "";
+        String ret = this.pushTransmissionMsg1(2, JSON.toJSONString(appResult), "2", null, clients);
+        return ret;
     }
 
     @Override
