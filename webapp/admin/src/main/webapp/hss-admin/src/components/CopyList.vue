@@ -30,7 +30,7 @@
             </el-table-column>
             <el-table-column label="标题">
               <template scope="scope">
-                {{scope.row.title}}
+                <el-button type="text" @click="modification(scope.row)">{{scope.row.title}}</el-button>
               </template>
             </el-table-column>
             <el-table-column label="发布时间">
@@ -85,6 +85,9 @@
       this.getData()
     },
     methods: {
+      modification: function (item) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/copyListDetail?type=2&id=' + item.id);
+      },
       datetimeSelect: function (val) {
         console.log(val);
         if (val == undefined) {
@@ -97,7 +100,7 @@
         }
       },
       release: function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/copyListDetail');
+        window.open('http://admin.qianbaojiajia.com/admin/details/copyListDetail?type=1');
       },
       reset: function () {
         this.date = '';
