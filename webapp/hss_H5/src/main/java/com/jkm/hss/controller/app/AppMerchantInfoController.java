@@ -927,7 +927,7 @@ public class AppMerchantInfoController extends BaseController {
         upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
         upgradePayRecordService.insert(upgradePayRecord);
         String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
-        Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),new BigDecimal("0.01"),skipUrl);
+        Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
         if(pair.getLeft()==0){
             String payUrl = URLDecoder.decode(pair.getRight(), "UTF-8");
             ToBuyResponse toBuyResponse = new ToBuyResponse();
