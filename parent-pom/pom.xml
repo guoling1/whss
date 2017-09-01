@@ -46,6 +46,7 @@
         <hsy.push.version>${hss.project.version}</hsy.push.version>
         <dealer.version>${hss.project.version}</dealer.version>
         <socket.service.version>${hss.project.version}</socket.service.version>
+        <jobTask.service.version>${hss.project.version}</jobTask.service.version>
         <jkm.interface.version>${hss.project.version}</jkm.interface.version>
     </properties>
 

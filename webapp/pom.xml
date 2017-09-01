@@ -18,5 +18,6 @@
         <module>dealer_PC</module>
         <module>hsy_API</module>
         <module>socket_service</module>
+        <module>job_task</module>
     </modules>
 </project>
