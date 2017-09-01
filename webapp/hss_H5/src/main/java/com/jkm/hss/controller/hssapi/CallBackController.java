@@ -64,7 +64,7 @@ public class CallBackController extends BaseController {
         String[] arrTemp = htmlTemp.split("\\?");
         String returnUrl = "";
         if(arrTemp.length>1){
-            returnUrl = htmlTemp+"?orderId="+orderId+"&activateStatus="+realStatus+"&msg="+msg;
+            returnUrl = htmlTemp+"&orderId="+orderId+"&activateStatus="+realStatus+"&msg="+msg;
         }else{
             returnUrl = htmlTemp+"?orderId="+orderId+"&activateStatus="+realStatus+"&msg="+msg;
         }
