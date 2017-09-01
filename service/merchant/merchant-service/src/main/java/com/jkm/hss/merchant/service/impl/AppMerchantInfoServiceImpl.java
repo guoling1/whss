@@ -209,6 +209,15 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
             throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
         }
         long oemId = 0;
+        if(appRegisterRequest.getOemNo()!=null&&!"".equals(appRegisterRequest.getOemNo())){
+            Optional<OemInfo> oemInfoOptional = oemInfoService.selectByOemNo(appRegisterRequest.getOemNo());
+            if(!oemInfoOptional.isPresent()){
+                throw new ApiHandleException(ResultCode.INVITECODE_NOT_EXSIT);
+            }
+            oemId = oemInfoOptional.get().getDealerId();
+        }
+
+
         final String mobile = appRegisterRequest.getMobile();
         final String verifyCode = appRegisterRequest.getCode();
         final String inviteCode = appRegisterRequest.getInviteCode();
@@ -245,7 +254,6 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
                 if(dealerOptional.get().getRecommendBtn()== EnumRecommendBtn.OFF.getId()){
                     throw new ApiHandleException(ResultCode.INVITECODE_NOT_EXSIT);
                 }
-                oemId = dealerOptional.get().getOemId();
             }else{
                 if(inviteCode.equals(mobile)){
                     throw new ApiHandleException(ResultCode.CANT_NOT_SHARE_TO_SELF);
@@ -260,7 +268,6 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
                 if(miOptional.get().getIsUpgrade()== EnumIsUpgrade.CANNOTUPGRADE.getId()){
                     throw new ApiHandleException(ResultCode.INVITECODE_NOT_EXSIT);
                 }
-                oemId = miOptional.get().getOemId();
             }
         }
         final Pair<Integer, String> checkResult =

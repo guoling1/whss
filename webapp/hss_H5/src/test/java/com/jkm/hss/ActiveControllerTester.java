@@ -96,7 +96,7 @@ public class ActiveControllerTester {
         p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("865873032687208");
-        String param="{\"mobile\":\"13146716739\",\"oemNo\":\"\",\"type\":2}";
+        String param="{\"mobile\":\"13146716739\",\"oemNo\":\"0C9C3ED38EC611E798410862664B7793\",\"type\":2}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
         String encodeUrl = URLEncoder.encode(base64E,"utf-8");
         p.setRequestData(encodeUrl);
@@ -112,7 +112,7 @@ public class ActiveControllerTester {
         p.setTimeStamp(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV(v);
         p.setDeviceId("865873032687208");
-        String param="{\"mobile\":\"13146716739\",\"code\":\"123456\",\"inviteCode\":\"13146716739\"}";
+        String param="{\"mobile\":\"13146716739\",\"code\":\"483073\",\"inviteCode\":\"18640426296\",\"oemNo\":\"0C9C3ED38EC611E798410862664B7793\"}";
         String base64E= AppAesUtil.encryptCBC_NoPaddingToBase64String(param, "utf-8", p.getAccessToken().substring(0,16), p.getAccessToken().substring(16,32));
         String encodeUrl = URLEncoder.encode(base64E,"utf-8");
         p.setRequestData(encodeUrl);

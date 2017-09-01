@@ -19,4 +19,8 @@ public class AppRegisterRequest {
      * 邀请码（邀请码或二维码至少与一个不为空）
      */
     private String inviteCode;
+    /**
+     * 分公司标示
+     */
+    private String oemNo;
 }
