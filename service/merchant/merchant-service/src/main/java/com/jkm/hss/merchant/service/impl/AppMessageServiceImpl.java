@@ -125,7 +125,7 @@ public class AppMessageServiceImpl implements AppMessageService {
      */
     public void insertMessageInfoAndPush(Long uid, EnumMessageType type, EnumMessageTemplate template, Map<String,String> param){
         String content="";
-        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(template.key);
+        SmsTemplate messageTemplate = null;//messageTemplateDao.getTemplateByType(template.key);
         if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
             content=messageTemplate.getMessageTemplate();
         else

@@ -19,7 +19,7 @@
     <select id="getTemplateByType" resultType="com.jkm.hss.notifier.entity.SmsTemplate">
         SELECT *
         FROM tb_message_template
-        WHERE notice_type=#{typeId}
+        WHERE notice_type=#{typeId} ORDER BY id DESC
     </select>
     <select id="getMessageTemplate" resultType="com.jkm.hss.notifier.entity.SmsTemplate">
         SELECT *

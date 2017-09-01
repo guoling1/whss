@@ -182,10 +182,10 @@ public class PushServiceImpl implements PushService {
         final SmsTemplate messageTemplate;
         AppResult appResult = new AppResult();
         if(isSucc){
-            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
+            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId()).get(0);
             appResult.setResultCode(100);
         }else{
-            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
+            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId()).get(0);
             appResult.setResultCode(101);
         }
         String newContent =messageTemplate.getMessageTemplate();
@@ -225,7 +225,7 @@ public class PushServiceImpl implements PushService {
                 }
             }
         }
-        final SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+        final SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId()).get(0);
         final Map data= new HashMap();
         data.put("code", code);
         data.put("payChannel",payChannel );
@@ -309,7 +309,7 @@ public class PushServiceImpl implements PushService {
             String clientid=map.get("CLIENTID").toString();
             clients.add(clientid);
         }
-        SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+        SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId()).get(0);
 
         Map  data= new HashMap();
         data.put("code", code);
@@ -335,7 +335,7 @@ public class PushServiceImpl implements PushService {
             String clientid=map.get("CLIENTID").toString();
             clients.add(clientid);
         }
-         SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH_OUT.getId());
+         SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH_OUT.getId()).get(0);
         Map  data= new HashMap();
         data.put("bank", payBank);
         data.put("cardNo",cardNo );
@@ -487,7 +487,7 @@ public class PushServiceImpl implements PushService {
         }
         final SmsTemplate messageTemplate;
         AppResult appResult = new AppResult();
-        messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.PUSH_REFERRALS.getId());
+        messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.PUSH_REFERRALS.getId()).get(0);
         appResult.setResultCode(300);
 
         String newContent =messageTemplate.getMessageTemplate();
@@ -508,7 +508,7 @@ public class PushServiceImpl implements PushService {
         }
         final SmsTemplate messageTemplate;
         AppResult appResult = new AppResult();
-        messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.PUSH_DISABLE.getId());
+        messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.PUSH_DISABLE.getId()).get(0);
         appResult.setResultCode(300);
 
         String newContent =messageTemplate.getMessageTemplate();
