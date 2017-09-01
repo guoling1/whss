@@ -49,7 +49,7 @@ public interface MessageTemplateDao {
      * @param typeId
      * @return
      */
-    SmsTemplate getTemplateByType(@Param("typeId") int typeId);
+    List<SmsTemplate> getTemplateByType(@Param("typeId") int typeId);
 
     /**
      * 根据模板id获取消息模板

@@ -53,7 +53,7 @@ public class MessageTemplateInitServiceImpl implements MessageTemplateInitServic
         final SmsTemplate smsTemplate = new SmsTemplate();
         smsTemplate.setMessageTemplate(template);
         smsTemplate.setNoticeType(noticeType.getId());
-        this.messageTemplateService.addTemplate(smsTemplate);
+//        this.messageTemplateService.addTemplate(smsTemplate);
 
     }
 }

@@ -6,6 +6,8 @@ import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.service.OemInfoService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
@@ -63,6 +65,8 @@ public class MerchantInfoCheckRecordController extends BaseController {
 
     @Autowired
     private AccountBankService accountBankService;
+    @Autowired
+    private OemInfoService oemInfoService;
 
     @ResponseBody
     @RequestMapping(value = "/record",method = RequestMethod.POST)
@@ -97,6 +101,11 @@ public class MerchantInfoCheckRecordController extends BaseController {
         sendMsgService.sendAuditThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
         final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_AUDIT);
         if (1 == verifyCode.getLeft()) {
+            final Optional<OemInfo> oemInfoOptional = this.oemInfoService.selectOemInfoByDealerId(merchantInfo.getDealerId());
+            String oemNo = "";
+            if (oemInfoOptional.isPresent()) {
+                oemNo = oemInfoOptional.get().getOemNo();
+            }
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
                     .mobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()))
@@ -104,6 +113,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
                     .noticeType(EnumNoticeType.MERCHANT_AUDIT)
+                    .oemNo(oemNo)
                     .build()
             );
         }
@@ -128,6 +138,11 @@ public class MerchantInfoCheckRecordController extends BaseController {
             sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),desr.getDescr(),toUsers);
             final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
             if (1 == verifyCode.getLeft()) {
+                final Optional<OemInfo> oemInfoOptional = this.oemInfoService.selectOemInfoByDealerId(merchantInfo.getDealerId());
+                String oemNo = "";
+                if (oemInfoOptional.isPresent()) {
+                    oemNo = oemInfoOptional.get().getOemNo();
+                }
                 final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
                 this.sendMessageService.sendMessage(SendMessageParams.builder()
                         .mobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()))
@@ -135,6 +150,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
                         .data(params)
                         .userType(EnumUserType.BACKGROUND_USER)
                         .noticeType(EnumNoticeType.MERCHANT_NO_AUDIT)
+                        .oemNo(oemNo)
                         .build()
                 );
             }

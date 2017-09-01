@@ -36,6 +36,7 @@ import com.jkm.hsy.user.util.AppAesUtil;
 import com.jkm.hsy.user.util.AppDateUtil;
 import com.jkm.hsy.user.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -599,7 +600,11 @@ public class MembershipController {
             return;
         }
 
-        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppPolicyConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
+        final List<SmsTemplate> messageTemplateList = messageTemplateDao.getTemplateByType(AppPolicyConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
+        SmsTemplate messageTemplate = null;
+        if (!CollectionUtils.isEmpty(messageTemplateList)) {
+            messageTemplate = messageTemplateList.get(0);
+        }
         String template="";
         if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
             template=messageTemplate.getMessageTemplate();

@@ -39,6 +39,7 @@ import com.jkm.hsy.user.service.HsyUserService;
 import com.jkm.hsy.user.util.AppDateUtil;
 import com.jkm.hsy.user.util.HttpUtil;
 import com.jkm.hsy.user.util.ShaUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -577,7 +578,11 @@ public class HsyUserServiceImpl implements HsyUserService {
         }
 
 
-        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
+        final List<SmsTemplate> messageTemplateList = messageTemplateDao.getTemplateByType(AppConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
+        SmsTemplate messageTemplate = null;
+        if (!CollectionUtils.isEmpty(messageTemplateList)) {
+            messageTemplate = messageTemplateList.get(0);
+        }
         String template="";
         if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
             template=messageTemplate.getMessageTemplate();
@@ -779,7 +784,11 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
         String password=(int)((Math.random()*9+1)*10000000)+"";
-        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.SEND_PASSWORD_NOTICE_TYPE_ID);
+        final List<SmsTemplate> messageTemplateList = messageTemplateDao.getTemplateByType(AppConstant.SEND_PASSWORD_NOTICE_TYPE_ID);
+        SmsTemplate messageTemplate = null;
+        if (!CollectionUtils.isEmpty(messageTemplateList)) {
+            messageTemplate = messageTemplateList.get(0);
+        }
         String template="";
         if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
             template=messageTemplate.getMessageTemplate();
@@ -1456,8 +1465,11 @@ public class HsyUserServiceImpl implements HsyUserService {
                 throw new ApiHandleException(ResultCode.CEELLPHONE_HAS_NOT_BEEN_REGISTERED);
         }
 
-
-        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.VERIFICATION_NOTICE_TYPE_ID_VOICE);
+        final List<SmsTemplate> messageTemplateList = messageTemplateDao.getTemplateByType(AppConstant.VERIFICATION_NOTICE_TYPE_ID_VOICE);
+        SmsTemplate messageTemplate = null;
+        if (!CollectionUtils.isEmpty(messageTemplateList)) {
+            messageTemplate = messageTemplateList.get(0);
+        }
         String template="";
         if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
             template=messageTemplate.getMessageTemplate();

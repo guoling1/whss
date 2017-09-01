@@ -28,10 +28,10 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
     @Override
     public long addTemplate(final SmsTemplate messageTemplate) {
 
-        final SmsTemplate template = this.messageTemplateDao.getTemplateByType(messageTemplate.getNoticeType());
+        final List<SmsTemplate> template = this.messageTemplateDao.getTemplateByType(messageTemplate.getNoticeType());
         if (template != null) {
-            this.messageTemplateDao.modifyMessageTemplate(template.getId(), messageTemplate.getMessageTemplate());
-            return template.getId();
+//            this.messageTemplateDao.modifyMessageTemplate(template.getId(), messageTemplate.getMessageTemplate());
+//            return template.getId();
         }
         this.messageTemplateDao.addTemplate(messageTemplate);
         return messageTemplate.getId();
@@ -80,7 +80,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
     @Override
     public SmsTemplate getTemplateByType(final EnumNoticeType type) {
 
-        return this.messageTemplateDao.getTemplateByType(type.getId());
+        return this.messageTemplateDao.getTemplateByType(type.getId()).get(0);
     }
 
     /**

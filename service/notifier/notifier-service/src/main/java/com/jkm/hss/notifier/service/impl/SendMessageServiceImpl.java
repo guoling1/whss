@@ -1,8 +1,10 @@
 package com.jkm.hss.notifier.service.impl;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.VelocityStringTemplate;
 import com.jkm.base.sms.service.SmsSendMessageService;
+import com.jkm.base.sms.service.constants.EnumSmsSdkChannel;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -11,20 +13,21 @@ import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.exception.NoticeSendException;
 import com.jkm.hss.notifier.helper.SendMessageParams;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by konglingxin on 15/10/9.
  */
-
+@Slf4j
 @Service
 public class SendMessageServiceImpl implements SendMessageService {
-    private static Logger log = Logger.getLogger(SendMessageServiceImpl.class);
 
     @Autowired
     private SmsSendMessageService smsSendMessageService;
@@ -50,10 +53,46 @@ public class SendMessageServiceImpl implements SendMessageService {
         @Override
         public long sendMessage(final SendMessageParams params) {
             checkSendMessageParams(params);
-            final SmsTemplate messageTemplate = this.messageTemplateDao.getTemplateByType(params.getNoticeType().getId());
+            final List<SmsTemplate> messageTemplateList = this.messageTemplateDao.getTemplateByType(params.getNoticeType().getId());
+            SmsTemplate messageTemplate = null;
+            if (StringUtils.isEmpty(params.getOemNo())) {
+                for (SmsTemplate template : messageTemplateList) {
+                    if (template.checkDefault()) {
+                        messageTemplate = template;
+                        break;
+                    }
+                }
+            } else {
+                for (SmsTemplate template : messageTemplateList) {
+                    if (Objects.equal(template.getOemNo(), params.getOemNo())) {
+                        messageTemplate = template;
+                        break;
+                    }
+                }
+            }
+//            log.info("[{}]", messageTemplate);
             Preconditions.checkNotNull(messageTemplate, "[%s]消息模板为空", params.getNoticeType().getDesc());
-            return sendRealMessage(params.getUid(), params.getUserType(),
-                    params.getMobile(), params.getData(), messageTemplate);
+            final EnumSmsSdkChannel smsSdkChannel = EnumSmsSdkChannel.of(messageTemplate.getChannel());
+            switch (smsSdkChannel) {
+                case DEFAULT:
+                    return sendRealMessage(params.getUid(), params.getUserType(),
+                            params.getMobile(), params.getData(), messageTemplate);
+                case ALIYUN:
+                    final String paramContent = VelocityStringTemplate.process(messageTemplate.getTemplateParam(), params.getData());
+                    final String resultContent;
+                    log.info("oemNo[{}],uid-[{}]发送短信内容[{}]", params.getOemNo(), params.getUid(), paramContent);
+                    try {
+                        resultContent = this.smsSendMessageService.sendMessageWithAliyun(params.getMobile(), messageTemplate.getTemplateCode(),
+                                messageTemplate.getSignName(), paramContent, messageTemplate.getAppCode());
+                    } catch (Exception e) {
+                        log.error("oemNo[" + params.getOemNo() + "]，uid-[" + params.getUid() + "]-发送短信失败", e);
+                        throw new NoticeSendException("短信消息发送失败，失败原因:" + e.getMessage(), e);
+                    }
+
+                    final SendMessageRecord sendMessageRecord = recordSendMessage(params.getUid(), params.getUserType(), params.getMobile(), messageTemplate, paramContent, resultContent, 1);
+                    return sendMessageRecord.getId();
+            }
+           return 0;
         }
 
         private void checkSendMessageParams(final SendMessageParams params) {
