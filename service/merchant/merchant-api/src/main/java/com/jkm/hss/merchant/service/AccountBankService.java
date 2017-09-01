@@ -56,6 +56,15 @@ public interface AccountBankService {
     int update(AccountBank accountBank);
 
     /**
+     * 修改
+     * @param id
+     * @param token
+     * @return
+     */
+    int updateToken(long id, String token);
+
+
+    /**
      * 设置为默认银行卡
      * @param id
      * @return

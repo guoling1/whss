@@ -1147,6 +1147,7 @@ public class PayServiceImpl implements PayService {
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+        order.setToken(accountBank.getToken());
         this.orderService.add(order);
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);
@@ -1214,6 +1215,7 @@ public class PayServiceImpl implements PayService {
         order.setTradeCardNo(accountBank.getBankNo());
         order.setTradeCardType(EnumBankType.CREDIT_CARD.getId());
         order.setBankName(accountBank.getBankName());
+        order.setToken(accountBank.getToken());
         this.orderService.add(order);
         final BusinessOrder updateBusinessOrder = new BusinessOrder();
         updateBusinessOrder.setId(businessOrderId);
@@ -1281,7 +1283,6 @@ public class PayServiceImpl implements PayService {
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkUnionPayResponse.getCode());
         switch (enumBasicStatus) {
             case SUCCESS:
-                order.setToken(accountBank.getToken());
                 order.setSn(paymentSdkUnionPayResponse.getSn());
                 order.setRemark(paymentSdkUnionPayResponse.getMessage());
                 this.orderService.update(order);
