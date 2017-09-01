@@ -58,7 +58,6 @@ public class SmsSendMessageServiceImpl implements SmsSendMessageService {
         queryParam.put("TemplateCode", templateCode);
         try {
             final HttpResponse response = HttpUtils.doGet("http://sms.market.alicloudapi.com", "/singleSendSms", "GET", headers, queryParam);
-            log.info("[{}]", EntityUtils.toString(response.getEntity()));
             return EntityUtils.toString(response.getEntity());
         } catch (final Exception e) {
             log.error("手机号[" + mobile + "]发送短信-templateCode[" + templateCode + "]，异常", e);
