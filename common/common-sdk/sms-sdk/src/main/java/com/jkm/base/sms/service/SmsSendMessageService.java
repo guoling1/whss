@@ -12,4 +12,15 @@ public interface SmsSendMessageService {
      * @return   第三方短信渠道返回标识
      */
     String sendMessage(String mobile, String content);
+
+    /**
+     * 阿里云发消息
+     *
+     * @param mobile
+     * @param templateCode
+     * @param signName
+     * @param templateParam
+     * @return
+     */
+    String sendMessageWithAliyun(String mobile, String templateCode, String signName, String templateParam, String appCode);
 }

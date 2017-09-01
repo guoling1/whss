@@ -560,12 +560,18 @@ public class AppMerchantInfoController extends BaseController {
         final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(reserveMobile, EnumVerificationCodeType.BIND_CARD_MERCHANT);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
+            final Optional<OemInfo> oemInfoOptional = this.oemInfoService.selectOemInfoByDealerId(merchantInfoOptional.get().getDealerId());
+            String oemNo = "";
+            if (oemInfoOptional.isPresent()) {
+                oemNo = oemInfoOptional.get().getOemNo();
+            }
             this.sendMessageService.sendMessage(SendMessageParams.builder()
                     .mobile(reserveMobile)
                     .uid(merchantInfo.getId() + "")
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
                     .noticeType(EnumNoticeType.BIND_CARD_MERCHANT)
+                    .oemNo(oemNo)
                     .build()
             );
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");

@@ -164,6 +164,7 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
                         .data(params)
                         .userType(EnumUserType.BACKGROUND_USER)
                         .noticeType(EnumNoticeType.REGISTER_MERCHANT)
+                        .oemNo(loginCodeRequest.getOemNo())
                         .build()
                 );
                 return "";
@@ -181,6 +182,7 @@ public class AppMerchantInfoServiceImpl implements AppMerchantInfoService {
                         .data(params)
                         .userType(EnumUserType.BACKGROUND_USER)
                         .noticeType(EnumNoticeType.LOGIN_MERCHANT)
+                        .oemNo(loginCodeRequest.getOemNo())
                         .build()
                 );
                 return "";

@@ -29,6 +29,16 @@ public class SendMessageParams {
     @Singular(value = "addMapData")
     private Map<String, ?> data = new HashMap<>();
     private Date sendTime;
+    /**
+     * o单商编号
+     */
+    private String oemNo;
+
+
+
+
+
+
 
     public Pair<Boolean, String> checkParamsCorrect() {
         if (getNoticeType() == null) {

@@ -26,6 +26,46 @@ public class SmsTemplate extends BaseEntity {
      * 短信模板
      */
     private String messageTemplate;
+    /**
+     * o单商编号
+     */
+    private String oemNo;
+    /**
+     * 短信通道
+     *
+     * {@link com.jkm.base.sms.service.constants.EnumSmsSdkChannel}
+     */
+    private String channel;
+    /**
+     * 模板编码
+     */
+    private String templateCode;
+    /**
+     * 模板签名
+     */
+    private String signName;
+    /**
+     * 参数
+     */
+    private String templateParam;
+    /**
+     *
+     */
+    private String appCode;
+
+    private String appKey;
+
+    private String appSecret;
+
+    /**
+     * 是否是缺省通道
+     */
+    private String isDefault;
+
+
+    public boolean checkDefault() {
+        return "Y".equals(this.isDefault);
+    }
 
 
     /**

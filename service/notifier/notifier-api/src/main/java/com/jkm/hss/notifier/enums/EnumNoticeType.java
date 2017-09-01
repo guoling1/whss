@@ -93,7 +93,7 @@ public enum EnumNoticeType {
     /**
      * 商户审核成功hss
      */
-    MERCHANT_NO_AUDIT(907, "审核通过"),
+    MERCHANT_NO_AUDIT(907, "审核未通过"),
 
     /**
      * 官网验证码
