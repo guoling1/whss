@@ -100,34 +100,5 @@ public class BankCardController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", responses);
     }
 
-    /**
-     * H5快捷支付绑卡
-     *
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "openCard", method = RequestMethod.POST)
-    public CommonResponse openCard(final HttpServletRequest httpServletRequest) {
-        final JSONObject openCardResponse = new JSONObject();
-        String readParam;
-        OpenCardRequest request;
-        try {
-            readParam = super.read(httpServletRequest);
-            request = JSON.parseObject(readParam, OpenCardRequest.class);
-        } catch (final IOException e) {
-            log.error("快捷绑卡读取数据流异常", e);
-            return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "开卡失败");
-        }
-        log.info("快捷绑卡入网参数[{}]", JSON.toJSON(request).toString());
-        try {
-            request.setBindCardReqNo(SnGenerator.generate());
-            String html = openCardService.kuaiPayOpenCard(request);
-            openCardResponse.put("html",html);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", openCardResponse);
-        } catch (final Throwable e) {
-            log.error("快捷绑卡异常", e);
-        }
-        return CommonResponse.simpleResponse(CommonResponse.FAIL_CODE, "开卡失败");
-    }
+
 }
