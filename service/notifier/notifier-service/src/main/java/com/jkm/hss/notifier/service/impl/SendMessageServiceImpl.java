@@ -70,6 +70,7 @@ public class SendMessageServiceImpl implements SendMessageService {
                     }
                 }
             }
+            log.info("[{}]", messageTemplate);
             Preconditions.checkNotNull(messageTemplate, "[%s]消息模板为空", params.getNoticeType().getDesc());
             final EnumSmsSdkChannel smsSdkChannel = EnumSmsSdkChannel.of(messageTemplate.getChannel());
             switch (smsSdkChannel) {

@@ -1,5 +1,6 @@
 package com.jkm.base.sms.service.constants;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
@@ -34,6 +35,7 @@ public enum EnumSmsSdkChannel {
     }
 
     public static EnumSmsSdkChannel of(final String code) {
+        Preconditions.checkState(INIT_MAP.containsKey(code), "通道错误");
         return INIT_MAP.get(code);
     }
 }
