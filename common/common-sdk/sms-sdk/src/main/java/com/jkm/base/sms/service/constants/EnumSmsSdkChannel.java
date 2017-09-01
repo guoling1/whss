@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 public enum EnumSmsSdkChannel {
 
-    DEFAULT("HAIDAI", "缺省通道"),
+    DEFAULT("HAODAI", "缺省通道"),
 
     ALIYUN("ALIYUN", "阿里云通道")
     ;
